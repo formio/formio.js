@@ -13,7 +13,8 @@ export default class FileComponent extends BaseComponent {
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
-      fileMaxSize: '1GB'
+      fileMaxSize: '1GB',
+      uploadOnly: false
     }, ...extend);
   }
 
@@ -58,6 +59,11 @@ export default class FileComponent extends BaseComponent {
   get defaultValue() {
     const value = super.defaultValue;
     return Array.isArray(value) ? value : [];
+  }
+
+  // File is always an array.
+  validateMultiple() {
+    return false;
   }
 
   build() {
@@ -179,6 +185,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   createFileLink(file) {
+    if (this.options.uploadOnly) {
+      return file.originalName || file.name;
+    }
     return this.ce('a', {
       href: file.url, target: '_blank',
       onClick: this.getFile.bind(this, file)
@@ -266,11 +275,11 @@ export default class FileComponent extends BaseComponent {
               return false;
             }
           },
-          [
-            this.ce('i', { class: this.iconClass('cloud-upload') }),
-            this.text(' Drop files to attach, or '),
-            this.buildBrowseLink()
-          ]
+            [
+              this.ce('i', { class: this.iconClass('cloud-upload') }),
+              this.text(' Drop files to attach, or '),
+              this.buildBrowseLink()
+            ]
           ) :
           this.ce('div')
       )
@@ -293,6 +302,7 @@ export default class FileComponent extends BaseComponent {
       },
       class: 'browse'
     }, this.text('browse'));
+    this.addFocusBlurEvents(this.browseLink);
 
     return this.browseLink;
   }
@@ -363,7 +373,7 @@ export default class FileComponent extends BaseComponent {
                 'aria-valuemax': 100,
                 style: `width:${fileUpload.progress}%`
               },
-              this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
+                this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
               )
             ) :
             this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
@@ -542,14 +552,19 @@ export default class FileComponent extends BaseComponent {
     }
   }
 
-  getFile(fileInfo, event)  {
+  getFile(fileInfo, event) {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        download(file.url, file.originalName, file.type);
+        if (file.storage === 'base64') {
+          download(file.url, file.originalName, file.type);
+        }
+        else {
+          window.open(file.url, '_blank');
+        }
       }
     })
       .catch((response) => {

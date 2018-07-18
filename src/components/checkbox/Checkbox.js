@@ -8,7 +8,7 @@ export default class CheckBoxComponent extends BaseComponent {
       inputType: 'checkbox',
       label: 'Checkbox',
       key: 'checkbox',
-      datagridLabel: true,
+      dataGridLabel: true,
       labelPosition: 'right',
       value: '',
       name: ''
@@ -31,7 +31,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   get defaultValue() {
-    return this.component.name ? '' : false;
+    return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
   }
 
   elementInfo() {
@@ -75,7 +75,7 @@ export default class CheckBoxComponent extends BaseComponent {
 
   createElement() {
     let className = `form-check ${this.className}`;
-    if (this.component.label) {
+    if (!this.labelIsHidden()) {
       className += ' checkbox';
     }
     this.element = this.ce('div', {
@@ -135,7 +135,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   createLabel(container, input) {
-    if (!this.component.label) {
+    if (this.labelIsHidden()) {
       return null;
     }
 

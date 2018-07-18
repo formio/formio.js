@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Validator from '../../../components/Validator';
 import BaseComponent from '../../../components/base/Base';
+import Formio from '../../../Formio';
 
 // Register a custom validor to use card validition from Stripe
 if (typeof Validator.validators.stripe === 'undefined') {
@@ -42,7 +43,7 @@ export default class StripeComponent extends BaseComponent {
      * Promise when Stripe is ready.
      * @type {Promise}
      */
-    this.stripeReady = BaseComponent.requireLibrary('stripe', 'Stripe', src, true);
+    this.stripeReady = Formio.requireLibrary('stripe', 'Stripe', src, true);
 
     /**
      * The last result returned by Stripe.

@@ -113,7 +113,7 @@ export default class TabsComponent extends NestedComponent {
     const tab = this.component.components[this.currentTab];
     this.empty(this.tabs[this.currentTab]);
     _.remove(this.components, (comp) => comp.component.tab === this.currentTab);
-    const components = this.hook('addComponents', tab.components);
+    const components = this.hook('addComponents', tab.components, this);
     _.each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
     this.checkConditions(this.root ? this.root.data : {});
 

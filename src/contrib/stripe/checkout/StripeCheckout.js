@@ -1,7 +1,8 @@
 /* globals StripeCheckout */
 import _ from 'lodash';
-import BaseComponent from '../../../components/base/Base';
 import ButtonComponent from '../../../components/button/Button';
+import Formio from '../../../Formio';
+
 export default class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -13,7 +14,7 @@ export default class StripeCheckoutComponent extends ButtonComponent {
      * Promise when Stripe is ready.
      * @type {Promise}
      */
-    this.stripeCheckoutReady = BaseComponent.requireLibrary('stripeCheckout', 'StripeCheckout', src, true);
+    this.stripeCheckoutReady = Formio.requireLibrary('stripeCheckout', 'StripeCheckout', src, true);
 
     /**
      * Keep initial component action

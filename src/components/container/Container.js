@@ -8,6 +8,7 @@ export default class ContainerComponent extends NestedComponent {
       key: 'container',
       clearOnHide: true,
       input: true,
+      tree: true,
       components: []
     }, ...extend);
   }

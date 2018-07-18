@@ -209,6 +209,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     const subPath = () => {
       if (
         component.key &&
+        !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
           ['datagrid', 'container', 'editgrid'].includes(component.type) ||
           component.tree
@@ -284,7 +285,7 @@ export function matchComponent(component, query) {
 export function getComponent(components, key, includeAll) {
   let result;
   eachComponent(components, (component, path) => {
-    if (matchComponent(component, key)) {
+    if (path === key) {
       component.path = path;
       result = component;
       return true;
@@ -471,7 +472,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom, { row, data, form }) :
+    instance.evaluate(custom) :
     evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
@@ -822,9 +823,16 @@ export function matchInputMask(value, inputMask) {
 
 export function getNumberSeparators(lang = 'en') {
   const formattedNumberString = (12345.6789).toLocaleString(lang);
+  const delimeters = formattedNumberString.match(/..(.)...(.)../);
+  if (!delimeters) {
+    return {
+      delimiter: ',',
+      decimalSeparator: '.'
+    };
+  }
   return {
-    delimiter: formattedNumberString.match(/12(.*)345/)[1],
-    decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',
+    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',
   };
 }
 
@@ -916,4 +924,29 @@ export function fieldData(data, component) {
     }
     return data[component.key];
   }
+}
+
+/**
+ * Delays function execution with possibility to execute function synchronously or cancel it.
+ *
+ * @param fn Function to delay
+ * @param delay Delay time
+ * @return {*}
+ */
+export function delay(fn, delay = 0, ...args) {
+  const timer = setTimeout(fn, delay, ...args);
+
+  function cancel() {
+    clearTimeout(timer);
+  }
+
+  function earlyCall() {
+    cancel();
+    return fn(...args);
+  }
+
+  earlyCall.timer = timer;
+  earlyCall.cancel = cancel;
+
+  return earlyCall;
 }

@@ -20,7 +20,7 @@ Formio.registerComponent = Components.setComponent;
 function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
-    i18next: i18next
+    i18next,
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -68,7 +68,10 @@ export default class Webform extends NestedComponent {
       }
       else {
         _.each(options.i18n, (lang, code) => {
-          if (!i18n.resources[code]) {
+          if (code === 'options') {
+            _.merge(i18n, lang);
+          }
+          else if (!i18n.resources[code]) {
             i18n.resources[code] = { translation: lang };
           }
           else {
@@ -779,6 +782,9 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
+    if (!type && this.submitted) {
+      return;
+    }
     if (this.options.noAlerts) {
       if (!message) {
         this.emit('error', false);
@@ -812,6 +818,7 @@ export default class Webform extends NestedComponent {
    */
   build() {
     this.on('submitButton', (options) => this.submit(false, options));
+    this.on('checkValidity', (data) => this.checkValidity(data, true));
     this.addComponents();
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
   }

@@ -6,9 +6,7 @@ import Components from '../Components';
 
 export default class NestedComponent extends BaseComponent {
   static schema(...extend) {
-    return BaseComponent.schema({
-      tree: true
-    }, ...extend);
+    return BaseComponent.schema({}, ...extend);
   }
 
   constructor(component, options, data) {
@@ -40,6 +38,18 @@ export default class NestedComponent extends BaseComponent {
 
   getComponents() {
     return this.components;
+  }
+
+  getAllComponents() {
+    return this.getComponents().reduce((components, component) => {
+      let result = component;
+
+      if (component.getAllComponents) {
+        result = component.getAllComponents();
+      }
+
+      return components.concat(result);
+    }, []);
   }
 
   /**
@@ -173,7 +183,7 @@ export default class NestedComponent extends BaseComponent {
       return comp;
     }
     this.setHidden(comp);
-    element = this.hook('addComponent', element, comp);
+    element = this.hook('addComponent', element, comp, this);
     if (before) {
       element.insertBefore(comp.getElement(), before);
     }
@@ -255,7 +265,7 @@ export default class NestedComponent extends BaseComponent {
   addComponents(element, data) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
+    const components = this.hook('addComponents', this.componentComponents, this);
     _.each(components, (component) => this.addComponent(component, element, data));
   }
 
@@ -318,6 +328,23 @@ export default class NestedComponent extends BaseComponent {
   clearOnHide(show) {
     super.clearOnHide(show);
     this.getComponents().forEach(component => component.clearOnHide(show));
+  }
+
+  show(show) {
+    const shown = super.show(show);
+    const forceShow = this.options.show && this.options.show[this.component.key];
+    const forceHide = this.options.hide && this.options.hide[this.component.key];
+    if (forceShow || forceHide) {
+      this.getComponents().forEach(component => {
+        if (forceShow) {
+          component.show(true);
+        }
+        else if (forceHide) {
+          component.show(false);
+        }
+      });
+    }
+    return shown;
   }
 
   /**
@@ -417,7 +444,7 @@ export default class NestedComponent extends BaseComponent {
 
   get errors() {
     let errors = [];
-    _.each(this.getComponents(), (comp) => {
+    _.each(this.getAllComponents(), (comp) => {
       const compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);

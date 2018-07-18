@@ -334,14 +334,17 @@ export default class SelectComponent extends BaseComponent {
     }, 'values') || []);
   }
 
+  /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
+      this.itemsLoadedResolve();
       return;
     }
 
     // Only load the data if it is visible.
     if (!this.checkConditions()) {
+      this.itemsLoadedResolve();
       return;
     }
 
@@ -402,6 +405,7 @@ export default class SelectComponent extends BaseComponent {
       }
     }
   }
+  /* eslint-enable max-statements */
 
   addPlaceholder(input) {
     if (!this.component.placeholder || !input) {
@@ -511,6 +515,7 @@ export default class SelectComponent extends BaseComponent {
       this.choices.containerOuter.setAttribute('tabIndex', '-1');
       this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
     }
+    this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
     this.setInputStyles(this.choices.containerOuter);

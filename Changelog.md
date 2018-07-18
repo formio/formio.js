@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Hidden Component value being equal to '[object Object]'
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -44,6 +48,110 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
+
+## 3.0.0-rc.22
+### Added
+ - Word and character counts along with validation to all text components.
+
+### Changed
+ - Upgraded i18next@11.3.6, babel-eslint@8.2.6, eslint@5.1.0, webpack@4.16.1
+
+### Fixed
+ - Utils `getComponent()` function.
+ - Data Grid displaying column for Hidden field
+ - Fixed the 12hr time configuration for DateTime component. 
+
+## 3.0.0-rc.21
+### Fixed
+ - Issue with builder where editing a component would not work inside nested component.
+ - Fixed data grid to not show columns consisting of hidden components.
+ - Decimal separators for languages that do not use numerics.
+ 
+### Added
+ - Configure dragula to check if a component can be dragged using the 'no-drag' class
+
+## 3.0.0-rc.20
+### Fixed
+ - Problem where conditionally hidden select fields would not resolve their loaded promise.
+
+## 3.0.0-rc.19
+### Changed
+ - Made each build entry derive from the same formio.form entry.
+
+### Added
+ - The ability to have access to the Promise library from external mechanisms.
+
+## 3.0.0-rc.18
+### Added
+ - A way to force components visible or hidden in a hierarchial manner.
+ - A way to get access to Formio.Utils from the global Formio object.
+
+## 3.0.0-rc.17
+### Added
+ - A way to get access to the Formio.Components from within a global script.
+
+## 3.0.0-rc.16
+### Fixed
+ - Issues with all Nested components getting the "tree" parameter which messed up validators for non data components.
+
+### Changed
+ - Upgrade flatpickr@4.5.1, i18next@11.3.5, babel-loader@7.1.5, eslint@5.0.1, fetch-mock@6.5.0, sinon@6.1.3, webpack@4.15.1, gulp-eslint@5.0.0
+
+## 3.0.0-rc.15
+### Added
+ - Possibility to override i18n settings.
+ - `focus` and `blur` events.
+ - Added uploadOnly to file component
+
+### Fixed
+  - Nested forms validation.
+
+## 3.0.0-rc.14
+### Fixed
+ - Bad build from previous release.
+
+## 3.0.0-rc.13
+### Added
+ - Ability to not show any buttons in rendered form.
+ - Better feedback on the submit buttons when form is submitting and errors occur.
+
+### Fixed
+ - Wrong data being passed to EditGrid and DataGrid for some evals.
+
+## 3.0.0-rc.12
+### Fixed
+ - Problem with the PDF Builder where you would not see the builder elemements.
+ - Fix default value on checkboxes.
+ - Fix multiple required file fields not requiring uploading a file.
+
+### Added
+ - Make rowIndex available on editgrids and datagrids.
+ - Add custom class name to table component.
+ - Add the ability for events to trigger field logic.
+ - Add option to trigger validations when button is pressed.
+
+### Changed
+ - Upgrade i18next@11.3.3
+
+## 3.0.0-rc.11
+### Fixed
+ - Some issues with the Formio constructor to determine the project, form, and submission paths for certain urls.
+ - Problem with the form builder where it would not add elements to the correct parents, but rather the root form.
+
+### Changed
+ - Moved the dynamic library loader into the Formio lib so that it is available to other libraries without renderer.
+
+### Added
+ - Okta SSO integration.
+
+## 3.0.0-rc.10
+### Added
+ - Fontawesome for button icons.
+
+### Fixed
+ - Multiple require file field not requiring files.
+ - File component for base64 download event.
+ - Cleanup of editgrid code.
 
 ## 3.0.0-rc.9
 ### Changed

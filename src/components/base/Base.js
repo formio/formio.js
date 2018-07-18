@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 import * as FormioUtils from '../../utils/utils';
+import Formio from '../../Formio';
 import Validator from '../Validator';
 import moment from 'moment';
 
@@ -309,6 +310,21 @@ export default class BaseComponent {
        */
       this.info = this.elementInfo();
     }
+
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        this.root.on(logic.trigger.event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
@@ -775,7 +791,9 @@ export default class BaseComponent {
     return Object.assign({
       component: this.component,
       row: this.data,
+      rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
+      form: this.root ? this.root._form : {},
       _,
       utils: FormioUtils,
       util: FormioUtils,
@@ -1072,7 +1090,7 @@ export default class BaseComponent {
   }
 
   labelIsHidden() {
-    return !this.component.label || this.component.hideLabel || this.options.inputsOnly;
+    return !this.component.label || this.component.hideLabel || this.options.inputsOnly || (this.component.inDataGrid && !this.component.dataGridLabel);
   }
 
   /**
@@ -1563,7 +1581,7 @@ export default class BaseComponent {
   removeClass(element, className) {
     let cls = element.getAttribute('class');
     if (cls) {
-      cls = cls.replace(new RegExp(className, 'g'), '');
+      cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
       element.setAttribute('class', cls);
     }
   }
@@ -1611,13 +1629,17 @@ export default class BaseComponent {
     return result;
   }
 
+  get logic() {
+    return this.component.logic || [];
+  }
+
   /**
    * Check all triggers and apply necessary actions.
    *
    * @param data
    */
   fieldLogic(data) {
-    const logics = this.component.logic || [];
+    const logics = this.logic;
 
     // If there aren't logic, don't go further.
     if (logics.length === 0) {
@@ -1637,35 +1659,7 @@ export default class BaseComponent {
       );
 
       if (result) {
-        changed |= logic.actions.reduce((changed, action) => {
-          switch (action.type) {
-            case 'property':
-              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
-              break;
-            case 'value': {
-              const oldValue = this.getValue();
-              const newValue = this.evaluate(
-                action.value,
-                {
-                  value: _.clone(oldValue),
-                  data,
-                  component: newComponent,
-                  result
-                },
-                'value'
-              );
-              if (!_.isEqual(oldValue, newValue)) {
-                this.setValue(newValue);
-                changed = true;
-              }
-              break;
-            }
-            case 'validation':
-              // TODO
-              break;
-          }
-          return changed;
-        }, false);
+        changed |= this.applyActions(logic.actions, result, data, newComponent);
       }
       return changed;
     }, false);
@@ -1677,6 +1671,38 @@ export default class BaseComponent {
     }
 
     return changed;
+  }
+
+  applyActions(actions, result, data, newComponent) {
+    return actions.reduce((changed, action) => {
+      switch (action.type) {
+        case 'property':
+          FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
+          break;
+        case 'value': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(
+            action.value,
+            {
+              value: _.clone(oldValue),
+              data,
+              component: newComponent,
+              result
+            },
+            'value'
+          );
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+            changed = true;
+          }
+          break;
+        }
+        case 'validation':
+          // TODO
+          break;
+      }
+      return changed;
+    }, false);
   }
 
   /**
@@ -1712,6 +1738,19 @@ export default class BaseComponent {
    * @param show
    */
   show(show) {
+    if (
+      this.options.hide &&
+      this.options.hide[this.component.key]
+    ) {
+      show = false;
+    }
+    else if (
+      this.options.show &&
+      this.options.show[this.component.key]
+    ) {
+      show = true;
+    }
+
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
       return show;
@@ -1860,9 +1899,35 @@ export default class BaseComponent {
     }
     this.inputs.push(input);
     this.hook('input', input, container);
+    this.addFocusBlurEvents(input);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
     return input;
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
+    });
   }
 
   get wysiwygDefault() {
@@ -1888,12 +1953,12 @@ export default class BaseComponent {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
-    BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+    Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(element, settings);
 
@@ -2553,88 +2618,3 @@ export default class BaseComponent {
     }
   }
 }
-
-BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = (name, property, src, polling) => {
-  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
-    BaseComponent.externalLibraries[name] = {};
-    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
-      BaseComponent.externalLibraries[name].resolve = resolve;
-      BaseComponent.externalLibraries[name].reject = reject;
-    });
-
-    const callbackName = `${name}Callback`;
-
-    if (!polling && !window[callbackName]) {
-      window[callbackName] = () => BaseComponent.externalLibraries[name].resolve();
-    }
-
-    // See if the plugin already exists.
-    const plugin = _.get(window, property);
-    if (plugin) {
-      BaseComponent.externalLibraries[name].resolve(plugin);
-    }
-    else {
-      src = Array.isArray(src) ? src : [src];
-      src.forEach((lib) => {
-        let attrs = {};
-        let elementType = '';
-        if (typeof lib === 'string') {
-          lib = {
-            type: 'script',
-            src: lib
-          };
-        }
-        switch (lib.type) {
-          case 'script':
-            elementType = 'script';
-            attrs = {
-              src: lib.src,
-              type: 'text/javascript',
-              defer: true,
-              async: true
-            };
-            break;
-          case 'styles':
-            elementType = 'link';
-            attrs = {
-              href: lib.src,
-              rel: 'stylesheet'
-            };
-            break;
-        }
-
-        // Add the script to the top page.
-        const script = document.createElement(elementType);
-        for (const attr in attrs) {
-          script.setAttribute(attr, attrs[attr]);
-        }
-        document.getElementsByTagName('head')[0].appendChild(script);
-      });
-
-      // if no callback is provided, then check periodically for the script.
-      if (polling) {
-        const interval = setInterval(() => {
-          const plugin = _.get(window, property);
-
-          if (plugin) {
-            clearInterval(interval);
-            BaseComponent.externalLibraries[name].resolve(plugin);
-          }
-        }, 200);
-      }
-    }
-  }
-  return BaseComponent.externalLibraries[name].ready;
-};
-
-BaseComponent.libraryReady = (name) => {
-  if (
-    BaseComponent.externalLibraries.hasOwnProperty(name) &&
-    BaseComponent.externalLibraries[name].ready
-  ) {
-    return BaseComponent.externalLibraries[name].ready;
-  }
-
-  return Promise.reject(`${name} library was not required.`);
-};

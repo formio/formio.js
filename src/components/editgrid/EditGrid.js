@@ -11,26 +11,11 @@ export default class EditGridComponent extends NestedComponent {
       key: 'editGrid',
       clearOnHide: true,
       input: true,
+      tree: true,
       components: [],
       templates: {
-        header: `
-          <div class="row">
-            {% util.eachComponent(components, function(component) { %}
-              <div class="col-sm-2">{{ component.label }}</div>
-            {% }) %}
-          </div>`,
-        row: `
-          <div class="row">
-            {% util.eachComponent(components, function(component) { %}
-              <div class="col-sm-2">{{ row[component.key] }}</div>
-            {% }) %}
-            <div class="col-sm-2">
-              <div class="btn-group pull-right">
-                <div class="btn btn-default editRow">Edit</div>
-                <div class="btn btn-danger removeRow">Delete</div>
-              </div>
-            </div>
-          </div>`,
+        header: this.defaultHeaderTemplate,
+        row: this.defaultRowTemplate,
         footer: ''
       }
     }, ...extend);
@@ -45,6 +30,30 @@ export default class EditGridComponent extends NestedComponent {
       weight: 40,
       schema: EditGridComponent.schema()
     };
+  }
+
+  static get defaultHeaderTemplate() {
+    return  `<div class="row">
+  {% util.eachComponent(components, function(component) { %}
+    <div class="col-sm-2">{{ component.label }}</div>
+  {% }) %}
+</div>`;
+  }
+
+  static get defaultRowTemplate() {
+    return `<div class="row">
+  {% util.eachComponent(components, function(component) { %}
+    <div class="col-sm-2">
+      {{ getView(component, row[component.key]) }}
+    </div>
+  {% }) %}
+  <div class="col-sm-2">
+    <div class="btn-group pull-right">
+      <button class="btn btn-default editRow">Edit</button>
+      <button class="btn btn-danger removeRow">Delete</button>
+    </div>
+  </div>
+</div>`;
   }
 
   constructor(component, options, data) {
@@ -106,25 +115,9 @@ export default class EditGridComponent extends NestedComponent {
     }));
   }
 
-  get defaultRowTemplate() {
-    return `<div class="row">
-      {% util.eachComponent(components, function(component) { %}
-        <div class="col-sm-2">
-          {{ getView(component, row[component.key]) }}
-        </div>
-      {% }) %}
-      <div class="col-sm-2">
-        <div class="btn-group pull-right">
-          <div class="btn btn-default editRow">Edit</div>
-          <div class="btn btn-danger removeRow">Delete</div>
-        </div>
-      </div>
-    </div>`;
-  }
-
   createRow(row, rowIndex) {
     const wrapper = this.ce('li', { class: 'list-group-item' });
-    const rowTemplate = _.get(this.component, 'templates.row', this.defaultRowTemplate);
+    const rowTemplate = _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
     // Store info so we can detect changes later.
     wrapper.rowData = row;
@@ -143,18 +136,19 @@ export default class EditGridComponent extends NestedComponent {
                 options.row = `${this.row}-${rowIndex}`;
                 options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
+                instance.rowIndex = rowIndex;
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
               }),
               this.ce('div', { class: 'editgrid-actions' },
                 [
-                  this.ce('div', {
+                  this.ce('button', {
                     class: 'btn btn-primary',
                     onClick: this.saveRow.bind(this, rowIndex)
                   }, this.component.saveRow || 'Save'),
                   ' ',
                   this.component.removeRow ?
-                    this.ce('div', {
+                    this.ce('button', {
                       class: 'btn btn-danger',
                       onClick: this.cancelRow.bind(this, rowIndex)
                     }, this.component.removeRow || 'Cancel')
