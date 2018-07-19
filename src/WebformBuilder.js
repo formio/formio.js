@@ -64,18 +64,18 @@ export default class WebformBuilder extends Webform {
         // Make sure the component position is relative so the buttons align properly.
         comp.getElement().style.position = 'relative';
 
-        const removeButton = parent.ce('div', {
+        const removeButton = this.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
-        }, parent.getIcon('remove'));
-        parent.addEventListener(removeButton, 'click', () => parent.root.deleteComponent(comp));
+        }, this.getIcon('remove'));
+        this.addEventListener(removeButton, 'click', () => this.deleteComponent(comp));
 
-        const editButton = parent.ce('div', {
+        const editButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
-        }, parent.getIcon('cog'));
-        parent.addEventListener(editButton, 'click', () => parent.root.editComponent(comp));
+        }, this.getIcon('cog'));
+        this.addEventListener(editButton, 'click', () => this.editComponent(comp));
 
         // Add the edit buttons to the component.
-        comp.prepend(parent.ce('div', {
+        comp.prepend(this.ce('div', {
           class: 'component-btn-group'
         }, [removeButton, editButton]));
       }
@@ -293,7 +293,11 @@ export default class WebformBuilder extends Webform {
     // Append the settings page to the dialog body.
     this.dialog.body.appendChild(componentEdit);
 
-    const editForm = Components.components[componentCopy.component.type].editForm();
+    // Allow editForm overrides per component.
+    const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
+
+    // Get the editform for this component.
+    const editForm = Components.components[componentCopy.component.type].editForm(overrides);
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
@@ -643,7 +647,12 @@ export default class WebformBuilder extends Webform {
     );
   }
 
+  /* eslint-disable  max-statements */
   onDrop(element, target, source, sibling) {
+    if (!element || !element.id) {
+      console.warn('No element.id defined for dropping');
+      return;
+    }
     const builderElement = source.querySelector(`#${element.id}`);
     const newParent = this.getParentElement(element);
     if (!newParent || !newParent.component) {
@@ -722,6 +731,7 @@ export default class WebformBuilder extends Webform {
       this.form = this.schema;
     }
   }
+  /* eslint-enable  max-statements */
 
   /**
    * Adds a submit button if there are no components.

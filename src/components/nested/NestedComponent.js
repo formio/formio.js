@@ -405,7 +405,6 @@ export default class NestedComponent extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
-    this.empty(this.getElement());
     this.destroyComponents();
   }
 

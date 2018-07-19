@@ -161,6 +161,10 @@ export default class BaseComponent {
       row: ''
     });
 
+    // Determine if we are inside a datagrid.
+    this.inDataGrid = this.options.inDataGrid;
+    this.options.inDataGrid = false;
+
     // Use the i18next that is passed in, otherwise use the global version.
     this.i18next = this.options.i18next || i18next;
 
@@ -957,7 +961,7 @@ export default class BaseComponent {
    */
   addButton(justIcon) {
     const addButton = this.ce('button', {
-      class: 'btn btn-primary'
+      class: 'btn btn-primary formio-button-add-row'
     });
     this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
@@ -1015,7 +1019,7 @@ export default class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce('button', {
       type: 'button',
-      class: 'btn btn-default btn-secondary'
+      class: 'btn btn-default btn-secondary formio-button-remove-row'
     });
 
     this.addEventListener(removeButton, 'click', (event) => {
@@ -1090,7 +1094,10 @@ export default class BaseComponent {
   }
 
   labelIsHidden() {
-    return !this.component.label || this.component.hideLabel || this.options.inputsOnly;
+    return !this.component.label ||
+      this.component.hideLabel ||
+      this.options.inputsOnly ||
+      (this.inDataGrid && !this.component.dataGridLabel);
   }
 
   /**
@@ -1581,7 +1588,7 @@ export default class BaseComponent {
   removeClass(element, className) {
     let cls = element.getAttribute('class');
     if (cls) {
-      cls = cls.replace(new RegExp(className, 'g'), '');
+      cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
       element.setAttribute('class', cls);
     }
   }

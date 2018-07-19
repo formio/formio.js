@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
 
+### Added
+ - CSS classes for array components buttons
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -48,6 +51,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
+
+## 3.0.0-rc.23
+### Fixed
+ - PDF builder to work much better with the drop zone handling for remote pdf forms.
+ - Fixed Data Grid components labels being rewritten to false
+ - Hidden Component value being equal to '[object Object]'
+ - DataGrid in the builder to allow for editing of the data grid.
+
+### Added 
+ - Allow for editForm overrides when embedding the form builder.
+ - A way to include a "namespace" for the tokens added to your browser so this library can handle multiple projects at once.
 
 ## 3.0.0-rc.22
 ### Added
