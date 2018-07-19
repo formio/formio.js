@@ -172,6 +172,18 @@ export default class DataGridComponent extends NestedComponent {
     return needsHeader ? thead : null;
   }
 
+  get dataValue() {
+    const dataValue = super.dataValue;
+    if (!dataValue || !_.isArray(dataValue)) {
+      return this.emptyValue;
+    }
+    return dataValue;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
+  }
+
   get defaultValue() {
     const value = super.defaultValue;
     if (_.isArray(value)) {
@@ -254,7 +266,9 @@ export default class DataGridComponent extends NestedComponent {
     _.each(this.component.components, (col) => {
       let showColumn = false;
       _.each(this.rows, (comps) => {
-        showColumn |= comps[col.key].checkConditions(data);
+        if (comps && comps[col.key] && typeof comps[col.key].checkConditions === 'function') {
+          showColumn |= comps[col.key].checkConditions(data);
+        }
       });
       showColumn = showColumn && col.type !== 'hidden' && !col.hidden;
       if (

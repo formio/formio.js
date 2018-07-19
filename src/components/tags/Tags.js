@@ -65,7 +65,9 @@ export default class TagsComponent extends BaseComponent {
         value = [value];
       }
       this.choices.removeActiveItems();
-      this.choices.setValue(value);
+      if (value) {
+        this.choices.setValue(value);
+      }
     }
   }
 

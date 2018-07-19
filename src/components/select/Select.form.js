@@ -4,7 +4,7 @@ import SelectEditData from './editForm/Select.edit.data';
 import SelectEditValidation from './editForm/Select.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: 'data',
       components: SelectEditData
@@ -13,5 +13,5 @@ export default function(...extend) {
       key: 'validation',
       components: SelectEditValidation
     }
-  ]);
+  ], ...extend);
 }

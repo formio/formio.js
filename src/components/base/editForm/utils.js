@@ -7,6 +7,18 @@ const EditFormUtils = {
   unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
       if (objValue.key === srcValue.key) {
+        // Create complete objects by including missing keys.
+        _.each(objValue, (value, prop) => {
+          if (!srcValue.hasOwnProperty(prop)) {
+            srcValue[prop] = value;
+          }
+        });
+        _.each(srcValue, (value, prop) => {
+          if (!objValue.hasOwnProperty(prop)) {
+            objValue[prop] = value;
+          }
+        });
+
         if (objValue.components) {
           srcValue.components = EditFormUtils.sortAndFilterComponents(
             _.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents)
