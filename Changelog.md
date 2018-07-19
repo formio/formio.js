@@ -49,9 +49,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with the edit forms not overriding correctly causing inconsistencies with the forms for components.
  - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
+ - Issue with EditGrid where the form would invalidate when you are filling out a new row.
 
 ### Added
  - CSS classes for array components buttons
+ - dataGridLabel configuration when a component is within a DataGrid element.
 
 ## 3.0.0-rc.23
 ### Fixed
