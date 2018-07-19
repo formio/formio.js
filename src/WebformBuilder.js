@@ -396,11 +396,11 @@ export default class WebformBuilder extends Component {
     if (!parent) {
       return;
     }
-    const remove = true;
-    // if (component.type === 'components' && component.getComponents().length > 0) {
-    //   const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
-    //   remove = window.confirm(this.t(message));
-    // }
+    let remove = true;
+    if (Array.isArray(component.components) || Array.isArray(component.rows) || Array.isArray(component.columns)) {
+      const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
+      remove = window.confirm(this.t(message));
+    }
     if (remove) {
       this.emit('removeComponent', component);
       parent.formioContainer.splice(parent.formioContainer.indexOf(component), 1);
