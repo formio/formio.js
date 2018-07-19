@@ -490,7 +490,7 @@ export default class SelectComponent extends BaseComponent {
       addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
-      searchPlaceholderValue: placeholderValue,
+      searchPlaceholderValue: this.t('Type to search'),
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
