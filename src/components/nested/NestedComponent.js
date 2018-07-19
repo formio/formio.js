@@ -184,11 +184,16 @@ export default class NestedComponent extends BaseComponent {
     }
     this.setHidden(comp);
     element = this.hook('addComponent', element, comp, this);
+    const compElement = comp.getElement();
+    if (!compElement) {
+      console.warn(`Component ${component.key} has no element.`);
+      return comp;
+    }
     if (before) {
-      element.insertBefore(comp.getElement(), before);
+      element.insertBefore(compElement, before);
     }
     else {
-      element.appendChild(comp.getElement());
+      element.appendChild(compElement);
     }
     return comp;
   }

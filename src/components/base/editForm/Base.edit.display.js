@@ -189,12 +189,13 @@ export default [
     input: true
   },
   {
-    weight: 1300,
+    weight: 1310,
     type: 'checkbox',
     label: 'Show Label in DataGrid',
     tooltip: 'Show the label when in a Datagrid.',
     key: 'dataGridLabel',
-    input: false
+    input: true,
+    customConditional: 'show = instance.root.editComponent.inDataGrid'
   },
   {
     weight: 1400,

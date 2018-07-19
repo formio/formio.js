@@ -317,6 +317,7 @@ export default class WebformBuilder extends Webform {
 
     // Pass along the form being edited.
     this.editForm.editForm = this._form;
+    this.editForm.editComponent = component;
 
     // Update the preview with this component.
     this.updateComponent(componentCopy);
