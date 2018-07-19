@@ -118,7 +118,7 @@ export default class ButtonComponent extends Field {
     if (!this.refs.button) {
       return;
     }
-    this.addShortcut(this.refs.button);
+    // this.addShortcut(this.refs.button);
 
     if (this.component.action === 'submit') {
       const message = this.ce('div');
