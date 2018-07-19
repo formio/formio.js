@@ -134,7 +134,6 @@ export default class DataGridComponent extends NestedComponent {
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [this.datagridKey]: 'multiple',
     });
-    super.attach(element);
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
@@ -158,6 +157,7 @@ export default class DataGridComponent extends NestedComponent {
         }
       });
     });
+    super.attach(element);
   }
 
   addRow() {

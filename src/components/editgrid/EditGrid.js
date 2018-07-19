@@ -104,7 +104,6 @@ export default class EditGridComponent extends NestedComponent {
       [`${this.editgridKey}-cancelRow`]: 'multiple',
       [this.editgridKey]: 'multiple',
     });
-    super.attach(element);
 
     this.refs[`${this.editgridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
@@ -139,6 +138,7 @@ export default class EditGridComponent extends NestedComponent {
         });
       }
     });
+    super.attach(element);
   }
 
   renderRow(row, rowIndex) {
@@ -383,7 +383,7 @@ export default class EditGridComponent extends NestedComponent {
     return Array.isArray(value) ? value : [];
   }
 
-  setValue(value) {
+  setValue(value, flags) {
     if (!value) {
       return;
     }
@@ -404,6 +404,7 @@ export default class EditGridComponent extends NestedComponent {
         if (this.editRows[rowIndex].isOpen) {
           this.editRows[rowIndex].components.forEach(col => {
             col.data = row;
+            col.setValue(row[col.key], flags);
           });
         }
       }

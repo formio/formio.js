@@ -54,9 +54,11 @@ export default class FieldsetComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.fieldsetKey]: 'single' });
-    super.attach(element);
+
     if (this.refs[this.fieldsetKey]) {
       super.attachComponents(this.refs[this.fieldsetKey]);
     }
+
+    super.attach(element);
   }
 }

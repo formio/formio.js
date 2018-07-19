@@ -51,10 +51,10 @@ export default class ContainerComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.containerKey]: 'single' });
-    super.attach(element);
     if (this.refs[this.containerKey]) {
       this.attachComponents(this.refs[this.containerKey]);
     }
+    super.attach(element);
   }
 
   hasChanged(before, after) {

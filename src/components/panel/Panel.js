@@ -56,10 +56,11 @@ export default class PanelComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.panelKey]: 'single' });
-    super.attach(element);
 
     if (this.refs[this.panelKey]) {
       this.attachComponents(this.refs[this.panelKey]);
     }
+
+    super.attach(element);
   }
 }
