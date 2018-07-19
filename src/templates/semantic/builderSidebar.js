@@ -2,12 +2,14 @@ export default {
   form: `
 <div id="builder-sidebar-{{id}}" class="ui segments" ref="sidebar">
   {% groupOrder.forEach(function(groupKey, index) { %}
-  <div class="ui segment form-builder-panel" ref="group-panel-{{groupKey}}">
-    <div class="card-header panel-heading form-builder-group-header">
-      <h5 class="mb-0 panel-title">
-        <button class="ui button fluid builder-group-button" data-toggle="collapse" data-parent="#builder-sidebar-{{id}}" data-target="#group-{{groupKey}}" ref="sidebar-anchor">{{groups[groupKey].title}}</button>
+  <div class="ui segment secondary form-builder-panel" style="padding: 0" ref="group-panel-{{groupKey}}">
+    <div class="form-builder-group-header">
+      <h5 class="panel-title">
+        <button class="ui button basic fluid builder-group-button" data-toggle="collapse" data-parent="#builder-sidebar-{{id}}" data-target="#group-{{groupKey}}" ref="sidebar-anchor">{{groups[groupKey].title}}</button>
       </h5>
     </div>
+  </div>
+  <div class="ui segment" style="padding: 0">
     <div class="panel-collapse collapse {{groups[groupKey].default ? ' in' : ''}}" data-default="{{groups[groupKey].default}}" id="group-{{groupKey}}" ref="sidebar-group">
       <div id="group-container-{{groupKey}}" class="card-body panel-body no-drop" ref="sidebar-container">
         {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}

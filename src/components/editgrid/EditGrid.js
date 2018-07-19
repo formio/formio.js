@@ -242,6 +242,7 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows[rowIndex].isOpen = false;
     this.checkValidity(this.data, true);
     this.updateValue();
+    this.triggerChange();
     this.redraw();
   }
 
@@ -266,6 +267,10 @@ export default class EditGridComponent extends NestedComponent {
       const comp = this.createComponent(_.assign({}, column, {
         row: options.row
       }), options, row);
+      // Don't bubble sub changes since they won't apply until pressing save.
+      comp.triggerChange = () => {
+        // Should we recalculate or something here?
+      };
       components.push(comp);
     });
     return components;
@@ -281,10 +286,13 @@ export default class EditGridComponent extends NestedComponent {
 
   validateRow(rowIndex, dirty) {
     let check = true;
-    this.editRows[rowIndex].components.forEach(comp => {
-      comp.setPristine(!dirty);
-      check &= comp.checkValidity(this.editRows[rowIndex].data, dirty);
-    });
+
+    if (this.editRows[rowIndex].isOpen) {
+      this.editRows[rowIndex].components.forEach(comp => {
+        comp.setPristine(!dirty);
+        check &= comp.checkValidity(this.editRows[rowIndex].data, dirty);
+      });
+    }
 
     if (this.component.validate && this.component.validate.row) {
       let valid = this.evaluate(this.component.validate.row, {
@@ -393,6 +401,11 @@ export default class EditGridComponent extends NestedComponent {
     this.dataValue.forEach((row, rowIndex) => {
       if (this.editRows[rowIndex]) {
         this.editRows[rowIndex].data = row;
+        if (this.editRows[rowIndex].isOpen) {
+          this.editRows[rowIndex].components.forEach(col => {
+            col.data = row;
+          });
+        }
       }
       else {
         this.editRows[rowIndex] = {
