@@ -5,7 +5,7 @@ import TextFieldEditDisplay from './editForm/TextField.edit.display';
 import TextFieldEditValidation from './editForm/TextField.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: 'display',
       components: TextFieldEditDisplay
@@ -18,5 +18,5 @@ export default function(...extend) {
       key: 'validation',
       components: TextFieldEditValidation
     }
-  ]);
+  ], ...extend);
 }

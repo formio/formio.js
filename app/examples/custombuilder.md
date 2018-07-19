@@ -91,6 +91,14 @@ Formio.builder(document.getElementById('builder'), {}, {
         table: false
       }
     }
+  },
+  editForm: {
+    textfield: [
+      {
+        key: 'api',
+        ignore: true
+      }        
+    ]
   }
 }).then(function(builder) {
   builder.on('saveComponent', function() {
@@ -174,6 +182,14 @@ Formio.builder(document.getElementById('builder'), {}, {
         table: false
       }
     }
+  },
+  editForm: {
+    textfield: [
+      {
+        key: 'api',
+        ignore: true
+      }        
+    ]
   }
 }).then(function(builder) {
   builder.on('saveComponent', function() {
