@@ -13,6 +13,7 @@ export default class PanelComponent extends NestedComponent {
       clearOnHide: false,
       input: false,
       tableView: false,
+      dataGridLabel: false,
       persistent: false
     }, ...extend);
   }

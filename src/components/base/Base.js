@@ -86,6 +86,11 @@ export default class BaseComponent {
       tableView: true,
 
       /**
+       * If true, will show label when component is in a datagrid.
+       */
+      dataGridLabel: false,
+
+      /**
        * The input label provided to this component.
        */
       label: '',
