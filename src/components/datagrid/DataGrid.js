@@ -271,6 +271,9 @@ export default class DataGridComponent extends NestedComponent {
         }
       });
     });
+    if (changed) {
+      this.redraw();
+    }
     return changed;
   }
 

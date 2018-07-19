@@ -58,6 +58,10 @@ export default class ColumnsComponent extends NestedComponent {
     this.columns = [];
     _.each(this.component.columns, (column, index) => {
       this.columns[index] = [];
+      // Ensure there is a components array.
+      if (!Array.isArray(column.components)) {
+        column.components = [];
+      }
       _.each(column.components, (component) => {
         this.columns[index].push(this.createComponent(component));
       });

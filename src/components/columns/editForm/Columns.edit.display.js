@@ -9,6 +9,11 @@ export default [
     tooltip: 'The width, offset, push, and pull settings for each column.',
     components: [
       {
+        type: 'hidden',
+        key: 'components',
+        defaultValue: []
+      },
+      {
         type: 'number',
         key: 'width',
         defaultValue: 6,
