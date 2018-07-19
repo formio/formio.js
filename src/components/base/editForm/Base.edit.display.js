@@ -189,6 +189,14 @@ export default [
     input: true
   },
   {
+    weight: 1300,
+    type: 'checkbox',
+    label: 'Show Label in DataGrid',
+    tooltip: 'Show the label when in a Datagrid.',
+    key: 'dataGridLabel',
+    input: false
+  },
+  {
     weight: 1400,
     type: 'checkbox',
     label: 'Disabled',
