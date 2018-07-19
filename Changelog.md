@@ -4,13 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
-
-### Added
- - CSS classes for array components buttons
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -51,6 +44,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
+
+## 3.0.0-rc.24
+### Fixed
+ - Issues with the edit forms not overriding correctly causing inconsistencies with the forms for components.
+ - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
+
+### Added
+ - CSS classes for array components buttons
 
 ## 3.0.0-rc.23
 ### Fixed
