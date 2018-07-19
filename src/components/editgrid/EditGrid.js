@@ -405,7 +405,9 @@ export default class EditGridComponent extends NestedComponent {
       rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
-      rowsClosed &= !editRow.isOpen;
+      if (dirty) {
+        rowsClosed &= !editRow.isOpen;
+      }
     });
 
     if (!rowsValid) {
