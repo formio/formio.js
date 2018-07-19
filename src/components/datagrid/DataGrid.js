@@ -164,7 +164,7 @@ export default class DataGridComponent extends NestedComponent {
     this.rows.forEach((row, rowIndex) => {
       let columnIndex = 0;
       this.component.components.forEach((col) => {
-        if (this.visibleColumns[col.key]) {
+        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
           this.attachComponents(
             this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
             [this.rows[rowIndex][col.key]],
