@@ -232,12 +232,12 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
-    if (!this.visibleColumns || (this.visibleColumns.hasOwnProperty(col.key) && !this.visibleColumns[col.key])) {
-      return;
+    var container;
+    const isVisible = this.visibleColumns && (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
+    if (isVisible) {
+      container = this.ce('td');
+      container.noDrop = true;
     }
-
-    const container = this.ce('td');
-    container.noDrop = true;
     const column = _.clone(col);
     const options = _.clone(this.options);
     options.name += `[${rowIndex}]`;
@@ -248,9 +248,11 @@ export default class DataGridComponent extends NestedComponent {
     }), options, row);
     comp.rowIndex = rowIndex;
     this.hook('addComponent', container, comp, this);
-    container.appendChild(comp.getElement());
     this.rows[rowIndex][column.key] = comp;
-    return container;
+    if (isVisible) {
+      container.appendChild(comp.getElement());
+      return container;
+    }
   }
 
   checkConditions(data) {

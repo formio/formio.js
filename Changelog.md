@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
+
 ### Added
  - CSS classes for array components buttons
 
