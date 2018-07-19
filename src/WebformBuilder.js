@@ -451,6 +451,7 @@ export default class WebformBuilder extends Component {
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
+    this.editForm.editComponent = component;
 
     this.editForm.submission = {
       data: componentCopy,
