@@ -961,7 +961,7 @@ export default class BaseComponent {
    */
   addButton(justIcon) {
     const addButton = this.ce('button', {
-      class: 'btn btn-primary'
+      class: 'btn btn-primary formio-button-add-row'
     });
     this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
@@ -1019,7 +1019,7 @@ export default class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce('button', {
       type: 'button',
-      class: 'btn btn-default btn-secondary'
+      class: 'btn btn-default btn-secondary formio-button-remove-row'
     });
 
     this.addEventListener(removeButton, 'click', (event) => {
