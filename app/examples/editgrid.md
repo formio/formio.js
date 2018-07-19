@@ -158,6 +158,7 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'children',
         type: 'editgrid',
         input: true,
+        removeRow: 'Cancel',
         templates: {
           header: '' +
             '<div class="row"> \n' +
