@@ -46,6 +46,18 @@ export default class DataGridComponent extends NestedComponent {
     this.checkColumns(this.dataValue);
   }
 
+  get dataValue() {
+    const dataValue = super.dataValue;
+    if (!dataValue || !_.isArray(dataValue)) {
+      return this.emptyValue;
+    }
+    return dataValue;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
+  }
+
   get defaultSchema() {
     return DataGridComponent.schema();
   }
@@ -213,7 +225,9 @@ export default class DataGridComponent extends NestedComponent {
 
     this.rows.forEach((row) => {
       _.each(row, (col, key) => {
-        visibility[key] = !!visibility[key] || col.checkConditions(data);
+        if (col && (typeof col.checkConditions === 'function')) {
+          visibility[key] = !!visibility[key] || col.checkConditions(data);
+        }
       });
     });
     const rebuild = !_.isEqual(visibility, this.visibleColumns);
