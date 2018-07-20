@@ -18,6 +18,22 @@ export default [
     input: true
   },
   {
+    weight: 150,
+    type: 'select',
+    key: 'validateOn',
+    defaultValue: 'change',
+    input: true,
+    label: 'Validate On',
+    tooltip: 'Determines when this component should trigger front-end validation.',
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Change', value: 'change' },
+        { label: 'Blur', value: 'blur' }
+      ]
+    }
+  },
+  {
     weight: 200,
     key: 'validate.customMessage',
     label: 'Custom Error Message',

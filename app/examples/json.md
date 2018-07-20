@@ -40,6 +40,14 @@ Formio.createForm(document.getElementById('formio'), {
       }
     },
     {
+      type: 'email',
+      key: 'email',
+      label: 'Email',
+      placeholder: 'Enter your email',
+      input: true,
+      validateOn: 'blur'
+    },
+    {
       type: 'phoneNumber',
       key: 'phoneNumber',
       label: 'Phone',
@@ -200,6 +208,14 @@ Formio.createForm(document.getElementById('formio'), {
       validate: {
         required: true
       }
+    },
+    {
+      type: 'email',
+      key: 'email',
+      label: 'Email',
+      placeholder: 'Enter your email',
+      input: true,
+      validateOn: 'blur'
     },
     {
       type: 'phoneNumber',

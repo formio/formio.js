@@ -104,6 +104,7 @@ export default class Component {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      validateOn: 'change',
 
       /**
        * The validation criteria for this component.
@@ -1454,6 +1455,11 @@ export default class Component {
     flags = flags || {};
     if (!flags.noValidate) {
       this.pristine = false;
+    }
+
+    // If we are supposed to validate on blur, then don't trigger validation yet.
+    if (this.component.validateOn === 'blur' && !this.errors.length) {
+      flags.noValidate = true;
     }
 
     // Set the changed variable.

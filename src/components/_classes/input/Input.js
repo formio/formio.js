@@ -1,6 +1,6 @@
 import maskInput from 'vanilla-text-mask';
 import Multivalue from '../multivalue/Multivalue';
-import { getInputMask } from '../../../utils/utils';
+import { getInputMask, delay } from '../../../utils/utils';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -175,6 +175,9 @@ export default class Input extends Multivalue {
       return this.updateValue(null, element.value, index);
     });
 
+    // Add focus and blur events.
+    this.addFocusBlurEvents(element);
+
     if (this.options.submitOnEnter) {
       this.addEventListener(element, 'keypress', (event) => {
         const key = event.keyCode || event.which;
@@ -187,5 +190,38 @@ export default class Input extends Multivalue {
     }
 
     this.setInputMask(this.refs.input[index]);
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({}, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: {}
+          });
+        }
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
+    });
   }
 }
