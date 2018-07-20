@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issues with the edit forms not overriding correctly causing inconsistencies with the forms for components.
  - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
  - Issue with EditGrid where the form would invalidate when you are filling out a new row.
+ - Search placeholders on the Select dropdown.
 
 ### Added
  - CSS classes for array components buttons
