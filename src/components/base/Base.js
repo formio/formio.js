@@ -107,6 +107,7 @@ export default class BaseComponent {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      validateOn: 'change',
 
       /**
        * The validation criteria for this component.
@@ -1855,6 +1856,11 @@ export default class BaseComponent {
       this.pristine = false;
     }
 
+    // If we are supposed to validate on blur, then don't trigger validation yet.
+    if (this.component.validateOn === 'blur' && !this.errors.length) {
+      flags.noValidate = true;
+    }
+
     // Set the changed variable.
     const changed = {
       instance: this,
@@ -1936,6 +1942,14 @@ export default class BaseComponent {
     this.addEventListener(element, 'blur', () => {
       this.root.pendingBlur = FormioUtils.delay(() => {
         this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({}, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: {}
+          });
+        }
         this.root.focusedComponent = null;
         this.root.pendingBlur = null;
       });
