@@ -210,6 +210,7 @@ export default class EditGridComponent extends NestedComponent {
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
+    this.editRows[rowIndex].editing = true;
     this.editRows[rowIndex].data = _.cloneDeep(this.dataValue[rowIndex]);
     this.editRows[rowIndex].components = this.createRowComponents(this.editRows[rowIndex].data, rowIndex);
     this.redraw();
@@ -243,9 +244,14 @@ export default class EditGridComponent extends NestedComponent {
     if (!this.validateRow(rowIndex, true)) {
       return;
     }
-    // Do not use rowIndex for dataValue since we should always just add a new row to the end.
-    this.dataValue.push(this.editRows[rowIndex].data);
+
     this.removeRowComponents(rowIndex);
+    if (this.editRows[rowIndex].editing) {
+      this.dataValue[rowIndex] = this.editRows[rowIndex].data;
+    }
+    else {
+      this.dataValue.push(this.editRows[rowIndex].data);
+    }
     this.editRows[rowIndex].isOpen = false;
     this.checkValidity(this.data, true);
     this.updateValue();
