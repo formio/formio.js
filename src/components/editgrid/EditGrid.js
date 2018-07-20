@@ -329,7 +329,9 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     this.removeRowComponents(rowIndex);
-    this.dataValue[rowIndex] = this.editRows[rowIndex].data;
+
+    // Do not use rowIndex for dataValue since we should always just add a new row to the end.
+    this.dataValue.push(this.editRows[rowIndex].data);
     this.editRows[rowIndex].isOpen = false;
     this.checkValidity(this.data, true);
     this.updateValue();
