@@ -95,13 +95,6 @@ export default class PDFBuilder extends WebformBuilder {
     return super.addComponent(component, element, data, before, true);
   }
 
-  updateComponent(component) {
-    if (this.pdfForm && component.component) {
-      this.pdfForm.postMessage({ name: 'updateElement', data: component.component });
-    }
-    return super.updateComponent(component);
-  }
-
   deleteComponent(component) {
     if (this.pdfForm && component.component) {
       this.pdfForm.postMessage({ name: 'removeElement', data: component.component });
