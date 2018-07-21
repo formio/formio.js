@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.26
+### Fixed
+ - Issue with the PDF builder where it would constantly update pdf components when it didn't need to.
+
 ## 3.0.0-rc.25
 ### Fixed
  - Issue where the indexes on EditGrid would get messed up and could add bogus entries.
