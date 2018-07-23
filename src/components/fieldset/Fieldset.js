@@ -28,37 +28,11 @@ export default class FieldsetComponent extends NestedComponent {
     return FieldsetComponent.schema();
   }
 
-  getContainer() {
-    return this.body;
-  }
-
   get className() {
     return `form-group ${super.className}`;
   }
 
-  get fieldsetKey() {
-    return `fieldset-${this.key}`;
-  }
-
-  init() {
-    this.addComponents();
-  }
-
-  render() {
-    return super.render(this.renderTemplate('fieldset', {
-      fieldsetKey: this.fieldsetKey,
-      children: this.renderComponents(),
-      collapsed: this.collapsed,
-    }));
-  }
-
-  attach(element) {
-    this.loadRefs(element, { [this.fieldsetKey]: 'single' });
-
-    if (this.refs[this.fieldsetKey]) {
-      super.attachComponents(this.refs[this.fieldsetKey]);
-    }
-
-    super.attach(element);
+  get templateName() {
+    return 'fieldset';
   }
 }

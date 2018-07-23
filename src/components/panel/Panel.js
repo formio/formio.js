@@ -28,39 +28,11 @@ export default class PanelComponent extends NestedComponent {
     };
   }
 
-  init() {
-    super.init();
-    this._collapsed = this.component.collapsed;
-    this.addComponents();
-  }
-
   get defaultSchema() {
     return PanelComponent.schema();
   }
 
-  getContainer() {
-    return this.panelBody;
-  }
-
-  get panelKey() {
-    return `panel-${this.key}`;
-  }
-
-  render() {
-    return super.render(this.renderTemplate('panel', {
-      panelKey: this.panelKey,
-      children: this.renderComponents(),
-      collapsed: this.collapsed,
-    }));
-  }
-
-  attach(element) {
-    this.loadRefs(element, { [this.panelKey]: 'single' });
-
-    if (this.refs[this.panelKey]) {
-      this.attachComponents(this.refs[this.panelKey]);
-    }
-
-    super.attach(element);
+  get templateName() {
+    return 'panel';
   }
 }

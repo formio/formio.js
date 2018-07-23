@@ -32,7 +32,7 @@ export default class ContentComponent extends Component {
   render() {
     return super.render(this.renderTemplate('html', {
       tag: 'div',
-      attrs: '',
+      attrs: [],
       content: this.content,
     }));
   }

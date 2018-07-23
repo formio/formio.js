@@ -97,19 +97,9 @@ export default class RadioComponent extends Field {
   }
 
   setValueAt(index, value) {
-    if (this.refs.input && this.refs.input[index]) {
-      let inputValue = this.refs.input[index].value;
-      if (inputValue === 'true') {
-        inputValue = true;
-      }
-      else if (inputValue === 'false') {
-        inputValue = false;
-      }
-      else if (!isNaN(parseInt(inputValue, 10)) && isFinite(inputValue)) {
-        inputValue = parseInt(inputValue, 10);
-      }
-
-      this.refs.input[index].checked = (inputValue === value);
+    if (this.refs.input && this.refs.input[index] && value !== null) {
+      const inputValue = this.refs.input[index].value;
+      this.refs.input[index].checked = (inputValue === value.toString());
     }
   }
 

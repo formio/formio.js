@@ -8,10 +8,10 @@ import {
 } from './fixtures';
 
 describe('Content Component', () => {
-  it('Should build a content component', (done) => {
-    Harness.testCreate(ContentComponent, comp1).then((component) => {
-      assert.equal(component.element.innerHTML, comp1.html);
-      done();
+  it('Should build a content component', () => {
+    return Harness.testCreate(ContentComponent, comp1).then((component) => {
+      const html = component.element.querySelector('[ref="html"]');
+      assert.equal(html.innerHTML, comp1.html.trim());
     });
   });
 });

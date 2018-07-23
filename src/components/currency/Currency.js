@@ -24,12 +24,8 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  constructor(component, options, data) {
-    // Currency should default to have a delimiter unless otherwise specified.
-    if (component && !component.hasOwnProperty('delimiter')) {
-      component.delimiter = true;
-    }
-    super(component, options, data);
+  init() {
+    super.init();
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,

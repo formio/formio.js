@@ -41,7 +41,7 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.spec.js': ['webpack']
     },
-    browserNoActivityTimeout: 30000,
+    browserNoActivityTimeout: 2000,
     reporters: ['progress'],
     port: 9876,
     colors: true,

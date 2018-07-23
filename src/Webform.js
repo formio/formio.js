@@ -10,7 +10,6 @@ import Formio from './Formio';
 import Promise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import templates from './templates';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -22,9 +21,6 @@ function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next,
-    template: 'bootstrap',
-    renderMode: 'form',
-    attachMode: 'full'
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -216,9 +212,6 @@ export default class Webform extends NestedComponent {
       this.language = this.options.language;
     });
 
-    // Set the template
-    this.template = this.options.template;
-
     this.init();
   }
   /* eslint-enable max-statements */
@@ -240,10 +233,6 @@ export default class Webform extends NestedComponent {
         resolve();
       });
     });
-  }
-
-  set template(template) {
-    this.options.templates = _.merge({}, templates[template], this.options.templates || {});
   }
 
   /**

@@ -162,6 +162,18 @@ export default class NestedComponent extends Component {
     return this.component.components;
   }
 
+  get nestedKey() {
+    return `nested-${this.key}`;
+  }
+
+  get templateName() {
+    return 'container';
+  }
+
+  init() {
+    this.addComponents();
+  }
+
   /**
    *
    * @param element
@@ -190,20 +202,42 @@ export default class NestedComponent extends Component {
     return comp;
   }
 
+  render(children) {
+    // If already rendering, don't re-render.
+    return super.render(children || this.renderTemplate(this.templateName, {
+      children: this.renderComponents(),
+      nestedKey: this.nestedKey,
+      collapsed: this.collapsed,
+    }));
+  }
+
   renderComponents(components) {
     components = components || this.components;
-    const htmls = components.map(component => component.render());
-    return this.renderTemplate('components', { htmls, components });
+    const children = components.map(component => component.render());
+    return this.renderTemplate('components', {
+      children,
+      components,
+    });
   }
 
   attach(element) {
-    this.loadRefs(element, { header: 'single' });
-    super.attach(element);
+    this.loadRefs(element, {
+      header: 'single',
+      collapsed: this.collapsed,
+      [this.nestedKey]: 'single',
+    });
+
+    if (this.refs[this.nestedKey]) {
+      this.attachComponents(this.refs[this.nestedKey]);
+    }
+
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
       });
     }
+
+    super.attach(element);
   }
 
   attachComponents(element, components, container) {

@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Address Component', () => {
-  it('Should build an address component', (done) => {
-    Harness.testCreate(AddressComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build an address component', () => {
+    return Harness.testCreate(AddressComponent, comp1);
   });
 });

@@ -156,15 +156,15 @@ export default {
     'Test Title, Description and Disabled'(form, done) {
       Harness.setInputValue(form, 'data[test]', '1');
       form.onChange({}, true);
-      Harness.testInnerHtml(form, '.formio-component-changeme .control-label', 'One');
-      Harness.testInnerHtml(form, '.formio-component-changeme .help-block', 'You have selected One');
+      Harness.testInnerHtml(form, '.formio-component-changeme .col-form-label', 'One');
+      Harness.testInnerHtml(form, '.formio-component-changeme .form-text', 'You have selected One');
       Harness.testAttribute(form, '.formio-component-changeme .form-control', 'disabled', 'disabled');
       done();
     },
     'Test Required'(form, done) {
       Harness.setInputValue(form, 'data[test]', '2');
       form.onChange({}, true);
-      Harness.testHasClass(form, '.formio-component-changeme .control-label', 'field-required');
+      Harness.testHasClass(form, '.formio-component-changeme .col-form-label', 'field-required');
       done();
     },
     'Test Set Value'(form, done) {

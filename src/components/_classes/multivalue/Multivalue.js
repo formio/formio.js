@@ -40,7 +40,7 @@ export default class Multivalue extends Field {
 
   attach(dom) {
     super.attach(dom);
-    this.loadRefs(dom, { addButton: 'single', input: 'multiple', removeRow: 'multiple' });
+    this.loadRefs(dom, { addButton: 'multiple', input: 'multiple', removeRow: 'multiple' });
 
     this.refs.input.forEach(this.attachElement.bind(this));
     if (!this.component.multiple) {
@@ -55,12 +55,12 @@ export default class Multivalue extends Field {
     });
 
     // If single value field.
-    if (this.refs.addButton) {
-      this.addEventListener(this.refs.addButton, 'click', (event) => {
+    this.refs.addButton.forEach((addButton) => {
+      this.addEventListener(addButton, 'click', (event) => {
         event.preventDefault();
         this.addValue();
       });
-    }
+    });
   }
 
   /**

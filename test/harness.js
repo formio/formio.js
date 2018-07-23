@@ -83,7 +83,11 @@ const Harness = {
         if (err) {
           return reject(err);
         }
+        // Need a parent element to redraw.
+        const parent = document.createElement('div');
         const element = document.createElement('div');
+        parent.appendChild(element);
+        component.init();
         component.build(element);
         assert(Boolean(component.element), `No ${component.type} element created.`);
         return resolve(component);
@@ -95,13 +99,13 @@ const Harness = {
       form.everyComponent((comp) => {
         if (hidden.includes(comp.component.key)) {
           // Should be hidden.
-          assert(comp.element.hidden, 'Element should not be visible');
-          assert.equal(comp.element.style.visibility, 'hidden');
+          assert(!comp.visible, 'Element should not be visible');
+          assert.equal(comp.element.childElementCount, 0, 'Hidden elements should not have children');
         }
         else {
           // Should be visible.
-          assert(!comp.element.hidden, 'Element should not be hidden');
-          assert((comp.element.style.visibility === '') || (comp.element.style.visibility === 'visible'), 'Element must be visible');
+          assert(comp.visible, 'Element should not be hidden');
+          assert.notEqual(comp.element.childElementCount, 0, 'Element must be visible');
         }
       });
       done();
@@ -163,7 +167,7 @@ const Harness = {
     return element;
   },
   testSetGet(component, value) {
-    component.setValue(value);
+    component.setValue(_.cloneDeep(value));
     assert.deepEqual(component.getValue(), value);
     return component;
   },
@@ -182,7 +186,7 @@ const Harness = {
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
-    assert.deepEqual(component.inputs[index].value, visible);
+    assert.deepEqual(component.refs.input[index].value, visible);
     return component;
   },
   testSubmission(form, submission, onChange) {

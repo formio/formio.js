@@ -25,7 +25,6 @@ describe('Formio Form Renderer tests', () => {
         }
       ]
     }).then(() => {
-      console.log(simpleForm.element);
       Harness.testElements(simpleForm, 'input[type="text"]', 2);
       Harness.testElements(simpleForm, 'input[name="data[firstName]"]', 1);
       Harness.testElements(simpleForm, 'input[name="data[lastName]"]', 1);
@@ -63,7 +62,7 @@ describe('Formio Form Renderer tests', () => {
         }
       ]
     }).then(() => {
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -92,7 +91,7 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.language = 'es';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -125,7 +124,7 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.language = 'fr';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'French Label');
       done();
     }).catch(done);
@@ -148,7 +147,7 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);

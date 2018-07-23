@@ -27,7 +27,6 @@ export default class ContainerComponent extends NestedComponent {
     super.init();
     this.type = 'container';
     this.dataValue = {};
-    this.addComponents(this.dataValue);
   }
 
   get defaultSchema() {
@@ -38,23 +37,8 @@ export default class ContainerComponent extends NestedComponent {
     return {};
   }
 
-  get containerKey() {
-    return `container-${this.key}`;
-  }
-
-  render() {
-    return super.render(this.renderTemplate('container', {
-      containerKey: this.containerKey,
-      children: this.renderComponents(),
-    }));
-  }
-
-  attach(element) {
-    this.loadRefs(element, { [this.containerKey]: 'single' });
-    if (this.refs[this.containerKey]) {
-      this.attachComponents(this.refs[this.containerKey]);
-    }
-    super.attach(element);
+  get templateName() {
+    return 'container';
   }
 
   hasChanged(before, after) {

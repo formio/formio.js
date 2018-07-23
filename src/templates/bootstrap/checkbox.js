@@ -1,7 +1,7 @@
 export default {
   form: `
 <div class="form-check">
-  <label class="{{input.labelClass}}">
+  <label class="{{input.labelClass}} form-check-label">
     <{{input.type}} 
       ref="input" 
       {% for (var attr in input.attr) { %}

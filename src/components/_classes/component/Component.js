@@ -160,7 +160,10 @@ export default class Component {
     this.options = _.defaults(_.clone(options), {
       language: 'en',
       highlightErrors: true,
-      row: ''
+      row: '',
+      template: 'bootstrap',
+      renderMode: 'form',
+      attachMode: 'full',
     });
 
     // Use the i18next that is passed in, otherwise use the global version.
@@ -311,6 +314,9 @@ export default class Component {
       this.info = this.elementInfo();
     }
 
+    // Set the template
+    this.template = this.options.template;
+
     // Allow anyone to hook into the component creation.
     this.hook('component');
   }
@@ -319,6 +325,14 @@ export default class Component {
   // For legacy.
   get ready() {
     return Promise.resolve(this);
+  }
+
+  set template(template) {
+    // Only import templates once.
+    if (!this.options.templateLoaded) {
+      this.options.templates = _.merge({}, templates[template], this.options.templates || {});
+      this.options.templateLoaded = true;
+    }
   }
 
   init() {
@@ -657,7 +671,6 @@ export default class Component {
   }
 
   build(element) {
-    // this.replaceElement(element, this.render());
     this.empty(element);
     element.innerHTML = this.render();
     this.attach(element);
@@ -697,7 +710,7 @@ export default class Component {
       });
     });
 
-    this.restoreValue();
+    // this.restoreValue();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -1598,6 +1611,10 @@ export default class Component {
         values.push(this.getValueAt(i));
       }
     }
+    if (values.length === 0 && !this.component.multiple) {
+      return '';
+    }
+
     return values;
   }
 

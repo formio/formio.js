@@ -1,7 +1,7 @@
 export default {
   form: `
 <div>
-  <div ref="{{containerKey}}">
+  <div ref="{{nestedKey}}">
     {{children}}
   </div>
 </div>

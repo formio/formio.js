@@ -5,7 +5,7 @@ export default {
     <h4 class="mb-0 panel-title" ref="header">{{t(component.title)}}</h4>
   </div>
   {% if (!collapsed) { %}
-  <div class="panel-body" ref="{{panelKey}}">
+  <div class="panel-body" ref="{{nestedKey}}">
     {{children}}
   </div>
   {% } %}
