@@ -16,7 +16,6 @@ export default class NestedComponent extends Component {
     super(component, options, data);
     this.type = 'components';
     this.components = [];
-    this.hidden = [];
     this._collapsed = !!this.component.collapsed;
   }
 
@@ -38,6 +37,17 @@ export default class NestedComponent extends Component {
   set collapsed(value) {
     this._collapsed = value;
     this.redraw();
+  }
+
+  set visible(value) {
+    super.visible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get visible() {
+    return super.visible;
   }
 
   getComponents() {
@@ -133,6 +143,7 @@ export default class NestedComponent extends Component {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
+    comp.parentVisible = this.visible;
     comp.init();
     comp.isBuilt = true;
     if (component.internal) {
@@ -447,7 +458,6 @@ export default class NestedComponent extends Component {
     const components = _.clone(this.components);
     _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];
-    this.hidden = [];
   }
 
   setCustomValidity(message, dirty) {
@@ -457,23 +467,6 @@ export default class NestedComponent extends Component {
 
   set disabled(disabled) {
     _.each(this.components, (component) => (component.disabled = disabled));
-  }
-
-  setHidden(component) {
-    if (component.components && component.components.length) {
-      component.hideComponents(this.hidden);
-    }
-    else if (component.component.hidden) {
-      component.visible = false;
-    }
-    else {
-      component.visible = (!this.hidden || !this.hidden.includes(component.key));
-    }
-  }
-
-  hideComponents(hidden) {
-    this.hidden = hidden;
-    this.eachComponent((component) => this.setHidden(component));
   }
 
   get errors() {

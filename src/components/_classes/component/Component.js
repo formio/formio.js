@@ -246,6 +246,7 @@ export default class Component {
      * Determines if this component is visible, or not.
      */
     this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
+    this._parentVisible = true;
 
     /**
      * If this input has been input and provided value.
@@ -354,6 +355,24 @@ export default class Component {
 
   get key() {
     return _.get(this.component, 'key', '');
+  }
+
+  set parentVisible(value) {
+    this._parentVisible = value;
+    this.clearOnHide(value);
+  }
+
+  get parentVisible() {
+    return this._parentVisible;
+  }
+
+  set visible(value) {
+    this._visible = value;
+    this.show(value);
+  }
+
+  get visible() {
+    return this._visible && this._parentVisible;
   }
 
   /**
@@ -679,7 +698,7 @@ export default class Component {
   render(children = `Unknown component: ${this.component.type}`) {
     this.rendered = true;
     return this.renderTemplate('component', {
-      visible: this._visible,
+      visible: this.visible,
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
@@ -1346,11 +1365,11 @@ export default class Component {
    */
   show(show) {
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (!show === !this._visible || this.options.attachMode === 'builder' || this.options.showHiddenFields) {
+    if (!show === !this.visible || this.options.attachMode === 'builder' || this.options.showHiddenFields) {
       return show;
     }
 
-    this._visible = show;
+    this.visible = show;
     this.clearOnHide(show);
     this.redraw();
     return show;
@@ -1394,14 +1413,6 @@ export default class Component {
         return arguments[1];
       }
     }
-  }
-
-  set visible(visible) {
-    this.show(visible);
-  }
-
-  get visible() {
-    return this._visible;
   }
 
   onChange(flags, fromRoot) {
@@ -1450,7 +1461,7 @@ export default class Component {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
-      Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+    Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
@@ -1516,7 +1527,10 @@ export default class Component {
    * @return {*}
    */
   get dataValue() {
-    if (!this.key) {
+    if (
+      !this.key ||
+      (!this.visible && this.component.clearOnHide)
+    ) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
@@ -1531,7 +1545,10 @@ export default class Component {
    * @param value
    */
   set dataValue(value) {
-    if (!this.key) {
+    if (
+      !this.key||
+      (!this.visible && this.component.clearOnHide)
+    ) {
       return value;
     }
     if ((value === null) || (value === undefined)) {
@@ -1828,12 +1845,12 @@ export default class Component {
   invalidMessage(data, dirty, ignoreCondition) {
     // Force valid if component is conditionally hidden.
     if (!ignoreCondition && !FormioUtils.checkCondition(
-      this.component,
-      data,
-      this.data,
-      this.root ? this.root._form : {},
-      this
-    )) {
+        this.component,
+        data,
+        this.data,
+        this.root ? this.root._form : {},
+        this
+      )) {
       return '';
     }
 

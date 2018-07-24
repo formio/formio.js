@@ -23,10 +23,14 @@ export default class ContainerComponent extends NestedComponent {
     };
   }
 
-  init() {
-    super.init();
+  constructor(...args) {
+    super(...args);
     this.type = 'container';
     this.dataValue = {};
+  }
+
+  init() {
+    this.addComponents(this.dataValue);
   }
 
   get defaultSchema() {
