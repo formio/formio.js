@@ -1208,6 +1208,7 @@ export default {
   tests: {
     'Test hiding and showing components'(form, done) {
       const fullData = _cloneDeep(form.getValue());
+      console.log('fullData', fullData.data.selectBoxes);
       form.getComponent('hide', component => {
         component.setValue(true);
         form.checkConditions(form.getValue());

@@ -50,6 +50,17 @@ export default class NestedComponent extends Component {
     return super.visible;
   }
 
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
   getComponents() {
     return this.components || [];
   }
@@ -170,7 +181,7 @@ export default class NestedComponent extends Component {
   }
 
   get componentComponents() {
-    return this.component.components;
+    return this.component.components || [];
   }
 
   get nestedKey() {
@@ -192,8 +203,7 @@ export default class NestedComponent extends Component {
    */
   addComponents(data) {
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
-    _.each(components, (component) => this.addComponent(component, data));
+    this.componentComponents.forEach((component) => this.addComponent(component, data));
   }
 
   /**

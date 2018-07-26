@@ -700,7 +700,6 @@ export default class Webform extends NestedComponent {
 
     this.addComponents();
     this.setValue(this.submission);
-    // this.showElement(false);
     this.isBuilt = true;
     if (this.element) {
       this.build();

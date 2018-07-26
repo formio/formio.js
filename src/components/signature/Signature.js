@@ -122,34 +122,37 @@ export default class SignatureComponent extends Input {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     super.attach(element);
 
-    // Add the footer.
     // Create the signature pad.
-    this.signaturePad = new SignaturePad(this.refs.canvas, {
-      minWidth: this.component.minWidth,
-      maxWidth: this.component.maxWidth,
-      penColor: this.component.penColor,
-      backgroundColor: this.component.backgroundColor
-    });
+    if (this.refs.canvas) {
+      this.signaturePad = new SignaturePad(this.refs.canvas, {
+        minWidth: this.component.minWidth,
+        maxWidth: this.component.maxWidth,
+        penColor: this.component.penColor,
+        backgroundColor: this.component.backgroundColor
+      });
+
+      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
+        noSign: true
+      });
+      // Ensure the signature is always the size of its container.
+      this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
+
+      // This has the potential to end up with infinite loops if there is no padBody.
+      // setTimeout(function checkWidth() {
+      //   if (this.refs.padBody.offsetWidth) {
+      //     this.checkSize();
+      //   }
+      //   else {
+      //     setTimeout(checkWidth.bind(this), 200);
+      //   }
+      // }.bind(this), 200);
+    }
     this.addEventListener(this.refs.refresh, 'click', (event) => {
       event.preventDefault();
       this.showCanvas(true);
       this.signaturePad.clear();
       this.setValue(this.defaultValue);
     });
-    this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
-      noSign: true
-    });
-
-    // Ensure the signature is always the size of its container.
-    this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
-    setTimeout(function checkWidth() {
-      if (this.refs.padBody.offsetWidth) {
-        this.checkSize();
-      }
-      else {
-        setTimeout(checkWidth.bind(this), 200);
-      }
-    }.bind(this), 200);
   }
   /* eslint-enable max-statements */
 

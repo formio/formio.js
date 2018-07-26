@@ -358,20 +358,38 @@ export default class Component {
   }
 
   set parentVisible(value) {
-    this._parentVisible = value;
-    this.clearOnHide(value);
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
   get parentVisible() {
     return this._parentVisible;
   }
 
+  /**
+   *
+   * @param value {boolean}
+   */
   set visible(value) {
-    this._visible = value;
-    this.show(value);
+    if (this._visible !== value) {
+      this._visible = value;
+      this.clearOnHide();
+      this.redraw();
+    }
   }
 
+  /**
+   *
+   * @returns {boolean}
+   */
   get visible() {
+    // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
+    if (this.options.attachMode === 'builder' || this.options.showHiddenFields) {
+      return true;
+    }
     return this._visible && this._parentVisible;
   }
 
@@ -1241,20 +1259,24 @@ export default class Component {
     let result;
 
     if (!this.hasCondition()) {
-      result = this.show(true);
+      result = true;
     }
     else {
-      result = this.show(FormioUtils.checkCondition(
+      result = FormioUtils.checkCondition(
         this.component,
         this.data,
         data,
         this.root ? this.root._form : {},
         this
-      ));
+      );
     }
 
     if (this.fieldLogic(data)) {
       this.redraw();
+    }
+
+    if (this.visible !== result) {
+      this.visible = result;
     }
 
     return result;
@@ -1358,27 +1380,10 @@ export default class Component {
     }
   }
 
-  /**
-   * Hide or Show an element.
-   *
-   * @param show
-   */
-  show(show) {
-    // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (!show === !this.visible || this.options.attachMode === 'builder' || this.options.showHiddenFields) {
-      return show;
-    }
-
-    this.visible = show;
-    this.clearOnHide(show);
-    this.redraw();
-    return show;
-  }
-
-  clearOnHide(show) {
+  clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (this.component.clearOnHide !== false && !this.options.readOnly) {
-      if (!show) {
+      if (!this.visible) {
         this.deleteValue();
       }
       else if (!this.hasValue()) {

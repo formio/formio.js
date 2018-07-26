@@ -127,11 +127,13 @@ export default class SelectComponent extends Field {
       return;
     }
 
-    this.refs.selectContainer.insertAdjacentHTML('beforeend', this.renderTemplate('selectOption', {
-      selected: this.dataValue === option.value,
-      option,
-      attrs,
-    }));
+    if (this.refs.selectContainer) {
+      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.renderTemplate('selectOption', {
+        selected: this.dataValue === option.value,
+        option,
+        attrs,
+      }));
+    }
   }
 
   addValueOptions(items) {
@@ -543,12 +545,16 @@ export default class SelectComponent extends Field {
     }
   }
 
-  show(show) {
+  set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
-    if (show && (this._visible !== show)) {
+    if (value && (this._visible !== value)) {
       this.triggerUpdate();
     }
-    return super.show(show);
+    super.visible = value;
+  }
+
+  get visible() {
+    return super.visible;
   }
 
   addCurrentChoices(value, items) {
@@ -664,7 +670,7 @@ export default class SelectComponent extends Field {
         const values = Array.isArray(value) ? value : [value];
         _.each(this.selectOptions, (selectOption) => {
           _.each(values, (val) => {
-            if (_.isEqual(val, selectOption.value)) {
+            if (_.isEqual(val, selectOption.value) && selectOption.element) {
               selectOption.element.selected = true;
               selectOption.element.setAttribute('selected', 'selected');
               return false;
@@ -674,8 +680,10 @@ export default class SelectComponent extends Field {
       }
       else {
         _.each(this.selectOptions, (selectOption) => {
-          selectOption.element.selected = false;
-          selectOption.element.removeAttribute('selected');
+          if (selectOption.element) {
+            selectOption.element.selected = false;
+            selectOption.element.removeAttribute('selected');
+          }
         });
       }
     }

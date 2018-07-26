@@ -10,7 +10,7 @@ export default {
         {{attr}}="{{input.attr[attr]}}"
         {% } %}
         value="{{item.value}}"
-        {% if (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])) { %}
+        {% if (value && (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value]))) { %}
           checked=true
         {% } %}
         id="{{id}}{{row}}-{{item.value}}" 

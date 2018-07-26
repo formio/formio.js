@@ -34,4 +34,8 @@ export default class HiddenComponent extends Input {
   labelIsHidden() {
     return true;
   }
+
+  get emptyValue() {
+    return '';
+  }
 }

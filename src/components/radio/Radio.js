@@ -37,14 +37,16 @@ export default class RadioComponent extends Field {
     return info;
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   render() {
     return super.render(this.renderTemplate('radio', {
-      component: this.component,
       input: this.inputInfo,
       inline: this.component.inline,
       values: this.component.values,
       value: this.dataValue,
-      id: this.id,
       row: this.row,
     }));
   }
@@ -112,7 +114,7 @@ export default class RadioComponent extends Field {
 
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        if (input.value === value) {
+        if (input && input.value === value) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
         }
