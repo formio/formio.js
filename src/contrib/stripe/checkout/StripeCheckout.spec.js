@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('StripeCheckout Component', () => {
-  it('Should build an stripeCheckout component', (done) => {
-    Harness.testCreate(StripeCheckoutComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build an stripeCheckout component', () => {
+    Harness.testCreate(StripeCheckoutComponent, comp1);
   });
 });

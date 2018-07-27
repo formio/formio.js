@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Hidden Component', () => {
-  it('Should build a hidden component', (done) => {
-    Harness.testCreate(HiddenComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a hidden component', () => {
+    return Harness.testCreate(HiddenComponent, comp1);
   });
 });

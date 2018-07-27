@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Form Component', () => {
-  it('Should build a form component', (done) => {
-    Harness.testCreate(FormComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a form component', () => {
+    return Harness.testCreate(FormComponent, comp1);
   });
 });

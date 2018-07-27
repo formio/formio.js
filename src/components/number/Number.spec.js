@@ -9,15 +9,14 @@ import {
 } from './fixtures';
 
 describe('Number Component', () => {
-  it('Should build an number component', (done) => {
-    Harness.testCreate(NumberComponent, comp1).then((component) => {
+  it('Should build an number component', () => {
+    return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
-      done();
     });
   });
 
-  it('Should limit decimals using step', (done) => {
-    Harness.testCreate(NumberComponent, _merge({}, comp2, {
+  it('Should limit decimals using step', () => {
+    return Harness.testCreate(NumberComponent, _merge({}, comp2, {
       validate: {
         step: '0.001'
       }
@@ -26,13 +25,12 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -123456789.123456789, -123456789.123, '-123,456,789.123');
       Harness.testSetInput(component, '123456789.123456789', 123456789.123, '123,456,789.123');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123, '-123,456,789.123');
-      done();
     });
   });
 
-  it('Should format numbers for USA locale', (done) => {
+  it('Should format numbers for USA locale', () => {
     /* eslint-disable max-statements */
-    Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, '', null, '');
@@ -75,13 +73,12 @@ describe('Number Component', () => {
       Harness.testSetInput(component, '-12.123456789', -12.123456789, '-12.123456789');
       Harness.testSetInput(component, '123456789.123456789', 123456789.123456789, '123,456,789.12345679');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123456789, '-123,456,789.12345679');
-      done();
     });
     /* eslint-enable max-statements */
   });
 
-  it('Should format numbers for British locale', (done) => {
-    Harness.testCreate(NumberComponent, comp2, { language: 'en-GB' }).then((component) => {
+  it('Should format numbers for British locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'en-GB' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
@@ -98,12 +95,11 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1,234,567,890.12');
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12.123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12.123456789');
-      done();
     });
   });
 
-  it('Should format numbers for French locale', (done) => {
-    Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
+  it('Should format numbers for French locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -121,12 +117,11 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1 234 567 890,12');
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12,123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12,123456789');
-      done();
     });
   });
 
-  it('Should format numbers for German locale', (done) => {
-    Harness.testCreate(NumberComponent, comp2, { language: 'de' }).then((component) => {
+  it('Should format numbers for German locale', () => {
+    return Harness.testCreate(NumberComponent, comp2, { language: 'de' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
@@ -143,7 +138,6 @@ describe('Number Component', () => {
       Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1.234.567.890,12');
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12,123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12,123456789');
-      done();
     });
   });
 });

@@ -6,10 +6,9 @@ import {
 } from './fixtures';
 
 describe('Signature Component', () => {
-  it('Should build a Signature component', (done) => {
-    Harness.testCreate(SignatureComponent, comp1).then((component) => {
+  it('Should build a Signature component', () => {
+    return Harness.testCreate(SignatureComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="hidden"]', 1);
-      done();
     });
   });
 });

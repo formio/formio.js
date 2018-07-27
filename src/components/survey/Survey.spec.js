@@ -9,33 +9,32 @@ import {
 } from './fixtures';
 
 describe('Survey Component', () => {
-  it('Should build a survey component', (done) => {
-    Harness.testCreate(SurveyComponent, comp1).then((component) => {
+  it('Should build a survey component', () => {
+    return Harness.testCreate(SurveyComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="radio"]', 10);
       inputs.forEach((input, index) => {
         if (index < 5) {
           // Service
           assert.equal(input.name, 'data[surveyQuestions][service]');
-          assert.equal(input.id, `${component.id}-service-${comp1.values[index].value}`);
+          assert.equal(input.id, `${component.key}-service-${comp1.values[index].value}`);
         }
         else {
           // How do you like our service?
           assert.equal(input.name, 'data[surveyQuestions][howWouldYouRateTheTechnology]');
-          assert.equal(input.id, `${component.id}-howWouldYouRateTheTechnology-${comp1.values[index - 5].value}`);
+          assert.equal(input.id, `${component.key}-howWouldYouRateTheTechnology-${comp1.values[index - 5].value}`);
         }
       });
-      done();
     });
   });
 
-  it('Should set the value of surveys.', (done) => {
-    Harness.testCreate(SurveyComponent, comp1).then((component) => {
+  it('Should set the value of surveys.', () => {
+    return Harness.testCreate(SurveyComponent, comp1).then((component) => {
       Harness.testSetGet(component, { service: 'bad', howWouldYouRateTheTechnology: 'good' });
       const inputs = Harness.testElements(component, 'input[type="radio"]', 10);
       for (const input of inputs) {
         if (
-          (input.id === `${component.id}-service-bad`) ||
-          (input.id === `${component.id}-howWouldYouRateTheTechnology-good`)
+          (input.id === `${component.key}-service-bad`) ||
+          (input.id === `${component.key}-howWouldYouRateTheTechnology-good`)
         ) {
           assert.equal(input.checked, true);
         }
@@ -43,7 +42,6 @@ describe('Survey Component', () => {
           assert.equal(input.checked, false);
         }
       }
-      done();
     });
   });
 
@@ -51,7 +49,6 @@ describe('Survey Component', () => {
     Harness.testCreate(SurveyComponent, comp2).then((component) => {
       Harness.testSetGet(component, { service: 'bad' });
       component.on('componentChange', () => {
-        console.log(component.element.className);
         done();
       });
       // assert(component.element)

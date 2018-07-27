@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Location Component', function() {
-  it('Should build a location component', function(done) {
-    Harness.testCreate(LocationComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a location component', function() {
+    return Harness.testCreate(LocationComponent, comp1);
   });
 });

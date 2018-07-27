@@ -227,15 +227,14 @@ describe('TextField Builder', () => {
   before((done) => Harness.builderBefore(done));
   after(() => Harness.builderAfter());
 
-  it('Should create a new textfield component', (done) => {
+  it('Should create a new textfield component', () => {
     builder = Harness.buildComponent('textfield');
-    builder.editForm.formReady.then(() => {
+    return builder.editForm.formReady.then(() => {
       // Make sure default preview is correct.
       const preview = builder.componentPreview.innerHTML;
       assert(preview.indexOf('formio-component formio-component-textfield formio-component-textField') !== -1, 'Must have correct classes');
       assert(preview.indexOf('<label class="control-label" style="">Text Field</label>') !== -1, 'Must have a label');
       assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control"') !== -1, 'Must have an input');
-      done();
     });
   });
 

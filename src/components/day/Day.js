@@ -97,7 +97,7 @@ export default class DayComponent extends Field {
       attr: {
         id: `${this.component.key}-${name}`,
         class: 'form-control',
-        type: this.component.fields[name].type,
+        type: this.component.fields[name].type === 'select' ? 'select' : 'number',
         placeholder: this.component.fields[name].placeholder,
         step: 1,
         min,
@@ -195,17 +195,20 @@ export default class DayComponent extends Field {
   }
 
   renderField(name) {
-    if (this.component.fields[name].type === 'number') {
-      return this.renderTemplate('input', {
-        input: this.inputDefinition(name)
-      });
-    }
-    else if (this.component.fields[name].type === 'select') {
+    if (this.component.fields[name].type === 'select') {
       return this.renderTemplate('select', {
         input: this.selectDefinition(name),
         options: this[`${name}s`].reduce((html, option) =>
-          html + this.renderTemplate('selectOption', { option, selected: false, attrs: {} }), ''
+          html + this.renderTemplate('selectOption', {
+            option,
+            selected: false, attrs: {}
+          }), ''
         ),
+      });
+    }
+    else {
+      return this.renderTemplate('input', {
+        input: this.inputDefinition(name)
       });
     }
   }
@@ -213,15 +216,16 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     super.attach(element);
-    if (this.refs.day) {
-      this.addEventListener(this.refs.day, 'change', () => this.updateValue());
-    }
-    if (this.refs.month) {
-      this.addEventListener(this.refs.month, 'change', () => this.updateValue());
-    }
-    if (this.refs.year) {
-      this.addEventListener(this.refs.year, 'change', () => this.updateValue());
-    }
+    this.addEventListener(this.refs.day, 'change', () => this.updateValue());
+    this.addEventListener(this.refs.month, 'change', () => this.updateValue());
+    // Change day max input when month changes.
+    this.addEventListener(this.refs.month, 'change', () => {
+      this.refs.day.max = new Date(this.refs.year.value, this.refs.month.value, 0).getDate();
+      if (this.refs.day.value > this.refs.day.max) {
+        this.refs.day.value = this.refs.day.max;
+      }
+    });
+    this.addEventListener(this.refs.year, 'change', () => this.updateValue());
     this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue());
   }
 

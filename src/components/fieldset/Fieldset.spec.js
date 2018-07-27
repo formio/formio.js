@@ -6,10 +6,9 @@ import {
 } from './fixtures';
 
 describe('Fieldset Component', () => {
-  it('Should build a fieldset component', (done) => {
-    Harness.testCreate(FieldsetComponent, comp1).then((component) => {
+  it('Should build a fieldset component', () => {
+    return Harness.testCreate(FieldsetComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 2);
-      done();
     });
   });
 });
