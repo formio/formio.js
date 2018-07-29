@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue where components in table component would not render conditions correctly.
  - Issue with the selection of a radio component.
+ - Multiple Select: Fixed selected items being rendered outside of the input
 
 ## 3.0.0-rc.26
 ### Fixed
