@@ -1771,6 +1771,9 @@ export default class BaseComponent {
 
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
+      if (!show) {
+        this.clearOnHide(false);
+      }
       return show;
     }
 

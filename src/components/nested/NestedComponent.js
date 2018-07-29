@@ -436,14 +436,11 @@ export default class NestedComponent extends BaseComponent {
     else if (component.component.hidden) {
       component.visible = false;
     }
-    else {
-      const isVisible = (!this.hidden || !this.hidden.includes(component.key));
-      if (isVisible && !component.conditionallyVisible()) {
-        component.visible = false;
-        return;
-      }
-
-      component.visible = isVisible;
+    else if (this.hidden && this.hidden.includes(component.key)) {
+      component.visible = false;
+    }
+    else if (!component.conditionallyVisible()) {
+      component.visible = false;
     }
   }
 
