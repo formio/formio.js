@@ -41,16 +41,17 @@ export default class NestedComponent extends Component {
 
   set visible(value) {
     super.visible = value;
+    const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
       if (forceShow) {
         component.visible = true;
       }
-      else if (forceHide) {
+      else if (forceHide || (isVisible && !component.conditionallyVisible())) {
         component.visible = false;
       }
-      component.parentVisible = this.visible;
+      component.parentVisible = isVisible;
     });
   }
 
