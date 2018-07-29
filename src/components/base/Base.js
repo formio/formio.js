@@ -1614,27 +1614,32 @@ export default class BaseComponent {
   }
 
   /**
+   * Check if this component is conditionally visible.
+   *
+   * @param data
+   * @return {boolean}
+   */
+  conditionallyVisible(data) {
+    if (!this.hasCondition()) {
+      return true;
+    }
+    return FormioUtils.checkCondition(
+      this.component,
+      this.data,
+      data,
+      this.root ? this.root._form : {},
+      this
+    );
+  }
+
+  /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
     data = data || (this.root ? this.root.data: {});
 
     // Check advanced conditions
-    let result;
-
-    if (!this.hasCondition()) {
-      result = this.show(true);
-    }
-    else {
-      result = this.show(FormioUtils.checkCondition(
-        this.component,
-        this.data,
-        data,
-        this.root ? this.root._form : {},
-        this
-      ));
-    }
-
+    const result = this.show(this.conditionallyVisible(data));
     if (this.fieldLogic(data)) {
       this.redraw();
     }
