@@ -354,11 +354,16 @@ export default class NestedComponent extends BaseComponent {
     }
     this.setHidden(comp);
     element = this.hook(&apos;addComponent&apos;, element, comp, this);
+    const compElement = comp.getElement();
+    if (!compElement) {
+      console.warn(`Component ${component.key} has no element.`);
+      return comp;
+    }
     if (before) {
-      element.insertBefore(comp.getElement(), before);
+      element.insertBefore(compElement, before);
     }
     else {
-      element.appendChild(comp.getElement());
+      element.appendChild(compElement);
     }
     return comp;
   }
@@ -575,7 +580,6 @@ export default class NestedComponent extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
-    this.empty(this.getElement());
     this.destroyComponents();
   }
 
@@ -602,8 +606,11 @@ export default class NestedComponent extends BaseComponent {
     else if (component.component.hidden) {
       component.visible = false;
     }
-    else {
-      component.visible = (!this.hidden || !this.hidden.includes(component.key));
+    else if (this.hidden &amp;&amp; this.hidden.includes(component.key)) {
+      component.visible = false;
+    }
+    else if (!component.conditionallyVisible()) {
+      component.visible = false;
     }
   }
 

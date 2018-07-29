@@ -173,12 +173,12 @@
 import ColumnsEditDisplay from &apos;./editForm/Columns.edit.display&apos;;
 
 export default function(...extend) {
-  return nestedComponentForm(...extend, [
+  return nestedComponentForm([
     {
       key: &apos;display&apos;,
       components: ColumnsEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

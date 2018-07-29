@@ -216,6 +216,17 @@ export default [
     }
   },
   {
+    type: &apos;checkbox&apos;,
+    input: true,
+    label: &apos;Lazy Load URL&apos;,
+    key: &apos;lazyLoad&apos;,
+    tooltip: &apos;When set, this will not fire off the request to the URL until this control is within focus. This can improve performance if you have many Select dropdowns on your form where the API\&apos;s will only fire when the control is activated.&apos;,
+    weight: 11,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] }
+    }
+  },
+  {
     type: &apos;datagrid&apos;,
     input: true,
     label: &apos;Request Headers&apos;,

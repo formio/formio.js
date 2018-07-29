@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 146,
+  "end": 119,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 146,
+    "end": 119,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ImportDeclaration",
         "start": 0,
-        "end": 65,
+        "end": 45,
         "loc": {
           "start": {
             "line": 1,
@@ -39,14 +39,14 @@
           },
           "end": {
             "line": 1,
-            "column": 65
+            "column": 45
           }
         },
         "specifiers": [
           {
             "type": "ImportDefaultSpecifier",
             "start": 7,
-            "end": 26,
+            "end": 19,
             "loc": {
               "start": {
                 "line": 1,
@@ -54,13 +54,13 @@
               },
               "end": {
                 "line": 1,
-                "column": 26
+                "column": 19
               }
             },
             "local": {
               "type": "Identifier",
               "start": 7,
-              "end": 26,
+              "end": 19,
               "loc": {
                 "start": {
                   "line": 1,
@@ -68,39 +68,39 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 26
+                  "column": 19
                 },
-                "identifierName": "nestedComponentForm"
+                "identifierName": "baseEditForm"
               },
-              "name": "nestedComponentForm"
+              "name": "baseEditForm"
             }
           }
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 32,
-          "end": 64,
+          "start": 25,
+          "end": 44,
           "loc": {
             "start": {
               "line": 1,
-              "column": 32
+              "column": 25
             },
             "end": {
               "line": 1,
-              "column": 64
+              "column": 44
             }
           },
           "extra": {
-            "rawValue": "../nested/NestedComponent.form",
-            "raw": "'../nested/NestedComponent.form'"
+            "rawValue": "../base/Base.form",
+            "raw": "'../base/Base.form'"
           },
-          "value": "../nested/NestedComponent.form"
+          "value": "../base/Base.form"
         }
       },
       {
         "type": "ExportDefaultDeclaration",
-        "start": 66,
-        "end": 145,
+        "start": 46,
+        "end": 118,
         "loc": {
           "start": {
             "line": 2,
@@ -113,8 +113,8 @@
         },
         "declaration": {
           "type": "FunctionDeclaration",
-          "start": 81,
-          "end": 145,
+          "start": 61,
+          "end": 118,
           "loc": {
             "start": {
               "line": 2,
@@ -132,8 +132,8 @@
           "params": [
             {
               "type": "RestElement",
-              "start": 90,
-              "end": 99,
+              "start": 70,
+              "end": 79,
               "loc": {
                 "start": {
                   "line": 2,
@@ -146,8 +146,8 @@
               },
               "argument": {
                 "type": "Identifier",
-                "start": 93,
-                "end": 99,
+                "start": 73,
+                "end": 79,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -165,8 +165,8 @@
           ],
           "body": {
             "type": "BlockStatement",
-            "start": 101,
-            "end": 145,
+            "start": 81,
+            "end": 118,
             "loc": {
               "start": {
                 "line": 2,
@@ -180,8 +180,8 @@
             "body": [
               {
                 "type": "ReturnStatement",
-                "start": 105,
-                "end": 143,
+                "start": 85,
+                "end": 116,
                 "loc": {
                   "start": {
                     "line": 3,
@@ -189,13 +189,13 @@
                   },
                   "end": {
                     "line": 3,
-                    "column": 40
+                    "column": 33
                   }
                 },
                 "argument": {
                   "type": "CallExpression",
-                  "start": 112,
-                  "end": 142,
+                  "start": 92,
+                  "end": 115,
                   "loc": {
                     "start": {
                       "line": 3,
@@ -203,13 +203,13 @@
                     },
                     "end": {
                       "line": 3,
-                      "column": 39
+                      "column": 32
                     }
                   },
                   "callee": {
                     "type": "Identifier",
-                    "start": 112,
-                    "end": 131,
+                    "start": 92,
+                    "end": 104,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -217,39 +217,39 @@
                       },
                       "end": {
                         "line": 3,
-                        "column": 28
+                        "column": 21
                       },
-                      "identifierName": "nestedComponentForm"
+                      "identifierName": "baseEditForm"
                     },
-                    "name": "nestedComponentForm"
+                    "name": "baseEditForm"
                   },
                   "arguments": [
                     {
                       "type": "SpreadElement",
-                      "start": 132,
-                      "end": 141,
+                      "start": 105,
+                      "end": 114,
                       "loc": {
                         "start": {
                           "line": 3,
-                          "column": 29
+                          "column": 22
                         },
                         "end": {
                           "line": 3,
-                          "column": 38
+                          "column": 31
                         }
                       },
                       "argument": {
                         "type": "Identifier",
-                        "start": 135,
-                        "end": 141,
+                        "start": 108,
+                        "end": 114,
                         "loc": {
                           "start": {
                             "line": 3,
-                            "column": 32
+                            "column": 25
                           },
                           "end": {
                             "line": 3,
-                            "column": 38
+                            "column": 31
                           },
                           "identifierName": "extend"
                         },
@@ -311,9 +311,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "nestedComponentForm",
+      "value": "baseEditForm",
       "start": 7,
-      "end": 26,
+      "end": 19,
       "loc": {
         "start": {
           "line": 1,
@@ -321,7 +321,7 @@
         },
         "end": {
           "line": 1,
-          "column": 26
+          "column": 19
         }
       }
     },
@@ -338,16 +338,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 27,
-      "end": 31,
+      "start": 20,
+      "end": 24,
       "loc": {
         "start": {
           "line": 1,
-          "column": 27
+          "column": 20
         },
         "end": {
           "line": 1,
-          "column": 31
+          "column": 24
         }
       }
     },
@@ -364,17 +364,17 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "../nested/NestedComponent.form",
-      "start": 32,
-      "end": 64,
+      "value": "../base/Base.form",
+      "start": 25,
+      "end": 44,
       "loc": {
         "start": {
           "line": 1,
-          "column": 32
+          "column": 25
         },
         "end": {
           "line": 1,
-          "column": 64
+          "column": 44
         }
       }
     },
@@ -391,16 +391,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 64,
-      "end": 65,
+      "start": 44,
+      "end": 45,
       "loc": {
         "start": {
           "line": 1,
-          "column": 64
+          "column": 44
         },
         "end": {
           "line": 1,
-          "column": 65
+          "column": 45
         }
       }
     },
@@ -419,8 +419,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 66,
-      "end": 72,
+      "start": 46,
+      "end": 52,
       "loc": {
         "start": {
           "line": 2,
@@ -447,8 +447,8 @@
         "updateContext": null
       },
       "value": "default",
-      "start": 73,
-      "end": 80,
+      "start": 53,
+      "end": 60,
       "loc": {
         "start": {
           "line": 2,
@@ -474,8 +474,8 @@
         "binop": null
       },
       "value": "function",
-      "start": 81,
-      "end": 89,
+      "start": 61,
+      "end": 69,
       "loc": {
         "start": {
           "line": 2,
@@ -499,8 +499,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 89,
-      "end": 90,
+      "start": 69,
+      "end": 70,
       "loc": {
         "start": {
           "line": 2,
@@ -525,8 +525,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 90,
-      "end": 93,
+      "start": 70,
+      "end": 73,
       "loc": {
         "start": {
           "line": 2,
@@ -551,8 +551,8 @@
         "binop": null
       },
       "value": "extend",
-      "start": 93,
-      "end": 99,
+      "start": 73,
+      "end": 79,
       "loc": {
         "start": {
           "line": 2,
@@ -576,8 +576,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 99,
-      "end": 100,
+      "start": 79,
+      "end": 80,
       "loc": {
         "start": {
           "line": 2,
@@ -601,8 +601,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 101,
-      "end": 102,
+      "start": 81,
+      "end": 82,
       "loc": {
         "start": {
           "line": 2,
@@ -629,8 +629,8 @@
         "updateContext": null
       },
       "value": "return",
-      "start": 105,
-      "end": 111,
+      "start": 85,
+      "end": 91,
       "loc": {
         "start": {
           "line": 3,
@@ -654,9 +654,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "nestedComponentForm",
-      "start": 112,
-      "end": 131,
+      "value": "baseEditForm",
+      "start": 92,
+      "end": 104,
       "loc": {
         "start": {
           "line": 3,
@@ -664,7 +664,7 @@
         },
         "end": {
           "line": 3,
-          "column": 28
+          "column": 21
         }
       }
     },
@@ -680,16 +680,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 131,
-      "end": 132,
+      "start": 104,
+      "end": 105,
       "loc": {
         "start": {
           "line": 3,
-          "column": 28
+          "column": 21
         },
         "end": {
           "line": 3,
-          "column": 29
+          "column": 22
         }
       }
     },
@@ -706,16 +706,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 132,
-      "end": 135,
+      "start": 105,
+      "end": 108,
       "loc": {
         "start": {
           "line": 3,
-          "column": 29
+          "column": 22
         },
         "end": {
           "line": 3,
-          "column": 32
+          "column": 25
         }
       }
     },
@@ -732,16 +732,16 @@
         "binop": null
       },
       "value": "extend",
-      "start": 135,
-      "end": 141,
+      "start": 108,
+      "end": 114,
       "loc": {
         "start": {
           "line": 3,
-          "column": 32
+          "column": 25
         },
         "end": {
           "line": 3,
-          "column": 38
+          "column": 31
         }
       }
     },
@@ -757,16 +757,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 141,
-      "end": 142,
+      "start": 114,
+      "end": 115,
       "loc": {
         "start": {
           "line": 3,
-          "column": 38
+          "column": 31
         },
         "end": {
           "line": 3,
-          "column": 39
+          "column": 32
         }
       }
     },
@@ -783,16 +783,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 142,
-      "end": 143,
+      "start": 115,
+      "end": 116,
       "loc": {
         "start": {
           "line": 3,
-          "column": 39
+          "column": 32
         },
         "end": {
           "line": 3,
-          "column": 40
+          "column": 33
         }
       }
     },
@@ -808,8 +808,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 144,
-      "end": 145,
+      "start": 117,
+      "end": 118,
       "loc": {
         "start": {
           "line": 4,
@@ -834,8 +834,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 146,
-      "end": 146,
+      "start": 119,
+      "end": 119,
       "loc": {
         "start": {
           "line": 5,

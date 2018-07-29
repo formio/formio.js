@@ -173,12 +173,12 @@
 import CheckboxEditDisplay from &apos;./editForm/Checkbox.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: CheckboxEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

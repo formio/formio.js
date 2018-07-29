@@ -173,12 +173,12 @@
 import TimeEditDisplay from &apos;./editForm/Time.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: TimeEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

@@ -171,7 +171,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;data&apos;,
       ignore: true
@@ -180,7 +180,7 @@ export default function(...extend) {
       key: &apos;validation&apos;,
       ignore: true
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

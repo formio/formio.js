@@ -205,12 +205,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   addDropZone() {
-    if (this.dropZone) {
-      return;
+    if (!this.dropZone) {
+      this.dropZone = this.ce(&apos;div&apos;, {
+        class: &apos;formio-drop-zone&apos;
+      });
+      this.prepend(this.dropZone);
     }
-    this.dropZone = this.ce(&apos;div&apos;);
-    this.disableDropZone();
-    this.pdfForm.prepend(this.dropZone);
     this.addEventListener(this.dropZone, &apos;dragover&apos;, (event) =&gt; {
       event.preventDefault();
       return false;
@@ -220,12 +220,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.dragStop(event);
       return false;
     });
-  }
-
-  get dropZoneStyles() {
-    const iframeRect = getElementRect(this.pdfForm.element);
-    const iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
-    return `position:absolute;width: 100%;height:${iframeHeight}px;`;
+    this.disableDropZone();
   }
 
   render() {
@@ -242,15 +237,18 @@ export default class PDFBuilder extends WebformBuilder {
     });
   }
 
-  activateDropZone() {
+  enableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute(&apos;style&apos;, `${this.dropZoneStyles}display:inherit;`);
+      const iframeRect = getElementRect(this.pdfForm.element);
+      this.dropZone.style.height = iframeRect &amp;&amp; iframeRect.height  ? `${iframeRect.height}px` : &apos;1000px&apos;;
+      this.dropZone.style.width = iframeRect &amp;&amp; iframeRect.width ? `${iframeRect.width}px` : &apos;100%&apos;;
+      this.addClass(this.dropZone, &apos;enabled&apos;);
     }
   }
 
   disableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute(&apos;style&apos;, `${this.dropZoneStyles}display:none;`);
+      this.removeClass(this.dropZone, &apos;enabled&apos;);
     }
   }
 
@@ -267,13 +265,6 @@ export default class PDFBuilder extends WebformBuilder {
     return super.addComponent(component, element, data, before, true);
   }
 
-  updateComponent(component) {
-    if (this.pdfForm &amp;&amp; component.component) {
-      this.pdfForm.postMessage({ name: &apos;updateElement&apos;, data: component.component });
-    }
-    return super.updateComponent(component);
-  }
-
   deleteComponent(component) {
     if (this.pdfForm &amp;&amp; component.component) {
       this.pdfForm.postMessage({ name: &apos;removeElement&apos;, data: component.component });
@@ -282,8 +273,10 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   dragStart(event, component) {
-    event.dataTransfer.setData(&apos;text/plain&apos;, JSON.stringify(component.schema));
-    this.activateDropZone();
+    event.stopPropagation();
+    event.dataTransfer.setData(&apos;text/plain&apos;, &apos;true&apos;);
+    this.currentComponent = component;
+    this.enableDropZone();
   }
 
   removeEventListeners(all) {
@@ -291,6 +284,7 @@ export default class PDFBuilder extends WebformBuilder {
     _.each(this.groups, (group) =&gt; {
       _.each(group.components, (builderComponent) =&gt; {
         this.removeEventListener(builderComponent, &apos;dragstart&apos;);
+        this.removeEventListener(builderComponent, &apos;dragend&apos;);
       });
     });
   }
@@ -305,13 +299,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   dragStop(event) {
-    event.preventDefault();
-    const dropData = event.dataTransfer.getData(&apos;text/plain&apos;);
-    if (!dropData || (typeof dropData !== &apos;string&apos;)) {
-      return false;
-    }
-
-    const schema = JSON.parse(dropData);
+    const schema = this.currentComponent ? this.currentComponent.schema : null;
     if (!schema) {
       return false;
     }
@@ -337,6 +325,7 @@ export default class PDFBuilder extends WebformBuilder {
       builderComponent.element.draggable = true;
       builderComponent.element.setAttribute(&apos;draggable&apos;, true);
       this.addEventListener(builderComponent.element, &apos;dragstart&apos;, (event) =&gt; this.dragStart(event, component));
+      this.addEventListener(builderComponent.element, &apos;dragend&apos;, () =&gt; this.disableDropZone());
     }
     return builderComponent;
   }
@@ -356,6 +345,7 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.pdfForm) {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);
+      this.addClass(this.pdfForm.element, &apos;formio-pdf-builder&apos;);
     }
     this.pdfForm.removeEventListeners(true);
     this.pdfForm.events.removeAllListeners();

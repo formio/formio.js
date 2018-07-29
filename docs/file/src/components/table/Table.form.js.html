@@ -173,12 +173,12 @@
 import TableEditDisplay from &apos;./editForm/Table.edit.display&apos;;
 
 export default function(...extend) {
-  return nestedComponentForm(...extend, [
+  return nestedComponentForm([
     {
       key: &apos;display&apos;,
       components: TableEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

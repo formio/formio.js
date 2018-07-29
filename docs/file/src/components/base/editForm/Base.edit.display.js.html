@@ -359,6 +359,15 @@ export default [
     input: true
   },
   {
+    weight: 1310,
+    type: &apos;checkbox&apos;,
+    label: &apos;Show Label in DataGrid&apos;,
+    tooltip: &apos;Show the label when in a Datagrid.&apos;,
+    key: &apos;dataGridLabel&apos;,
+    input: true,
+    customConditional: &apos;show = instance.root.editComponent.inDataGrid&apos;
+  },
+  {
     weight: 1400,
     type: &apos;checkbox&apos;,
     label: &apos;Disabled&apos;,

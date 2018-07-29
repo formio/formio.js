@@ -173,14 +173,14 @@
 import FileEditFile from &apos;./editForm/File.edit.file&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       label: &apos;File&apos;,
       key: &apos;file&apos;,
       weight: 5,
       components: FileEditFile
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

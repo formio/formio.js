@@ -234,18 +234,18 @@ export default class WebformBuilder extends Webform {
         // Make sure the component position is relative so the buttons align properly.
         comp.getElement().style.position = &apos;relative&apos;;
 
-        const removeButton = parent.ce(&apos;div&apos;, {
+        const removeButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-danger component-settings-button component-settings-button-remove&apos;
-        }, parent.getIcon(&apos;remove&apos;));
-        parent.addEventListener(removeButton, &apos;click&apos;, () =&gt; parent.root.deleteComponent(comp));
+        }, this.getIcon(&apos;remove&apos;));
+        this.addEventListener(removeButton, &apos;click&apos;, () =&gt; this.deleteComponent(comp));
 
-        const editButton = parent.ce(&apos;div&apos;, {
+        const editButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-edit&apos;
-        }, parent.getIcon(&apos;cog&apos;));
-        parent.addEventListener(editButton, &apos;click&apos;, () =&gt; parent.root.editComponent(comp));
+        }, this.getIcon(&apos;cog&apos;));
+        this.addEventListener(editButton, &apos;click&apos;, () =&gt; this.editComponent(comp));
 
         // Add the edit buttons to the component.
-        comp.prepend(parent.ce(&apos;div&apos;, {
+        comp.prepend(this.ce(&apos;div&apos;, {
           class: &apos;component-btn-group&apos;
         }, [removeButton, editButton]));
       }
@@ -463,7 +463,11 @@ export default class WebformBuilder extends Webform {
     // Append the settings page to the dialog body.
     this.dialog.body.appendChild(componentEdit);
 
-    const editForm = Components.components[componentCopy.component.type].editForm();
+    // Allow editForm overrides per component.
+    const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
+
+    // Get the editform for this component.
+    const editForm = Components.components[componentCopy.component.type].editForm(overrides);
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, &apos;defaultValue&apos;);
@@ -483,6 +487,7 @@ export default class WebformBuilder extends Webform {
 
     // Pass along the form being edited.
     this.editForm.editForm = this._form;
+    this.editForm.editComponent = component;
 
     // Update the preview with this component.
     this.updateComponent(componentCopy);
@@ -813,7 +818,12 @@ export default class WebformBuilder extends Webform {
     );
   }
 
+  /* eslint-disable  max-statements */
   onDrop(element, target, source, sibling) {
+    if (!element || !element.id) {
+      console.warn(&apos;No element.id defined for dropping&apos;);
+      return;
+    }
     const builderElement = source.querySelector(`#${element.id}`);
     const newParent = this.getParentElement(element);
     if (!newParent || !newParent.component) {
@@ -892,6 +902,7 @@ export default class WebformBuilder extends Webform {
       this.form = this.schema;
     }
   }
+  /* eslint-enable  max-statements */
 
   /**
    * Adds a submit button if there are no components.

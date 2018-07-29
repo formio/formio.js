@@ -178,7 +178,7 @@ export default class CheckBoxComponent extends BaseComponent {
       inputType: &apos;checkbox&apos;,
       label: &apos;Checkbox&apos;,
       key: &apos;checkbox&apos;,
-      datagridLabel: true,
+      dataGridLabel: true,
       labelPosition: &apos;right&apos;,
       value: &apos;&apos;,
       name: &apos;&apos;
@@ -245,7 +245,7 @@ export default class CheckBoxComponent extends BaseComponent {
 
   createElement() {
     let className = `form-check ${this.className}`;
-    if (this.component.label) {
+    if (!this.labelIsHidden()) {
       className += &apos; checkbox&apos;;
     }
     this.element = this.ce(&apos;div&apos;, {
@@ -305,7 +305,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   createLabel(container, input) {
-    if (!this.component.label) {
+    if (this.labelIsHidden()) {
       return null;
     }
 

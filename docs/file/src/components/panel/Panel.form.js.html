@@ -173,12 +173,12 @@
 import PanelEditDisplay from &apos;./editForm/Panel.edit.display&apos;;
 
 export default function(...extend) {
-  return nestedComponentForm(...extend, [
+  return nestedComponentForm([
     {
       key: &apos;display&apos;,
       components: PanelEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

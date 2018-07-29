@@ -571,15 +571,15 @@ export default class Formio {
    *
    * @return {*}
    */
-  getToken() {
-    return Formio.getToken();
+  getToken(options) {
+    return Formio.getToken(options);
   }
 
   /**
    * Returns a temporary authentication token for single purpose token generation.
    */
-  getTempToken(expire, allowed) {
-    const token = Formio.getToken();
+  getTempToken(expire, allowed, options) {
+    const token = Formio.getToken(options);
     if (!token) {
       return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
     }
@@ -820,6 +820,8 @@ export default class Formio {
     }
 
     const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
+    requestArgs.opts = requestArgs.opts || {};
+    requestArgs.opts.formio = formio;
     const request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
       .then(() =&gt; Formio.pluginGet(&apos;request&apos;, requestArgs)
         .then((result) =&gt; {
@@ -860,7 +862,7 @@ export default class Formio {
       &apos;Accept&apos;: &apos;application/json&apos;,
       &apos;Content-type&apos;: &apos;application/json; charset=UTF-8&apos;
     });
-    const token = Formio.getToken();
+    const token = Formio.getToken(opts);
     if (token &amp;&amp; !opts.noToken) {
       headers.append(&apos;x-jwt-token&apos;, token);
     }
@@ -876,6 +878,9 @@ export default class Formio {
 
     // Allow plugins to alter the options.
     options = Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
+    if (options.namespace) {
+      opts.namespace = options.namespace;
+    }
 
     const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
     return fetch(url, options)
@@ -885,7 +890,7 @@ export default class Formio {
 
         if (!response.ok) {
           if (response.status === 440) {
-            Formio.setToken(null);
+            Formio.setToken(null, opts);
             Formio.events.emit(&apos;formio.sessionExpired&apos;, response.body);
           }
           else if (response.status === 401) {
@@ -927,7 +932,7 @@ export default class Formio {
           token !== &apos;&apos; &amp;&amp;
           !tokenIntroduced
         ) {
-          Formio.setToken(token);
+          Formio.setToken(token, opts);
         }
         // 204 is no content. Don&apos;t try to .json() it.
         if (response.status === 204) {
@@ -993,7 +998,7 @@ export default class Formio {
       })
       .catch((err) =&gt; {
         if (err === &apos;Bad Token&apos;) {
-          Formio.setToken(null);
+          Formio.setToken(null, opts);
           Formio.events.emit(&apos;formio.badToken&apos;, err);
         }
         if (err.message) {
@@ -1004,72 +1009,107 @@ export default class Formio {
       });
   }
 
-  static setToken(token) {
+  // Needed to maintain reverse compatability...
+  static get token() {
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    return Formio.tokens.formioToken ? Formio.tokens.formioToken : &apos;&apos;;
+  }
+
+  // Needed to maintain reverse compatability...
+  static set token(token) {
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    return Formio.tokens.formioToken = token || &apos;&apos;;
+  }
+
+  static setToken(token, opts) {
     token = token || &apos;&apos;;
-    if (token === this.token) {
+    opts = (typeof opts === &apos;string&apos;) ? { namespace: opts } : opts || {};
+    var tokenName = `${opts.namespace || &apos;formio&apos;}Token`;
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    if (Formio.tokens[tokenName] === token) {
       return;
     }
-    this.token = token;
+
+    Formio.tokens[tokenName] = token;
     if (!token) {
-      Formio.setUser(null);
+      Formio.setUser(null, opts);
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(&apos;formioToken&apos;);
+        return localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(&apos;formioToken&apos;, { path: &apos;/&apos; });
+        return cookies.erase(tokenName, { path: &apos;/&apos; });
       }
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(&apos;formioToken&apos;, token);
+      localStorage.setItem(tokenName, token);
     }
     catch (err) {
-      cookies.set(&apos;formioToken&apos;, token, { path: &apos;/&apos; });
+      cookies.set(tokenName, token, { path: &apos;/&apos; });
     }
-    return Formio.currentUser(); // Run this so user is updated if null
+    return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
   }
 
-  static getToken() {
-    if (this.token) {
-      return this.token;
+  static getToken(options) {
+    options = (typeof options === &apos;string&apos;) ? { namespace: options } : options || {};
+    var tokenName = `${options.namespace || &apos;formio&apos;}Token`;
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    if (Formio.tokens[tokenName]) {
+      return Formio.tokens[tokenName];
     }
     try {
-      this.token = localStorage.getItem(&apos;formioToken&apos;) || &apos;&apos;;
-      return this.token;
+      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || &apos;&apos;;
+      return Formio.tokens[tokenName];
     }
     catch (e) {
-      this.token = cookies.get(&apos;formioToken&apos;);
-      return this.token;
+      Formio.tokens[tokenName] = cookies.get(tokenName);
+      return Formio.tokens[tokenName];
     }
   }
 
-  static setUser(user) {
+  static setUser(user, opts) {
+    opts = opts || {};
+    var userName = `${opts.namespace || &apos;formio&apos;}User`;
     if (!user) {
-      this.setToken(null);
+      this.setToken(null, opts);
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(&apos;formioUser&apos;);
+        return localStorage.removeItem(userName);
       }
       catch (err) {
-        return cookies.erase(&apos;formioUser&apos;, { path: &apos;/&apos; });
+        return cookies.erase(userName, { path: &apos;/&apos; });
       }
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(&apos;formioUser&apos;, JSON.stringify(user));
+      localStorage.setItem(userName, JSON.stringify(user));
     }
     catch (err) {
-      cookies.set(&apos;formioUser&apos;, JSON.stringify(user), { path: &apos;/&apos; });
+      cookies.set(userName, JSON.stringify(user), { path: &apos;/&apos; });
     }
   }
 
-  static getUser() {
+  static getUser(options) {
+    options = options || {};
+    var userName = `${options.namespace || &apos;formio&apos;}User`;
     try {
-      return JSON.parse(localStorage.getItem(&apos;formioUser&apos;) || null);
+      return JSON.parse(localStorage.getItem(userName) || null);
     }
     catch (e) {
-      return JSON.parse(cookies.get(&apos;formioUser&apos;));
+      return JSON.parse(cookies.get(userName));
     }
   }
 
@@ -1189,7 +1229,7 @@ export default class Formio {
   static currentUser(formio, options) {
     let projectUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     projectUrl += &apos;/current&apos;;
-    const user = this.getUser();
+    const user = this.getUser(options);
     if (user) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(user), {
         url: projectUrl,
@@ -1197,7 +1237,8 @@ export default class Formio {
         options
       });
     }
-    if ((!options || !options.external) &amp;&amp; !Formio.getToken()) {
+    const token = Formio.getToken(options);
+    if ((!options || !options.external) &amp;&amp; !token) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
         url: projectUrl,
         method: &apos;GET&apos;,
@@ -1206,14 +1247,16 @@ export default class Formio {
     }
     return Formio.makeRequest(formio, &apos;currentUser&apos;, projectUrl, &apos;GET&apos;, null, options)
       .then((response) =&gt; {
-        Formio.setUser(response);
+        Formio.setUser(response, options);
         return response;
       });
   }
 
-  static logout(formio) {
-    Formio.setToken(null);
-    Formio.setUser(null);
+  static logout(formio, options) {
+    options = options || {};
+    options.formio = formio;
+    Formio.setToken(null, options);
+    Formio.setUser(null, options);
     Formio.clearCache();
     const projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
     return Formio.makeRequest(formio, &apos;logout&apos;, `${projectUrl}/logout`);

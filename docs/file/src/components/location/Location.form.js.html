@@ -173,14 +173,14 @@
 import LocationEditMap from &apos;./editForm/Location.edit.map&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       label: &apos;Map&apos;,
       key: &apos;map&apos;,
       weight: 1,
       components: LocationEditMap
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

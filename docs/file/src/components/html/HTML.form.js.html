@@ -173,12 +173,12 @@
 import HTMLEditDisplay from &apos;./editForm/HTML.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: HTMLEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

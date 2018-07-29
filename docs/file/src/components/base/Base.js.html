@@ -256,6 +256,11 @@ export default class BaseComponent {
       tableView: true,
 
       /**
+       * If true, will show label when component is in a datagrid.
+       */
+      dataGridLabel: false,
+
+      /**
        * The input label provided to this component.
        */
       label: &apos;&apos;,
@@ -272,6 +277,7 @@ export default class BaseComponent {
       dbIndex: false,
       customDefaultValue: &apos;&apos;,
       calculateValue: &apos;&apos;,
+      validateOn: &apos;change&apos;,
 
       /**
        * The validation criteria for this component.
@@ -330,6 +336,10 @@ export default class BaseComponent {
       highlightErrors: true,
       row: &apos;&apos;
     });
+
+    // Determine if we are inside a datagrid.
+    this.inDataGrid = this.options.inDataGrid;
+    this.options.inDataGrid = false;
 
     // Use the i18next that is passed in, otherwise use the global version.
     this.i18next = this.options.i18next || i18next;
@@ -1127,7 +1137,7 @@ export default class BaseComponent {
    */
   addButton(justIcon) {
     const addButton = this.ce(&apos;button&apos;, {
-      class: &apos;btn btn-primary&apos;
+      class: &apos;btn btn-primary formio-button-add-row&apos;
     });
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
@@ -1185,7 +1195,7 @@ export default class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce(&apos;button&apos;, {
       type: &apos;button&apos;,
-      class: &apos;btn btn-default btn-secondary&apos;
+      class: &apos;btn btn-default btn-secondary formio-button-remove-row&apos;
     });
 
     this.addEventListener(removeButton, &apos;click&apos;, (event) =&gt; {
@@ -1260,7 +1270,10 @@ export default class BaseComponent {
   }
 
   labelIsHidden() {
-    return !this.component.label || this.component.hideLabel || this.options.inputsOnly;
+    return !this.component.label ||
+      this.component.hideLabel ||
+      this.options.inputsOnly ||
+      (this.inDataGrid &amp;&amp; !this.component.dataGridLabel);
   }
 
   /**
@@ -1751,7 +1764,7 @@ export default class BaseComponent {
   removeClass(element, className) {
     let cls = element.getAttribute(&apos;class&apos;);
     if (cls) {
-      cls = cls.replace(new RegExp(className, &apos;g&apos;), &apos;&apos;);
+      cls = cls.replace(new RegExp(` ${className}`, &apos;g&apos;), &apos;&apos;);
       element.setAttribute(&apos;class&apos;, cls);
     }
   }
@@ -1771,27 +1784,32 @@ export default class BaseComponent {
   }
 
   /**
+   * Check if this component is conditionally visible.
+   *
+   * @param data
+   * @return {boolean}
+   */
+  conditionallyVisible(data) {
+    if (!this.hasCondition()) {
+      return true;
+    }
+    return FormioUtils.checkCondition(
+      this.component,
+      this.data,
+      data,
+      this.root ? this.root._form : {},
+      this
+    );
+  }
+
+  /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
     data = data || (this.root ? this.root.data: {});
 
     // Check advanced conditions
-    let result;
-
-    if (!this.hasCondition()) {
-      result = this.show(true);
-    }
-    else {
-      result = this.show(FormioUtils.checkCondition(
-        this.component,
-        this.data,
-        data,
-        this.root ? this.root._form : {},
-        this
-      ));
-    }
-
+    const result = this.show(this.conditionallyVisible(data));
     if (this.fieldLogic(data)) {
       this.redraw();
     }
@@ -1923,6 +1941,9 @@ export default class BaseComponent {
 
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
+      if (!show) {
+        this.clearOnHide(false);
+      }
       return show;
     }
 
@@ -2013,6 +2034,11 @@ export default class BaseComponent {
       this.pristine = false;
     }
 
+    // If we are supposed to validate on blur, then don&apos;t trigger validation yet.
+    if (this.component.validateOn === &apos;blur&apos; &amp;&amp; !this.errors.length) {
+      flags.noValidate = true;
+    }
+
     // Set the changed variable.
     const changed = {
       instance: this,
@@ -2094,6 +2120,14 @@ export default class BaseComponent {
     this.addEventListener(element, &apos;blur&apos;, () =&gt; {
       this.root.pendingBlur = FormioUtils.delay(() =&gt; {
         this.emit(&apos;blur&apos;, this);
+        if (this.component.validateOn === &apos;blur&apos;) {
+          this.root.triggerChange({}, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: {}
+          });
+        }
         this.root.focusedComponent = null;
         this.root.pendingBlur = null;
       });

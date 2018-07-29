@@ -1753,7 +1753,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-member-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
+    "src/Formio.js~Formio.token",
+    "member"
+  ],
+  [
+    "src/formio.js~formio.token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -1872,12 +1878,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#activatedropzone",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-activateDropZone",
-    "src/PDFBuilder.js~PDFBuilder#activateDropZone",
-    "method"
-  ],
-  [
     "src/pdfbuilder.js~pdfbuilder#addbuildercomponent",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-addBuilderComponent",
     "src/PDFBuilder.js~PDFBuilder#addBuilderComponent",
@@ -1918,6 +1918,12 @@ window.esdocSearchIndex = [
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-clear",
     "src/PDFBuilder.js~PDFBuilder#clear",
     "method"
+  ],
+  [
+    "src/pdfbuilder.js~pdfbuilder#currentcomponent",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-currentComponent",
+    "src/PDFBuilder.js~PDFBuilder#currentComponent",
+    "member"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#defaultcomponents",
@@ -1962,10 +1968,10 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/pdfbuilder.js~pdfbuilder#dropzonestyles",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-dropZoneStyles",
-    "src/PDFBuilder.js~PDFBuilder#dropZoneStyles",
-    "member"
+    "src/pdfbuilder.js~pdfbuilder#enabledropzone",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-enableDropZone",
+    "src/PDFBuilder.js~PDFBuilder#enableDropZone",
+    "method"
   ],
   [
     "src/pdfbuilder.js~pdfbuilder#isbuilt",
@@ -2007,12 +2013,6 @@ window.esdocSearchIndex = [
     "src/pdfbuilder.js~pdfbuilder#setform",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setForm",
     "src/PDFBuilder.js~PDFBuilder#setForm",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#updatecomponent",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-updateComponent",
-    "src/PDFBuilder.js~PDFBuilder#updateComponent",
     "method"
   ],
   [
@@ -2131,13 +2131,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -3486,6 +3486,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#conditionallyvisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-conditionallyVisible",
+    "src/components/base/Base.js~BaseComponent#conditionallyVisible",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#constructor",
     "class/src/components/base/Base.js~BaseComponent.html#instance-constructor-constructor",
     "src/components/base/Base.js~BaseComponent#constructor",
@@ -3867,6 +3873,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#id",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-id",
     "src/components/base/Base.js~BaseComponent#id",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#indatagrid",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-inDataGrid",
+    "src/components/base/Base.js~BaseComponent#inDataGrid",
     "member"
   ],
   [
@@ -4333,13 +4345,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4633,13 +4645,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5203,7 +5215,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
+    "member"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -5223,6 +5241,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/datagrid.js~datagridcomponent#destroy",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-destroy",
     "src/components/datagrid/DataGrid.js~DataGridComponent#destroy",
+    "method"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#destroyrows",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-destroyRows",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#destroyRows",
     "method"
   ],
   [
@@ -6630,6 +6654,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/hidden/hidden.js~hiddencomponent#datavalue",
+    "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-member-dataValue",
+    "src/components/hidden/Hidden.js~HiddenComponent#dataValue",
+    "member"
+  ],
+  [
     "src/components/hidden/hidden.js~hiddencomponent#defaultschema",
     "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-get-defaultSchema",
     "src/components/hidden/Hidden.js~HiddenComponent#defaultSchema",
@@ -6639,6 +6669,18 @@ window.esdocSearchIndex = [
     "src/components/hidden/hidden.js~hiddencomponent#elementinfo",
     "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-method-elementInfo",
     "src/components/hidden/Hidden.js~HiddenComponent#elementInfo",
+    "method"
+  ],
+  [
+    "src/components/hidden/hidden.js~hiddencomponent#getvalue",
+    "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-method-getValue",
+    "src/components/hidden/Hidden.js~HiddenComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/hidden/hidden.js~hiddencomponent#setvalue",
+    "class/src/components/hidden/Hidden.js~HiddenComponent.html#instance-method-setValue",
+    "src/components/hidden/Hidden.js~HiddenComponent#setValue",
     "method"
   ],
   [

@@ -173,12 +173,12 @@
 import TextAreaEditDisplay from &apos;./editForm/TextArea.edit.display&apos;;
 
 export default function(...extend) {
-  return textEditForm(...extend, [
+  return textEditForm([
     {
       key: &apos;display&apos;,
       components: TextAreaEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

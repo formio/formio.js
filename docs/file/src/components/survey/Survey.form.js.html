@@ -173,12 +173,12 @@
 import SurveyEditDisplay from &apos;./editForm/Survey.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: SurveyEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

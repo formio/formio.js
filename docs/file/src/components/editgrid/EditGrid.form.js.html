@@ -173,14 +173,14 @@
 import EditGridEditTemplates from &apos;./editForm/EditGrid.edit.templates&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       label: &apos;Templates&apos;,
       key: &apos;templates&apos;,
       weight: 5,
       components: EditGridEditTemplates
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

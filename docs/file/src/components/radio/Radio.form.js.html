@@ -173,12 +173,12 @@
 import RadioEditDisplay from &apos;./editForm/Radio.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: RadioEditDisplay
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

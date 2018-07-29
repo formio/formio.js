@@ -176,7 +176,7 @@ import DateTimeEditDisplay from &apos;./editForm/DateTime.edit.display&apos;;
 import DateTimeEditTime from &apos;./editForm/DateTime.edit.time&apos;;
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: &apos;display&apos;,
       components: DateTimeEditDisplay
@@ -197,7 +197,7 @@ export default function(...extend) {
       key: &apos;data&apos;,
       components: DateTimeEditData
     }
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

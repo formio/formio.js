@@ -660,7 +660,7 @@ export default class SelectComponent extends BaseComponent {
       addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
-      searchPlaceholderValue: placeholderValue,
+      searchPlaceholderValue: this.t(&apos;Type to search&apos;),
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;),
       searchEnabled: useSearch,
@@ -705,6 +705,14 @@ export default class SelectComponent extends BaseComponent {
     }
 
     this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
+    if (placeholderValue &amp;&amp; this.choices.isSelectOneElement) {
+      this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
+        const items = this.choices.store.getItemsFilteredByActive();
+        if (!items.length) {
+          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
+        }
+      });
+    }
 
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;

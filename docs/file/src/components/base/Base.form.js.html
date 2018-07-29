@@ -179,59 +179,59 @@ import BaseEditValidation from &apos;./editForm/Base.edit.validation&apos;;
 import EditFormUtils from &apos;./editForm/utils&apos;;
 
 export default function(...extend) {
-  return {
-    components: _.unionWith(extend.map((items) =&gt; ({
+  const components = [
+    {
       type: &apos;tabs&apos;,
       key: &apos;tabs&apos;,
-      components: items
-    })), [
-      {
-        type: &apos;tabs&apos;,
-        key: &apos;tabs&apos;,
-        components: [
-          {
-            label: &apos;Display&apos;,
-            key: &apos;display&apos;,
-            weight: 0,
-            components: BaseEditDisplay
-          },
-          {
-            label: &apos;Data&apos;,
-            key: &apos;data&apos;,
-            weight: 10,
-            components: BaseEditData
-          },
-          {
-            label: &apos;Validation&apos;,
-            key: &apos;validation&apos;,
-            weight: 20,
-            components: BaseEditValidation
-          },
-          {
-            label: &apos;API&apos;,
-            key: &apos;api&apos;,
-            weight: 30,
-            components: BaseEditAPI
-          },
-          {
-            label: &apos;Conditional&apos;,
-            key: &apos;conditional&apos;,
-            weight: 40,
-            components: BaseEditConditional
-          },
-          {
-            label: &apos;Logic&apos;,
-            key: &apos;logic&apos;,
-            weight: 50,
-            components: BaseEditLogic
-          }
-        ]
-      },
-      {
-        type: &apos;hidden&apos;,
-        key: &apos;type&apos;
-      }
-    ], EditFormUtils.unifyComponents)
+      components: [
+        {
+          label: &apos;Display&apos;,
+          key: &apos;display&apos;,
+          weight: 0,
+          components: BaseEditDisplay
+        },
+        {
+          label: &apos;Data&apos;,
+          key: &apos;data&apos;,
+          weight: 10,
+          components: BaseEditData
+        },
+        {
+          label: &apos;Validation&apos;,
+          key: &apos;validation&apos;,
+          weight: 20,
+          components: BaseEditValidation
+        },
+        {
+          label: &apos;API&apos;,
+          key: &apos;api&apos;,
+          weight: 30,
+          components: BaseEditAPI
+        },
+        {
+          label: &apos;Conditional&apos;,
+          key: &apos;conditional&apos;,
+          weight: 40,
+          components: BaseEditConditional
+        },
+        {
+          label: &apos;Logic&apos;,
+          key: &apos;logic&apos;,
+          weight: 50,
+          components: BaseEditLogic
+        }
+      ]
+    }
+  ].concat(extend.map((items) =&gt; ({
+    type: &apos;tabs&apos;,
+    key: &apos;tabs&apos;,
+    components: items
+  })));
+  return {
+    components: _.unionWith(components, EditFormUtils.unifyComponents).concat({
+      type: &apos;hidden&apos;,
+      key: &apos;type&apos;
+    })
   };
 }
 </code></pre>
