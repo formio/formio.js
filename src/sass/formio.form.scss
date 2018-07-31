@@ -614,7 +614,7 @@ body.formio-dialog-open {
   margin-bottom: 0;
 }
 
-.formio-choices .form-control {
+.formio-choices[data-type=select-multiple] .form-control {
   height: auto;
 }
 
