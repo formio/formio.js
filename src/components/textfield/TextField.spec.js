@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
 
@@ -10,78 +10,61 @@ import {
 } from './fixtures';
 
 describe('TextField Component', () => {
-  it('Should build a TextField component', (done) => {
-    Harness.testCreate(TextFieldComponent, comp1).then((component) => {
+  it('Should build a TextField component', () => {
+    return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
-      done();
     });
   });
 
 
-  it('Should provide required validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide required validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: '',
-        field: 'firstName',
-        error: 'First Name is required'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, '', 'firstName', 'First Name is required'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide minLength validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide minLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 't',
-        field: 'firstName',
-        error: 'First Name must be longer than 1 characters.'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 't', 'firstName', 'First Name must be longer than 1 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide maxLength validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide maxLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'testte',
-        field: 'firstName',
-        error: 'First Name must be shorter than 6 characters.'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be shorter than 6 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide custom validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide custom validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
       }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'Joe',
-        field: 'firstName',
-        error: 'You cannot be Joe'
-      },
-      good: {
-        value: 'Tom'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
+        Harness.testValid(component, 'Tom')
+      ];
+    });
   });
 
-  it('Should provide json validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide json validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         json: {
           'if': [
@@ -96,93 +79,73 @@ describe('TextField Component', () => {
           ]
         }
       }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'Tom',
-        field: 'firstName',
-        error: 'You must be Joe'
-      },
-      good: {
-        value: 'Joe'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
+        Harness.testValid(component, 'Joe')
+      ];
+    });
   });
 
-  it('Should allow for multiple values', (done) => {
-    Harness.testCreate(TextFieldComponent, comp3).then((component) => {
+  it('Should allow for multiple values', () => {
+    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
+      console.log(component.element.innerHTML);
       Harness.testElements(component, 'table', 1);
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicon-remove-circle', 1);
-      done();
+      Harness.testElements(component, 'table tr:first-child td:last-child .fa-times-circle-o', 1);
     });
   });
 
-  it('Should provide required validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide required validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: '',
-        field: 'firstName',
-        error: 'First Name is required'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, '', 'firstName', 'First Name is required'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide minLength validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide minLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 't',
-        field: 'firstName',
-        error: 'First Name must be longer than 1 characters.'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 't', 'firstName', 'First Name must be longer than 1 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide maxLength validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide maxLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'testte',
-        field: 'firstName',
-        error: 'First Name must be shorter than 6 characters.'
-      },
-      good: {
-        value: 'te'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be shorter than 6 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
   });
 
-  it('Should provide custom validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide custom validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
       }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'Joe',
-        field: 'firstName',
-        error: 'You cannot be Joe'
-      },
-      good: {
-        value: 'Tom'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
+        Harness.testValid(component, 'Tom')
+      ];
+    });
   });
 
-  it('Should provide json validation', (done) => {
-    Harness.testCreate(TextFieldComponent, _merge({}, comp2, {
+  it('Should provide json validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         json: {
           'if': [
@@ -197,26 +160,21 @@ describe('TextField Component', () => {
           ]
         }
       }
-    })).then((component) => Harness.testComponent(component, {
-      bad: {
-        value: 'Tom',
-        field: 'firstName',
-        error: 'You must be Joe'
-      },
-      good: {
-        value: 'Joe'
-      }
-    }, done));
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
+        Harness.testValid(component, 'Joe')
+      ];
+    });
   });
 
-  it('Should allow for multiple values', (done) => {
-    Harness.testCreate(TextFieldComponent, comp3).then((component) => {
+  it('Should allow for multiple values', () => {
+    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
       Harness.testElements(component, 'table', 1);
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicon-remove-circle', 1);
-      done();
+      Harness.testElements(component, 'table tr:first-child td:last-child .fa-times-circle-o', 1);
     });
   });
 });

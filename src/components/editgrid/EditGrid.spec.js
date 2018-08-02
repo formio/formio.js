@@ -19,7 +19,7 @@ describe('EditGrid Component', () => {
       Harness.testElements(component, 'li.list-group-footer', 0);
       Harness.testElements(component, 'div.editRow', 0);
       Harness.testElements(component, 'div.removeRow', 0);
-      Harness.testElements(component, 'div.editgrid-add button', 1);
+      assert.equal(component.refs[`${component.editgridKey}-addRow`].length, 1);
       assert(component.checkValidity(component.getValue()), 'Item should be valid');
     });
   });
@@ -44,7 +44,7 @@ describe('EditGrid Component', () => {
       Harness.testElements(component, 'li.list-group-footer', 0);
       Harness.testElements(component, 'div.editRow', 2);
       Harness.testElements(component, 'div.removeRow', 2);
-      Harness.testElements(component, 'div.editgrid-add button', 1);
+      assert.equal(component.refs[`${component.editgridKey}-addRow`].length, 1);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(2)', 'foo');
@@ -58,10 +58,10 @@ describe('EditGrid Component', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'li.list-group-item', 1);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testElements(component, 'li.list-group-item', 2);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
       assert(!component.checkValidity(component.getValue()), 'Item should not be valid');
@@ -82,7 +82,7 @@ describe('EditGrid Component', () => {
       ]);
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testElements(component, 'li.list-group-item', 4);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.setInputValue(component, 'data[editgrid][2][field1]', 'good');
@@ -110,7 +110,7 @@ describe('EditGrid Component', () => {
       ]);
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testElements(component, 'li.list-group-item', 4);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.setInputValue(component, 'data[editgrid][2][field1]', 'good');
@@ -242,7 +242,7 @@ describe('EditGrid Component', () => {
   it('Should not allow saving when errors exist', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       document.body.appendChild(component.element);
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
       Harness.getInputValue(component, 'data[editgrid][0][field2]', '');
@@ -303,7 +303,7 @@ describe('EditGrid Component', () => {
       ]);
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.removeRow');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-danger');
@@ -316,7 +316,7 @@ describe('EditGrid Component', () => {
 
   it('Should calculate conditional logic and default values when adding row', () => {
     return Harness.testCreate(EditGridComponent, comp2).then(component => {
-      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testVisibility(component, '.formio-component-field2', false);
       Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bar');
     });

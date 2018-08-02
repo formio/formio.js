@@ -128,7 +128,10 @@ const Harness = {
       bubbles: true,
       cancelable: true
     });
-    const element = this.testElement(component, query, true);
+    let element = query;
+    if (typeof query === 'string') {
+      element = this.testElement(component, query, true);
+    }
     return element.dispatchEvent(clickEvent);
   },
   testElements(component, query, number) {
@@ -208,6 +211,38 @@ const Harness = {
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
     form.submit();
+  },
+  testValid(component, value) {
+    return new Promise((resolve, reject) => {
+      component.on('componentChange', (change) => {
+        const valid = component.checkValidity();
+        if (valid) {
+          assert.equal(change.value, value);
+          resolve();
+        }
+        else {
+          reject('Component should be valid');
+        }
+      });
+      component.setValue(value);
+    });
+  },
+  testInvalid(component, value, field, error) {
+    return new Promise((resolve, reject) => {
+      component.on('componentChange', (change) => {
+        if(component.checkValidity()) {
+          reject('Component should not be valid');
+        }
+      });
+      component.on('componentError', (error) => {
+        assert.equal(error.component.key, field);
+        assert.equal(error.message, error);
+        resolve();
+      });
+
+      // Set the value.
+      component.setValue(value);
+    });
   },
   testComponent(component, test, done) {
     let testBad = true;

@@ -302,13 +302,13 @@ export default class EditGridComponent extends NestedComponent {
         valid = `Invalid row validation for ${this.key}`;
       }
 
-      this.editRows[rowIndex].errorContainer.innerHTML = '';
-      if (valid !== true) {
-        this.editRows[rowIndex].errorContainer.appendChild(
-          this.ce('div', { class: 'editgrid-row-error help-block' }, valid)
-        );
-        return false;
-      }
+      // this.editRows[rowIndex].errorContainer.innerHTML = '';
+      // if (valid !== true) {
+      //   this.editRows[rowIndex].errorContainer.appendChild(
+      //     this.ce('div', { class: 'editgrid-row-error help-block' }, valid)
+      //   );
+      //   return false;
+      // }
     }
 
     return check;

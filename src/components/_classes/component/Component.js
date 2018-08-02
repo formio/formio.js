@@ -1660,6 +1660,7 @@ export default class Component {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
+    console.log('setValue', value);
     this.dataValue = value;
 
     // If we aren't connected to the dom yet, skip updating values.

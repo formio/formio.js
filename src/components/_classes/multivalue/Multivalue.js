@@ -1,6 +1,19 @@
 import Field from '../field/Field';
 
 export default class Multivalue extends Field {
+  get dataValue() {
+    const parent = super.dataValue;
+
+    if (!parent) {
+      return [];
+    }
+    return parent;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
+  }
+
   get defaultValue() {
     if (this.component.multiple) {
       return [super.defaultValue];

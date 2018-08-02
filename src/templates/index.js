@@ -5,6 +5,6 @@ import semantic from './semantic';
 export default {
   bootstrap,
   bootstrap3,
-  material,
+  // material,
   semantic
 };

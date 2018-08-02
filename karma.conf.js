@@ -12,6 +12,12 @@ module.exports = function(config) {
             use: {
               loader: 'babel-loader'
             }
+          },
+          {
+            test: /\.html$/,
+            use: {
+              loader: 'raw-loader'
+            }
           }
         ]
       }

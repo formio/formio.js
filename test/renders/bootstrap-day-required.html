@@ -1,0 +1,39 @@
+<div id="abc123" class="form-group has-feedback formio-component formio-component-day formio-component-day required form-group" ref="component">
+  <label class="col-form-label field-required"> Day </label>
+  <div class="row">
+    <div class="col col-xs-4">
+      <label for="day-month" class="">Month</label>
+      <div>
+        <select ref="month" class="form-control" name="month" lang="en">
+          <option value="0"> </option>
+          <option value="1"> january</option>
+          <option value="2"> february</option>
+          <option value="3"> march</option>
+          <option value="4"> april</option>
+          <option value="5"> may</option>
+          <option value="6"> june</option>
+          <option value="7"> july</option>
+          <option value="8"> august</option>
+          <option value="9"> september</option>
+          <option value="10"> october</option>
+          <option value="11"> november</option>
+          <option value="12"> december</option>
+        </select>
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <label for="day-day" class="">Day</label>
+      <div>
+        <input ref="day" id="day-day" class="form-control" type="number" placeholder="" step="1" min="1" max="31"></input>
+      </div>
+    </div>
+    <div class="col col-xs-5">
+      <label for="day-year" class="">Year</label>
+      <div>
+        <input ref="year" id="day-year" class="form-control" type="number" placeholder="" step="1" min="1" max=""></input>
+      </div>
+    </div>
+  </div>
+  <input name="data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>
