@@ -186,6 +186,9 @@ export function eachComponent(components, fn, includeAll, path, parent) {
   if (!components) return;
   path = path || '';
   components.forEach((component) => {
+    if (!component) {
+      return;
+    }
     const hasColumns = component.columns && Array.isArray(component.columns);
     const hasRows = component.rows && Array.isArray(component.rows);
     const hasComps = component.components && Array.isArray(component.components);

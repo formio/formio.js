@@ -1544,6 +1544,9 @@ export default class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
+    if (!element) {
+      return;
+    }
     _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {
@@ -1564,6 +1567,9 @@ export default class BaseComponent {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
+    if (!element) {
+      return;
+    }
     className = ` ${className} `;
     return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
@@ -1577,6 +1583,9 @@ export default class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
+    if (!element) {
+      return;
+    }
     const classes = element.getAttribute('class');
     if (!classes || classes.indexOf(className) === -1) {
       element.setAttribute('class', `${classes} ${className}`);
@@ -1592,6 +1601,9 @@ export default class BaseComponent {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
+    if (!element) {
+      return;
+    }
     let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
