@@ -21,6 +21,8 @@ export default class SelectComponent extends BaseComponent {
       refreshOn: '',
       filter: '',
       searchEnabled: true,
+      searchField: '',
+      requireSearch: false,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: ''
@@ -270,6 +272,11 @@ export default class SelectComponent extends BaseComponent {
       else {
         query[this.component.searchField] = search;
       }
+    }
+
+    // See if we should require search.
+    if (this.component.requireSearch && this.component.searchField && !search) {
+      return;
     }
 
     // Add filter capability
