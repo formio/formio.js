@@ -356,6 +356,9 @@ export default class WebformBuilder extends Webform {
     });
 
     this.addEventListener(saveButton, 'click', (event) => {
+      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        return;
+      }
       event.preventDefault();
       component.isNew = false;
       component.component = componentCopy.component;
