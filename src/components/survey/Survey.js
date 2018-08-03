@@ -38,6 +38,7 @@ export default class SurveyComponent extends Field {
     this.refs.input.forEach((input) => {
       this.addEventListener(input, 'change', () => this.updateValue());
     });
+    this.setValue(this.dataValue);
   }
 
   setValue(value, flags) {

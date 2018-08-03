@@ -30,7 +30,7 @@ export default class Form {
     if (arguments[0] instanceof HTMLElement) {
       this.options = arguments[2];
       this.form = arguments[1];
-      this.build(arguments[0]);
+      this.ready.then(() => this.build(arguments[0]));
     }
     else {
       this.options = arguments[1];

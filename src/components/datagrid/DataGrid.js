@@ -25,6 +25,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   init() {
+    this.components = this.components || [];
     this.type = 'datagrid';
     this.numColumns = 0;
 

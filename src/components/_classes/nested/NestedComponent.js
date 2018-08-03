@@ -15,7 +15,6 @@ export default class NestedComponent extends Component {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
-    this.components = [];
     this._collapsed = !!this.component.collapsed;
   }
 
@@ -155,7 +154,6 @@ export default class NestedComponent extends Component {
     comp.parent = this;
     comp.root = this.root || this;
     comp.parentVisible = this.visible;
-    comp.init();
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -193,6 +191,7 @@ export default class NestedComponent extends Component {
   }
 
   init() {
+    this.components = this.components || [];
     this.addComponents();
   }
 
@@ -502,12 +501,6 @@ export default class NestedComponent extends Component {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     _.unset(this.data, this.key);
     this.setPristine(true);
-  }
-
-  get dataReady() {
-    const promises = [];
-    _.each(this.getComponents(), (component) => promises.push(component.dataReady));
-    return Promise.all(promises);
   }
 
   setValue(value, flags) {

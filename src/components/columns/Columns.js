@@ -55,6 +55,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   init() {
+    super.init();
     this.columns = [];
     _.each(this.component.columns, (column, index) => {
       this.columns[index] = [];

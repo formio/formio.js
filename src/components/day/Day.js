@@ -227,6 +227,7 @@ export default class DayComponent extends Field {
     });
     this.addEventListener(this.refs.year, 'change', () => this.updateValue());
     this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue());
+    this.setValue(this.dataValue);
   }
 
   validateRequired(setting, value) {
@@ -247,51 +248,6 @@ export default class DayComponent extends Field {
       return true;
     }
     return !this.isEmpty(value);
-  }
-
-  createMonthInput(subinputAtTheBottom) {
-    const monthColumn = this.ce('div', {
-      class: 'form-group col col-xs-4'
-    });
-
-    const id = `${this.component.key}-month`;
-
-    const monthLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
-    });
-    monthLabel.appendChild(this.text(this.t('month')));
-    this.setSubinputLabelStyle(monthLabel);
-    if (!subinputAtTheBottom) {
-      monthColumn.appendChild(monthLabel);
-    }
-
-    const monthInputWrapper = this.ce('div');
-    this.refs.month = this.ce('select', {
-      class: 'form-control',
-      id
-    });
-    this.hook('input', this.refs.month, monthInputWrapper);
-    this.selectOptions(this.refs.month, 'monthOption', this.months);
-    const self = this;
-
-    // Ensure the day limits match up with the months selected.
-    this.refs.month.onchange = function() {
-      self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
-      if (self.dayInput.value > self.dayInput.max) {
-        self.dayInput.value = self.dayInput.max;
-      }
-      self.updateValue();
-    };
-    monthInputWrapper.appendChild(this.refs.month);
-    this.setSubinputStyle(monthInputWrapper);
-    monthColumn.appendChild(monthInputWrapper);
-
-    if (monthLabel && subinputAtTheBottom) {
-      monthColumn.appendChild(monthLabel);
-    }
-
-    return monthColumn;
   }
 
   set disabled(disabled) {
@@ -322,16 +278,16 @@ export default class DayComponent extends Field {
       return null;
     }
     const parts = value.split('/');
-    if (this.component.dayFirst && this.showDay) {
+    if (this.refs.day && this.component.dayFirst && this.showDay) {
       this.refs.day.value = parseInt(parts.shift(), 10);
     }
-    if (this.showMonth) {
+    if (this.refs.month && this.showMonth) {
       this.refs.month.value = parseInt(parts.shift(), 10);
     }
-    if (!this.component.dayFirst && this.showDay) {
+    if (this.refs.day && !this.component.dayFirst && this.showDay) {
       this.refs.day.value = parseInt(parts.shift(), 10);
     }
-    if (this.showYear) {
+    if (this.refs.year && this.showYear) {
       this.refs.year.value = parseInt(parts.shift(), 10);
     }
   }

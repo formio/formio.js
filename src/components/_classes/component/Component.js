@@ -212,18 +212,6 @@ export default class Component {
     this.component.id = this.id;
 
     /**
-     * The bounding HTML Element which this component is rendered.
-     * @type {null}
-     */
-    this.element = null;
-
-    /**
-     * The HTMLElement that is assigned to the label of this component.
-     * @type {null}
-     */
-    this.labelElement = null;
-
-    /**
      * The existing error that this component has.
      * @type {string}
      */
@@ -320,6 +308,13 @@ export default class Component {
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
+
+    // If component is visible or not set to clear on hide, set the default value.
+    if (this.visible || !this.component.clearOnHide) {
+      this.dataValue = this.defaultValue;
+    }
+
+    this.init();
   }
   /* eslint-enable max-statements */
 
@@ -1660,7 +1655,6 @@ export default class Component {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    console.log('setValue', value);
     this.dataValue = value;
 
     // If we aren't connected to the dom yet, skip updating values.

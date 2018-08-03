@@ -4,7 +4,7 @@ export default class Multivalue extends Field {
   get dataValue() {
     const parent = super.dataValue;
 
-    if (!parent) {
+    if (!parent && this.component.multiple) {
       return [];
     }
     return parent;

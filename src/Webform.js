@@ -56,6 +56,7 @@ export default class Webform extends NestedComponent {
       options = arguments[0];
     }
     super(null, getOptions(options));
+
     this.element = element;
 
     // Keep track of all available forms globally.
@@ -211,8 +212,6 @@ export default class Webform extends NestedComponent {
     this.localize().then(() => {
       this.language = this.options.language;
     });
-
-    this.init();
   }
   /* eslint-enable max-statements */
 
@@ -562,10 +561,9 @@ export default class Webform extends NestedComponent {
 
     // Create the form.
     this._form = form;
-    return this.init().then(() => {
-      this.emit('formLoad', form);
-      return form;
-    });
+    this.formReadyResolve();
+    this.rebuild();
+    this.emit('formLoad', form);
   }
 
   /**
@@ -635,7 +633,7 @@ export default class Webform extends NestedComponent {
             noValidate: true
           });
         }
-        return this.dataReady.then(() => this.submissionReadyResolve(submission));
+        return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
     ).catch(
@@ -699,12 +697,10 @@ export default class Webform extends NestedComponent {
     }
 
     this.addComponents();
-    this.setValue(this.submission);
     this.isBuilt = true;
     if (this.element) {
       this.build();
     }
-    this.formReadyResolve();
     return this.formReady;
   }
 
@@ -743,10 +739,7 @@ export default class Webform extends NestedComponent {
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
     this.on('refreshData', () => this.updateValue());
-    setTimeout(() => {
-      this.onChange();
-      this.emit('render');
-    }, 1);
+    this.emit('render');
   }
 
   resetValue() {

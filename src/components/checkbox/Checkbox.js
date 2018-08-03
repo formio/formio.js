@@ -73,18 +73,8 @@ export default class CheckBoxComponent extends Component {
     if (this.refs.input.length) {
       this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
     }
-    //   this.autofocus();
-    //   this.addShortcut();
-    //   if (this.shouldDisable) {
-    //     this.disabled = true;
-    //   }
     super.attach(element);
   }
-    // build() {
-  //   if (this.viewOnly) {
-  //     return this.viewOnlyBuild();
-  //   }
-  // }
 
   get emptyValue() {
     return false;
@@ -94,6 +84,11 @@ export default class CheckBoxComponent extends Component {
     return super.isEmpty(value) || value === false;
   }
 
+  /**
+   *
+   * @param value {*}
+   * @returns {*}
+   */
   set dataValue(value) {
     const setValue = (super.dataValue = value);
     if (this.component.name) {

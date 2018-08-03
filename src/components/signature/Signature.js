@@ -153,6 +153,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.clear();
       this.setValue(this.defaultValue);
     });
+    this.setValue(this.dataValue);
   }
   /* eslint-enable max-statements */
 

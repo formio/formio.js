@@ -30,6 +30,7 @@ export default class ContainerComponent extends NestedComponent {
   }
 
   init() {
+    this.components = this.components || [];
     this.addComponents(this.dataValue);
   }
 

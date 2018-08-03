@@ -1,5 +1,5 @@
 export default {
-  form: `
+  form: ` 
 <div class="formio builder row formbuilder">
   <div class="col-xs-4 col-sm-3 col-md-2 formcomponents">
     {{sidebar}}
