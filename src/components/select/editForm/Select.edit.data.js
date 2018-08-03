@@ -235,11 +235,28 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    key: 'requireSearch',
+    weight: 17,
+    label: 'Require Search',
+    tooltip: 'Check this if you would like to hold off on any API calls being made until they provide some search criteria.',
+    defaultValue: false,
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '!==': [{ var: 'searchField' }, ''] }
+        ]
+      }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'filter',
     label: 'Filter Query',
-    weight: 17,
+    weight: 18,
     description: 'The filter query for results.',
     tooltip: 'Use this to provide additional filtering using query parameters.',
     conditional: {
@@ -256,7 +273,7 @@ export default [
     input: true,
     key: 'limit',
     label: 'Limit',
-    weight: 17,
+    weight: 18,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
