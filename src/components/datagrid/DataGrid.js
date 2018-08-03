@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
+import Component from '../_classes/component/Component';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -253,6 +254,11 @@ export default class DataGridComponent extends NestedComponent {
 
     // Return if this table should show.
     return show;
+  }
+
+  updateValue(flags, value) {
+    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
   setValue(value, flags) {
