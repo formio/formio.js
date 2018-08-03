@@ -264,7 +264,7 @@ export default class DateTimeComponent extends Input {
         calendar.setDate(new Date(value), false);
       }
       else {
-        calendar.clear();
+        calendar.clear(false);
       }
     }
   }
