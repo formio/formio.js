@@ -256,7 +256,7 @@ export default class DateTimeComponent extends BaseComponent {
         calendar.setDate(new Date(value), false);
       }
       else {
-        calendar.clear();
+        calendar.clear(false);
       }
     }
   }
