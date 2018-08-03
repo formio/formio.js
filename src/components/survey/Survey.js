@@ -65,6 +65,9 @@ export default class SurveyComponent extends Field {
     if (this.viewOnly) {
       return this.dataValue;
     }
+    if (!this.refs.input) {
+      return this.dataValue;
+    }
     const value = {};
     const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {

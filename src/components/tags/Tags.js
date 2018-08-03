@@ -27,7 +27,6 @@ export default class TagsComponent extends Input {
 
   init() {
     super.init();
-    this.component.delimeter = this.component.delimeter || ',';
   }
 
   get emptyValue() {
@@ -46,16 +45,21 @@ export default class TagsComponent extends Input {
     return info;
   }
 
+  get delimiter() {
+    return this.component.delimeter || ',';
+  }
+
   attachElement(element, index) {
     super.attachElement(element, index);
     if (!this.refs.input[index]) {
       return;
     }
     this.choices = new Choices(this.refs.input[index], {
-      delimiter: (this.component.delimeter || ','),
+      delimiter: this.delimiter,
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
+      duplicateItems: false,
     });
     this.choices.itemList.tabIndex = this.refs.input[index].tabIndex;
   }
@@ -72,7 +76,7 @@ export default class TagsComponent extends Input {
   setValue(value) {
     if (this.choices) {
       if (this.component.storeas === 'string' && (typeof value === 'string')) {
-        value = value.split(',');
+        value = value.split(this.delimiter);
       }
       if (value && !_.isArray(value)) {
         value = [value];
@@ -85,7 +89,7 @@ export default class TagsComponent extends Input {
   getValue() {
     if (this.choices) {
       const value = this.choices.getValue(true);
-      return (this.component.storeas === 'string') ? value.join(this.component.delimeter) : value;
+      return (this.component.storeas === 'string') ? value.join(this.delimiter) : value;
     }
     return null;
   }

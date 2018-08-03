@@ -99,6 +99,7 @@ export default class RadioComponent extends Field {
   }
 
   setValueAt(index, value) {
+    console.log('radio setValueAt', index, value);
     if (this.refs.input && this.refs.input[index] && value !== null) {
       const inputValue = this.refs.input[index].value;
       this.refs.input[index].checked = (inputValue === value.toString());

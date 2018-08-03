@@ -68,6 +68,9 @@ export default class SelectBoxesComponent extends RadioComponent {
     if (this.viewOnly) {
       return this.dataValue;
     }
+    if (!this.refs.input) {
+      return this.dataValue;
+    }
     const value = {};
     _.each(this.refs.input, (input) => {
       value[input.value] = !!input.checked;

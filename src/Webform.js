@@ -110,7 +110,6 @@ export default class Webform extends NestedComponent {
     this.type = 'form';
     this._src = '';
     this._loading = false;
-    this._submission = {};
     this._form = {};
 
     /**
@@ -177,6 +176,8 @@ export default class Webform extends NestedComponent {
        */
       this.formReadyReject = reject;
     });
+
+    this.submission = this._submission;
 
     /**
      * Promise that executes when the submission is ready and rendered.
@@ -683,6 +684,7 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   init() {
+    this._submission = this._submission || {};
     // Remove any existing components.
     if (this.components && this.components.length) {
       this.destroyComponents();

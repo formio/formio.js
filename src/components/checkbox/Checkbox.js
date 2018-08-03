@@ -31,7 +31,7 @@ export default class CheckBoxComponent extends Component {
   }
 
   get defaultValue() {
-    return this.component.name ? '' : false;
+    return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
   }
 
   get className() {
