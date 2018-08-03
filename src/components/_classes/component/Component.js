@@ -1188,6 +1188,9 @@ export default class Component {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
+    if (!element) {
+      return;
+    }
     _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {

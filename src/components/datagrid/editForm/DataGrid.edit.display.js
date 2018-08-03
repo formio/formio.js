@@ -34,5 +34,13 @@ export default [
     },
     weight: 420,
     customConditional: 'show = !data.disableAddingRemovingRows'
+  },
+  {
+    type: 'checkbox',
+    label: 'Default Open Rows',
+    key: 'defaultOpen',
+    tooltip: 'Check this if you would like for the rows of the edit grid to be defaulted to opened if values exist.',
+    weight: 405,
+    input: true
   }
 ];
