@@ -499,6 +499,9 @@ export default class WebformBuilder extends Component {
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
+      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        return;
+      }
       event.preventDefault();
       saved = true;
       this.editForm.detach();
