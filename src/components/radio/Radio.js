@@ -183,7 +183,7 @@ export default class RadioComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    if (this.inputs && this.inputs[index] && value !== null) {
+    if (this.inputs && this.inputs[index] && value !== null && value !== undefined) {
       const inputValue = this.inputs[index].value;
       this.inputs[index].checked = (inputValue === value.toString());
     }
