@@ -2,6 +2,17 @@
   <label class="col-form-label "> Location </label>
   <table class="table table-bordered">
     <tbody>
+      <tr ref="row">
+        <td>
+          <input ref="input" name="data[location]" type="text" class="form-control Gmap-search" lang="en" value=""></input>
+          <div id="" style="min-height: 300px; height: calc(100vh - 600px);" ref="gmapElement"></div>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
       <tr>
         <td colspan="2">
           <button class="btn btn-primary" ref="addButton">

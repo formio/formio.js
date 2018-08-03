@@ -2,6 +2,16 @@
   <label class="col-form-label "> Text Area </label>
   <table class="table table-bordered">
     <tbody>
+      <tr ref="row">
+        <td>
+          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en"></textarea>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
       <tr>
         <td colspan="2">
           <button class="btn btn-primary" ref="addButton">

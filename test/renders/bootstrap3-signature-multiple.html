@@ -2,6 +2,24 @@
   <label class="col-form-label "> Signature </label>
   <table class="table table-bordered">
     <tbody>
+      <tr ref="row">
+        <td>
+          <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value=""></input>
+          <div class="signature-pad-body" style="width: 100%;height: 150;padding:0;margin:0;" tabindex="0" ref="padBody">
+            <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
+              <i class="fa fa-refresh"></i>
+            </a>
+            <canvas class="signature-pad-canvas" height="150" ref="canvas"></canvas>
+            <img style="width: 100%;display: none;" ref="signatureImage">
+          </div>
+          <div class="signature-pad-footer"> Sign above </div>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
       <tr>
         <td colspan="2">
           <button class="btn btn-primary" ref="addButton">

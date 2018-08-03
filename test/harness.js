@@ -87,7 +87,6 @@ const Harness = {
         const parent = document.createElement('div');
         const element = document.createElement('div');
         parent.appendChild(element);
-        component.init();
         component.build(element);
         assert(Boolean(component.element), `No ${component.type} element created.`);
         return resolve(component);

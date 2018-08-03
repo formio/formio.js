@@ -565,6 +565,7 @@ export default class Webform extends NestedComponent {
     this.formReadyResolve();
     this.rebuild();
     this.emit('formLoad', form);
+    return this.formReady;
   }
 
   /**

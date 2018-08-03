@@ -14,7 +14,6 @@ if (!fs.existsSync(dir)){
 
 const renderComponent = (Type, definition) => {
   const instance = new Type(definition);
-  instance.init();
   instance.id = 'abc123';
   // jsdom does not support dnd but we don't want to render it that way.
   if (instance.hasOwnProperty('support')) {
