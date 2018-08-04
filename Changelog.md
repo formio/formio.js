@@ -45,9 +45,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
-## [Unreleased]
+## 3.1.0
+### Added
+ - Minimum search setting for Select component that would hold off on sending API until they type a certain length.
+ - Adding submission to the evalContext so you can do things like {{ submission.created }} in templates.
+ - Add validation check to edit form on builder.
+
+### Changed
+ - Upgrade text-mask-addon@3.8.0
+
 ### Fixed
  - WYSIWYG issue with cursor jumping in the beginning of line on setValue
+ - Fixed issue with EditGrid validating and adding rows in the correct order.
+ - Fixing DataGrid to not trigger infinite update loops.
+ - Making DateTime not trigger constant update handlers.
+ - Fixed the Radio component to also check for undefined values.
+ - Fixed issue with the builder resetting the sidebar when items are added.
+ - Fixed empty single select rendering improperly
 
 ## 3.0.0
 ### Fixed
