@@ -22,7 +22,7 @@ export default class SelectComponent extends Field {
       filter: '',
       searchEnabled: true,
       searchField: '',
-      requireSearch: false,
+      minSearch: 0,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: ''
@@ -235,6 +235,17 @@ export default class SelectComponent extends Field {
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
 
+    // See if they have not met the minimum search requirements.
+    const minSearch = parseInt(this.component.minSearch, 10);
+    if (
+      this.component.searchField &&
+      (minSearch > 0) &&
+      (!search || (search.length < minSearch))
+    ) {
+      // Set empty items.
+      return this.setItems([]);
+    }
+
     // Ensure we have a method and remove any body if method is get
     method = method || 'GET';
     if (method.toUpperCase() === 'GET') {
@@ -259,11 +270,6 @@ export default class SelectComponent extends Field {
       else {
         query[this.component.searchField] = search;
       }
-    }
-
-    // See if we should require search.
-    if (this.component.requireSearch && this.component.searchField && !search) {
-      return;
     }
 
     // Add filter capability
