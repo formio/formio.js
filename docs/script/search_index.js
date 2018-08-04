@@ -2203,13 +2203,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2371,13 +2371,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2431,13 +2431,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3583,13 +3583,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3937,13 +3937,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4345,13 +4345,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4645,13 +4645,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5215,13 +5215,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -5344,6 +5344,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-type",
     "src/components/datagrid/DataGrid.js~DataGridComponent#type",
     "member"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#updatevalue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-updateValue",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#updateValue",
+    "method"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#visiblecolumns",
@@ -5928,27 +5934,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#footerelement",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-member-footerElement",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#footerElement",
-    "member"
-  ],
-  [
     "src/components/editgrid/editgrid.js~editgridcomponent#getvalue",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getValue",
     "src/components/editgrid/EditGrid.js~EditGridComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#headerelement",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-member-headerElement",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#headerElement",
-    "member"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#refreshdom",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-refreshDOM",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#refreshDOM",
     "method"
   ],
   [
@@ -5992,6 +5980,12 @@ window.esdocSearchIndex = [
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-member-type",
     "src/components/editgrid/EditGrid.js~EditGridComponent#type",
     "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#updatevalue",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-updateValue",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#updateValue",
+    "method"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#validaterow",

@@ -191,6 +191,8 @@ export default class SelectComponent extends BaseComponent {
       refreshOn: &apos;&apos;,
       filter: &apos;&apos;,
       searchEnabled: true,
+      searchField: &apos;&apos;,
+      minSearch: 0,
       authenticate: false,
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;
@@ -415,6 +417,17 @@ export default class SelectComponent extends BaseComponent {
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
+
+    // See if they have not met the minimum search requirements.
+    const minSearch = parseInt(this.component.minSearch, 10);
+    if (
+      this.component.searchField &amp;&amp;
+      (minSearch &gt; 0) &amp;&amp;
+      (!search || (search.length &lt; minSearch))
+    ) {
+      // Set empty items.
+      return this.setItems([]);
+    }
 
     // Ensure we have a method and remove any body if method is get
     method = method || &apos;GET&apos;;

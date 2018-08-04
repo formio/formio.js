@@ -405,11 +405,28 @@ export default [
     }
   },
   {
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;minSearch&apos;,
+    weight: 17,
+    label: &apos;Minimum Search Length&apos;,
+    tooltip: &apos;The minimum amount of characters they must type before a search is made.&apos;,
+    defaultValue: 0,
+    conditional: {
+      json: {
+        and: [
+          { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
+          { &apos;!=&apos;: [{ var: &apos;data.searchField&apos; }, &apos;&apos;] }
+        ]
+      }
+    }
+  },
+  {
     type: &apos;textfield&apos;,
     input: true,
     key: &apos;filter&apos;,
     label: &apos;Filter Query&apos;,
-    weight: 17,
+    weight: 18,
     description: &apos;The filter query for results.&apos;,
     tooltip: &apos;Use this to provide additional filtering using query parameters.&apos;,
     conditional: {
@@ -426,7 +443,7 @@ export default [
     input: true,
     key: &apos;limit&apos;,
     label: &apos;Limit&apos;,
-    weight: 17,
+    weight: 18,
     description: &apos;Maximum number of items to view per page of results.&apos;,
     tooltip: &apos;Use this to limit the number of items to request or view.&apos;,
     conditional: {

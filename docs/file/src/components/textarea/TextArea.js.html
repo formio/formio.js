@@ -171,6 +171,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global ace */
 import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import Formio from &apos;../../Formio&apos;;
+import _ from &apos;lodash&apos;;
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -338,6 +339,10 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    if (_.isEqual(value, this.getValue())) {
+      //don&apos;t do anything if new value is equal to current
+      return;
+    }
     value = value || &apos;&apos;;
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
