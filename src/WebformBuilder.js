@@ -270,7 +270,7 @@ export default class WebformBuilder extends Component {
 
     this.sideBarTop = this.refs.sidebar.getBoundingClientRect().top + window.scrollY;
     if (this.sideBarScroll) {
-      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
+      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10), true);
     }
 
     // See if we have bootstrap.js installed.
@@ -288,7 +288,7 @@ export default class WebformBuilder extends Component {
           this.refs['sidebar-group'].forEach((group, groupIndex) => {
             group.style.display = (groupIndex === index) ? 'inherit' : 'none';
           });
-        });
+        }, true);
       });
     }
 

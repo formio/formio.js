@@ -1051,12 +1051,16 @@ export default class Component {
    *   The event name to add.
    * @param func
    *   The callback function to be executed when the listener is triggered.
+   * @param persistent
+   *   If this listener should persist beyond "destroy" commands.
    */
-  addEventListener(obj, evt, func) {
+  addEventListener(obj, evt, func, persistent) {
     if (!obj) {
       return;
     }
-    this.eventHandlers.push({ type: evt, func: func });
+    if (!persistent) {
+      this.eventHandlers.push({ type: evt, func: func });
+    }
     if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);
     }
