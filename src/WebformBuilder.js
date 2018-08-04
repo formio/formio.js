@@ -465,7 +465,7 @@ export default class WebformBuilder extends Webform {
           this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
           this.scrollSidebar();
         }
-      });
+      }, true);
     }
 
     info.element = this.ce('div', {
@@ -558,11 +558,12 @@ export default class WebformBuilder extends Webform {
   }
 
   buildSidebar() {
+    // Do not rebuild the sidebar.
+    if (this.sideBarElement) {
+      return;
+    }
     this.groups = {};
     this.sidebarContainers = [];
-    if (this.sideBarElement) {
-      this.removeChildFrom(this.sideBarElement, this.builderSidebar);
-    }
     this.sideBarElement = this.ce('div', {
       id: `builder-sidebar-${this.id}`,
       class: 'accordion panel-group'
@@ -608,7 +609,7 @@ export default class WebformBuilder extends Webform {
     this.updateDraggable();
     this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
     if (this.options.sideBarScroll) {
-      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
+      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10), true);
     }
   }
 

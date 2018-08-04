@@ -1384,9 +1384,13 @@ export default class BaseComponent {
    *   The event name to add.
    * @param func
    *   The callback function to be executed when the listener is triggered.
+   * @param persistent
+   *   If this listener should persist beyond "destroy" commands.
    */
-  addEventListener(obj, type, func) {
-    this.eventHandlers.push({ id: this.id, obj, type, func });
+  addEventListener(obj, type, func, persistent) {
+    if (!persistent) {
+      this.eventHandlers.push({ id: this.id, obj, type, func });
+    }
     if ('addEventListener' in obj) {
       obj.addEventListener(type, func, false);
     }
