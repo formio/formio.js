@@ -803,6 +803,7 @@ export default class BaseComponent {
       row: this.data,
       rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
+      submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
       _,
       utils: FormioUtils,
@@ -1383,9 +1384,13 @@ export default class BaseComponent {
    *   The event name to add.
    * @param func
    *   The callback function to be executed when the listener is triggered.
+   * @param persistent
+   *   If this listener should persist beyond "destroy" commands.
    */
-  addEventListener(obj, type, func) {
-    this.eventHandlers.push({ id: this.id, obj, type, func });
+  addEventListener(obj, type, func, persistent) {
+    if (!persistent) {
+      this.eventHandlers.push({ id: this.id, obj, type, func });
+    }
     if ('addEventListener' in obj) {
       obj.addEventListener(type, func, false);
     }
@@ -1544,6 +1549,9 @@ export default class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
+    if (!element) {
+      return;
+    }
     _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {
@@ -1564,6 +1572,9 @@ export default class BaseComponent {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
+    if (!element) {
+      return;
+    }
     className = ` ${className} `;
     return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
@@ -1577,6 +1588,9 @@ export default class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
+    if (!element) {
+      return;
+    }
     const classes = element.getAttribute('class');
     if (!classes || classes.indexOf(className) === -1) {
       element.setAttribute('class', `${classes} ${className}`);
@@ -1592,6 +1606,9 @@ export default class BaseComponent {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
+    if (!element) {
+      return;
+    }
     let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(new RegExp(` ${className}`, 'g'), '');

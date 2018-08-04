@@ -235,11 +235,28 @@ export default [
     }
   },
   {
+    type: 'number',
+    input: true,
+    key: 'minSearch',
+    weight: 17,
+    label: 'Minimum Search Length',
+    tooltip: 'The minimum amount of characters they must type before a search is made.',
+    defaultValue: 0,
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '!=': [{ var: 'data.searchField' }, ''] }
+        ]
+      }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'filter',
     label: 'Filter Query',
-    weight: 17,
+    weight: 18,
     description: 'The filter query for results.',
     tooltip: 'Use this to provide additional filtering using query parameters.',
     conditional: {
@@ -256,7 +273,7 @@ export default [
     input: true,
     key: 'limit',
     label: 'Limit',
-    weight: 17,
+    weight: 18,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
