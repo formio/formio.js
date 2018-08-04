@@ -235,18 +235,18 @@ export default [
     }
   },
   {
-    type: 'checkbox',
+    type: 'number',
     input: true,
-    key: 'requireSearch',
+    key: 'minSearch',
     weight: 17,
-    label: 'Require Search',
-    tooltip: 'Check this if you would like to hold off on any API calls being made until they provide some search criteria.',
-    defaultValue: false,
+    label: 'Minimum Search Length',
+    tooltip: 'The minimum amount of characters they must type before a search is made.',
+    defaultValue: 0,
     conditional: {
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '!==': [{ var: 'searchField' }, ''] }
+          { '!=': [{ var: 'data.searchField' }, ''] }
         ]
       }
     }
