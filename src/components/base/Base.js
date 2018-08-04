@@ -803,6 +803,7 @@ export default class BaseComponent {
       row: this.data,
       rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
+      submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
       _,
       utils: FormioUtils,
