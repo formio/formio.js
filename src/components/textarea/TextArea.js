@@ -1,6 +1,7 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
+import _ from 'lodash';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -168,6 +169,10 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    if (_.isEqual(value, this.getValue())) {
+      //don't do anything if new value is equal to current
+      return;
+    }
     value = value || '';
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
