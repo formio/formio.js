@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.1.1
+### Fixed
+ - An issue where EditGrid may not default to show its values.
+ - The readonly view of EditGrid to now show add and remove buttons.
+
+## 3.1.0
+### Added
+ - Minimum search setting for Select component that would hold off on sending API until they type a certain length.
+ - Adding submission to the evalContext so you can do things like {{ submission.created }} in templates.
+ - Add validation check to edit form on builder.
+
+### Changed
+ - Upgrade text-mask-addon@3.8.0
+
+### Fixed
+ - WYSIWYG issue with cursor jumping in the beginning of line on setValue
+ - Fixed issue with EditGrid validating and adding rows in the correct order.
+ - Fixing DataGrid to not trigger infinite update loops.
+ - Making DateTime not trigger constant update handlers.
+ - Fixed the Radio component to also check for undefined values.
+ - Fixed issue with the builder resetting the sidebar when items are added.
+ - Fixed empty single select rendering improperly
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -44,24 +67,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
-
-## 3.1.0
-### Added
- - Minimum search setting for Select component that would hold off on sending API until they type a certain length.
- - Adding submission to the evalContext so you can do things like {{ submission.created }} in templates.
- - Add validation check to edit form on builder.
-
-### Changed
- - Upgrade text-mask-addon@3.8.0
-
-### Fixed
- - WYSIWYG issue with cursor jumping in the beginning of line on setValue
- - Fixed issue with EditGrid validating and adding rows in the correct order.
- - Fixing DataGrid to not trigger infinite update loops.
- - Making DateTime not trigger constant update handlers.
- - Fixed the Radio component to also check for undefined values.
- - Fixed issue with the builder resetting the sidebar when items are added.
- - Fixed empty single select rendering improperly
 
 ## 3.0.0
 ### Fixed
