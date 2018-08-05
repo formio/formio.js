@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.1.1
 ### Fixed
  - An issue where EditGrid may not default to show its values.
+ - The readonly view of EditGrid to now show add and remove buttons.
 
 ## 3.1.0
 ### Added
