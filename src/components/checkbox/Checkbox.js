@@ -76,7 +76,7 @@ export default class CheckBoxComponent extends BaseComponent {
   createElement() {
     let className = `form-check ${this.className}`;
     if (!this.labelIsHidden()) {
-      className += ' checkbox';
+      className += ` ${this.component.inputType || 'checkbox'}`;
     }
     this.element = this.ce('div', {
       id: this.id,

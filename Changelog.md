@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.1.2
+### Fixed
+ - The styles for checkbox so that it will look good for both radio and checkboxes.
+
 ## 3.1.1
 ### Fixed
  - An issue where EditGrid may not default to show its values.
