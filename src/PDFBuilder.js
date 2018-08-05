@@ -154,8 +154,8 @@ export default class PDFBuilder extends WebformBuilder {
     if (builderComponent) {
       builderComponent.element.draggable = true;
       builderComponent.element.setAttribute('draggable', true);
-      this.addEventListener(builderComponent.element, 'dragstart', (event) => this.dragStart(event, component));
-      this.addEventListener(builderComponent.element, 'dragend', () => this.disableDropZone());
+      this.addEventListener(builderComponent.element, 'dragstart', (event) => this.dragStart(event, component), true);
+      this.addEventListener(builderComponent.element, 'dragend', () => this.disableDropZone(), true);
     }
     return builderComponent;
   }
