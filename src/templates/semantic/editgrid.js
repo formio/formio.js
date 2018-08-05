@@ -10,7 +10,7 @@ export default {
   {% rows.forEach(function(row, rowIndex) { %}
   <div class="item" ref="{{editgridKey}}">
     {{row}}
-    {% if (openRows[rowIndex]) { %}
+    {% if (openRows[rowIndex] && !options.readOnly) { %}
     <div class="editgrid-actions">
       <button class="ui button primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
       {% if (component.removeRow) { %}
@@ -27,9 +27,10 @@ export default {
   </div>
   {% } %}
 </div>
+{% if (!options.readOnly) { %}
 <button class="ui button primary" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
-
+{% } %}
 `,
 };

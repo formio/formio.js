@@ -567,6 +567,7 @@ export default class Component {
 
     data.component = this.component;
     data.self = this;
+    data.options = this.options;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;

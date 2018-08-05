@@ -15,7 +15,7 @@ export default {
   {% rows.forEach(function(row, rowIndex) { %}
   <li class="list-group-item" ref="{{editgridKey}}">
     {{row}}
-    {% if (openRows[rowIndex]) { %}
+    {% if (openRows[rowIndex] && !options.readOnly) { %}
     <div class="editgrid-actions">
       <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
       {% if (component.removeRow) { %}
@@ -32,9 +32,10 @@ export default {
   </li>
   {% } %}
 </ul>
+{% if (!options.readOnly) { %}
 <button class="btn btn-primary formio-button-add-another" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
-
+{% } %}
 `,
 };

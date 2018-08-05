@@ -88,6 +88,20 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   render() {
+    // Ensure we always have rows for each dataValue available.
+    this.dataValue.forEach((row, rowIndex) => {
+      if (this.editRows[rowIndex]) {
+        this.editRows[rowIndex].data = row;
+      }
+      else {
+        this.editRows[rowIndex] = {
+          components: [],
+          isOpen: !!this.options.defaultOpen,
+          data: row
+        };
+      }
+    });
+
     return super.render(this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
       header: this.renderString(_.get(this.component, 'templates.header'), {
@@ -266,8 +280,6 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.editRows[rowIndex].dirty = false;
     this.editRows[rowIndex].isOpen = false;
-    this.updateValue();
-    this.triggerChange();
     this.redraw();
     this.checkValidity(this.data, true);
   }
@@ -278,7 +290,6 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
-    this.updateValue();
     this.redraw();
     this.checkValidity(this.data, true);
   }
