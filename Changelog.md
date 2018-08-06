@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Emitting Edit Grid event for row addition
+
 ## 3.1.3
 ### Fixed
  - Problem with the PDFBuilder component where it would remove listeners for the drag-and-drop components.
