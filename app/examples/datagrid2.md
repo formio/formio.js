@@ -193,6 +193,10 @@ Formio.createForm(document.getElementById('formio'), {
         ]
       }
     ]
+}).then(function(form) {
+  form.on('change', function() {
+    console.log(form.getValue());
+  });
 });
 </script>
 </div>
