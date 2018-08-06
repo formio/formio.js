@@ -2200,7 +2200,6 @@ export default class BaseComponent {
         c.component.validate.required = false;
       }
       Validator.check(c, c.data);
-      console.log(c, c.data);
       var req = ' field-required';
       if (c.component.validate && c.component.validate.required) {
         if (c.labelElement.className.indexOf(req) === -1) {
