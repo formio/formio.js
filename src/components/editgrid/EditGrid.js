@@ -343,6 +343,7 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows[rowIndex].dirty = false;
     this.editRows[rowIndex].isOpen = false;
     this.updateValue();
+    this.triggerChange();
     this.buildTable();
     this.checkValidity(this.data, true);
   }
