@@ -82,6 +82,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## [Unreleased]
+### Fixed
+ - Data Grid excess re-rendering rows on setValue
+
 ## 3.0.0
 ### Fixed
  - Issue where components in table component would not render conditions correctly.
