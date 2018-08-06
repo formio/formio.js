@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.1.4
 ### Added
  - Emitting Edit Grid event for row addition
 ### Fixed
  - Edit Grid not firing outer calculations on 'Save' button click
+ - Problem with DataGrid where its value would not be correct when there were Panels within the DataGrid.
 
 ## 3.1.3
 ### Fixed

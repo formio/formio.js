@@ -281,11 +281,10 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: {}
     });
-    const rowInfo = {
+    this.emit('editGridAddRow', {
       component: this.component,
       row: this.editRows[this.editRows.length - 1]
-    };
-    this.emit('editGridAddRow', rowInfo);
+    });
     this.buildTable();
   }
 
@@ -356,6 +355,7 @@ export default class EditGridComponent extends NestedComponent {
     this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
+    this.triggerChange();
     this.buildTable();
     this.checkValidity(this.data, true);
   }

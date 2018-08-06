@@ -300,6 +300,7 @@ export default class DataGridComponent extends NestedComponent {
     return BaseComponent.prototype.updateValue.call(this, flags, value);
   }
 
+  /* eslint-disable max-statements */
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
@@ -376,6 +377,7 @@ export default class DataGridComponent extends NestedComponent {
     });
     return changed;
   }
+  /* eslint-enable max-statements */
 
   /**
    * Get the value of this component.
@@ -383,19 +385,6 @@ export default class DataGridComponent extends NestedComponent {
    * @returns {*}
    */
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    const values = [];
-    _.each(this.rows, (row) => {
-      const value = {};
-      _.each(row, (col) => {
-        if (col && col.key) {
-          _.set(value, col.key, col.getValue());
-        }
-      });
-      values.push(value);
-    });
-    return values;
+    return this.dataValue;
   }
 }
