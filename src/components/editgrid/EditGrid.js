@@ -220,6 +220,11 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: {}
     });
+    const rowInfo = {
+      component: this.component,
+      row: this.editRows[this.editRows.length - 1]
+    };
+    this.emit('editGridAddRow', rowInfo);
     const rowIndex = this.editRows.length - 1;
     this.editRows[rowIndex].components = this.createRowComponents(this.editRows[rowIndex].data, rowIndex);
     this.redraw();
