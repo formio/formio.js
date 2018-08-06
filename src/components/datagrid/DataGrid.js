@@ -310,17 +310,6 @@ export default class DataGridComponent extends NestedComponent {
    * @returns {*}
    */
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    const values = [];
-    _.each(this.rows, (row) => {
-      const value = {};
-      _.each(row, (col, key) => {
-        _.set(value, key, col.getValue());
-      });
-      values.push(value);
-    });
-    return values;
+    return this.dataValue;
   }
 }
