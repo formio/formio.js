@@ -485,13 +485,7 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
       ]);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.removeRow&apos;);
       Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
-      Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.editRow&apos;);
-      Harness.clickElement(component, &apos;div.editgrid-actions button.btn-danger&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
-      Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.editRow&apos;);
-      Harness.clickElement(component, &apos;div.editgrid-actions button.btn-primary&apos;);
       Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       done();
     });

@@ -174,7 +174,8 @@ import Harness from &apos;../../../test/harness&apos;;
 import DataGridComponent from &apos;./DataGrid&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DataGrid Component&apos;, () =&gt; {
@@ -222,8 +223,40 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
         },
         {
           make: &apos;&apos;,
-          model: &apos;&apos;,
-          year: null
+          model: &apos;&apos;
+        }
+      ]);
+      done();
+    });
+  });
+});
+
+describe(&apos;DataGrid Panels&apos;, () =&gt; {
+  it(&apos;Should build a data grid component&apos;, (done) =&gt; {
+    Harness.testCreate(DataGridComponent, comp2).then((component) =&gt; {
+      done();
+    });
+  });
+
+  it(&apos;Should be able to set the values of one panel in the DataGrid.&apos;, (done) =&gt; {
+    Harness.testCreate(DataGridComponent, comp2).then((component) =&gt; {
+      Harness.testSetGet(component, [
+        {
+          firstName: &apos;Joe&apos;,
+          lastName: &apos;Smith&apos;
+        }
+      ]);
+
+      // Now add a new row.
+      component.addValue();
+      assert.deepEqual(component.getValue(), [
+        {
+          firstName: &apos;Joe&apos;,
+          lastName: &apos;Smith&apos;
+        },
+        {
+          firstName: &apos;&apos;,
+          lastName: &apos;&apos;
         }
       ]);
       done();

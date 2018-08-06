@@ -248,6 +248,21 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.createElement();
     this.createLabel(this.element);
+
+    // Ensure we always have rows for each dataValue available.
+    this.dataValue.forEach((row, rowIndex) =&gt; {
+      if (this.editRows[rowIndex]) {
+        this.editRows[rowIndex].data = row;
+      }
+      else {
+        this.editRows[rowIndex] = {
+          components: [],
+          isOpen: !!this.options.defaultOpen,
+          data: row
+        };
+      }
+    });
+
     this.buildTable();
     this.createDescription(this.element);
     this.createAddButton();
@@ -300,37 +315,36 @@ export default class EditGridComponent extends NestedComponent {
     row.components = [];
 
     if (wrapper.rowOpen) {
+      const editForm = this.component.components.map(comp =&gt; {
+        const component = _.cloneDeep(comp);
+        const options = _.clone(this.options);
+        options.row = `${this.row}-${rowIndex}`;
+        options.name += `[${rowIndex}]`;
+        const instance = this.createComponent(component, options, row.data);
+        instance.rowIndex = rowIndex;
+        row.components.push(instance);
+        return instance.element;
+      });
+      if (!this.options.readOnly) {
+        editForm.push(this.ce(&apos;div&apos;, { class: &apos;editgrid-actions&apos; },
+          [
+            this.ce(&apos;button&apos;, {
+              class: &apos;btn btn-primary&apos;,
+              onClick: this.saveRow.bind(this, rowIndex)
+            }, this.component.saveRow || &apos;Save&apos;),
+            &apos; &apos;,
+            this.component.removeRow ?
+              this.ce(&apos;button&apos;, {
+                class: &apos;btn btn-danger&apos;,
+                onClick: this.cancelRow.bind(this, rowIndex)
+              }, this.component.removeRow || &apos;Cancel&apos;)
+              : null
+          ]
+        ));
+      }
       wrapper.appendChild(
         this.ce(&apos;div&apos;, { class: &apos;editgrid-edit&apos; },
-          this.ce(&apos;div&apos;, { class: &apos;editgrid-body&apos; },
-            [
-              this.component.components.map(comp =&gt; {
-                const component = _.cloneDeep(comp);
-                const options = _.clone(this.options);
-                options.row = `${this.row}-${rowIndex}`;
-                options.name += `[${rowIndex}]`;
-                const instance = this.createComponent(component, options, row.data);
-                instance.rowIndex = rowIndex;
-                row.components.push(instance);
-                return instance.element;
-              }),
-              this.ce(&apos;div&apos;, { class: &apos;editgrid-actions&apos; },
-                [
-                  this.ce(&apos;button&apos;, {
-                    class: &apos;btn btn-primary&apos;,
-                    onClick: this.saveRow.bind(this, rowIndex)
-                  }, this.component.saveRow || &apos;Save&apos;),
-                  &apos; &apos;,
-                  this.component.removeRow ?
-                    this.ce(&apos;button&apos;, {
-                      class: &apos;btn btn-danger&apos;,
-                      onClick: this.cancelRow.bind(this, rowIndex)
-                    }, this.component.removeRow || &apos;Cancel&apos;)
-                    : null
-                ]
-              )
-            ]
-          )
+          this.ce(&apos;div&apos;, { class: &apos;editgrid-body&apos; }, editForm)
         )
       );
     }
@@ -411,6 +425,9 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   createAddButton() {
+    if (this.options.readOnly) {
+      return;
+    }
     this.element.appendChild(this.ce(&apos;div&apos;, { class: &apos;editgrid-add&apos; },
       this.ce(&apos;button&apos;, {
         class: &apos;btn btn-primary&apos;,
@@ -434,7 +451,10 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: {}
     });
-    this.updateValue();
+    this.emit(&apos;editGridAddRow&apos;, {
+      component: this.component,
+      row: this.editRows[this.editRows.length - 1]
+    });
     this.buildTable();
   }
 
@@ -492,6 +512,7 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows[rowIndex].dirty = false;
     this.editRows[rowIndex].isOpen = false;
     this.updateValue();
+    this.triggerChange();
     this.buildTable();
     this.checkValidity(this.data, true);
   }
@@ -504,6 +525,7 @@ export default class EditGridComponent extends NestedComponent {
     this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
+    this.triggerChange();
     this.buildTable();
     this.checkValidity(this.data, true);
   }
@@ -635,6 +657,7 @@ export default class EditGridComponent extends NestedComponent {
 
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
+
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) =&gt; {
       if (this.editRows[rowIndex]) {
@@ -655,6 +678,7 @@ export default class EditGridComponent extends NestedComponent {
         this.editRows.splice(rowIndex, 1);
       }
     }
+
     this.buildTable();
     return changed;
   }
