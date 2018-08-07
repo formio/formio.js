@@ -2196,7 +2196,7 @@ export default class BaseComponent {
     }
     this.updateOnChange(flags, changed);
     this.root.components.forEach((c) => {
-      if (c.component.validate.required && c.component.validate.custom.indexof('component.validate.required') !== -1) {
+      if (c.component.validate.required && c.component.validate.custom.indexOf('component.validate.required') !== -1) {
         c.component.validate.required = false;
       }
       Validator.check(c, c.data);
