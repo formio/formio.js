@@ -766,9 +766,7 @@ export default class Component {
     this.refs.tooltip.forEach((tooltip, index) => {
       const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
-        delay: {
-          hide: 100
-        },
+        trigger: 'hover click',
         placement: 'right',
         html: true,
         title,
