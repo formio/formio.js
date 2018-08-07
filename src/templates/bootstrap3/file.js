@@ -45,9 +45,27 @@ export default {
 {% } %}
 {% if (!disabled && (component.multiple || !files.length)) { %}
 <input type="file" style="opacity: 0; position: absolute;" tabindex="-1" ref="hiddenFileInputElement">
-<div class="fileSelector" ref="fileDrop">
-  <i class="{{iconClass('cloud-upload')}}"></i> Drop files to attach, or <a href="#" ref="fileBrowse" class="browse">browse</a>
+{% if (self.useWebViewCamera) { %}
+<div class="fileSelector">
+  <button class="btn btn-primary" ref="galleryButton"><i class="fa fa-book"></i> Gallery</button>
+  <button class="btn btn-primary" ref="cameraButton"><i class="fa fa-camera"></i> Camera</button>
 </div>
+{% } else if (!self.cameraMode || !component.image) { %}
+<div class="fileSelector" ref="fileDrop">
+  <i class="{{iconClass('cloud-upload')}}"></i> Drop files to attach, 
+    {% if (component.image) { %}
+      <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> Use Camera</a>, 
+    {% } %}
+    or <a href="#" ref="fileBrowse" class="browse">browse</a>
+</div>
+{% } else { %}
+<div>
+  <video class="video" autoplay="true" ref="videoPlayer"></video>
+  <canvas style="display: none" ref="videoCanvas"></canvas>
+</div>
+<button class="btn btn-primary" ref="takePictureButton"><i class="fa fa-camera"></i> Take Picture</button>
+<button class="btn btn-primary" ref="toggleCameraMode">Switch to file upload</button>
+{% } %}
 {% } %}
 {% statuses.forEach(function(status) { %}
 <div class="file {{statuses.status === 'error' ? ' has-error' : ''}}">

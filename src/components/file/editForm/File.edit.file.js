@@ -88,5 +88,13 @@ export default [
     placeholder: '10MB',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
     weight: 70
-  }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    key: 'mobileDevices',
+    label: 'Allow WebView Camera Plugin',
+    tooltip: '(Only for Webview Applications, Cordova, Ionic, PhoneGap.)Allow to use/upload photos from Camera and PhotoLibrary Plugins.',
+    weight: 80
+  },
 ];
