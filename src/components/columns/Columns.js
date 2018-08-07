@@ -82,6 +82,36 @@ export default class ColumnsComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) =>
       this.attachComponents(column, this.columns[index], this.component.columns[index].components)
     );
+    this.on('change', () => this.justifyColumns(this.components));
+  }
+
+  /**
+   * Justify columns width according to `this.gridSize`.
+   * @param {ColumnComponent[]} columns
+   * @return {*}
+   */
+  justifyRow(columns) {
+    const visible = _.filter(columns, 'visible');
+    const nbColumns = columns.length;
+    const nbVisible = visible.length;
+
+    if (nbColumns > 0 && nbVisible > 0) {
+      const w = Math.floor(this.gridSize / nbVisible);
+      const totalWidth = w * nbVisible;
+      const span = this.gridSize - totalWidth;
+
+      _.each(visible, column => {
+        column.component.width = w;
+      });
+
+      // In case when row is not fully filled,
+      // extending last col to fill empty space.
+      _.last(visible).component.width += span;
+
+      _.each(visible, col => {
+        col.element.setAttribute('class', col.className);
+      });
+    }
   }
 
   detach(all) {
