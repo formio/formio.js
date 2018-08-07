@@ -14,6 +14,7 @@ export default class FileComponent extends BaseComponent {
       filePattern: '*',
       fileMinSize: '0KB',
       fileMaxSize: '1GB',
+      mobileDevices: false,
       uploadOnly: false
     }, ...extend);
   }
@@ -254,27 +255,76 @@ export default class FileComponent extends BaseComponent {
   buildUpload() {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
+    // Implement Camera file upload for WebView Apps.
+    if (this.component.mobileDevices) {
+      return this.ce('div', {},
+        (
+          (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
+            this.ce('div', {
+                class: 'fileSelector'
+              },
+              [
+                this.ce('button', { class: 'btn btn-primary',
+                  onClick: (event) => {
+                    event.preventDefault();
+                    navigator.camera.getPicture((success) => {
+                      window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                          fileEntry.file((file) => {
+                            this.upload([file]);
+                          });
+                        }
+                      );
+                    }, null, { sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY });
+                  }
+                },
+                  [
+                    this.ce('i', { class: this.iconClass('book') }),
+                    this.text('Gallery')
+                  ]),
+                this.ce('button', { class: 'btn btn-primary',
+                  onClick: (event) => {
+                    event.preventDefault();
+                    navigator.camera.getPicture((success) => {
+                      window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                          fileEntry.file((file) => {
+                            this.upload([file]);
+                          });
+                        }
+                      );
+                    });
+                  }
+                },
+                  [
+                  this.ce('i', { class: this.iconClass('camera') }),
+                  this.text('Camera')
+                ])
+              ]
+            ) :
+            this.ce('div')
+        )
+      );
+    }
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
-            class: 'fileSelector',
-            onDragover(event) {
-              this.className = 'fileSelector fileDragOver';
-              event.preventDefault();
+              class: 'fileSelector',
+              onDragover(event) {
+                this.className = 'fileSelector fileDragOver';
+                event.preventDefault();
+              },
+              onDragleave(event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+              },
+              onDrop(event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+                element.upload(event.dataTransfer.files);
+                return false;
+              }
             },
-            onDragleave(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-            },
-            onDrop(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-              element.upload(event.dataTransfer.files);
-              return false;
-            }
-          },
             [
               this.ce('i', { class: this.iconClass('cloud-upload') }),
               this.text(' Drop files to attach, or '),
@@ -364,19 +414,19 @@ export default class FileComponent extends BaseComponent {
       this.ce('div', { class: 'row' }, [
         this.ce('div', { class: 'col-sm-12' }, [
           (fileUpload.status === 'progress' ?
-            this.ce('div', { class: 'progress' },
-              this.ce('div', {
-                class: 'progress-bar',
-                role: 'progressbar',
-                'aria-valuenow': fileUpload.progress,
-                'aria-valuemin': 0,
-                'aria-valuemax': 100,
-                style: `width:${fileUpload.progress}%`
-              },
-                this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
-              )
-            ) :
-            this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
+              this.ce('div', { class: 'progress' },
+                this.ce('div', {
+                    class: 'progress-bar',
+                    role: 'progressbar',
+                    'aria-valuenow': fileUpload.progress,
+                    'aria-valuemin': 0,
+                    'aria-valuemax': 100,
+                    style: `width:${fileUpload.progress}%`
+                  },
+                  this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
+                )
+              ) :
+              this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
           )
         ])
       ])
