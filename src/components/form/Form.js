@@ -337,6 +337,9 @@ export default class FormComponent extends Component {
   }
 
   getAllComponents() {
+    if (!this.subForm) {
+      return [];
+    }
     return this.subForm.getAllComponents();
   }
 }
