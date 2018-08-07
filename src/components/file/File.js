@@ -254,6 +254,8 @@ export default class FileComponent extends BaseComponent {
   buildUpload() {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
+    // Declare Camera Instace
+    let Camera;
     // Implement Camera file upload for WebView Apps.
     if ((navigator.camera || Camera) && this.component.image) {
       const camera = navigator.camera || Camera;
