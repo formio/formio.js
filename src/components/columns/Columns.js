@@ -50,6 +50,27 @@ export default class ColumnsComponent extends NestedComponent {
     return `row ${super.className}`;
   }
 
+  justifyColumns(columns) {
+    const nbColumns = columns.length;
+    const visible = _.filter(columns, '_visible');
+    const nbVisible = visible.length;
+    const total = 12;
+
+    if (nbColumns > 0 && nbVisible > 0) {
+      _.each(visible, column => {
+        column.component.width = Math.floor(total / nbVisible);
+      });
+      this.redraw();
+    }
+  }
+
+  build() {
+    this.on('change', () => {
+      this.justifyColumns(this.components);
+    });
+    super.build();
+  }
+
   addComponents() {
     const container = this.getContainer();
     container.noDrop = true;
