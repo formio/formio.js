@@ -10,6 +10,7 @@ import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
 import _get from 'lodash/get';
+import Plugin from './Plugin';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -986,11 +987,6 @@ export default class Formio {
     Formio.cache = {};
   }
 
-  static noop() {}
-  static identity(value) {
-    return value;
-  }
-
   static deregisterPlugin(plugin) {
     const beforeLength = Formio.plugins.length;
     Formio.plugins = Formio.plugins.filter((p) => {
@@ -998,17 +994,21 @@ export default class Formio {
         return true;
       }
 
-      (p.deregister || Formio.noop).call(plugin, Formio);
+      p.deregister(Formio);
       return false;
     });
     return beforeLength !== Formio.plugins.length;
   }
 
   static registerPlugin(plugin, name) {
+    if (!(plugin instanceof Plugin)) {
+      return;
+    }
+
     Formio.plugins.push(plugin);
     Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
     plugin.__name = name;
-    (plugin.init || Formio.noop).call(plugin, Formio);
+    plugin.init(Formio);
   }
 
   static getPlugin(name) {
@@ -1022,8 +1022,7 @@ export default class Formio {
   }
 
   static pluginWait(pluginFn, ...args) {
-    return Promise.all(Formio.plugins.map((plugin) =>
-      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
+    return Promise.all(Formio.plugins.map((plugin) => plugin[pluginFn](...args)));
   }
 
   static pluginGet(pluginFn, ...args) {
@@ -1034,7 +1033,7 @@ export default class Formio {
         return Promise.resolve(null);
       }
 
-      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
+      return Promise.resolve(plugin[pluginFn](...args))
         .then((result) => {
           if (!isNil(result)) {
             return result;
@@ -1047,8 +1046,7 @@ export default class Formio {
   }
 
   static pluginAlter(pluginFn, value, ...args) {
-    return Formio.plugins.reduce((value, plugin) =>
-      (plugin[pluginFn] || Formio.identity)(value, ...args), value);
+    return Formio.plugins.reduce((value, plugin) => plugin[pluginFn](value, ...args), value);
   }
 
   static accessInfo(formio) {
