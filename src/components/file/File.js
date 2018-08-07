@@ -14,7 +14,6 @@ export default class FileComponent extends BaseComponent {
       filePattern: '*',
       fileMinSize: '0KB',
       fileMaxSize: '1GB',
-      mobileDevices: false,
       uploadOnly: false
     }, ...extend);
   }
@@ -256,7 +255,8 @@ export default class FileComponent extends BaseComponent {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
     // Implement Camera file upload for WebView Apps.
-    if (this.component.mobileDevices) {
+    if ((navigator.camera || Camera) && this.component.image) {
+      const camera = navigator.camera || Camera;
       return this.ce('div', {},
         (
           (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
@@ -267,14 +267,14 @@ export default class FileComponent extends BaseComponent {
                 this.ce('button', { class: 'btn btn-primary',
                   onClick: (event) => {
                     event.preventDefault();
-                    navigator.camera.getPicture((success) => {
+                    camera.getPicture((success) => {
                       window.resolveLocalFileSystemURL(success, (fileEntry) => {
                           fileEntry.file((file) => {
                             this.upload([file]);
                           });
                         }
                       );
-                    }, null, { sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY });
+                    }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
                   }
                 },
                   [
@@ -284,7 +284,7 @@ export default class FileComponent extends BaseComponent {
                 this.ce('button', { class: 'btn btn-primary',
                   onClick: (event) => {
                     event.preventDefault();
-                    navigator.camera.getPicture((success) => {
+                    camera.getPicture((success) => {
                       window.resolveLocalFileSystemURL(success, (fileEntry) => {
                           fileEntry.file((file) => {
                             this.upload([file]);
