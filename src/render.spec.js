@@ -13,7 +13,7 @@ describe('Rendering Tests', () => {
           it(`Renders ${component} for ${framework}`, (done) => {
             const instance = new AllComponents[component]();
             instance.id = 'abc123';
-            assert.equal(renders[`${framework}-${component}`], pretty(instance.render()));
+            assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render()));
             done();
           });
           it(`Renders ${component} for ${framework} as required`, (done) => {
@@ -23,7 +23,7 @@ describe('Rendering Tests', () => {
               }
             });
             instance.id = 'abc123';
-            assert.equal(renders[`${framework}-${component}-required`], pretty(instance.render()));
+            assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render()));
             done();
           });
           it(`Renders ${component} for ${framework} as multiple`, (done) => {
@@ -31,8 +31,7 @@ describe('Rendering Tests', () => {
               multiple: true
             });
             instance.id = 'abc123';
-            console.log(renders[`${framework}-${component}-multiple`], pretty(instance.render()));
-            assert.equal(renders[`${framework}-${component}-multiple`], pretty(instance.render()));
+            assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render()));
             done();
           });
         });
