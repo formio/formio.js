@@ -18,28 +18,26 @@ if (!fs.existsSync(dir)){
   fs.mkdirSync(dir);
 }
 
+const fixComponent = (instance, index = 0) => {
+  instance.id = instance.key;
+  index++;
+  if (instance.type === 'form') {
+    instance.everyComponent(component => fixComponent(component, index));
+    if (instance.hasOwnProperty('subForm')) {
+      instance.subForm.id = instance.key;
+    }
+  }
+};
+
 const renderForm = (form) => {
-  return new Form(form).then(instance => {
-    let index = 0;
-    instance.everyComponent((component) => {
-      // jsdom does not support dnd but we don't want to render it that way.
-      if (instance.hasOwnProperty('support')) {
-        instance.support.dnd = true;
-      }
-      component.id = 'abc' + index;
-      index++;
-    });
-    return pretty(instance.render());
-  });
+  const instance = new Form(form)
+  fixComponent(instance);
+  return pretty(instance.render());
 };
 
 const renderComponent = (Type, definition) => {
   const instance = new Type(definition);
-  instance.id = 'abc123';
-  // jsdom does not support dnd but we don't want to render it that way.
-  if (instance.hasOwnProperty('support')) {
-    instance.support.dnd = true;
-  }
+  fixComponent(instance);
   return pretty(instance.render());
 };
 
@@ -49,13 +47,7 @@ Object.keys(templates).forEach(framework => {
   // Render forms
   Object.keys(forms).forEach(form => {
     renders.push(`form-${framework}-${form}`);
-    renderForm(forms[form], {})
-      .then(render => {
-        fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, render);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, renderForm(forms[form], {}));
   });
   // Object.keys(formtests).forEach(form => {
   //   renders.push(`form-${framework}-${form}`);

@@ -32,11 +32,10 @@ export default class FileComponent extends Component {
     super.init();
     this.support = {
       filereader: typeof FileReader != 'undefined',
-      dnd: 'draggable' in document.createElement('span'),
       formdata: !!window.FormData,
       progress: 'upload' in new XMLHttpRequest
     };
-    this.support.hasWarning = !this.support.filereader || !this.support.dnd || !this.support.formdata || !this.support.progress;
+    this.support.hasWarning = !this.support.filereader || !this.support.formdata || !this.support.progress;
 
     this.statuses = [];
   }

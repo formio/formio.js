@@ -69,9 +69,6 @@ export default {
   {% if (!component.storage) { %}
     <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>
   {% } %}
-  {% if (!support.dnd) { %}
-    <p>File Drag/Drop is not supported for this browser.</p>
-  {% } %}
   {% if (!support.filereader) { %}
     <p>File API & FileReader API not supported.</p>
   {% } %}

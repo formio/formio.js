@@ -86,17 +86,15 @@ export default class FormComponent extends Component {
     // Ensure components is set.
     this.component.components = this.component.components || [];
 
-    (new Form(this.component, srcOptions)).then((instance) => {
-      this.subForm = instance;
-      this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.onChange();
-      });
-      this.loadSubForm().then(this.redraw.bind(this));
-      this.subForm.url = this.formSrc;
-      this.subForm.nosubmit = false;
-      this.restoreValue();
+    this.subForm = new Form(this.component, srcOptions);
+    this.subForm.on('change', () => {
+      this.dataValue = this.subForm.getValue();
+      this.onChange();
     });
+    this.loadSubForm().then(this.redraw.bind(this));
+    this.subForm.url = this.formSrc;
+    this.subForm.nosubmit = false;
+    this.restoreValue();
   }
 
   get defaultSchema() {
@@ -172,6 +170,15 @@ export default class FormComponent extends Component {
   }
 
   /**
+   * Pass everyComponent to subform.
+   * @param args
+   * @returns {*|void}
+   */
+  everyComponent(...args) {
+    return this.subForm.everyComponent(...args);
+  }
+
+  /**
    * Filter a subform to ensure all submit button components are hidden.
    *
    * @param form
@@ -204,7 +211,8 @@ export default class FormComponent extends Component {
     // Determine if we already have a loaded form object.
     if (this.component && this.component.components && this.component.components.length) {
       this.filterSubForm();
-      return this.subFormReadyResolve(this.subForm);
+      this.subFormReadyResolve(this.subForm);
+      return this.subFormReady;
     }
     else {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })

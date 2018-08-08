@@ -141,18 +141,18 @@ export default class DayComponent extends Field {
     }
     this._months = [
       { value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
-      { value: 1, label: this.t('january') },
-      { value: 2, label: this.t('february') },
-      { value: 3, label: this.t('march') },
-      { value: 4, label: this.t('april') },
-      { value: 5, label: this.t('may') },
-      { value: 6, label: this.t('june') },
-      { value: 7, label: this.t('july') },
-      { value: 8, label: this.t('august') },
-      { value: 9, label: this.t('september') },
-      { value: 10, label: this.t('october') },
-      { value: 11, label: this.t('november') },
-      { value: 12, label: this.t('december') }
+      { value: 1, label: 'January' },
+      { value: 2, label: 'February' },
+      { value: 3, label: 'March' },
+      { value: 4, label: 'April' },
+      { value: 5, label: 'May' },
+      { value: 6, label: 'June' },
+      { value: 7, label: 'July' },
+      { value: 8, label: 'August' },
+      { value: 9, label: 'September' },
+      { value: 10, label: 'October' },
+      { value: 11, label: 'November' },
+      { value: 12, label: 'December' }
     ];
     return this._months;
   }

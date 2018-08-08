@@ -86,7 +86,75 @@
         "eq": ""
       },
       "properties": {},
-      "hideLabel": true
+      "hideLabel": true,
+      "components": [
+        {
+          "type": "email",
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "defaultValue": "",
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your email address",
+          "key": "email",
+          "label": "Email",
+          "inputType": "email",
+          "tableView": true,
+          "input": true,
+          "kickbox": {
+            "enabled": false
+          }
+        },
+        {
+          "type": "password",
+          "persistent": true,
+          "protected": true,
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your password.",
+          "key": "password",
+          "label": "Password",
+          "inputType": "password",
+          "tableView": false,
+          "input": true
+        },
+        {
+          "input": true,
+          "inputType": "checkbox",
+          "tableView": true,
+          "hideLabel": true,
+          "label": "Valid",
+          "key": "valid",
+          "defaultValue": false,
+          "protected": false,
+          "persistent": true,
+          "validate": {
+            "required": false
+          },
+          "type": "checkbox",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          }
+        },
+        {
+          "type": "button",
+          "theme": "primary",
+          "disableOnInvalid": true,
+          "action": "submit",
+          "block": false,
+          "rightIcon": "",
+          "leftIcon": "",
+          "size": "md",
+          "key": "submit",
+          "tableView": false,
+          "label": "Submit",
+          "input": true
+        }
+      ]
     },
     {
       "type": "custom",
