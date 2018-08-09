@@ -24,9 +24,13 @@ export default class DataGridComponent extends NestedComponent {
     };
   }
 
+  constructor(...args) {
+    super(...args);
+    this.type = 'datagrid';
+  }
+
   init() {
     this.components = this.components || [];
-    this.type = 'datagrid';
     this.numColumns = 0;
 
     // Add new values based on minLength.

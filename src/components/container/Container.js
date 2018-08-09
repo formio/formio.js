@@ -26,7 +26,6 @@ export default class ContainerComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.type = 'container';
-    this.dataValue = {};
   }
 
   init() {

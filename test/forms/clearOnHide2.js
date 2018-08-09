@@ -1208,13 +1208,14 @@ export default {
   tests: {
     'Test hiding and showing components'(form, done) {
       const fullData = _cloneDeep(form.getValue());
-      console.log('fullData', fullData.data.selectBoxes);
       form.getComponent('hide', component => {
         component.setValue(true);
         form.checkConditions(form.getValue());
         assert.deepEqual(form.getValue(), {data: {hide: true}});
         component.setValue(false);
         form.checkConditions(form.getValue());
+        console.log(JSON.stringify(fullData), JSON.stringify(form.getValue()));
+        // console.log(fullData.data.selectBoxes, form.getValue().data.selectBoxes);
         assert.deepEqual(form.getValue(), fullData);
         done();
       });

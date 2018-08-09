@@ -67,9 +67,13 @@ export default class EditGridComponent extends NestedComponent {
     return `editgrid-${this.key}`;
   }
 
+  constructor(...args) {
+    super(...args);
+    this.type = 'editgrid';
+  }
+
   init() {
     this.components = this.components || [];
-    this.type = 'editgrid';
     this.editRows = this.dataValue.map((row) => ({
       isOpen: false,
       data: row,
@@ -142,6 +146,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   renderRow(row, rowIndex) {
+    console.log('renderRow', row, rowIndex);
     if (row.isOpen) {
       return this.renderComponents(row.components);
     }

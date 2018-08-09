@@ -24,8 +24,8 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  init() {
-    super.init();
+  constructor(...args) {
+    super(...args);
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
