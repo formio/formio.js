@@ -16,7 +16,7 @@ export default class ColumnComponent extends NestedComponent {
   }
 
   conditionallyVisible(data) {
-    const allChildrenHidden = _.every(this.getComponents(), cmp => !cmp._visible);
+    const allChildrenHidden = _.every(this.getComponents(), ['visible', false]);
     if (allChildrenHidden) {
       return false;
     }

@@ -14,7 +14,8 @@ export default class ColumnsComponent extends NestedComponent {
       clearOnHide: false,
       input: false,
       tableView: false,
-      persistent: false
+      persistent: false,
+      autoAdjustment: false
     }, ...extend);
   }
 
@@ -27,6 +28,11 @@ export default class ColumnsComponent extends NestedComponent {
       weight: 10,
       schema: ColumnsComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.rows = [];
   }
 
   get defaultSchema() {
@@ -67,6 +73,7 @@ export default class ColumnsComponent extends NestedComponent {
         this.columns[index].push(this.createComponent(component));
       });
     });
+    this.rows = this.groupByRow();
   }
 
   render() {
@@ -83,6 +90,15 @@ export default class ColumnsComponent extends NestedComponent {
       this.attachComponents(column, this.columns[index], this.component.columns[index].components)
     );
     this.on('change', () => this.justifyColumns(this.components));
+  }
+
+  get gridSize() {
+    return 12;
+  }
+
+  /** @type {number} */
+  get nbVisible() {
+    return _.filter(this.components, 'visible').length;
   }
 
   /**
@@ -112,6 +128,33 @@ export default class ColumnsComponent extends NestedComponent {
         col.element.setAttribute('class', col.className);
       });
     }
+  }
+
+  /**
+   * Group columns in rows.
+   * @return {Array.<ColumnComponent[]>}
+   */
+  groupByRow() {
+    const initVal = { stack: [], rows: [] };
+    const width = x => x.component.width;
+    const result = _.reduce(this.components, (acc, next) => {
+      const stack = [...acc.stack, next];
+      if (_.sumBy(stack, width) <= this.gridSize) {
+        acc.stack = stack;
+        return acc;
+      }
+      else {
+        acc.rows = [...acc.rows, acc.stack];
+        acc.stack = [next];
+        return acc;
+      }
+    }, initVal);
+
+    return _.concat(result.rows, [result.stack]);
+  }
+
+  justify() {
+    _.each(this.rows, this.justifyRow.bind(this));
   }
 
   detach(all) {
