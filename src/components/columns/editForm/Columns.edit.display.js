@@ -33,5 +33,12 @@ export default [
         label: 'Pull'
       }
     ]
-  }
-];
+  },
+  {
+    weight: 160,
+    type: 'checkbox',
+    label: 'Auto adjustment',
+    tooltip: 'Whether to justify columns when some of them are hidden.',
+    key: 'autoAdjustment',
+    input: true
+  }];
