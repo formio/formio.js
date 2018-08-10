@@ -67,6 +67,12 @@ export default class DateTimeComponent extends BaseComponent {
     };
   }
 
+  get offset() {
+    // Get either the set timezone or the current timezone.
+    // console.log(this.root.submission.metadata);
+    return parseFloat(_.get(this, 'root.submission.metadata.timezone', moment().utcOffset()));
+  }
+
   get defaultSchema() {
     return DateTimeComponent.schema();
   }
@@ -146,7 +152,13 @@ export default class DateTimeComponent extends BaseComponent {
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange({ noValidate: true }),
-      onClose: () => this.closedOn = Date.now()
+      onClose: () => this.closedOn = Date.now(),
+      formatDate: (date, format) => {
+        // We need to add the difference of the timezone from when the submission was created versus the one we are currently in.
+        // This will adjust the date to the original timezone. Unfortunately flatpickr doesn't better support this.
+        const newDate = new Date(date.getTime() + ((this.offset + date.getTimezoneOffset()) * 60 * 1000));
+        return Flatpickr.formatDate(newDate, format);
+      },
     };
     /* eslint-enable camelcase */
   }
@@ -240,7 +252,7 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : '';
+    return value ? moment(value).utcOffset(this.offset).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : '';
   }
 
   setValueAt(index, value) {
