@@ -4,7 +4,6 @@ import NestedComponent from '../nested/NestedComponent';
 export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      autoAdjustment: false,
       label: 'Columns',
       key: 'columns',
       type: 'columns',
@@ -15,7 +14,8 @@ export default class ColumnsComponent extends NestedComponent {
       clearOnHide: false,
       input: false,
       tableView: false,
-      persistent: false
+      persistent: false,
+      autoAdjust: false
     }, ...extend);
   }
 
@@ -132,10 +132,9 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   checkConditions(data) {
-    if (this.component.autoAdjustment) {
+    if (this.component.autoAdjust) {
       const before = this.nbVisible;
       super.checkConditions(data);
-
       if (before !== this.nbVisible) {
         this.justify();
       }
