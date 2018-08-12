@@ -59,7 +59,6 @@ export default class DateTimeComponent extends BaseComponent {
     super(component, options, data);
     this.validators.push('date');
     this.closedOn = 0;
-
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
@@ -68,9 +67,7 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   get offset() {
-    // Get either the set timezone or the current timezone.
-    // console.log(this.root.submission.metadata);
-    return parseFloat(_.get(this, 'root.submission.metadata.timezone', moment().utcOffset()));
+    return parseInt(_.get(this, 'root.submission.metadata.timezone', moment().utcOffset()), 10);
   }
 
   get defaultSchema() {
@@ -118,7 +115,7 @@ export default class DateTimeComponent extends BaseComponent {
     return false;
   }
 
-  getLocaleFormat() {
+  get localeFormat() {
     let format = '';
 
     if (this.component.enableDate) {
@@ -132,7 +129,27 @@ export default class DateTimeComponent extends BaseComponent {
     return format;
   }
 
+  get dateTimeFormat() {
+    return this.component.useLocaleSettings
+      ? this.localeFormat()
+      : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
+  }
+
+  timeZone(date) {
+    // Modern browsers have Intl to get the timezone name of this offset.
+    if (Intl && Intl.DateTimeFormat && navigator && navigator.languages && navigator.languages.length) {
+      const matches = (new Intl.DateTimeFormat(navigator.languages[0], {
+        timeZoneName: 'short'
+      })).format(date).match(/, (.+)$/);
+      if (matches && matches.length > 1) {
+        return matches[1];
+      }
+    }
+    return moment(date).format('Z');
+  }
+
   get config() {
+    const altFormat = this.dateTimeFormat;
     /* eslint-disable camelcase */
     return {
       altInput: true,
@@ -141,9 +158,7 @@ export default class DateTimeComponent extends BaseComponent {
       mode: this.component.multiple ? 'multiple' : 'single',
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
-      altFormat: this.component.useLocaleSettings
-        ? this.getLocaleFormat()
-        : convertFormatToFlatpickr(_.get(this.component, 'format', '')),
+      altFormat: altFormat,
       dateFormat: 'U',
       defaultDate: this.defaultDate,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
@@ -154,11 +169,14 @@ export default class DateTimeComponent extends BaseComponent {
       onChange: () => this.onChange({ noValidate: true }),
       onClose: () => this.closedOn = Date.now(),
       formatDate: (date, format) => {
-        // We need to add the difference of the timezone from when the submission was created versus the one we are currently in.
-        // This will adjust the date to the original timezone. Unfortunately flatpickr doesn't better support this.
-        const newDate = new Date(date.getTime() + ((this.offset + date.getTimezoneOffset()) * 60 * 1000));
-        return Flatpickr.formatDate(newDate, format);
-      },
+        // Only format this if this is the altFormat and the form is readOnly.
+        if (this.options.readOnly && (format === altFormat)) {
+          const newDate = moment(date).utcOffset(this.offset).toDate();
+          return `${Flatpickr.formatDate(newDate, format)} (${this.timeZone(newDate)})`;
+        }
+
+        return Flatpickr.formatDate(date, format);
+      }
     };
     /* eslint-enable camelcase */
   }
@@ -252,7 +270,12 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? moment(value).utcOffset(this.offset).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : '';
+    if (!value) {
+      return '';
+    }
+    const date = moment(value).utcOffset(this.offset);
+    const dateFormat = convertFormatToMoment(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
+    return `${date.format(dateFormat)} (${this.timeZone(date.toDate())})`;
   }
 
   setValueAt(index, value) {
