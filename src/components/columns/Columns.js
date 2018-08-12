@@ -15,7 +15,7 @@ export default class ColumnsComponent extends NestedComponent {
       input: false,
       tableView: false,
       persistent: false,
-      autoAdjustment: false
+      autoAdjust: false
     }, ...extend);
   }
 
@@ -155,6 +155,20 @@ export default class ColumnsComponent extends NestedComponent {
 
   justify() {
     _.each(this.rows, this.justifyRow.bind(this));
+  }
+
+  checkConditions(data) {
+    if (this.component.autoAdjust) {
+      const before = this.nbVisible;
+      const result = super.checkConditions(data);
+      if (before !== this.nbVisible) {
+        this.justify();
+      }
+      return result;
+    }
+    else {
+      return super.checkConditions(data);
+    }
   }
 
   detach(all) {

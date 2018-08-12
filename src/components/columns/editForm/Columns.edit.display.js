@@ -42,8 +42,8 @@ export default [
   {
     weight: 160,
     type: 'checkbox',
-    label: 'Auto adjustment',
-    tooltip: 'Whether to justify columns when some of them are hidden.',
-    key: 'autoAdjustment',
+    label: 'Auto adjust columns',
+    tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
+    key: 'autoAdjust',
     input: true
   }];
