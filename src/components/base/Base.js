@@ -1235,9 +1235,7 @@ export default class BaseComponent {
     container.appendChild(this.text(' '));
     container.appendChild(ttElement);
     this.tooltip = new Tooltip(ttElement, {
-      delay: {
-        hide: 100
-      },
+      trigger: 'hover click',
       placement: 'right',
       html: true,
       title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')

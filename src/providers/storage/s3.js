@@ -1,15 +1,13 @@
 import Promise from 'native-promise-only';
-
+import _trim from 'lodash/trim';
+const trim = function(text) {
+  return _trim(text, '/');
+};
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback) {
     return new Promise(((resolve, reject) => {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
-
-      const prefd = new FormData();
-      prefd.append('name', fileName);
-      prefd.append('size', file.size);
-      prefd.append('type', file.type);
 
       // This only fires on a network error.
       pre.onerror = (err) => {
@@ -31,13 +29,7 @@ const s3 = (formio) => ({
           }
 
           response.data.fileName = fileName;
-          response.data.key += dir + fileName;
-
-          const fd = new FormData();
-          for (const key in response.data) {
-            fd.append(key, response.data[key]);
-          }
-          fd.append('file', file);
+          response.data.key = `${trim(response.data.key)}/${trim(dir)}/${trim(fileName)}`;
 
           // Fire on network error.
           xhr.onerror = (err) => {
@@ -52,7 +44,7 @@ const s3 = (formio) => ({
                 name: fileName,
                 bucket: response.bucket,
                 key: response.data.key,
-                url: response.url + response.data.key,
+                url: `${trim(response.url)}/${trim(response.data.key)}`,
                 acl: response.data.acl,
                 size: file.size,
                 type: file.type
@@ -64,10 +56,20 @@ const s3 = (formio) => ({
           };
 
           xhr.onabort = reject;
-
-          xhr.open('POST', response.url);
-
-          xhr.send(fd);
+          if (response.signed) {
+            xhr.open('PUT', response.signed);
+            xhr.setRequestHeader('Content-Type', file.type);
+            xhr.send(file);
+          }
+          else {
+            const fd = new FormData();
+            for (const key in response.data) {
+              fd.append(key, response.data[key]);
+            }
+            fd.append('file', file);
+            xhr.open('POST', response.url);
+            xhr.send(fd);
+          }
         }
         else {
           reject(pre.response || 'Unable to sign file');
@@ -84,7 +86,7 @@ const s3 = (formio) => ({
       }
 
       pre.send(JSON.stringify({
-        name: fileName,
+        name: trim(`${trim(dir)}/${trim(fileName)}`),
         size: file.size,
         type: file.type
       }));
@@ -92,7 +94,7 @@ const s3 = (formio) => ({
   },
   downloadFile(file) {
     if (file.acl !== 'public-read') {
-      return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${file.bucket}&key=${file.key}`, 'GET');
+      return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${trim(file.bucket)}&key=${trim(file.key)}`, 'GET');
     }
     else {
       return Promise.resolve(file);

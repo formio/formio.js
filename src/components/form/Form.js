@@ -271,6 +271,9 @@ export default class FormComponent extends BaseComponent {
   }
 
   getAllComponents() {
+    if (!this.subForm) {
+      return [];
+    }
     return this.subForm.getAllComponents();
   }
 }

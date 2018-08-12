@@ -33,5 +33,12 @@ export default [
         label: 'Pull'
       }
     ]
-  }
-];
+  },
+  {
+    weight: 160,
+    type: 'checkbox',
+    label: 'Auto adjust columns',
+    tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
+    key: 'autoAdjust',
+    input: true
+  }];
