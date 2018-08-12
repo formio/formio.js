@@ -44,7 +44,7 @@ export default class NestedComponent extends BaseComponent {
     return this.getComponents().reduce((components, component) => {
       let result = component;
 
-      if (component.getAllComponents) {
+      if (component && component.getAllComponents) {
         result = component.getAllComponents();
       }
 
