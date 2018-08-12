@@ -706,7 +706,7 @@ export default class Webform extends NestedComponent {
       submission = { data: {} };
     }
     // Metadata needs to be available before setValue
-    this._submission.metadata = submission.metadata;
+    this._submission.metadata = submission.metadata || {};
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
     submission.data = this.data;
