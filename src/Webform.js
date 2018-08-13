@@ -4,6 +4,7 @@ import * as polyfill from './formio.polyfill';
 /* eslint-enable no-unused-vars */
 
 import _ from 'lodash';
+import moment from 'moment';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from './Formio';
@@ -704,6 +705,8 @@ export default class Webform extends NestedComponent {
     if (!submission || !submission.data) {
       submission = { data: {} };
     }
+    // Metadata needs to be available before setValue
+    this._submission.metadata = submission.metadata || {};
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
     submission.data = this.data;
@@ -955,6 +958,18 @@ export default class Webform extends NestedComponent {
     }
   }
 
+  get submissionOffset() {
+    return parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10);
+  }
+
+  get hasTimezone() {
+    return _.has(this, '_submission.metadata.timezone');
+  }
+
+  get submissionTimezone() {
+    return _.get(this, '_submission.metadata.timezone', this.timezone);
+  }
+
   submitForm(options = {}) {
     return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -966,6 +981,19 @@ export default class Webform extends NestedComponent {
       }
 
       const submission = this.submission || {};
+
+      // Add in metadata about client submitting the form
+      submission.metadata = submission.metadata || {};
+      _.defaults(submission.metadata, {
+        timezone: this.submissionTimezone,
+        offset: this.submissionOffset,
+        referrer: document.referrer,
+        browserName: navigator.appName,
+        userAgent: navigator.userAgent,
+        pathName: window.location.pathname,
+        onLine: navigator.onLine,
+      });
+
       submission.state = options.state || 'submitted';
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', submission, (err) => {
