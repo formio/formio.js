@@ -755,6 +755,34 @@ export function convertFormatToFlatpickr(format) {
     .replace(/a/g, 'K');
 }
 
+export function convertFlatpickrToFormat(format) {
+  return format
+    // Year conversion.
+    .replace('Y', 'YYYY')
+    .replace('y', 'YY')
+
+    // Month conversion.
+    .replace('F', 'MMMM')
+    .replace('M', 'MMM')
+    .replace('m', 'MM')
+    .replace('n', 'M')
+
+    // Day in month.
+    .replace('d', 'dd')
+    .replace('j', 'd')
+
+    // Day in week.
+    .replace('l', 'EEEE')
+    .replace('D', 'EEE')
+
+    // Hours, minutes, seconds
+    .replace('H', 'HH')
+    .replace('h', 'H')
+    .replace('i', 'mm')
+    .replace('S', 'ss')
+    .replace('K', 'a');
+}
+
 /**
  * Convert the format from the angular-datepicker module to moment format.
  * @param format

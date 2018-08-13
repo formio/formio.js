@@ -25,6 +25,14 @@ export default [
     weight: 51
   },
   {
+    type: 'checkbox',
+    input: true,
+    key: 'allowInput',
+    label: 'Allow Manual Input',
+    tooltip: 'Check this if you would like to allow the user to manually enter in the date.',
+    weight: 51
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'format',
