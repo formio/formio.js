@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - A method for working with Encrypted S3 buckets.
  - A way to configure the Columns component so that it hides columns where all elements are hidden in that column.
  - A different view widget to view images with file component on devices that support Camera.
+ - A way to input text into the DateTime component.
 ### Changed
  - Upgraded i18next@11.6.0 and upgraded dev dependencies.
 ### Fixed
