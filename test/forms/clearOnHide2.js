@@ -1207,7 +1207,7 @@ export default {
   },
   tests: {
     'Test hiding and showing components'(form, done) {
-      const fullData = _cloneDeep(form.getValue());
+      const fullData = _cloneDeep(_omit(form.getValue(), ['metadata']));
       form.getComponent('hide', component => {
         component.setValue(true);
         form.checkConditions(form.getValue());
