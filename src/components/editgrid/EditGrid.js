@@ -100,6 +100,10 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   buildTable() {
+    // Do not show the table when in builder mode.
+    if (this.options.builder) {
+      return;
+    }
     let tableClass = 'editgrid-listgroup list-group ';
     _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {

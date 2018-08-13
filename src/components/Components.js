@@ -10,6 +10,14 @@ export default class Components {
   }
 
   static setComponents(comps) {
+    // Set the tableView method on BaseComponent.
+    if (comps.base) {
+      // Implement the tableView method.
+      comps.base.tableView = function(value, options) {
+        const comp = Components.create(options.component, {}, {}, true);
+        return comp.getView(value);
+      };
+    }
     _.assign(Components.components, comps);
   }
 

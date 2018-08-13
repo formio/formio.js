@@ -141,6 +141,17 @@ export default class BaseComponent {
   }
 
   /**
+   * Provides a table view for this component. Override if you wish to do something different than using getView
+   * method of your instance.
+   *
+   * @param value
+   * @param options
+   */
+  /* eslint-disable no-unused-vars */
+  static tableView(value, options) {}
+  /* eslint-enable no-unused-vars */
+
+  /**
    * Initialize a new BaseComponent.
    *
    * @param {Object} component - The component JSON you wish to initialize.
