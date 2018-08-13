@@ -170,12 +170,29 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/editForm/DateTime.edit.display.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
   {
+    type: &apos;select&apos;,
+    input: true,
+    key: &apos;displayInTimezone&apos;,
+    label: &apos;Display in Timezone&apos;,
+    tooltip: &apos;This will display the captured date time in the select timezone.&apos;,
+    weight: 30,
+    defaultValue: &apos;submission&apos;,
+    dataSrc: &apos;values&apos;,
+    data: {
+      values: [
+        { label: &apos;of Viewer&apos;, value: &apos;viewer&apos; },
+        { label: &apos;of Submission&apos;, value: &apos;submission&apos; },
+        { label: &apos;of GMT&apos;, value: &apos;gmt&apos; }
+      ]
+    }
+  },
+  {
     type: &apos;checkbox&apos;,
     input: true,
     key: &apos;useLocaleSettings&apos;,
     label: &apos;Use Locale Settings&apos;,
     tooltip: &apos;Use locale settings to display date and time.&apos;,
-    weight: 50
+    weight: 51
   },
   {
     type: &apos;textfield&apos;,
@@ -184,7 +201,7 @@
     label: &apos;Format&apos;,
     placeholder: &apos;Format&apos;,
     tooltip: &apos;The moment.js format for saving the value of this field.&apos;,
-    weight: 51
+    weight: 52
   }
 ];
 </code></pre>

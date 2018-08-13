@@ -229,7 +229,6 @@ export default class DateTimeComponent extends BaseComponent {
     super(component, options, data);
     this.validators.push(&apos;date&apos;);
     this.closedOn = 0;
-
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? &apos;d/m/Y &apos; : &apos;m/d/Y &apos;,
@@ -282,7 +281,7 @@ export default class DateTimeComponent extends BaseComponent {
     return false;
   }
 
-  getLocaleFormat() {
+  get localeFormat() {
     let format = &apos;&apos;;
 
     if (this.component.enableDate) {
@@ -296,7 +295,39 @@ export default class DateTimeComponent extends BaseComponent {
     return format;
   }
 
+  get dateTimeFormat() {
+    return this.component.useLocaleSettings
+      ? this.localeFormat()
+      : convertFormatToFlatpickr(_.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;));
+  }
+
+  offset(date) {
+    if (
+      (this.component.displayInTimezone === &apos;submission&apos;) &amp;&amp;
+      this.root &amp;&amp;
+      this.root.hasTimezone
+    ) {
+      return {
+        date: new Date(date.getTime() + ((this.root.submissionOffset + date.getTimezoneOffset()) * 60000)),
+        timezone: ` (${this.root.submissionTimezone})`
+      };
+    }
+    else if (
+      (this.component.displayInTimezone === &apos;gmt&apos;)
+    ) {
+      return {
+        date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+        timezone: &apos; (GMT)&apos;
+      };
+    }
+    return {
+      date,
+      timezone: ` (${this.timezone})`
+    };
+  }
+
   get config() {
+    const altFormat = this.dateTimeFormat;
     /* eslint-disable camelcase */
     return {
       altInput: true,
@@ -305,9 +336,7 @@ export default class DateTimeComponent extends BaseComponent {
       mode: this.component.multiple ? &apos;multiple&apos; : &apos;single&apos;,
       enableTime: _.get(this.component, &apos;enableTime&apos;, true),
       noCalendar: !_.get(this.component, &apos;enableDate&apos;, true),
-      altFormat: this.component.useLocaleSettings
-        ? this.getLocaleFormat()
-        : convertFormatToFlatpickr(_.get(this.component, &apos;format&apos;, &apos;&apos;)),
+      altFormat: altFormat,
       dateFormat: &apos;U&apos;,
       defaultDate: this.defaultDate,
       hourIncrement: _.get(this.component, &apos;timePicker.hourStep&apos;, 1),
@@ -316,7 +345,16 @@ export default class DateTimeComponent extends BaseComponent {
       minDate: getDateSetting(_.get(this.component, &apos;datePicker.minDate&apos;)),
       maxDate: getDateSetting(_.get(this.component, &apos;datePicker.maxDate&apos;)),
       onChange: () =&gt; this.onChange({ noValidate: true }),
-      onClose: () =&gt; this.closedOn = Date.now()
+      onClose: () =&gt; this.closedOn = Date.now(),
+      formatDate: (date, format) =&gt; {
+        // Only format this if this is the altFormat and the form is readOnly.
+        if (this.options.readOnly &amp;&amp; (format === altFormat)) {
+          const offset = this.offset(date);
+          return `${Flatpickr.formatDate(offset.date, format)}${offset.timezone}`;
+        }
+
+        return Flatpickr.formatDate(date, format);
+      }
     };
     /* eslint-enable camelcase */
   }
@@ -410,7 +448,13 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, &apos;format&apos;, &apos;&apos;))) : &apos;&apos;;
+    if (!value) {
+      return &apos;&apos;;
+    }
+    const offset = this.offset(moment(value).toDate());
+    const dateFormat = convertFormatToMoment(_.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;));
+    const formatted = moment(offset.date).format(dateFormat);
+    return `${formatted}${offset.timezone}`;
   }
 
   setValueAt(index, value) {

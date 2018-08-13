@@ -168,11 +168,23 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/columns/Column.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedComponent from &apos;../nested/NestedComponent&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import NestedComponent from &apos;../nested/NestedComponent&apos;;
 export default class ColumnComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+  }
+
+  conditionallyVisible(data) {
+    // Check children components for visibility.
+    const allChildrenHidden = _.every(this.getComponents(), [&apos;visible&apos;, false]);
+
+    if (allChildrenHidden) {
+      return false;
+    }
+
+    return super.conditionallyVisible(data);
   }
 
   get className() {

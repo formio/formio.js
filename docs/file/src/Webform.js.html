@@ -174,6 +174,7 @@ import * as polyfill from &apos;./formio.polyfill&apos;;
 /* eslint-enable no-unused-vars */
 
 import _ from &apos;lodash&apos;;
+import moment from &apos;moment&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import i18next from &apos;i18next&apos;;
 import Formio from &apos;./Formio&apos;;
@@ -874,6 +875,8 @@ export default class Webform extends NestedComponent {
     if (!submission || !submission.data) {
       submission = { data: {} };
     }
+    // Metadata needs to be available before setValue
+    this._submission.metadata = submission.metadata || {};
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
     submission.data = this.data;
@@ -1125,6 +1128,18 @@ export default class Webform extends NestedComponent {
     }
   }
 
+  get submissionOffset() {
+    return parseInt(_.get(this, &apos;_submission.metadata.offset&apos;, moment().utcOffset()), 10);
+  }
+
+  get hasTimezone() {
+    return _.has(this, &apos;_submission.metadata.timezone&apos;);
+  }
+
+  get submissionTimezone() {
+    return _.get(this, &apos;_submission.metadata.timezone&apos;, this.timezone);
+  }
+
   submitForm(options = {}) {
     return new Promise((resolve, reject) =&gt; {
       // Read-only forms should never submit.
@@ -1136,6 +1151,19 @@ export default class Webform extends NestedComponent {
       }
 
       const submission = this.submission || {};
+
+      // Add in metadata about client submitting the form
+      submission.metadata = submission.metadata || {};
+      _.defaults(submission.metadata, {
+        timezone: this.submissionTimezone,
+        offset: this.submissionOffset,
+        referrer: document.referrer,
+        browserName: navigator.appName,
+        userAgent: navigator.userAgent,
+        pathName: window.location.pathname,
+        onLine: navigator.onLine,
+      });
+
       submission.state = options.state || &apos;submitted&apos;;
       const isDraft = (submission.state === &apos;draft&apos;);
       this.hook(&apos;beforeSubmit&apos;, submission, (err) =&gt; {

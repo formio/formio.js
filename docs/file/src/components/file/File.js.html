@@ -424,6 +424,60 @@ export default class FileComponent extends BaseComponent {
   buildUpload() {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
+    // Declare Camera Instace
+    let Camera;
+    // Implement Camera file upload for WebView Apps.
+    if ((navigator.camera || Camera) &amp;&amp; this.component.image) {
+      const camera = navigator.camera || Camera;
+      return this.ce(&apos;div&apos;, {},
+        (!this.disabled &amp;&amp; (this.component.multiple || this.dataValue.length === 0)) ?
+          this.ce(&apos;div&apos;,
+            {
+              class: &apos;fileSelector&apos;
+            },
+            [
+              this.ce(&apos;button&apos;,
+                {
+                  class: &apos;btn btn-primary&apos;,
+                  onClick: (event) =&gt; {
+                    event.preventDefault();
+                    camera.getPicture((success) =&gt; {
+                      window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
+                        fileEntry.file((file) =&gt; {
+                          this.upload([file]);
+                        });
+                      });
+                    }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
+                  }
+                },
+                [
+                  this.ce(&apos;i&apos;, { class: this.iconClass(&apos;book&apos;) }),
+                  this.text(&apos;Gallery&apos;)
+                ]
+              ),
+              this.ce(&apos;button&apos;,
+                {
+                  class: &apos;btn btn-primary&apos;,
+                  onClick: (event) =&gt; {
+                    event.preventDefault();
+                    camera.getPicture((success) =&gt; {
+                      window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
+                        fileEntry.file((file) =&gt; {
+                          this.upload([file]);
+                        });
+                      });
+                    });
+                  }
+                },
+                [
+                  this.ce(&apos;i&apos;, { class: this.iconClass(&apos;camera&apos;) }),
+                  this.text(&apos;Camera&apos;)
+                ]
+              )
+            ]
+          ) : this.ce(&apos;div&apos;)
+      );
+    }
     // If this is disabled or a single value with a value, don&apos;t show the upload div.
     return this.ce(&apos;div&apos;, {},
       (
