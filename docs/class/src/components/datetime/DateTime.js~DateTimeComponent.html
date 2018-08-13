@@ -130,6 +130,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFlatpickrToFormat">convertFlatpickrToFormat</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
@@ -168,13 +169,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import DateTimeComponent from &apos;<span><a href="file/src/components/datetime/DateTime.js.html#lineNumber14">formiojs/src/components/datetime/DateTime.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import DateTimeComponent from &apos;<span><a href="file/src/components/datetime/DateTime.js.html#lineNumber15">formiojs/src/components/datetime/DateTime.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/components/datetime/DateTime.js.html#lineNumber14">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/components/datetime/DateTime.js.html#lineNumber15">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -357,7 +358,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-config">config</a></span></span><span class="code" data-ice="signature">: {&quot;altInput&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;clickOpens&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;enableDate&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;mode&quot;: <span>*</span>, &quot;enableTime&quot;: <span>*</span>, &quot;noCalendar&quot;: <span>*</span>, &quot;altFormat&quot;: <span>*</span>, &quot;dateFormat&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;defaultDate&quot;: <span>*</span>, &quot;hourIncrement&quot;: <span>*</span>, &quot;minuteIncrement&quot;: <span>*</span>, &quot;time_24hr&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;onChange&quot;: <span>*</span>, &quot;onClose&quot;: <span>*</span>, &quot;formatDate&quot;: <span>*</span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-config">config</a></span></span><span class="code" data-ice="signature">: {&quot;altInput&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;allowInput&quot;: <span>*</span>, &quot;clickOpens&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;enableDate&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;mode&quot;: <span>*</span>, &quot;enableTime&quot;: <span>*</span>, &quot;noCalendar&quot;: <span>*</span>, &quot;altFormat&quot;: <span>*</span>, &quot;dateFormat&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;defaultDate&quot;: <span>*</span>, &quot;hourIncrement&quot;: <span>*</span>, &quot;minuteIncrement&quot;: <span>*</span>, &quot;time_24hr&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;onChange&quot;: <span>*</span>, &quot;onClose&quot;: <span>*</span>, &quot;formatDate&quot;: <span>*</span>}</span>
         </p>
       </div>
       <div>
@@ -6368,7 +6369,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber47">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber50">source</a></span></span>
     </span>
   </h3>
 
@@ -6414,7 +6415,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber16">source</a></span></span>
     </span>
   </h3>
 
@@ -6488,7 +6489,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber58">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
@@ -6535,7 +6536,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber61">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber64">source</a></span></span>
     </span>
   </h3>
 
@@ -6574,11 +6575,11 @@ Removes all listeners for a certain event.</p>
     
     
     
-    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">: {&quot;altInput&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;clickOpens&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;enableDate&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;mode&quot;: <span>*</span>, &quot;enableTime&quot;: <span>*</span>, &quot;noCalendar&quot;: <span>*</span>, &quot;altFormat&quot;: <span>*</span>, &quot;dateFormat&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;defaultDate&quot;: <span>*</span>, &quot;hourIncrement&quot;: <span>*</span>, &quot;minuteIncrement&quot;: <span>*</span>, &quot;time_24hr&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;onChange&quot;: <span>*</span>, &quot;onClose&quot;: <span>*</span>, &quot;formatDate&quot;: <span>*</span>}</span>
+    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">: {&quot;altInput&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;allowInput&quot;: <span>*</span>, &quot;clickOpens&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;enableDate&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, &quot;mode&quot;: <span>*</span>, &quot;enableTime&quot;: <span>*</span>, &quot;noCalendar&quot;: <span>*</span>, &quot;altFormat&quot;: <span>*</span>, &quot;dateFormat&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;defaultDate&quot;: <span>*</span>, &quot;hourIncrement&quot;: <span>*</span>, &quot;minuteIncrement&quot;: <span>*</span>, &quot;time_24hr&quot;: <span>*</span>, &quot;minDate&quot;: <span>*</span>, &quot;maxDate&quot;: <span>*</span>, &quot;onChange&quot;: <span>*</span>, &quot;onClose&quot;: <span>*</span>, &quot;formatDate&quot;: <span>*</span>}</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber159">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber166">source</a></span></span>
     </span>
   </h3>
 
@@ -6621,7 +6622,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 
@@ -6664,7 +6665,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber105">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber112">source</a></span></span>
     </span>
   </h3>
 
@@ -6720,7 +6721,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber63">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber66">source</a></span></span>
     </span>
   </h3>
 
@@ -6763,7 +6764,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber69">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
@@ -6806,7 +6807,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber73">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber76">source</a></span></span>
     </span>
   </h3>
 
@@ -6849,7 +6850,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber192">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber200">source</a></span></span>
     </span>
   </h3>
 
@@ -6893,7 +6894,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber104">source</a></span></span>
     </span>
   </h3>
 
@@ -6937,7 +6938,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber114">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber121">source</a></span></span>
     </span>
   </h3>
 
@@ -6980,7 +6981,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber249">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber257">source</a></span></span>
     </span>
   </h3>
 
@@ -7026,7 +7027,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber209">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber217">source</a></span></span>
     </span>
   </h3>
 
@@ -7104,7 +7105,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber110">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber117">source</a></span></span>
     </span>
   </h3>
 
@@ -7160,7 +7161,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber88">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -7216,7 +7217,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber308">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber316">source</a></span></span>
     </span>
   </h3>
 
@@ -7259,7 +7260,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber233">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber241">source</a></span></span>
     </span>
   </h3>
 
@@ -7331,7 +7332,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber241">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber249">source</a></span></span>
     </span>
   </h3>
 
@@ -7402,7 +7403,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber262">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber270">source</a></span></span>
     </span>
   </h3>
 
@@ -7474,7 +7475,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber280">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber288">source</a></span></span>
     </span>
   </h3>
 
@@ -7545,7 +7546,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber134">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber141">source</a></span></span>
     </span>
   </h3>
 
@@ -7616,7 +7617,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber290">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datetime/DateTime.js.html#lineNumber298">source</a></span></span>
     </span>
   </h3>
 
