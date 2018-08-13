@@ -958,6 +958,18 @@ export default class Webform extends NestedComponent {
     }
   }
 
+  get submissionOffset() {
+    return parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10);
+  }
+
+  get hasTimezone() {
+    return _.has(this, '_submission.metadata.timezone');
+  }
+
+  get submissionTimezone() {
+    return _.get(this, '_submission.metadata.timezone', this.timezone);
+  }
+
   submitForm(options = {}) {
     return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -973,7 +985,8 @@ export default class Webform extends NestedComponent {
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
       _.defaults(submission.metadata, {
-        timezone: moment().utcOffset(),
+        timezone: this.submissionTimezone,
+        offset: this.submissionOffset,
         referrer: document.referrer,
         browserName: navigator.appName,
         userAgent: navigator.userAgent,

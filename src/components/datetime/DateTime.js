@@ -66,10 +66,6 @@ export default class DateTimeComponent extends BaseComponent {
     };
   }
 
-  get offset() {
-    return parseInt(_.get(this, 'root.submission.metadata.timezone', moment().utcOffset()), 10);
-  }
-
   get defaultSchema() {
     return DateTimeComponent.schema();
   }
@@ -135,17 +131,29 @@ export default class DateTimeComponent extends BaseComponent {
       : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
   }
 
-  timeZone(date) {
-    // Modern browsers have Intl to get the timezone name of this offset.
-    if (Intl && Intl.DateTimeFormat && navigator && navigator.languages && navigator.languages.length) {
-      const matches = (new Intl.DateTimeFormat(navigator.languages[0], {
-        timeZoneName: 'short'
-      })).format(date).match(/, (.+)$/);
-      if (matches && matches.length > 1) {
-        return matches[1];
-      }
+  offset(date) {
+    if (
+      (this.component.displayInTimezone === 'submission') &&
+      this.root &&
+      this.root.hasTimezone
+    ) {
+      return {
+        date: new Date(date.getTime() + ((this.submissionOffset + date.getTimezoneOffset()) * 60000)),
+        timezone: ` (${this.root.submissionTimezone})`
+      };
     }
-    return moment(date).format('Z');
+    else if (
+      (this.component.displayInTimezone === 'gmt')
+    ) {
+      return {
+        date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+        timezone: ' (GMT)'
+      };
+    }
+    return {
+      date,
+      timezone: ` (${this.timezone})`
+    };
   }
 
   get config() {
@@ -171,8 +179,8 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) => {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
-          const newDate = moment(date).utcOffset(this.offset).toDate();
-          return `${Flatpickr.formatDate(newDate, format)} (${this.timeZone(newDate)})`;
+          const offset = this.offset(date);
+          return `${Flatpickr.formatDate(offset.date, format)}${offset.timezone}`;
         }
 
         return Flatpickr.formatDate(date, format);
@@ -273,9 +281,10 @@ export default class DateTimeComponent extends BaseComponent {
     if (!value) {
       return '';
     }
-    const date = moment(value).utcOffset(this.offset);
+    const offset = this.offset(moment(value).toDate());
     const dateFormat = convertFormatToMoment(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
-    return `${date.format(dateFormat)} (${this.timeZone(date.toDate())})`;
+    const formatted = moment(offset.date).format(dateFormat);
+    return `${formatted}${offset.timezone}`;
   }
 
   setValueAt(index, value) {
