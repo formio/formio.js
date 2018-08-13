@@ -154,7 +154,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _nativePromiseOnly = __webpack_require__(/*! native-promise-only */ \"./node_modules/native-promise-only/lib/npo.src.js\");\n\nvar _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar s3 = function s3(formio) {\n  return {\n    uploadFile: function uploadFile(file, fileName, dir, progressCallback) {\n      return new _nativePromiseOnly2.default(function (resolve, reject) {\n        // Send the pre response to sign the upload.\n        var pre = new XMLHttpRequest();\n\n        var prefd = new FormData();\n        prefd.append('name', fileName);\n        prefd.append('size', file.size);\n        prefd.append('type', file.type);\n\n        // This only fires on a network error.\n        pre.onerror = function (err) {\n          err.networkError = true;\n          reject(err);\n        };\n\n        pre.onabort = reject;\n\n        pre.onload = function () {\n          if (pre.status >= 200 && pre.status < 300) {\n            var response = JSON.parse(pre.response);\n\n            // Send the file with data.\n            var xhr = new XMLHttpRequest();\n\n            if (typeof progressCallback === 'function') {\n              xhr.upload.onprogress = progressCallback;\n            }\n\n            response.data.fileName = fileName;\n            response.data.key += dir + fileName;\n\n            var fd = new FormData();\n            for (var key in response.data) {\n              fd.append(key, response.data[key]);\n            }\n            fd.append('file', file);\n\n            // Fire on network error.\n            xhr.onerror = function (err) {\n              err.networkError = true;\n              reject(err);\n            };\n\n            xhr.onload = function () {\n              if (xhr.status >= 200 && xhr.status < 300) {\n                resolve({\n                  storage: 's3',\n                  name: fileName,\n                  bucket: response.bucket,\n                  key: response.data.key,\n                  url: response.url + response.data.key,\n                  acl: response.data.acl,\n                  size: file.size,\n                  type: file.type\n                });\n              } else {\n                reject(xhr.response || 'Unable to upload file');\n              }\n            };\n\n            xhr.onabort = reject;\n\n            xhr.open('POST', response.url);\n\n            xhr.send(fd);\n          } else {\n            reject(pre.response || 'Unable to sign file');\n          }\n        };\n\n        pre.open('POST', formio.formUrl + '/storage/s3');\n\n        pre.setRequestHeader('Accept', 'application/json');\n        pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');\n        var token = formio.getToken();\n        if (token) {\n          pre.setRequestHeader('x-jwt-token', token);\n        }\n\n        pre.send(JSON.stringify({\n          name: fileName,\n          size: file.size,\n          type: file.type\n        }));\n      });\n    },\n    downloadFile: function downloadFile(file) {\n      if (file.acl !== 'public-read') {\n        return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + file.bucket + '&key=' + file.key, 'GET');\n      } else {\n        return _nativePromiseOnly2.default.resolve(file);\n      }\n    }\n  };\n};\n\ns3.title = 'S3';\nexports.default = s3;\n\n//# sourceURL=webpack:///./lib/providers/storage/s3.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _nativePromiseOnly = __webpack_require__(/*! native-promise-only */ \"./node_modules/native-promise-only/lib/npo.src.js\");\n\nvar _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);\n\nvar _trim2 = __webpack_require__(/*! lodash/trim */ \"./node_modules/lodash/trim.js\");\n\nvar _trim3 = _interopRequireDefault(_trim2);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar trim = function trim(text) {\n  return (0, _trim3.default)(text, '/');\n};\nvar s3 = function s3(formio) {\n  return {\n    uploadFile: function uploadFile(file, fileName, dir, progressCallback) {\n      return new _nativePromiseOnly2.default(function (resolve, reject) {\n        // Send the pre response to sign the upload.\n        var pre = new XMLHttpRequest();\n\n        // This only fires on a network error.\n        pre.onerror = function (err) {\n          err.networkError = true;\n          reject(err);\n        };\n\n        pre.onabort = reject;\n\n        pre.onload = function () {\n          if (pre.status >= 200 && pre.status < 300) {\n            var response = JSON.parse(pre.response);\n\n            // Send the file with data.\n            var xhr = new XMLHttpRequest();\n\n            if (typeof progressCallback === 'function') {\n              xhr.upload.onprogress = progressCallback;\n            }\n\n            response.data.fileName = fileName;\n            response.data.key = trim(response.data.key) + '/' + trim(dir) + '/' + trim(fileName);\n\n            // Fire on network error.\n            xhr.onerror = function (err) {\n              err.networkError = true;\n              reject(err);\n            };\n\n            xhr.onload = function () {\n              if (xhr.status >= 200 && xhr.status < 300) {\n                resolve({\n                  storage: 's3',\n                  name: fileName,\n                  bucket: response.bucket,\n                  key: response.data.key,\n                  url: trim(response.url) + '/' + trim(response.data.key),\n                  acl: response.data.acl,\n                  size: file.size,\n                  type: file.type\n                });\n              } else {\n                reject(xhr.response || 'Unable to upload file');\n              }\n            };\n\n            xhr.onabort = reject;\n            if (response.signed) {\n              xhr.open('PUT', response.signed);\n              xhr.setRequestHeader('Content-Type', file.type);\n              xhr.send(file);\n            } else {\n              var fd = new FormData();\n              for (var key in response.data) {\n                fd.append(key, response.data[key]);\n              }\n              fd.append('file', file);\n              xhr.open('POST', response.url);\n              xhr.send(fd);\n            }\n          } else {\n            reject(pre.response || 'Unable to sign file');\n          }\n        };\n\n        pre.open('POST', formio.formUrl + '/storage/s3');\n\n        pre.setRequestHeader('Accept', 'application/json');\n        pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');\n        var token = formio.getToken();\n        if (token) {\n          pre.setRequestHeader('x-jwt-token', token);\n        }\n\n        pre.send(JSON.stringify({\n          name: trim(trim(dir) + '/' + trim(fileName)),\n          size: file.size,\n          type: file.type\n        }));\n      });\n    },\n    downloadFile: function downloadFile(file) {\n      if (file.acl !== 'public-read') {\n        return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + trim(file.bucket) + '&key=' + trim(file.key), 'GET');\n      } else {\n        return _nativePromiseOnly2.default.resolve(file);\n      }\n    }\n  };\n};\n\ns3.title = 'S3';\nexports.default = s3;\n\n//# sourceURL=webpack:///./lib/providers/storage/s3.js?");
 
 /***/ }),
 
@@ -258,6 +258,17 @@ eval("/**\n * A specialized version of `_.map` for arrays without support for it
 
 /***/ }),
 
+/***/ "./node_modules/lodash/_asciiToArray.js":
+/*!**********************************************!*\
+  !*** ./node_modules/lodash/_asciiToArray.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * Converts an ASCII `string` to an array.\n *\n * @private\n * @param {string} string The string to convert.\n * @returns {Array} Returns the converted array.\n */\nfunction asciiToArray(string) {\n  return string.split('');\n}\n\nmodule.exports = asciiToArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_asciiToArray.js?");
+
+/***/ }),
+
 /***/ "./node_modules/lodash/_assocIndexOf.js":
 /*!**********************************************!*\
   !*** ./node_modules/lodash/_assocIndexOf.js ***!
@@ -266,6 +277,17 @@ eval("/**\n * A specialized version of `_.map` for arrays without support for it
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var eq = __webpack_require__(/*! ./eq */ \"./node_modules/lodash/eq.js\");\n\n/**\n * Gets the index at which the `key` is found in `array` of key-value pairs.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {*} key The key to search for.\n * @returns {number} Returns the index of the matched value, else `-1`.\n */\nfunction assocIndexOf(array, key) {\n  var length = array.length;\n  while (length--) {\n    if (eq(array[length][0], key)) {\n      return length;\n    }\n  }\n  return -1;\n}\n\nmodule.exports = assocIndexOf;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_assocIndexOf.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_baseFindIndex.js":
+/*!***********************************************!*\
+  !*** ./node_modules/lodash/_baseFindIndex.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * The base implementation of `_.findIndex` and `_.findLastIndex` without\n * support for iteratee shorthands.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {Function} predicate The function invoked per iteration.\n * @param {number} fromIndex The index to search from.\n * @param {boolean} [fromRight] Specify iterating from right to left.\n * @returns {number} Returns the index of the matched value, else `-1`.\n */\nfunction baseFindIndex(array, predicate, fromIndex, fromRight) {\n  var length = array.length,\n      index = fromIndex + (fromRight ? 1 : -1);\n\n  while ((fromRight ? index-- : ++index < length)) {\n    if (predicate(array[index], index, array)) {\n      return index;\n    }\n  }\n  return -1;\n}\n\nmodule.exports = baseFindIndex;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseFindIndex.js?");
 
 /***/ }),
 
@@ -291,6 +313,28 @@ eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/
 
 /***/ }),
 
+/***/ "./node_modules/lodash/_baseIndexOf.js":
+/*!*********************************************!*\
+  !*** ./node_modules/lodash/_baseIndexOf.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var baseFindIndex = __webpack_require__(/*! ./_baseFindIndex */ \"./node_modules/lodash/_baseFindIndex.js\"),\n    baseIsNaN = __webpack_require__(/*! ./_baseIsNaN */ \"./node_modules/lodash/_baseIsNaN.js\"),\n    strictIndexOf = __webpack_require__(/*! ./_strictIndexOf */ \"./node_modules/lodash/_strictIndexOf.js\");\n\n/**\n * The base implementation of `_.indexOf` without `fromIndex` bounds checks.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {*} value The value to search for.\n * @param {number} fromIndex The index to search from.\n * @returns {number} Returns the index of the matched value, else `-1`.\n */\nfunction baseIndexOf(array, value, fromIndex) {\n  return value === value\n    ? strictIndexOf(array, value, fromIndex)\n    : baseFindIndex(array, baseIsNaN, fromIndex);\n}\n\nmodule.exports = baseIndexOf;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIndexOf.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_baseIsNaN.js":
+/*!*******************************************!*\
+  !*** ./node_modules/lodash/_baseIsNaN.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * The base implementation of `_.isNaN` without support for number objects.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.\n */\nfunction baseIsNaN(value) {\n  return value !== value;\n}\n\nmodule.exports = baseIsNaN;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIsNaN.js?");
+
+/***/ }),
+
 /***/ "./node_modules/lodash/_baseIsNative.js":
 /*!**********************************************!*\
   !*** ./node_modules/lodash/_baseIsNative.js ***!
@@ -299,6 +343,17 @@ eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var isFunction = __webpack_require__(/*! ./isFunction */ \"./node_modules/lodash/isFunction.js\"),\n    isMasked = __webpack_require__(/*! ./_isMasked */ \"./node_modules/lodash/_isMasked.js\"),\n    isObject = __webpack_require__(/*! ./isObject */ \"./node_modules/lodash/isObject.js\"),\n    toSource = __webpack_require__(/*! ./_toSource */ \"./node_modules/lodash/_toSource.js\");\n\n/**\n * Used to match `RegExp`\n * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).\n */\nvar reRegExpChar = /[\\\\^$.*+?()[\\]{}|]/g;\n\n/** Used to detect host constructors (Safari). */\nvar reIsHostCtor = /^\\[object .+?Constructor\\]$/;\n\n/** Used for built-in method references. */\nvar funcProto = Function.prototype,\n    objectProto = Object.prototype;\n\n/** Used to resolve the decompiled source of functions. */\nvar funcToString = funcProto.toString;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/** Used to detect if a method is native. */\nvar reIsNative = RegExp('^' +\n  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\\\$&')\n  .replace(/hasOwnProperty|(function).*?(?=\\\\\\()| for .+?(?=\\\\\\])/g, '$1.*?') + '$'\n);\n\n/**\n * The base implementation of `_.isNative` without bad shim checks.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a native function,\n *  else `false`.\n */\nfunction baseIsNative(value) {\n  if (!isObject(value) || isMasked(value)) {\n    return false;\n  }\n  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;\n  return pattern.test(toSource(value));\n}\n\nmodule.exports = baseIsNative;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIsNative.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_baseSlice.js":
+/*!*******************************************!*\
+  !*** ./node_modules/lodash/_baseSlice.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * The base implementation of `_.slice` without an iteratee call guard.\n *\n * @private\n * @param {Array} array The array to slice.\n * @param {number} [start=0] The start position.\n * @param {number} [end=array.length] The end position.\n * @returns {Array} Returns the slice of `array`.\n */\nfunction baseSlice(array, start, end) {\n  var index = -1,\n      length = array.length;\n\n  if (start < 0) {\n    start = -start > length ? 0 : (length + start);\n  }\n  end = end > length ? length : end;\n  if (end < 0) {\n    end += length;\n  }\n  length = start > end ? 0 : ((end - start) >>> 0);\n  start >>>= 0;\n\n  var result = Array(length);\n  while (++index < length) {\n    result[index] = array[index + start];\n  }\n  return result;\n}\n\nmodule.exports = baseSlice;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseSlice.js?");
 
 /***/ }),
 
@@ -321,6 +376,39 @@ eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var isArray = __webpack_require__(/*! ./isArray */ \"./node_modules/lodash/isArray.js\"),\n    isKey = __webpack_require__(/*! ./_isKey */ \"./node_modules/lodash/_isKey.js\"),\n    stringToPath = __webpack_require__(/*! ./_stringToPath */ \"./node_modules/lodash/_stringToPath.js\"),\n    toString = __webpack_require__(/*! ./toString */ \"./node_modules/lodash/toString.js\");\n\n/**\n * Casts `value` to a path array if it's not one.\n *\n * @private\n * @param {*} value The value to inspect.\n * @param {Object} [object] The object to query keys on.\n * @returns {Array} Returns the cast property path array.\n */\nfunction castPath(value, object) {\n  if (isArray(value)) {\n    return value;\n  }\n  return isKey(value, object) ? [value] : stringToPath(toString(value));\n}\n\nmodule.exports = castPath;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_castPath.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_castSlice.js":
+/*!*******************************************!*\
+  !*** ./node_modules/lodash/_castSlice.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var baseSlice = __webpack_require__(/*! ./_baseSlice */ \"./node_modules/lodash/_baseSlice.js\");\n\n/**\n * Casts `array` to a slice if it's needed.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {number} start The start position.\n * @param {number} [end=array.length] The end position.\n * @returns {Array} Returns the cast slice.\n */\nfunction castSlice(array, start, end) {\n  var length = array.length;\n  end = end === undefined ? length : end;\n  return (!start && end >= length) ? array : baseSlice(array, start, end);\n}\n\nmodule.exports = castSlice;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_castSlice.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_charsEndIndex.js":
+/*!***********************************************!*\
+  !*** ./node_modules/lodash/_charsEndIndex.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var baseIndexOf = __webpack_require__(/*! ./_baseIndexOf */ \"./node_modules/lodash/_baseIndexOf.js\");\n\n/**\n * Used by `_.trim` and `_.trimEnd` to get the index of the last string symbol\n * that is not found in the character symbols.\n *\n * @private\n * @param {Array} strSymbols The string symbols to inspect.\n * @param {Array} chrSymbols The character symbols to find.\n * @returns {number} Returns the index of the last unmatched string symbol.\n */\nfunction charsEndIndex(strSymbols, chrSymbols) {\n  var index = strSymbols.length;\n\n  while (index-- && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}\n  return index;\n}\n\nmodule.exports = charsEndIndex;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_charsEndIndex.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_charsStartIndex.js":
+/*!*************************************************!*\
+  !*** ./node_modules/lodash/_charsStartIndex.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var baseIndexOf = __webpack_require__(/*! ./_baseIndexOf */ \"./node_modules/lodash/_baseIndexOf.js\");\n\n/**\n * Used by `_.trim` and `_.trimStart` to get the index of the first string symbol\n * that is not found in the character symbols.\n *\n * @private\n * @param {Array} strSymbols The string symbols to inspect.\n * @param {Array} chrSymbols The character symbols to find.\n * @returns {number} Returns the index of the first unmatched string symbol.\n */\nfunction charsStartIndex(strSymbols, chrSymbols) {\n  var index = -1,\n      length = strSymbols.length;\n\n  while (++index < length && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}\n  return index;\n}\n\nmodule.exports = charsStartIndex;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_charsStartIndex.js?");
 
 /***/ }),
 
@@ -387,6 +475,17 @@ eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/
 /***/ (function(module, exports) {
 
 eval("/**\n * Gets the value at `key` of `object`.\n *\n * @private\n * @param {Object} [object] The object to query.\n * @param {string} key The key of the property to get.\n * @returns {*} Returns the property value.\n */\nfunction getValue(object, key) {\n  return object == null ? undefined : object[key];\n}\n\nmodule.exports = getValue;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getValue.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_hasUnicode.js":
+/*!********************************************!*\
+  !*** ./node_modules/lodash/_hasUnicode.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/** Used to compose unicode character classes. */\nvar rsAstralRange = '\\\\ud800-\\\\udfff',\n    rsComboMarksRange = '\\\\u0300-\\\\u036f',\n    reComboHalfMarksRange = '\\\\ufe20-\\\\ufe2f',\n    rsComboSymbolsRange = '\\\\u20d0-\\\\u20ff',\n    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,\n    rsVarRange = '\\\\ufe0e\\\\ufe0f';\n\n/** Used to compose unicode capture groups. */\nvar rsZWJ = '\\\\u200d';\n\n/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */\nvar reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');\n\n/**\n * Checks if `string` contains Unicode symbols.\n *\n * @private\n * @param {string} string The string to inspect.\n * @returns {boolean} Returns `true` if a symbol is found, else `false`.\n */\nfunction hasUnicode(string) {\n  return reHasUnicode.test(string);\n}\n\nmodule.exports = hasUnicode;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hasUnicode.js?");
 
 /***/ }),
 
@@ -632,6 +731,28 @@ eval("var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ \"./node_modules
 
 /***/ }),
 
+/***/ "./node_modules/lodash/_strictIndexOf.js":
+/*!***********************************************!*\
+  !*** ./node_modules/lodash/_strictIndexOf.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * A specialized version of `_.indexOf` which performs strict equality\n * comparisons of values, i.e. `===`.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {*} value The value to search for.\n * @param {number} fromIndex The index to search from.\n * @returns {number} Returns the index of the matched value, else `-1`.\n */\nfunction strictIndexOf(array, value, fromIndex) {\n  var index = fromIndex - 1,\n      length = array.length;\n\n  while (++index < length) {\n    if (array[index] === value) {\n      return index;\n    }\n  }\n  return -1;\n}\n\nmodule.exports = strictIndexOf;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_strictIndexOf.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_stringToArray.js":
+/*!***********************************************!*\
+  !*** ./node_modules/lodash/_stringToArray.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var asciiToArray = __webpack_require__(/*! ./_asciiToArray */ \"./node_modules/lodash/_asciiToArray.js\"),\n    hasUnicode = __webpack_require__(/*! ./_hasUnicode */ \"./node_modules/lodash/_hasUnicode.js\"),\n    unicodeToArray = __webpack_require__(/*! ./_unicodeToArray */ \"./node_modules/lodash/_unicodeToArray.js\");\n\n/**\n * Converts `string` to an array.\n *\n * @private\n * @param {string} string The string to convert.\n * @returns {Array} Returns the converted array.\n */\nfunction stringToArray(string) {\n  return hasUnicode(string)\n    ? unicodeToArray(string)\n    : asciiToArray(string);\n}\n\nmodule.exports = stringToArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stringToArray.js?");
+
+/***/ }),
+
 /***/ "./node_modules/lodash/_stringToPath.js":
 /*!**********************************************!*\
   !*** ./node_modules/lodash/_stringToPath.js ***!
@@ -662,6 +783,17 @@ eval("var isSymbol = __webpack_require__(/*! ./isSymbol */ \"./node_modules/loda
 /***/ (function(module, exports) {
 
 eval("/** Used for built-in method references. */\nvar funcProto = Function.prototype;\n\n/** Used to resolve the decompiled source of functions. */\nvar funcToString = funcProto.toString;\n\n/**\n * Converts `func` to its source code.\n *\n * @private\n * @param {Function} func The function to convert.\n * @returns {string} Returns the source code.\n */\nfunction toSource(func) {\n  if (func != null) {\n    try {\n      return funcToString.call(func);\n    } catch (e) {}\n    try {\n      return (func + '');\n    } catch (e) {}\n  }\n  return '';\n}\n\nmodule.exports = toSource;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_toSource.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/_unicodeToArray.js":
+/*!************************************************!*\
+  !*** ./node_modules/lodash/_unicodeToArray.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/** Used to compose unicode character classes. */\nvar rsAstralRange = '\\\\ud800-\\\\udfff',\n    rsComboMarksRange = '\\\\u0300-\\\\u036f',\n    reComboHalfMarksRange = '\\\\ufe20-\\\\ufe2f',\n    rsComboSymbolsRange = '\\\\u20d0-\\\\u20ff',\n    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,\n    rsVarRange = '\\\\ufe0e\\\\ufe0f';\n\n/** Used to compose unicode capture groups. */\nvar rsAstral = '[' + rsAstralRange + ']',\n    rsCombo = '[' + rsComboRange + ']',\n    rsFitz = '\\\\ud83c[\\\\udffb-\\\\udfff]',\n    rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',\n    rsNonAstral = '[^' + rsAstralRange + ']',\n    rsRegional = '(?:\\\\ud83c[\\\\udde6-\\\\uddff]){2}',\n    rsSurrPair = '[\\\\ud800-\\\\udbff][\\\\udc00-\\\\udfff]',\n    rsZWJ = '\\\\u200d';\n\n/** Used to compose unicode regexes. */\nvar reOptMod = rsModifier + '?',\n    rsOptVar = '[' + rsVarRange + ']?',\n    rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',\n    rsSeq = rsOptVar + reOptMod + rsOptJoin,\n    rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';\n\n/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */\nvar reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');\n\n/**\n * Converts a Unicode `string` to an array.\n *\n * @private\n * @param {string} string The string to convert.\n * @returns {Array} Returns the converted array.\n */\nfunction unicodeToArray(string) {\n  return string.match(reUnicode) || [];\n}\n\nmodule.exports = unicodeToArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_unicodeToArray.js?");
 
 /***/ }),
 
@@ -761,6 +893,17 @@ eval("var MapCache = __webpack_require__(/*! ./_MapCache */ \"./node_modules/lod
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var baseToString = __webpack_require__(/*! ./_baseToString */ \"./node_modules/lodash/_baseToString.js\");\n\n/**\n * Converts `value` to a string. An empty string is returned for `null`\n * and `undefined` values. The sign of `-0` is preserved.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to convert.\n * @returns {string} Returns the converted string.\n * @example\n *\n * _.toString(null);\n * // => ''\n *\n * _.toString(-0);\n * // => '-0'\n *\n * _.toString([1, 2, 3]);\n * // => '1,2,3'\n */\nfunction toString(value) {\n  return value == null ? '' : baseToString(value);\n}\n\nmodule.exports = toString;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/toString.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/trim.js":
+/*!*************************************!*\
+  !*** ./node_modules/lodash/trim.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var baseToString = __webpack_require__(/*! ./_baseToString */ \"./node_modules/lodash/_baseToString.js\"),\n    castSlice = __webpack_require__(/*! ./_castSlice */ \"./node_modules/lodash/_castSlice.js\"),\n    charsEndIndex = __webpack_require__(/*! ./_charsEndIndex */ \"./node_modules/lodash/_charsEndIndex.js\"),\n    charsStartIndex = __webpack_require__(/*! ./_charsStartIndex */ \"./node_modules/lodash/_charsStartIndex.js\"),\n    stringToArray = __webpack_require__(/*! ./_stringToArray */ \"./node_modules/lodash/_stringToArray.js\"),\n    toString = __webpack_require__(/*! ./toString */ \"./node_modules/lodash/toString.js\");\n\n/** Used to match leading and trailing whitespace. */\nvar reTrim = /^\\s+|\\s+$/g;\n\n/**\n * Removes leading and trailing whitespace or specified characters from `string`.\n *\n * @static\n * @memberOf _\n * @since 3.0.0\n * @category String\n * @param {string} [string=''] The string to trim.\n * @param {string} [chars=whitespace] The characters to trim.\n * @param- {Object} [guard] Enables use as an iteratee for methods like `_.map`.\n * @returns {string} Returns the trimmed string.\n * @example\n *\n * _.trim('  abc  ');\n * // => 'abc'\n *\n * _.trim('-_-abc-_-', '_-');\n * // => 'abc'\n *\n * _.map(['  foo  ', '  bar  '], _.trim);\n * // => ['foo', 'bar']\n */\nfunction trim(string, chars, guard) {\n  string = toString(string);\n  if (string && (guard || chars === undefined)) {\n    return string.replace(reTrim, '');\n  }\n  if (!string || !(chars = baseToString(chars))) {\n    return string;\n  }\n  var strSymbols = stringToArray(string),\n      chrSymbols = stringToArray(chars),\n      start = charsStartIndex(strSymbols, chrSymbols),\n      end = charsEndIndex(strSymbols, chrSymbols) + 1;\n\n  return castSlice(strSymbols, start, end).join('');\n}\n\nmodule.exports = trim;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/trim.js?");
 
 /***/ }),
 

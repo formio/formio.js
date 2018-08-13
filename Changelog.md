@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.0
+### Added
+ - A way to track submission metadata including referrer, timezone, etc.
+ - An option to view the DateTime component in either the Viewer, Submission, or GMT timezones
+ - A tableView method to show the data in a submission grid correctly.
+ - A method for working with Encrypted S3 buckets.
+ - A way to configure the Columns component so that it hides columns where all elements are hidden in that column.
+ - A different view widget to view images with file component on devices that support Camera.
+### Changed
+ - Upgraded i18next@11.6.0 and upgraded dev dependencies.
+### Fixed
+ - Tooltip options to make them behave better.
+ - Protect calls to getAllComponents where it was sometimes on null.
+
 ## 3.1.4
 ### Added
  - Emitting Edit Grid event for row addition
