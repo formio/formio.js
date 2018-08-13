@@ -138,7 +138,7 @@ export default class DateTimeComponent extends BaseComponent {
       this.root.hasTimezone
     ) {
       return {
-        date: new Date(date.getTime() + ((this.submissionOffset + date.getTimezoneOffset()) * 60000)),
+        date: new Date(date.getTime() + ((this.root.submissionOffset + date.getTimezoneOffset()) * 60000)),
         timezone: ` (${this.root.submissionTimezone})`
       };
     }
