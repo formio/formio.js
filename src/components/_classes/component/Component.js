@@ -2217,6 +2217,15 @@ export default class Component {
       input.focus();
     }
   }
+
+  get timezone() {
+    if (navigator.languages && navigator.languages.length) {
+      return (new Date()).toLocaleTimeString(navigator.languages[0], {
+        timeZoneName:'short'
+      }).split(' ')[2];
+    }
+    return moment().format('Z');
+  }
 }
 
 Component.externalLibraries = {};
