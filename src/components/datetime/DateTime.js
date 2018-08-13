@@ -6,6 +6,7 @@ import Input from '../_classes/input/Input';
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
+  convertFlatpickrToFormat,
   convertFormatToFlatpickr,
   convertFormatToMoment,
 } from '../../utils/utils';
@@ -18,6 +19,8 @@ export default class DateTimeComponent extends Input {
       label: 'Date / Time',
       key: 'dateTime',
       format: 'yyyy-MM-dd HH:mm a',
+      useLocaleSettings: false,
+      allowInput: true,
       enableDate: true,
       enableTime: true,
       defaultDate: '',
@@ -86,6 +89,10 @@ export default class DateTimeComponent extends Input {
   }
 
   get inputInfo() {
+    // Default the placeholder to the format if none is present.
+    if (!this.component.placeholder) {
+      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
+    }
     const info = super.inputInfo;
     info.type = 'input';
     info.attr.type = 'text';
@@ -192,6 +199,7 @@ export default class DateTimeComponent extends Input {
     /* eslint-disable camelcase */
     return {
       altInput: true,
+      allowInput: _.get(this.component, 'allowInput', true),
       clickOpens: true,
       enableDate: true,
       mode: this.component.multiple ? 'multiple' : 'single',
