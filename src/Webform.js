@@ -1014,7 +1014,7 @@ export default class Webform extends NestedComponent {
         // Use the form action to submit the form if available.
         let submitFormio = this.formio;
         if (this._form && this._form.action) {
-          submitFormio = new Formio(this._form.action);
+          submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
         }
 
         if (this.nosubmit || !submitFormio) {
