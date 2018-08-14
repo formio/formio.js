@@ -35,10 +35,17 @@ export default class ContainerComponent extends NestedComponent {
 
   build() {
     this.createElement();
+    const labelAtTheBottom = this.component.labelPosition === 'bottom';
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     if (!this.hasValue()) {
       this.dataValue = {};
     }
     this.addComponents(this.getContainer(), this.dataValue);
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
   }
 
   get emptyValue() {
