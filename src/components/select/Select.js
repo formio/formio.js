@@ -69,6 +69,10 @@ export default class SelectComponent extends Field {
     return SelectComponent.schema();
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   refreshItems() {
     this.triggerUpdate();
     if (this.component.clearOnRefresh) {
@@ -572,7 +576,7 @@ export default class SelectComponent extends Field {
 
   set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
-    if (value && (this._visible !== value)) {
+    if (value && (!this._visible !== !value)) {
       this.triggerUpdate();
     }
     super.visible = value;
@@ -632,6 +636,10 @@ export default class SelectComponent extends Field {
         }
       });
       value = this.component.multiple ? values : values.shift();
+    }
+    // Choices will return undefined if nothing is selected. We really want '' to be empty.
+    if (value === undefined) {
+      value = '';
     }
     return value;
   }
@@ -715,6 +723,14 @@ export default class SelectComponent extends Field {
 
     this.updateOnChange(flags, changed);
     return changed;
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
+  deleteValue() {
+    this.setValue('');
+    _.unset(this.data, this.key);
   }
 
   /**
