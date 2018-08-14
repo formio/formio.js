@@ -47,6 +47,10 @@ export default class Formio {
     this.vUrl = '';
     this.query = '';
 
+    // Store the original path and options.
+    this.path = path;
+    this.options = options;
+
     if (options.hasOwnProperty('base')) {
       this.base = options.base;
     }
