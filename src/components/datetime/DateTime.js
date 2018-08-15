@@ -159,7 +159,7 @@ export default class DateTimeComponent extends BaseComponent {
     if (this.component.displayInTimezone === 'gmt') {
       return {
         offset: 0,
-        abbr: 'GMT'
+        abbr: 'GST'
       };
     }
     return null;
