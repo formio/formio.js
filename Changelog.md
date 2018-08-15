@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.2
+### Fixed
+ - Issue where the timezone dropdown was not showing up on DateTime component.
+
 ## 3.2.1
 ### Added
  - Allow for global overrides of components and let the form.settings override components globally.
