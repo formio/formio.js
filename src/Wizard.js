@@ -25,7 +25,7 @@ export default class Wizard extends Webform {
 
   eachPage(cb) {
     const pageOptions = _.clone(this.options);
-    _.each(this.pages, page => cb(this.createComponent(page, pageOptions)));
+    _.each(this.pages, (page) => cb(this.createComponent(page, pageOptions)));
   }
 
   resetValue() {
@@ -85,7 +85,7 @@ export default class Wizard extends Webform {
 
   beforeSubmit() {
     const ops = [];
-    this.eachPage(page => {
+    this.eachPage((page) => {
       page.options.beforeSubmit = true;
       ops.push(page.beforeSubmit());
     });
@@ -199,6 +199,7 @@ export default class Wizard extends Webform {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (checkCondition(component, this.data, this.data, this.wizard, this)) {
+          component.internal = true;
           this.pages.push(component);
         }
       }
