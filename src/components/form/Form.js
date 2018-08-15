@@ -254,6 +254,13 @@ export default class FormComponent extends Component {
     return super.calculateValue(data, flags);
   }
 
+  setPristine(pristine) {
+    super.setPristine(pristine);
+    if (this.subForm) {
+      this.subForm.setPristine(pristine);
+    }
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */

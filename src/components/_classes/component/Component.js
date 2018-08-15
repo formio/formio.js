@@ -2023,7 +2023,7 @@ export default class Component {
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
-    _.each(this.refs.input, (input) => {
+    this.refs.input.forEach(input => {
       input = this.performInputMapping(input);
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
