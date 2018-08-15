@@ -709,6 +709,55 @@ export function isValidDate(date) {
   return _.isDate(date) && !_.isNaN(date.getDate());
 }
 
+/**
+ * Get the current timezone string.
+ *
+ * @return {string}
+ */
+export function currentTimezone() {
+  if (navigator.languages && navigator.languages.length) {
+    return (new Date()).toLocaleTimeString(navigator.languages[0], {
+      timeZoneName:'short'
+    }).split(' ')[2];
+  }
+  return moment().format('Z');
+}
+
+/**
+ * Get an offset date provided a date object and timezone object.
+ *
+ * @param date
+ * @param timezone
+ * @return {Date}
+ */
+export function offsetDate(date, timezone) {
+  if (!timezone || !timezone.abbr) {
+    return {
+      date,
+      abbr: ` (${currentTimezone()})`
+    };
+  }
+  return {
+    date: new Date(date.getTime() + ((parseInt(timezone.offset, 10) + date.getTimezoneOffset()) * 60000)),
+    abbr: ` (${timezone.abbr})`
+  };
+}
+
+/**
+ * Format a date provided a value, formate, and timezone object.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatDate(value, format, timezone) {
+  const date = moment(value).toDate();
+  const offset = offsetDate(date, timezone);
+  const dateFormat = convertFormatToMoment(format);
+  return `${moment(offset.date).format(dateFormat)}${offset.abbr}`;
+}
+
 export function getLocaleDateFormatInfo(locale) {
   const formatInfo = {};
 
