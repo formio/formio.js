@@ -1,8 +1,3 @@
-// DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
-/* eslint-disable no-unused-vars */
-import * as polyfill from './formio.polyfill';
-/* eslint-enable no-unused-vars */
-
 import _ from 'lodash';
 import moment from 'moment';
 import EventEmitter from 'eventemitter2';
@@ -566,6 +561,12 @@ export default class Webform extends NestedComponent {
 
     // Create the form.
     this._form = form;
+
+    // Allow the form to provide component overrides.
+    if (form && form.settings && form.settings.components) {
+      this.options.components = form.settings.components;
+    }
+
     this.formReadyResolve();
     this.rebuild();
     this.emit('formLoad', form);

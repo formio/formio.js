@@ -198,6 +198,14 @@ export default class Component {
      */
     this.refs = {};
 
+    // Allow global override for any component JSON.
+    if (
+      this.options.components &&
+      this.options.components[component.type]
+    ) {
+      _.merge(component, this.options.components[component.type]);
+    }
+
     /**
      * If the component has been attached
      */
