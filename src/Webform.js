@@ -1010,13 +1010,20 @@ export default class Webform extends NestedComponent {
         }
 
         this.loading = true;
-        if (this.nosubmit || !this.formio) {
+
+        // Use the form action to submit the form if available.
+        let submitFormio = this.formio;
+        if (this._form && this._form.action) {
+          submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
+        }
+
+        if (this.nosubmit || !submitFormio) {
           return resolve({
             submission: submission,
             saved: false
           });
         }
-        this.formio.saveSubmission(submission).then(result => resolve({
+        submitFormio.saveSubmission(submission).then(result => resolve({
           submission: result,
           saved: true
         })).catch(reject);
