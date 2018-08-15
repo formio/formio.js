@@ -610,6 +610,12 @@ export default class Webform extends NestedComponent {
 
     // Create the form.
     this._form = form;
+
+    // Allow the form to provide component overrides.
+    if (form && form.settings && form.settings.components) {
+      this.options.components = form.settings.components;
+    }
+
     return this.createForm(form).then(() => {
       this.emit('formLoad', form);
       return form;
