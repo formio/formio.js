@@ -6,14 +6,33 @@ export default [
     label: 'Display in Timezone',
     tooltip: 'This will display the captured date time in the select timezone.',
     weight: 30,
-    defaultValue: 'submission',
+    defaultValue: 'viewer',
     dataSrc: 'values',
     data: {
       values: [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
+        { label: 'of Location', value: 'location' },
         { label: 'of GMT', value: 'gmt' }
       ]
+    }
+  },
+  {
+    type: 'select',
+    input: true,
+    key: 'timezoneOffset',
+    label: 'Select Timezone',
+    tooltip: 'Select the timezone you wish to display this Date',
+    weight: 31,
+    defaultValue: '',
+    lazyLoad: true,
+    dataSrc: 'url',
+    data: {
+      url: 'https://cdn.rawgit.com/travist/1072389661176f3efcd20f71b245e8aa/raw/timezones.json'
+    },
+    template: '<span>{{ item.name }}</span>',
+    conditional: {
+      json: { '===': [{ var: 'data.displayInTimezone' }, 'select'] }
     }
   },
   {

@@ -2678,7 +2678,7 @@ export default class BaseComponent {
     }
   }
 
-  get timezone() {
+  get currentTimezone() {
     if (navigator.languages && navigator.languages.length) {
       return (new Date()).toLocaleTimeString(navigator.languages[0], {
         timeZoneName:'short'

@@ -24,6 +24,8 @@ export default class DateTimeComponent extends BaseComponent {
       enableDate: true,
       enableTime: true,
       defaultDate: '',
+      displayInTimezone: 'viewer',
+      timezone: null,
       datepickerMode: 'day',
       datePicker: {
         showWeeks: true,
@@ -139,7 +141,15 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   offset(date) {
-    if (
+    // See if a timezone is configured on this component.
+    const timezone = this.component.timezone;
+    if (timezone && timezone.abbr) {
+      return {
+        date: new Date(date.getTime() + ((parseInt(timezone.offset, 10) + date.getTimezoneOffset()) * 60000)),
+        timezone: ` (${timezone.abbr})`
+      };
+    }
+    else if (
       (this.component.displayInTimezone === 'submission') &&
       this.root &&
       this.root.hasTimezone
@@ -159,7 +169,7 @@ export default class DateTimeComponent extends BaseComponent {
     }
     return {
       date,
-      timezone: ` (${this.timezone})`
+      timezone: ` (${this.currentTimezone})`
     };
   }
 
