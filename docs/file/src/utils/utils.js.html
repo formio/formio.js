@@ -905,7 +905,7 @@ export function currentTimezone() {
  * @return {Date}
  */
 export function offsetDate(date, timezone) {
-  if (!timezone || !timezone.abbr) {
+  if (!timezone) {
     return {
       date,
       abbr: ` (${currentTimezone()})`
@@ -913,7 +913,7 @@ export function offsetDate(date, timezone) {
   }
   return {
     date: new Date(date.getTime() + ((parseInt(timezone.offset, 10) + date.getTimezoneOffset()) * 60000)),
-    abbr: ` (${timezone.abbr})`
+    abbr: timezone.abbr ? ` (${timezone.abbr})` : &apos;&apos;
   };
 }
 
