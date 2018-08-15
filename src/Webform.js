@@ -6,6 +6,7 @@ import Formio from './Formio';
 import Promise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
+import { currentTimezone } from './utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -934,7 +935,7 @@ export default class Webform extends NestedComponent {
   }
 
   get submissionTimezone() {
-    return _.get(this, '_submission.metadata.timezone', this.currentTimezone);
+    return _.get(this, '_submission.metadata.timezone', currentTimezone());
   }
 
   submitForm(options = {}) {

@@ -5,10 +5,11 @@ import Input from '../_classes/input/Input';
 
 import {
   getDateSetting,
+  offsetDate,
+  formatDate,
   getLocaleDateFormatInfo,
   convertFlatpickrToFormat,
   convertFormatToFlatpickr,
-  convertFormatToMoment,
 } from '../../utils/utils';
 import moment from 'moment';
 
@@ -171,37 +172,28 @@ export default class DateTimeComponent extends Input {
       : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
   }
 
-  offset(date) {
-    // See if a timezone is configured on this component.
+  get timezone() {
     const timezone = this.component.timezone;
     if (timezone && timezone.abbr) {
-      return {
-        date: new Date(date.getTime() + ((parseInt(timezone.offset, 10) + date.getTimezoneOffset()) * 60000)),
-        timezone: ` (${timezone.abbr})`
-      };
+      return timezone;
     }
-    else if (
+    if (
       (this.component.displayInTimezone === 'submission') &&
       this.root &&
       this.root.hasTimezone
     ) {
       return {
-        date: new Date(date.getTime() + ((this.root.submissionOffset + date.getTimezoneOffset()) * 60000)),
-        timezone: ` (${this.root.submissionTimezone})`
+        offset: this.root.submissionOffset,
+        abbr: this.root.submissionTimezone
       };
     }
-    else if (
-      (this.component.displayInTimezone === 'gmt')
-    ) {
+    if (this.component.displayInTimezone === 'gmt') {
       return {
-        date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
-        timezone: ' (GMT)'
+        offset: 0,
+        abbr: 'GMT'
       };
     }
-    return {
-      date,
-      timezone: ` (${this.currentTimezone})`
-    };
+    return null;
   }
 
   get config() {
@@ -228,8 +220,8 @@ export default class DateTimeComponent extends Input {
       formatDate: (date, format) => {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
-          const offset = this.offset(date);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.timezone}`;
+          const offset = offsetDate(date, this.timezone);
+          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
         }
 
         return Flatpickr.formatDate(date, format);
@@ -307,10 +299,7 @@ export default class DateTimeComponent extends Input {
     if (!value) {
       return '';
     }
-    const offset = this.offset(moment(value).toDate());
-    const dateFormat = convertFormatToMoment(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
-    const formatted = moment(offset.date).format(dateFormat);
-    return `${formatted}${offset.timezone}`;
+    return formatDate(value, _.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'), this.timezone);
   }
 
   setValueAt(index, value) {
