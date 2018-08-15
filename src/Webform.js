@@ -933,7 +933,7 @@ export default class Webform extends NestedComponent {
   }
 
   get submissionTimezone() {
-    return _.get(this, '_submission.metadata.timezone', this.timezone);
+    return _.get(this, '_submission.metadata.timezone', this.currentTimezone);
   }
 
   submitForm(options = {}) {
