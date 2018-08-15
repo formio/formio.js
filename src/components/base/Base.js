@@ -2413,7 +2413,7 @@ export default class BaseComponent {
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
-    _.each(this.inputs, (input) => {
+    this.inputs.forEach((input) => {
       input = this.performInputMapping(input);
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);

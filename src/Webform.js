@@ -792,9 +792,6 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
-    if (!type && this.submitted) {
-      return;
-    }
     if (this.options.noAlerts) {
       if (!message) {
         this.emit('error', false);
@@ -854,14 +851,12 @@ export default class Webform extends NestedComponent {
       this.setAlert(false);
       return;
     }
-    let message = `<p>${this.t('error')}</p><ul>`;
-    _.each(errors, (err) => {
-      if (err) {
-        const errorMessage = err.message || err;
-        message += `<li><strong>${errorMessage}</strong></li>`;
-      }
-    });
-    message += '</ul>';
+    const message = `
+      <p>${this.t('error')}</p>
+      <ul>
+        ${errors.map((err) => err ? `<li><strong>${err.message || err}</strong></li>` : '').join('')}
+      </ul>
+    `;
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
