@@ -12,7 +12,7 @@ export default [
       values: [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
-        { label: 'of Selected', value: 'select' },
+        { label: 'of Location', value: 'location' },
         { label: 'of GMT', value: 'gmt' }
       ]
     }
@@ -28,7 +28,7 @@ export default [
     lazyLoad: true,
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/89888c19a253bde754ec7fb7d2946e85/raw/timezones.json'
+      url: 'https://cdn.rawgit.com/travist/1072389661176f3efcd20f71b245e8aa/raw/timezones.json'
     },
     template: '<span>{{ item.name }}</span>',
     conditional: {
