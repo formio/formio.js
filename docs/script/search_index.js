@@ -606,6 +606,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~currenttimezone",
+    "function/index.html#static-function-currentTimezone",
+    "<span>currentTimezone</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~delay",
     "function/index.html#static-function-delay",
     "<span>delay</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -657,6 +663,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~formatascurrency",
     "function/index.html#static-function-formatAsCurrency",
     "<span>formatAsCurrency</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~formatdate",
+    "function/index.html#static-function-formatDate",
+    "<span>formatDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -777,6 +789,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~matchinputmask",
     "function/index.html#static-function-matchInputMask",
     "<span>matchInputMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~offsetdate",
+    "function/index.html#static-function-offsetDate",
+    "<span>offsetDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1437,6 +1455,18 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#noproject",
     "class/src/Formio.js~Formio.html#instance-member-noProject",
     "src/Formio.js~Formio#noProject",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#options",
+    "class/src/Formio.js~Formio.html#instance-member-options",
+    "src/Formio.js~Formio#options",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#path",
+    "class/src/Formio.js~Formio.html#instance-member-path",
+    "src/Formio.js~Formio#path",
     "member"
   ],
   [
@@ -2383,13 +2413,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3613,13 +3643,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3667,13 +3697,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4296,12 +4326,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#timezone",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-timezone",
-    "src/components/base/Base.js~BaseComponent#timezone",
-    "member"
-  ],
-  [
     "src/components/base/base.js~basecomponent#tooltip",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-tooltip",
     "src/components/base/Base.js~BaseComponent#tooltip",
@@ -4381,13 +4405,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5676,16 +5700,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#offset",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-offset",
-    "src/components/datetime/DateTime.js~DateTimeComponent#offset",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#setvalueat",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-setValueAt",
     "src/components/datetime/DateTime.js~DateTimeComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#timezone",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-timezone",
+    "src/components/datetime/DateTime.js~DateTimeComponent#timezone",
+    "member"
   ],
   [
     "src/components/datetime/datetime.js~datetimecomponent#validationvalue",
@@ -7806,6 +7830,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/radio/radio.js~radiocomponent#emptyvalue",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-get-emptyValue",
+    "src/components/radio/Radio.js~RadioComponent#emptyValue",
+    "member"
+  ],
+  [
     "src/components/radio/radio.js~radiocomponent#errorcontainer",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-member-errorContainer",
     "src/components/radio/Radio.js~RadioComponent#errorContainer",
@@ -8088,6 +8118,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#deletevalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-deleteValue",
+    "src/components/select/Select.js~SelectComponent#deleteValue",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#destroy",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-destroy",
     "src/components/select/Select.js~SelectComponent#destroy",
@@ -8104,6 +8140,12 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-elementInfo",
     "src/components/select/Select.js~SelectComponent#elementInfo",
     "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#emptyvalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-emptyValue",
+    "src/components/select/Select.js~SelectComponent#emptyValue",
+    "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#focus",

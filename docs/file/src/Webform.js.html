@@ -133,6 +133,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFlatpickrToFormat">convertFlatpickrToFormat</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
@@ -141,6 +142,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -160,6 +162,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -182,6 +185,7 @@ import Formio from &apos;./Formio&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import NestedComponent from &apos;./components/nested/NestedComponent&apos;;
+import { currentTimezone } from &apos;./utils/utils&apos;;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -781,6 +785,12 @@ export default class Webform extends NestedComponent {
 
     // Create the form.
     this._form = form;
+
+    // Allow the form to provide component overrides.
+    if (form &amp;&amp; form.settings &amp;&amp; form.settings.components) {
+      this.options.components = form.settings.components;
+    }
+
     return this.createForm(form).then(() =&gt; {
       this.emit(&apos;formLoad&apos;, form);
       return form;
@@ -1138,7 +1148,7 @@ export default class Webform extends NestedComponent {
   }
 
   get submissionTimezone() {
-    return _.get(this, &apos;_submission.metadata.timezone&apos;, this.timezone);
+    return _.get(this, &apos;_submission.metadata.timezone&apos;, currentTimezone());
   }
 
   submitForm(options = {}) {
@@ -1181,13 +1191,20 @@ export default class Webform extends NestedComponent {
         }
 
         this.loading = true;
-        if (this.nosubmit || !this.formio) {
+
+        // Use the form action to submit the form if available.
+        let submitFormio = this.formio;
+        if (this._form &amp;&amp; this._form.action) {
+          submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
+        }
+
+        if (this.nosubmit || !submitFormio) {
           return resolve({
             submission: submission,
             saved: false
           });
         }
-        this.formio.saveSubmission(submission).then(result =&gt; resolve({
+        submitFormio.saveSubmission(submission).then(result =&gt; resolve({
           submission: result,
           saved: true
         })).catch(reject);

@@ -133,6 +133,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFlatpickrToFormat">convertFlatpickrToFormat</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
@@ -141,6 +142,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -160,6 +162,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
@@ -176,10 +179,11 @@ import BaseComponent from &apos;../base/Base&apos;;
 
 import {
   getDateSetting,
+  offsetDate,
+  formatDate,
   getLocaleDateFormatInfo,
   convertFlatpickrToFormat,
   convertFormatToFlatpickr,
-  convertFormatToMoment,
 } from &apos;../../utils/utils&apos;;
 import moment from &apos;moment&apos;;
 
@@ -195,6 +199,8 @@ export default class DateTimeComponent extends BaseComponent {
       enableDate: true,
       enableTime: true,
       defaultDate: &apos;&apos;,
+      displayInTimezone: &apos;viewer&apos;,
+      timezone: null,
       datepickerMode: &apos;day&apos;,
       datePicker: {
         showWeeks: true,
@@ -309,29 +315,28 @@ export default class DateTimeComponent extends BaseComponent {
       : convertFormatToFlatpickr(_.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;));
   }
 
-  offset(date) {
+  get timezone() {
+    const timezone = this.component.timezone;
+    if (timezone &amp;&amp; timezone.abbr) {
+      return timezone;
+    }
     if (
       (this.component.displayInTimezone === &apos;submission&apos;) &amp;&amp;
       this.root &amp;&amp;
       this.root.hasTimezone
     ) {
       return {
-        date: new Date(date.getTime() + ((this.root.submissionOffset + date.getTimezoneOffset()) * 60000)),
-        timezone: ` (${this.root.submissionTimezone})`
+        offset: this.root.submissionOffset,
+        abbr: this.root.submissionTimezone
       };
     }
-    else if (
-      (this.component.displayInTimezone === &apos;gmt&apos;)
-    ) {
+    if (this.component.displayInTimezone === &apos;gmt&apos;) {
       return {
-        date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
-        timezone: &apos; (GMT)&apos;
+        offset: 0,
+        abbr: &apos;GST&apos;
       };
     }
-    return {
-      date,
-      timezone: ` (${this.timezone})`
-    };
+    return null;
   }
 
   get config() {
@@ -358,8 +363,8 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) =&gt; {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly &amp;&amp; (format === altFormat)) {
-          const offset = this.offset(date);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.timezone}`;
+          const offset = offsetDate(date, this.timezone);
+          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
         }
 
         return Flatpickr.formatDate(date, format);
@@ -460,10 +465,7 @@ export default class DateTimeComponent extends BaseComponent {
     if (!value) {
       return &apos;&apos;;
     }
-    const offset = this.offset(moment(value).toDate());
-    const dateFormat = convertFormatToMoment(_.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;));
-    const formatted = moment(offset.date).format(dateFormat);
-    return `${formatted}${offset.timezone}`;
+    return formatDate(value, _.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;), this.timezone);
   }
 
   setValueAt(index, value) {

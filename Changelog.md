@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.1
+### Added
+ - Allow for global overrides of components and let the form.settings override components globally.
+ - Allow for custom timezones for the DateTime component.
+ - Save the "path" and "options" in Formio class so that they can be passed along to other instances.
+ - FOR-1542: Update `build` method of `Container` component.
+ 
+### Fixed
+ - The acronym for offset 0 time is GST not GMT.
+ - Fix issue where select and radio components end up in an infinite refresh when hidden with "clearOnHide" set.
+
+### Changed
+ - Moved timezone formatting to utils so that it can be used in templates.
+
 ## 3.2.0
 ### Added
  - A way to track submission metadata including referrer, timezone, etc.
