@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
  - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.
+ - FOR-1326: Fixed an issue where a language change would not re-trigger conditionals.
 
 ## 3.2.3
 ### Fixed
