@@ -276,7 +276,8 @@ export default class Webform extends NestedComponent {
     i18next.initialized = true;
     return new Promise((resolve, reject) => {
       i18next.init(this.options.i18n, (err) => {
-        this.options.language = i18next.language;
+        // Get language but remove any ;q=1 that might exist on it.
+        this.options.language = i18next.language.split(';')[0];
         if (err) {
           return reject(err);
         }
