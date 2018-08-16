@@ -410,11 +410,6 @@ export default class NestedComponent extends BaseComponent {
     this.hidden = [];
   }
 
-  setCustomValidity(message, dirty) {
-    super.setCustomValidity(message, dirty);
-    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
-  }
-
   set disabled(disabled) {
     this.components.forEach((component) => component.disabled = disabled);
   }
