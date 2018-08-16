@@ -22,23 +22,16 @@ export default [
   },
   {
     weight: 200,
-    type: 'datagrid',
+    type: 'datamap',
     label: 'Custom Properties',
     tooltip: 'This allows you to configure any custom properties for this component.',
     key: 'properties',
-    components: [
-      {
-        type: 'textfield',
-        key: 'key',
-        label: 'Key',
-        input: true
-      },
-      {
-        type: 'textfield',
-        key: 'value',
-        label: 'Value',
-        input: true
-      }
-    ]
+    valueComponent: {
+      type: 'textfield',
+      key: 'value',
+      label: 'Value',
+      defaultValue: 'Value',
+      input: true
+    }
   }
 ];
