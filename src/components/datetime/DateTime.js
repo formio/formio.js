@@ -92,25 +92,9 @@ export default class DateTimeComponent extends Input {
   }
 
   get inputInfo() {
-    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
-    this.defaultFormat = {
-      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
-      time: 'h:i K'
-    };
-    let localeFormat = '';
-    if (this.component.enableDate) {
-      localeFormat += this.defaultFormat.date;
-    }
-    if (this.component.enableTime) {
-      localeFormat += this.defaultFormat.time;
-    }
-    const dateTimeFormat = this.component.useLocaleSettings
-      ? localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
-
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = convertFlatpickrToFormat(dateTimeFormat);
+      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
     }
     const info = super.inputInfo;
     info.type = 'input';
