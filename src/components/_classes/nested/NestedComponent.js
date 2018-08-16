@@ -480,11 +480,6 @@ export default class NestedComponent extends Component {
     this.components = [];
   }
 
-  setCustomValidity(message, dirty) {
-    super.setCustomValidity(message, dirty);
-    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
-  }
-
   set disabled(disabled) {
     this.componentComponents.forEach((component) => component.disabled = disabled);
   }
