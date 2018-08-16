@@ -111,8 +111,23 @@ export default class SelectComponent extends Field {
     }
   }
 
-  itemValue(data) {
-    return (this.component.valueProperty && _.isObject(data)) ? _.get(data, this.component.valueProperty) : data;
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.component.valueProperty) {
+        return _.get(data, this.component.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
   }
 
   /**
@@ -586,16 +601,27 @@ export default class SelectComponent extends Field {
     return super.visible;
   }
 
+  /**
+   * @param {*} value
+   * @param {Array} items
+   */
   addCurrentChoices(value, items) {
     if (value) {
       let found = false;
+      // Make sure that `items` and `this.selectOptions` points
+      // to the same reference. Because `this.selectOptions` is
+      // internal property and all items are populated by
+      // `this.addOption` method, we assume that items has
+      // 'label' and 'value' properties. This assumption allows
+      // us to read correct value from the item.
+      const isSelectOptions = items === this.selectOptions;
       if (items && items.length) {
         _.each(items, (choice) => {
           if (choice._id && value._id && (choice._id === value._id)) {
             found = true;
             return false;
           }
-          found |= _.isEqual(this.itemValue(choice), value);
+          found |= _.isEqual(this.itemValue(choice, isSelectOptions), value);
           return found ? false : true;
         });
       }
