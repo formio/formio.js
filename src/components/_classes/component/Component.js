@@ -643,7 +643,7 @@ export default class Component {
       for (let i = 0; i < nav.languages.length; i++) {
         language = nav.languages[i];
         if (language && language.length) {
-          return language;
+          return language.split(';')[0];
         }
       }
     }
@@ -652,7 +652,7 @@ export default class Component {
     for (let i = 0; i < browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language && language.length) {
-        return language;
+        return language.split(';')[0];
       }
     }
 
