@@ -793,6 +793,10 @@ export default class Webform extends NestedComponent {
    */
   setAlert(type, message) {
     if (!type && this.submitted) {
+      if (this.alert) {
+        this.removeChild(this.alert);
+        this.alert = null;
+      }
       return;
     }
     if (this.options.noAlerts) {
