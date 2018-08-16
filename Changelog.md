@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3.0
+### Added
+ - A DataMap component that provides a dynamic key-value pair input component.
+ 
+### Fixed
+ - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
+ - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.
+
 ## 3.2.3
 ### Fixed
  - Datetime component crashing when using locale format.
