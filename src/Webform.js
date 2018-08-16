@@ -766,6 +766,13 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
+    if (!type && this.submitted) {
+      if (this.alert) {
+        this.removeChild(this.alert);
+        this.alert = null;
+      }
+      return;
+    }
     if (this.options.noAlerts) {
       if (!message) {
         this.emit('error', false);
