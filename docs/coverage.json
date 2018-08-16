@@ -1,7 +1,7 @@
 {
-  "coverage": "19.73%",
-  "expectCount": 1348,
-  "actualCount": 266,
+  "coverage": "19.52%",
+  "expectCount": 1378,
+  "actualCount": 269,
   "files": {
     "src/Form.js": {
       "expectCount": 11,
@@ -226,13 +226,13 @@
         750,
         772,
         783,
-        934,
-        968,
-        972,
-        976,
-        980,
-        1041,
-        1077
+        941,
+        975,
+        979,
+        983,
+        987,
+        1048,
+        1084
       ]
     },
     "src/WebformBuilder.js": {
@@ -715,6 +715,45 @@
         304
       ]
     },
+    "src/components/datamap/DataMap.form.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        5
+      ]
+    },
+    "src/components/datamap/DataMap.js": {
+      "expectCount": 27,
+      "actualCount": 1,
+      "undocumentLines": [
+        6,
+        7,
+        31,
+        42,
+        48,
+        50,
+        51,
+        54,
+        58,
+        62,
+        71,
+        78,
+        82,
+        86,
+        98,
+        106,
+        125,
+        142,
+        168,
+        192,
+        203,
+        242,
+        251,
+        254,
+        259,
+        263
+      ]
+    },
     "src/components/datetime/DateTime.form.js": {
       "expectCount": 1,
       "actualCount": 0,
@@ -738,17 +777,17 @@
         107,
         120,
         124,
-        138,
-        144,
-        168,
-        202,
-        219,
-        251,
-        259,
-        272,
-        290,
-        297,
-        315
+        143,
+        149,
+        173,
+        207,
+        224,
+        256,
+        264,
+        277,
+        295,
+        302,
+        320
       ]
     },
     "src/components/day/Day.form.js": {
@@ -1657,8 +1696,8 @@
       ]
     },
     "src/utils/utils.js": {
-      "expectCount": 43,
-      "actualCount": 32,
+      "expectCount": 45,
+      "actualCount": 34,
       "undocumentLines": [
         94,
         486,

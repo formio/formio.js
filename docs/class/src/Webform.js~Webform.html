@@ -59,6 +59,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
@@ -160,11 +162,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
@@ -1541,7 +1545,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-build">build</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-build">build</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -9744,7 +9748,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber972">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber979">source</a></span></span>
     </span>
   </h3>
 
@@ -10619,7 +10623,7 @@ form.submission = {data: {
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber968">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber975">source</a></span></span>
     </span>
   </h3>
 
@@ -10806,7 +10810,7 @@ form.src = &apos;https://examples.form.io/example/submission/234234234234234243&
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber976">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber983">source</a></span></span>
     </span>
   </h3>
 
@@ -11402,11 +11406,11 @@ form.src = &apos;https://examples.form.io/example/submission/234234234234234243&
     
     
     
-    <span class="code" data-ice="name">build</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">build</span><span class="code" data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber829">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber833">source</a></span></span>
     </span>
   </h3>
 
@@ -11421,7 +11425,19 @@ form.src = &apos;https://examples.form.io/example/submission/234234234234234243&
   <div data-ice="properties">
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -11450,7 +11466,7 @@ form.src = &apos;https://examples.form.io/example/submission/234234234234234243&
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber958">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber965">source</a></span></span>
     </span>
   </h3>
 
@@ -11522,7 +11538,7 @@ form.src = &apos;https://examples.form.io/example/submission/234234234234234243&
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber934">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber941">source</a></span></span>
     </span>
   </h3>
 
@@ -11674,7 +11690,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber945">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber952">source</a></span></span>
     </span>
   </h3>
 
@@ -11789,7 +11805,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1041">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1048">source</a></span></span>
     </span>
   </h3>
 
@@ -12164,7 +12180,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber924">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber931">source</a></span></span>
     </span>
   </h3>
 
@@ -12230,7 +12246,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber902">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber909">source</a></span></span>
     </span>
   </h3>
 
@@ -12303,7 +12319,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber879">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber886">source</a></span></span>
     </span>
   </h3>
 
@@ -13083,7 +13099,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber842">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber849">source</a></span></span>
     </span>
   </h3>
 
@@ -13156,7 +13172,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1068">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1075">source</a></span></span>
     </span>
   </h3>
 
@@ -13247,7 +13263,7 @@ form.submit().then((submission) =&gt; {
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber980">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber987">source</a></span></span>
     </span>
   </h3>
 
@@ -13319,7 +13335,7 @@ form.submit().then((submission) =&gt; {
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1077">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Webform.js.html#lineNumber1084">source</a></span></span>
     </span>
   </h3>
 
