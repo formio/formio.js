@@ -7,9 +7,6 @@ jobs:
             CHROME_BIN: "/usr/bin/google-chrome"
     steps:
       - checkout
-      - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
