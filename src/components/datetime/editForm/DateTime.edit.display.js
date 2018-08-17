@@ -28,7 +28,7 @@ export default [
     lazyLoad: true,
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/ab18b83989b4520730bcefc79c5f8b20/raw/timezones.json'
+      url: 'https://cdn.rawgit.com/travist/8ea624349d947b6f736bf1c09da2461e/raw/timezones.json'
     },
     template: '<span>{{ item.name }}</span>',
     conditional: {
