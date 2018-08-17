@@ -14,7 +14,7 @@ export default class Components {
     if (comps.base) {
       // Implement the tableView method.
       comps.base.tableView = function(value, options) {
-        const comp = Components.create(options.component, {}, {}, true);
+        const comp = Components.create(options.component, options.options || {}, options.data || {}, true);
         return comp.getView(value);
       };
     }
