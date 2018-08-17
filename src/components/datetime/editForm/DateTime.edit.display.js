@@ -20,7 +20,7 @@ export default [
   {
     type: 'select',
     input: true,
-    key: 'timezoneOffset',
+    key: 'timezone',
     label: 'Select Timezone',
     tooltip: 'Select the timezone you wish to display this Date',
     weight: 31,
@@ -28,7 +28,7 @@ export default [
     lazyLoad: true,
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/1072389661176f3efcd20f71b245e8aa/raw/timezones.json'
+      url: 'https://cdn.rawgit.com/travist/ab18b83989b4520730bcefc79c5f8b20/raw/timezones.json'
     },
     template: '<span>{{ item.name }}</span>',
     conditional: {

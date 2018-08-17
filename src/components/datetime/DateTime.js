@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Input from '../_classes/input/Input';
 
 import {
+  convertTimezone,
   getDateSetting,
   offsetDate,
   formatDate,
@@ -178,19 +179,12 @@ export default class DateTimeComponent extends Input {
   }
 
   get timezone() {
-    const timezone = this.component.timezone;
-    if (timezone && timezone.abbr) {
-      return timezone;
+    const timezone = this.component.timezone || this.options.timezone;
+    if (!_.isEmpty(timezone)) {
+      return convertTimezone(timezone);
     }
-    if (
-      (this.component.displayInTimezone === 'submission') &&
-      this.root &&
-      this.root.hasTimezone
-    ) {
-      return {
-        offset: this.root.submissionOffset,
-        abbr: this.root.submissionTimezone
-      };
+    if ((this.component.displayInTimezone === 'submission') && this.options.submissionTimezone) {
+      return this.options.submissionTimezone;
     }
     if (this.component.displayInTimezone === 'gmt') {
       return {

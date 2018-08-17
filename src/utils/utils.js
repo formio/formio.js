@@ -744,6 +744,32 @@ export function offsetDate(date, timezone) {
 }
 
 /**
+ * Convert timezones to take DST into account.
+ *
+ * @param timezone
+ * @return {*}
+ */
+export function convertTimezone(timezone) {
+  const today = new Date();
+  const jan = new Date(today.getFullYear(), 0, 1);
+  const jul = new Date(today.getFullYear(), 6, 1);
+  const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+
+  // Checks if we are in DST. https://bit.ly/2xVTIKD
+  if (today.getTimezoneOffset() < stdOffset) {
+    return timezone;
+  }
+  // See if we have timezone info.
+  if (timezone.dstOffset && timezone.std) {
+    return {
+      abbr: timezone.std,
+      offset: parseInt(timezone.offset, 10) - parseInt(timezone.dstOffset, 10)
+    };
+  }
+  return timezone;
+}
+
+/**
  * Format a date provided a value, formate, and timezone object.
  *
  * @param value
