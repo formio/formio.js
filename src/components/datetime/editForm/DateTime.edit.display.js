@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+import _ from 'lodash';
 export default [
   {
     type: 'select',
@@ -13,7 +15,7 @@ export default [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
         { label: 'of Location', value: 'location' },
-        { label: 'of GMT', value: 'gmt' }
+        { label: 'of UTC', value: 'utc' }
       ]
     }
   },
@@ -25,10 +27,19 @@ export default [
     tooltip: 'Select the timezone you wish to display this Date',
     weight: 31,
     defaultValue: '',
-    lazyLoad: true,
-    dataSrc: 'url',
+    valueProperty: 'name',
+    dataSrc: 'custom',
     data: {
-      url: 'https://cdn.rawgit.com/travist/8ea624349d947b6f736bf1c09da2461e/raw/timezones.json'
+      custom: () => {
+        const timezones = [];
+        _.each(moment.tz._zones, zone => {
+          const unpacked = moment.tz.unpack(zone);
+          timezones.push({
+            name: unpacked.name
+          });
+        });
+        return timezones;
+      }
     },
     template: '<span>{{ item.name }}</span>',
     conditional: {
