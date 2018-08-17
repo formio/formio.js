@@ -754,9 +754,14 @@ export function convertTimezone(timezone) {
   const jan = new Date(today.getFullYear(), 0, 1);
   const jul = new Date(today.getFullYear(), 6, 1);
   const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  const offset = today.getTimezoneOffset();
 
   // Checks if we are in DST. https://bit.ly/2xVTIKD
-  if (today.getTimezoneOffset() < stdOffset) {
+  if (
+    (!timezone.dstOffset) ||
+    ((timezone.dstOffset > 0) && (offset < stdOffset)) ||
+    ((timezone.dstOffset < 0) && (offset === stdOffset))
+  ) {
     return timezone;
   }
   // See if we have timezone info.
