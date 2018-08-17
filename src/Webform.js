@@ -721,10 +721,7 @@ export default class Webform extends NestedComponent {
       submission.metadata &&
       submission.metadata.timezone
     ) {
-      this.options.submissionTimezone = {
-        offset: parseInt(submission.metadata.offset, 10),
-        abbr: submission.metadata.timezone
-      };
+      this.options.submissionTimezone = submission.metadata.timezone;
     }
 
     const changed = super.setValue(submission.data, flags);

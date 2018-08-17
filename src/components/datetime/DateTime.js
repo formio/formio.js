@@ -4,7 +4,7 @@ import _ from 'lodash';
 import BaseComponent from '../base/Base';
 
 import {
-  convertTimezone,
+  currentTimezone,
   getDateSetting,
   offsetDate,
   formatDate,
@@ -27,7 +27,7 @@ export default class DateTimeComponent extends BaseComponent {
       enableTime: true,
       defaultDate: '',
       displayInTimezone: 'viewer',
-      timezone: null,
+      timezone: '',
       datepickerMode: 'day',
       datePicker: {
         showWeeks: true,
@@ -149,19 +149,23 @@ export default class DateTimeComponent extends BaseComponent {
 
   get timezone() {
     const timezone = this.component.timezone || this.options.timezone;
-    if (!_.isEmpty(timezone)) {
-      return convertTimezone(timezone);
+    if (timezone) {
+      return timezone;
     }
-    if ((this.component.displayInTimezone === 'submission') && this.options.submissionTimezone) {
-      return this.options.submissionTimezone;
+    if (this.component.displayInTimezone === 'submission') {
+      if (this.options.submissionTimezone) {
+        return this.options.submissionTimezone;
+      }
+      if (this.root && this.root.options && this.root.options.submissionTimezone) {
+        return this.root.options.submissionTimezone;
+      }
     }
-    if (this.component.displayInTimezone === 'gmt') {
-      return {
-        offset: 0,
-        abbr: 'GST'
-      };
+    if (this.component.displayInTimezone === 'utc') {
+      return 'UTC';
     }
-    return null;
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   get config() {
@@ -189,7 +193,7 @@ export default class DateTimeComponent extends BaseComponent {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
           const offset = offsetDate(date, this.timezone);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
+          return `${Flatpickr.formatDate(offset.date, format)} ${offset.abbr}`;
         }
 
         return Flatpickr.formatDate(date, format);
