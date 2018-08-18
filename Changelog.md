@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3.2
+### Fixed
+ - Problems with undefined promise if no timezone is used.
+ - Default datetime component to now show 24 hour time.
+ - Fixed placeholder on DateTime component to show the standard form.io time format.
+
+### Changed
+ - Added help docs to the DateTime component.
+
 ## 3.3.1
 ### Fixed
  - FOR-1560: Date timezones to use moment-timezone with lazy loading zones.
