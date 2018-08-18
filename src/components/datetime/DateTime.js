@@ -1,18 +1,18 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
-
+import moment from 'moment';
 import BaseComponent from '../base/Base';
 
 import {
   currentTimezone,
   getDateSetting,
-  offsetDate,
+  loadZones,
   formatDate,
+  formatOffset,
   getLocaleDateFormatInfo,
   convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from '../../utils/utils';
-import moment from 'moment';
 
 export default class DateTimeComponent extends BaseComponent {
   static schema(...extend) {
@@ -192,8 +192,12 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) => {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
-          const offset = offsetDate(date, this.timezone);
-          return `${Flatpickr.formatDate(offset.date, format)} ${offset.abbr}`;
+          if (!moment.zonesLoaded) {
+            loadZones(this.timezone).then(() => this.redraw());
+            return Flatpickr.formatDate(date, format);
+          }
+
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () => this.redraw());
         }
 
         return Flatpickr.formatDate(date, format);
