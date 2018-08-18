@@ -145,6 +145,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -163,11 +164,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timezoneText">timezoneText</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
@@ -906,7 +909,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices">addCurrentChoices</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, items: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices">addCurrentChoices</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, items: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>)</span>
         </p>
       </div>
       <div>
@@ -1329,7 +1332,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-itemValue">itemValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html#instance-method-itemValue">itemValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, forceUseValue: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -7262,7 +7265,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber457">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber472">source</a></span></span>
     </span>
   </h3>
 
@@ -7305,7 +7308,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber525">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber540">source</a></span></span>
     </span>
   </h3>
 
@@ -7391,7 +7394,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber672">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber698">source</a></span></span>
     </span>
   </h3>
 
@@ -7478,7 +7481,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber579">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber594">source</a></span></span>
     </span>
   </h3>
 
@@ -7566,7 +7569,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber528">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber543">source</a></span></span>
     </span>
   </h3>
 
@@ -7695,7 +7698,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber689">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber715">source</a></span></span>
     </span>
   </h3>
 
@@ -7738,7 +7741,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber233">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber248">source</a></span></span>
     </span>
   </h3>
 
@@ -7781,7 +7784,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber327">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber342">source</a></span></span>
     </span>
   </h3>
 
@@ -7825,7 +7828,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber123">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber138">source</a></span></span>
     </span>
   </h3>
 
@@ -7868,7 +7871,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber139">source</a></span></span>
     </span>
   </h3>
 
@@ -8043,7 +8046,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber440">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber455">source</a></span></span>
     </span>
   </h3>
 
@@ -8083,11 +8086,11 @@ Removes all listeners for a certain event.</p>
     
     
     
-    <span class="code" data-ice="name">addCurrentChoices</span><span class="code" data-ice="signature">(value: <span>*</span>, items: <span>*</span>)</span>
+    <span class="code" data-ice="name">addCurrentChoices</span><span class="code" data-ice="signature">(value: <span>*</span>, items: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber605">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber624">source</a></span></span>
     </span>
   </h3>
 
@@ -8114,7 +8117,7 @@ Removes all listeners for a certain event.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">items</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -8152,7 +8155,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber462">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber477">source</a></span></span>
     </span>
   </h3>
 
@@ -8218,7 +8221,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber133">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber148">source</a></span></span>
     </span>
   </h3>
 
@@ -8284,7 +8287,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber427">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber442">source</a></span></span>
     </span>
   </h3>
 
@@ -8343,7 +8346,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber158">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber173">source</a></span></span>
     </span>
   </h3>
 
@@ -8402,7 +8405,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber760">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber786">source</a></span></span>
     </span>
   </h3>
 
@@ -8474,7 +8477,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber137">source</a></span></span>
     </span>
   </h3>
 
@@ -8590,7 +8593,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber741">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber767">source</a></span></span>
     </span>
   </h3>
 
@@ -8634,7 +8637,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber780">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber806">source</a></span></span>
     </span>
   </h3>
 
@@ -8734,7 +8737,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber789">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber815">source</a></span></span>
     </span>
   </h3>
 
@@ -8777,7 +8780,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber630">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber656">source</a></span></span>
     </span>
   </h3>
 
@@ -8833,7 +8836,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber626">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber652">source</a></span></span>
     </span>
   </h3>
 
@@ -8971,11 +8974,11 @@ Removes all listeners for a certain event.</p>
     
     
     
-    <span class="code" data-ice="name">itemValue</span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">itemValue</span><span class="code" data-ice="signature">(data: <span>*</span>, forceUseValue: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber118">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -8999,6 +9002,14 @@ Removes all listeners for a certain event.</p>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">forceUseValue</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: false</li></ul></td>
+      <td data-ice="description"><p>if true, return &apos;value&apos; property of the data</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -9046,7 +9057,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber252">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber267">source</a></span></span>
     </span>
   </h3>
 
@@ -9190,7 +9201,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber175">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber190">source</a></span></span>
     </span>
   </h3>
 
@@ -9255,7 +9266,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber663">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber689">source</a></span></span>
     </span>
   </h3>
 
@@ -9333,7 +9344,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber776">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber802">source</a></span></span>
     </span>
   </h3>
 
@@ -9392,7 +9403,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber596">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber611">source</a></span></span>
     </span>
   </h3>
 
@@ -9464,7 +9475,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber570">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber585">source</a></span></span>
     </span>
   </h3>
 
@@ -9507,7 +9518,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber348">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber363">source</a></span></span>
     </span>
   </h3>
 
@@ -9550,7 +9561,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber355">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber370">source</a></span></span>
     </span>
   </h3>
 
@@ -9615,7 +9626,7 @@ Removes all listeners for a certain event.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber751">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/select/Select.js.html#lineNumber777">source</a></span></span>
     </span>
   </h3>
 

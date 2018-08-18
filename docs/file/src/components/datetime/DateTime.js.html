@@ -145,6 +145,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
@@ -163,11 +164,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timezoneText">timezoneText</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
@@ -178,18 +181,19 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Flatpickr from &apos;flatpickr&apos;;
 import _ from &apos;lodash&apos;;
-
+import moment from &apos;moment&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 
 import {
+  currentTimezone,
   getDateSetting,
-  offsetDate,
+  loadZones,
   formatDate,
+  formatOffset,
   getLocaleDateFormatInfo,
   convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from &apos;../../utils/utils&apos;;
-import moment from &apos;moment&apos;;
 
 export default class DateTimeComponent extends BaseComponent {
   static schema(...extend) {
@@ -204,7 +208,7 @@ export default class DateTimeComponent extends BaseComponent {
       enableTime: true,
       defaultDate: &apos;&apos;,
       displayInTimezone: &apos;viewer&apos;,
-      timezone: null,
+      timezone: &apos;&apos;,
       datepickerMode: &apos;day&apos;,
       datePicker: {
         showWeeks: true,
@@ -325,27 +329,24 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   get timezone() {
-    const timezone = this.component.timezone;
-    if (timezone &amp;&amp; timezone.abbr) {
+    const timezone = this.component.timezone || this.options.timezone;
+    if (timezone) {
       return timezone;
     }
-    if (
-      (this.component.displayInTimezone === &apos;submission&apos;) &amp;&amp;
-      this.root &amp;&amp;
-      this.root.hasTimezone
-    ) {
-      return {
-        offset: this.root.submissionOffset,
-        abbr: this.root.submissionTimezone
-      };
+    if (this.component.displayInTimezone === &apos;submission&apos;) {
+      if (this.options.submissionTimezone) {
+        return this.options.submissionTimezone;
+      }
+      if (this.root &amp;&amp; this.root.options &amp;&amp; this.root.options.submissionTimezone) {
+        return this.root.options.submissionTimezone;
+      }
     }
-    if (this.component.displayInTimezone === &apos;gmt&apos;) {
-      return {
-        offset: 0,
-        abbr: &apos;GST&apos;
-      };
+    if (this.component.displayInTimezone === &apos;utc&apos;) {
+      return &apos;UTC&apos;;
     }
-    return null;
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   get config() {
@@ -372,8 +373,12 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) =&gt; {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly &amp;&amp; (format === altFormat)) {
-          const offset = offsetDate(date, this.timezone);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
+          if (!moment.zonesLoaded) {
+            loadZones(this.timezone).then(() =&gt; this.redraw());
+            return Flatpickr.formatDate(date, format);
+          }
+
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () =&gt; this.redraw());
         }
 
         return Flatpickr.formatDate(date, format);
