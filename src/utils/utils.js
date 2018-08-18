@@ -4,6 +4,7 @@ import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
+import Promise from 'native-promise-only';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -753,11 +754,11 @@ export function offsetDate(date, timezone) {
 export function loadZones(timezone) {
   if (timezone === currentTimezone()) {
     // Return non-resolving promise.
-    return new Promise();
+    return new Promise(_.noop);
   }
   if (timezone === 'UTC') {
     // Return non-resolving promise.
-    return new Promise();
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
@@ -891,34 +892,6 @@ export function convertFormatToFlatpickr(format) {
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
-}
-
-export function convertFlatpickrToFormat(format) {
-  return format
-    // Year conversion.
-    .replace('Y', 'YYYY')
-    .replace('y', 'YY')
-
-    // Month conversion.
-    .replace('F', 'MMMM')
-    .replace('M', 'MMM')
-    .replace('m', 'MM')
-    .replace('n', 'M')
-
-    // Day in month.
-    .replace('d', 'dd')
-    .replace('j', 'd')
-
-    // Day in week.
-    .replace('l', 'EEEE')
-    .replace('D', 'EEE')
-
-    // Hours, minutes, seconds
-    .replace('H', 'HH')
-    .replace('h', 'H')
-    .replace('i', 'mm')
-    .replace('S', 'ss')
-    .replace('K', 'a');
 }
 
 /**

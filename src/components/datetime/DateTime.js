@@ -10,17 +10,20 @@ import {
   formatDate,
   formatOffset,
   getLocaleDateFormatInfo,
-  convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from '../../utils/utils';
 
 export default class DateTimeComponent extends BaseComponent {
+  static get DEFAULT_FORMAT() {
+    return 'yyyy-MM-dd hh:mm a';
+  }
+
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
-      format: 'yyyy-MM-dd HH:mm a',
+      format: DateTimeComponent.DEFAULT_FORMAT,
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
@@ -77,6 +80,10 @@ export default class DateTimeComponent extends BaseComponent {
     return DateTimeComponent.schema();
   }
 
+  get dateFormat() {
+    return _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT);
+  }
+
   get defaultValue() {
     const defaultValue = super.defaultValue;
     if (defaultValue) {
@@ -95,7 +102,7 @@ export default class DateTimeComponent extends BaseComponent {
   elementInfo() {
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
+      this.component.placeholder = this.dateFormat;
     }
     const info = super.elementInfo();
     info.type = 'input';
@@ -144,7 +151,7 @@ export default class DateTimeComponent extends BaseComponent {
   get dateTimeFormat() {
     return this.component.useLocaleSettings
       ? this.localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
+      : convertFormatToFlatpickr(this.dateFormat);
   }
 
   get timezone() {
@@ -298,7 +305,7 @@ export default class DateTimeComponent extends BaseComponent {
     if (!value) {
       return '';
     }
-    return formatDate(value, _.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'), this.timezone);
+    return formatDate(value, this.dateFormat, this.timezone);
   }
 
   setValueAt(index, value) {
