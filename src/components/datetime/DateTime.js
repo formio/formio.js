@@ -1,17 +1,18 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
-
+import moment from 'moment';
 import BaseComponent from '../base/Base';
 
 import {
+  currentTimezone,
   getDateSetting,
-  offsetDate,
+  loadZones,
   formatDate,
+  formatOffset,
   getLocaleDateFormatInfo,
   convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from '../../utils/utils';
-import moment from 'moment';
 
 export default class DateTimeComponent extends BaseComponent {
   static schema(...extend) {
@@ -26,7 +27,7 @@ export default class DateTimeComponent extends BaseComponent {
       enableTime: true,
       defaultDate: '',
       displayInTimezone: 'viewer',
-      timezone: null,
+      timezone: '',
       datepickerMode: 'day',
       datePicker: {
         showWeeks: true,
@@ -147,27 +148,24 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   get timezone() {
-    const timezone = this.component.timezone;
-    if (timezone && timezone.abbr) {
+    const timezone = this.component.timezone || this.options.timezone;
+    if (timezone) {
       return timezone;
     }
-    if (
-      (this.component.displayInTimezone === 'submission') &&
-      this.root &&
-      this.root.hasTimezone
-    ) {
-      return {
-        offset: this.root.submissionOffset,
-        abbr: this.root.submissionTimezone
-      };
+    if (this.component.displayInTimezone === 'submission') {
+      if (this.options.submissionTimezone) {
+        return this.options.submissionTimezone;
+      }
+      if (this.root && this.root.options && this.root.options.submissionTimezone) {
+        return this.root.options.submissionTimezone;
+      }
     }
-    if (this.component.displayInTimezone === 'gmt') {
-      return {
-        offset: 0,
-        abbr: 'GST'
-      };
+    if (this.component.displayInTimezone === 'utc') {
+      return 'UTC';
     }
-    return null;
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   get config() {
@@ -194,8 +192,12 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) => {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
-          const offset = offsetDate(date, this.timezone);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
+          if (!moment.zonesLoaded) {
+            loadZones(this.timezone).then(() => this.redraw());
+            return Flatpickr.formatDate(date, format);
+          }
+
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () => this.redraw());
         }
 
         return Flatpickr.formatDate(date, format);

@@ -13,24 +13,25 @@ export default [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
         { label: 'of Location', value: 'location' },
-        { label: 'of GMT', value: 'gmt' }
+        { label: 'of UTC', value: 'utc' }
       ]
     }
   },
   {
     type: 'select',
     input: true,
-    key: 'timezoneOffset',
+    key: 'timezone',
     label: 'Select Timezone',
     tooltip: 'Select the timezone you wish to display this Date',
     weight: 31,
-    defaultValue: '',
     lazyLoad: true,
+    defaultValue: '',
+    valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/1072389661176f3efcd20f71b245e8aa/raw/timezones.json'
+      url: 'https://cdn.rawgit.com/travist/b8b3b3dd51c3ca01469ce18d8f00fd3e/raw/timezones.json'
     },
-    template: '<span>{{ item.name }}</span>',
+    template: '<span>{{ item.label }}</span>',
     conditional: {
       json: { '===': [{ var: 'data.displayInTimezone' }, 'location'] }
     }
