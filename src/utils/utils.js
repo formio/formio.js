@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import 'whatwg-fetch';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone';
+import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 
@@ -716,7 +717,11 @@ export function isValidDate(date) {
  * @return {string}
  */
 export function currentTimezone() {
-  return jtz.determine().name();
+  if (moment.currentTimezone) {
+    return moment.currentTimezone;
+  }
+  moment.currentTimezone = jtz.determine().name();
+  return moment.currentTimezone;
 }
 
 /**
@@ -727,8 +732,11 @@ export function currentTimezone() {
  * @return {Date}
  */
 export function offsetDate(date, timezone) {
-  if (timezone.abbr) {
-    timezone = timezone.abbr.toString();
+  if (timezone === 'UTC') {
+    return {
+      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      abbr: 'UTC'
+    };
   }
   const dateMoment = moment(date).tz(timezone);
   return {
@@ -738,7 +746,60 @@ export function offsetDate(date, timezone) {
 }
 
 /**
- * Format a date provided a value, formate, and timezone object.
+ * Externally load the timezone data.
+ *
+ * @return {Promise<any> | *}
+ */
+export function loadZones(timezone) {
+  if (timezone === currentTimezone()) {
+    // Return non-resolving promise.
+    return new Promise();
+  }
+  if (timezone === 'UTC') {
+    // Return non-resolving promise.
+    return new Promise();
+  }
+
+  if (moment.zonesPromise) {
+    return moment.zonesPromise;
+  }
+  return moment.zonesPromise = fetch(
+    'https://cdn.rawgit.com/moment/moment-timezone/develop/data/packed/latest.json',
+  ).then(resp => resp.json().then(zones => {
+    moment.tz.load(zones);
+    moment.zonesLoaded = true;
+  }));
+}
+
+/**
+ * Set the timezone text and replace once timezones have loaded.
+ *
+ * @param offsetFormat
+ * @param stdFormat
+ * @return {*}
+ */
+export function timezoneText(offsetFormat, stdFormat) {
+  loadZones();
+  if (moment.zonesLoaded) {
+    return offsetFormat();
+  }
+  const id = getRandomComponentId();
+  let tries = 0;
+  moment.zonesPromise.then(function replaceZone() {
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerHTML = offsetFormat();
+    }
+    else if (tries++ < 5) {
+      setTimeout(replaceZone, 100);
+    }
+  });
+  // For now just return the current format, and replace once zones are loaded.
+  return `<span id='${id}'>${stdFormat()}</span>`;
+}
+
+/**
+ * Format a date provided a value, format, and timezone object.
  *
  * @param value
  * @param format
@@ -746,10 +807,44 @@ export function offsetDate(date, timezone) {
  * @return {string}
  */
 export function formatDate(value, format, timezone) {
-  if (timezone.abbr) {
-    timezone = timezone.abbr.toString();
+  const momentDate = moment(value);
+  if (timezone === currentTimezone()) {
+    return momentDate.format(convertFormatToMoment(format));
   }
-  return moment(value).tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  if (timezone === 'UTC') {
+    const offset = offsetDate(momentDate.toDate(), 'UTC');
+    return `${moment(offset).format(convertFormatToMoment(format))} UTC`;
+  }
+
+  // Return the timezoneText.
+  return timezoneText(
+    () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
+    () => momentDate.format(convertFormatToMoment(format))
+  );
+}
+
+/**
+ * Pass a format function to format within a timezone.
+ *
+ * @param formatFn
+ * @param date
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatOffset(formatFn, date, format, timezone) {
+  if (timezone === currentTimezone()) {
+    return formatFn(date, format);
+  }
+  if (timezone === 'UTC') {
+    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
+  }
+
+  // Return the timezone text.
+  return timezoneText(() => {
+    const offset = offsetDate(date, timezone);
+    return `${formatFn(offset.date, format)} ${offset.abbr}`;
+  }, () => formatFn(date, format));
 }
 
 export function getLocaleDateFormatInfo(locale) {
