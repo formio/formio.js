@@ -132,7 +132,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFlatpickrToFormat">convertFlatpickrToFormat</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
@@ -191,17 +190,20 @@ import {
   formatDate,
   formatOffset,
   getLocaleDateFormatInfo,
-  convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from &apos;../../utils/utils&apos;;
 
 export default class DateTimeComponent extends BaseComponent {
+  static get DEFAULT_FORMAT() {
+    return &apos;yyyy-MM-dd hh:mm a&apos;;
+  }
+
   static schema(...extend) {
     return BaseComponent.schema({
       type: &apos;datetime&apos;,
       label: &apos;Date / Time&apos;,
       key: &apos;dateTime&apos;,
-      format: &apos;yyyy-MM-dd HH:mm a&apos;,
+      format: DateTimeComponent.DEFAULT_FORMAT,
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
@@ -258,6 +260,10 @@ export default class DateTimeComponent extends BaseComponent {
     return DateTimeComponent.schema();
   }
 
+  get dateFormat() {
+    return _.get(this.component, &apos;format&apos;, DateTimeComponent.DEFAULT_FORMAT);
+  }
+
   get defaultValue() {
     const defaultValue = super.defaultValue;
     if (defaultValue) {
@@ -276,7 +282,7 @@ export default class DateTimeComponent extends BaseComponent {
   elementInfo() {
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
+      this.component.placeholder = this.dateFormat;
     }
     const info = super.elementInfo();
     info.type = &apos;input&apos;;
@@ -325,7 +331,7 @@ export default class DateTimeComponent extends BaseComponent {
   get dateTimeFormat() {
     return this.component.useLocaleSettings
       ? this.localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;));
+      : convertFormatToFlatpickr(this.dateFormat);
   }
 
   get timezone() {
@@ -479,7 +485,7 @@ export default class DateTimeComponent extends BaseComponent {
     if (!value) {
       return &apos;&apos;;
     }
-    return formatDate(value, _.get(this.component, &apos;format&apos;, &apos;yyyy-MM-dd HH:mm a&apos;), this.timezone);
+    return formatDate(value, this.dateFormat, this.timezone);
   }
 
   setValueAt(index, value) {

@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 1652,
+  "end": 2025,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 65,
+      "line": 66,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 1652,
+    "end": 2025,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 65,
+        "line": 66,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 1651,
+        "end": 2024,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 64,
+            "line": 65,
             "column": 2
           }
         },
         "declaration": {
           "type": "ArrayExpression",
           "start": 15,
-          "end": 1650,
+          "end": 2023,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 64,
+              "line": 65,
               "column": 1
             }
           },
@@ -2783,14 +2783,14 @@
             {
               "type": "ObjectExpression",
               "start": 1448,
-              "end": 1648,
+              "end": 2021,
               "loc": {
                 "start": {
                   "line": 55,
                   "column": 2
                 },
                 "end": {
-                  "line": 63,
+                  "line": 64,
                   "column": 3
                 }
               },
@@ -3069,7 +3069,7 @@
                 {
                   "type": "ObjectProperty",
                   "start": 1561,
-                  "end": 1628,
+                  "end": 1754,
                   "loc": {
                     "start": {
                       "line": 61,
@@ -3077,7 +3077,7 @@
                     },
                     "end": {
                       "line": 61,
-                      "column": 71
+                      "column": 197
                     }
                   },
                   "method": false,
@@ -3086,7 +3086,7 @@
                   "key": {
                     "type": "Identifier",
                     "start": 1561,
-                    "end": 1568,
+                    "end": 1572,
                     "loc": {
                       "start": {
                         "line": 61,
@@ -3094,6 +3094,61 @@
                       },
                       "end": {
                         "line": 61,
+                        "column": 15
+                      },
+                      "identifierName": "description"
+                    },
+                    "name": "description"
+                  },
+                  "value": {
+                    "type": "StringLiteral",
+                    "start": 1574,
+                    "end": 1754,
+                    "loc": {
+                      "start": {
+                        "line": 61,
+                        "column": 17
+                      },
+                      "end": {
+                        "line": 61,
+                        "column": 197
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "Use formats formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>",
+                      "raw": "'Use formats formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>'"
+                    },
+                    "value": "Use formats formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>"
+                  }
+                },
+                {
+                  "type": "ObjectProperty",
+                  "start": 1760,
+                  "end": 2001,
+                  "loc": {
+                    "start": {
+                      "line": 62,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 62,
+                      "column": 245
+                    }
+                  },
+                  "method": false,
+                  "shorthand": false,
+                  "computed": false,
+                  "key": {
+                    "type": "Identifier",
+                    "start": 1760,
+                    "end": 1767,
+                    "loc": {
+                      "start": {
+                        "line": 62,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 62,
                         "column": 11
                       },
                       "identifierName": "tooltip"
@@ -3102,36 +3157,36 @@
                   },
                   "value": {
                     "type": "StringLiteral",
-                    "start": 1570,
-                    "end": 1628,
+                    "start": 1769,
+                    "end": 2001,
                     "loc": {
                       "start": {
-                        "line": 61,
+                        "line": 62,
                         "column": 13
                       },
                       "end": {
-                        "line": 61,
-                        "column": 71
+                        "line": 62,
+                        "column": 245
                       }
                     },
                     "extra": {
-                      "rawValue": "The moment.js format for saving the value of this field.",
-                      "raw": "'The moment.js format for saving the value of this field.'"
+                      "rawValue": "The date format for saving the value of this field. You can use formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>",
+                      "raw": "'The date format for saving the value of this field. You can use formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>'"
                     },
-                    "value": "The moment.js format for saving the value of this field."
+                    "value": "The date format for saving the value of this field. You can use formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>"
                   }
                 },
                 {
                   "type": "ObjectProperty",
-                  "start": 1634,
-                  "end": 1644,
+                  "start": 2007,
+                  "end": 2017,
                   "loc": {
                     "start": {
-                      "line": 62,
+                      "line": 63,
                       "column": 4
                     },
                     "end": {
-                      "line": 62,
+                      "line": 63,
                       "column": 14
                     }
                   },
@@ -3140,15 +3195,15 @@
                   "computed": false,
                   "key": {
                     "type": "Identifier",
-                    "start": 1634,
-                    "end": 1640,
+                    "start": 2007,
+                    "end": 2013,
                     "loc": {
                       "start": {
-                        "line": 62,
+                        "line": 63,
                         "column": 4
                       },
                       "end": {
-                        "line": 62,
+                        "line": 63,
                         "column": 10
                       },
                       "identifierName": "weight"
@@ -3157,15 +3212,15 @@
                   },
                   "value": {
                     "type": "NumericLiteral",
-                    "start": 1642,
-                    "end": 1644,
+                    "start": 2015,
+                    "end": 2017,
                     "loc": {
                       "start": {
-                        "line": 62,
+                        "line": 63,
                         "column": 12
                       },
                       "end": {
-                        "line": 62,
+                        "line": 63,
                         "column": 14
                       }
                     },
@@ -9265,9 +9320,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "tooltip",
+      "value": "description",
       "start": 1561,
-      "end": 1568,
+      "end": 1572,
       "loc": {
         "start": {
           "line": 61,
@@ -9275,6 +9330,111 @@
         },
         "end": {
           "line": 61,
+          "column": 15
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 1572,
+      "end": 1573,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 15
+        },
+        "end": {
+          "line": 61,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Use formats formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>",
+      "start": 1574,
+      "end": 1754,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 17
+        },
+        "end": {
+          "line": 61,
+          "column": 197
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 1754,
+      "end": 1755,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 197
+        },
+        "end": {
+          "line": 61,
+          "column": 198
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "tooltip",
+      "start": 1760,
+      "end": 1767,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 4
+        },
+        "end": {
+          "line": 62,
           "column": 11
         }
       }
@@ -9292,15 +9452,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1568,
-      "end": 1569,
+      "start": 1767,
+      "end": 1768,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 62,
           "column": 11
         },
         "end": {
-          "line": 61,
+          "line": 62,
           "column": 12
         }
       }
@@ -9318,17 +9478,17 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "The moment.js format for saving the value of this field.",
-      "start": 1570,
-      "end": 1628,
+      "value": "The date format for saving the value of this field. You can use formats provided by <a href=\"https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes\" target=\"_blank\">DateParser Codes</a>",
+      "start": 1769,
+      "end": 2001,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 62,
           "column": 13
         },
         "end": {
-          "line": 61,
-          "column": 71
+          "line": 62,
+          "column": 245
         }
       }
     },
@@ -9345,16 +9505,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1628,
-      "end": 1629,
+      "start": 2001,
+      "end": 2002,
       "loc": {
         "start": {
-          "line": 61,
-          "column": 71
+          "line": 62,
+          "column": 245
         },
         "end": {
-          "line": 61,
-          "column": 72
+          "line": 62,
+          "column": 246
         }
       }
     },
@@ -9371,15 +9531,15 @@
         "binop": null
       },
       "value": "weight",
-      "start": 1634,
-      "end": 1640,
+      "start": 2007,
+      "end": 2013,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 63,
           "column": 4
         },
         "end": {
-          "line": 62,
+          "line": 63,
           "column": 10
         }
       }
@@ -9397,15 +9557,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1640,
-      "end": 1641,
+      "start": 2013,
+      "end": 2014,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 63,
           "column": 10
         },
         "end": {
-          "line": 62,
+          "line": 63,
           "column": 11
         }
       }
@@ -9424,15 +9584,15 @@
         "updateContext": null
       },
       "value": 52,
-      "start": 1642,
-      "end": 1644,
+      "start": 2015,
+      "end": 2017,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 63,
           "column": 12
         },
         "end": {
-          "line": 62,
+          "line": 63,
           "column": 14
         }
       }
@@ -9449,15 +9609,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 1647,
-      "end": 1648,
+      "start": 2020,
+      "end": 2021,
       "loc": {
         "start": {
-          "line": 63,
+          "line": 64,
           "column": 2
         },
         "end": {
-          "line": 63,
+          "line": 64,
           "column": 3
         }
       }
@@ -9475,15 +9635,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1649,
-      "end": 1650,
+      "start": 2022,
+      "end": 2023,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 65,
           "column": 0
         },
         "end": {
-          "line": 64,
+          "line": 65,
           "column": 1
         }
       }
@@ -9501,15 +9661,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1650,
-      "end": 1651,
+      "start": 2023,
+      "end": 2024,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 65,
           "column": 1
         },
         "end": {
-          "line": 64,
+          "line": 65,
           "column": 2
         }
       }
@@ -9527,15 +9687,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 1652,
-      "end": 1652,
+      "start": 2025,
+      "end": 2025,
       "loc": {
         "start": {
-          "line": 65,
+          "line": 66,
           "column": 0
         },
         "end": {
-          "line": 65,
+          "line": 66,
           "column": 0
         }
       }

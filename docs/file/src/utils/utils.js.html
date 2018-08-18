@@ -132,7 +132,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFlatpickrToFormat">convertFlatpickrToFormat</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
@@ -185,6 +184,7 @@ import jsonLogic from &apos;json-logic-js&apos;;
 import moment from &apos;moment-timezone/moment-timezone&apos;;
 import jtz from &apos;jstimezonedetect&apos;;
 import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
+import Promise from &apos;native-promise-only&apos;;
 
 // Configure JsonLogic
 lodashOperators.forEach((name) =&gt; jsonLogic.add_operation(`_${name}`, _[name]));
@@ -934,11 +934,11 @@ export function offsetDate(date, timezone) {
 export function loadZones(timezone) {
   if (timezone === currentTimezone()) {
     // Return non-resolving promise.
-    return new Promise();
+    return new Promise(_.noop);
   }
   if (timezone === &apos;UTC&apos;) {
     // Return non-resolving promise.
-    return new Promise();
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
@@ -1072,34 +1072,6 @@ export function convertFormatToFlatpickr(format) {
     .replace(&apos;mm&apos;, &apos;i&apos;)
     .replace(&apos;ss&apos;, &apos;S&apos;)
     .replace(/a/g, &apos;K&apos;);
-}
-
-export function convertFlatpickrToFormat(format) {
-  return format
-    // Year conversion.
-    .replace(&apos;Y&apos;, &apos;YYYY&apos;)
-    .replace(&apos;y&apos;, &apos;YY&apos;)
-
-    // Month conversion.
-    .replace(&apos;F&apos;, &apos;MMMM&apos;)
-    .replace(&apos;M&apos;, &apos;MMM&apos;)
-    .replace(&apos;m&apos;, &apos;MM&apos;)
-    .replace(&apos;n&apos;, &apos;M&apos;)
-
-    // Day in month.
-    .replace(&apos;d&apos;, &apos;dd&apos;)
-    .replace(&apos;j&apos;, &apos;d&apos;)
-
-    // Day in week.
-    .replace(&apos;l&apos;, &apos;EEEE&apos;)
-    .replace(&apos;D&apos;, &apos;EEE&apos;)
-
-    // Hours, minutes, seconds
-    .replace(&apos;H&apos;, &apos;HH&apos;)
-    .replace(&apos;h&apos;, &apos;H&apos;)
-    .replace(&apos;i&apos;, &apos;mm&apos;)
-    .replace(&apos;S&apos;, &apos;ss&apos;)
-    .replace(&apos;K&apos;, &apos;a&apos;);
 }
 
 /**
