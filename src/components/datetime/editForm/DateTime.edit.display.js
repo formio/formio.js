@@ -58,7 +58,8 @@ export default [
     key: 'format',
     label: 'Format',
     placeholder: 'Format',
-    tooltip: 'The moment.js format for saving the value of this field.',
+    description: 'Use formats formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
+    tooltip: 'The moment.js format for saving the value of this field. You can use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
     weight: 52
   }
 ];
