@@ -240,13 +240,18 @@ export default class Webform extends NestedComponent {
   set language(lang) {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
-      i18next.changeLanguage(lang, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        this.redraw();
-        resolve();
-      });
+      try {
+        i18next.changeLanguage(lang, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          this.redraw();
+          resolve();
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
     });
   }
 
@@ -275,14 +280,19 @@ export default class Webform extends NestedComponent {
     }
     i18next.initialized = true;
     return new Promise((resolve, reject) => {
-      i18next.init(this.options.i18n, (err) => {
-        // Get language but remove any ;q=1 that might exist on it.
-        this.options.language = i18next.language.split(';')[0];
-        if (err) {
-          return reject(err);
-        }
-        resolve(i18next);
-      });
+      try {
+        i18next.init(this.options.i18n, (err) => {
+          // Get language but remove any ;q=1 that might exist on it.
+          this.options.language = i18next.language.split(';')[0];
+          if (err) {
+            return reject(err);
+          }
+          resolve(i18next);
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
     });
   }
 

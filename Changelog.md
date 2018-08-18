@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3.1
+### Fixed
+ - FOR-1560: Date timezones to use moment-timezone with lazy loading zones.
+ - FOR-1445: Problems where duplicates could show up in Select component
+ - Issue that arrises when you send a malformed language code to the switch language system.
+ - Added try/catch blocks around language switching to make it so the renderer is still usable.
+ 
 ## 3.3.0
 ### Added
  - A DataMap component that provides a dynamic key-value pair input component.
