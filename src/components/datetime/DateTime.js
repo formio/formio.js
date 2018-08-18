@@ -20,7 +20,7 @@ export default class DateTimeComponent extends Input {
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
-      format: 'yyyy-MM-dd HH:mm a',
+      format: 'MMM d, yyyy h:m a',
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
@@ -175,7 +175,7 @@ export default class DateTimeComponent extends Input {
   get dateTimeFormat() {
     return this.component.useLocaleSettings
       ? this.localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
+      : convertFormatToFlatpickr(_.get(this.component, 'format', 'MMM d, yyyy h:m a'));
   }
 
   get timezone() {
@@ -306,7 +306,7 @@ export default class DateTimeComponent extends Input {
     if (!value) {
       return '';
     }
-    return formatDate(value, _.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'), this.timezone);
+    return formatDate(value, _.get(this.component, 'format', 'MMM d, yyyy h:m a'), this.timezone);
   }
 
   setValueAt(index, value) {

@@ -35,7 +35,7 @@ export default {
   'defaultDate': '',
   'enableTime': true,
   'enableDate': true,
-  'format': 'yyyy-MM-dd hh:mm',
+  'format': 'MMM d, yyyy h:m a',
   'placeholder': 'Enter the date',
   'key': 'date',
   'label': 'Date',
