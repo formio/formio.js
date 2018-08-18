@@ -10,17 +10,20 @@ import {
   formatDate,
   formatOffset,
   getLocaleDateFormatInfo,
-  convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from '../../utils/utils';
 
 export default class DateTimeComponent extends Input {
+  static get DEFAULT_FORMAT() {
+    return 'yyyy-MM-dd hh:mm a';
+  }
+
   static schema(...extend) {
     return Input.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
-      format: 'MMM d, yyyy h:m a',
+      format: DateTimeComponent.DEFAULT_FORMAT,
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
@@ -95,7 +98,7 @@ export default class DateTimeComponent extends Input {
   get inputInfo() {
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
+      this.component.placeholder = _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT);
     }
     const info = super.inputInfo;
     info.type = 'input';
@@ -175,7 +178,7 @@ export default class DateTimeComponent extends Input {
   get dateTimeFormat() {
     return this.component.useLocaleSettings
       ? this.localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, 'format', 'MMM d, yyyy h:m a'));
+      : convertFormatToFlatpickr(_.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT));
   }
 
   get timezone() {
@@ -306,7 +309,7 @@ export default class DateTimeComponent extends Input {
     if (!value) {
       return '';
     }
-    return formatDate(value, _.get(this.component, 'format', 'MMM d, yyyy h:m a'), this.timezone);
+    return formatDate(value, _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT), this.timezone);
   }
 
   setValueAt(index, value) {
