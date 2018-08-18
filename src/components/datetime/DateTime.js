@@ -80,6 +80,10 @@ export default class DateTimeComponent extends Input {
     return DateTimeComponent.schema();
   }
 
+  get dateFormat() {
+    return _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT);
+  }
+
   get defaultValue() {
     const defaultValue = super.defaultValue;
     if (defaultValue) {
@@ -98,7 +102,7 @@ export default class DateTimeComponent extends Input {
   get inputInfo() {
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT);
+      this.component.placeholder = this.dateFormat;
     }
     const info = super.inputInfo;
     info.type = 'input';
@@ -178,7 +182,7 @@ export default class DateTimeComponent extends Input {
   get dateTimeFormat() {
     return this.component.useLocaleSettings
       ? this.localeFormat
-      : convertFormatToFlatpickr(_.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT));
+      : convertFormatToFlatpickr(this.dateFormat);
   }
 
   get timezone() {
@@ -309,7 +313,7 @@ export default class DateTimeComponent extends Input {
     if (!value) {
       return '';
     }
-    return formatDate(value, _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT), this.timezone);
+    return formatDate(value, this.dateFormat, this.timezone);
   }
 
   setValueAt(index, value) {
