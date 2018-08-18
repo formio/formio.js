@@ -149,7 +149,7 @@ Formio.createForm(document.getElementById('formio'), {
       placeholder: 'Enter your last name',
       input: true,
       conditional: {
-        json: {"===": [{var: "data.firstName"}, "Bob"]}
+        json: {"!==": [{var: "data.firstName"}, "Bob"]}
       }
     },
     {
