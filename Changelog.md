@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with Invalid date showing up for display times in UTC.
 
+### Changed
+ - Minor text change for the form builder.
+
 ## 3.3.3
 ### Fixed
  - Issue where the Content component would not work in builder with Refresh on Change checked.
