@@ -814,7 +814,7 @@ export function formatDate(value, format, timezone) {
   }
   if (timezone === 'UTC') {
     const offset = offsetDate(momentDate.toDate(), 'UTC');
-    return `${moment(offset).format(convertFormatToMoment(format))} UTC`;
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
   }
 
   // Return the timezoneText.
