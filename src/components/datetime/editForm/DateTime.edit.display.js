@@ -13,7 +13,7 @@ export default [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
         { label: 'of Location', value: 'location' },
-        { label: 'of UTC', value: 'utc' }
+        { label: 'UTC', value: 'utc' }
       ]
     }
   },
