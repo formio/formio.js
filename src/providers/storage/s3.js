@@ -3,6 +3,9 @@ import _trim from 'lodash/trim';
 const trim = function(text) {
   return _trim(text, '/');
 };
+const path = function(items) {
+  return items.filter(item => !!item).map(trim).join('/');
+};
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback) {
     return new Promise(((resolve, reject) => {
@@ -29,7 +32,7 @@ const s3 = (formio) => ({
           }
 
           response.data.fileName = fileName;
-          response.data.key = `${trim(response.data.key)}/${trim(dir)}/${trim(fileName)}`;
+          response.data.key = path([response.data.key, dir, fileName]);
 
           // Fire on network error.
           xhr.onerror = (err) => {
@@ -44,7 +47,7 @@ const s3 = (formio) => ({
                 name: fileName,
                 bucket: response.bucket,
                 key: response.data.key,
-                url: `${trim(response.url)}/${trim(response.data.key)}`,
+                url: path([response.url, response.data.key]),
                 acl: response.data.acl,
                 size: file.size,
                 type: file.type
@@ -86,7 +89,7 @@ const s3 = (formio) => ({
       }
 
       pre.send(JSON.stringify({
-        name: trim(`${trim(dir)}/${trim(fileName)}`),
+        name: path([dir, fileName]),
         size: file.size,
         type: file.type
       }));
