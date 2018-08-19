@@ -1544,6 +1544,9 @@ export default class Component {
     return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
 
       .then(() => {
+        if (!element.parentNode) {
+          return Promise.reject();
+        }
         this.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
