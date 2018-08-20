@@ -1,7 +1,30 @@
-import { Form } from './formio.form';
-const query = {};
 const scripts = document.getElementsByTagName('script');
-const thisScript = scripts[ scripts.length - 1 ];
+let thisScript = scripts[(scripts.length - 1)];
+let foundScript = false;
+if (!thisScript.src || thisScript.src.indexOf('formio.embed') === -1) {
+  // Manually search for the script...
+  for (var i in scripts) {
+    if (
+      scripts[i].src &&
+      (scripts[i].src.indexOf('formio.embed') !== -1)
+    ) {
+      foundScript = true;
+      thisScript = scripts[i];
+      break;
+    }
+  }
+}
+else {
+  foundScript = true;
+}
+
+// Show an error if the script cannot be found.
+if (!foundScript) {
+  return document.write('<span>Could not locate form render script.</span>');
+}
+
+const Form = require('./formio.form').Form;
+const query = {};
 let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
 scriptSrc.pop();
 scriptSrc = scriptSrc.join('/');
