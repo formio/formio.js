@@ -1,24 +1,14 @@
 const scripts = document.getElementsByTagName('script');
-let thisScript = scripts[(scripts.length - 1)];
-let foundScript = false;
-if (!thisScript.src || thisScript.src.indexOf('formio.embed') === -1) {
-  // Fallback mode: Manually search for the script...
-  for (var i in scripts) {
-    if (
-      scripts[i].src &&
-      (scripts[i].src.indexOf('formio.embed') !== -1)
-    ) {
-      foundScript = true;
-      thisScript = scripts[i];
-      break;
-    }
+let thisScript = null;
+let i = scripts.length;
+while (i--) {
+  if (scripts[i].src && (scripts[i].src.indexOf('formio.embed') !== -1)) {
+    thisScript = scripts[i];
+    break;
   }
 }
-else {
-  foundScript = true;
-}
 
-if (foundScript) {
+if (thisScript) {
   const Form = require('./formio.form').Form;
   const query = {};
   let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
@@ -67,5 +57,5 @@ if (foundScript) {
 }
 else {
   // Show an error if the script cannot be found.
-  document.write('<span>Could not locate form render script.</span>');
+  document.write('<span>Could not locate the Embedded form.</span>');
 }
