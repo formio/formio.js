@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.3.6
+### Fixed
+ - Issues with the embed script to try and grab wrong script from the page.
+ - Problems where the default embed script is in Webpack develop mode.
+
 ## 3.3.5
 ### Fixed
  - Path issues with s3 uploads that was adding empty directories to the upload paths.
