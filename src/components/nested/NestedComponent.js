@@ -267,11 +267,18 @@ export default class NestedComponent extends BaseComponent {
    * @param element
    * @param data
    */
-  addComponents(element, data) {
+  addComponents(element, data, options) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents, this);
-    components.forEach((component) => this.addComponent(component, element, data));
+    options = options || this.options;
+
+    if (options.components) {
+      this.components = options.components;
+    }
+    else {
+      const components = this.hook('addComponents', this.componentComponents, this);
+      components.forEach((component) => this.addComponent(component, element, data));
+    }
   }
 
   updateValue(flags) {

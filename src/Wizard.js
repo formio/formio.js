@@ -23,13 +23,22 @@ export default class Wizard extends Webform {
     this._nextPage = 0;
   }
 
-  eachPage(cb) {
+  getPages() {
     const pageOptions = _.clone(this.options);
-    _.each(this.pages, (page) => cb(this.createComponent(page, pageOptions)));
+    const components = _.clone(this.components);
+
+    // We shouldn't recreate a components on the page we currently on to avoid duplicate inputs desync.
+    return this.pages.map((page, index) => this.createComponent(page, Object.assign({}, pageOptions, {
+      components: index === this.page ? components : null,
+    })));
+  }
+
+  getComponents() {
+    return this.submitting ? this.getPages() : super.getComponents();
   }
 
   resetValue() {
-    this.eachPage(page => page.resetValue());
+    this.getPages().forEach((page) => page.resetValue());
     this.setPristine(true);
   }
 
@@ -84,12 +93,10 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const ops = [];
-    this.eachPage((page) => {
+    return Promise.all(this.getPages().map((page) => {
       page.options.beforeSubmit = true;
-      ops.push(page.beforeSubmit());
-    });
-    return Promise.all(ops);
+      return page.beforeSubmit();
+    }));
   }
 
   nextPage() {
@@ -139,8 +146,8 @@ export default class Wizard extends Webform {
 
   getPageIndexByKey(key) {
     let pageIndex = 0;
-    _.each(this.pages, (_page, index) => {
-      if (_page.key === key) {
+    this.pages.forEach((page, index) => {
+      if (page.key === key) {
         pageIndex = index;
         return false;
       }
@@ -180,7 +187,7 @@ export default class Wizard extends Webform {
     } while (pageIndex);
 
     // Add all other components.
-    _.each(this.wizard.components, (component) => {
+    this.wizard.components.forEach((component) => {
       if (component.type !== 'panel') {
         wizard.components.push(component);
       }
@@ -195,7 +202,7 @@ export default class Wizard extends Webform {
 
   buildPages(form) {
     this.pages = [];
-    _.each(form.components, (component) => {
+    form.components.forEach((component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (checkCondition(component, this.data, this.data, this.wizard, this)) {
@@ -291,7 +298,7 @@ export default class Wizard extends Webform {
     this.prepend(this.wizardHeader);
 
     const showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
-    _.each(this.pages, (page, i) => {
+    this.pages.forEach((page, i) => {
       // See if this page is in our history.
       if (showHistory && ((this.page !== i) && !this.history.includes(i))) {
         return;
@@ -354,7 +361,7 @@ export default class Wizard extends Webform {
     // Only rebuild if there is a page change.
     let pageIndex = 0;
     let rebuild = false;
-    _.each(this.wizard.components, (component) => {
+    this.wizard.components.forEach((component) => {
       if (component.type !== 'panel') {
         return;
       }
@@ -401,12 +408,12 @@ export default class Wizard extends Webform {
       class: 'list-inline'
     });
     this.element.appendChild(this.wizardNav);
-    _.each([
+    [
       { name: 'cancel',    method: 'cancel',   class: 'btn btn-default btn-secondary' },
       { name: 'previous',  method: 'prevPage', class: 'btn btn-primary' },
       { name: 'next',      method: 'nextPage', class: 'btn btn-primary' },
       { name: 'submit',    method: 'submit',   class: 'btn btn-primary' }
-    ], (button) => {
+    ].forEach((button) => {
       if (!this.hasButton(button.name, nextPage)) {
         return;
       }
