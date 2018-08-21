@@ -23,6 +23,25 @@ export default class Wizard extends Webform {
     this.history = [];
   }
 
+  getPages() {
+    const pageOptions = _.clone(this.options);
+    const components = _.clone(this.components);
+
+    // We shouldn't recreate a components on the page we currently on to avoid duplicate inputs desync.
+    return this.pages.map((page, index) => this.createComponent(page, Object.assign({}, pageOptions, {
+      components: index === this.page ? components : null,
+    })));
+  }
+
+  getComponents() {
+    return this.submitting ? this.getPages() : super.getComponents();
+  }
+
+  resetValue() {
+    this.getPages().forEach((page) => page.resetValue());
+    this.setPristine(true);
+  }
+
   init() {
     // Check for and initlize button settings object
     this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
@@ -250,8 +269,8 @@ export default class Wizard extends Webform {
 
   getPageIndexByKey(key) {
     let pageIndex = 0;
-    _.each(this.panels, (_page, index) => {
-      if (_page.key === key) {
+    this.pages.forEach((page, index) => {
+      if (page.key === key) {
         pageIndex = index;
         return false;
       }

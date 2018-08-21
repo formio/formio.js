@@ -119,11 +119,18 @@ export default class Webform extends NestedComponent {
     this.nosubmit = false;
 
     /**
-     * If the form has tried to be submitted, error or not.
+     * Determines if the form has tried to be submitted, error or not.
      *
      * @type {boolean}
      */
     this.submitted = false;
+
+    /**
+     * Determines if the form is being submitted at the moment.
+     *
+     * @type {boolean}
+     */
+    this.submitting = false;
 
     /**
      * The Formio instance for this form.
@@ -865,6 +872,7 @@ export default class Webform extends NestedComponent {
    */
   onSubmit(submission, saved) {
     this.loading = false;
+    this.submitting = false;
     this.setPristine(true);
     this.setValue(submission, {
       noValidate: true,
@@ -895,6 +903,7 @@ export default class Webform extends NestedComponent {
       }
     }
 
+    this.submitting = false;
     this.setPristine(false);
     return this.showErrors(error, true);
   }
@@ -1012,9 +1021,10 @@ export default class Webform extends NestedComponent {
 
   executeSubmit(options) {
     this.submitted = true;
+    this.submitting = true;
     return this.submitForm(options)
-      .then(result => this.onSubmit(result.submission, result.saved))
-      .catch(err => Promise.reject(this.onSubmissionError(err)));
+      .then((result) => this.onSubmit(result.submission, result.saved))
+      .catch((err) => Promise.reject(this.onSubmissionError(err)));
   }
 
   /**
