@@ -159,6 +159,15 @@ export default class EditGridComponent extends NestedComponent {
         });
       }
     });
+
+    // Add open class to the element if any edit grid row is open
+    if (openRowCount) {
+      this.addClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
+    }
+    else {
+      this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
+    }
+
     super.attach(element);
   }
 
