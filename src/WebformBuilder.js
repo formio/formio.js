@@ -74,10 +74,20 @@ export default class WebformBuilder extends Webform {
         }, this.getIcon('cog'));
         this.addEventListener(editButton, 'click', () => this.editComponent(comp));
 
+        const copyButton = this.ce('div', {
+          class: 'btn btn-xxs btn-default component-settings-button component-settings-button-copy'
+        }, this.getIcon('copy'));
+        this.addEventListener(copyButton, 'click', () => this.copyComponent(comp));
+
+        const pasteButton = this.ce('div', {
+          class: 'btn btn-xxs btn-default component-settings-button component-settings-button-paste'
+        }, this.getIcon('paste'));
+        this.addEventListener(pasteButton, 'click', () => this.pasteComponent(comp));
+
         // Add the edit buttons to the component.
         comp.prepend(this.ce('div', {
           class: 'component-btn-group'
-        }, [removeButton, editButton]));
+        }, [removeButton, editButton, copyButton, pasteButton]));
       }
 
       if (!container.noDrop) {
@@ -379,6 +389,37 @@ export default class WebformBuilder extends Webform {
 
     // Called when we edit a component.
     this.emit('editComponent', component);
+  }
+
+  /**
+   * Creates copy of component schema and stores it under sessionStorage.
+   * @param {Component} component
+   * @return {*}
+   */
+  copyComponent(component) {
+    const copy = _.cloneDeep(component.schema);
+    window.sessionStorage.setItem('formio.clipboard', JSON.stringify(copy));
+  }
+
+  /**
+   * Paste copied component after the current component.
+   * @param {Component} component
+   * @return {*}
+   */
+  pasteComponent(component) {
+    const data = window.sessionStorage.getItem('formio.clipboard');
+    if (data) {
+      const schema = JSON.parse(data);
+      const currentIndex = this.components.indexOf(component);
+      const next = this.components[currentIndex + 1];
+      let before = false;
+
+      if (next) {
+        before = next.element;
+      }
+
+      this.addComponent(schema, false, false, before);
+    }
   }
 
   destroy() {
