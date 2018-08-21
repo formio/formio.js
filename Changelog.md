@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Error messages displaying.
+ - OnChange event infinite loop on Wizard.
+
 ## 3.2.1
 ### Added
  - Allow for global overrides of components and let the form.settings override components globally.
  - Allow for custom timezones for the DateTime component.
  - Save the "path" and "options" in Formio class so that they can be passed along to other instances.
  - FOR-1542: Update `build` method of `Container` component.
- 
+
 ### Fixed
  - The acronym for offset 0 time is GST not GMT.
  - Fix issue where select and radio components end up in an infinite refresh when hidden with "clearOnHide" set.
@@ -121,7 +126,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issue where components in table component would not render conditions correctly.
  - Issue with the selection of a radio component.
  - Multiple Select: Fixed selected items being rendered outside of the input
- 
+
 ### Changed
  - Upgraded fetch-mock@6.5.2, gulp-watch@5.0.1, karma@2.0.5, sinon@6.1.4, webpack@4.16.3, i18next@11.5.0, eslint@5.2.0, gulp-rename@1.4.0
 
@@ -154,7 +159,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Hidden Component value being equal to '[object Object]'
  - DataGrid in the builder to allow for editing of the data grid.
 
-### Added 
+### Added
  - Allow for editForm overrides when embedding the form builder.
  - A way to include a "namespace" for the tokens added to your browser so this library can handle multiple projects at once.
 
@@ -168,14 +173,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Utils `getComponent()` function.
  - Data Grid displaying column for Hidden field
- - Fixed the 12hr time configuration for DateTime component. 
+ - Fixed the 12hr time configuration for DateTime component.
 
 ## 3.0.0-rc.21
 ### Fixed
  - Issue with builder where editing a component would not work inside nested component.
  - Fixed data grid to not show columns consisting of hidden components.
  - Decimal separators for languages that do not use numerics.
- 
+
 ### Added
  - Configure dragula to check if a component can be dragged using the 'no-drag' class
 
