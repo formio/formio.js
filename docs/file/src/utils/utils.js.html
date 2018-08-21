@@ -632,16 +632,21 @@ export function checkSimpleConditional(component, condition, row, data) {
   if (_.isNil(value)) {
     value = &apos;&apos;;
   }
+
+  value = String(value);
+  const eq = String(condition.eq);
+  const show = String(condition.show);
+
   // Special check for selectboxes component.
   if (_.isObject(value) &amp;&amp; _.has(value, condition.eq)) {
-    return value[condition.eq].toString() === condition.show.toString();
+    return String(value[condition.eq]) === show;
   }
   // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) &amp;&amp; value.includes(condition.eq)) {
-    return (condition.show.toString() === &apos;true&apos;);
+  if (Array.isArray(value) &amp;&amp; value.map(String).includes(eq)) {
+    return show === &apos;true&apos;;
   }
 
-  return (value.toString() === condition.eq.toString()) === (condition.show.toString() === &apos;true&apos;);
+  return (value === eq) === (show === &apos;true&apos;);
 }
 
 /**
@@ -994,7 +999,7 @@ export function formatDate(value, format, timezone) {
   }
   if (timezone === &apos;UTC&apos;) {
     const offset = offsetDate(momentDate.toDate(), &apos;UTC&apos;);
-    return `${moment(offset).format(convertFormatToMoment(format))} UTC`;
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
   }
 
   // Return the timezoneText.

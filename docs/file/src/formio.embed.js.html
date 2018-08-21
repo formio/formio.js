@@ -178,53 +178,67 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.embed.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Form } from &apos;./formio.form&apos;;
-const query = {};
-const scripts = document.getElementsByTagName(&apos;script&apos;);
-const thisScript = scripts[ scripts.length - 1 ];
-let scriptSrc = thisScript.src.replace(/^([^?]+).*/, &apos;$1&apos;).split(&apos;/&apos;);
-scriptSrc.pop();
-scriptSrc = scriptSrc.join(&apos;/&apos;);
-const queryString = thisScript.src.replace(/^[^?]+\??/,&apos;&apos;);
-queryString.replace(/\?/g, &apos;&amp;&apos;).split(&apos;&amp;&apos;).forEach((item) =&gt; {
-  query[item.split(&apos;=&apos;)[0]] = item.split(&apos;=&apos;)[1] &amp;&amp; decodeURIComponent(item.split(&apos;=&apos;)[1]);
-});
-query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
-Form.embed(query).then((instance) =&gt; {
-  instance.on(&apos;submit&apos;, (submission) =&gt; {
-    let returnUrl = query.return || query.redirect;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const scripts = document.getElementsByTagName(&apos;script&apos;);
+let thisScript = null;
+let i = scripts.length;
+while (i--) {
+  if (scripts[i].src &amp;&amp; (scripts[i].src.indexOf(&apos;formio.embed&apos;) !== -1)) {
+    thisScript = scripts[i];
+    break;
+  }
+}
 
-    // Allow form based configuration for return url.
-    if (
-      !returnUrl &amp;&amp;
-      (
-        instance._form &amp;&amp;
-        instance._form.settings &amp;&amp;
-        (
-          instance._form.settings.returnUrl ||
-          instance._form.settings.redirect
-        )
-      )
-    ) {
-      returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
-    }
-
-    if (returnUrl) {
-      const formSrc = instance.formio ? instance.formio.formUrl : &apos;&apos;;
-      const hasQuery = !!returnUrl.match(/\?/);
-      const isOrigin = returnUrl.indexOf(location.origin) === 0;
-      returnUrl += hasQuery ? &apos;&amp;&apos; : &apos;?&apos;;
-      returnUrl += `sub=${submission._id}`;
-      if (!isOrigin &amp;&amp; formSrc) {
-        returnUrl += `&amp;form=${encodeURIComponent(formSrc)}`;
-      }
-      window.location.href = returnUrl;
-      if (isOrigin) {
-        window.location.reload();
-      }
-    }
+if (thisScript) {
+  const Form = require(&apos;./formio.form&apos;).Form;
+  const query = {};
+  let scriptSrc = thisScript.src.replace(/^([^?]+).*/, &apos;$1&apos;).split(&apos;/&apos;);
+  scriptSrc.pop();
+  scriptSrc = scriptSrc.join(&apos;/&apos;);
+  const queryString = thisScript.src.replace(/^[^?]+\??/,&apos;&apos;);
+  queryString.replace(/\?/g, &apos;&amp;&apos;).split(&apos;&amp;&apos;).forEach((item) =&gt; {
+    query[item.split(&apos;=&apos;)[0]] = item.split(&apos;=&apos;)[1] &amp;&amp; decodeURIComponent(item.split(&apos;=&apos;)[1]);
   });
-});
+  query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
+  Form.embed(query).then((instance) =&gt; {
+    instance.on(&apos;submit&apos;, (submission) =&gt; {
+      let returnUrl = query.return || query.redirect;
+
+      // Allow form based configuration for return url.
+      if (
+        !returnUrl &amp;&amp;
+        (
+          instance._form &amp;&amp;
+          instance._form.settings &amp;&amp;
+          (
+            instance._form.settings.returnUrl ||
+            instance._form.settings.redirect
+          )
+        )
+      ) {
+        returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
+      }
+
+      if (returnUrl) {
+        const formSrc = instance.formio ? instance.formio.formUrl : &apos;&apos;;
+        const hasQuery = !!returnUrl.match(/\?/);
+        const isOrigin = returnUrl.indexOf(location.origin) === 0;
+        returnUrl += hasQuery ? &apos;&amp;&apos; : &apos;?&apos;;
+        returnUrl += `sub=${submission._id}`;
+        if (!isOrigin &amp;&amp; formSrc) {
+          returnUrl += `&amp;form=${encodeURIComponent(formSrc)}`;
+        }
+        window.location.href = returnUrl;
+        if (isOrigin) {
+          window.location.reload();
+        }
+      }
+    });
+  });
+}
+else {
+  // Show an error if the script cannot be found.
+  document.write(&apos;&lt;span&gt;Could not locate the Embedded form.&lt;/span&gt;&apos;);
+}
 </code></pre>
 
 </div>

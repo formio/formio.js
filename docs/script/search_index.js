@@ -2275,13 +2275,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2443,13 +2443,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2496,6 +2496,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#submitting",
+    "class/src/Webform.js~Webform.html#instance-member-submitting",
+    "src/Webform.js~Webform#submitting",
+    "member"
+  ],
+  [
     "src/webform.js~webform#type",
     "class/src/Webform.js~Webform.html#instance-member-type",
     "src/Webform.js~Webform#type",
@@ -2503,13 +2509,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -2616,6 +2622,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webformbuilder.js~webformbuilder#copycomponent",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-copyComponent",
+    "src/WebformBuilder.js~WebformBuilder#copyComponent",
+    "method"
+  ],
+  [
     "src/webformbuilder.js~webformbuilder#defaultcomponents",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-defaultComponents",
     "src/WebformBuilder.js~WebformBuilder#defaultComponents",
@@ -2697,6 +2709,12 @@ window.esdocSearchIndex = [
     "src/webformbuilder.js~webformbuilder#ondrop",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-onDrop",
     "src/WebformBuilder.js~WebformBuilder#onDrop",
+    "method"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#pastecomponent",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-pasteComponent",
+    "src/WebformBuilder.js~WebformBuilder#pasteComponent",
     "method"
   ],
   [
@@ -2838,9 +2856,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/wizard.js~wizard#eachpage",
-    "class/src/Wizard.js~Wizard.html#instance-method-eachPage",
-    "src/Wizard.js~Wizard#eachPage",
+    "src/wizard.js~wizard#getcomponents",
+    "class/src/Wizard.js~Wizard.html#instance-method-getComponents",
+    "src/Wizard.js~Wizard#getComponents",
     "method"
   ],
   [
@@ -2859,6 +2877,12 @@ window.esdocSearchIndex = [
     "src/wizard.js~wizard#getpageindexbykey",
     "class/src/Wizard.js~Wizard.html#instance-method-getPageIndexByKey",
     "src/Wizard.js~Wizard#getPageIndexByKey",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#getpages",
+    "class/src/Wizard.js~Wizard.html#instance-method-getPages",
+    "src/Wizard.js~Wizard#getPages",
     "method"
   ],
   [
@@ -4423,13 +4447,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -6996,6 +7020,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#setpristine",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-setPristine",
+    "src/components/form/Form.js~FormComponent#setPristine",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#setvalue",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-setValue",
     "src/components/form/Form.js~FormComponent#setValue",
@@ -7611,12 +7641,6 @@ window.esdocSearchIndex = [
     "src/components/nested/nestedcomponent.js~nestedcomponent#setcollapsed",
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setCollapsed",
     "src/components/nested/NestedComponent.js~NestedComponent#setCollapsed",
-    "method"
-  ],
-  [
-    "src/components/nested/nestedcomponent.js~nestedcomponent#setcustomvalidity",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setCustomValidity",
-    "src/components/nested/NestedComponent.js~NestedComponent#setCustomValidity",
     "method"
   ],
   [
@@ -8602,6 +8626,12 @@ window.esdocSearchIndex = [
     "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-method-elementInfo",
     "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#elementInfo",
     "method"
+  ],
+  [
+    "src/components/selectboxes/selectboxes.js~selectboxescomponent#emptyvalue",
+    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-emptyValue",
+    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#emptyValue",
+    "member"
   ],
   [
     "src/components/selectboxes/selectboxes.js~selectboxescomponent#getvalue",

@@ -254,10 +254,20 @@ export default class WebformBuilder extends Webform {
         }, this.getIcon(&apos;cog&apos;));
         this.addEventListener(editButton, &apos;click&apos;, () =&gt; this.editComponent(comp));
 
+        const copyButton = this.ce(&apos;div&apos;, {
+          class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-copy&apos;
+        }, this.getIcon(&apos;copy&apos;));
+        this.addEventListener(copyButton, &apos;click&apos;, () =&gt; this.copyComponent(comp));
+
+        const pasteButton = this.ce(&apos;div&apos;, {
+          class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-paste&apos;
+        }, this.getIcon(&apos;paste&apos;));
+        this.addEventListener(pasteButton, &apos;click&apos;, () =&gt; this.pasteComponent(comp));
+
         // Add the edit buttons to the component.
         comp.prepend(this.ce(&apos;div&apos;, {
           class: &apos;component-btn-group&apos;
-        }, [removeButton, editButton]));
+        }, [removeButton, editButton, copyButton, pasteButton]));
       }
 
       if (!container.noDrop) {
@@ -559,6 +569,37 @@ export default class WebformBuilder extends Webform {
 
     // Called when we edit a component.
     this.emit(&apos;editComponent&apos;, component);
+  }
+
+  /**
+   * Creates copy of component schema and stores it under sessionStorage.
+   * @param {Component} component
+   * @return {*}
+   */
+  copyComponent(component) {
+    const copy = _.cloneDeep(component.schema);
+    window.sessionStorage.setItem(&apos;formio.clipboard&apos;, JSON.stringify(copy));
+  }
+
+  /**
+   * Paste copied component after the current component.
+   * @param {Component} component
+   * @return {*}
+   */
+  pasteComponent(component) {
+    const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
+    if (data) {
+      const schema = JSON.parse(data);
+      const currentIndex = this.components.indexOf(component);
+      const next = this.components[currentIndex + 1];
+      let before = false;
+
+      if (next) {
+        before = next.element;
+      }
+
+      this.addComponent(schema, false, false, before);
+    }
   }
 
   destroy() {

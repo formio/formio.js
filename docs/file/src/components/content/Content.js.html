@@ -219,19 +219,18 @@ export default class ContentComponent extends BaseComponent {
 
     if (this.options.builder) {
       const editorElement = this.ce(&apos;div&apos;);
+      this.element.appendChild(editorElement);
       this.addQuill(editorElement, this.wysiwygDefault, (element) =&gt; {
         this.component.html = element.value;
       }).then((editor) =&gt; {
         editor.setContents(editor.clipboard.convert(this.component.html));
-      });
-      this.element.appendChild(editorElement);
+      }).catch(err =&gt; console.warn(err));
     }
     else {
       this.setHTML();
-    }
-
-    if (this.component.refreshOnChange) {
-      this.on(&apos;change&apos;, () =&gt; this.setHTML());
+      if (this.component.refreshOnChange) {
+        this.on(&apos;change&apos;, () =&gt; this.setHTML());
+      }
     }
   }
 

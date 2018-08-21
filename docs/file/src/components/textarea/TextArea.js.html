@@ -314,7 +314,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       }
 
       return quill;
-    });
+    }).catch(err =&gt; console.warn(err));
 
     return this.input;
   }
