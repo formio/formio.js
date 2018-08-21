@@ -122,6 +122,16 @@ export default class EditGridComponent extends NestedComponent {
     else {
       this.element.appendChild(tableElement);
     }
+    //add open class to the element if any edit grid row is open
+    const isAnyRowOpen = _.some(this.editRows, function(row) {
+      return row.isOpen;
+    });
+    if (isAnyRowOpen) {
+      this.addClass(this.element, `formio-component-${this.component.type}-row-open`);
+    }
+    else {
+      this.removeClass(this.element, `formio-component-${this.component.type}-row-open`);
+    }
     this.tableElement = tableElement;
   }
 
