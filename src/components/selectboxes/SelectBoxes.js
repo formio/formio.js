@@ -39,6 +39,13 @@ export default class SelectBoxesComponent extends RadioComponent {
     return info;
   }
 
+  get emptyValue() {
+    return this.component.values.reduce((prev, value) => {
+      prev[value.value] = false;
+      return prev;
+    }, {});
+  }
+
   /**
    * Only empty if the values are all false.
    *
