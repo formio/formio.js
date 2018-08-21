@@ -520,7 +520,7 @@ export default class BaseComponent {
       for (let i = 0; i < nav.languages.length; i++) {
         language = nav.languages[i];
         if (language && language.length) {
-          return language;
+          return language.split(';')[0];
         }
       }
     }
@@ -529,7 +529,7 @@ export default class BaseComponent {
     for (let i = 0; i < browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language && language.length) {
-        return language;
+        return language.split(';')[0];
       }
     }
 
@@ -2028,6 +2028,9 @@ export default class BaseComponent {
     // Lazy load the quill library.
     return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
+        if (!element.parentNode) {
+          return Promise.reject();
+        }
         this.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/

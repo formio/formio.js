@@ -1,32 +1,36 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
-
+import moment from 'moment';
 import BaseComponent from '../base/Base';
 
 import {
+  currentTimezone,
   getDateSetting,
-  offsetDate,
+  loadZones,
   formatDate,
+  formatOffset,
   getLocaleDateFormatInfo,
-  convertFlatpickrToFormat,
   convertFormatToFlatpickr,
 } from '../../utils/utils';
-import moment from 'moment';
 
 export default class DateTimeComponent extends BaseComponent {
+  static get DEFAULT_FORMAT() {
+    return 'yyyy-MM-dd hh:mm a';
+  }
+
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
-      format: 'yyyy-MM-dd HH:mm a',
+      format: DateTimeComponent.DEFAULT_FORMAT,
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
       enableTime: true,
       defaultDate: '',
       displayInTimezone: 'viewer',
-      timezone: null,
+      timezone: '',
       datepickerMode: 'day',
       datePicker: {
         showWeeks: true,
@@ -76,6 +80,10 @@ export default class DateTimeComponent extends BaseComponent {
     return DateTimeComponent.schema();
   }
 
+  get dateFormat() {
+    return _.get(this.component, 'format', DateTimeComponent.DEFAULT_FORMAT);
+  }
+
   get defaultValue() {
     const defaultValue = super.defaultValue;
     if (defaultValue) {
@@ -94,7 +102,7 @@ export default class DateTimeComponent extends BaseComponent {
   elementInfo() {
     // Default the placeholder to the format if none is present.
     if (!this.component.placeholder) {
-      this.component.placeholder = convertFlatpickrToFormat(this.dateTimeFormat);
+      this.component.placeholder = this.dateFormat;
     }
     const info = super.elementInfo();
     info.type = 'input';
@@ -122,6 +130,11 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   get localeFormat() {
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
+    this.defaultFormat = this.defaultFormat || {
+      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
+      time: 'h:i K'
+    };
     let format = '';
 
     if (this.component.enableDate) {
@@ -137,32 +150,29 @@ export default class DateTimeComponent extends BaseComponent {
 
   get dateTimeFormat() {
     return this.component.useLocaleSettings
-      ? this.localeFormat()
-      : convertFormatToFlatpickr(_.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'));
+      ? this.localeFormat
+      : convertFormatToFlatpickr(this.dateFormat);
   }
 
   get timezone() {
-    const timezone = this.component.timezone;
-    if (timezone && timezone.abbr) {
+    const timezone = this.component.timezone || this.options.timezone;
+    if (timezone) {
       return timezone;
     }
-    if (
-      (this.component.displayInTimezone === 'submission') &&
-      this.root &&
-      this.root.hasTimezone
-    ) {
-      return {
-        offset: this.root.submissionOffset,
-        abbr: this.root.submissionTimezone
-      };
+    if (this.component.displayInTimezone === 'submission') {
+      if (this.options.submissionTimezone) {
+        return this.options.submissionTimezone;
+      }
+      if (this.root && this.root.options && this.root.options.submissionTimezone) {
+        return this.root.options.submissionTimezone;
+      }
     }
-    if (this.component.displayInTimezone === 'gmt') {
-      return {
-        offset: 0,
-        abbr: 'GST'
-      };
+    if (this.component.displayInTimezone === 'utc') {
+      return 'UTC';
     }
-    return null;
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   get config() {
@@ -189,8 +199,12 @@ export default class DateTimeComponent extends BaseComponent {
       formatDate: (date, format) => {
         // Only format this if this is the altFormat and the form is readOnly.
         if (this.options.readOnly && (format === altFormat)) {
-          const offset = offsetDate(date, this.timezone);
-          return `${Flatpickr.formatDate(offset.date, format)}${offset.abbr}`;
+          if (!moment.zonesLoaded) {
+            loadZones(this.timezone).then(() => this.redraw());
+            return Flatpickr.formatDate(date, format);
+          }
+
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () => this.redraw());
         }
 
         return Flatpickr.formatDate(date, format);
@@ -291,7 +305,7 @@ export default class DateTimeComponent extends BaseComponent {
     if (!value) {
       return '';
     }
-    return formatDate(value, _.get(this.component, 'format', 'yyyy-MM-dd HH:mm a'), this.timezone);
+    return formatDate(value, this.dateFormat, this.timezone);
   }
 
   setValueAt(index, value) {

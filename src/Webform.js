@@ -247,13 +247,18 @@ export default class Webform extends NestedComponent {
   set language(lang) {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
-      i18next.changeLanguage(lang, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        this.redraw();
-        resolve();
-      });
+      try {
+        i18next.changeLanguage(lang, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          this.redraw();
+          resolve();
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
     });
   }
 
@@ -282,13 +287,19 @@ export default class Webform extends NestedComponent {
     }
     i18next.initialized = true;
     return new Promise((resolve, reject) => {
-      i18next.init(this.options.i18n, (err) => {
-        this.options.language = i18next.language;
-        if (err) {
-          return reject(err);
-        }
-        resolve(i18next);
-      });
+      try {
+        i18next.init(this.options.i18n, (err) => {
+          // Get language but remove any ;q=1 that might exist on it.
+          this.options.language = i18next.language.split(';')[0];
+          if (err) {
+            return reject(err);
+          }
+          resolve(i18next);
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
     });
   }
 
@@ -721,6 +732,16 @@ export default class Webform extends NestedComponent {
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
+
+    // Set the timezone in the options if available.
+    if (
+      !this.options.submissionTimezone &&
+      submission.metadata &&
+      submission.metadata.timezone
+    ) {
+      this.options.submissionTimezone = submission.metadata.timezone;
+    }
+
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
     submission.data = this.data;
@@ -775,7 +796,7 @@ export default class Webform extends NestedComponent {
     return this.onElement.then(() => {
       this.clear();
       this.showElement(false);
-      this.build();
+      clearTimeout(this.build());
       this.isBuilt = true;
       this.on('resetForm', () => this.resetValue());
       this.on('deleteSubmission', () => this.deleteSubmission());
@@ -835,6 +856,9 @@ export default class Webform extends NestedComponent {
     this.on('checkValidity', (data) => this.checkValidity(data, true));
     this.addComponents();
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
+    return setTimeout(() => {
+      this.onChange();
+    }, 1);
   }
 
   /**
@@ -969,18 +993,6 @@ export default class Webform extends NestedComponent {
     }
   }
 
-  get submissionOffset() {
-    return parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10);
-  }
-
-  get hasTimezone() {
-    return _.has(this, '_submission.metadata.timezone');
-  }
-
-  get submissionTimezone() {
-    return _.get(this, '_submission.metadata.timezone', currentTimezone());
-  }
-
   submitForm(options = {}) {
     return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
@@ -996,8 +1008,8 @@ export default class Webform extends NestedComponent {
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
       _.defaults(submission.metadata, {
-        timezone: this.submissionTimezone,
-        offset: this.submissionOffset,
+        timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
+        offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
         referrer: document.referrer,
         browserName: navigator.appName,
         userAgent: navigator.userAgent,

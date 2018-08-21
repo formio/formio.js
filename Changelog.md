@@ -9,6 +9,62 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Error messages displaying.
  - OnChange event infinite loop on Wizard.
 
+## 3.3.6
+### Fixed
+ - Issues with the embed script to try and grab wrong script from the page.
+ - Problems where the default embed script is in Webpack develop mode.
+
+## 3.3.5
+### Fixed
+ - Path issues with s3 uploads that was adding empty directories to the upload paths.
+
+## 3.3.4
+### Fixed
+ - Issues with Invalid date showing up for display times in UTC.
+
+### Changed
+ - Minor text change for the form builder.
+
+## 3.3.3
+### Fixed
+ - Issue where the Content component would not work in builder with Refresh on Change checked.
+
+## 3.3.2
+### Fixed
+ - Problems with undefined promise if no timezone is used.
+ - Default datetime component to now show 24 hour time.
+ - Fixed placeholder on DateTime component to show the standard form.io time format.
+
+### Changed
+ - Added help docs to the DateTime component.
+
+## 3.3.1
+### Fixed
+ - FOR-1560: Date timezones to use moment-timezone with lazy loading zones.
+ - FOR-1445: Problems where duplicates could show up in Select component
+ - Issue that arrises when you send a malformed language code to the switch language system.
+ - Added try/catch blocks around language switching to make it so the renderer is still usable.
+
+## 3.3.0
+### Added
+ - A DataMap component that provides a dynamic key-value pair input component.
+
+ ## Changed
+  - Cleanup code around setting the locale in the DateTime component.
+
+### Fixed
+ - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
+ - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.
+ - FOR-1326: Fixed an issue where a language change would not re-trigger conditionals.
+
+## 3.2.3
+### Fixed
+ - Datetime component crashing when using locale format.
+
+## 3.2.2
+### Fixed
+ - Issue where the timezone dropdown was not showing up on DateTime component.
+
 ## 3.2.1
 ### Added
  - Allow for global overrides of components and let the form.settings override components globally.

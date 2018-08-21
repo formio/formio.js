@@ -13,26 +13,27 @@ export default [
         { label: 'of Viewer', value: 'viewer' },
         { label: 'of Submission', value: 'submission' },
         { label: 'of Location', value: 'location' },
-        { label: 'of GMT', value: 'gmt' }
+        { label: 'UTC', value: 'utc' }
       ]
     }
   },
   {
     type: 'select',
     input: true,
-    key: 'timezoneOffset',
+    key: 'timezone',
     label: 'Select Timezone',
     tooltip: 'Select the timezone you wish to display this Date',
     weight: 31,
-    defaultValue: '',
     lazyLoad: true,
+    defaultValue: '',
+    valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/1072389661176f3efcd20f71b245e8aa/raw/timezones.json'
+      url: 'https://cdn.rawgit.com/travist/b8b3b3dd51c3ca01469ce18d8f00fd3e/raw/timezones.json'
     },
-    template: '<span>{{ item.name }}</span>',
+    template: '<span>{{ item.label }}</span>',
     conditional: {
-      json: { '===': [{ var: 'data.displayInTimezone' }, 'select'] }
+      json: { '===': [{ var: 'data.displayInTimezone' }, 'location'] }
     }
   },
   {
@@ -57,7 +58,8 @@ export default [
     key: 'format',
     label: 'Format',
     placeholder: 'Format',
-    tooltip: 'The moment.js format for saving the value of this field.',
+    description: 'Use formats formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
+    tooltip: 'The date format for saving the value of this field. You can use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
     weight: 52
   }
 ];

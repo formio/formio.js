@@ -39,19 +39,18 @@ export default class ContentComponent extends BaseComponent {
 
     if (this.options.builder) {
       const editorElement = this.ce('div');
+      this.element.appendChild(editorElement);
       this.addQuill(editorElement, this.wysiwygDefault, (element) => {
         this.component.html = element.value;
       }).then((editor) => {
         editor.setContents(editor.clipboard.convert(this.component.html));
-      });
-      this.element.appendChild(editorElement);
+      }).catch(err => console.warn(err));
     }
     else {
       this.setHTML();
-    }
-
-    if (this.component.refreshOnChange) {
-      this.on('change', () => this.setHTML());
+      if (this.component.refreshOnChange) {
+        this.on('change', () => this.setHTML());
+      }
     }
   }
 

@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import 'whatwg-fetch';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment';
+import moment from 'moment-timezone/moment-timezone';
+import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
+import Promise from 'native-promise-only';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -720,12 +723,11 @@ export function isValidDate(date) {
  * @return {string}
  */
 export function currentTimezone() {
-  if (navigator.languages && navigator.languages.length) {
-    return (new Date()).toLocaleTimeString(navigator.languages[0], {
-      timeZoneName:'short'
-    }).split(' ')[2];
+  if (moment.currentTimezone) {
+    return moment.currentTimezone;
   }
-  return moment().format('Z');
+  moment.currentTimezone = jtz.determine().name();
+  return moment.currentTimezone;
 }
 
 /**
@@ -736,20 +738,74 @@ export function currentTimezone() {
  * @return {Date}
  */
 export function offsetDate(date, timezone) {
-  if (!timezone) {
+  if (timezone === 'UTC') {
     return {
-      date,
-      abbr: ` (${currentTimezone()})`
+      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      abbr: 'UTC'
     };
   }
+  const dateMoment = moment(date).tz(timezone);
   return {
-    date: new Date(date.getTime() + ((parseInt(timezone.offset, 10) + date.getTimezoneOffset()) * 60000)),
-    abbr: timezone.abbr ? ` (${timezone.abbr})` : ''
+    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    abbr: dateMoment.format('z')
   };
 }
 
 /**
- * Format a date provided a value, formate, and timezone object.
+ * Externally load the timezone data.
+ *
+ * @return {Promise<any> | *}
+ */
+export function loadZones(timezone) {
+  if (timezone === currentTimezone()) {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
+  }
+  if (timezone === 'UTC') {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
+  }
+
+  if (moment.zonesPromise) {
+    return moment.zonesPromise;
+  }
+  return moment.zonesPromise = fetch(
+    'https://cdn.rawgit.com/moment/moment-timezone/develop/data/packed/latest.json',
+  ).then(resp => resp.json().then(zones => {
+    moment.tz.load(zones);
+    moment.zonesLoaded = true;
+  }));
+}
+
+/**
+ * Set the timezone text and replace once timezones have loaded.
+ *
+ * @param offsetFormat
+ * @param stdFormat
+ * @return {*}
+ */
+export function timezoneText(offsetFormat, stdFormat) {
+  loadZones();
+  if (moment.zonesLoaded) {
+    return offsetFormat();
+  }
+  const id = getRandomComponentId();
+  let tries = 0;
+  moment.zonesPromise.then(function replaceZone() {
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerHTML = offsetFormat();
+    }
+    else if (tries++ < 5) {
+      setTimeout(replaceZone, 100);
+    }
+  });
+  // For now just return the current format, and replace once zones are loaded.
+  return `<span id='${id}'>${stdFormat()}</span>`;
+}
+
+/**
+ * Format a date provided a value, format, and timezone object.
  *
  * @param value
  * @param format
@@ -757,10 +813,44 @@ export function offsetDate(date, timezone) {
  * @return {string}
  */
 export function formatDate(value, format, timezone) {
-  const date = moment(value).toDate();
-  const offset = offsetDate(date, timezone);
-  const dateFormat = convertFormatToMoment(format);
-  return `${moment(offset.date).format(dateFormat)}${offset.abbr}`;
+  const momentDate = moment(value);
+  if (timezone === currentTimezone()) {
+    return momentDate.format(convertFormatToMoment(format));
+  }
+  if (timezone === 'UTC') {
+    const offset = offsetDate(momentDate.toDate(), 'UTC');
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+  }
+
+  // Return the timezoneText.
+  return timezoneText(
+    () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
+    () => momentDate.format(convertFormatToMoment(format))
+  );
+}
+
+/**
+ * Pass a format function to format within a timezone.
+ *
+ * @param formatFn
+ * @param date
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatOffset(formatFn, date, format, timezone) {
+  if (timezone === currentTimezone()) {
+    return formatFn(date, format);
+  }
+  if (timezone === 'UTC') {
+    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
+  }
+
+  // Return the timezone text.
+  return timezoneText(() => {
+    const offset = offsetDate(date, timezone);
+    return `${formatFn(offset.date, format)} ${offset.abbr}`;
+  }, () => formatFn(date, format));
 }
 
 export function getLocaleDateFormatInfo(locale) {
@@ -807,34 +897,6 @@ export function convertFormatToFlatpickr(format) {
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
-}
-
-export function convertFlatpickrToFormat(format) {
-  return format
-    // Year conversion.
-    .replace('Y', 'YYYY')
-    .replace('y', 'YY')
-
-    // Month conversion.
-    .replace('F', 'MMMM')
-    .replace('M', 'MMM')
-    .replace('m', 'MM')
-    .replace('n', 'M')
-
-    // Day in month.
-    .replace('d', 'dd')
-    .replace('j', 'd')
-
-    // Day in week.
-    .replace('l', 'EEEE')
-    .replace('D', 'EEE')
-
-    // Hours, minutes, seconds
-    .replace('H', 'HH')
-    .replace('h', 'H')
-    .replace('i', 'mm')
-    .replace('S', 'ss')
-    .replace('K', 'a');
 }
 
 /**
@@ -1034,4 +1096,38 @@ export function delay(fn, delay = 0, ...args) {
   earlyCall.cancel = cancel;
 
   return earlyCall;
+}
+
+/**
+ * Iterate the given key to make it unique.
+ *
+ * @param {String} key
+ *   Modify the component key to be unique.
+ *
+ * @returns {String}
+ *   The new component key.
+ */
+export function iterateKey(key) {
+  if (!key.match(/(\d+)$/)) {
+    return `${key}2`;
+  }
+
+  return key.replace(/(\d+)$/, function(suffix) {
+    return Number(suffix) + 1;
+  });
+}
+
+/**
+ * Determines a unique key within a map provided the base key.
+ *
+ * @param map
+ * @param base
+ * @return {*}
+ */
+export function uniqueKey(map, base) {
+  let newKey = base;
+  while (map.hasOwnProperty(newKey)) {
+    newKey = iterateKey(newKey);
+  }
+  return newKey;
 }

@@ -147,7 +147,10 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      conditional: {
+        json: {"!==": [{var: "data.firstName"}, "Bob"]}
+      }
     },
     {
       type: 'survey',
