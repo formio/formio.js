@@ -115,11 +115,18 @@ export default class Webform extends NestedComponent {
     this.nosubmit = false;
 
     /**
-     * If the form has tried to be submitted, error or not.
+     * Determines if the form has tried to be submitted, error or not.
      *
      * @type {boolean}
      */
     this.submitted = false;
+
+    /**
+     * Determines if the form is being submitted at the moment.
+     *
+     * @type {boolean}
+     */
+    this.submitting = false;
 
     /**
      * The Formio instance for this form.
@@ -813,13 +820,6 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
-    if (!type && this.submitted) {
-      if (this.alert) {
-        this.removeChild(this.alert);
-        this.alert = null;
-      }
-      return;
-    }
     if (this.options.noAlerts) {
       if (!message) {
         this.emit('error', false);
@@ -882,14 +882,12 @@ export default class Webform extends NestedComponent {
       this.setAlert(false);
       return;
     }
-    let message = `<p>${this.t('error')}</p><ul>`;
-    _.each(errors, (err) => {
-      if (err) {
-        const errorMessage = err.message || err;
-        message += `<li><strong>${errorMessage}</strong></li>`;
-      }
-    });
-    message += '</ul>';
+    const message = `
+      <p>${this.t('error')}</p>
+      <ul>
+        ${errors.map((err) => err ? `<li><strong>${err.message || err}</strong></li>` : '').join('')}
+      </ul>
+    `;
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
@@ -906,6 +904,7 @@ export default class Webform extends NestedComponent {
    */
   onSubmit(submission, saved) {
     this.loading = false;
+    this.submitting = false;
     this.setPristine(true);
     this.setValue(submission, {
       noValidate: true,
@@ -939,6 +938,7 @@ export default class Webform extends NestedComponent {
       }
     }
 
+    this.submitting = false;
     this.setPristine(false);
     return this.showErrors(error, true);
   }
@@ -1056,9 +1056,10 @@ export default class Webform extends NestedComponent {
 
   executeSubmit(options) {
     this.submitted = true;
+    this.submitting = true;
     return this.submitForm(options)
-      .then(result => this.onSubmit(result.submission, result.saved))
-      .catch(err => Promise.reject(this.onSubmissionError(err)));
+      .then((result) => this.onSubmit(result.submission, result.saved))
+      .catch((err) => Promise.reject(this.onSubmissionError(err)));
   }
 
   /**

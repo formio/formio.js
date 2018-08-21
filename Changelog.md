@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [UNRELEASED]
+### Fixed
+ - Error messages displaying.
+ - OnChange event infinite loop on Wizard.
+
 ### Added
  - Edit Grid: 'formio-component-editgrid-row-open' class for case when any row is open
-
 
 ## 3.3.6
 ### Fixed
@@ -44,14 +47,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1445: Problems where duplicates could show up in Select component
  - Issue that arrises when you send a malformed language code to the switch language system.
  - Added try/catch blocks around language switching to make it so the renderer is still usable.
- 
+
 ## 3.3.0
 ### Added
  - A DataMap component that provides a dynamic key-value pair input component.
- 
+
  ## Changed
   - Cleanup code around setting the locale in the DateTime component.
- 
+
 ### Fixed
  - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
  - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.

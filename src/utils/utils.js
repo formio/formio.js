@@ -452,16 +452,21 @@ export function checkSimpleConditional(component, condition, row, data) {
   if (_.isNil(value)) {
     value = '';
   }
+
+  value = String(value);
+  const eq = String(condition.eq);
+  const show = String(condition.show);
+
   // Special check for selectboxes component.
   if (_.isObject(value) && _.has(value, condition.eq)) {
-    return value[condition.eq].toString() === condition.show.toString();
+    return String(value[condition.eq]) === show;
   }
   // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) && value.includes(condition.eq)) {
-    return (condition.show.toString() === 'true');
+  if (Array.isArray(value) && value.map(String).includes(eq)) {
+    return show === 'true';
   }
 
-  return (value.toString() === condition.eq.toString()) === (condition.show.toString() === 'true');
+  return (value === eq) === (show === 'true');
 }
 
 /**
