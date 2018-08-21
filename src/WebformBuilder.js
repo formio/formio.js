@@ -3,6 +3,7 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
+import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent } from './utils/utils';
@@ -167,11 +168,54 @@ export default class WebformBuilder extends Component {
       component.loadRefs(element, {
         removeComponent: 'single',
         editComponent: 'single',
+        copyComponent: 'single',
+        pasteComponnt: 'single'
       });
 
+      if (this.refs.copyButton) {
+        new Tooltip(component.refs.copyComponent, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Copy')
+        });
+
+        component.addEventListener(component.refs.copyComponent, 'click', () => this.copyComponent(component));
+      }
+
+      if (this.refs.pasteButton) {
+        const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Paste below')
+        });
+
+        component.addEventListener(component.refs.pasteComponent, 'click', () => {
+          pasteToolTip.hide();
+          this.pasteComponent(component);
+        });
+      }
+
       const parent = this.getParentElement(element);
-      component.addEventListener(component.refs.editComponent, 'click', () => parent.root.editComponent(component.component, parent));
-      component.addEventListener(component.refs.removeComponent, 'click', () => parent.root.removeComponent(component.component, parent));
+
+      if (this.refs.editComponent) {
+        new Tooltip(component.refs.editComponent, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit')
+        });
+
+        component.addEventListener(component.refs.editComponent, 'click', () => parent.root.editComponent(component.component, parent));
+      }
+
+      if (this.refs.removeComponent) {
+        new Tooltip(component.refs.removeComponent, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Remove')
+        });
+
+        component.addEventListener(component.refs.removeComponent, 'click', () => parent.root.removeComponent(component.component, parent));
+      }
 
       return element;
     };
@@ -520,6 +564,39 @@ export default class WebformBuilder extends Component {
 
     // Called when we edit a component.
     this.emit('editComponent', component);
+  }
+
+  /**
+   * Creates copy of component schema and stores it under sessionStorage.
+   * @param {Component} component
+   * @return {*}
+   */
+  copyComponent(component) {
+    if (!window.sessionStorage) {
+      return console.log('Session storage is not supported in this browser.');
+    }
+    this.addClass(this.refs.form, 'builder-paste-mode');
+    const copy = _.cloneDeep(component.schema);
+    window.sessionStorage.setItem('formio.clipboard', JSON.stringify(copy));
+  }
+
+  /**
+   * Paste copied component after the current component.
+   * @param {Component} component
+   * @return {*}
+   */
+  pasteComponent(component) {
+    if (!window.sessionStorage) {
+      return console.log('Session storage is not supported in this browser.');
+    }
+    this.removeClass(this.refs.form, 'builder-paste-mode');
+    const data = window.sessionStorage.getItem('formio.clipboard');
+    if (data) {
+      const schema = JSON.parse(data);
+      window.sessionStorage.removeItem('formio.clipboard');
+      component.parent.addComponent(schema, false, false, component.element.nextSibling);
+      this.form = this.schema;
+    }
   }
 
   getParentElement(element) {
