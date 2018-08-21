@@ -2231,8 +2231,22 @@ export default class BaseComponent {
     if (this.viewOnly) {
       this.updateViewOnlyValue(newValue);
     }
-
     this.updateOnChange(flags, changed);
+    this.root.components.forEach((c) => {
+      if (c.component.validate.required && c.component.validate.custom.indexOf('component.validate.required') !== -1) {
+        c.component.validate.required = false;
+      }
+      Validator.check(c, c.data);
+      var req = ' field-required';
+      if (c.component.validate && c.component.validate.required) {
+        if (c.labelElement.className.indexOf(req) === -1) {
+          c.labelElement.className += req;
+        }
+      }
+      else {
+        c.labelElement.className = c.labelElement.className.replace(req, '');
+      }
+    });
     return changed;
   }
 
