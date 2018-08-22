@@ -453,7 +453,6 @@ export function checkSimpleConditional(component, condition, row, data) {
     value = '';
   }
 
-  value = String(value);
   const eq = String(condition.eq);
   const show = String(condition.show);
 
@@ -466,7 +465,7 @@ export function checkSimpleConditional(component, condition, row, data) {
     return show === 'true';
   }
 
-  return (value === eq) === (show === 'true');
+  return (String(value) === eq) === (show === 'true');
 }
 
 /**
