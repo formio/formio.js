@@ -83,6 +83,16 @@ export default class Component {
       clearOnHide: true,
 
       /**
+       * This will refresh this component when this field changes.
+       */
+      refreshOn: '',
+
+      /**
+       * Determines if we should clear our value when a refresh occurs.
+       */
+      clearOnRefresh: false,
+
+      /**
        * If this component should be included as a column within a submission table.
        */
       tableView: true,
@@ -792,6 +802,9 @@ export default class Component {
       });
     });
 
+    // Attach the refresh on events.
+    this.attachRefreshOn();
+
     // this.restoreValue();
 
     // Disable if needed.
@@ -819,6 +832,72 @@ export default class Component {
       tooltip.dispose();
     });
     this.tooltips = [];
+  }
+
+  attachRefreshOn() {
+    // If they wish to refresh on a value, then add that here.
+    if (this.component.refreshOn) {
+      this.on('change', (event) => {
+        if (this.component.refreshOn === 'data') {
+          this.refresh(this.data);
+        }
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn) &
+          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+          // in fields inside EditGrids could alter their state from other rows (which is bad).
+          this.inContext(event.changed.instance)
+        ) {
+          this.refresh(event.changed.value);
+        }
+      });
+    }
+  }
+
+  /**
+   * Refreshes the component with a new value.
+   *
+   * @param value
+   */
+  refresh(value) {
+    if (this.hasOwnProperty('refreshOnValue')) {
+      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
+    }
+    else {
+      this.refreshOnChanged = true;
+    }
+    this.refreshOnValue = value;
+    if (this.refreshOnChanged) {
+      if (this.component.clearOnRefresh) {
+        this.setValue(null);
+      }
+      this.redraw();
+    }
+  }
+
+  /**
+   * Checks to see if a separate component is in the "context" of this component. This is determined by first checking
+   * if they share the same "data" object. It will then walk up the parent tree and compare its parents data objects
+   * with the components data and returns true if they are in the same context.
+   *
+   * Different rows of the same EditGrid, for example, are in different contexts.
+   *
+   * @param component
+   */
+  inContext(component) {
+    if (component.data === this.data) {
+      return true;
+    }
+    let parent = this.parent;
+    while (parent) {
+      if (parent.data === component.data) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+
+    return false;
   }
 
   get viewOnly() {

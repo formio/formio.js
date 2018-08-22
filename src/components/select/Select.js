@@ -18,7 +18,6 @@ export default class SelectComponent extends Field {
       },
       dataSrc: 'values',
       valueProperty: '',
-      refreshOn: '',
       filter: '',
       searchEnabled: true,
       searchField: '',
@@ -71,13 +70,6 @@ export default class SelectComponent extends Field {
 
   get emptyValue() {
     return '';
-  }
-
-  refreshItems() {
-    this.triggerUpdate();
-    if (this.component.clearOnRefresh) {
-      this.setValue(null);
-    }
   }
 
   get inputInfo() {
@@ -450,7 +442,7 @@ export default class SelectComponent extends Field {
     else {
       this.addOption('', this.t('loading...'));
     }
-    this.refreshItems();
+    this.triggerUpdate();
   }
 
   get active() {
