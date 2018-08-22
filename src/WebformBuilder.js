@@ -2,6 +2,7 @@
 
 import Webform from './Webform';
 import dragula from 'dragula';
+import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent } from './utils/utils';
@@ -68,21 +69,41 @@ export default class WebformBuilder extends Webform {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
         }, this.getIcon('remove'));
         this.addEventListener(removeButton, 'click', () => this.deleteComponent(comp));
+        new Tooltip(removeButton, {
+          trigger: 'hover click',
+          placement: 'below',
+          title: this.t('Remove')
+        });
 
         const editButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
         }, this.getIcon('cog'));
         this.addEventListener(editButton, 'click', () => this.editComponent(comp));
+        new Tooltip(editButton, {
+          trigger: 'hover click',
+          placement: 'below',
+          title: this.t('Edit')
+        });
 
         const copyButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-copy'
         }, this.getIcon('copy'));
         this.addEventListener(copyButton, 'click', () => this.copyComponent(comp));
+        new Tooltip(copyButton, {
+          trigger: 'hover click',
+          placement: 'below',
+          title: this.t('Copy')
+        });
 
         const pasteButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-paste'
         }, this.getIcon('paste'));
         this.addEventListener(pasteButton, 'click', () => this.pasteComponent(comp));
+        new Tooltip(pasteButton, {
+          trigger: 'hover click',
+          placement: 'below',
+          title: this.t('Paste below this component')
+        });
 
         // Add the edit buttons to the component.
         comp.prepend(this.ce('div', {
@@ -410,15 +431,7 @@ export default class WebformBuilder extends Webform {
     const data = window.sessionStorage.getItem('formio.clipboard');
     if (data) {
       const schema = JSON.parse(data);
-      const currentIndex = this.components.indexOf(component);
-      const next = this.components[currentIndex + 1];
-      let before = false;
-
-      if (next) {
-        before = next.element;
-      }
-
-      this.addComponent(schema, false, false, before);
+      component.parent.addComponent(schema, false, false, component.element.nextSibling);
     }
   }
 
