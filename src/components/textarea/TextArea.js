@@ -169,8 +169,11 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    if (_.isEqual(value, this.getValue())) {
-      //don't do anything if new value is equal to current
+    //should set value if new value is not equal to current
+    let shouldSetValue = !_.isEqual(value, this.getValue());
+    //should set value if is in read only mode
+    shouldSetValue = shouldSetValue || this.options.readOnly;
+    if (!shouldSetValue) {
       return;
     }
     value = value || '';

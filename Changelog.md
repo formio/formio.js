@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - WYSIWYG: being empty in read only mode in Wizard on non-first page
+
 ## 3.3.7
 ### Fixed
  - Problems with infinite onChange events firing from SelectBoxes component.
