@@ -966,6 +966,8 @@ export default class BaseComponent {
       return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
     }
     switch (name) {
+      case 'save':
+        return 'fa fa-download';
       case 'zoom-in':
         return 'fa fa-search-plus';
       case 'zoom-out':
