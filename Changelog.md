@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Error from occurring in the TextArea builder modal.
  - WYSIWYG: being empty in read only mode in Wizard on non-first page
  - FOR-1604: Fixed issue where Select with RefreshOn + ClearOnRefresh will clear its value even when its refresh dependency does not change values. 
+ - Issues with EditGrid triggering validation preemptively.
 
 ### Added
  - Edit Grid: 'formio-component-editgrid-row-open' class for case when any row is open
