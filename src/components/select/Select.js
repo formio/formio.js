@@ -474,6 +474,21 @@ export default class SelectComponent extends BaseComponent {
     return !this.component.lazyLoad || this.activated;
   }
 
+  /**
+   * Sets the value of the refresh dependency and keep track if it has changed.
+   *
+   * @param value
+   */
+  refreshValue(value) {
+    if (this.hasOwnProperty('refreshOnValue')) {
+      this.refreshOnChanged = _.isEqual(value, this.refreshOnValue);
+    }
+    else {
+      this.refreshOnChanged = true;
+    }
+    this.refreshOnValue = value;
+  }
+
   /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
@@ -482,6 +497,7 @@ export default class SelectComponent extends BaseComponent {
     if (this.component.refreshOn) {
       this.on('change', (event) => {
         if (this.component.refreshOn === 'data') {
+          this.refreshValue(this.data);
           this.refreshItems();
         }
         else if (
@@ -489,15 +505,7 @@ export default class SelectComponent extends BaseComponent {
           event.changed.component &&
           (event.changed.component.key === this.component.refreshOn)
         ) {
-          // Determine if the refreshOn value has changed.
-          if (this.hasOwnProperty('refreshOnValue')) {
-            this.refreshOnChanged = _.isEqual(event.changed.value, this.refreshOnValue);
-          }
-          else {
-            this.refreshOnChanged = true;
-          }
-
-          this.refreshOnValue = event.changed.value;
+          this.refreshValue(event.changed.value);
           this.refreshItems();
         }
       });
