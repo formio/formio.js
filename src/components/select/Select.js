@@ -20,6 +20,7 @@ export default class SelectComponent extends BaseComponent {
       valueProperty: '',
       refreshOn: '',
       filter: '',
+      clearOnRefresh: false,
       searchEnabled: true,
       searchField: '',
       minSearch: 0,
@@ -75,7 +76,7 @@ export default class SelectComponent extends BaseComponent {
 
   refreshItems() {
     this.triggerUpdate();
-    if (this.component.clearOnRefresh) {
+    if (this.component.clearOnRefresh && this.refreshOnChanged) {
       this.setValue(null);
     }
   }
@@ -488,6 +489,15 @@ export default class SelectComponent extends BaseComponent {
           event.changed.component &&
           (event.changed.component.key === this.component.refreshOn)
         ) {
+          // Determine if the refreshOn value has changed.
+          if (this.hasOwnProperty('refreshOnValue')) {
+            this.refreshOnChanged = _.isEqual(event.changed.value, this.refreshOnValue);
+          }
+          else {
+            this.refreshOnChanged = true;
+          }
+
+          this.refreshOnValue = event.changed.value;
           this.refreshItems();
         }
       });
