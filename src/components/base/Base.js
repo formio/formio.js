@@ -1785,6 +1785,30 @@ export default class BaseComponent {
   }
 
   /**
+   * Checks to see if a separate component is in the "context" of this component. This is determined by first checking
+   * if they share the same "data" object. It will then walk up the parent tree and compare its parents data objects
+   * with the components data and returns true if they are in the same context.
+   *
+   * Different rows of the same EditGrid, for example, are in different contexts.
+   *
+   * @param component
+   */
+  inContext(component) {
+    if (component.data === this.data) {
+      return true;
+    }
+    let parent = this.parent;
+    while (parent) {
+      if (parent.data === component.data) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+
+    return false;
+  }
+
+  /**
    * Hide or Show an element.
    *
    * @param show

@@ -481,7 +481,7 @@ export default class SelectComponent extends BaseComponent {
    */
   refreshValue(value) {
     if (this.hasOwnProperty('refreshOnValue')) {
-      this.refreshOnChanged = _.isEqual(value, this.refreshOnValue);
+      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
     }
     else {
       this.refreshOnChanged = true;
@@ -503,7 +503,10 @@ export default class SelectComponent extends BaseComponent {
         else if (
           event.changed &&
           event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn)
+          (event.changed.component.key === this.component.refreshOn) &
+          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+          // in fields inside EditGrids could alter their state from other rows (which is bad).
+          this.inContext(event.changed.instance)
         ) {
           this.refreshValue(event.changed.value);
           this.refreshItems();
