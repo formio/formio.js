@@ -3164,3 +3164,11 @@ body.formio-dialog-open {
 .formio-drop-zone.enabled {
   display: inherit;
 }
+
+.component-settings-button-paste {
+  display: none;
+}
+
+.builder-paste-mode .component-settings-button-paste {
+  display: inherit;
+}

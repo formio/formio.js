@@ -200,6 +200,7 @@ export default class SelectComponent extends BaseComponent {
       valueProperty: &apos;&apos;,
       refreshOn: &apos;&apos;,
       filter: &apos;&apos;,
+      clearOnRefresh: false,
       searchEnabled: true,
       searchField: &apos;&apos;,
       minSearch: 0,
@@ -255,7 +256,7 @@ export default class SelectComponent extends BaseComponent {
 
   refreshItems() {
     this.triggerUpdate();
-    if (this.component.clearOnRefresh) {
+    if (this.component.clearOnRefresh &amp;&amp; this.refreshOnChanged) {
       this.setValue(null);
     }
   }
@@ -653,6 +654,21 @@ export default class SelectComponent extends BaseComponent {
     return !this.component.lazyLoad || this.activated;
   }
 
+  /**
+   * Sets the value of the refresh dependency and keep track if it has changed.
+   *
+   * @param value
+   */
+  refreshValue(value) {
+    if (this.hasOwnProperty(&apos;refreshOnValue&apos;)) {
+      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
+    }
+    else {
+      this.refreshOnChanged = true;
+    }
+    this.refreshOnValue = value;
+  }
+
   /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
@@ -661,13 +677,18 @@ export default class SelectComponent extends BaseComponent {
     if (this.component.refreshOn) {
       this.on(&apos;change&apos;, (event) =&gt; {
         if (this.component.refreshOn === &apos;data&apos;) {
+          this.refreshValue(this.data);
           this.refreshItems();
         }
         else if (
           event.changed &amp;&amp;
           event.changed.component &amp;&amp;
-          (event.changed.component.key === this.component.refreshOn)
+          (event.changed.component.key === this.component.refreshOn) &amp;
+          // Make sure the changed component is not in a different &quot;context&quot;. Solves issues where refreshOn being set
+          // in fields inside EditGrids could alter their state from other rows (which is bad).
+          this.inContext(event.changed.instance)
         ) {
+          this.refreshValue(event.changed.value);
           this.refreshItems();
         }
       });

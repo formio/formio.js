@@ -182,6 +182,7 @@
 
 import Webform from &apos;./Webform&apos;;
 import dragula from &apos;dragula&apos;;
+import Tooltip from &apos;tooltip.js&apos;;
 import Components from &apos;./components/Components&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import { getComponent } from &apos;./utils/utils&apos;;
@@ -248,21 +249,50 @@ export default class WebformBuilder extends Webform {
           class: &apos;btn btn-xxs btn-danger component-settings-button component-settings-button-remove&apos;
         }, this.getIcon(&apos;remove&apos;));
         this.addEventListener(removeButton, &apos;click&apos;, () =&gt; this.deleteComponent(comp));
+        new Tooltip(removeButton, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Remove&apos;)
+        });
 
         const editButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-edit&apos;
         }, this.getIcon(&apos;cog&apos;));
         this.addEventListener(editButton, &apos;click&apos;, () =&gt; this.editComponent(comp));
+        new Tooltip(editButton, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Edit&apos;)
+        });
 
         const copyButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-copy&apos;
         }, this.getIcon(&apos;copy&apos;));
         this.addEventListener(copyButton, &apos;click&apos;, () =&gt; this.copyComponent(comp));
+        new Tooltip(copyButton, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Copy&apos;)
+        });
 
         const pasteButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-paste&apos;
-        }, this.getIcon(&apos;paste&apos;));
-        this.addEventListener(pasteButton, &apos;click&apos;, () =&gt; this.pasteComponent(comp));
+        }, this.getIcon(&apos;save&apos;));
+        const pasteTooltip = new Tooltip(pasteButton, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Paste below&apos;)
+        });
+        this.addEventListener(pasteButton, &apos;click&apos;, () =&gt; {
+          pasteTooltip.hide();
+          this.pasteComponent(comp);
+        });
+
+        // Set in paste mode if we have an item in our clipboard.
+        const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
+        if (data) {
+          this.addClass(this.element, &apos;builder-paste-mode&apos;);
+        }
 
         // Add the edit buttons to the component.
         comp.prepend(this.ce(&apos;div&apos;, {
@@ -577,6 +607,7 @@ export default class WebformBuilder extends Webform {
    * @return {*}
    */
   copyComponent(component) {
+    this.addClass(this.element, &apos;builder-paste-mode&apos;);
     const copy = _.cloneDeep(component.schema);
     window.sessionStorage.setItem(&apos;formio.clipboard&apos;, JSON.stringify(copy));
   }
@@ -587,18 +618,12 @@ export default class WebformBuilder extends Webform {
    * @return {*}
    */
   pasteComponent(component) {
+    this.removeClass(this.element, &apos;builder-paste-mode&apos;);
     const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
     if (data) {
       const schema = JSON.parse(data);
-      const currentIndex = this.components.indexOf(component);
-      const next = this.components[currentIndex + 1];
-      let before = false;
-
-      if (next) {
-        before = next.element;
-      }
-
-      this.addComponent(schema, false, false, before);
+      window.sessionStorage.removeItem(&apos;formio.clipboard&apos;);
+      component.parent.addComponent(schema, false, false, component.element.nextSibling);
     }
   }
 

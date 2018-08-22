@@ -1146,6 +1146,8 @@ export default class BaseComponent {
       return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
     }
     switch (name) {
+      case &apos;save&apos;:
+        return &apos;fa fa-download&apos;;
       case &apos;zoom-in&apos;:
         return &apos;fa fa-search-plus&apos;;
       case &apos;zoom-out&apos;:
@@ -1962,6 +1964,30 @@ export default class BaseComponent {
     if (dirty &amp;&amp; this.options.highlightErrors) {
       this.addClass(this.element, &apos;alert alert-danger&apos;);
     }
+  }
+
+  /**
+   * Checks to see if a separate component is in the &quot;context&quot; of this component. This is determined by first checking
+   * if they share the same &quot;data&quot; object. It will then walk up the parent tree and compare its parents data objects
+   * with the components data and returns true if they are in the same context.
+   *
+   * Different rows of the same EditGrid, for example, are in different contexts.
+   *
+   * @param component
+   */
+  inContext(component) {
+    if (component.data === this.data) {
+      return true;
+    }
+    let parent = this.parent;
+    while (parent) {
+      if (parent.data === component.data) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+
+    return false;
   }
 
   /**
