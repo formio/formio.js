@@ -4,16 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - WYSIWYG: being empty in read only mode in Wizard on non-first page
-
 ## 3.3.7
 ### Fixed
  - Problems with infinite onChange events firing from SelectBoxes component.
  - FOR-1500: Error messages displaying.
  - FOR-1500: OnChange event infinite loop on Wizard.
  - Error from occurring in the TextArea builder modal.
+ - WYSIWYG: being empty in read only mode in Wizard on non-first page
 
 ### Added
  - Edit Grid: 'formio-component-editgrid-row-open' class for case when any row is open
