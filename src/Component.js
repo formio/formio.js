@@ -1,0 +1,490 @@
+import EventEmitter from 'eventemitter2';
+import * as FormioUtils from './utils/utils';
+import i18next from 'i18next';
+import _ from 'lodash';
+import moment from 'moment';
+
+/**
+ * Root component for all elements within the renderer.
+ */
+export default class Component {
+  constructor(options, id) {
+    /**
+     * The options for this component.
+     * @type {{}}
+     */
+    this.options = _.assign({
+      language: 'en',
+      highlightErrors: true,
+      row: ''
+    }, options || {});
+
+    /**
+     * The ID of this component. This value is auto-generated when the component is created, but
+     * can also be provided from the component.id value passed into the constructor.
+     * @type {string}
+     */
+    this.id = id || FormioUtils.getRandomComponentId();
+
+    /**
+     * The event namespace of this component.
+     *
+     * @type {*|string}
+     */
+    this.namespace = options.namespace || 'formio';
+
+    /**
+     * An array of event handlers so that the destry command can deregister them.
+     * @type {Array}
+     */
+    this.eventHandlers = [];
+
+    // Use the i18next that is passed in, otherwise use the global version.
+    this.i18next = this.options.i18next || i18next;
+
+    /**
+     * An instance of the EventEmitter class to handle the emitting and registration of events.
+     *
+     * @type {EventEmitter}
+     */
+    this.events = options.events || new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+  }
+
+  /**
+   * Register for a new event within this component.
+   *
+   * @example
+   * let component = new BaseComponent({
+   *   type: 'textfield',
+   *   label: 'First Name',
+   *   key: 'firstName'
+   * });
+   * component.on('componentChange', (changed) => {
+   *   console.log('this element is changed.');
+   * });
+   *
+   *
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function} cb - The callback handler to handle this event.
+   */
+  on(event, cb) {
+    if (!this.events) {
+      return;
+    }
+    const type = `${this.namespace}.${event}`;
+
+    // Store the component id in the handler so that we can determine which events are for this component.
+    cb.id = this.id;
+
+    // Register for this event.
+    return this.events.on(type, cb);
+  }
+
+  /**
+   * Removes all listeners for a certain event.
+   *
+   * @param event
+   */
+  off(event) {
+    if (!this.events) {
+      return;
+    }
+    const type = `${this.namespace}.${event}`;
+
+    // Iterate through all the internal events.
+    _.each(this.events.listeners(type), (listener) => {
+      // Ensure this event is for this component.
+      if (listener && (listener.id === this.id)) {
+        // Turn off this event handler.
+        this.events.off(type, listener);
+      }
+    });
+  }
+
+  /**
+   * Emit a new event.
+   *
+   * @param {string} event - The event to emit.
+   * @param {Object} data - The data to emit with the handler.
+   */
+  emit(event, data) {
+    if (this.events) {
+      this.events.emit(`${this.namespace}.${event}`, data);
+    }
+  }
+
+  /**
+   * Wrapper method to add an event listener to an HTML element.
+   *
+   * @param obj
+   *   The DOM element to add the event to.
+   * @param type
+   *   The event name to add.
+   * @param func
+   *   The callback function to be executed when the listener is triggered.
+   * @param persistent
+   *   If this listener should persist beyond "destroy" commands.
+   */
+  addEventListener(obj, type, func, persistent) {
+    if (!persistent) {
+      this.eventHandlers.push({ id: this.id, obj, type, func });
+    }
+    if ('addEventListener' in obj) {
+      obj.addEventListener(type, func, false);
+    }
+    else if ('attachEvent' in obj) {
+      obj.attachEvent(`on${type}`, func);
+    }
+  }
+
+  /**
+   * Remove an event listener from the object.
+   *
+   * @param obj
+   * @param type
+   */
+  removeEventListener(obj, type) {
+    const indexes = [];
+    _.each(this.eventHandlers, (handler, index) => {
+      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+        obj.removeEventListener(type, handler.func);
+        indexes.push(index);
+      }
+    });
+    if (indexes.length) {
+      _.pullAt(this.eventHandlers, indexes);
+    }
+  }
+
+  /**
+   * Removes all event listeners attached to this component.
+   */
+  destroy() {
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
+      });
+    });
+    _.each(this.eventHandlers, (handler) => {
+      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+        handler.obj.removeEventListener(handler.type, handler.func);
+      }
+    });
+  }
+
+  /**
+   * Append an HTML DOM element to a container.
+   *
+   * @param element
+   * @param container
+   */
+  appendTo(element, container) {
+    if (container) {
+      container.appendChild(element);
+    }
+  }
+
+  /**
+   * Prepend an HTML DOM element to a container.
+   *
+   * @param {HTMLElement} element - The DOM element to prepend.
+   * @param {HTMLElement} container - The DOM element that is the container of the element getting prepended.
+   */
+  prependTo(element, container) {
+    if (container) {
+      if (container.firstChild) {
+        try {
+          container.insertBefore(element, container.firstChild);
+        }
+        catch (err) {
+          console.warn(err);
+          container.appendChild(element);
+        }
+      }
+      else {
+        container.appendChild(element);
+      }
+    }
+  }
+
+  /**
+   * Removes an HTML DOM element from its bounding container.
+   *
+   * @param {HTMLElement} element - The element to remove.
+   * @param {HTMLElement} container - The DOM element that is the container of the element to remove.
+   */
+  removeChildFrom(element, container) {
+    if (container && container.contains(element)) {
+      try {
+        container.removeChild(element);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+  }
+
+  /**
+   * Alias for document.createElement.
+   *
+   * @param {string} type - The type of element to create
+   * @param {Object} attr - The element attributes to add to the created element.
+   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
+   *
+   * @return {HTMLElement} - The created element.
+   */
+  ce(type, attr, children = null) {
+    // Create the element.
+    const element = document.createElement(type);
+
+    // Add attributes.
+    if (attr) {
+      this.attr(element, attr);
+    }
+
+    // Append the children.
+    this.appendChild(element, children);
+    return element;
+  }
+
+  /**
+   * Append different types of children.
+   *
+   * @param child
+   */
+  appendChild(element, child) {
+    if (Array.isArray(child)) {
+      child.forEach(oneChild => {
+        this.appendChild(element, oneChild);
+      });
+    }
+    else if (child instanceof HTMLElement || child instanceof Text) {
+      element.appendChild(child);
+    }
+    else if (child) {
+      element.appendChild(this.text(child.toString()));
+    }
+  }
+
+  /**
+   * Translate a text using the i18n system.
+   *
+   * @param {string} text - The i18n identifier.
+   * @param {Object} params - The i18n parameters to use for translation.
+   */
+  t(text, params) {
+    params = params || {};
+    params.nsSeparator = '::';
+    params.keySeparator = '.|.';
+    params.pluralSeparator = '._.';
+    params.contextSeparator = '._.';
+    const translated = this.i18next.t(text, params);
+    return translated || text;
+  }
+
+  /**
+   * Alias to create a text node.
+   * @param text
+   * @returns {Text}
+   */
+  text(text) {
+    return document.createTextNode(this.t(text));
+  }
+
+  /**
+   * Adds an object of attributes onto an element.
+   * @param {HtmlElement} element - The element to add the attributes to.
+   * @param {Object} attr - The attributes to add to the input element.
+   */
+  attr(element, attr) {
+    if (!element) {
+      return;
+    }
+    _.each(attr, (value, key) => {
+      if (typeof value !== 'undefined') {
+        if (key.indexOf('on') === 0) {
+          // If this is an event, add a listener.
+          this.addEventListener(element, key.substr(2).toLowerCase(), value);
+        }
+        else {
+          // Otherwise it is just an attribute.
+          element.setAttribute(key, value);
+        }
+      }
+    });
+  }
+
+  /**
+   * Determines if an element has a class.
+   *
+   * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+   */
+  hasClass(element, className) {
+    if (!element) {
+      return;
+    }
+    className = ` ${className} `;
+    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+  }
+
+  /**
+   * Adds a class to a DOM element.
+   *
+   * @param element
+   *   The element to add a class to.
+   * @param className
+   *   The name of the class to add.
+   */
+  addClass(element, className) {
+    if (!element) {
+      return;
+    }
+    const classes = element.getAttribute('class');
+    if (!classes || classes.indexOf(className) === -1) {
+      element.setAttribute('class', `${classes} ${className}`);
+    }
+  }
+
+  /**
+   * Remove a class from a DOM element.
+   *
+   * @param element
+   *   The DOM element to remove the class from.
+   * @param className
+   *   The name of the class that is to be removed.
+   */
+  removeClass(element, className) {
+    if (!element) {
+      return;
+    }
+    let cls = element.getAttribute('class');
+    if (cls) {
+      cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
+      element.setAttribute('class', cls);
+    }
+  }
+
+  /**
+   * Empty's an HTML DOM element.
+   *
+   * @param {HTMLElement} element - The element you wish to empty.
+   */
+  empty(element) {
+    if (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+    }
+  }
+
+  /**
+   * Gets the classname for either Fontawesome or Bootstrap depending on their settings.
+   *
+   * @param name
+   * @param spinning
+   * @return {string}
+   */
+  iconClass(name, spinning) {
+    if (!this.options.icons || this.options.icons === 'glyphicon') {
+      return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
+    }
+    switch (name) {
+      case 'save':
+        return 'fa fa-download';
+      case 'zoom-in':
+        return 'fa fa-search-plus';
+      case 'zoom-out':
+        return 'fa fa-search-minus';
+      case 'question-sign':
+        return 'fa fa-question-circle';
+      case 'remove-circle':
+        return 'fa fa-times-circle-o';
+      case 'new-window':
+        return 'fa fa-window-restore';
+      default:
+        return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
+    }
+  }
+
+  /**
+   * Returns an HTMLElement icon element.
+   *
+   * @param {string} name - The name of the icon to retrieve.
+   * @returns {HTMLElement} - The icon element.
+   */
+  getIcon(name) {
+    return this.ce('i', {
+      class: this.iconClass(name)
+    });
+  }
+
+  /**
+   * Create an evaluation context for all script executions and interpolations.
+   *
+   * @param additional
+   * @return {*}
+   */
+  evalContext(additional) {
+    return Object.assign(additional || {}, {
+      _,
+      utils: FormioUtils,
+      util: FormioUtils,
+      moment,
+      instance: this
+    });
+  }
+
+  /**
+   * Performs an interpolation using the evaluation context of this component.
+   *
+   * @param string
+   * @param data
+   * @return {XML|string|*|void}
+   */
+  interpolate(string, data) {
+    return FormioUtils.interpolate(string, this.evalContext(data));
+  }
+
+  /**
+   * Performs an evaluation using the evaluation context of this component.
+   *
+   * @param func
+   * @param args
+   * @param ret
+   * @param tokenize
+   * @return {*}
+   */
+  evaluate(func, args, ret, tokenize) {
+    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
+  }
+
+  /**
+   * Allow for options to hook into the functionality of this renderer.
+   * @return {*}
+   */
+  hook() {
+    const name = arguments[0];
+    if (
+      this.options &&
+      this.options.hooks &&
+      this.options.hooks[name]
+    ) {
+      return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    else {
+      // If this is an async hook instead of a sync.
+      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+      if (fn) {
+        return fn(null, arguments[1]);
+      }
+      else {
+        return arguments[1];
+      }
+    }
+  }
+}

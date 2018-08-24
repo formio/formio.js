@@ -62,6 +62,7 @@ export function evaluate(func, args, ret, tokenize) {
 
     try {
       func = new Function(...params, func);
+      args = _.values(args);
     }
     catch (err) {
       console.warn(`An error occured within the custom function for ${component.key}`, err);
@@ -70,9 +71,8 @@ export function evaluate(func, args, ret, tokenize) {
     }
   }
   if (typeof func === 'function') {
-    const values = _.values(args);
     try {
-      returnVal = func(...values);
+      returnVal = Array.isArray(args) ? func(...args) : func(args);
     }
     catch (err) {
       returnVal = null;
