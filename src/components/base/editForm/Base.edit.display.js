@@ -91,14 +91,13 @@ export default [
     weight: 50,
     type: 'select',
     input: true,
-    key: 'widget.type',
+    key: 'widgetType',
     label: 'Widget',
     placeholder: 'Select a widget',
     tooltip: 'The widget is the display UI used to input the value of the field.',
     dataSrc: 'values',
     data: {
       values: [
-        { label: 'Default', value: '' },
         { label: 'Calendar', value: 'calendar' }
       ]
     }
@@ -108,9 +107,13 @@ export default [
     type: 'textarea',
     key: 'widget',
     label: 'Widget Settings',
-    refreshOn: 'widget.type',
+    refreshOn: 'widgetType',
     customDefaultValue: (context) => {
-      return JSON.stringify(Widgets[context.data.widget.type].defaultSettings, null, 2);
+      let settings = {};
+      if (context.data.widget && context.data.widget.type) {
+        settings = Widgets[context.data.widget.type].defaultSettings;
+      }
+      return JSON.stringify(settings, null, 2);
     },
     input: true,
     rows: 5,

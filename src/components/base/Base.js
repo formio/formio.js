@@ -108,6 +108,20 @@ export default class BaseComponent extends Component {
       customDefaultValue: '',
       calculateValue: '',
       widget: null,
+
+      /**
+       * This will refresh this component when this field changes.
+       */
+      refreshOn: '',
+
+      /**
+       * Determines if we should clear our value when a refresh occurs.
+       */
+      clearOnRefresh: false,
+
+      /**
+       * This will perform the validation on either "change" or "blur" of the input element.
+       */
       validateOn: 'change',
 
       /**
@@ -293,6 +307,9 @@ export default class BaseComponent extends Component {
      */
     this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
+    // Trigger an update.
+    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -326,6 +343,9 @@ export default class BaseComponent extends Component {
         });
       }
     });
+
+    // Attach the refresh on events.
+    this.attachRefreshOn();
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
@@ -486,6 +506,27 @@ export default class BaseComponent extends Component {
     }
   }
 
+  attachRefreshOn() {
+    // If they wish to refresh on a value, then add that here.
+    if (this.component.refreshOn) {
+      this.on('change', (event) => {
+        if (this.component.refreshOn === 'data') {
+          this.refresh(this.data);
+        }
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn) &
+          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+          // in fields inside EditGrids could alter their state from other rows (which is bad).
+          this.inContext(event.changed.instance)
+        ) {
+          this.refresh(event.changed.value);
+        }
+      });
+    }
+  }
+
   get viewOnly() {
     return this.options.readOnly && this.options.viewAsHtml;
   }
@@ -548,6 +589,11 @@ export default class BaseComponent extends Component {
       return value.join(', ');
     }
     return value.toString();
+  }
+
+  updateItems(...args) {
+    this.restoreValue();
+    this.onChange(...args);
   }
 
   updateViewOnlyValue() {
@@ -1691,6 +1737,7 @@ export default class BaseComponent extends Component {
     if (input && container) {
       input = container.appendChild(input);
     }
+
     this.inputs.push(input);
     this.hook('input', input, container);
     this.addFocusBlurEvents(input);
@@ -2195,6 +2242,27 @@ export default class BaseComponent extends Component {
 
   get dataReady() {
     return Promise.resolve();
+  }
+
+  /**
+   * Refreshes the component with a new value.
+   *
+   * @param value
+   */
+  refresh(value) {
+    if (this.hasOwnProperty('refreshOnValue')) {
+      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
+    }
+    else {
+      this.refreshOnChanged = true;
+    }
+    this.refreshOnValue = value;
+    if (this.refreshOnChanged) {
+      this.triggerUpdate();
+      if (this.component.clearOnRefresh) {
+        this.setValue(null);
+      }
+    }
   }
 
   /**
