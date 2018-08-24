@@ -37,7 +37,7 @@ export default class Form {
       this.form = arguments[0];
     }
 
-    return this.instance;
+    return this.ready;
   }
 
   create(display) {

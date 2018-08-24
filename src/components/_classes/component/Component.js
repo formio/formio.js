@@ -161,7 +161,7 @@ export default class Component {
       language: 'en',
       highlightErrors: true,
       row: '',
-      template: 'bootstrap',
+      template: 'bootstrap3',
       renderMode: 'form',
       attachMode: 'full',
     });
