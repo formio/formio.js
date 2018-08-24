@@ -18,6 +18,7 @@ export default class Wizard extends Webform {
     this.panels = [];
     this.pages = [];
     this.globalComponents = [];
+    this.components = [];
     this.page = 0;
     this.history = [];
   }
