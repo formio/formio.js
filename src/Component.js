@@ -16,7 +16,8 @@ export default class Component {
     this.options = _.assign({
       language: 'en',
       highlightErrors: true,
-      row: ''
+      row: '',
+      namespace: 'formio'
     }, options || {});
 
     /**
@@ -25,13 +26,6 @@ export default class Component {
      * @type {string}
      */
     this.id = id || FormioUtils.getRandomComponentId();
-
-    /**
-     * The event namespace of this component.
-     *
-     * @type {*|string}
-     */
-    this.namespace = options.namespace || 'formio';
 
     /**
      * An array of event handlers so that the destry command can deregister them.
@@ -47,7 +41,7 @@ export default class Component {
      *
      * @type {EventEmitter}
      */
-    this.events = options.events || new EventEmitter({
+    this.events = (options && options.events) ? options.events : new EventEmitter({
       wildcard: false,
       maxListeners: 0
     });
@@ -74,7 +68,7 @@ export default class Component {
     if (!this.events) {
       return;
     }
-    const type = `${this.namespace}.${event}`;
+    const type = `${this.options.namespace}.${event}`;
 
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
@@ -92,7 +86,7 @@ export default class Component {
     if (!this.events) {
       return;
     }
-    const type = `${this.namespace}.${event}`;
+    const type = `${this.options.namespace}.${event}`;
 
     // Iterate through all the internal events.
     _.each(this.events.listeners(type), (listener) => {
@@ -112,7 +106,7 @@ export default class Component {
    */
   emit(event, data) {
     if (this.events) {
-      this.events.emit(`${this.namespace}.${event}`, data);
+      this.events.emit(`${this.options.namespace}.${event}`, data);
     }
   }
 
@@ -430,13 +424,13 @@ export default class Component {
    * @return {*}
    */
   evalContext(additional) {
-    return Object.assign(additional || {}, {
+    return Object.assign({
       _,
       utils: FormioUtils,
       util: FormioUtils,
       moment,
       instance: this
-    });
+    }, additional);
   }
 
   /**

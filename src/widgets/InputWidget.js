@@ -3,6 +3,7 @@ import Component from '../Component';
 export default class InputWidget extends Component {
   constructor(settings, component) {
     super(settings);
+    this.namespace = 'formio.widget';
     this.component = component || {};
     this.settings = _.merge({}, this.defaultSettings, settings || {});
   }
