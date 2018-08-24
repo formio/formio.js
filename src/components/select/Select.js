@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
@@ -41,9 +41,6 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-
-    // Trigger an update.
-    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
 
     // Keep track of the select options.
     this.selectOptions = [];

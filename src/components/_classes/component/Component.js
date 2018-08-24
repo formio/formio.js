@@ -113,6 +113,11 @@ export default class Component extends Widget {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      widget: null,
+
+      /**
+       * This will perform the validation on either "change" or "blur" of the input element.
+       */
       validateOn: 'change',
 
       /**
@@ -280,11 +285,15 @@ export default class Component extends Widget {
      */
     this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
+    // Trigger an update.
+    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+
     /**
      * list of attached tooltips
      * @type {Array}
      */
     this.tooltips = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -862,6 +871,11 @@ export default class Component extends Widget {
     }
 
     return value.toString();
+  }
+
+  updateItems(...args) {
+    this.restoreValue();
+    this.onChange(...args);
   }
 
   updateViewOnlyValue() {

@@ -1,3 +1,5 @@
+import Widgets from '../../../../widgets';
+
 /* eslint-disable max-len */
 export default [
   {
@@ -84,6 +86,42 @@ export default [
           { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
         ]
       }
+    }
+  },
+  {
+    weight: 50,
+    type: 'select',
+    input: true,
+    key: 'widgetType',
+    label: 'Widget',
+    placeholder: 'Select a widget',
+    tooltip: 'The widget is the display UI used to input the value of the field.',
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Calendar', value: 'calendar' }
+      ]
+    }
+  },
+  {
+    weight: 55,
+    type: 'textarea',
+    key: 'widget',
+    label: 'Widget Settings',
+    refreshOn: 'widgetType',
+    customDefaultValue: (context) => {
+      let settings = {};
+      if (context.data.widget && context.data.widget.type) {
+        settings = Widgets[context.data.widget.type].defaultSettings;
+      }
+      return JSON.stringify(settings, null, 2);
+    },
+    input: true,
+    rows: 5,
+    editor: 'ace',
+    as: 'json',
+    conditional: {
+      json: { '!==': [{ var: 'data.widget.type' }, ''] }
     }
   },
   {
