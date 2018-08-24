@@ -230,7 +230,7 @@ export default class NestedComponent extends Component {
       this.components = options.components;
     }
     else {
-      const components = this.hook('addComponents', this.componentComponents, this);
+      const components = this.hook('addComponents', this.componentComponents, this) || [];
       components.forEach((component) => this.addComponent(component, data));
     }
   }
