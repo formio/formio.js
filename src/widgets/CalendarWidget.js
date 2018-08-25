@@ -63,6 +63,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.defaultDate = getDateSetting(this.settings.defaultDate);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
+    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('change');
     this.settings.onClose = () => (this.closedOn = Date.now());
     this.settings.formatDate = (date, format) => {
