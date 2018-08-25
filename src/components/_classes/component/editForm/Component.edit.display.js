@@ -1,4 +1,5 @@
 import Widgets from '../../../../widgets';
+import _ from 'lodash';
 
 /* eslint-disable max-len */
 export default [
@@ -92,11 +93,14 @@ export default [
     weight: 50,
     type: 'select',
     input: true,
-    key: 'widgetType',
+    key: 'widget.type',
     label: 'Widget',
     placeholder: 'Select a widget',
     tooltip: 'The widget is the display UI used to input the value of the field.',
     dataSrc: 'values',
+    onChange: (context) => {
+      context.data.widget = _.pick(this.data.widget, 'type');
+    },
     data: {
       values: [
         { label: 'Calendar', value: 'calendar' }
@@ -108,13 +112,15 @@ export default [
     type: 'textarea',
     key: 'widget',
     label: 'Widget Settings',
-    refreshOn: 'widgetType',
-    customDefaultValue: (context) => {
-      let settings = {};
-      if (context.data.widget && context.data.widget.type) {
-        settings = Widgets[context.data.widget.type].defaultSettings;
+    calculateValue: (context) => {
+      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
+        let settings = {};
+        if (context.data.widget && context.data.widget.type) {
+          settings = Widgets[context.data.widget.type].defaultSettings;
+        }
+        return settings;
       }
-      return JSON.stringify(settings, null, 2);
+      return context.data.widget;
     },
     input: true,
     rows: 5,

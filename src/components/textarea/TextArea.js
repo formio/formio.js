@@ -160,7 +160,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && value) {
       try {
-        value = JSON.stringify(value);
+        value = JSON.stringify(value, null, 2);
       }
       catch (err) {
         console.warn(err);

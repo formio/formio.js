@@ -42,6 +42,9 @@ export default class SelectComponent extends Field {
   init() {
     super.init();
 
+    // Trigger an update.
+    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+
     // Keep track of the select options.
     this.selectOptions = [];
 

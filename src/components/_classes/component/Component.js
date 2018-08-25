@@ -285,8 +285,12 @@ export default class Component extends Widget {
      */
     this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
-    // Trigger an update.
-    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+    /**
+     * Used to trigger a redraw event within this component.
+     *
+     * @type {Function}
+     */
+    this.triggerRedraw = _.debounce(this.redraw.bind(this), 100);
 
     /**
      * list of attached tooltips
@@ -788,7 +792,7 @@ export default class Component extends Widget {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
       }
-      this.redraw();
+      this.triggerRedraw();
     }
   }
 
@@ -1272,6 +1276,10 @@ export default class Component extends Widget {
     // If we are supposed to validate on blur, then don't trigger validation yet.
     if (this.component.validateOn === 'blur' && !this.errors.length) {
       flags.noValidate = true;
+    }
+
+    if (this.component.onChange) {
+      this.evaluate(this.component.onChange);
     }
 
     // Set the changed variable.
