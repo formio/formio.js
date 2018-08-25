@@ -307,8 +307,12 @@ export default class BaseComponent extends Component {
      */
     this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
-    // Trigger an update.
-    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
+    /**
+     * Used to trigger a redraw event within this component.
+     *
+     * @type {Function}
+     */
+    this.triggerRedraw = _.debounce(this.redraw.bind(this), 100);
 
     // To force this component to be invalid.
     this.invalid = false;
@@ -1683,6 +1687,10 @@ export default class BaseComponent extends Component {
       flags.noValidate = true;
     }
 
+    if (this.component.onChange) {
+      this.evaluate(this.component.onChange);
+    }
+
     // Set the changed variable.
     const changed = {
       instance: this,
@@ -2258,10 +2266,10 @@ export default class BaseComponent extends Component {
     }
     this.refreshOnValue = value;
     if (this.refreshOnChanged) {
-      this.triggerUpdate();
       if (this.component.clearOnRefresh) {
         this.setValue(null);
       }
+      this.triggerRedraw();
     }
   }
 
