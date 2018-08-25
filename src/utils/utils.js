@@ -814,6 +814,16 @@ export function timezoneText(offsetFormat, stdFormat) {
 export function formatDate(value, format, timezone) {
   const momentDate = moment(value);
   if (timezone === currentTimezone()) {
+    // See if our format contains a "z" timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      // Return the timezoneText.
+      return timezoneText(
+        () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
+        () => momentDate.format(convertFormatToMoment(format))
+      );
+    }
+
+    // Return the standard format.
     return momentDate.format(convertFormatToMoment(format));
   }
   if (timezone === 'UTC') {

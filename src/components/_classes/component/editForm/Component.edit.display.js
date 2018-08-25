@@ -99,7 +99,7 @@ export default [
     tooltip: 'The widget is the display UI used to input the value of the field.',
     dataSrc: 'values',
     onChange: (context) => {
-      context.data.widget = _.pick(this.data.widget, 'type');
+      context.data.widget = _.pick(context.data.widget, 'type');
     },
     data: {
       values: [
@@ -127,7 +127,7 @@ export default [
     editor: 'ace',
     as: 'json',
     conditional: {
-      json: { '!==': [{ var: 'data.widget.type' }, ''] }
+      json: { '!!': { var: 'data.widget.type' } }
     }
   },
   {
