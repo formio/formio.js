@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1618: Fix bug where select could get in infinite change.
  
 ### Removed
- - Settings from DateTime component that no longer apply to core renderer.
+ - FOR-1579: Settings from DateTime component that no longer apply to core renderer.
 
 ## 3.3.7
 ### Fixed
