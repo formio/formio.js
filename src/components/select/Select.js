@@ -409,7 +409,11 @@ export default class SelectComponent extends BaseComponent {
         let body;
 
         if (url.substr(0, 1) === '/') {
-          url = Formio.getBaseUrl() + this.component.data.url;
+          let baseUrl = Formio.getProjectUrl();
+          if (!baseUrl) {
+            baseUrl = Formio.getBaseUrl();
+          }
+          url = baseUrl + this.component.data.url;
         }
 
         if (!this.component.data.method) {
