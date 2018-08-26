@@ -99,7 +99,11 @@ export default class TextAreaComponent extends TextFieldComponent {
           const mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
           this.editor.on('change', () => {
-            this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
+            const newValue = this.getConvertedValue(this.editor.getValue());
+            // Do not bother to update if they are both empty.
+            if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
+              this.updateValue(null, newValue);
+            }
           });
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode(`ace/mode/${mode}`);
