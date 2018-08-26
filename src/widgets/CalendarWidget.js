@@ -13,6 +13,7 @@ import {
 import moment from 'moment';
 import _ from 'lodash';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
+const ISO_8601_FORMAT = 'YYYY-MM-DDTHH:mm:ssZ';
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -26,8 +27,8 @@ export default class CalendarWidget extends InputWidget {
       enableTime: true,
       mode: 'single',
       noCalendar: false,
-      format: 'yyyy-MM-dd hh:mm a',
-      dateFormat: 'Z',
+      format: DEFAULT_FORMAT,
+      dateFormat: ISO_8601_FORMAT,
       useLocaleSettings: false,
       language: 'us-en',
       defaultDate: null,
@@ -60,7 +61,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     this.closedOn = 0;
-    this.originalFormat = this.settings.dateFormat || 'Z';
+    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.defaultDate = getDateSetting(this.settings.defaultDate);
@@ -179,7 +180,7 @@ export default class CalendarWidget extends InputWidget {
 
   getValue() {
     // Standard output format.
-    if (!this.calendar || this.settings.formatDate === 'Z') {
+    if (!this.calendar || (this.valueFormat === ISO_8601_FORMAT)) {
       return super.getValue();
     }
 
@@ -191,7 +192,7 @@ export default class CalendarWidget extends InputWidget {
 
     // Return a formatted version of the date to store in string format.
     return (dates[0] instanceof Date) ?
-      this.getView(dates[0], this.originalFormat) :
+      this.getView(dates[0], this.valueFormat) :
       'Invalid Date';
   }
 
@@ -200,7 +201,7 @@ export default class CalendarWidget extends InputWidget {
       return super.setValue(value);
     }
     if (value) {
-      this.calendar.setDate(new Date(value), false);
+      this.calendar.setDate(moment(value, this.valueFormat).toDate(), false);
     }
     else {
       this.calendar.clear(false);
