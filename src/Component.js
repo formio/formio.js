@@ -3,6 +3,7 @@ import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
+import maskInput from 'vanilla-text-mask';
 
 /**
  * Root component for all elements within the renderer.
@@ -45,6 +46,12 @@ export default class Component {
       wildcard: false,
       maxListeners: 0
     });
+
+    /**
+     * All of the input masks associated with this component.
+     * @type {Array}
+     */
+    this.inputMasks = [];
   }
 
   /**
@@ -169,6 +176,10 @@ export default class Component {
         handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
+
+    // Destroy the input masks.
+    this.inputMasks.forEach(mask => mask.destroy());
+    this.inputMasks = [];
   }
 
   /**
@@ -262,6 +273,40 @@ export default class Component {
     }
     else if (child) {
       element.appendChild(this.text(child.toString()));
+    }
+  }
+
+  /**
+   * Creates a new input mask placeholder.
+   * @param {HTMLElement} mask - The input mask.
+   * @returns {string} - The placeholder that will exist within the input as they type.
+   */
+  maskPlaceholder(mask) {
+    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
+  }
+
+  /**
+   * Sets the input mask for an input.
+   *
+   * @param {HTMLElement} input - The html input to apply the mask to.
+   * @param {String} inputMask - The input mask to add to this input.
+   * @param {Boolean} placeholder - Set the mask placeholder on the input.
+   */
+  setInputMask(input, inputMask, placeholder) {
+    if (input && inputMask) {
+      const mask = FormioUtils.getInputMask(inputMask);
+      this._inputMask = mask;
+      input.mask = maskInput({
+        inputElement: input,
+        mask
+      });
+      if (mask.numeric) {
+        input.setAttribute('pattern', '\\d*');
+      }
+      if (placeholder) {
+        input.setAttribute('placeholder', this.maskPlaceholder(mask));
+      }
+      this.inputMasks.push(input.mask);
     }
   }
 

@@ -1,5 +1,5 @@
 /* globals Quill */
-import maskInput, { conformToMask } from 'vanilla-text-mask';
+import { conformToMask } from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
@@ -1264,34 +1264,9 @@ export default class BaseComponent extends Component {
     return inputGroup;
   }
 
-  /**
-   * Creates a new input mask placeholder.
-   * @param {HTMLElement} mask - The input mask.
-   * @returns {string} - The placeholder that will exist within the input as they type.
-   */
-  maskPlaceholder(mask) {
-    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
-  }
-
-  /**
-   * Sets the input mask for an input.
-   * @param {HTMLElement} input - The html input to apply the mask to.
-   */
-  setInputMask(input) {
-    if (input && this.component.inputMask) {
-      const mask = FormioUtils.getInputMask(this.component.inputMask);
-      this._inputMask = mask;
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
-      if (mask.numeric) {
-        input.setAttribute('pattern', '\\d*');
-      }
-      if (!this.component.placeholder) {
-        input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-    }
+  // Default the mask to the component input mask.
+  setInputMask(input, inputMask) {
+    return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
   /**

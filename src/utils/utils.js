@@ -925,6 +925,16 @@ export function convertFormatToMoment(format) {
     .replace(/a/g, 'A');
 }
 
+export function convertFormatToMask(format) {
+  return format
+    // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, 'MM')
+    // Year conversion
+    .replace(/[ydhmsHM]/g, '9')
+    // AM/PM conversion
+    .replace(/a/g, 'AA');
+}
+
 /**
  * Returns an input mask that is compatible with the input mask library.
  * @param {string} mask - The Form.io input mask.

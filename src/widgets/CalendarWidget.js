@@ -2,6 +2,7 @@ import Flatpickr from 'flatpickr';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
+  convertFormatToMask,
   currentTimezone,
   formatDate,
   formatOffset,
@@ -81,7 +82,16 @@ export default class CalendarWidget extends InputWidget {
     };
 
     if (this._input) {
+      // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
+
+      // Enforce the input mask of the format.
+      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
+
+      // Make sure we commit the value after a blur event occurs.
+      this.addEventListener(this.calendar._input, 'blur', () =>
+        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
+      );
     }
   }
 
