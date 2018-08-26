@@ -6,18 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.4.0
 ### Added
- - Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
- - Widget settings to TextField component.
+ - FOR-1614: Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
+ - FOR-1614: Widget settings to TextField component.
  
 ### Changed
- - Make sure the calendar enforces an input mask and also updates the date on a blur event of the input.
+ - FOR-1616, FOR-1615: Make sure the calendar enforces an input mask and also updates the date on a blur event of the input.
  
 ### Fixed
  - Make sure to not send an invalid API call when no resource is provided.
  - Make the select component work when project url is provided.
  - Fixed the select component to trigger a refresh when visibility changes.
  - Fixed the ACE editor to not trigger infinite refresh when new value and existing values are both empty.
- - Fix bug where select could get in infinite change.
+ - FOR-1618: Fix bug where select could get in infinite change.
  
 ### Removed
  - Settings from DateTime component that no longer apply to core renderer.
