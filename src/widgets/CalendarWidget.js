@@ -2,7 +2,7 @@ import Flatpickr from 'flatpickr';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
-  convertFormatToMask,
+  convertFormatToMask, convertFormatToMoment,
   currentTimezone,
   formatDate,
   formatOffset,
@@ -13,7 +13,7 @@ import {
 import moment from 'moment';
 import _ from 'lodash';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
-const ISO_8601_FORMAT = 'YYYY-MM-DDTHH:mm:ssZ';
+const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 
 export default class CalendarWidget extends InputWidget {
   /* eslint-disable camelcase */
@@ -62,12 +62,13 @@ export default class CalendarWidget extends InputWidget {
 
     this.closedOn = 0;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
+    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.defaultDate = getDateSetting(this.settings.defaultDate);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
-    this.settings.onChange = () => this.emit('change');
+    this.settings.onChange = () => this.emit('update');
     this.settings.onClose = () => (this.closedOn = Date.now());
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
@@ -201,7 +202,7 @@ export default class CalendarWidget extends InputWidget {
       return super.setValue(value);
     }
     if (value) {
-      this.calendar.setDate(moment(value, this.valueFormat).toDate(), false);
+      this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
     }
     else {
       this.calendar.clear(false);

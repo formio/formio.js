@@ -1326,7 +1326,7 @@ export default class BaseComponent extends Component {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('change', () => this.onChange({ noValidate: true }));
+    widget.on('update', () => this.updateValue());
     widget.on('redraw', () => this.redraw());
     this._widget = widget;
     return widget;

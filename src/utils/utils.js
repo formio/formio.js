@@ -881,6 +881,9 @@ export function getLocaleDateFormatInfo(locale) {
  */
 export function convertFormatToFlatpickr(format) {
   return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, '')
+
     // Year conversion.
     .replace(/y/g, 'Y')
     .replace('YYYY', 'Y')
@@ -894,7 +897,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Day in month.
     .replace(/d/g, 'j')
-    .replace('jj', 'd')
+    .replace(/jj/g, 'd')
 
     // Day in week.
     .replace('EEEE', 'l')
