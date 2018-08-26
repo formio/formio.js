@@ -181,7 +181,7 @@ export default class CalendarWidget extends InputWidget {
 
   getValue() {
     // Standard output format.
-    if (!this.calendar || (this.valueFormat === ISO_8601_FORMAT)) {
+    if (!this.calendar) {
       return super.getValue();
     }
 
