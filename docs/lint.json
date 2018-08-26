@@ -1,5 +1,42 @@
 [
   {
+    "name": "Component#appendChild",
+    "filePath": "src/Component.js",
+    "lines": [
+      {
+        "lineNumber": 259,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 260,
+        "line": "   * Append different types of children."
+      },
+      {
+        "lineNumber": 261,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 262,
+        "line": "   * @param child"
+      },
+      {
+        "lineNumber": 263,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 264,
+        "line": "  appendChild(element, child) {"
+      }
+    ],
+    "codeParams": [
+      "element",
+      "child"
+    ],
+    "docParams": [
+      "child"
+    ]
+  },
+  {
     "name": "Webform#showErrors",
     "filePath": "src/Webform.js",
     "lines": [
@@ -184,23 +221,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1239,
+        "lineNumber": 1150,
         "line": "  /**"
       },
       {
-        "lineNumber": 1240,
+        "lineNumber": 1151,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 1241,
+        "lineNumber": 1152,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 1242,
+        "lineNumber": 1153,
         "line": "   */"
       },
       {
-        "lineNumber": 1243,
+        "lineNumber": 1154,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -214,137 +251,39 @@
     ]
   },
   {
-    "name": "BaseComponent#appendChild",
-    "filePath": "src/components/base/Base.js",
-    "lines": [
-      {
-        "lineNumber": 1512,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 1513,
-        "line": "   * Append different types of children."
-      },
-      {
-        "lineNumber": 1514,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1515,
-        "line": "   * @param child"
-      },
-      {
-        "lineNumber": 1516,
-        "line": "   */"
-      },
-      {
-        "lineNumber": 1517,
-        "line": "  appendChild(element, child) {"
-      }
-    ],
-    "codeParams": [
-      "element",
-      "child"
-    ],
-    "docParams": [
-      "child"
-    ]
-  },
-  {
-    "name": "BaseComponent#ce",
-    "filePath": "src/components/base/Base.js",
-    "lines": [
-      {
-        "lineNumber": 1531,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 1532,
-        "line": "   * Alias for document.createElement."
-      },
-      {
-        "lineNumber": 1533,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1534,
-        "line": "   * @param {string} type - The type of element to create"
-      },
-      {
-        "lineNumber": 1535,
-        "line": "   * @param {Object} attr - The element attributes to add to the created element."
-      },
-      {
-        "lineNumber": 1536,
-        "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
-      },
-      {
-        "lineNumber": 1537,
-        "line": "   * @param {Object} events"
-      },
-      {
-        "lineNumber": 1538,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1539,
-        "line": "   * @return {HTMLElement} - The created element."
-      },
-      {
-        "lineNumber": 1540,
-        "line": "   */"
-      },
-      {
-        "lineNumber": 1541,
-        "line": "  ce(type, attr, children = null) {"
-      }
-    ],
-    "codeParams": [
-      "type",
-      "attr",
-      "children"
-    ],
-    "docParams": [
-      "type",
-      "attr",
-      "children",
-      "events"
-    ]
-  },
-  {
     "name": "BaseComponent#addInput",
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1971,
+        "lineNumber": 1708,
         "line": "  /**"
       },
       {
-        "lineNumber": 1972,
+        "lineNumber": 1709,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1973,
+        "lineNumber": 1710,
         "line": "   *"
       },
       {
-        "lineNumber": 1974,
+        "lineNumber": 1711,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1975,
+        "lineNumber": 1712,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1976,
+        "lineNumber": 1713,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1977,
+        "lineNumber": 1714,
         "line": "   */"
       },
       {
-        "lineNumber": 1978,
+        "lineNumber": 1715,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -363,27 +302,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2242,
+        "lineNumber": 1983,
         "line": "  /**"
       },
       {
-        "lineNumber": 2243,
+        "lineNumber": 1984,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2244,
+        "lineNumber": 1985,
         "line": "   *"
       },
       {
-        "lineNumber": 2245,
+        "lineNumber": 1986,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2246,
+        "lineNumber": 1987,
         "line": "   */"
       },
       {
-        "lineNumber": 2247,
+        "lineNumber": 1988,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -400,35 +339,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2283,
+        "lineNumber": 2024,
         "line": "  /**"
       },
       {
-        "lineNumber": 2284,
+        "lineNumber": 2025,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2285,
+        "lineNumber": 2026,
         "line": "   *"
       },
       {
-        "lineNumber": 2286,
+        "lineNumber": 2027,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2287,
+        "lineNumber": 2028,
         "line": "   *"
       },
       {
-        "lineNumber": 2288,
+        "lineNumber": 2029,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2289,
+        "lineNumber": 2030,
         "line": "   */"
       },
       {
-        "lineNumber": 2290,
+        "lineNumber": 2031,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -445,35 +384,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2331,
+        "lineNumber": 2072,
         "line": "  /**"
       },
       {
-        "lineNumber": 2332,
+        "lineNumber": 2073,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2333,
+        "lineNumber": 2074,
         "line": "   *"
       },
       {
-        "lineNumber": 2334,
+        "lineNumber": 2075,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2335,
+        "lineNumber": 2076,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2336,
+        "lineNumber": 2077,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2337,
+        "lineNumber": 2078,
         "line": "   */"
       },
       {
-        "lineNumber": 2338,
+        "lineNumber": 2079,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -634,31 +573,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 142,
+        "lineNumber": 133,
         "line": "  /**"
       },
       {
-        "lineNumber": 143,
+        "lineNumber": 134,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 144,
+        "lineNumber": 135,
         "line": "   *"
       },
       {
-        "lineNumber": 145,
+        "lineNumber": 136,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 146,
+        "lineNumber": 137,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 147,
+        "lineNumber": 138,
         "line": "   */"
       },
       {
-        "lineNumber": 148,
+        "lineNumber": 139,
         "line": "  addOption(value, label, attr) {"
       }
     ],
@@ -1098,35 +1037,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 1074,
+        "lineNumber": 1097,
         "line": "/**"
       },
       {
-        "lineNumber": 1075,
+        "lineNumber": 1098,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 1076,
+        "lineNumber": 1099,
         "line": " *"
       },
       {
-        "lineNumber": 1077,
+        "lineNumber": 1100,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 1078,
+        "lineNumber": 1101,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 1079,
+        "lineNumber": 1102,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 1080,
+        "lineNumber": 1103,
         "line": " */"
       },
       {
-        "lineNumber": 1081,
+        "lineNumber": 1104,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],

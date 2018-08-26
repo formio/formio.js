@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
@@ -18,9 +18,7 @@ export default class SelectComponent extends BaseComponent {
       },
       dataSrc: 'values',
       valueProperty: '',
-      refreshOn: '',
       filter: '',
-      clearOnRefresh: false,
       searchEnabled: true,
       searchField: '',
       minSearch: 0,
@@ -72,13 +70,6 @@ export default class SelectComponent extends BaseComponent {
 
   get emptyValue() {
     return '';
-  }
-
-  refreshItems() {
-    this.triggerUpdate();
-    if (this.component.clearOnRefresh && this.refreshOnChanged) {
-      this.setValue(null);
-    }
   }
 
   elementInfo() {
@@ -393,8 +384,8 @@ export default class SelectComponent extends BaseComponent {
         this.updateCustomItems();
         break;
       case 'resource': {
-        if (!forceUpdate && !this.active) {
-          // If we are lazyLoading, wait until activated.
+        // If there is no resource, or we are lazyLoading, wait until active.
+        if (!this.component.data.resource || (!forceUpdate && !this.active)) {
           return;
         }
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
@@ -418,7 +409,11 @@ export default class SelectComponent extends BaseComponent {
         let body;
 
         if (url.substr(0, 1) === '/') {
-          url = Formio.getBaseUrl() + this.component.data.url;
+          let baseUrl = Formio.getProjectUrl();
+          if (!baseUrl) {
+            baseUrl = Formio.getBaseUrl();
+          }
+          url = baseUrl + this.component.data.url;
         }
 
         if (!this.component.data.method) {
@@ -467,53 +462,16 @@ export default class SelectComponent extends BaseComponent {
     else {
       this.addOption('', this.t('loading...'));
     }
-    this.refreshItems();
+    this.triggerUpdate();
   }
 
   get active() {
     return !this.component.lazyLoad || this.activated;
   }
 
-  /**
-   * Sets the value of the refresh dependency and keep track if it has changed.
-   *
-   * @param value
-   */
-  refreshValue(value) {
-    if (this.hasOwnProperty('refreshOnValue')) {
-      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
-    }
-    else {
-      this.refreshOnChanged = true;
-    }
-    this.refreshOnValue = value;
-  }
-
   /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
-
-    // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        if (this.component.refreshOn === 'data') {
-          this.refreshValue(this.data);
-          this.refreshItems();
-        }
-        else if (
-          event.changed &&
-          event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn) &
-          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-          // in fields inside EditGrids could alter their state from other rows (which is bad).
-          this.inContext(event.changed.instance)
-        ) {
-          this.refreshValue(event.changed.value);
-          this.refreshItems();
-        }
-      });
-    }
-
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -630,9 +588,10 @@ export default class SelectComponent extends BaseComponent {
   }
 
   show(show) {
-    show = super.show(show);
     // If we go from hidden to visible, trigger a refresh.
-    if (show && (!this._visible !== !show)) {
+    const triggerUpdate = show && (this._visible !== show);
+    show = super.show(show);
+    if (triggerUpdate) {
       this.triggerUpdate();
     }
     return show;

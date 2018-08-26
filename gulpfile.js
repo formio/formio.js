@@ -92,6 +92,9 @@ gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
   .pipe(plugins.eslint.failAfterError())
 );
 
+gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
+gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
+
 // Copy the version and dependencies into the distribution package.json file.
 gulp.task('package-version', function() {
   const pkg = require('./package.json');
@@ -112,6 +115,8 @@ gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.f
 // Create a new build.
 gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [
   'icons',
+  'bootstrap',
+  'bootswatch',
   'styles-form',
   'styles-builder',
   'styles-full',

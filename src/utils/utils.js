@@ -62,6 +62,7 @@ export function evaluate(func, args, ret, tokenize) {
 
     try {
       func = new Function(...params, func);
+      args = _.values(args);
     }
     catch (err) {
       console.warn(`An error occured within the custom function for ${component.key}`, err);
@@ -70,9 +71,8 @@ export function evaluate(func, args, ret, tokenize) {
     }
   }
   if (typeof func === 'function') {
-    const values = _.values(args);
     try {
-      returnVal = func(...values);
+      returnVal = Array.isArray(args) ? func(...args) : func(args);
     }
     catch (err) {
       returnVal = null;
@@ -814,6 +814,16 @@ export function timezoneText(offsetFormat, stdFormat) {
 export function formatDate(value, format, timezone) {
   const momentDate = moment(value);
   if (timezone === currentTimezone()) {
+    // See if our format contains a "z" timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      // Return the timezoneText.
+      return timezoneText(
+        () => momentDate.tz(timezone).format(convertFormatToMoment(format)),
+        () => momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')))
+      );
+    }
+
+    // Return the standard format.
     return momentDate.format(convertFormatToMoment(format));
   }
   if (timezone === 'UTC') {
@@ -871,6 +881,9 @@ export function getLocaleDateFormatInfo(locale) {
  */
 export function convertFormatToFlatpickr(format) {
   return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, '')
+
     // Year conversion.
     .replace(/y/g, 'Y')
     .replace('YYYY', 'Y')
@@ -884,7 +897,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Day in month.
     .replace(/d/g, 'j')
-    .replace('jj', 'd')
+    .replace(/jj/g, 'd')
 
     // Day in week.
     .replace('EEEE', 'l')
@@ -913,6 +926,16 @@ export function convertFormatToMoment(format) {
     .replace(/E/g, 'd')
     // AM/PM marker
     .replace(/a/g, 'A');
+}
+
+export function convertFormatToMask(format) {
+  return format
+    // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, 'MM')
+    // Year conversion
+    .replace(/[ydhmsHM]/g, '9')
+    // AM/PM conversion
+    .replace(/a/g, 'AA');
 }
 
 /**

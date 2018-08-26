@@ -17,10 +17,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JavaScript Powered Forms and Form.io SDK</title>
   {% if page.template %}
-    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ site.baseurl }}/app/bootswatch/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   {% if page.template == nil %}
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ site.baseurl }}/app/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <link href="https://unpkg.com/bootstrap-vertical-tabs@1.2.2/bootstrap.vertical-tabs.min.css" rel="stylesheet">
   <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
@@ -30,7 +30,7 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script src="{{ site.baseurl }}/dist/formio.full.min.js"></script>
+  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}

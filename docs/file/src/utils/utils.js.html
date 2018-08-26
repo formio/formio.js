@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -133,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
@@ -173,6 +175,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -242,6 +246,7 @@ export function evaluate(func, args, ret, tokenize) {
 
     try {
       func = new Function(...params, func);
+      args = _.values(args);
     }
     catch (err) {
       console.warn(`An error occured within the custom function for ${component.key}`, err);
@@ -250,9 +255,8 @@ export function evaluate(func, args, ret, tokenize) {
     }
   }
   if (typeof func === &apos;function&apos;) {
-    const values = _.values(args);
     try {
-      returnVal = func(...values);
+      returnVal = Array.isArray(args) ? func(...args) : func(args);
     }
     catch (err) {
       returnVal = null;
@@ -994,6 +998,16 @@ export function timezoneText(offsetFormat, stdFormat) {
 export function formatDate(value, format, timezone) {
   const momentDate = moment(value);
   if (timezone === currentTimezone()) {
+    // See if our format contains a &quot;z&quot; timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      // Return the timezoneText.
+      return timezoneText(
+        () =&gt; momentDate.tz(timezone).format(convertFormatToMoment(format)),
+        () =&gt; momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, &apos;&apos;)))
+      );
+    }
+
+    // Return the standard format.
     return momentDate.format(convertFormatToMoment(format));
   }
   if (timezone === &apos;UTC&apos;) {
@@ -1051,6 +1065,9 @@ export function getLocaleDateFormatInfo(locale) {
  */
 export function convertFormatToFlatpickr(format) {
   return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, &apos;&apos;)
+
     // Year conversion.
     .replace(/y/g, &apos;Y&apos;)
     .replace(&apos;YYYY&apos;, &apos;Y&apos;)
@@ -1064,7 +1081,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Day in month.
     .replace(/d/g, &apos;j&apos;)
-    .replace(&apos;jj&apos;, &apos;d&apos;)
+    .replace(/jj/g, &apos;d&apos;)
 
     // Day in week.
     .replace(&apos;EEEE&apos;, &apos;l&apos;)
@@ -1093,6 +1110,16 @@ export function convertFormatToMoment(format) {
     .replace(/E/g, &apos;d&apos;)
     // AM/PM marker
     .replace(/a/g, &apos;A&apos;);
+}
+
+export function convertFormatToMask(format) {
+  return format
+    // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, &apos;MM&apos;)
+    // Year conversion
+    .replace(/[ydhmsHM]/g, &apos;9&apos;)
+    // AM/PM conversion
+    .replace(/a/g, &apos;AA&apos;);
 }
 
 /**

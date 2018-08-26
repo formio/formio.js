@@ -117,7 +117,7 @@ export default class WebformBuilder extends Webform {
         // Add the edit buttons to the component.
         comp.prepend(this.ce('div', {
           class: 'component-btn-group'
-        }, [removeButton, editButton, copyButton, pasteButton]));
+        }, [removeButton, copyButton, pasteButton, editButton]));
       }
 
       if (!container.noDrop) {

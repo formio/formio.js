@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -133,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
@@ -173,6 +175,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -204,84 +208,6 @@
     placeholder: &apos;yyyy-MM-dd&apos;,
     tooltip: &apos;The maximum date that can be picked. You can also use Moment.js functions. For example: \n \n moment().add(10, \&apos;days\&apos;)&apos;,
     weight: 20
-  },
-  {
-    type: &apos;select&apos;,
-    input: true,
-    key: &apos;datePicker.startingDay&apos;,
-    label: &apos;Starting Day&apos;,
-    tooltip: &apos;The first day of the week.&apos;,
-    weight: 30,
-    dataSrc: &apos;values&apos;,
-    data: {
-      values: [
-        { label: &apos;Sunday&apos;, value: 0 },
-        { label: &apos;Monday&apos;, value: 1 },
-        { label: &apos;Tuesday&apos;, value: 2 },
-        { label: &apos;Wednesday&apos;, value: 3 },
-        { label: &apos;Thursday&apos;, value: 4 },
-        { label: &apos;Friday&apos;, value: 5 },
-        { label: &apos;Saturday&apos;, value: 6 }
-      ]
-    }
-  },
-  {
-    type: &apos;select&apos;,
-    input: true,
-    key: &apos;datePicker.minMode&apos;,
-    label: &apos;Minimum Mode&apos;,
-    tooltip: &apos;The smallest unit of time view to display in the date picker.&apos;,
-    weight: 40,
-    dataSrc: &apos;values&apos;,
-    data: {
-      values: [
-        { label: &apos;Day&apos;, value: &apos;day&apos; },
-        { label: &apos;Month&apos;, value: &apos;month&apos; },
-        { label: &apos;Year&apos;, value: &apos;year&apos; }
-      ]
-    }
-  },
-  {
-    type: &apos;select&apos;,
-    input: true,
-    key: &apos;datePicker.maxMode&apos;,
-    label: &apos;Maximum Mode&apos;,
-    tooltip: &apos;The largest unit of time view to display in the date picker.&apos;,
-    weight: 50,
-    dataSrc: &apos;values&apos;,
-    data: {
-      values: [
-        { label: &apos;Day&apos;, value: &apos;day&apos; },
-        { label: &apos;Month&apos;, value: &apos;month&apos; },
-        { label: &apos;Year&apos;, value: &apos;year&apos; }
-      ]
-    }
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    key: &apos;datePicker.yearRows&apos;,
-    label: &apos;Number of Years Displayed (Rows)&apos;,
-    placeholder: &apos;Year Range (Rows)&apos;,
-    tooltip: &apos;The number of years to display in the years view (Rows).&apos;,
-    weight: 60
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    key: &apos;datePicker.yearColumns&apos;,
-    label: &apos;Number of Years Displayed (Columns)&apos;,
-    placeholder: &apos;Year Range (Columns)&apos;,
-    tooltip: &apos;The number of years to display in the years view (Columns).&apos;,
-    weight: 70
-  },
-  {
-    type: &apos;checkbox&apos;,
-    input: true,
-    key: &apos;datePicker.showWeeks&apos;,
-    label: &apos;Show Week Numbers&apos;,
-    tooltip: &apos;Displays the week numbers on the date picker.&apos;,
-    weight: 70
   }
 ];
 </code></pre>

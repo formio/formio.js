@@ -1,7 +1,4 @@
 import _ from 'lodash';
-import maskInput from 'vanilla-text-mask';
-
-import { getInputMask } from '../../utils/utils';
 import BaseComponent from '../base/Base';
 
 export default class TextFieldComponent extends BaseComponent {
@@ -134,22 +131,6 @@ export default class TextFieldComponent extends BaseComponent {
     }
     if (this.charCount) {
       this.setCounter('characters', this.charCount, this.dataValue.length, this.maxCharCount);
-    }
-  }
-
-  setInputMask(input, inputMask) {
-    if (!this.isMultipleMasksField) {
-      return super.setInputMask(input);
-    }
-    if (input && inputMask) {
-      const mask = getInputMask(inputMask);
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
-      if (!this.component.placeholder) {
-        input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
     }
   }
 

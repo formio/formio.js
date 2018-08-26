@@ -19,6 +19,36 @@ export default [
     '<p><h4>Example:</h4><pre>{"sum": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
   ),
   {
+    type: 'select',
+    input: true,
+    key: 'refreshOn',
+    label: 'Refresh On',
+    weight: 110,
+    tooltip: 'Refresh data when another field changes.',
+    dataSrc: 'custom',
+    data: {
+      custom: `
+        values.push({label: 'Any Change', key: 'data'});
+        utils.eachComponent(instance.root.editForm.components, function(component, path) {
+          if (component.key !== data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+      `
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 111,
+    key: 'clearOnRefresh',
+    label: 'Clear Value On Refresh',
+    tooltip: 'When the Refresh On field is changed, clear this components value.'
+  },
+  {
     weight: 400,
     type: 'checkbox',
     label: 'Encrypt',
