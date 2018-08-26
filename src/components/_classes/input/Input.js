@@ -70,8 +70,8 @@ export default class Input extends Multivalue {
     return inputMask ? inputMask.mask : undefined;
   }
 
-  setInputMask(input) {
-    return super.setInputMask(input, this.component.inputMask, this.component.placeholder);
+  setInputMask(input, inputMask) {
+    return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
   get hasCounter() {
