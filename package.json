@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "esdoc;gulp build",
+    "watch": "babel -w ./src/ --out-dir ./lib/",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
     "tag": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "publish": "npm test;gulp build;npm run tag;npm publish lib;",
@@ -83,6 +84,7 @@
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
