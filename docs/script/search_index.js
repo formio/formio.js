@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/widgets/calendarwidget.js~calendarwidget",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html",
+    "<span>CalendarWidget</span> <span class=\"search-result-import-path\">formiojs/src/widgets/CalendarWidget.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/checkbox/checkbox.js~checkboxcomponent",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html",
     "<span>CheckBoxComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/checkbox/Checkbox.js</span>",
@@ -63,6 +69,12 @@ window.esdocSearchIndex = [
     "formiojs/src/components/columns/columns.js~columnscomponent",
     "class/src/components/columns/Columns.js~ColumnsComponent.html",
     "<span>ColumnsComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/columns/Columns.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/component.js~component",
+    "class/src/Component.js~Component.html",
+    "<span>Component</span> <span class=\"search-result-import-path\">formiojs/src/Component.js</span>",
     "class"
   ],
   [
@@ -267,6 +279,12 @@ window.esdocSearchIndex = [
     "formiojs/src/components/hidden/hidden.js~hiddencomponent",
     "class/src/components/hidden/Hidden.js~HiddenComponent.html",
     "<span>HiddenComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/hidden/Hidden.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/widgets/inputwidget.js~inputwidget",
+    "class/src/widgets/InputWidget.js~InputWidget.html",
+    "<span>InputWidget</span> <span class=\"search-result-import-path\">formiojs/src/widgets/InputWidget.js</span>",
     "class"
   ],
   [
@@ -603,6 +621,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~convertformattoflatpickr",
     "function/index.html#static-function-convertFormatToFlatpickr",
     "<span>convertFormatToFlatpickr</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~convertformattomask",
+    "function/index.html#static-function-convertFormatToMask",
+    "<span>convertFormatToMask</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1144,6 +1168,216 @@ window.esdocSearchIndex = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
     "src/.external-ecmascript.js~undefined",
     "external"
+  ],
+  [
+    "src/component.js",
+    "file/src/Component.js.html",
+    "src/Component.js",
+    "file"
+  ],
+  [
+    "src/component.js~component#_inputmask",
+    "class/src/Component.js~Component.html#instance-member-_inputMask",
+    "src/Component.js~Component#_inputMask",
+    "member"
+  ],
+  [
+    "src/component.js~component#addclass",
+    "class/src/Component.js~Component.html#instance-method-addClass",
+    "src/Component.js~Component#addClass",
+    "method"
+  ],
+  [
+    "src/component.js~component#addeventlistener",
+    "class/src/Component.js~Component.html#instance-method-addEventListener",
+    "src/Component.js~Component#addEventListener",
+    "method"
+  ],
+  [
+    "src/component.js~component#appendchild",
+    "class/src/Component.js~Component.html#instance-method-appendChild",
+    "src/Component.js~Component#appendChild",
+    "method"
+  ],
+  [
+    "src/component.js~component#appendto",
+    "class/src/Component.js~Component.html#instance-method-appendTo",
+    "src/Component.js~Component#appendTo",
+    "method"
+  ],
+  [
+    "src/component.js~component#attr",
+    "class/src/Component.js~Component.html#instance-method-attr",
+    "src/Component.js~Component#attr",
+    "method"
+  ],
+  [
+    "src/component.js~component#ce",
+    "class/src/Component.js~Component.html#instance-method-ce",
+    "src/Component.js~Component#ce",
+    "method"
+  ],
+  [
+    "src/component.js~component#constructor",
+    "class/src/Component.js~Component.html#instance-constructor-constructor",
+    "src/Component.js~Component#constructor",
+    "method"
+  ],
+  [
+    "src/component.js~component#destroy",
+    "class/src/Component.js~Component.html#instance-method-destroy",
+    "src/Component.js~Component#destroy",
+    "method"
+  ],
+  [
+    "src/component.js~component#emit",
+    "class/src/Component.js~Component.html#instance-method-emit",
+    "src/Component.js~Component#emit",
+    "method"
+  ],
+  [
+    "src/component.js~component#empty",
+    "class/src/Component.js~Component.html#instance-method-empty",
+    "src/Component.js~Component#empty",
+    "method"
+  ],
+  [
+    "src/component.js~component#evalcontext",
+    "class/src/Component.js~Component.html#instance-method-evalContext",
+    "src/Component.js~Component#evalContext",
+    "method"
+  ],
+  [
+    "src/component.js~component#evaluate",
+    "class/src/Component.js~Component.html#instance-method-evaluate",
+    "src/Component.js~Component#evaluate",
+    "method"
+  ],
+  [
+    "src/component.js~component#eventhandlers",
+    "class/src/Component.js~Component.html#instance-member-eventHandlers",
+    "src/Component.js~Component#eventHandlers",
+    "member"
+  ],
+  [
+    "src/component.js~component#events",
+    "class/src/Component.js~Component.html#instance-member-events",
+    "src/Component.js~Component#events",
+    "member"
+  ],
+  [
+    "src/component.js~component#geticon",
+    "class/src/Component.js~Component.html#instance-method-getIcon",
+    "src/Component.js~Component#getIcon",
+    "method"
+  ],
+  [
+    "src/component.js~component#hasclass",
+    "class/src/Component.js~Component.html#instance-method-hasClass",
+    "src/Component.js~Component#hasClass",
+    "method"
+  ],
+  [
+    "src/component.js~component#hook",
+    "class/src/Component.js~Component.html#instance-method-hook",
+    "src/Component.js~Component#hook",
+    "method"
+  ],
+  [
+    "src/component.js~component#i18next",
+    "class/src/Component.js~Component.html#instance-member-i18next",
+    "src/Component.js~Component#i18next",
+    "member"
+  ],
+  [
+    "src/component.js~component#iconclass",
+    "class/src/Component.js~Component.html#instance-method-iconClass",
+    "src/Component.js~Component#iconClass",
+    "method"
+  ],
+  [
+    "src/component.js~component#id",
+    "class/src/Component.js~Component.html#instance-member-id",
+    "src/Component.js~Component#id",
+    "member"
+  ],
+  [
+    "src/component.js~component#inputmasks",
+    "class/src/Component.js~Component.html#instance-member-inputMasks",
+    "src/Component.js~Component#inputMasks",
+    "member"
+  ],
+  [
+    "src/component.js~component#interpolate",
+    "class/src/Component.js~Component.html#instance-method-interpolate",
+    "src/Component.js~Component#interpolate",
+    "method"
+  ],
+  [
+    "src/component.js~component#maskplaceholder",
+    "class/src/Component.js~Component.html#instance-method-maskPlaceholder",
+    "src/Component.js~Component#maskPlaceholder",
+    "method"
+  ],
+  [
+    "src/component.js~component#off",
+    "class/src/Component.js~Component.html#instance-method-off",
+    "src/Component.js~Component#off",
+    "method"
+  ],
+  [
+    "src/component.js~component#on",
+    "class/src/Component.js~Component.html#instance-method-on",
+    "src/Component.js~Component#on",
+    "method"
+  ],
+  [
+    "src/component.js~component#options",
+    "class/src/Component.js~Component.html#instance-member-options",
+    "src/Component.js~Component#options",
+    "member"
+  ],
+  [
+    "src/component.js~component#prependto",
+    "class/src/Component.js~Component.html#instance-method-prependTo",
+    "src/Component.js~Component#prependTo",
+    "method"
+  ],
+  [
+    "src/component.js~component#removechildfrom",
+    "class/src/Component.js~Component.html#instance-method-removeChildFrom",
+    "src/Component.js~Component#removeChildFrom",
+    "method"
+  ],
+  [
+    "src/component.js~component#removeclass",
+    "class/src/Component.js~Component.html#instance-method-removeClass",
+    "src/Component.js~Component#removeClass",
+    "method"
+  ],
+  [
+    "src/component.js~component#removeeventlistener",
+    "class/src/Component.js~Component.html#instance-method-removeEventListener",
+    "src/Component.js~Component#removeEventListener",
+    "method"
+  ],
+  [
+    "src/component.js~component#setinputmask",
+    "class/src/Component.js~Component.html#instance-method-setInputMask",
+    "src/Component.js~Component#setInputMask",
+    "method"
+  ],
+  [
+    "src/component.js~component#t",
+    "class/src/Component.js~Component.html#instance-method-t",
+    "src/Component.js~Component#t",
+    "method"
+  ],
+  [
+    "src/component.js~component#text",
+    "class/src/Component.js~Component.html#instance-method-text",
+    "src/Component.js~Component#text",
+    "method"
   ],
   [
     "src/form.js",
@@ -1825,13 +2059,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2275,13 +2509,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2443,13 +2677,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2509,13 +2743,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3055,13 +3289,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3354,33 +3588,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/base/base.js~basecomponent#_inputmask",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-_inputMask",
-    "src/components/base/Base.js~BaseComponent#_inputMask",
-    "member"
-  ],
-  [
     "src/components/base/base.js~basecomponent#_visible",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-_visible",
     "src/components/base/Base.js~BaseComponent#_visible",
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#_widget",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-_widget",
+    "src/components/base/Base.js~BaseComponent#_widget",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#addbutton",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-addButton",
     "src/components/base/Base.js~BaseComponent#addButton",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#addclass",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addClass",
-    "src/components/base/Base.js~BaseComponent#addClass",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#addeventlistener",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addEventListener",
-    "src/components/base/Base.js~BaseComponent#addEventListener",
     "method"
   ],
   [
@@ -3468,18 +3690,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#appendchild",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-appendChild",
-    "src/components/base/Base.js~BaseComponent#appendChild",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#appendto",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-appendTo",
-    "src/components/base/Base.js~BaseComponent#appendTo",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#applyactions",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-applyActions",
     "src/components/base/Base.js~BaseComponent#applyActions",
@@ -3492,9 +3702,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#attr",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-attr",
-    "src/components/base/Base.js~BaseComponent#attr",
+    "src/components/base/base.js~basecomponent#attachrefreshon",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-attachRefreshOn",
+    "src/components/base/Base.js~BaseComponent#attachRefreshOn",
     "method"
   ],
   [
@@ -3543,12 +3753,6 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#calculatevalue",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-calculateValue",
     "src/components/base/Base.js~BaseComponent#calculateValue",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#ce",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-ce",
-    "src/components/base/Base.js~BaseComponent#ce",
     "method"
   ],
   [
@@ -3660,6 +3864,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#createwidget",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createWidget",
+    "src/components/base/Base.js~BaseComponent#createWidget",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#createwrapper",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-createWrapper",
     "src/components/base/Base.js~BaseComponent#createWrapper",
@@ -3739,13 +3949,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -3759,18 +3969,6 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#elementinfo",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-elementInfo",
     "src/components/base/Base.js~BaseComponent#elementInfo",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#emit",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-emit",
-    "src/components/base/Base.js~BaseComponent#emit",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#empty",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-empty",
-    "src/components/base/Base.js~BaseComponent#empty",
     "method"
   ],
   [
@@ -3822,24 +4020,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#evaluate",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-evaluate",
-    "src/components/base/Base.js~BaseComponent#evaluate",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#eventhandlers",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-eventHandlers",
-    "src/components/base/Base.js~BaseComponent#eventHandlers",
-    "member"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#events",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-events",
-    "src/components/base/Base.js~BaseComponent#events",
-    "member"
-  ],
-  [
     "src/components/base/base.js~basecomponent#fieldlogic",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-fieldLogic",
     "src/components/base/Base.js~BaseComponent#fieldLogic",
@@ -3867,12 +4047,6 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#getflags",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-getFlags",
     "src/components/base/Base.js~BaseComponent#getFlags",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#geticon",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-getIcon",
-    "src/components/base/Base.js~BaseComponent#getIcon",
     "method"
   ],
   [
@@ -3930,12 +4104,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#hasclass",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasClass",
-    "src/components/base/Base.js~BaseComponent#hasClass",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#hascondition",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasCondition",
     "src/components/base/Base.js~BaseComponent#hasCondition",
@@ -3952,30 +4120,6 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasValue",
     "src/components/base/Base.js~BaseComponent#hasValue",
     "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#hook",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-hook",
-    "src/components/base/Base.js~BaseComponent#hook",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#i18next",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-i18next",
-    "src/components/base/Base.js~BaseComponent#i18next",
-    "member"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#iconclass",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-iconClass",
-    "src/components/base/Base.js~BaseComponent#iconClass",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#id",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-id",
-    "src/components/base/Base.js~BaseComponent#id",
-    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#incontext",
@@ -4000,12 +4144,6 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-inputs",
     "src/components/base/Base.js~BaseComponent#inputs",
     "member"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#interpolate",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-interpolate",
-    "src/components/base/Base.js~BaseComponent#interpolate",
-    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#invalid",
@@ -4045,13 +4183,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4092,40 +4230,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/base/base.js~basecomponent#maskplaceholder",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-maskPlaceholder",
-    "src/components/base/Base.js~BaseComponent#maskPlaceholder",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#name",
     "class/src/components/base/Base.js~BaseComponent.html#instance-get-name",
     "src/components/base/Base.js~BaseComponent#name",
     "member"
   ],
   [
-    "src/components/base/base.js~basecomponent#off",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-off",
-    "src/components/base/Base.js~BaseComponent#off",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#on",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-on",
-    "src/components/base/Base.js~BaseComponent#on",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#onchange",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-onChange",
     "src/components/base/Base.js~BaseComponent#onChange",
     "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#options",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-options",
-    "src/components/base/Base.js~BaseComponent#options",
-    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#originalcomponent",
@@ -4152,12 +4266,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#prependto",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-prependTo",
-    "src/components/base/Base.js~BaseComponent#prependTo",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#pristine",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-pristine",
     "src/components/base/Base.js~BaseComponent#pristine",
@@ -4176,6 +4284,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#refresh",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-refresh",
+    "src/components/base/Base.js~BaseComponent#refresh",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#refreshonchanged",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-refreshOnChanged",
+    "src/components/base/Base.js~BaseComponent#refreshOnChanged",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#refreshonvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-refreshOnValue",
+    "src/components/base/Base.js~BaseComponent#refreshOnValue",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#removebutton",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeButton",
     "src/components/base/Base.js~BaseComponent#removeButton",
@@ -4185,30 +4311,6 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#removechild",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChild",
     "src/components/base/Base.js~BaseComponent#removeChild",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#removechildfrom",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChildFrom",
-    "src/components/base/Base.js~BaseComponent#removeChildFrom",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#removeclass",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeClass",
-    "src/components/base/Base.js~BaseComponent#removeClass",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#removeeventlistener",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeEventListener",
-    "src/components/base/Base.js~BaseComponent#removeEventListener",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#removeeventlisteners",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeEventListeners",
-    "src/components/base/Base.js~BaseComponent#removeEventListeners",
     "method"
   ],
   [
@@ -4368,12 +4470,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/base/base.js~basecomponent#text",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-text",
-    "src/components/base/Base.js~BaseComponent#text",
-    "method"
-  ],
-  [
     "src/components/base/base.js~basecomponent#tooltip",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-tooltip",
     "src/components/base/Base.js~BaseComponent#tooltip",
@@ -4386,10 +4482,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#triggerredraw",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-triggerRedraw",
+    "src/components/base/Base.js~BaseComponent#triggerRedraw",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#type",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-type",
     "src/components/base/Base.js~BaseComponent#type",
     "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#updateitems",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-updateItems",
+    "src/components/base/Base.js~BaseComponent#updateItems",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#updateonchange",
@@ -4468,6 +4576,12 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-whenReady",
     "src/components/base/Base.js~BaseComponent#whenReady",
     "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#widget",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-widget",
+    "src/components/base/Base.js~BaseComponent#widget",
+    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#wysiwygdefault",
@@ -5431,13 +5545,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -5826,24 +5940,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#addsuffix",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-addSuffix",
-    "src/components/datetime/DateTime.js~DateTimeComponent#addSuffix",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#closedon",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-member-closedOn",
-    "src/components/datetime/DateTime.js~DateTimeComponent#closedOn",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#config",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-config",
-    "src/components/datetime/DateTime.js~DateTimeComponent#config",
-    "member"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#constructor",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-constructor-constructor",
     "src/components/datetime/DateTime.js~DateTimeComponent#constructor",
@@ -5856,117 +5952,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#dateformat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-dateFormat",
-    "src/components/datetime/DateTime.js~DateTimeComponent#dateFormat",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#datetimeformat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-dateTimeFormat",
-    "src/components/datetime/DateTime.js~DateTimeComponent#dateTimeFormat",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#defaultdate",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-defaultDate",
-    "src/components/datetime/DateTime.js~DateTimeComponent#defaultDate",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#defaultformat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-member-defaultFormat",
-    "src/components/datetime/DateTime.js~DateTimeComponent#defaultFormat",
-    "member"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#defaultschema",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-defaultSchema",
     "src/components/datetime/DateTime.js~DateTimeComponent#defaultSchema",
     "member"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#defaultvalue",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-defaultValue",
-    "src/components/datetime/DateTime.js~DateTimeComponent#defaultValue",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#disabled",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-set-disabled",
-    "src/components/datetime/DateTime.js~DateTimeComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#elementinfo",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-elementInfo",
-    "src/components/datetime/DateTime.js~DateTimeComponent#elementInfo",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#emptyvalue",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-emptyValue",
     "src/components/datetime/DateTime.js~DateTimeComponent#emptyValue",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#focus",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-focus",
-    "src/components/datetime/DateTime.js~DateTimeComponent#focus",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#getcalendar",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getCalendar",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getCalendar",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#getdate",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getDate",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getDate",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#getvalueat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getValueAt",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getValueAt",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#getview",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getView",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getView",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#localeformat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-localeFormat",
-    "src/components/datetime/DateTime.js~DateTimeComponent#localeFormat",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#setvalueat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-setValueAt",
-    "src/components/datetime/DateTime.js~DateTimeComponent#setValueAt",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#timezone",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-timezone",
-    "src/components/datetime/DateTime.js~DateTimeComponent#timezone",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#validationvalue",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-validationValue",
-    "src/components/datetime/DateTime.js~DateTimeComponent#validationValue",
-    "member"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent.default_format",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-DEFAULT_FORMAT",
-    "src/components/datetime/DateTime.js~DateTimeComponent.DEFAULT_FORMAT",
     "member"
   ],
   [
@@ -8472,30 +8466,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/select/select.js~selectcomponent#refreshitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-refreshItems",
-    "src/components/select/Select.js~SelectComponent#refreshItems",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#refreshonchanged",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-refreshOnChanged",
-    "src/components/select/Select.js~SelectComponent#refreshOnChanged",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#refreshonvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-refreshOnValue",
-    "src/components/select/Select.js~SelectComponent#refreshOnValue",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#refreshvalue",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-refreshValue",
-    "src/components/select/Select.js~SelectComponent#refreshValue",
-    "method"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#requestheaders",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-requestHeaders",
     "src/components/select/Select.js~SelectComponent#requestHeaders",
@@ -9630,12 +9600,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/textfield/textfield.js~textfieldcomponent#setinputmask",
-    "class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-setInputMask",
-    "src/components/textfield/TextField.js~TextFieldComponent#setInputMask",
-    "method"
-  ],
-  [
     "src/components/textfield/textfield.js~textfieldcomponent#setvalueat",
     "class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-setValueAt",
     "src/components/textfield/TextField.js~TextFieldComponent#setValueAt",
@@ -10173,6 +10137,252 @@ window.esdocSearchIndex = [
     "src/utils/utils.spec.js",
     "file/src/utils/utils.spec.js.html",
     "src/utils/utils.spec.js",
+    "file"
+  ],
+  [
+    "src/widgets/calendarwidget.js",
+    "file/src/widgets/CalendarWidget.js.html",
+    "src/widgets/CalendarWidget.js",
+    "file"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#addsuffix",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-addSuffix",
+    "src/widgets/CalendarWidget.js~CalendarWidget#addSuffix",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#attach",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-attach",
+    "src/widgets/CalendarWidget.js~CalendarWidget#attach",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#calendar",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-calendar",
+    "src/widgets/CalendarWidget.js~CalendarWidget#calendar",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#closedon",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-closedOn",
+    "src/widgets/CalendarWidget.js~CalendarWidget#closedOn",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#constructor",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-constructor-constructor",
+    "src/widgets/CalendarWidget.js~CalendarWidget#constructor",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#dateformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-dateFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#dateFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#datetimeformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-dateTimeFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#dateTimeFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#defaultdate",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-defaultDate",
+    "src/widgets/CalendarWidget.js~CalendarWidget#defaultDate",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#defaultformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-defaultFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#defaultFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#defaultsettings",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-defaultSettings",
+    "src/widgets/CalendarWidget.js~CalendarWidget#defaultSettings",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#defaultvalue",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-defaultValue",
+    "src/widgets/CalendarWidget.js~CalendarWidget#defaultValue",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#disabled",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-set-disabled",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disabled",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#getvalue",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getValue",
+    "src/widgets/CalendarWidget.js~CalendarWidget#getValue",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#getview",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getView",
+    "src/widgets/CalendarWidget.js~CalendarWidget#getView",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#input",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-input",
+    "src/widgets/CalendarWidget.js~CalendarWidget#input",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#localeformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-localeFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#setvalue",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-setValue",
+    "src/widgets/CalendarWidget.js~CalendarWidget#setValue",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#timezone",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-timezone",
+    "src/widgets/CalendarWidget.js~CalendarWidget#timezone",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#validationvalue",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-validationValue",
+    "src/widgets/CalendarWidget.js~CalendarWidget#validationValue",
+    "method"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#valueformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-valueFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#valueFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#valuemomentformat",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-valueMomentFormat",
+    "src/widgets/CalendarWidget.js~CalendarWidget#valueMomentFormat",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget.defaultsettings",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#static-get-defaultSettings",
+    "src/widgets/CalendarWidget.js~CalendarWidget.defaultSettings",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js",
+    "file/src/widgets/InputWidget.js.html",
+    "src/widgets/InputWidget.js",
+    "file"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#_input",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-member-_input",
+    "src/widgets/InputWidget.js~InputWidget#_input",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#addprefix",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-addPrefix",
+    "src/widgets/InputWidget.js~InputWidget#addPrefix",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#addsuffix",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-addSuffix",
+    "src/widgets/InputWidget.js~InputWidget#addSuffix",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#attach",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-attach",
+    "src/widgets/InputWidget.js~InputWidget#attach",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#component",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-member-component",
+    "src/widgets/InputWidget.js~InputWidget#component",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#constructor",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-constructor-constructor",
+    "src/widgets/InputWidget.js~InputWidget#constructor",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#defaultsettings",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-get-defaultSettings",
+    "src/widgets/InputWidget.js~InputWidget#defaultSettings",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#defaultvalue",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-get-defaultValue",
+    "src/widgets/InputWidget.js~InputWidget#defaultValue",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#disabled",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-set-disabled",
+    "src/widgets/InputWidget.js~InputWidget#disabled",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#getvalue",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-getValue",
+    "src/widgets/InputWidget.js~InputWidget#getValue",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#getview",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-getView",
+    "src/widgets/InputWidget.js~InputWidget#getView",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#input",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-get-input",
+    "src/widgets/InputWidget.js~InputWidget#input",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#namespace",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-member-namespace",
+    "src/widgets/InputWidget.js~InputWidget#namespace",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#setvalue",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-setValue",
+    "src/widgets/InputWidget.js~InputWidget#setValue",
+    "method"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#settings",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-member-settings",
+    "src/widgets/InputWidget.js~InputWidget#settings",
+    "member"
+  ],
+  [
+    "src/widgets/inputwidget.js~inputwidget#validationvalue",
+    "class/src/widgets/InputWidget.js~InputWidget.html#instance-method-validationValue",
+    "src/widgets/InputWidget.js~InputWidget#validationValue",
+    "method"
+  ],
+  [
+    "src/widgets/index.js",
+    "file/src/widgets/index.js.html",
+    "src/widgets/index.js",
     "file"
   ]
 ]

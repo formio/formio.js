@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -133,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
@@ -173,37 +175,22 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Flatpickr from &apos;flatpickr&apos;;
-import _ from &apos;lodash&apos;;
-import moment from &apos;moment&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
-
-import {
-  currentTimezone,
-  getDateSetting,
-  loadZones,
-  formatDate,
-  formatOffset,
-  getLocaleDateFormatInfo,
-  convertFormatToFlatpickr,
-} from &apos;../../utils/utils&apos;;
-
 export default class DateTimeComponent extends BaseComponent {
-  static get DEFAULT_FORMAT() {
-    return &apos;yyyy-MM-dd hh:mm a&apos;;
-  }
-
   static schema(...extend) {
     return BaseComponent.schema({
       type: &apos;datetime&apos;,
       label: &apos;Date / Time&apos;,
       key: &apos;dateTime&apos;,
-      format: DateTimeComponent.DEFAULT_FORMAT,
+      format: &apos;yyyy-MM-dd hh:mm a&apos;,
       useLocaleSettings: false,
       allowInput: true,
       enableDate: true,
@@ -247,270 +234,46 @@ export default class DateTimeComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.validators.push(&apos;date&apos;);
-    this.closedOn = 0;
-    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
-    this.defaultFormat = {
-      date: dateFormatInfo.dayFirst ? &apos;d/m/Y &apos; : &apos;m/d/Y &apos;,
-      time: &apos;h:i K&apos;
+    const timezone = (this.component.timezone || this.options.timezone);
+    const submissionTimezone = this.options.submissionTimezone ||  _.get(this.root, &apos;options.submissionTimezone&apos;);
+
+    /* eslint-disable camelcase */
+    this.component.widget = {
+      type: &apos;calendar&apos;,
+      timezone,
+      displayInTimezone: _.get(this.component, &apos;displayInTimezone&apos;, &apos;viewer&apos;),
+      submissionTimezone,
+      language: this.options.language,
+      useLocaleSettings: _.get(this.component, &apos;useLocaleSettings&apos;, false),
+      allowInput: _.get(this.component, &apos;allowInput&apos;, true),
+      mode: this.component.multiple ? &apos;multiple&apos; : &apos;single&apos;,
+      enableTime: _.get(this.component, &apos;enableTime&apos;, true),
+      noCalendar: !_.get(this.component, &apos;enableDate&apos;, true),
+      format: this.component.format,
+      defaultDate: this.component.defaultDate,
+      hourIncrement: _.get(this.component, &apos;timePicker.hourStep&apos;, 1),
+      minuteIncrement: _.get(this.component, &apos;timePicker.minuteStep&apos;, 5),
+      time_24hr: !_.get(this.component, &apos;timePicker.showMeridian&apos;, true),
+      minDate: _.get(this.component, &apos;datePicker.minDate&apos;),
+      maxDate: _.get(this.component, &apos;datePicker.maxDate&apos;)
     };
+    /* eslint-enable camelcase */
+
+    // Add the validators date.
+    this.validators.push(&apos;date&apos;);
   }
 
   get defaultSchema() {
     return DateTimeComponent.schema();
   }
 
-  get dateFormat() {
-    return _.get(this.component, &apos;format&apos;, DateTimeComponent.DEFAULT_FORMAT);
-  }
-
-  get defaultValue() {
-    const defaultValue = super.defaultValue;
-    if (defaultValue) {
-      return defaultValue;
-    }
-
-    // Check the default date.
-    const defaultDate = this.defaultDate;
-    if (defaultDate) {
-      return defaultDate.toISOString();
-    }
-
-    return &apos;&apos;;
-  }
-
-  elementInfo() {
-    // Default the placeholder to the format if none is present.
-    if (!this.component.placeholder) {
-      this.component.placeholder = this.dateFormat;
-    }
-    const info = super.elementInfo();
-    info.type = &apos;input&apos;;
-    info.attr.type = &apos;text&apos;;
-    info.changeEvent = &apos;input&apos;;
-    this.component.suffix = true;
-    return info;
-  }
-
   get emptyValue() {
     return &apos;&apos;;
-  }
-
-  /**
-   * Get the default date for the calendar.
-   * @return {*}
-   */
-  get defaultDate() {
-    return getDateSetting(this.component.defaultDate);
   }
 
   // This select component can handle multiple items on its own.
   createWrapper() {
     return false;
-  }
-
-  get localeFormat() {
-    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
-    this.defaultFormat = this.defaultFormat || {
-      date: dateFormatInfo.dayFirst ? &apos;d/m/Y &apos; : &apos;m/d/Y &apos;,
-      time: &apos;h:i K&apos;
-    };
-    let format = &apos;&apos;;
-
-    if (this.component.enableDate) {
-      format += this.defaultFormat.date;
-    }
-
-    if (this.component.enableTime) {
-      format += this.defaultFormat.time;
-    }
-
-    return format;
-  }
-
-  get dateTimeFormat() {
-    return this.component.useLocaleSettings
-      ? this.localeFormat
-      : convertFormatToFlatpickr(this.dateFormat);
-  }
-
-  get timezone() {
-    const timezone = this.component.timezone || this.options.timezone;
-    if (timezone) {
-      return timezone;
-    }
-    if (this.component.displayInTimezone === &apos;submission&apos;) {
-      if (this.options.submissionTimezone) {
-        return this.options.submissionTimezone;
-      }
-      if (this.root &amp;&amp; this.root.options &amp;&amp; this.root.options.submissionTimezone) {
-        return this.root.options.submissionTimezone;
-      }
-    }
-    if (this.component.displayInTimezone === &apos;utc&apos;) {
-      return &apos;UTC&apos;;
-    }
-
-    // Return current timezone if none are provided.
-    return currentTimezone();
-  }
-
-  get config() {
-    const altFormat = this.dateTimeFormat;
-    /* eslint-disable camelcase */
-    return {
-      altInput: true,
-      allowInput: _.get(this.component, &apos;allowInput&apos;, true),
-      clickOpens: true,
-      enableDate: true,
-      mode: this.component.multiple ? &apos;multiple&apos; : &apos;single&apos;,
-      enableTime: _.get(this.component, &apos;enableTime&apos;, true),
-      noCalendar: !_.get(this.component, &apos;enableDate&apos;, true),
-      altFormat: altFormat,
-      dateFormat: &apos;U&apos;,
-      defaultDate: this.defaultDate,
-      hourIncrement: _.get(this.component, &apos;timePicker.hourStep&apos;, 1),
-      minuteIncrement: _.get(this.component, &apos;timePicker.minuteStep&apos;, 5),
-      time_24hr: !_.get(this.component, &apos;timePicker.showMeridian&apos;, true),
-      minDate: getDateSetting(_.get(this.component, &apos;datePicker.minDate&apos;)),
-      maxDate: getDateSetting(_.get(this.component, &apos;datePicker.maxDate&apos;)),
-      onChange: () =&gt; this.onChange({ noValidate: true }),
-      onClose: () =&gt; this.closedOn = Date.now(),
-      formatDate: (date, format) =&gt; {
-        // Only format this if this is the altFormat and the form is readOnly.
-        if (this.options.readOnly &amp;&amp; (format === altFormat)) {
-          if (!moment.zonesLoaded) {
-            loadZones(this.timezone).then(() =&gt; this.redraw());
-            return Flatpickr.formatDate(date, format);
-          }
-
-          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () =&gt; this.redraw());
-        }
-
-        return Flatpickr.formatDate(date, format);
-      }
-    };
-    /* eslint-enable camelcase */
-  }
-
-  set disabled(disabled) {
-    super.disabled = disabled;
-    _.each(this.inputs, (input) =&gt; {
-      const calendar = this.getCalendar(input);
-      if (calendar) {
-        if (disabled) {
-          calendar._input.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
-        }
-        else {
-          calendar._input.removeAttribute(&apos;disabled&apos;);
-        }
-        calendar.close();
-        calendar.redraw();
-      }
-    });
-  }
-
-  addSuffix(input, inputGroup) {
-    const suffix = this.ce(&apos;span&apos;, {
-      class: &apos;input-group-addon&apos;,
-      style: &apos;cursor: pointer&apos;
-    });
-    suffix.appendChild(this.getIcon(this.component.enableDate ? &apos;calendar&apos; : &apos;time&apos;));
-    const calendar = this.getCalendar(input);
-    if (calendar) {
-      this.addEventListener(suffix, &apos;click&apos;, () =&gt; {
-        // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!calendar.isOpen &amp;&amp; ((Date.now() - this.closedOn) &gt; 200)) {
-          calendar.open();
-        }
-      });
-    }
-    inputGroup.appendChild(suffix);
-    return suffix;
-  }
-
-  /**
-   * Get the calendar or create an instance of one.
-   * @param input
-   * @return {Flatpickr|flatpickr}
-   */
-  getCalendar(input) {
-    if (!input.calendar &amp;&amp; !this.options.noCalendar) {
-      input.calendar = new Flatpickr(input, this.config);
-      this.addFocusBlurEvents(input.calendar.altInput);
-    }
-    return input.calendar;
-  }
-
-  getDate(value) {
-    const timestamp = parseInt(value, 10);
-    if (!timestamp) {
-      return null;
-    }
-    return (new Date(timestamp * 1000));
-  }
-
-  get validationValue() {
-    const values = [];
-    for (const i in this.inputs) {
-      if (this.inputs.hasOwnProperty(i)) {
-        if (!this.component.multiple) {
-          return this.getDate(this.inputs[i].value);
-        }
-        values.push(this.getDate(this.inputs[i].value));
-      }
-    }
-    return values;
-  }
-
-  getValueAt(index) {
-    if (!this.inputs[index]) {
-      return &apos;&apos;;
-    }
-
-    const calendar = this.getCalendar(this.inputs[index]);
-    if (!calendar) {
-      return super.getValueAt(index);
-    }
-
-    const dates = calendar.selectedDates;
-    if (!dates || !dates.length) {
-      return &apos;&apos;;
-    }
-
-    return (typeof dates[0].toISOString === &apos;function&apos;) ? dates[0].toISOString() : &apos;Invalid Date&apos;;
-  }
-
-  getView(value) {
-    if (!value) {
-      return &apos;&apos;;
-    }
-    return formatDate(value, this.dateFormat, this.timezone);
-  }
-
-  setValueAt(index, value) {
-    // Convert to a standard ISO-8601 format. Needed for proper IE function.
-    if (value) {
-      value = moment(value).toISOString();
-    }
-
-    super.setValueAt(index, value);
-    const calendar = this.getCalendar(this.inputs[index]);
-    if (calendar) {
-      if (value) {
-        calendar.setDate(new Date(value), false);
-      }
-      else {
-        calendar.clear(false);
-      }
-    }
-  }
-
-  focus() {
-    const input = this.inputs[0];
-    if (input &amp;&amp; !this.options.readOnly) {
-      input.calendar.altInput.focus();
-    }
   }
 }
 </code></pre>
