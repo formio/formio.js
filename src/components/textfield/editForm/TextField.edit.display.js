@@ -1,4 +1,47 @@
+import Widgets from '../../../widgets';
+import _ from 'lodash';
 export default [
+  {
+    weight: 50,
+    type: 'select',
+    input: true,
+    key: 'widget.type',
+    label: 'Widget',
+    placeholder: 'Select a widget',
+    tooltip: 'The widget is the display UI used to input the value of the field.',
+    onChange: (context) => {
+      context.data.widget = _.pick(context.data.widget, 'type');
+    },
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Calendar', value: 'calendar' }
+      ]
+    }
+  },
+  {
+    weight: 55,
+    type: 'textarea',
+    key: 'widget',
+    label: 'Widget Settings',
+    calculateValue: (context) => {
+      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
+        let settings = {};
+        if (context.data.widget && context.data.widget.type) {
+          settings = Widgets[context.data.widget.type].defaultSettings;
+        }
+        return settings;
+      }
+      return context.data.widget;
+    },
+    input: true,
+    rows: 5,
+    editor: 'ace',
+    as: 'json',
+    conditional: {
+      json: { '!!': { var: 'data.widget.type' } }
+    }
+  },
   {
     weight: 410,
     type: 'textfield',

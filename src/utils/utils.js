@@ -818,8 +818,8 @@ export function formatDate(value, format, timezone) {
     if (format.match(/\s(z$|z\s)/)) {
       // Return the timezoneText.
       return timezoneText(
-        () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
-        () => momentDate.format(convertFormatToMoment(format))
+        () => momentDate.tz(timezone).format(convertFormatToMoment(format)),
+        () => momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')))
       );
     }
 

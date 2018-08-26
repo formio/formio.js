@@ -60,6 +60,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     this.closedOn = 0;
+    this.originalFormat = this.settings.dateFormat || 'Z';
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.defaultDate = getDateSetting(this.settings.defaultDate);
@@ -176,19 +177,39 @@ export default class CalendarWidget extends InputWidget {
     return defaultDate ? defaultDate.toISOString() : '';
   }
 
+  getValue() {
+    // Standard output format.
+    if (!this.calendar || this.settings.formatDate === 'Z') {
+      return super.getValue();
+    }
+
+    // Get the selected dates from the calendar widget.
+    const dates = this.calendar.selectedDates;
+    if (!dates || !dates.length) {
+      return super.getValue();
+    }
+
+    // Return a formatted version of the date to store in string format.
+    return (dates[0] instanceof Date) ?
+      this.getView(dates[0], this.originalFormat) :
+      'Invalid Date';
+  }
+
   setValue(value) {
-    if (this.calendar) {
-      if (value) {
-        this.calendar.setDate(new Date(value), false);
-      }
-      else {
-        this.calendar.clear(false);
-      }
+    if (!this.calendar) {
+      return super.setValue(value);
+    }
+    if (value) {
+      this.calendar.setDate(new Date(value), false);
+    }
+    else {
+      this.calendar.clear(false);
     }
   }
 
-  getView(value) {
-    return formatDate(value, this.dateFormat, this.timezone);
+  getView(value, format) {
+    format = format || this.dateFormat;
+    return formatDate(value, format, this.timezone);
   }
 
   validationValue(value) {
