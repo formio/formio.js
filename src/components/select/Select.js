@@ -588,9 +588,10 @@ export default class SelectComponent extends BaseComponent {
   }
 
   show(show) {
-    show = super.show(show);
     // If we go from hidden to visible, trigger a refresh.
-    if (show && (!this._visible !== !show)) {
+    const triggerUpdate = show && (this._visible !== show);
+    show = super.show(show);
+    if (triggerUpdate) {
       this.triggerUpdate();
     }
     return show;
