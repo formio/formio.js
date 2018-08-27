@@ -12,10 +12,21 @@ export default class Field extends Component {
     if (this.hasInput && this.component.validate && this.component.validate.required) {
       label.className += ' field-required';
     }
+    if (label.hidden) {
+      label.className += ' control-label--hidden';
+    }
     if (this.info.attr.id) {
       label.for = this.info.attr.id;
     }
     return label;
+  }
+
+  get className() {
+    let className = super.className;
+    if (this.labelIsHidden()) {
+      className += ' formio-component-label-hidden';
+    }
+    return className;
   }
 
   labelIsHidden() {
