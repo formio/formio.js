@@ -77,7 +77,12 @@ gulp.task('scripts-formio', build('Formio.js', 'formio.js'));
 gulp.task('scripts-utils', build('utils/utils.js', 'formio.utils.js'));
 gulp.task('scripts-full', build('index.js', 'formio.full.js'));
 gulp.task('scripts-form', build('formio.form.js', 'formio.form.js'));
-gulp.task('scripts-embed', build('formio.embed.js', 'formio.embed.js'));
+gulp.task('formio.embed.min.js', () => buildProd('formio.embed.js', 'formio.embed.min.js'));
+gulp.task('formio.embed.js', () =>
+  gulp.src('./dist/formio.embed.min.js')
+    .pipe(plugins.rename('formio.embed.js'))
+    .pipe(gulp.dest('dist')));
+gulp.task('scripts-embed', gulpsync.sync([['formio.embed.min.js'], 'formio.embed.js']));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 
 // ESLint
@@ -86,6 +91,9 @@ gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
   .pipe(plugins.eslint.format())
   .pipe(plugins.eslint.failAfterError())
 );
+
+gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
+gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
 
 // Copy the version and dependencies into the distribution package.json file.
 gulp.task('package-version', function() {
@@ -107,6 +115,8 @@ gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.f
 // Create a new build.
 gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [
   'icons',
+  'bootstrap',
+  'bootswatch',
   'styles-form',
   'styles-builder',
   'styles-full',

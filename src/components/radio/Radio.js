@@ -28,6 +28,10 @@ export default class RadioComponent extends BaseComponent {
     return RadioComponent.schema();
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -189,8 +193,8 @@ export default class RadioComponent extends BaseComponent {
     }
   }
 
-  updateValue(value, flags) {
-    const changed = super.updateValue(value, flags);
+  updateValue(flags, value) {
+    const changed = super.updateValue(flags, value);
     if (changed) {
       //add/remove selected option class
       const value = this.dataValue;

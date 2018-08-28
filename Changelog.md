@@ -4,11 +4,129 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.4.0
+### Added
+ - FOR-1614: Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
+ - FOR-1614: Widget settings to TextField component.
+ 
+### Changed
+ - FOR-1616, FOR-1615: Make sure the calendar enforces an input mask and also updates the date on a blur event of the input.
+ 
+### Fixed
+ - Make sure to not send an invalid API call when no resource is provided.
+ - Make the select component work when project url is provided.
+ - Fixed the select component to trigger a refresh when visibility changes.
+ - Fixed the ACE editor to not trigger infinite refresh when new value and existing values are both empty.
+ - FOR-1618: Fix bug where select could get in infinite change.
+ 
+### Removed
+ - FOR-1579: Settings from DateTime component that no longer apply to core renderer.
+
+## 3.3.7
+### Fixed
+ - Problems with infinite onChange events firing from SelectBoxes component.
+ - FOR-1500: Error messages displaying.
+ - FOR-1500: OnChange event infinite loop on Wizard.
+ - Error from occurring in the TextArea builder modal.
+ - WYSIWYG: being empty in read only mode in Wizard on non-first page
+ - FOR-1604: Fixed issue where Select with RefreshOn + ClearOnRefresh will clear its value even when its refresh dependency does not change values. 
+ - Issues with EditGrid triggering validation preemptively.
+
+### Added
+ - Edit Grid: 'formio-component-editgrid-row-open' class for case when any row is open
+ - FOR-672: Copy and paste features on the builder.
+
+## 3.3.6
+### Fixed
+ - Issues with the embed script to try and grab wrong script from the page.
+ - Problems where the default embed script is in Webpack develop mode.
+
+## 3.3.5
+### Fixed
+ - Path issues with s3 uploads that was adding empty directories to the upload paths.
+
+## 3.3.4
+### Fixed
+ - Issues with Invalid date showing up for display times in UTC.
+
+### Changed
+ - Minor text change for the form builder.
+
+## 3.3.3
+### Fixed
+ - Issue where the Content component would not work in builder with Refresh on Change checked.
+
+## 3.3.2
+### Fixed
+ - Problems with undefined promise if no timezone is used.
+ - Default datetime component to now show 24 hour time.
+ - Fixed placeholder on DateTime component to show the standard form.io time format.
+
+### Changed
+ - Added help docs to the DateTime component.
+
+## 3.3.1
+### Fixed
+ - FOR-1560: Date timezones to use moment-timezone with lazy loading zones.
+ - FOR-1445: Problems where duplicates could show up in Select component
+ - Issue that arrises when you send a malformed language code to the switch language system.
+ - Added try/catch blocks around language switching to make it so the renderer is still usable.
+
+## 3.3.0
+### Added
+ - A DataMap component that provides a dynamic key-value pair input component.
+
+ ## Changed
+  - Cleanup code around setting the locale in the DateTime component.
+
+### Fixed
+ - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
+ - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.
+ - FOR-1326: Fixed an issue where a language change would not re-trigger conditionals.
+
+## 3.2.3
+### Fixed
+ - Datetime component crashing when using locale format.
+
+## 3.2.2
+### Fixed
+ - Issue where the timezone dropdown was not showing up on DateTime component.
+
+## 3.2.1
+### Added
+ - Allow for global overrides of components and let the form.settings override components globally.
+ - Allow for custom timezones for the DateTime component.
+ - Save the "path" and "options" in Formio class so that they can be passed along to other instances.
+ - FOR-1542: Update `build` method of `Container` component.
+
+### Fixed
+ - The acronym for offset 0 time is GST not GMT.
+ - Fix issue where select and radio components end up in an infinite refresh when hidden with "clearOnHide" set.
+
+### Changed
+ - Moved timezone formatting to utils so that it can be used in templates.
+
+## 3.2.0
+### Added
+ - A way to track submission metadata including referrer, timezone, etc.
+ - An option to view the DateTime component in either the Viewer, Submission, or GMT timezones
+ - A tableView method to show the data in a submission grid correctly.
+ - A method for working with Encrypted S3 buckets.
+ - A way to configure the Columns component so that it hides columns where all elements are hidden in that column.
+ - A different view widget to view images with file component on devices that support Camera.
+ - A way to input text into the DateTime component.
+### Changed
+ - Upgraded i18next@11.6.0 and upgraded dev dependencies.
+### Fixed
+ - Tooltip options to make them behave better.
+ - Protect calls to getAllComponents where it was sometimes on null.
+
+## 3.1.4
 ### Added
  - Emitting Edit Grid event for row addition
 ### Fixed
  - Edit Grid not firing outer calculations on 'Save' button click
+ - Problem with DataGrid where its value would not be correct when there were Panels within the DataGrid.
 
 ## 3.1.3
 ### Fixed
@@ -91,7 +209,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issue where components in table component would not render conditions correctly.
  - Issue with the selection of a radio component.
  - Multiple Select: Fixed selected items being rendered outside of the input
- 
+
 ### Changed
  - Upgraded fetch-mock@6.5.2, gulp-watch@5.0.1, karma@2.0.5, sinon@6.1.4, webpack@4.16.3, i18next@11.5.0, eslint@5.2.0, gulp-rename@1.4.0
 
@@ -124,7 +242,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Hidden Component value being equal to '[object Object]'
  - DataGrid in the builder to allow for editing of the data grid.
 
-### Added 
+### Added
  - Allow for editForm overrides when embedding the form builder.
  - A way to include a "namespace" for the tokens added to your browser so this library can handle multiple projects at once.
 
@@ -138,14 +256,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Utils `getComponent()` function.
  - Data Grid displaying column for Hidden field
- - Fixed the 12hr time configuration for DateTime component. 
+ - Fixed the 12hr time configuration for DateTime component.
 
 ## 3.0.0-rc.21
 ### Fixed
  - Issue with builder where editing a component would not work inside nested component.
  - Fixed data grid to not show columns consisting of hidden components.
  - Decimal separators for languages that do not use numerics.
- 
+
 ### Added
  - Configure dragula to check if a component can be dragged using the 'no-drag' class
 

@@ -14,6 +14,7 @@ export default class EditGridComponent extends NestedComponent {
       input: true,
       tree: true,
       defaultOpen: false,
+      removeRow: '',
       components: [],
       templates: {
         header: this.defaultHeaderTemplate,
@@ -99,7 +100,14 @@ export default class EditGridComponent extends NestedComponent {
     this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
   }
 
-  buildTable() {
+  buildTable(fromBuild) {
+    // Do not show the table when in builder mode.
+    if (this.options.builder) {
+      return;
+    }
+    if (!fromBuild && !this.editRows.length && this.component.defaultOpen) {
+      return this.addRow(true);
+    }
     let tableClass = 'editgrid-listgroup list-group ';
     _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
@@ -117,6 +125,16 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       this.element.appendChild(tableElement);
+    }
+    //add open class to the element if any edit grid row is open
+    const isAnyRowOpen = _.some(this.editRows, function(row) {
+      return row.isOpen;
+    });
+    if (isAnyRowOpen) {
+      this.addClass(this.element, `formio-component-${this.component.type}-row-open`);
+    }
+    else {
+      this.removeClass(this.element, `formio-component-${this.component.type}-row-open`);
     }
     this.tableElement = tableElement;
   }
@@ -272,7 +290,7 @@ export default class EditGridComponent extends NestedComponent {
     ));
   }
 
-  addRow() {
+  addRow(fromBuild) {
     if (this.options.readOnly) {
       return;
     }
@@ -281,12 +299,11 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: {}
     });
-    const rowInfo = {
+    this.emit('editGridAddRow', {
       component: this.component,
       row: this.editRows[this.editRows.length - 1]
-    };
-    this.emit('editGridAddRow', rowInfo);
-    this.buildTable();
+    });
+    this.buildTable(fromBuild);
   }
 
   editRow(rowIndex) {
@@ -294,6 +311,12 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows[rowIndex].isOpen = true;
     this.editRows[rowIndex].editing = true;
     this.editRows[rowIndex].data = _.cloneDeep(this.dataValue[rowIndex]);
+    this.buildTable();
+  }
+
+  updateGrid() {
+    this.updateValue();
+    this.triggerChange();
     this.buildTable();
   }
 
@@ -313,8 +336,7 @@ export default class EditGridComponent extends NestedComponent {
       this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
     }
-    this.buildTable();
-    this.checkValidity(this.data, true);
+    this.updateGrid();
   }
 
   saveRow(rowIndex) {
@@ -342,10 +364,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.editRows[rowIndex].dirty = false;
     this.editRows[rowIndex].isOpen = false;
-    this.updateValue();
-    this.triggerChange();
-    this.buildTable();
-    this.checkValidity(this.data, true);
+    this.updateGrid();
   }
 
   removeRow(rowIndex) {
@@ -355,9 +374,7 @@ export default class EditGridComponent extends NestedComponent {
     this.splice(rowIndex);
     this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
-    this.updateValue();
-    this.buildTable();
-    this.checkValidity(this.data, true);
+    this.updateGrid();
   }
 
   removeRowComponents(rowIndex) {

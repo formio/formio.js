@@ -14,7 +14,8 @@ export default class ColumnsComponent extends NestedComponent {
       clearOnHide: false,
       input: false,
       tableView: false,
-      persistent: false
+      persistent: false,
+      autoAdjust: false
     }, ...extend);
   }
 
@@ -46,8 +47,78 @@ export default class ColumnsComponent extends NestedComponent {
     return schema;
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.rows = [];
+  }
+
   get className() {
     return `row ${super.className}`;
+  }
+
+  get gridSize() {
+    return 12;
+  }
+
+  /** @type {number} */
+  get nbVisible() {
+    return _.filter(this.components, 'visible').length;
+  }
+
+  /**
+   * Justify columns width according to `this.gridSize`.
+   * @param {ColumnComponent[]} columns
+   * @return {*}
+   */
+  justifyRow(columns) {
+    const visible = _.filter(columns, 'visible');
+    const nbColumns = columns.length;
+    const nbVisible = visible.length;
+
+    if (nbColumns > 0 && nbVisible > 0) {
+      const w = Math.floor(this.gridSize / nbVisible);
+      const totalWidth = w * nbVisible;
+      const span = this.gridSize - totalWidth;
+
+      _.each(visible, column => {
+        column.component.width = w;
+      });
+
+      // In case when row is not fully filled,
+      // extending last col to fill empty space.
+      _.last(visible).component.width += span;
+
+      _.each(visible, col => {
+        col.element.setAttribute('class', col.className);
+      });
+    }
+  }
+
+  /**
+   * Group columns in rows.
+   * @return {Array.<ColumnComponent[]>}
+   */
+  groupByRow() {
+    const initVal = { stack: [], rows: [] };
+    const width = x => x.component.width;
+    const result = _.reduce(this.components, (acc, next) => {
+      const stack = [...acc.stack, next];
+      if (_.sumBy(stack, width) <= this.gridSize) {
+        acc.stack = stack;
+        return acc;
+      }
+      else {
+        acc.rows = [...acc.rows, acc.stack];
+        acc.stack = [next];
+        return acc;
+      }
+    }, initVal);
+
+    return _.concat(result.rows, [result.stack]);
+  }
+
+  justify() {
+    _.each(this.rows, this.justifyRow.bind(this));
   }
 
   addComponents() {
@@ -57,5 +128,24 @@ export default class ColumnsComponent extends NestedComponent {
       column.type = 'column';
       this.addComponent(column, container, this.data);
     });
+    this.rows = this.groupByRow();
+  }
+
+  checkConditions(data) {
+    if (this.component.autoAdjust) {
+      const before = this.nbVisible;
+      super.checkConditions(data);
+      if (before !== this.nbVisible) {
+        this.justify();
+      }
+    }
+    else {
+      super.checkConditions(data);
+    }
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    this.rows = [];
   }
 }

@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
@@ -18,7 +18,6 @@ export default class SelectComponent extends BaseComponent {
       },
       dataSrc: 'values',
       valueProperty: '',
-      refreshOn: '',
       filter: '',
       searchEnabled: true,
       searchField: '',
@@ -69,11 +68,8 @@ export default class SelectComponent extends BaseComponent {
     return SelectComponent.schema();
   }
 
-  refreshItems() {
-    this.triggerUpdate();
-    if (this.component.clearOnRefresh) {
-      this.setValue(null);
-    }
+  get emptyValue() {
+    return '';
   }
 
   elementInfo() {
@@ -111,8 +107,23 @@ export default class SelectComponent extends BaseComponent {
     }
   }
 
-  itemValue(data) {
-    return (this.component.valueProperty && _.isObject(data)) ? _.get(data, this.component.valueProperty) : data;
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.component.valueProperty) {
+        return _.get(data, this.component.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
   }
 
   createInput(container) {
@@ -373,8 +384,8 @@ export default class SelectComponent extends BaseComponent {
         this.updateCustomItems();
         break;
       case 'resource': {
-        if (!forceUpdate && !this.active) {
-          // If we are lazyLoading, wait until activated.
+        // If there is no resource, or we are lazyLoading, wait until active.
+        if (!this.component.data.resource || (!forceUpdate && !this.active)) {
           return;
         }
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
@@ -398,7 +409,11 @@ export default class SelectComponent extends BaseComponent {
         let body;
 
         if (url.substr(0, 1) === '/') {
-          url = Formio.getBaseUrl() + this.component.data.url;
+          let baseUrl = Formio.getProjectUrl();
+          if (!baseUrl) {
+            baseUrl = Formio.getBaseUrl();
+          }
+          url = baseUrl + this.component.data.url;
         }
 
         if (!this.component.data.method) {
@@ -447,7 +462,7 @@ export default class SelectComponent extends BaseComponent {
     else {
       this.addOption('', this.t('loading...'));
     }
-    this.refreshItems();
+    this.triggerUpdate();
   }
 
   get active() {
@@ -457,23 +472,6 @@ export default class SelectComponent extends BaseComponent {
   /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
-
-    // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        if (this.component.refreshOn === 'data') {
-          this.refreshItems();
-        }
-        else if (
-          event.changed &&
-          event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn)
-        ) {
-          this.refreshItems();
-        }
-      });
-    }
-
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -591,22 +589,35 @@ export default class SelectComponent extends BaseComponent {
 
   show(show) {
     // If we go from hidden to visible, trigger a refresh.
-    if (show && (this._visible !== show)) {
+    const triggerUpdate = show && (this._visible !== show);
+    show = super.show(show);
+    if (triggerUpdate) {
       this.triggerUpdate();
     }
-    return super.show(show);
+    return show;
   }
 
+  /**
+   * @param {*} value
+   * @param {Array} items
+   */
   addCurrentChoices(value, items) {
     if (value) {
       let found = false;
+      // Make sure that `items` and `this.selectOptions` points
+      // to the same reference. Because `this.selectOptions` is
+      // internal property and all items are populated by
+      // `this.addOption` method, we assume that items has
+      // 'label' and 'value' properties. This assumption allows
+      // us to read correct value from the item.
+      const isSelectOptions = items === this.selectOptions;
       if (items && items.length) {
         _.each(items, (choice) => {
           if (choice._id && value._id && (choice._id === value._id)) {
             found = true;
             return false;
           }
-          found |= _.isEqual(this.itemValue(choice), value);
+          found |= _.isEqual(this.itemValue(choice, isSelectOptions), value);
           return found ? false : true;
         });
       }
@@ -647,6 +658,10 @@ export default class SelectComponent extends BaseComponent {
         }
       });
       value = this.component.multiple ? values : values.shift();
+    }
+    // Choices will return undefined if nothing is selected. We really want '' to be empty.
+    if (value === undefined || value === null) {
+      value = '';
     }
     return value;
   }
@@ -724,6 +739,14 @@ export default class SelectComponent extends BaseComponent {
 
     this.updateOnChange(flags, changed);
     return changed;
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
+  deleteValue() {
+    this.setValue('');
+    _.unset(this.data, this.key);
   }
 
   /**

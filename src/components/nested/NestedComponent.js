@@ -44,7 +44,7 @@ export default class NestedComponent extends BaseComponent {
     return this.getComponents().reduce((components, component) => {
       let result = component;
 
-      if (component.getAllComponents) {
+      if (component && component.getAllComponents) {
         result = component.getAllComponents();
       }
 
@@ -267,19 +267,22 @@ export default class NestedComponent extends BaseComponent {
    * @param element
    * @param data
    */
-  addComponents(element, data) {
+  addComponents(element, data, options) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents, this);
-    _.each(components, (component) => this.addComponent(component, element, data));
+    options = options || this.options;
+
+    if (options.components) {
+      this.components = options.components;
+    }
+    else {
+      const components = this.hook('addComponents', this.componentComponents, this) || [];
+      components.forEach((component) => this.addComponent(component, element, data));
+    }
   }
 
   updateValue(flags) {
-    let changed = false;
-    _.each(this.components, (comp) => {
-      changed |= comp.updateValue(flags);
-    });
-    return changed;
+    return this.components.reduce((changed, comp) => comp.updateValue(flags) || changed, false);
   }
 
   hasChanged() {
@@ -306,7 +309,7 @@ export default class NestedComponent extends BaseComponent {
     });
 
     // Iterate through all components and check conditions, and calculate values.
-    _.each(this.getComponents(), (comp) => {
+    this.getComponents().forEach((comp) => {
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
@@ -326,21 +329,22 @@ export default class NestedComponent extends BaseComponent {
   }
 
   checkConditions(data) {
-    this.getComponents().forEach(comp => comp.checkConditions(data));
+    this.getComponents().forEach((comp) => comp.checkConditions(data));
     return super.checkConditions(data);
   }
 
   clearOnHide(show) {
     super.clearOnHide(show);
-    this.getComponents().forEach(component => component.clearOnHide(show));
+    this.getComponents().forEach((component) => component.clearOnHide(show));
   }
 
   show(show) {
     const shown = super.show(show);
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
+
     if (forceShow || forceHide) {
-      this.getComponents().forEach(component => {
+      this.getComponents().forEach((component) => {
         if (forceShow) {
           component.show(true);
         }
@@ -358,9 +362,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    const ops = [];
-    _.each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
-    return Promise.all(ops);
+    return Promise.all(this.getComponents().map((comp) => comp.beforeNext()));
   }
 
   /**
@@ -369,25 +371,21 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    const ops = [];
-    _.each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
-    return Promise.all(ops);
+    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
-    let changed = super.calculateValue(data, flags);
-    _.each(this.getComponents(), (comp) => {
-      changed |= comp.calculateValue(data, flags);
-    });
-    return changed;
+    return this.getComponents().reduce(
+      (changed, comp) => comp.calculateValue(data, flags) || changed,
+      super.calculateValue(data, flags)
+    );
   }
 
   isValid(data, dirty) {
-    let valid = super.isValid(data, dirty);
-    _.each(this.getComponents(), (comp) => {
-      valid &= comp.isValid(data, dirty);
-    });
-    return valid;
+    return this.getComponents().reduce(
+      (valid, comp) => comp.isValid(data, dirty) && valid,
+      super.isValid(data, dirty)
+    );
   }
 
   checkValidity(data, dirty) {
@@ -396,16 +394,15 @@ export default class NestedComponent extends BaseComponent {
       return true;
     }
 
-    let check = super.checkValidity(data, dirty);
-    _.each(this.getComponents(), (comp) => {
-      check &= comp.checkValidity(data, dirty);
-    });
-    return check;
+    return this.getComponents().reduce(
+      (check, comp) => comp.checkValidity(data, dirty) && check,
+      super.checkValidity(data, dirty)
+    );
   }
 
   setPristine(pristine) {
     super.setPristine(pristine);
-    _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
+    this.getComponents().forEach((comp) => comp.setPristine(pristine));
   }
 
   destroy(all) {
@@ -414,19 +411,14 @@ export default class NestedComponent extends BaseComponent {
   }
 
   destroyComponents() {
-    const components = _.clone(this.components);
-    _.each(components, (comp) => this.removeComponent(comp, this.components));
+    const components = this.components.slice();
+    components.forEach((comp) => this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
   }
 
-  setCustomValidity(message, dirty) {
-    super.setCustomValidity(message, dirty);
-    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
-  }
-
   set disabled(disabled) {
-    _.each(this.components, (component) => (component.disabled = disabled));
+    this.components.forEach((component) => component.disabled = disabled);
   }
 
   setHidden(component) {
@@ -450,14 +442,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   get errors() {
-    let errors = [];
-    _.each(this.getAllComponents(), (comp) => {
-      const compErrors = comp.errors;
-      if (compErrors.length) {
-        errors = errors.concat(compErrors);
-      }
-    });
-    return errors;
+    return this.getAllComponents().reduce((errors, comp) => errors.concat(comp.errors || []), []);
   }
 
   get value() {
@@ -469,15 +454,13 @@ export default class NestedComponent extends BaseComponent {
   }
 
   resetValue() {
-    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.getComponents().forEach((comp) => comp.resetValue());
     _.unset(this.data, this.key);
     this.setPristine(true);
   }
 
   get dataReady() {
-    const promises = [];
-    _.each(this.getComponents(), (component) => promises.push(component.dataReady));
-    return Promise.all(promises);
+    return Promise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setValue(value, flags) {
@@ -485,24 +468,22 @@ export default class NestedComponent extends BaseComponent {
       return false;
     }
     flags = this.getFlags.apply(this, arguments);
-    let changed = false;
-    this.getComponents().forEach(component => {
+    return this.getComponents().reduce((changed, component) => {
       if (component.type === 'button') {
         return;
       }
 
       if (component.type === 'components') {
-        changed |= component.setValue(value, flags);
+        return component.setValue(value, flags) || changed;
       }
       else if (value && component.hasValue(value)) {
-        changed |= component.setValue(_.get(value, component.key), flags);
+        return component.setValue(_.get(value, component.key), flags) || changed;
       }
       else {
         flags.noValidate = true;
-        changed |= component.setValue(component.defaultValue, flags);
+        return component.setValue(component.defaultValue, flags) || changed;
       }
-    });
-    return changed;
+    }, false);
   }
 
   setCollapseHeader(header) {

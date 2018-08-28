@@ -179,6 +179,13 @@ export default class FormComponent extends BaseComponent {
     return super.calculateValue(data, flags);
   }
 
+  setPristine(pristine) {
+    super.setPristine(pristine);
+    if (this.subForm) {
+      this.subForm.setPristine(pristine);
+    }
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
@@ -271,6 +278,9 @@ export default class FormComponent extends BaseComponent {
   }
 
   getAllComponents() {
+    if (!this.subForm) {
+      return [];
+    }
     return this.subForm.getAllComponents();
   }
 }

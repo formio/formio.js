@@ -1,8 +1,20 @@
+import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 export default class ColumnComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+  }
+
+  conditionallyVisible(data) {
+    // Check children components for visibility.
+    const allChildrenHidden = _.every(this.getComponents(), ['visible', false]);
+
+    if (allChildrenHidden) {
+      return false;
+    }
+
+    return super.conditionallyVisible(data);
   }
 
   get className() {

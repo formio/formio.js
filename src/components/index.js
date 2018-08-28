@@ -4,6 +4,7 @@ import BaseComponent from './base/Base';
 import ContentComponent from './content/Content';
 import ContainerComponent from './container/Container';
 import DataGridComponent from './datagrid/DataGrid';
+import DataMapComponent from './datamap/DataMap';
 import DateTimeComponent from './datetime/DateTime';
 import DayComponent from './day/Day';
 import EditGridComponent from './editgrid/EditGrid';
@@ -45,6 +46,7 @@ export default {
   content: ContentComponent,
   container: ContainerComponent,
   datagrid: DataGridComponent,
+  datamap: DataMapComponent,
   datetime: DateTimeComponent,
   day: DayComponent,
   htmlelement: HTMLComponent,
