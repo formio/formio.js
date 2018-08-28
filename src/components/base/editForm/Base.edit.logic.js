@@ -78,6 +78,7 @@ export default [
                     label: 'When the form component:',
                     key: 'conditional.when',
                     dataSrc: 'custom',
+                    valueProperty: 'value',
                     data: {
                       custom: `
                         utils.eachComponent(instance.root.editForm.components, function(component, path) {
@@ -203,7 +204,7 @@ export default [
                     },
                     {
                       label: 'required',
-                      value: 'validation.required',
+                      value: 'validate.required',
                       type: 'boolean'
                     },
                     {
