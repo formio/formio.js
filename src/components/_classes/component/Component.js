@@ -1661,7 +1661,9 @@ export default class Component extends Widget {
    * @return {boolean} - If the value changed during calculation.
    */
   calculateValue(data, flags) {
-    if (!this.component.calculateValue) {
+    // If no calculated value or
+    // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide)) {
       return false;
     }
 
