@@ -135,10 +135,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   createLabel(container, input) {
-    if (this.labelIsHidden()) {
-      return null;
-    }
-
+    const isLabelHidden = this.labelIsHidden();
     let className = 'control-label form-check-label';
     if (this.component.input
       && !this.options.inputsOnly
@@ -153,22 +150,22 @@ export default class CheckBoxComponent extends BaseComponent {
     this.addShortcut();
 
     const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
+    if (!isLabelHidden) {
+      // Create the SPAN around the textNode for better style hooks
+      this.labelSpan = this.ce('span');
 
-    // Create the SPAN around the textNode for better style hooks
-    this.labelSpan = this.ce('span');
-
-    if (this.info.attr.id) {
-      this.labelElement.setAttribute('for', this.info.attr.id);
+      if (this.info.attr.id) {
+        this.labelElement.setAttribute('for', this.info.attr.id);
+      }
     }
-    if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
+    if (!isLabelHidden && labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.component.label));
       this.labelElement.appendChild(this.labelSpan);
     }
     this.addInput(input, this.labelElement);
-
-    if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
+    if (!isLabelHidden && !labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));

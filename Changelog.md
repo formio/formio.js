@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-1644: Required marks missing when Hide Label is checked for a component
+
 ## 3.4.0
 ### Added
  - FOR-1614: Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
