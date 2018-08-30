@@ -4,25 +4,31 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.4.1
+### Added
+ - FOR-1635: Add button for taking picture with webcam to image file components.
+
 ### Fixed
  - FOR-1644: Required marks missing when Hide Label is checked for a component
+ - Field logic simple conditional and set required not setting properly.
+ - FOR-1618: Fix infinite loop with hidden, clearOnHide and calculateValue.
+ - FOR-1645: Fix columns in datagrids disappearing.
 
 ## 3.4.0
 ### Added
  - FOR-1614: Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
  - FOR-1614: Widget settings to TextField component.
- 
+
 ### Changed
  - FOR-1616, FOR-1615: Make sure the calendar enforces an input mask and also updates the date on a blur event of the input.
- 
+
 ### Fixed
  - Make sure to not send an invalid API call when no resource is provided.
  - Make the select component work when project url is provided.
  - Fixed the select component to trigger a refresh when visibility changes.
  - Fixed the ACE editor to not trigger infinite refresh when new value and existing values are both empty.
  - FOR-1618: Fix bug where select could get in infinite change.
- 
+
 ### Removed
  - FOR-1579: Settings from DateTime component that no longer apply to core renderer.
 
@@ -33,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1500: OnChange event infinite loop on Wizard.
  - Error from occurring in the TextArea builder modal.
  - WYSIWYG: being empty in read only mode in Wizard on non-first page
- - FOR-1604: Fixed issue where Select with RefreshOn + ClearOnRefresh will clear its value even when its refresh dependency does not change values. 
+ - FOR-1604: Fixed issue where Select with RefreshOn + ClearOnRefresh will clear its value even when its refresh dependency does not change values.
  - Issues with EditGrid triggering validation preemptively.
 
 ### Added
