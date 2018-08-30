@@ -1011,7 +1011,10 @@ export default class Webform extends NestedComponent {
             saved: false
           });
         }
-        submitFormio.saveSubmission(submission).then(result => resolve({
+
+        // If this is an actionUrl, then make sure to save the action and not the submission.
+        const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
+        submitFormio[submitMethod](submission).then(result => resolve({
           submission: result,
           saved: true
         })).catch(reject);
