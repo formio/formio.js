@@ -179,13 +179,5 @@ export default [
     tooltip: 'This will disable this field if the form is invalid.',
     input: true,
     weight: 620
-  },
-  {
-    type: 'checkbox',
-    key: 'displayInEditGrid',
-    label: 'Display in Edit Grid',
-    tooltip: 'This will display this button in Edit Grid.',
-    input: true,
-    weight: 630
   }
 ];

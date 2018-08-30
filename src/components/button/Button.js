@@ -381,19 +381,5 @@ export default class ButtonComponent extends BaseComponent {
   focus() {
     this.buttonElement.focus();
   }
-
-  getView() {
-    if (this.component.displayInEditGrid) {
-      this.build();
-
-      setTimeout(() => {
-        const element = document.getElementById(this.id);
-        element.parentNode.replaceChild(this.element, element);
-      });
-
-      return this.element.outerHTML;
-    }
-
-    return super.getView();
-  }
 }
+
