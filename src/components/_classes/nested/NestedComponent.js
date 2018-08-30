@@ -495,10 +495,6 @@ export default class NestedComponent extends Component {
     return this.getAllComponents().reduce((errors, comp) => errors.concat(comp.errors || []), []);
   }
 
-  get value() {
-    return this.data;
-  }
-
   getValue() {
     return this.data;
   }
@@ -509,26 +505,29 @@ export default class NestedComponent extends Component {
     this.setPristine(true);
   }
 
+  setNestedValue(component, value, flags, changed) {
+    if (component.type === 'button') {
+      return false;
+    }
+    if (component.type === 'components') {
+      return component.setValue(value, flags) || changed;
+    }
+    else if (value && component.hasValue(value)) {
+      return component.setValue(_.get(value, component.key), flags) || changed;
+    }
+    else {
+      flags.noValidate = true;
+      return component.setValue(component.defaultValue, flags) || changed;
+    }
+  }
+
   setValue(value, flags) {
     if (!value) {
       return false;
     }
     flags = this.getFlags.apply(this, arguments);
     return this.getComponents().reduce((changed, component) => {
-      if (component.type === 'button') {
-        return;
-      }
-
-      if (component.type === 'components') {
-        return component.setValue(value, flags) || changed;
-      }
-      else if (value && component.hasValue(value)) {
-        return component.setValue(_.get(value, component.key), flags) || changed;
-      }
-      else {
-        flags.noValidate = true;
-        return component.setValue(component.defaultValue, flags) || changed;
-      }
+      return this.setNestedValue(component, value, flags, changed);
     }, false);
   }
 }

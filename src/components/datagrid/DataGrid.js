@@ -284,19 +284,7 @@ export default class DataGridComponent extends NestedComponent {
       if (value.length <= rowIndex) {
         return;
       }
-      _.each(row, (col, key) => {
-        if (col.type === 'components') {
-          col.setValue(value[rowIndex], flags);
-        }
-        else if (value[rowIndex].hasOwnProperty(key)) {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex][key], flags);
-        }
-        else {
-          col.data = value[rowIndex];
-          col.setValue(col.defaultValue, flags);
-        }
-      });
+      _.each(row, component => this.setNestedValue(component, value[rowIndex], flags));
     });
     if (changed) {
       this.redraw();

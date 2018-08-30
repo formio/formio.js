@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
+import Component from '../_classes/component/Component';
 
 export default class ContainerComponent extends NestedComponent {
   static schema(...extend) {
@@ -51,12 +52,12 @@ export default class ContainerComponent extends NestedComponent {
   }
 
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    const value = {};
-    _.each(this.components, (component) => _.set(value, component.key, component.getValue()));
-    return value;
+    return this.dataValue;
+  }
+
+  updateValue(flags, value) {
+    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
   setValue(value, flags) {
@@ -64,24 +65,15 @@ export default class ContainerComponent extends NestedComponent {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if (this.hasValue() && _.isEmpty(this.dataValue)) {
+    const hasValue = this.hasValue();
+    if (hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
-    const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    _.each(this.components, (component) => {
-      if (component.type === 'components') {
-        component.setValue(value, flags);
-      }
-      else if (_.has(value, component.key)) {
-        component.setValue(_.get(value, component.key), flags);
-      }
-      else {
-        component.data = value;
-        component.setValue(component.defaultValue, flags);
-      }
-    });
-    this.updateValue(flags);
-    return changed;
+    if (!hasValue) {
+      // Set the data value and then reset each component to use the new data object.
+      this.dataValue = {};
+      this.getComponents().forEach(component => (component.data = this.dataValue));
+    }
+    return super.setValue(value, flags);
   }
 }
