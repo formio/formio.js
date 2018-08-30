@@ -3,6 +3,26 @@ import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
 
+// canvas.toBlob polyfill.
+if (!HTMLCanvasElement.prototype.toBlob) {
+  Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+    value: function(callback, type, quality) {
+      var canvas = this;
+      setTimeout(function() {
+        var binStr = atob(canvas.toDataURL(type, quality).split(',')[1]),
+          len = binStr.length,
+          arr = new Uint8Array(len);
+
+        for (var i = 0; i < len; i++) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback(new Blob([arr], { type: type || 'image/png' }));
+      });
+    }
+  });
+}
+
 export default class FileComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
@@ -251,197 +271,189 @@ export default class FileComponent extends BaseComponent {
     );
   }
 
+  startVideo() {
+    const width = 320;
+    const height = 240;
+    navigator.getMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+
+    navigator.getMedia(
+      {
+        video: true,
+        audio: false
+      },
+      (stream) => {
+        if (navigator.mozGetUserMedia) {
+          this.video.mozSrcObject = stream;
+        }
+        else {
+          this.video.srcObject = stream;
+          this.video.play();
+        }
+        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        this.video.setAttribute('width', width);
+        this.video.setAttribute('height', height);
+        this.canvas.setAttribute('width', width);
+        this.canvas.setAttribute('height', height);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  takePicture() {
+    const width = 320;
+    const height = this.video.videoHeight / (this.video.videoWidth / width);
+    this.canvas.getContext('2d').drawImage(this.video, 0, 0, width, height);
+    this.canvas.toBlob(blob => {
+      blob.name = `photo-${Date.now()}.png`;
+      this.upload([blob]);
+    });
+  }
+
   buildUpload() {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
     // Declare Camera Instace
     let Camera;
     // Implement Camera file upload for WebView Apps.
-    if (this.component.image) {
-      if (navigator.camera || Camera) {
-        const camera = navigator.camera || Camera;
-        return this.ce('div', {},
-          (
-            (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-              this.ce('div', {
-                  class: 'fileSelector'
-                },
-                [
-                  this.ce('button', { class: 'btn btn-primary',
-                      onClick: (event) => {
-                        event.preventDefault();
-                        camera.getPicture((success) => {
-                          window.resolveLocalFileSystemURL(success, (fileEntry) => {
-                              fileEntry.file((file) => {
-                                this.upload([file]);
-                              });
-                            }
-                          );
-                        }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
-                      }
-                    },
-                    [
-                      this.ce('i', { class: this.iconClass('book') }),
-                      this.text('Gallery')
-                    ]),
-                  this.ce('button', { class: 'btn btn-primary',
-                      onClick: (event) => {
-                        event.preventDefault();
-                        camera.getPicture((success) => {
-                          window.resolveLocalFileSystemURL(success, (fileEntry) => {
-                              fileEntry.file((file) => {
-                                this.upload([file]);
-                              });
-                            }
-                          );
-                        }, null, {
-                          sourceType: camera.PictureSourceType.CAMERA,
-                          encodingType: camera.EncodingType.PNG,
-                          mediaType: camera.MediaType.PICTURE,
-                          saveToPhotoAlbum: true,
-                          correctOrientation: false
-                        });
-                      }
-                    },
-                    [
-                      this.ce('i', { class: this.iconClass('camera') }),
-                      this.text('Camera')
-                    ])
-                ]
-              ) :
-              this.ce('div')
-          )
-        );
-      }
-      else {
-        let streaming = false;
-        const getMedia = () => {
-          const video = document.querySelector('#video');
-          const  canvas = document.querySelector('#canvas');
-          const photo = document.querySelector('#photo');
-          const  width = 320;
-          let height = 0;
-          navigator.getMedia = ( navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
-          navigator.getMedia(
-            {
-              video: true,
-              audio: false
-            },
-            (stream) => {
-              if (navigator.mozGetUserMedia) {
-                video.mozSrcObject = stream;
-              }
-              else {
-                video.srcObject = stream;
-                video.play();
-              }
-            },
-            (err) => {
-              console.log(err);
-            }
-          );
-          if (!streaming) {
-            height = video.videoHeight / (video.videoWidth/width);
-            video.setAttribute('width', width);
-            video.setAttribute('height', height);
-            canvas.setAttribute('width', width);
-            canvas.setAttribute('height', height);
-          }
-          this.takepicture = () => {
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-            const data = canvas.toDataURL('image/png');
-            photo.setAttribute('src', data);
-          };
-        };
-
-        return this.ce('div', {},
-          (
-            (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-              this.ce('div', {
-                  class: 'fileSelector'
-                },
-                [
-                  this.ce('button', { class: 'btn btn-primary text-white',
-                      onClick: (event) => {
-                        event.preventDefault();
-                      }
-                    },
-                    [
-                      this.text('Use'),
-                      this.buildBrowseLink()
-                    ]),
-                  this.ce('button', { class: 'btn btn-primary',
-                      onClick: (event) => {
-                        streaming = true;
-                        getMedia();
-                        event.preventDefault();
-                      }
-                    },
-                    [
-                      this.ce('i', { class: this.iconClass('camera') }),
-                      this.text('Web Cam')
-                    ]),
-                  this.ce('video', {
-                    class: 'video',
-                    id: 'video',
-                    autoplay: true
-                  }),
-                  this.ce('button', { class: 'btn btn-primary',
-                      onClick: (event) => {
-                        this.takepicture();
-                        event.preventDefault();
-                      }
-                    },
-                    [
-                      this.ce('i', { class: this.iconClass('camera'), id: 'startbutton' }),
-                      this.text('Take Photo')
-                    ]),
-                  this.ce('canvas', {
-                    id: 'canvas'
-                  }),
-                  this.ce('img', {
-                    src: '',
-                    id: 'photo'
-                  })
-                ]
-              ) :
-              this.ce('div')
-          )
-        );
-      }
+    if (this.component.image && (navigator.camera || Camera)) {
+      const camera = navigator.camera || Camera;
+      return this.ce('div', {},
+        (
+          (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
+            this.ce('div', {
+                class: 'fileSelector'
+              },
+              [
+                this.ce('button', {
+                    class: 'btn btn-primary',
+                    onClick: (event) => {
+                      event.preventDefault();
+                      camera.getPicture((success) => {
+                        window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                            fileEntry.file((file) => {
+                              this.upload([file]);
+                            });
+                          }
+                        );
+                      }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
+                    }
+                  },
+                  [
+                    this.ce('i', { class: this.iconClass('book') }),
+                    this.text('Gallery')
+                  ]),
+                this.ce('button', {
+                    class: 'btn btn-primary',
+                    onClick: (event) => {
+                      event.preventDefault();
+                      camera.getPicture((success) => {
+                        window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                            fileEntry.file((file) => {
+                              this.upload([file]);
+                            });
+                          }
+                        );
+                      }, null, {
+                        sourceType: camera.PictureSourceType.CAMERA,
+                        encodingType: camera.EncodingType.PNG,
+                        mediaType: camera.MediaType.PICTURE,
+                        saveToPhotoAlbum: true,
+                        correctOrientation: false
+                      });
+                    }
+                  },
+                  [
+                    this.ce('i', { class: this.iconClass('camera') }),
+                    this.text('Camera')
+                  ])
+              ]
+            ) :
+            this.ce('div')
+        )
+      );
     }
+
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-          this.ce('div', {
-              class: 'fileSelector',
-              onDragover(event) {
-                this.className = 'fileSelector fileDragOver';
-                event.preventDefault();
-              },
-              onDragleave(event) {
-                this.className = 'fileSelector';
-                event.preventDefault();
-              },
-              onDrop(event) {
-                this.className = 'fileSelector';
-                event.preventDefault();
-                element.upload(event.dataTransfer.files);
-                return false;
-              }
-            },
+          !this.cameraMode || !this.component.image ?
             [
-              this.ce('i', { class: this.iconClass('cloud-upload') }),
-              this.text(' Drop files to attach, or '),
-              this.buildBrowseLink()
+              this.ce('div',
+                {
+                  class: 'fileSelector',
+                  onDragover(event) {
+                    this.className = 'fileSelector fileDragOver';
+                    event.preventDefault();
+                  },
+                  onDragleave(event) {
+                    this.className = 'fileSelector';
+                    event.preventDefault();
+                  },
+                  onDrop(event) {
+                    this.className = 'fileSelector';
+                    event.preventDefault();
+                    element.upload(event.dataTransfer.files);
+                    return false;
+                  }
+                },
+                [
+                  this.ce('i', { class: this.iconClass('cloud-upload') }),
+                  this.text(' Drop files to attach, or '),
+                  this.buildBrowseLink()
+                ]
+              ),
+              this.component.image ?
+                this.ce('div',
+                  {
+                    class: 'btn btn-default',
+                    onClick: () => {
+                      this.cameraMode = !this.cameraMode;
+                      this.refreshDOM();
+                      this.startVideo();
+                    }
+                  },
+                  'Use Camera'
+                ) : null
+            ] :
+            [
+              this.ce('div',
+                {},
+                [
+                  this.video = this.ce('video', {
+                    class: 'video',
+                    autoplay: true
+                  }),
+                  this.canvas = this.ce('canvas', { style: 'display: none;' }),
+                  this.photo = this.ce('img')
+                ]
+              ),
+              this.ce('div',
+                {
+                  class: 'btn btn-primary',
+                  onClick: () => {
+                    this.takePicture();
+                  }
+                },
+                'Take Photo'
+              ),
+              this.ce('div',
+                {
+                  class: 'btn btn-default',
+                  onClick: () => {
+                    this.cameraMode = !this.cameraMode;
+                    this.refreshDOM();
+                  }
+                },
+                'Switch to file upload'
+              )
             ]
-          ) :
+          :
           this.ce('div')
       )
     );
@@ -507,6 +519,7 @@ export default class FileComponent extends BaseComponent {
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
+
   /* eslint-enable max-len */
 
   createUploadStatus(fileUpload) {
@@ -581,6 +594,7 @@ export default class FileComponent extends BaseComponent {
     }
     return { regexp: regexp, excludes: excludes };
   }
+
   /* eslint-enable max-depth */
 
   translateScalars(str) {
