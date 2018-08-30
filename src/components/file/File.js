@@ -257,78 +257,185 @@ export default class FileComponent extends BaseComponent {
     // Declare Camera Instace
     let Camera;
     // Implement Camera file upload for WebView Apps.
-    if ((navigator.camera || Camera) && this.component.image) {
-      const camera = navigator.camera || Camera;
-      return this.ce('div', {},
-        (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-          this.ce('div',
+    if (this.component.image) {
+      if (navigator.camera || Camera) {
+        const camera = navigator.camera || Camera;
+        return this.ce('div', {},
+          (
+            (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
+              this.ce('div', {
+                  class: 'fileSelector'
+                },
+                [
+                  this.ce('button', { class: 'btn btn-primary',
+                      onClick: (event) => {
+                        event.preventDefault();
+                        camera.getPicture((success) => {
+                          window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                              fileEntry.file((file) => {
+                                this.upload([file]);
+                              });
+                            }
+                          );
+                        }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
+                      }
+                    },
+                    [
+                      this.ce('i', { class: this.iconClass('book') }),
+                      this.text('Gallery')
+                    ]),
+                  this.ce('button', { class: 'btn btn-primary',
+                      onClick: (event) => {
+                        event.preventDefault();
+                        camera.getPicture((success) => {
+                          window.resolveLocalFileSystemURL(success, (fileEntry) => {
+                              fileEntry.file((file) => {
+                                this.upload([file]);
+                              });
+                            }
+                          );
+                        }, null, {
+                          sourceType: camera.PictureSourceType.CAMERA,
+                          encodingType: camera.EncodingType.PNG,
+                          mediaType: camera.MediaType.PICTURE,
+                          saveToPhotoAlbum: true,
+                          correctOrientation: false
+                        });
+                      }
+                    },
+                    [
+                      this.ce('i', { class: this.iconClass('camera') }),
+                      this.text('Camera')
+                    ])
+                ]
+              ) :
+              this.ce('div')
+          )
+        );
+      }
+      else {
+        let streaming = false;
+        const getMedia = () => {
+          const video = document.querySelector('#video');
+          const  canvas = document.querySelector('#canvas');
+          const photo = document.querySelector('#photo');
+          const  width = 320;
+          let height = 0;
+          navigator.getMedia = ( navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia);
+          navigator.getMedia(
             {
-              class: 'fileSelector'
+              video: true,
+              audio: false
             },
-            [
-              this.ce('button',
-                {
-                  class: 'btn btn-primary',
-                  onClick: (event) => {
-                    event.preventDefault();
-                    camera.getPicture((success) => {
-                      window.resolveLocalFileSystemURL(success, (fileEntry) => {
-                        fileEntry.file((file) => {
-                          this.upload([file]);
-                        });
-                      });
-                    }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
-                  }
+            (stream) => {
+              if (navigator.mozGetUserMedia) {
+                video.mozSrcObject = stream;
+              }
+              else {
+                video.srcObject = stream;
+                video.play();
+              }
+            },
+            (err) => {
+              console.log(err);
+            }
+          );
+          if (!streaming) {
+            height = video.videoHeight / (video.videoWidth/width);
+            video.setAttribute('width', width);
+            video.setAttribute('height', height);
+            canvas.setAttribute('width', width);
+            canvas.setAttribute('height', height);
+          }
+          this.takepicture = () => {
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+            const data = canvas.toDataURL('image/png');
+            photo.setAttribute('src', data);
+          };
+        };
+
+        return this.ce('div', {},
+          (
+            (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
+              this.ce('div', {
+                  class: 'fileSelector'
                 },
                 [
-                  this.ce('i', { class: this.iconClass('book') }),
-                  this.text('Gallery')
+                  this.ce('button', { class: 'btn btn-primary text-white',
+                      onClick: (event) => {
+                        event.preventDefault();
+                      }
+                    },
+                    [
+                      this.text('Use'),
+                      this.buildBrowseLink()
+                    ]),
+                  this.ce('button', { class: 'btn btn-primary',
+                      onClick: (event) => {
+                        streaming = true;
+                        getMedia();
+                        event.preventDefault();
+                      }
+                    },
+                    [
+                      this.ce('i', { class: this.iconClass('camera') }),
+                      this.text('Web Cam')
+                    ]),
+                  this.ce('video', {
+                    class: 'video',
+                    id: 'video',
+                    autoplay: true
+                  }),
+                  this.ce('button', { class: 'btn btn-primary',
+                      onClick: (event) => {
+                        this.takepicture();
+                        event.preventDefault();
+                      }
+                    },
+                    [
+                      this.ce('i', { class: this.iconClass('camera'), id: 'startbutton' }),
+                      this.text('Take Photo')
+                    ]),
+                  this.ce('canvas', {
+                    id: 'canvas'
+                  }),
+                  this.ce('img', {
+                    src: '',
+                    id: 'photo'
+                  })
                 ]
-              ),
-              this.ce('button',
-                {
-                  class: 'btn btn-primary',
-                  onClick: (event) => {
-                    event.preventDefault();
-                    camera.getPicture((success) => {
-                      window.resolveLocalFileSystemURL(success, (fileEntry) => {
-                        fileEntry.file((file) => {
-                          this.upload([file]);
-                        });
-                      });
-                    });
-                  }
-                },
-                [
-                  this.ce('i', { class: this.iconClass('camera') }),
-                  this.text('Camera')
-                ]
-              )
-            ]
-          ) : this.ce('div')
-      );
+              ) :
+              this.ce('div')
+          )
+        );
+      }
     }
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
-            class: 'fileSelector',
-            onDragover(event) {
-              this.className = 'fileSelector fileDragOver';
-              event.preventDefault();
+              class: 'fileSelector',
+              onDragover(event) {
+                this.className = 'fileSelector fileDragOver';
+                event.preventDefault();
+              },
+              onDragleave(event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+              },
+              onDrop(event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+                element.upload(event.dataTransfer.files);
+                return false;
+              }
             },
-            onDragleave(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-            },
-            onDrop(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-              element.upload(event.dataTransfer.files);
-              return false;
-            }
-          },
             [
               this.ce('i', { class: this.iconClass('cloud-upload') }),
               this.text(' Drop files to attach, or '),
@@ -418,19 +525,19 @@ export default class FileComponent extends BaseComponent {
       this.ce('div', { class: 'row' }, [
         this.ce('div', { class: 'col-sm-12' }, [
           (fileUpload.status === 'progress' ?
-            this.ce('div', { class: 'progress' },
-              this.ce('div', {
-                class: 'progress-bar',
-                role: 'progressbar',
-                'aria-valuenow': fileUpload.progress,
-                'aria-valuemin': 0,
-                'aria-valuemax': 100,
-                style: `width:${fileUpload.progress}%`
-              },
-                this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
-              )
-            ) :
-            this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
+              this.ce('div', { class: 'progress' },
+                this.ce('div', {
+                    class: 'progress-bar',
+                    role: 'progressbar',
+                    'aria-valuenow': fileUpload.progress,
+                    'aria-valuemin': 0,
+                    'aria-valuemax': 100,
+                    style: `width:${fileUpload.progress}%`
+                  },
+                  this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
+                )
+              ) :
+              this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
           )
         ])
       ])
