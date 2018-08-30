@@ -352,28 +352,15 @@ export default class DataGridComponent extends NestedComponent {
         }
       }
     }
-
     this.dataValue = value;
     if (shouldBuildRows) {
       this.buildRows();
     }
-
     _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
       }
-      _.each(row, (col, key) => {
-        if (col.type === 'components') {
-          col.setValue(value[index], flags);
-        }
-        else if (value[index].hasOwnProperty(key)) {
-          col.setValue(value[index][key], flags);
-        }
-        else {
-          col.data = value[index];
-          col.setValue(col.defaultValue, flags);
-        }
-      });
+      _.each(row, component => this.setNestedValue(component, value[index], flags));
     });
     return changed;
   }
