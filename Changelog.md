@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.2
+### Fixed
+ - Field logic simple conditional when key.
+
 ## 3.4.1
 ### Added
  - FOR-1635: Add button for taking picture with webcam to image file components.
