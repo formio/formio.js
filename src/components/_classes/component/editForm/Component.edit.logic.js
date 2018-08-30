@@ -76,7 +76,7 @@ export default [
                     type: 'select',
                     input: true,
                     label: 'When the form component:',
-                    key: 'conditional.when',
+                    key: 'when',
                     dataSrc: 'custom',
                     valueProperty: 'value',
                     data: {
