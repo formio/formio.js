@@ -134,13 +134,14 @@ export default class ColumnsComponent extends NestedComponent {
   checkConditions(data) {
     if (this.component.autoAdjust) {
       const before = this.nbVisible;
-      super.checkConditions(data);
+      const result = super.checkConditions(data);
       if (before !== this.nbVisible) {
         this.justify();
       }
+      return result;
     }
     else {
-      super.checkConditions(data);
+      return super.checkConditions(data);
     }
   }
 
