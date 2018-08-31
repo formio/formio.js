@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.3
+### Fixed
+ - Issues where sessionStorage was making the renderer crash for IE browsers.
+ - Problems with the ContainerComponent where it would reset the data objects and stop tracking data changes.
+ - Problem with the core renderer to work when it is pointing to the Form Action API.
+ - Fix web camera option for image uploads.
+
 ## 3.4.2
 ### Fixed
  - Field logic simple conditional when key.
