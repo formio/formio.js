@@ -2059,13 +2059,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2677,13 +2677,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2743,13 +2743,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3289,13 +3289,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3895,13 +3895,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3949,13 +3949,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4561,13 +4561,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5286,6 +5286,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/container/container.js~containercomponent#updatevalue",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-updateValue",
+    "src/components/container/Container.js~ContainerComponent#updateValue",
+    "method"
+  ],
+  [
     "src/components/container/container.js~containercomponent.builderinfo",
     "class/src/components/container/Container.js~ContainerComponent.html#static-get-builderInfo",
     "src/components/container/Container.js~ContainerComponent.builderInfo",
@@ -5545,13 +5551,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6714,6 +6720,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#cameramode",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-cameraMode",
+    "src/components/file/File.js~FileComponent#cameraMode",
+    "member"
+  ],
+  [
     "src/components/file/file.js~filecomponent#classname",
     "class/src/components/file/File.js~FileComponent.html#instance-member-className",
     "src/components/file/File.js~FileComponent#className",
@@ -6852,10 +6864,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#startvideo",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-startVideo",
+    "src/components/file/File.js~FileComponent#startVideo",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#support",
     "class/src/components/file/File.js~FileComponent.html#instance-member-support",
     "src/components/file/File.js~FileComponent#support",
     "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#takepicture",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-takePicture",
+    "src/components/file/File.js~FileComponent#takePicture",
+    "method"
   ],
   [
     "src/components/file/file.js~filecomponent#translatescalars",
@@ -7656,6 +7680,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/nested/nestedcomponent.js~nestedcomponent#setnestedvalue",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setNestedValue",
+    "src/components/nested/NestedComponent.js~NestedComponent#setNestedValue",
+    "method"
+  ],
+  [
     "src/components/nested/nestedcomponent.js~nestedcomponent#setpristine",
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setPristine",
     "src/components/nested/NestedComponent.js~NestedComponent#setPristine",
@@ -7690,12 +7720,6 @@ window.esdocSearchIndex = [
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue",
     "src/components/nested/NestedComponent.js~NestedComponent#updateValue",
     "method"
-  ],
-  [
-    "src/components/nested/nestedcomponent.js~nestedcomponent#value",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-value",
-    "src/components/nested/NestedComponent.js~NestedComponent#value",
-    "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent.schema",

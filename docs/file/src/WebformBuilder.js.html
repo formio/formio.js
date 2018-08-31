@@ -293,9 +293,11 @@ export default class WebformBuilder extends Webform {
         });
 
         // Set in paste mode if we have an item in our clipboard.
-        const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
-        if (data) {
-          this.addClass(this.element, &apos;builder-paste-mode&apos;);
+        if (window.sessionStorage) {
+          const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
+          if (data) {
+            this.addClass(this.element, &apos;builder-paste-mode&apos;);
+          }
         }
 
         // Add the edit buttons to the component.
@@ -611,6 +613,9 @@ export default class WebformBuilder extends Webform {
    * @return {*}
    */
   copyComponent(component) {
+    if (!window.sessionStorage) {
+      return console.log(&apos;Session storage is not supported in this browser.&apos;);
+    }
     this.addClass(this.element, &apos;builder-paste-mode&apos;);
     const copy = _.cloneDeep(component.schema);
     window.sessionStorage.setItem(&apos;formio.clipboard&apos;, JSON.stringify(copy));
@@ -622,6 +627,9 @@ export default class WebformBuilder extends Webform {
    * @return {*}
    */
   pasteComponent(component) {
+    if (!window.sessionStorage) {
+      return console.log(&apos;Session storage is not supported in this browser.&apos;);
+    }
     this.removeClass(this.element, &apos;builder-paste-mode&apos;);
     const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
     if (data) {

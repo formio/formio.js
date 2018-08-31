@@ -1228,34 +1228,37 @@ export default class BaseComponent extends Component {
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (this.labelIsHidden()) {
-      return;
-    }
+    const isLabelHidden = this.labelIsHidden();
     let className = &apos;control-label&apos;;
     let style = &apos;&apos;;
+    if (!isLabelHidden) {
+      const {
+        labelPosition
+      } = this.component;
 
-    const {
-      labelPosition
-    } = this.component;
+      // Determine label styles/classes depending on position.
+      if (labelPosition === &apos;bottom&apos;) {
+        className += &apos; control-label--bottom&apos;;
+      }
+      else if (labelPosition &amp;&amp; labelPosition !== &apos;top&apos;) {
+        const labelWidth = this.getLabelWidth();
+        const labelMargin = this.getLabelMargin();
 
-    // Determine label styles/classes depending on position.
-    if (labelPosition === &apos;bottom&apos;) {
-      className += &apos; control-label--bottom&apos;;
+        // Label is on the left or right.
+        if (this.labelOnTheLeft(labelPosition)) {
+          style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
+        }
+        else if (this.labelOnTheRight(labelPosition)) {
+          style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
+        }
+        if (this.rightAlignedLabel(labelPosition)) {
+          style += &apos;text-align: right; &apos;;
+        }
+      }
     }
-    else if (labelPosition &amp;&amp; labelPosition !== &apos;top&apos;) {
-      const labelWidth = this.getLabelWidth();
-      const labelMargin = this.getLabelMargin();
-
-      // Label is on the left or right.
-      if (this.labelOnTheLeft(labelPosition)) {
-        style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
-      }
-      else if (this.labelOnTheRight(labelPosition)) {
-        style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
-      }
-      if (this.rightAlignedLabel(labelPosition)) {
-        style += &apos;text-align: right; &apos;;
-      }
+    else {
+      this.addClass(container, &apos;formio-component-label-hidden&apos;);
+      className += &apos; control-label--hidden&apos;;
     }
 
     if (this.hasInput &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
@@ -1265,11 +1268,13 @@ export default class BaseComponent extends Component {
       class: className,
       style
     });
-    if (this.info.attr.id) {
-      this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
+    if (!isLabelHidden) {
+      if (this.info.attr.id) {
+        this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
+      }
+      this.labelElement.appendChild(this.text(this.component.label));
+      this.createTooltip(this.labelElement);
     }
-    this.labelElement.appendChild(this.text(this.component.label));
-    this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
   }
 
@@ -2214,7 +2219,9 @@ export default class BaseComponent extends Component {
    * @return {boolean} - If the value changed during calculation.
    */
   calculateValue(data, flags) {
-    if (!this.component.calculateValue) {
+    // If no calculated value or
+    // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide)) {
       return false;
     }
 

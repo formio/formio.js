@@ -187,6 +187,26 @@ import { uniqueName } from &apos;../../utils/utils&apos;;
 import download from &apos;downloadjs&apos;;
 import Formio from &apos;../../Formio&apos;;
 
+// canvas.toBlob polyfill.
+if (!HTMLCanvasElement.prototype.toBlob) {
+  Object.defineProperty(HTMLCanvasElement.prototype, &apos;toBlob&apos;, {
+    value: function(callback, type, quality) {
+      var canvas = this;
+      setTimeout(function() {
+        var binStr = atob(canvas.toDataURL(type, quality).split(&apos;,&apos;)[1]),
+          len = binStr.length,
+          arr = new Uint8Array(len);
+
+        for (var i = 0; i &lt; len; i++) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback(new Blob([arr], { type: type || &apos;image/png&apos; }));
+      });
+    }
+  });
+}
+
 export default class FileComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
@@ -435,90 +455,189 @@ export default class FileComponent extends BaseComponent {
     );
   }
 
+  startVideo() {
+    const width = 320;
+    const height = 240;
+    navigator.getMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+
+    navigator.getMedia(
+      {
+        video: true,
+        audio: false
+      },
+      (stream) =&gt; {
+        if (navigator.mozGetUserMedia) {
+          this.video.mozSrcObject = stream;
+        }
+        else {
+          this.video.srcObject = stream;
+          this.video.play();
+        }
+        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        this.video.setAttribute(&apos;width&apos;, width);
+        this.video.setAttribute(&apos;height&apos;, height);
+        this.canvas.setAttribute(&apos;width&apos;, width);
+        this.canvas.setAttribute(&apos;height&apos;, height);
+      },
+      (err) =&gt; {
+        console.log(err);
+      }
+    );
+  }
+
+  takePicture() {
+    const width = 320;
+    const height = this.video.videoHeight / (this.video.videoWidth / width);
+    this.canvas.getContext(&apos;2d&apos;).drawImage(this.video, 0, 0, width, height);
+    this.canvas.toBlob(blob =&gt; {
+      blob.name = `photo-${Date.now()}.png`;
+      this.upload([blob]);
+    });
+  }
+
   buildUpload() {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
     // Declare Camera Instace
     let Camera;
     // Implement Camera file upload for WebView Apps.
-    if ((navigator.camera || Camera) &amp;&amp; this.component.image) {
+    if (this.component.image &amp;&amp; (navigator.camera || Camera)) {
       const camera = navigator.camera || Camera;
       return this.ce(&apos;div&apos;, {},
-        (!this.disabled &amp;&amp; (this.component.multiple || this.dataValue.length === 0)) ?
-          this.ce(&apos;div&apos;,
-            {
-              class: &apos;fileSelector&apos;
-            },
-            [
-              this.ce(&apos;button&apos;,
-                {
-                  class: &apos;btn btn-primary&apos;,
-                  onClick: (event) =&gt; {
-                    event.preventDefault();
-                    camera.getPicture((success) =&gt; {
-                      window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
-                        fileEntry.file((file) =&gt; {
-                          this.upload([file]);
-                        });
+        (
+          (!this.disabled &amp;&amp; (this.component.multiple || this.dataValue.length === 0)) ?
+            this.ce(&apos;div&apos;, {
+                class: &apos;fileSelector&apos;
+              },
+              [
+                this.ce(&apos;button&apos;, {
+                    class: &apos;btn btn-primary&apos;,
+                    onClick: (event) =&gt; {
+                      event.preventDefault();
+                      camera.getPicture((success) =&gt; {
+                        window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
+                            fileEntry.file((file) =&gt; {
+                              this.upload([file]);
+                            });
+                          }
+                        );
+                      }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
+                    }
+                  },
+                  [
+                    this.ce(&apos;i&apos;, { class: this.iconClass(&apos;book&apos;) }),
+                    this.text(&apos;Gallery&apos;)
+                  ]),
+                this.ce(&apos;button&apos;, {
+                    class: &apos;btn btn-primary&apos;,
+                    onClick: (event) =&gt; {
+                      event.preventDefault();
+                      camera.getPicture((success) =&gt; {
+                        window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
+                            fileEntry.file((file) =&gt; {
+                              this.upload([file]);
+                            });
+                          }
+                        );
+                      }, null, {
+                        sourceType: camera.PictureSourceType.CAMERA,
+                        encodingType: camera.EncodingType.PNG,
+                        mediaType: camera.MediaType.PICTURE,
+                        saveToPhotoAlbum: true,
+                        correctOrientation: false
                       });
-                    }, null, { sourceType: camera.PictureSourceType.PHOTOLIBRARY });
-                  }
-                },
-                [
-                  this.ce(&apos;i&apos;, { class: this.iconClass(&apos;book&apos;) }),
-                  this.text(&apos;Gallery&apos;)
-                ]
-              ),
-              this.ce(&apos;button&apos;,
-                {
-                  class: &apos;btn btn-primary&apos;,
-                  onClick: (event) =&gt; {
-                    event.preventDefault();
-                    camera.getPicture((success) =&gt; {
-                      window.resolveLocalFileSystemURL(success, (fileEntry) =&gt; {
-                        fileEntry.file((file) =&gt; {
-                          this.upload([file]);
-                        });
-                      });
-                    });
-                  }
-                },
-                [
-                  this.ce(&apos;i&apos;, { class: this.iconClass(&apos;camera&apos;) }),
-                  this.text(&apos;Camera&apos;)
-                ]
-              )
-            ]
-          ) : this.ce(&apos;div&apos;)
+                    }
+                  },
+                  [
+                    this.ce(&apos;i&apos;, { class: this.iconClass(&apos;camera&apos;) }),
+                    this.text(&apos;Camera&apos;)
+                  ])
+              ]
+            ) :
+            this.ce(&apos;div&apos;)
+        )
       );
     }
+
     // If this is disabled or a single value with a value, don&apos;t show the upload div.
     return this.ce(&apos;div&apos;, {},
       (
         (!this.disabled &amp;&amp; (this.component.multiple || this.dataValue.length === 0)) ?
-          this.ce(&apos;div&apos;, {
-            class: &apos;fileSelector&apos;,
-            onDragover(event) {
-              this.className = &apos;fileSelector fileDragOver&apos;;
-              event.preventDefault();
-            },
-            onDragleave(event) {
-              this.className = &apos;fileSelector&apos;;
-              event.preventDefault();
-            },
-            onDrop(event) {
-              this.className = &apos;fileSelector&apos;;
-              event.preventDefault();
-              element.upload(event.dataTransfer.files);
-              return false;
-            }
-          },
+          !this.cameraMode || !this.component.image ?
             [
-              this.ce(&apos;i&apos;, { class: this.iconClass(&apos;cloud-upload&apos;) }),
-              this.text(&apos; Drop files to attach, or &apos;),
-              this.buildBrowseLink()
+              this.ce(&apos;div&apos;,
+                {
+                  class: &apos;fileSelector&apos;,
+                  onDragover(event) {
+                    this.className = &apos;fileSelector fileDragOver&apos;;
+                    event.preventDefault();
+                  },
+                  onDragleave(event) {
+                    this.className = &apos;fileSelector&apos;;
+                    event.preventDefault();
+                  },
+                  onDrop(event) {
+                    this.className = &apos;fileSelector&apos;;
+                    event.preventDefault();
+                    element.upload(event.dataTransfer.files);
+                    return false;
+                  }
+                },
+                [
+                  this.ce(&apos;i&apos;, { class: this.iconClass(&apos;cloud-upload&apos;) }),
+                  this.text(&apos; Drop files to attach, or &apos;),
+                  this.buildBrowseLink()
+                ]
+              ),
+              this.component.image ?
+                this.ce(&apos;div&apos;,
+                  {
+                    class: &apos;btn btn-default&apos;,
+                    onClick: () =&gt; {
+                      this.cameraMode = !this.cameraMode;
+                      this.refreshDOM();
+                      this.startVideo();
+                    }
+                  },
+                  &apos;Use Camera&apos;
+                ) : null
+            ] :
+            [
+              this.ce(&apos;div&apos;,
+                {},
+                [
+                  this.video = this.ce(&apos;video&apos;, {
+                    class: &apos;video&apos;,
+                    autoplay: true
+                  }),
+                  this.canvas = this.ce(&apos;canvas&apos;, { style: &apos;display: none;&apos; }),
+                  this.photo = this.ce(&apos;img&apos;)
+                ]
+              ),
+              this.ce(&apos;div&apos;,
+                {
+                  class: &apos;btn btn-primary&apos;,
+                  onClick: () =&gt; {
+                    this.takePicture();
+                  }
+                },
+                &apos;Take Photo&apos;
+              ),
+              this.ce(&apos;div&apos;,
+                {
+                  class: &apos;btn btn-default&apos;,
+                  onClick: () =&gt; {
+                    this.cameraMode = !this.cameraMode;
+                    this.refreshDOM();
+                  }
+                },
+                &apos;Switch to file upload&apos;
+              )
             ]
-          ) :
+          :
           this.ce(&apos;div&apos;)
       )
     );
@@ -584,6 +703,7 @@ export default class FileComponent extends BaseComponent {
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${&apos;kMGTPEZY&apos;[--e]}B` : &apos;Bytes&apos;}`;
   }
+
   /* eslint-enable max-len */
 
   createUploadStatus(fileUpload) {
@@ -602,19 +722,19 @@ export default class FileComponent extends BaseComponent {
       this.ce(&apos;div&apos;, { class: &apos;row&apos; }, [
         this.ce(&apos;div&apos;, { class: &apos;col-sm-12&apos; }, [
           (fileUpload.status === &apos;progress&apos; ?
-            this.ce(&apos;div&apos;, { class: &apos;progress&apos; },
-              this.ce(&apos;div&apos;, {
-                class: &apos;progress-bar&apos;,
-                role: &apos;progressbar&apos;,
-                &apos;aria-valuenow&apos;: fileUpload.progress,
-                &apos;aria-valuemin&apos;: 0,
-                &apos;aria-valuemax&apos;: 100,
-                style: `width:${fileUpload.progress}%`
-              },
-                this.ce(&apos;span&apos;, { class: &apos;sr-only&apos; }, `${fileUpload.progress}% Complete`)
-              )
-            ) :
-            this.ce(&apos;div&apos;, { class: `bg-${fileUpload.status}` }, fileUpload.message)
+              this.ce(&apos;div&apos;, { class: &apos;progress&apos; },
+                this.ce(&apos;div&apos;, {
+                    class: &apos;progress-bar&apos;,
+                    role: &apos;progressbar&apos;,
+                    &apos;aria-valuenow&apos;: fileUpload.progress,
+                    &apos;aria-valuemin&apos;: 0,
+                    &apos;aria-valuemax&apos;: 100,
+                    style: `width:${fileUpload.progress}%`
+                  },
+                  this.ce(&apos;span&apos;, { class: &apos;sr-only&apos; }, `${fileUpload.progress}% Complete`)
+                )
+              ) :
+              this.ce(&apos;div&apos;, { class: `bg-${fileUpload.status}` }, fileUpload.message)
           )
         ])
       ])
@@ -658,6 +778,7 @@ export default class FileComponent extends BaseComponent {
     }
     return { regexp: regexp, excludes: excludes };
   }
+
   /* eslint-enable max-depth */
 
   translateScalars(str) {
