@@ -405,20 +405,25 @@ export default class FileComponent extends BaseComponent {
                 [
                   this.ce('i', { class: this.iconClass('cloud-upload') }),
                   this.text(' Drop files to attach, or '),
-                  this.buildBrowseLink()
+                  this.buildBrowseLink(),
+                  this.component.webcam ?
+                    [
+                      this.text(', or '),
+                      this.ce('a',
+                        {
+                          href: '#',
+                          title: 'Use Web Camera',
+                          onClick: (event) => {
+                            event.preventDefault();
+                            this.cameraMode = !this.cameraMode;
+                            this.refreshDOM();
+                          }
+                        },
+                        this.ce('i', { class: this.iconClass('camera') })
+                      )
+                    ] : null
                 ]
               ),
-              this.component.webcam ?
-                this.ce('div',
-                  {
-                    class: 'btn btn-default',
-                    onClick: () => {
-                      this.cameraMode = !this.cameraMode;
-                      this.refreshDOM();
-                    }
-                  },
-                  'Use Camera'
-                ) : null
             ] :
             [
               this.ce('div',
