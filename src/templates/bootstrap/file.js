@@ -50,7 +50,7 @@ export default {
   <button class="btn btn-primary" ref="galleryButton"><i class="fa fa-book"></i> Gallery</button>
   <button class="btn btn-primary" ref="cameraButton"><i class="fa fa-camera"></i> Camera</button>
 </div>
-{% } else if (!self.cameraMode || !component.image) { %}
+{% } else if (!self.cameraMode) { %}
 <div class="fileSelector" ref="fileDrop">
   <i class="{{iconClass('cloud-upload')}}"></i> Drop files to attach, 
     {% if (component.image) { %}
