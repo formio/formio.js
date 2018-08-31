@@ -305,7 +305,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   takePicture() {
-    const width = this.component.webcamSize || 320;
+    const width = parseInt(this.component.webcamSize) || 320;
     const height = this.video.videoHeight / (this.video.videoWidth / width);
     this.canvas.getContext('2d').drawImage(this.video, 0, 0, width, height);
     this.canvas.toBlob(blob => {
