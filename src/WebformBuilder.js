@@ -590,12 +590,14 @@ export default class WebformBuilder extends Component {
       return console.log('Session storage is not supported in this browser.');
     }
     this.removeClass(this.refs.form, 'builder-paste-mode');
-    const data = window.sessionStorage.getItem('formio.clipboard');
-    if (data) {
-      const schema = JSON.parse(data);
-      window.sessionStorage.removeItem('formio.clipboard');
-      component.parent.addComponent(schema, false, false, component.element.nextSibling);
-      this.form = this.schema;
+    if (window.sessionStorage) {
+      const data = window.sessionStorage.getItem('formio.clipboard');
+      if (data) {
+        const schema = JSON.parse(data);
+        window.sessionStorage.removeItem('formio.clipboard');
+        component.parent.addComponent(schema, false, false, component.element.nextSibling);
+        this.form = this.schema;
+      }
     }
   }
 
