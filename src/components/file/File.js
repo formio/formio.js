@@ -151,7 +151,7 @@ export default class FileComponent extends Component {
       return;
     }
 
-    const width = this.component.webcamSize || 320;
+    const width = parseInt(this.component.webcamSize) || 320;
     const height = this.refs.videoPlayer.videoHeight / (this.refs.videoPlayer.videoWidth / width);
     this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0, width, height);
     this.refs.videoCanvas.toBlob(blob => {
