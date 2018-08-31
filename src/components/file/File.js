@@ -415,7 +415,6 @@ export default class FileComponent extends BaseComponent {
                     onClick: () => {
                       this.cameraMode = !this.cameraMode;
                       this.refreshDOM();
-                      this.startVideo();
                     }
                   },
                   'Use Camera'
