@@ -63,6 +63,26 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    key: 'webcam',
+    label: 'Enable web camera',
+    tooltip: 'This will allow using an attached camera to directly take a picture instead of uploading an existing file.',
+    weight: 32
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'webcamSize',
+    label: 'Webcam Width',
+    placeholder: '320',
+    tooltip: 'The webcam size for taking pictures.',
+    weight: 38,
+    conditional: {
+      json: { '==': [{ var: 'data.webcam' }, true] }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'filePattern',

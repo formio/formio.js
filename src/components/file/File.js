@@ -272,8 +272,8 @@ export default class FileComponent extends BaseComponent {
   }
 
   startVideo() {
-    const width = 320;
-    const height = 240;
+    const width = parseInt(this.component.webcamSize) || 320;
+    const height = width * 3 / 4;
     navigator.getMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
@@ -305,7 +305,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   takePicture() {
-    const width = 320;
+    const width = parseInt(this.component.webcamSize) || 320;
     const height = this.video.videoHeight / (this.video.videoWidth / width);
     this.canvas.getContext('2d').drawImage(this.video, 0, 0, width, height);
     this.canvas.toBlob(blob => {
@@ -379,10 +379,10 @@ export default class FileComponent extends BaseComponent {
     }
 
     // If this is disabled or a single value with a value, don't show the upload div.
-    return this.ce('div', {},
+    const render = this.ce('div', {},
       (
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-          !this.cameraMode || !this.component.image ?
+          !this.cameraMode ?
             [
               this.ce('div',
                 {
@@ -405,21 +405,25 @@ export default class FileComponent extends BaseComponent {
                 [
                   this.ce('i', { class: this.iconClass('cloud-upload') }),
                   this.text(' Drop files to attach, or '),
-                  this.buildBrowseLink()
+                  this.buildBrowseLink(),
+                  this.component.webcam ?
+                    [
+                      this.text(', or '),
+                      this.ce('a',
+                        {
+                          href: '#',
+                          title: 'Use Web Camera',
+                          onClick: (event) => {
+                            event.preventDefault();
+                            this.cameraMode = !this.cameraMode;
+                            this.refreshDOM();
+                          }
+                        },
+                        this.ce('i', { class: this.iconClass('camera') })
+                      )
+                    ] : null
                 ]
               ),
-              this.component.image ?
-                this.ce('div',
-                  {
-                    class: 'btn btn-default',
-                    onClick: () => {
-                      this.cameraMode = !this.cameraMode;
-                      this.refreshDOM();
-                      this.startVideo();
-                    }
-                  },
-                  'Use Camera'
-                ) : null
             ] :
             [
               this.ce('div',
@@ -457,6 +461,10 @@ export default class FileComponent extends BaseComponent {
           this.ce('div')
       )
     );
+    if (this.cameraMode) {
+      this.startVideo();
+    }
+    return render;
   }
 
   buildBrowseLink() {
