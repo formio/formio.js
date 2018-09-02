@@ -567,14 +567,12 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
-      groupBodyClass += ' in';
-      if (!hasBootstrapJS) {
-        groupBodyClass += ' show';
-      }
+      groupBodyClass += ' in show';
     }
 
     info.panel = this.ce('div', {
       class: groupBodyClass,
+      'data-parent': `#${container.id}`,
       id: `group-${info.key}`
     }, info.body);
 

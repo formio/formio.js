@@ -391,6 +391,7 @@ export default class BaseComponent extends Component {
         (key === 'key') ||
         (key === 'label') ||
         (key === 'input') ||
+        (key === 'tableView') ||
         !defaultSchema.hasOwnProperty(key) ||
         _.isArray(val) ||
         (val !== defaultSchema[key])

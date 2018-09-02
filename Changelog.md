@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.4
+### Added
+ - Better settings for webcam and make it initialize properly when switching modes.
+
+### Fixed
+ - The form builder to hide sections when the others are clicked for Bootstrap 4.
+ - The form builder to show the default section at first.
+ - The signature refresh button to use the correct class for bootstrap 4.
+ - Style problem where hidden labels would add a space to the top of the control.
+
 ## 3.4.3
 ### Fixed
  - Issues where sessionStorage was making the renderer crash for IE browsers.
