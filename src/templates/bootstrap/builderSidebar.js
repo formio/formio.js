@@ -8,7 +8,7 @@ export default {
         <button class="btn btn-block btn-default builder-group-button" data-toggle="collapse" data-parent="#builder-sidebar-{{id}}" data-target="#group-{{groupKey}}" ref="sidebar-anchor">{{groups[groupKey].title}}</button>
       </h5>
     </div>
-    <div class="panel-collapse collapse {{groups[groupKey].default ? ' in' : ''}}" data-default="{{groups[groupKey].default}}" id="group-{{groupKey}}" ref="sidebar-group">
+    <div class="panel-collapse collapse {{groups[groupKey].default ? ' show' : ''}}" data-default="{{groups[groupKey].default}}" id="group-{{groupKey}}" ref="sidebar-group">
       <div id="group-container-{{groupKey}}" class="card-body no-drop p-2" ref="sidebar-container">
         {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}
         <span data-type="{{componentKey}}" class="btn btn-primary btn-sm btn-block formcomponent drag-copy">
@@ -25,7 +25,7 @@ export default {
                 <button class="btn btn-block builder-group-button" data-toggle="collapse" data-parent="#builder-sidebar-{{id}}" data-target="#group-{{subgroupKey}}" ref="sidebar-anchor">{{groups[groupKey].groups[subgroupKey].title}}</button>
               </h5>
             </div>
-            <div class="panel-collapse collapse {{groups[groupKey].groups[subgroupKey].default ? ' in' : ''}}" id="group-{{subgroupKey}}" ref="sidebar-group">
+            <div class="panel-collapse collapse {{groups[groupKey].groups[subgroupKey].default ? ' show' : ''}}" id="group-{{subgroupKey}}" ref="sidebar-group">
               <div id="group-container-{{subgroupKey}}" class="card-body no-drop p-2" ref="sidebar-container">
                 {% groups[groupKey].groups[subgroupKey].componentOrder.forEach(function(componentKey) { %}
                 <span data-type="{{componentKey}}" class="btn btn-primary btn-sm btn-block formcomponent drag-copy">

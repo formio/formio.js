@@ -456,6 +456,7 @@ export default class Component extends Widget {
         (key === 'key') ||
         (key === 'label') ||
         (key === 'input') ||
+        (key === 'tableView') ||
         !defaultSchema.hasOwnProperty(key) ||
         _.isArray(val) ||
         (val !== defaultSchema[key])
