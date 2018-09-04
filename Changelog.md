@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.4.5
 ### Fixed
  - Issues with the setHidden not working since they were not added to containers.
+ 
+### Changed
+ - Upgrade flatpickr@4.5.2, ace@1.4.1
 
 ## 3.4.4
 ### Added
