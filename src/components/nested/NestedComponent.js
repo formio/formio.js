@@ -182,7 +182,6 @@ export default class NestedComponent extends BaseComponent {
     if (noAdd) {
       return comp;
     }
-    this.setHidden(comp);
     element = this.hook('addComponent', element, comp, this);
     const compElement = comp.getElement();
     if (!compElement) {
@@ -195,6 +194,7 @@ export default class NestedComponent extends BaseComponent {
     else {
       element.appendChild(compElement);
     }
+    this.setHidden(comp);
     return comp;
   }
 

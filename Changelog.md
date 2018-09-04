@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.5
+### Fixed
+ - Issues with the setHidden not working since they were not added to containers.
+
 ## 3.4.4
 ### Added
  - Better settings for webcam and make it initialize properly when switching modes.
