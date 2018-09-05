@@ -406,7 +406,16 @@ export default class Formio {
    * @return {*}
    */
   getToken(options) {
-    return Formio.getToken(options);
+    return Formio.getToken(Object.assign({ formio: this }, this.options, options));
+  }
+
+  /**
+   * Sets the JWT token for this instance.
+   *
+   * @return {*}
+   */
+  setToken(token, options) {
+    return Formio.setToken(token, Object.assign({ formio: this }, this.options, options));
   }
 
   /**
