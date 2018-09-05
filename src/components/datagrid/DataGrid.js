@@ -236,7 +236,7 @@ export default class DataGridComponent extends NestedComponent {
     var container;
     const isVisible = this.visibleColumns &&
       (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
-    if (isVisible) {
+    if (isVisible || this.options.builder) {
       container = this.ce('td');
       container.noDrop = true;
     }
@@ -251,7 +251,7 @@ export default class DataGridComponent extends NestedComponent {
     comp.rowIndex = rowIndex;
     this.hook('addComponent', container, comp, this);
     this.rows[rowIndex][column.key] = comp;
-    if (isVisible) {
+    if (isVisible || this.options.builder) {
       container.appendChild(comp.getElement());
       return container;
     }
