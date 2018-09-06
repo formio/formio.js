@@ -436,6 +436,11 @@ export default class WebformBuilder extends Component {
     }
   }
 
+  setForm(form) {
+    this.emit('change', form);
+    return super.setForm(form);
+  }
+
   removeComponent(component, parent) {
     if (!parent) {
       return;
