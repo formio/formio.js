@@ -1,3 +1,5 @@
+/* global $ */
+
 import _ from 'lodash';
 import 'whatwg-fetch';
 import jsonLogic from 'json-logic-js';
@@ -1152,4 +1154,16 @@ export function uniqueKey(map, base) {
     newKey = iterateKey(newKey);
   }
   return newKey;
+}
+
+/**
+ * Determines the major version number of bootstrap.
+ *
+ * @return {number}
+ */
+export function bootstrapVersion() {
+  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
+    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  return 0;
 }
