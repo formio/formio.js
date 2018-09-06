@@ -67,6 +67,9 @@ export default class PDF extends Webform {
             return;
           }
           if (!this.downloadButton) {
+            if (this.options.primaryProject) {
+              url += `&project=${this.options.primaryProject}`;
+            }
             this.downloadButton = this.ce('a', {
               href: url,
               target: '_blank',
