@@ -108,7 +108,11 @@ export default class TabsComponent extends NestedComponent {
     }
 
     this.currentTab = index;
-this.addTabComponents(index);
+    this.addTabComponents(index);
+
+    if (this.tabLinks.length <= index) {
+      return;
+    }
 
     _.each(this.tabLinks, (tabLink) => {
       this.removeClass(tabLink, 'active');
@@ -122,11 +126,11 @@ this.addTabComponents(index);
     this.addClass(this.tabs[index], 'active');
   }
 
-    /**
- * Renders the tab's content
- *
- * @param tabIndex
- */
+  /**
+* Renders the tab's content
+*
+* @param tabIndex
+*/
   addTabComponents(tabIndex) {
     // Get the current tab.
     const tab = this.component.components[tabIndex];
@@ -136,7 +140,7 @@ this.addTabComponents(index);
     _.each(components, (component) => this.addComponent(component, this.tabs[tabIndex]));
     this.checkConditions(this.root ? this.root.data : {});
   }
-  
+
   /**
    * Make sure to include the tab on the component as it is added.
    *
@@ -156,10 +160,10 @@ this.addTabComponents(index);
    */
   addComponents() {
     this.setTab(this.currentTab);
-	_.each(this.tabs, (tab, index) => {
-        if (index !== this.currentTab) {
-          this.addTabComponents(index);
-        }
-      });
+    _.each(this.tabs, (tab, index) => {
+      if (index !== this.currentTab) {
+        this.addTabComponents(index);
+      }
+    });
   }
 }
