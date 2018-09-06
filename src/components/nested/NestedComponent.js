@@ -422,10 +422,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   setHidden(component) {
-    if (component.components && component.components.length) {
-      component.hideComponents(this.hidden);
-    }
-    else if (component.component.hidden) {
+    if (component.component.hidden) {
       component.visible = false;
     }
     else if (this.hidden && this.hidden.includes(component.key)) {
