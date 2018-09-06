@@ -52,6 +52,10 @@ export default class NestedComponent extends Component {
       else if (forceHide || (isVisible && !conditionallyVisible)) {
         component.visible = false;
       }
+      // If hiding a nested component, clear all errors below.
+      if (!component.visible) {
+        component.error = '';
+      }
       component.parentVisible = isVisible;
     });
   }

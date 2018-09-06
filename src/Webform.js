@@ -813,7 +813,7 @@ export default class Webform extends NestedComponent {
         this.alert = null;
       }
       catch (err) {
-        // ingore
+        // ignore
       }
     }
     if (message) {
