@@ -1446,7 +1446,9 @@ export default class Component extends Widget {
    * Deletes the value of the component.
    */
   deleteValue() {
-    this.setValue(null);
+    this.setValue(null, {
+      noUpdateEvent: true
+    });
     _.unset(this.data, this.key);
   }
 
