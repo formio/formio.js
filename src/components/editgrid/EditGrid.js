@@ -247,6 +247,15 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
+  clearErrors(rowIndex) {
+    if (this.editRows[rowIndex] && Array.isArray(this.editRows[rowIndex].components)) {
+      this.editRows[rowIndex].components.forEach(comp => {
+        comp.setPristine(true);
+        comp.setCustomValidity('');
+      });
+    }
+  }
+
   cancelRow(rowIndex) {
     if (this.options.readOnly) {
       this.editRows[rowIndex].dirty = false;
@@ -258,8 +267,10 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows[rowIndex].dirty = false;
       this.editRows[rowIndex].isOpen = false;
       this.editRows[rowIndex].data = this.dataValue[rowIndex];
+      this.clearErrors(rowIndex);
     }
     else {
+      this.clearErrors(rowIndex);
       this.editRows.splice(rowIndex, 1);
     }
 
