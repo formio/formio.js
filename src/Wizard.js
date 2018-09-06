@@ -47,7 +47,7 @@ export default class Wizard extends Webform {
       this.page = num;
       return super.setForm(this.currentPage());
     }
-    else if (this.wizard.full) {
+    else if (this.wizard.full || !this.pages.length) {
       return super.setForm(this.getWizard());
     }
     return Promise.reject('Page not found');

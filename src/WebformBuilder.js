@@ -44,10 +44,10 @@ export default class WebformBuilder extends Webform {
             type: 'htmlelement',
             internal: true,
             tag: 'div',
-            className: 'alert alert-info',
+            className: 'drag-and-drop-alert alert alert-info',
             attrs: [
               { attr: 'id', value: `${parent.id}-placeholder` },
-              { attr: 'style', value: 'text-align:center; margin-bottom: 0px;' },
+              { attr: 'style', value: 'text-align:center;' },
               { attr: 'role', value: 'alert' }
             ],
             content: 'Drag and Drop a form component'
@@ -314,8 +314,8 @@ export default class WebformBuilder extends Webform {
           }, [
             this.ce('div', {
               class: 'card-header panel-heading'
-            }, this.ce('h3', {
-              class: 'card-title panel-title'
+            }, this.ce('h4', {
+              class: 'card-title panel-title mb-0'
             }, this.t('Preview'))),
             this.ce('div', {
               class: 'card-body panel-body'
