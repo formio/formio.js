@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.8
+### Fixed
+ - Problems where the builder sidebar would not collapse the first group causing style issues.
+ - FOR-1618: Fixed problems with infinite refresh loops when clearOnHide is used.
+ - FOR-1670: Fixed issue in EditGrid where errors would persist and not get cleared when a row is canceled.
+ - FOR-1665: Fixed issues where default hidden states would not be set for nested conditionals.
+ - Clear errors when components are hidden.
+
+### Added
+ - Option that adds the ability to add primary project id to the pdf download icon.
+ - A 'change' event to the webform builder anytime the schema changes.
+
 ## 3.4.6, 3.4.7
 ### Fixed
  - Cosmetic changes with Bootstrap 4
