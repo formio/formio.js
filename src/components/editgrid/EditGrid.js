@@ -320,7 +320,7 @@ export default class EditGridComponent extends NestedComponent {
     this.buildTable();
   }
 
-  clearErros(rowIndex) {
+  clearErrors(rowIndex) {
     if (this.editRows[rowIndex] && Array.isArray(this.editRows[rowIndex].components)) {
       this.editRows[rowIndex].components.forEach(comp => {
         comp.setPristine(true);
@@ -340,10 +340,10 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows[rowIndex].dirty = false;
       this.editRows[rowIndex].isOpen = false;
       this.editRows[rowIndex].data = this.dataValue[rowIndex];
-      this.clearErros(rowIndex);
+      this.clearErrors(rowIndex);
     }
     else {
-      this.clearErros(rowIndex);
+      this.clearErrors(rowIndex);
       this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
     }
