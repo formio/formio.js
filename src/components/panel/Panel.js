@@ -47,7 +47,7 @@ export default class PanelComponent extends NestedComponent {
 
   build() {
     this.component.theme = this.component.theme || 'default';
-    let panelClass = `card border-${this.bootstrap4Theme(this.component.theme)} `;
+    let panelClass = `mb-2 card border-${this.bootstrap4Theme(this.component.theme)} `;
     panelClass += `panel panel-${this.component.theme} `;
     panelClass += this.component.customClass;
     this.element = this.ce('div', {

@@ -93,9 +93,11 @@ export default class WizardBuilder extends WebformBuilder {
 
     this.empty(this.pageBar);
     _.each(pages, (page, index) => {
-      const pageLink = this.ce('a', {
+      const pageLink = this.ce('span', {
         title: page.title,
-        class: (index === this.currentPage) ? 'label label-primary' : 'label label-info'
+        class: (index === this.currentPage) ?
+          'mr-2 badge badge-primary label label-primary wizard-page-label' :
+          'mr-2 badge badge-info label label-info wizard-page-label'
       }, this.text(page.title));
       this.pageBar.appendChild(this.ce('li', null, pageLink));
       this.addEventListener(pageLink, 'click', (event) => {
@@ -104,9 +106,9 @@ export default class WizardBuilder extends WebformBuilder {
       });
     });
 
-    const newPage = this.ce('a', {
+    const newPage = this.ce('span', {
       title: this.t('Create Page'),
-      class: 'label label-success'
+      class: 'mr-2 badge badge-success label label-success wizard-page-label'
     }, [
       this.getIcon('plus'),
       this.text(' PAGE')
