@@ -1914,7 +1914,9 @@ export default class BaseComponent extends Component {
    * Deletes the value of the component.
    */
   deleteValue() {
-    this.setValue(null);
+    this.setValue(null, {
+      noUpdateEvent: true
+    });
     _.unset(this.data, this.key);
   }
 
