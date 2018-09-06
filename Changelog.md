@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.4.6, 3.4.7
+### Fixed
+ - Cosmetic changes with Bootstrap 4
+ - Fix namespacing of user tokens.
+
+### Changed
+ - i18next@11.7.0, sinon@6.2.0
+
 ## 3.4.5
 ### Fixed
  - Issues with the setHidden not working since they were not added to containers.
