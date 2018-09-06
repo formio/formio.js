@@ -353,6 +353,12 @@ export default class NestedComponent extends BaseComponent {
         }
       });
     }
+    // If hiding a nested component, clear all errors below.
+    if (!shown) {
+      this.getAllComponents().forEach(component => {
+        component.error = '';
+      });
+    }
     return shown;
   }
 
