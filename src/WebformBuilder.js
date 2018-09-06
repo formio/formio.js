@@ -1,11 +1,9 @@
-/* global $ */
-
 import Webform from './Webform';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import { getComponent } from './utils/utils';
+import { getComponent, bootstrapVersion } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -512,11 +510,8 @@ export default class WebformBuilder extends Webform {
       'data-target': `#group-${info.key}`
     }, this.text(info.title));
 
-    // See if we have bootstrap.js installed.
-    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
-
     // Add a listener when it is clicked.
-    if (!hasBootstrapJS) {
+    if (!bootstrapVersion()) {
       this.addEventListener(groupAnchor, 'click', (event) => {
         event.preventDefault();
         const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
@@ -567,7 +562,17 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
-      groupBodyClass += ' in show';
+      switch (bootstrapVersion()) {
+        case 4:
+          groupBodyClass += ' show';
+          break;
+        case 3:
+          groupBodyClass += ' in';
+          break;
+        default:
+          groupBodyClass += ' in show';
+          break;
+      }
     }
 
     info.panel = this.ce('div', {
