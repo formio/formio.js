@@ -14,6 +14,7 @@ import FormComponent from './form/Form';
 import TextFieldComponent from './textfield/TextField';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import EmailComponent from './email/Email';
+import UrlComponent from './url/Url';
 import TimeComponent from './time/Time';
 import CheckBoxComponent from './checkbox/Checkbox';
 import CurrencyComponent from './currency/Currency';
@@ -55,6 +56,7 @@ export default {
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
+  url: UrlComponent,
   time: TimeComponent,
   checkbox: CheckBoxComponent,
   currency: CurrencyComponent,
