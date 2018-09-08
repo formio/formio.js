@@ -6,10 +6,7 @@ export default class UrlComponent extends TextFieldComponent {
       type: 'url',
       label: 'Url',
       key: 'url',
-      inputType: 'url',
-      kickbox: {
-        enabled: false
-      }
+      inputType: 'url'
     }, ...extend);
   }
 
