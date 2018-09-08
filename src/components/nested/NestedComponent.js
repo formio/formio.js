@@ -433,6 +433,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   destroyComponents(state) {
+    state = state || {};
     state.components = state.components || {};
     const components = this.components.slice();
     components.forEach((comp) => {
