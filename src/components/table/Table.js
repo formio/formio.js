@@ -73,7 +73,7 @@ export default class TableComponent extends NestedComponent {
    * @param element
    * @param data
    */
-  addComponents(element, data) {
+  addComponents(element, data, options, state) {
     // Build the body.
     this.tbody = this.ce('tbody');
     _.each(this.component.rows, (row, rowIndex) => {
@@ -83,7 +83,7 @@ export default class TableComponent extends NestedComponent {
           id: `${this.id}-${rowIndex}-${colIndex}`
         });
         _.each(column.components, (comp) => {
-          const component = this.addComponent(comp, td, data);
+          const component = this.addComponent(comp, td, data, null, null, state);
           component.tableRow = rowIndex;
           component.tableColumn = colIndex;
         });
@@ -125,7 +125,7 @@ export default class TableComponent extends NestedComponent {
     }
   }
 
-  build() {
+  build(state) {
     this.element = this.ce('div', {
       id: this.id,
       class: `${this.className}  table-responsive`,
@@ -143,7 +143,7 @@ export default class TableComponent extends NestedComponent {
     });
 
     this.buildHeader();
-    this.addComponents();
+    this.addComponents(null, null, null, state);
     this.table.appendChild(this.tbody);
     this.element.appendChild(this.table);
   }

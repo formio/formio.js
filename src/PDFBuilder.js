@@ -55,8 +55,7 @@ export default class PDFBuilder extends WebformBuilder {
 
   render() {
     return this.onElement.then(() => {
-      this.clear();
-      this.build();
+      this.build(this.clear());
       this.isBuilt = true;
       this.on('resetForm', () => this.resetValue());
       this.on('refreshData', () => this.updateValue());
@@ -91,8 +90,8 @@ export default class PDFBuilder extends WebformBuilder {
     return comp;
   }
 
-  addComponent(component, element, data, before) {
-    return super.addComponent(component, element, data, before, true);
+  addComponent(component, element, data, before, noAdd, state) {
+    return super.addComponent(component, element, data, before, true, state);
   }
 
   deleteComponent(component) {
@@ -120,7 +119,9 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   clear() {
-    this.destroy();
+    const state = {};
+    this.destroy(state);
+    return state;
   }
   redraw() {
     if (this.pdfForm) {

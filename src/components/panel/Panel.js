@@ -45,7 +45,7 @@ export default class PanelComponent extends NestedComponent {
     return `panel panel-${this.component.theme} ${super.className}`;
   }
 
-  build() {
+  build(state) {
     this.component.theme = this.component.theme || 'default';
     let panelClass = `mb-2 card border-${this.bootstrap4Theme(this.component.theme)} `;
     panelClass += `panel panel-${this.component.theme} `;
@@ -75,7 +75,7 @@ export default class PanelComponent extends NestedComponent {
       this.createTooltip(this.panelBody, this.component, `${this.iconClass('question-sign')} text-muted formio-hide-label-panel-tooltip`);
     }
 
-    this.addComponents();
+    this.addComponents(null, null, null, state);
     this.element.appendChild(this.panelBody);
     this.setCollapsed();
   }

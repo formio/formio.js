@@ -121,12 +121,12 @@ export default class DataGridComponent extends NestedComponent {
 
   buildRows() {
     this.setVisibleComponents();
-    this.destroy();
+    const state = this.destroy();
     this.empty(this.tableElement);
 
     // Build the rows.
     const tableRows = [];
-    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex)));
+    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state)));
 
     // Create the header (must happen after build rows to get correct column length)
     const header = this.createHeader();
@@ -196,7 +196,7 @@ export default class DataGridComponent extends NestedComponent {
     return this.emptyValue;
   }
 
-  buildRow(row, index) {
+  buildRow(row, index, state) {
     this.rows[index] = {};
     let lastColumn = null;
     if (this.hasRemoveButtons()) {
@@ -216,23 +216,30 @@ export default class DataGridComponent extends NestedComponent {
     }
     return this.ce('tr', null,
       [
-        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
+        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index, state)),
         lastColumn
       ]
     );
   }
 
-  destroyRows() {
-    _.each(this.rows, row => _.each(row, col => this.removeComponent(col, row)));
+  destroyRows(state) {
+    state.components = state.components || {};
+    _.each(this.rows, row => _.each(row, col => {
+      const compState = this.removeComponent(col, row);
+      if (col.key && compState) {
+        state.components[col.key] = compState;
+      }
+    }));
     this.rows = [];
   }
 
-  destroy(all) {
-    super.destroy(all);
-    this.destroyRows();
+  destroy() {
+    const state = super.destroy() || {};
+    this.destroyRows(state);
+    return state;
   }
 
-  buildComponent(col, colIndex, row, rowIndex) {
+  buildComponent(col, colIndex, row, rowIndex, state) {
     var container;
     const isVisible = this.visibleColumns &&
       (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
@@ -247,7 +254,7 @@ export default class DataGridComponent extends NestedComponent {
     options.inDataGrid = true;
     const comp = this.createComponent(_.assign({}, column, {
       row: options.row
-    }), options, row);
+    }), options, row, null, state);
     comp.rowIndex = rowIndex;
     this.hook('addComponent', container, comp, this);
     this.rows[rowIndex][column.key] = comp;

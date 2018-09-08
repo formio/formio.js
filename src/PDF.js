@@ -85,9 +85,9 @@ export default class PDF extends Webform {
     });
   }
 
-  addComponent(component, element, data, before) {
+  addComponent(component, element, data, before, noAdd, state) {
     // Never add the component to the DOM.
-    super.addComponent(component, element, data, before, true);
+    super.addComponent(component, element, data, before, true, state);
   }
 
   // Iframe should always be shown.

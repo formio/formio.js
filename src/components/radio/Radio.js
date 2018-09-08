@@ -213,8 +213,4 @@ export default class RadioComponent extends BaseComponent {
     }
     return changed;
   }
-
-  destroy() {
-    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-  }
 }

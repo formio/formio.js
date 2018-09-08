@@ -266,7 +266,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   destroy() {
-    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
+    super.destroy();
     this.removeShortcut();
   }
 }

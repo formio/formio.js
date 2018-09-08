@@ -36,7 +36,7 @@ export default class FieldsetComponent extends NestedComponent {
     return `form-group ${super.className}`;
   }
 
-  build() {
+  build(state) {
     this.element = this.ce('fieldset', {
       id: this.id,
       class: this.className
@@ -51,7 +51,7 @@ export default class FieldsetComponent extends NestedComponent {
     this.body = this.ce('div', {
       class: 'card-body'
     });
-    this.addComponents();
+    this.addComponents(null, null, null, state);
     this.element.appendChild(this.body);
     this.setCollapsed();
   }

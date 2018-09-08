@@ -58,12 +58,12 @@ export default class WizardBuilder extends WebformBuilder {
     this.redraw();
   }
 
-  addComponents(element, data) {
+  addComponents(element, data, options, state) {
     element = element || this.getContainer();
     data = data || this.data;
     const components = this.hook('addComponents', this.componentComponents, this);
     _.each(components, (component, index) => {
-      this.addComponent(component, element, data, null, (index !== this.currentPage));
+      this.addComponent(component, element, data, null, (index !== this.currentPage), state);
     });
   }
 

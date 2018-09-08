@@ -1343,8 +1343,7 @@ export default class BaseComponent extends Component {
     if (!this.isBuilt) {
       return;
     }
-    this.clear();
-    this.build();
+    this.build(this.clear());
   }
 
   destroyInputs() {
@@ -1368,8 +1367,9 @@ export default class BaseComponent extends Component {
    * Remove all event handlers.
    */
   destroy() {
-    super.destroy();
+    const state = super.destroy() || {};
     this.destroyInputs();
+    return state;
   }
 
   /**
@@ -2399,9 +2399,13 @@ export default class BaseComponent extends Component {
     }
   }
 
+  /**
+   * Destroys and clears a component and returns the current state.
+   */
   clear() {
-    this.destroy();
+    const state = this.destroy() || {};
     this.empty(this.getElement());
+    return state;
   }
 
   /**

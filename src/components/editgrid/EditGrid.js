@@ -73,9 +73,9 @@ export default class EditGridComponent extends NestedComponent {
     return [];
   }
 
-  build() {
+  build(state) {
     if (this.options.builder) {
-      return super.build(true);
+      return super.build(state, true);
     }
     this.createElement();
     this.createLabel(this.element);

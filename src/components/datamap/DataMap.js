@@ -83,9 +83,9 @@ export default class DataMapComponent extends NestedComponent {
     return [this.component.valueComponent];
   }
 
-  build() {
+  build(state) {
     if (this.options.builder) {
-      return super.build(true);
+      return super.build(state, true);
     }
     this.createElement();
     this.createLabel(this.element);
@@ -98,7 +98,7 @@ export default class DataMapComponent extends NestedComponent {
     this.tableElement = this.ce('table', {
       class: tableClass
     });
-    this.buildRows();
+    this.buildRows(state);
     this.element.appendChild(this.tableElement);
     this.createDescription(this.element);
   }
@@ -165,7 +165,7 @@ export default class DataMapComponent extends NestedComponent {
     ));
   }
 
-  buildRows() {
+  buildRows(state) {
     // Do not builder rows when in builder mode.
     if (this.options.builder) {
       return;
@@ -177,7 +177,7 @@ export default class DataMapComponent extends NestedComponent {
     this.rows = {};
     this.empty(this.tableElement);
     const tableRows = [];
-    _.each(this.dataValue, (value, key) => tableRows.push(this.buildRow(value, key)));
+    _.each(this.dataValue, (value, key) => tableRows.push(this.buildRow(value, key, state)));
     this.tableElement.appendChild(this.createHeader());
     this.tableElement.appendChild(this.ce('tbody', null, tableRows));
     this.tableElement.appendChild(this.ce('tfoot', null,
@@ -189,20 +189,20 @@ export default class DataMapComponent extends NestedComponent {
     ));
   }
 
-  createValueComponent() {
+  createValueComponent(state) {
     const container = this.ce('td', {
       class: 'col-9 col-sm-8'
     });
     const schema = this.component.valueComponent;
     schema.hideLabel = true;
-    const value = this.addComponent(schema, container, {}, null, null);
+    const value = this.addComponent(schema, container, {}, null, null, state);
     value.on('change', () => this.updateValue());
     return { value, container };
   }
 
-  buildRow(value, key) {
+  buildRow(value, key, state) {
     if (!this.rows[key]) {
-      this.rows[key] = this.createValueComponent();
+      this.rows[key] = this.createValueComponent(state);
     }
     const row = this.rows[key];
 

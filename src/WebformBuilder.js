@@ -459,10 +459,11 @@ export default class WebformBuilder extends Webform {
   }
 
   destroy() {
-    super.destroy();
+    const state = super.destroy();
     if (this.dragula) {
       this.dragula.destroy();
     }
+    return state;
   }
 
   /**
@@ -721,8 +722,8 @@ export default class WebformBuilder extends Webform {
   }
 
   clear() {
-    super.clear();
     this.dragContainers = [];
+    return super.clear();
   }
 
   addComponentTo(parent, schema, element, sibling) {
@@ -859,9 +860,9 @@ export default class WebformBuilder extends Webform {
     this.builderReadyResolve();
   }
 
-  build() {
+  build(state) {
     this.buildSidebar();
-    super.build();
+    super.build(state);
     this.updateDraggable();
     this.formReadyResolve();
   }
