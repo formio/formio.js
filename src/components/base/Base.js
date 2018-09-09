@@ -891,10 +891,6 @@ export default class BaseComponent extends Component {
     input.value = value;
   }
 
-  bootstrap4Theme(name) {
-    return (name === 'default') ? 'secondary' : name;
-  }
-
   /**
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The "Add New" button html element.
