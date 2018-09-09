@@ -1,6 +1,11 @@
 export default [
   {
-    weight: 10,
+    key: 'label',
+    hidden: true,
+    calculateValue: 'value = data.title'
+  },
+  {
+    weight: 1,
     type: 'textfield',
     input: true,
     placeholder: 'Panel Title',
