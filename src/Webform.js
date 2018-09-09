@@ -17,6 +17,7 @@ Formio.registerComponent = Components.setComponent;
 function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
+    icons: Formio.icons || '',
     i18next,
   });
   if (!options.events) {
