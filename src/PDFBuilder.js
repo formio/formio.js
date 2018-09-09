@@ -165,11 +165,6 @@ export default class PDFBuilder extends WebformBuilder {
     this.builderReadyResolve();
   }
 
-  destroy() {
-    this.removeEventListeners();
-    this.destroyComponents();
-  }
-
   build() {
     this.buildSidebar();
     if (!this.pdfForm) {
@@ -177,9 +172,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.pdfForm = new PDF(this.element, this.options);
       this.addClass(this.pdfForm.element, 'formio-pdf-builder');
     }
-    this.pdfForm.removeEventListeners(true);
-    this.pdfForm.events.removeAllListeners();
-    this.pdfForm.destroyComponents();
+    this.pdfForm.destroy();
     this.pdfForm.on('iframe-elementUpdate', schema => {
       const component = this.getComponentById(schema.id);
       if (component && component.component) {
