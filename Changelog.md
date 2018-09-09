@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.5.0
+### Fixed
+ - Problem where icon configurations would not get passed to sub forms.
+ - Issue when building tabs, they would reset to first tab.
+ - Adding data to add components when moving between tabs.
+ - Fixed a problem where clearOnHide would trigger when navigating between tabs.
+ - Fixed problem where extending forms would modify the Base forms.
+
+### Changed
+ - Hide the label settings for Panels since they have a title field.
+
+### Added
+ - URL component
+
 ## 3.4.8
 ### Fixed
  - Problems where the builder sidebar would not collapse the first group causing style issues.
