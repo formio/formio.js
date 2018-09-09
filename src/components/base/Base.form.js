@@ -1,5 +1,4 @@
 import _ from 'lodash';
-
 import BaseEditConditional from './editForm/Base.edit.conditional';
 import BaseEditData from './editForm/Base.edit.data';
 import BaseEditAPI from './editForm/Base.edit.api';
@@ -9,7 +8,7 @@ import BaseEditValidation from './editForm/Base.edit.validation';
 import EditFormUtils from './editForm/utils';
 
 export default function(...extend) {
-  const components = [
+  const components = _.cloneDeep([
     {
       type: 'tabs',
       key: 'tabs',
@@ -52,7 +51,7 @@ export default function(...extend) {
         }
       ]
     }
-  ].concat(extend.map((items) => ({
+  ]).concat(extend.map((items) => ({
     type: 'tabs',
     key: 'tabs',
     components: items
