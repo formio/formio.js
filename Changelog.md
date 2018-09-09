@@ -11,12 +11,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Adding data to add components when moving between tabs.
  - Fixed a problem where clearOnHide would trigger when navigating between tabs.
  - Fixed problem where extending forms would modify the Base forms.
+ - Panel style themes for Bootstrap 4 to be consistent with Bootstrap 3.
 
 ### Changed
  - Hide the label settings for Panels since they have a title field.
+ - Upgrade to Babel 8.0 compilations.
+ - Upgraded demo application to Bootstrap 4.
+ - Default size for EditGrid buttons to small.
 
 ### Added
  - URL component
+ - Ability to provide global icons using Formio.icons property.
 
 ## 3.4.8
 ### Fixed
