@@ -1579,7 +1579,7 @@ export default class BaseComponent extends Component {
    *
    * @param show
    */
-  show(show) {
+  show(show, noClear) {
     if (
       this.options.hide &&
       this.options.hide[this.component.key]
@@ -1603,7 +1603,9 @@ export default class BaseComponent extends Component {
 
     this._visible = show;
     this.showElement(show && !this.component.hidden);
-    this.clearOnHide(show);
+    if (!noClear) {
+      this.clearOnHide(show);
+    }
     return show;
   }
 
