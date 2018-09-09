@@ -13,6 +13,7 @@ require('./components/builder');
 export default class WebformBuilder extends Component {
   constructor(options) {
     super(null, options);
+    this.builderHeight = 0;
     this.schemas = {};
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
@@ -425,11 +426,11 @@ export default class WebformBuilder extends Component {
   scrollSidebar() {
     const newTop = (window.scrollY - this.sideBarTop) + this.sideBarScrollOffset;
     const shouldScroll = (newTop > 0);
-    if (shouldScroll && ((newTop + this.refs.sidebar.offsetHeight) < this.element.offsetHeight)) {
+    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.builderHeight)) {
       this.refs.sidebar.style.marginTop = `${newTop}px`;
     }
-    else if (shouldScroll && (this.refs.sidebar.offsetHeight < this.element.offsetHeight)) {
-      this.refs.sidebar.style.marginTop = `${this.element.offsetHeight - this.refs.sidebar.offsetHeight}px`;
+    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.builderHeight)) {
+      this.sideBarElement.style.marginTop = `${this.builderHeight - this.sideBarElement.offsetHeight}px`;
     }
     else {
       this.refs.sidebar.style.marginTop = '0px';
@@ -438,7 +439,10 @@ export default class WebformBuilder extends Component {
 
   setForm(form) {
     this.emit('change', form);
-    return super.setForm(form);
+    return super.setForm(form).then(retVal => {
+      setTimeout(() => (this.builderHeight = this.element.offsetHeight), 200);
+      return retVal;
+    });
   }
 
   removeComponent(component, parent) {
