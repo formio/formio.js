@@ -1,26 +1,32 @@
 {
-  "_from": "bootswatch@^3.3.7",
-  "_id": "bootswatch@3.3.7",
+  "_args": [
+    [
+      "bootswatch@4.1.3",
+      "/Users/travistidwell/Documents/formio/modules/formio.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "bootswatch@4.1.3",
+  "_id": "bootswatch@4.1.3",
   "_inBundle": false,
-  "_integrity": "sha1-62+amoUjuHpwbqkd7sPg1+qoqx8=",
+  "_integrity": "sha1-MONyOxn6iVaM/83JyJQ7RponRek=",
   "_location": "/bootswatch",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "bootswatch@^3.3.7",
+    "raw": "bootswatch@4.1.3",
     "name": "bootswatch",
     "escapedName": "bootswatch",
-    "rawSpec": "^3.3.7",
+    "rawSpec": "4.1.3",
     "saveSpec": null,
-    "fetchSpec": "^3.3.7"
+    "fetchSpec": "4.1.3"
   },
   "_requiredBy": [
     "#DEV:/"
   ],
-  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-3.3.7.tgz",
-  "_shasum": "eb6f9a9a8523b87a706ea91deec3e0d7eaa8ab1f",
-  "_spec": "bootswatch@^3.3.7",
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.1.3.tgz",
+  "_spec": "4.1.3",
   "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Thomas Park"
@@ -28,29 +34,38 @@
   "bugs": {
     "url": "https://github.com/thomaspark/bootswatch/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
+  "dependencies": {},
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
-    "bower": "~1.2.8",
-    "grunt": "~0.4.2",
-    "grunt-autoprefixer": "~1.0.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-connect": "~0.8.0",
-    "grunt-contrib-less": "~0.9.0",
-    "grunt-contrib-sass": "~0.7.4",
-    "grunt-contrib-watch": "~0.5.1"
+    "autoprefixer": "^7.1.2",
+    "bootstrap": "^4.1.3",
+    "font-awesome": "~4.7.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^1.0.1",
+    "grunt-sass": "^2.0.0",
+    "jquery": ">=1.9.1",
+    "popper.js": "^1.14.0",
+    "postcss-cli": "^4.1.0",
+    "postcss-flexbugs-fixes": "^2.0.0"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">=6"
   },
-  "homepage": "http://bootswatch.com",
+  "homepage": "https://bootswatch.com",
   "license": "MIT",
   "name": "bootswatch",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thomaspark/bootswatch.git"
   },
-  "version": "3.3.7"
+  "scripts": {
+    "postcss": "postcss --no-map --use autoprefixer --config build/js/postcss.js --replace dist/*/bootstrap.css"
+  },
+  "version": "4.1.3"
 }

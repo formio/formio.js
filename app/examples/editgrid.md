@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 221
 ---
-### Edit Grid
 The Edit Grid is very similar to the Data Grid, but allows you to view the whole form within for each new item, and then
 constructs as table view as you add new rows.
 
@@ -18,26 +17,26 @@ Formio.createForm(document.getElementById('formio'), {
         input: true,
         templates: {
           header: '' +
-            '<div class="row"> \n' +
-            '{% raw %}  {% util.eachComponent(components, function(component) { %} \n{% endraw %}' +
-            '    <div class="col-sm-2"> \n' +
-            '{% raw %}      <strong>{{ component.label }}</strong> \n{% endraw %}' +
-            '    </div> \n' +
-            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '<div class="row">' +
+            '{% raw %}  {% util.eachComponent(components, function(component) { %} {% endraw %}' +
+            '    <div class="col-sm-2">' +
+            '{% raw %}      <strong>{{ component.label }}</strong>{% endraw %}' +
+            '    </div>' +
+            '{% raw %}  {% }) %}{% endraw %}' +
             '</div>',
           row: '' +
-            '<div class="row"> \n' +
-            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
-            '    <div class="col-sm-2"> \n' +
-            '{% raw %}      {{ row[component.key] }} \n{% endraw %}' +
-            '    </div> \n' +
-            '{% raw %}  {% }) %} \n{% endraw %}' +
-            '  <div class="col-sm-2"> \n' +
-            '    <div class="btn-group pull-right"> \n' +
-            '      <div class="btn btn-default editRow">Edit</div> \n' +
-            '      <div class="btn btn-danger removeRow">Delete</div> \n' +
-            '    </div> \n' +
-            '  </div> \n' +
+            '<div class="row">' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %}{% endraw %}' +
+            '    <div class="col-sm-2">' +
+            '{% raw %}      {{ row[component.key] }}{% endraw %}' +
+            '    </div>' +
+            '{% raw %}  {% }) %}{% endraw %}' +
+            '  <div class="col-sm-2">' +
+            '    <div class="btn-group pull-right">' +
+            '      <div class="btn btn-default btn-sm editRow"><i class="fa fa-edit"></i></div>' +
+            '      <div class="btn btn-danger btn-sm removeRow"><i class="fa fa-trash"></i></div>' +
+            '    </div>' +
+            '  </div>' +
             '</div>',
           footer: ''
         },
@@ -148,7 +147,7 @@ Formio.createForm(document.getElementById('formio'), {
 ````
 
 <h3>Result</h3>
-<div class='well'>
+<div class='card card-body bg-light'>
 <div id='formio'></div>
 <script type='text/javascript'>
 Formio.createForm(document.getElementById('formio'), {
@@ -161,26 +160,26 @@ Formio.createForm(document.getElementById('formio'), {
         removeRow: 'Cancel',
         templates: {
           header: '' +
-            '<div class="row"> \n' +
-            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
-            '    <div class="col-sm-2"> \n' +
-            '{% raw %}      <strong>{{ component.label }}</strong> \n{% endraw %}' +
-            '    </div> \n' +
-            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '<div class="row">' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %}{% endraw %}' +
+            '    <div class="col-sm-2">' +
+            '{% raw %}      <strong>{{ component.label }}</strong>{% endraw %}' +
+            '    </div>' +
+            '{% raw %}  {% }) %}{% endraw %}' +
             '</div>',
           row: '' +
-            '<div class="row"> \n' +
-            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
-            '    <div class="col-sm-2"> \n' +
-            '{% raw %}      {{ row[component.key] }} \n{% endraw %}' +
-            '    </div> \n' +
-            '{% raw %}  {% }) %} \n{% endraw %}' +
-            '  <div class="col-sm-2"> \n' +
-            '    <div class="btn-group pull-right"> \n' +
-            '      <div class="btn btn-default editRow">Edit</div> \n' +
-            '      <div class="btn btn-danger removeRow">Delete</div> \n' +
-            '    </div> \n' +
-            '  </div> \n' +
+            '<div class="row">' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %}{% endraw %}' +
+            '    <div class="col-sm-2">' +
+            '{% raw %}      {{ row[component.key] }}{% endraw %}' +
+            '    </div>' +
+            '{% raw %}  {% }) %}{% endraw %}' +
+            '  <div class="col-sm-2">' +
+            '    <div class="btn-group pull-right">' +
+            '      <div class="btn btn-default btn-sm editRow"><i class="fa fa-edit"></i></div>' +
+            '      <div class="btn btn-danger btn-sm removeRow"><i class="fa fa-trash"></i></div>' +
+            '    </div>' +
+            '  </div>' +
             '</div>',
           footer: ''
         },

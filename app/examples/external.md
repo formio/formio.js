@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 230
 ---
-### External Data Sources
 The Select component allows you to connect to external data sources as well as perform look ahead searching within that data source.
 
 ### Conditional Selects
@@ -73,7 +72,7 @@ Formio.createForm(document.getElementById('formio'), {
 ```
 
 <h3>Result</h3>
-<div class='well'>
+<div class='card card-body bg-light'>
 <div id='formio'></div>
 <script type='text/javascript'>
 Formio.createForm(document.getElementById('formio'), {

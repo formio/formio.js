@@ -16,56 +16,51 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JavaScript Powered Forms and Form.io SDK</title>
+  <link href="{{ site.baseurl }}/app/syntax.css" rel="stylesheet">
+  <link href="{{ site.baseurl }}/app/main.css" rel="stylesheet">
+  <link href="{{ site.baseurl }}/app/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="{{ site.baseurl }}/app/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   {% if page.template %}
     <link href="{{ site.baseurl }}/app/bootswatch/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   {% if page.template == nil %}
-    <link href="{{ site.baseurl }}/app/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ site.baseurl }}/app/bootswatch/yeti/bootstrap.min.css" rel="stylesheet">
   {% endif %}
-  <link href="https://unpkg.com/bootstrap-vertical-tabs@1.2.2/bootstrap.vertical-tabs.min.css" rel="stylesheet">
   <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+  <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
+  <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
   <script src="{{ site.baseurl }}/dist/formio.full.min.js"></script>
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
+  <script type="text/javascript">Formio.icons = 'fontawesome';</script>
 </head>
 <body>
 <a href="https://github.com/formio/formio.js"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:3000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="https://form.io">
-        <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"> | JavaScript SDK Library
-      </a>
+    <a class="navbar-brand" href="#">
+      <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"> | JavaScript SDK Library
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav">
+        <li class="nav-item {% if page.section == 'home' %}active{% endif %}"><a class="nav-link" href="{{ site.baseurl }}"><i class="fa fa-home"></i></a></li>
+        <li class="nav-item {% if page.section == 'builder' %}active{% endif %}"><a class="nav-link" href="app/builder"><i class="fa fa-th-list"></i> Form Builder</a></li>
+        <li class="nav-item {% if page.section == 'examples' %}active{% endif %}"><a class="nav-link" href="app/examples"><i class="fa fa-check-square-o"></i> Examples</a></li>
+        <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/formio/formio.js/wiki"><i class="fa fa-book"></i> Documentation</a></li>
+        <li class="nav-item {% if page.section == 'sdk'%}active{% endif %}"><a class="nav-link" href="app/sdk"><i class="fa fa-list-alt"></i> SDK</a></li>
+      </ul>
+      <ul class="navbar-nav float-right mt-3">
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js/fork" data-size="large" data-show-count="true" aria-label="Fork formio/formio.js on GitHub">Fork</a></li>
+      </ul>
     </div>
-    <div id="navbar" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li {% if page.section == 'home' %}class="active"{% endif %}><a href="{{ site.baseurl }}"><span class="glyphicon glyphicon-home"></span></a></li>
-        <li {% if page.section == 'builder' %}class="active"{% endif %}><a href="app/builder"><span class="glyphicon glyphicon-th-list"></span> Form Builder</a></li>
-        <li {% if page.section == 'examples' %}class="active"{% endif %}><a href="app/examples"><span class="glyphicon glyphicon-check"></span> Examples</a></li>
-        <li><a target="_blank" href="https://github.com/formio/formio.js/wiki"><span class="glyphicon glyphicon-book"></span> Documentation</a></li>
-        <li {% if page.section == 'sdk'%}class="active"{% endif %}><a href="app/sdk"><span class="glyphicon glyphicon-list-alt"></span> SDK</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right" style="padding-top: 10px">
-        <li><a class="github-button navbar-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
-        <li><a class="github-button navbar-link" href="https://github.com/formio/formio.js/fork" data-size="large" data-show-count="true" aria-label="Fork formio/formio.js on GitHub">Fork</a></li>
-      </ul>
-    </div><!--/.nav-collapse -->
   </div>
 </nav>
-<div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}" style="margin-top: 60px;">
+<div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}">
   {{ content }}
 </div>
 <script async defer src="https://buttons.github.io/buttons.js"></script>

@@ -1,17 +1,26 @@
 'use strict';
-var gulp = require('gulp');
-var gulpsync = require('gulp-sync')(gulp);
-var plugins = require('gulp-load-plugins')();
+const gulp = require('gulp');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
-plugins.cleanCSS = require('gulp-clean-css');
+const sync = require('gulp-sync')(gulp);
+const babel = require('gulp-babel');
+const filter = require('gulp-filter');
+const sass = require('gulp-sass');
+const concat = require('gulp-concat');
+const replace = require('gulp-replace');
+const rename = require('gulp-rename');
+const cleanCSS = require('gulp-clean-css');
+const eslint = require('gulp-eslint');
 
 // Clean lib folder.
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 
 // Run babel on source code.
 gulp.task('babel', ['eslint'], () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(plugins.babel())
+  .pipe(babel({
+    presets: ['@babel/env'],
+    plugins: ['@babel/plugin-proposal-export-default-from']
+  }))
   .pipe(gulp.dest('lib')));
 
 // Move choices.js icons into dist folder.
@@ -22,17 +31,17 @@ gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').p
 
 // Generate styles
 const compileStyles = (styles, file) => {
-  const sassFilter = plugins.filter(['*.scss'], {restore: true});
+  const sassFilter = filter(['*.scss'], {restore: true});
   return gulp.src(styles)
     .pipe(sassFilter)
-    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(sass().on('error', sass.logError))
     .pipe(sassFilter.restore)
-    .pipe(plugins.concat(`${file}.css`))
-    .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
-    .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
+    .pipe(concat(`${file}.css`))
+    .pipe(replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+    .pipe(replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
-    .pipe(plugins.rename(`${file}.min.css`))
-    .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
+    .pipe(rename(`${file}.min.css`))
+    .pipe(cleanCSS({compatibility: 'ie8'}))
     .pipe(gulp.dest('dist'));
 };
 gulp.task('styles-form', () => compileStyles([
@@ -80,18 +89,20 @@ gulp.task('scripts-form', build('formio.form.js', 'formio.form.js'));
 gulp.task('formio.embed.min.js', () => buildProd('formio.embed.js', 'formio.embed.min.js'));
 gulp.task('formio.embed.js', () =>
   gulp.src('./dist/formio.embed.min.js')
-    .pipe(plugins.rename('formio.embed.js'))
+    .pipe(rename('formio.embed.js'))
     .pipe(gulp.dest('dist')));
-gulp.task('scripts-embed', gulpsync.sync([['formio.embed.min.js'], 'formio.embed.js']));
+gulp.task('scripts-embed', sync.sync([['formio.embed.min.js'], 'formio.embed.js']));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 
 // ESLint
 gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(plugins.eslint())
-  .pipe(plugins.eslint.format())
-  .pipe(plugins.eslint.failAfterError())
+  .pipe(eslint())
+  .pipe(eslint.format())
+  .pipe(eslint.failAfterError())
 );
 
+gulp.task('jquery', () => gulp.src('./node_modules/jquery/dist/**/*.*').pipe(gulp.dest('./app/jquery')));
+gulp.task('fontawesome', () => gulp.src('./node_modules/font-awesome/**/*.*').pipe(gulp.dest('./app/fontawesome')));
 gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
 gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
 
@@ -101,8 +112,8 @@ gulp.task('package-version', function() {
   return gulp.src([
     'src/package.json'
   ])
-    .pipe(plugins.replace(/"version": ""/, `"version": "${pkg.version}"`))
-    .pipe(plugins.replace(/"dependencies": {}/, `"dependencies": ${JSON.stringify(pkg.dependencies)}`))
+    .pipe(replace(/"version": ""/, `"version": "${pkg.version}"`))
+    .pipe(replace(/"dependencies": {}/, `"dependencies": ${JSON.stringify(pkg.dependencies)}`))
     .pipe(gulp.dest('lib'));
 });
 
@@ -113,8 +124,10 @@ gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
 gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.full.js']));
 
 // Create a new build.
-gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [
+gulp.task('build', sync.sync([['clean'], 'babel', 'package-version', [
   'icons',
+  'jquery',
+  'fontawesome',
   'bootstrap',
   'bootswatch',
   'styles-form',

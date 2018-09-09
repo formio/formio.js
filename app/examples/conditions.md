@@ -1,10 +1,9 @@
 ---
-title: Conditionals
+title: Conditional Forms
 layout: vtabs
 section: examples
 weight: 200
 ---
-### Conditional Forms
 You can use [JSON Logic](http://jsonlogic.com) to create complex conditionals and validation criteria.
 
 <div class="row">
@@ -179,7 +178,7 @@ Formio.createForm(document.getElementById('formio'), {
   </div>
   <div class="col col-sm-5">
   <h3>Result</h3>
-  <div class="well">
+  <div class="card card-body bg-light">
   <div id="formio"></div>
   <script type="text/javascript">
   Formio.createForm(document.getElementById('formio'), {

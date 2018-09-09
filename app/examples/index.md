@@ -1,20 +1,21 @@
 ---
-title: Simple
+title: Simple Embedding
 layout: vtabs
 section: examples
 weight: 0
 ---
-### Simple Embedding
-
 You can create a form with the simple JSON schema as follows.
 
 ```html
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
 <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
 <div id="formio"></formio>
 ```
 
 ```js
+Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {
@@ -80,7 +81,7 @@ Formio.createForm(document.getElementById('formio'), {
 ```
 
 <h3>Result</h3>
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), {

@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 222
 ---
-### Data Grid Panels
 In addition to data grid input, you can also place panels inside the data grid to provide dynamic "add another" sections.
 
 ```js
@@ -101,7 +100,7 @@ Formio.createForm(document.getElementById('formio'), {
 ````
 
 <h3>Result</h3>
-<div class='well'>
+<div class='card card-body bg-light'>
 <div id='formio'></div>
 <script type='text/javascript'>
 Formio.createForm(document.getElementById('formio'), {
