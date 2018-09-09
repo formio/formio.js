@@ -12,6 +12,7 @@ require('./components/builder');
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
     super(element, options);
+    this.builderHeight = 0;
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
@@ -154,11 +155,11 @@ export default class WebformBuilder extends Webform {
   scrollSidebar() {
     const newTop = (window.scrollY - this.sideBarTop) + this.options.sideBarScrollOffset;
     const shouldScroll = (newTop > 0);
-    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.element.offsetHeight)) {
+    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.builderHeight)) {
       this.sideBarElement.style.marginTop = `${newTop}px`;
     }
-    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.element.offsetHeight)) {
-      this.sideBarElement.style.marginTop = `${this.element.offsetHeight - this.sideBarElement.offsetHeight}px`;
+    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.builderHeight)) {
+      this.sideBarElement.style.marginTop = `${this.builderHeight - this.sideBarElement.offsetHeight}px`;
     }
     else {
       this.sideBarElement.style.marginTop = '0px';
@@ -183,7 +184,10 @@ export default class WebformBuilder extends Webform {
 
   setForm(form) {
     this.emit('change', form);
-    return super.setForm(form);
+    return super.setForm(form).then(retVal => {
+      setTimeout(() => (this.builderHeight = this.element.offsetHeight), 200);
+      return retVal;
+    });
   }
 
   deleteComponent(component) {
@@ -455,6 +459,7 @@ export default class WebformBuilder extends Webform {
       const schema = JSON.parse(data);
       window.sessionStorage.removeItem('formio.clipboard');
       component.parent.addComponent(schema, false, false, component.element.nextSibling);
+      this.form = this.schema;
     }
   }
 
