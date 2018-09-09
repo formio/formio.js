@@ -117,7 +117,7 @@ export default class TabsComponent extends NestedComponent {
     _.each(components, (component) => this.addComponent(
       component,
       this.tabs[this.currentTab],
-      null,
+      this.data,
       null,
       null,
       state
