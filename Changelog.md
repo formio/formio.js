@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed a problem where clearOnHide would trigger when navigating between tabs.
  - Fixed problem where extending forms would modify the Base forms.
  - Panel style themes for Bootstrap 4 to be consistent with Bootstrap 3.
+ - Issue where the builder would resize continuously.
 
 ### Changed
  - Hide the label settings for Panels since they have a title field.
