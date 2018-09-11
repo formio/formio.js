@@ -79,7 +79,6 @@ export default class FileComponent extends Component {
     const value = super.defaultValue;
     return Array.isArray(value) ? value : [];
   }
-
   get fileService() {
     if (this.options.fileService) {
       return this.options.fileService;
