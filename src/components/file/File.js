@@ -171,7 +171,10 @@ export default class FileComponent extends BaseComponent {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
       tabindex: -1, // prevent focus
-      onChange: () => this.upload(this.hiddenFileInputElement.files)
+      onChange: () => {
+        this.upload(this.hiddenFileInputElement.files);
+        this.hiddenFileInputElement.value = '';
+      }
     });
   }
 
