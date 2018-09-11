@@ -20,7 +20,7 @@ export default {
       {% if (hasExtraColumn) { %}
       <th>
         {% if (!builder && hasAddButton && hasTopSubmit) { %}
-        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
+        <button class="btn btn-primary formio-button-add-row" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> Add Another
         </button>
         {% } %}
@@ -42,7 +42,7 @@ export default {
       {% if (hasExtraColumn) { %}
         {% if (!builder && hasRemoveButtons) { %}
         <td>
-          <button type="button" class="btn btn-secondary" ref="{{datagridKey}}-removeRow">
+          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{datagridKey}}-removeRow">
             <i class="{{iconClass('remove-circle')}}"></i>
           </button>
         </td>
@@ -60,7 +60,7 @@ export default {
   <tfoot>
     <tr>
       <td colspan="{{numColumns}}">
-        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
+        <button class="btn btn-primary formio-button-add-row" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
         </button>
       </td>

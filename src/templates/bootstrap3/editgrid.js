@@ -32,7 +32,7 @@ export default {
   </li>
   {% } %}
 </ul>
-<button class="btn btn-primary" ref="{{editgridKey}}-addRow">
+<button class="btn btn-primary formio-button-add-another" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
 
