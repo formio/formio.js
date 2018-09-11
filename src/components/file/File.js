@@ -214,6 +214,7 @@ export default class FileComponent extends Component {
       });
       this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
         this.upload(this.refs.hiddenFileInputElement.files);
+        this.refs.hiddenFileInputElement.value = '';
       });
     }
 
