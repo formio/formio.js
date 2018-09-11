@@ -4,6 +4,11 @@ import { getInputMask } from '../../../utils/utils';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.triggerUpdateValueAt = _.debounce(this.updateValueAt.bind(this), 100);
+  }
+
   get inputInfo() {
     const attr = {
       name: this.options.name,
@@ -86,8 +91,14 @@ export default class Input extends Multivalue {
     }
   }
 
-  hasWordCount() {
-    return _.has(this.component, 'validate.maxWords');
+  get hasCounter() {
+    if (
+      _.get(this.component, 'showWordCount', false) ||
+      _.get(this.component, 'showCharCount', false)
+    ) {
+      return true;
+    }
+    return false;
   }
 
   get remainingWords() {
@@ -106,11 +117,66 @@ export default class Input extends Multivalue {
     });
   }
 
+  setCounter(type, element, count, max) {
+    if (max) {
+      const remaining = max - count;
+      if (remaining > 0) {
+        this.removeClass(element, 'text-danger');
+      }
+      else {
+        this.addClass(element, 'text-danger');
+      }
+      element.innerHTML = this.t(`{{ remaining }} ${type} remaining.`, {
+        remaining: remaining
+      });
+    }
+    else {
+      element.innerHTML = this.t(`{{ count }} ${type}`, {
+        count: count
+      });
+    }
+  }
+
+  updateValueAt(flags, value, index) {
+    if (this.refs.counter && this.refs.counter[index]) {
+      if (_.get(this.component, 'showWordCount', false)) {
+        const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
+        if (maxWords) {
+          this.setCounter('words', this.refs.counter[index], value.trim().split(/\s+/).length, maxWords);
+        }
+      }
+      if (_.get(this.component, 'showCharCount', false)) {
+        const maxChars = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
+        if (maxChars) {
+          this.setCounter('characters', this.refs.counter[index], value.length, maxChars);
+        }
+      }
+    }
+  }
+
+  updateValue(flags, value, index) {
+    flags = flags || {};
+    value = value || this.dataValue;
+    index = index || 0;
+    this.triggerUpdateValueAt(flags, value, index);
+    return super.updateValue(flags, value);
+  }
+
+  attach(element) {
+    const ret = super.attach(element);
+    this.loadRefs(element, {
+      counter: 'multiple'
+    });
+    return ret;
+  }
+
   attachElement(element, index) {
-    this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
+    this.addEventListener(element, this.inputInfo.changeEvent, () => {
+      return this.updateValue(null, element.value, index);
+    });
 
     if (this.options.submitOnEnter) {
-      this.addEventListener(this.refs.input[index], 'keypress', (event) => {
+      this.addEventListener(element, 'keypress', (event) => {
         const key = event.keyCode || event.which;
         if (key === 13) {
           event.preventDefault();

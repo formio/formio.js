@@ -756,7 +756,10 @@ export default class Component {
       this.id = this.element.id;
     }
 
-    this.loadRefs(element, { messageContainer: 'single', tooltip: 'multiple' });
+    this.loadRefs(element, {
+      messageContainer: 'single',
+      tooltip: 'multiple'
+    });
 
     this.refs.tooltip.forEach((tooltip, index) => {
       const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
@@ -1492,6 +1495,8 @@ export default class Component {
     if (this.root && !fromRoot) {
       this.root.triggerChange(flags, changed);
     }
+
+    return changed;
   }
 
   get wysiwygDefault() {
