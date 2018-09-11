@@ -443,6 +443,10 @@ export default class NestedComponent extends Component {
   }
 
   calculateValue(data, flags) {
+    // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
+    if (!this.conditionallyVisible()) {
+      return false;
+    }
     return this.getComponents().reduce(
       (changed, comp) => comp.calculateValue(data, flags) || changed,
       super.calculateValue(data, flags)
