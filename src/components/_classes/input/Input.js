@@ -1,6 +1,6 @@
-import maskInput from 'vanilla-text-mask';
 import Multivalue from '../multivalue/Multivalue';
-import { getInputMask, delay } from '../../../utils/utils';
+import { delay } from '../../../utils/utils';
+import Widgets from '../../widgets';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -70,25 +70,8 @@ export default class Input extends Multivalue {
     return inputMask ? inputMask.mask : undefined;
   }
 
-  /**
-   * Sets the input mask for an input.
-   * @param {HTMLElement} input - The html input to apply the mask to.
-   */
   setInputMask(input) {
-    if (input && this.component.inputMask) {
-      const mask = getInputMask(this.component.inputMask);
-      this._inputMask = mask;
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
-      if (mask.numeric) {
-        input.setAttribute('pattern', '\\d*');
-      }
-      if (!this.component.placeholder) {
-        input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-    }
+    return super.setInputMask(input, this.component.inputMask, this.component.placeholder);
   }
 
   get hasCounter() {
@@ -175,6 +158,10 @@ export default class Input extends Multivalue {
       return this.updateValue(null, element.value, index);
     });
 
+    // Attach the widget.
+    element.widget = this.createWidget(index);
+    element.widget.attach(element);
+
     // Add focus and blur events.
     this.addFocusBlurEvents(element);
 
@@ -190,6 +177,47 @@ export default class Input extends Multivalue {
     }
 
     this.setInputMask(this.refs.input[index]);
+  }
+
+  /**
+   * Returns the instance of the widget for this component.
+   *
+   * @return {*}
+   */
+  get widget() {
+    if (this._widget) {
+      return this._widget;
+    }
+    return this.createWidget();
+  }
+
+  /**
+   * Creates an instance of a widget for this component.
+   *
+   * @return {null}
+   */
+  createWidget(index) {
+    // Return null if no widget is found.
+    if (!this.component.widget) {
+      return null;
+    }
+
+    // Get the widget settings.
+    const settings = (typeof this.component.widget === 'string') ? {
+      type: this.component.widget
+    } : this.component.widget;
+
+    // Make sure we have a widget.
+    if (!Widgets.hasOwnProperty(settings.type)) {
+      return null;
+    }
+
+    // Create the widget.
+    const widget = new Widgets[settings.type](settings, this.component);
+    widget.on('update', () => this.updateValue(null, widget.getValue(), index));
+    widget.on('redraw', () => this.redraw());
+    this._widget = widget;
+    return widget;
   }
 
   addFocusBlurEvents(element) {

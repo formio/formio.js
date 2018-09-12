@@ -263,7 +263,7 @@ export default {
           value = value ? value.value : value;
         }
         else {
-          inputMask = component._inputMask;
+          inputMask = component.defaultMask;
         }
         if (value && inputMask) {
           return matchInputMask(value, inputMask);
