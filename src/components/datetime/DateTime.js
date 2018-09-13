@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
-export default class DateTimeComponent extends BaseComponent {
+import Input from '../_classes/input/Input';
+export default class DateTimeComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',

@@ -1,11 +1,11 @@
-import BaseComponent from '../base/Base';
-import NestedComponent from '../nested/NestedComponent';
+import Component from '../_classes/component/Component';
+import NestedComponent from '../_classes/nested/NestedComponent';
 import _ from 'lodash';
 import { uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends NestedComponent {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       label: 'Data Map',
       key: 'dataMap',
       type: 'datamap',
@@ -257,7 +257,7 @@ export default class DataMapComponent extends NestedComponent {
   }
 
   updateValue(flags, value) {
-    return BaseComponent.prototype.updateValue.call(this, flags, value);
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
   setValue(value) {

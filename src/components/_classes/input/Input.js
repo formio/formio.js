@@ -1,6 +1,6 @@
 import Multivalue from '../multivalue/Multivalue';
 import { delay } from '../../../utils/utils';
-import Widgets from '../../widgets';
+import Widgets from '../../../widgets';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
