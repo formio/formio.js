@@ -81,6 +81,11 @@ export default class TextAreaComponent extends TextFieldComponent {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.content = value;
+    if (this.options.readOnly) {
+      return this.renderTemplate('well', {
+        children: value
+      });
+    }
     return this.renderTemplate('input', {
       input: info,
       index
@@ -240,7 +245,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (this.viewOnly || this.htmlView) {
+    if (this.viewOnly || this.htmlView || this.options.readOnly) {
       return this.dataValue;
     }
 
