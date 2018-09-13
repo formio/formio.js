@@ -75,7 +75,16 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   createInput(container) {
     if (this.isPlain) {
-      return super.createInput(container);
+      if (this.options.readOnly) {
+        this.input = this.ce('div', {
+          class: 'well'
+        });
+        container.appendChild(this.input);
+        return this.input;
+      }
+      else {
+        return super.createInput(container);
+      }
     }
 
     if (this.htmlView) {
@@ -182,7 +191,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
     value = value || '';
     if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
+      if (this.options.readOnly) {
+        // For readOnly, just view the contents.
+        this.input.innerHTML = this.interpolate(value);
+        this.dataValue = value;
+        return;
+      }
+      else {
+        return super.setValue(this.setConvertedValue(value), flags);
+      }
     }
 
     // Set the value when the editor is ready.
@@ -218,7 +235,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (this.viewOnly || this.htmlView) {
+    if (this.viewOnly || this.htmlView || this.options.readOnly) {
       return this.dataValue;
     }
 

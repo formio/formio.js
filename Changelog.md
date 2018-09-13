@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-1675: Textarea not displaying whole its content in readOnly mode
+
 ## 3.5.1
 ### Fixed
  - Issues where the PDF builder would not load.
