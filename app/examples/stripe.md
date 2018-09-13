@@ -5,8 +5,6 @@ section: examples
 weight: 150
 contrib: true
 ---
-
-### Stripe
 Stripe securely collect card information from your customers and create a card payment.
 This component provides a card input field created by [Stripe](https://stripe.com/docs/stripe-js) library.
 The component also provides a "pay button" using Android Pay, Apple Pay or Payment Request API.
@@ -139,7 +137,7 @@ Formio.createForm(document.getElementById('formio'), {
 
 #### Result
 
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), {

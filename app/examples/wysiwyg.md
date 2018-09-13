@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 24
 ---
-### WYSIWYG Editor
 With this form renderer, you can also configure any Text area to render as a WYSIWYG editor using the amazing [Quill editor](https://quilljs.com).
 
 <pre>
@@ -44,7 +43,7 @@ Formio.createForm(document.getElementById('formio'), {
 });
 </pre>
   <h3>Result</h3>
-  <div class="well">
+  <div class="card card-body bg-light">
   <div id="formio"></div>
   <script type="text/javascript">
   Formio.createForm(document.getElementById('formio'), {
@@ -127,7 +126,7 @@ Formio.createForm(document.getElementById('formio'), {
 });
 </pre>
   <h3>Result</h3>
-  <div class="well">
+  <div class="card card-body bg-light">
   <div id="formio2"></div>
   <script type="text/javascript">
   Formio.createForm(document.getElementById('formio2'), {

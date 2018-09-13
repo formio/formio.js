@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 20
 ---
-### Wizards
 In addition to rendering forms, this library can also be used to render complex wizard workflows. 
 
 Wizards work by taking the root **Panel** components within a normal flat form, and turning those
@@ -66,7 +65,7 @@ Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/w
 
 ### Result
 
-<div class="well">
+<div class="card card-body bg-light">
 <div id="wizard"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/wizard')
@@ -114,7 +113,7 @@ Formio.createForm(
 ```
 
 ### Result
-<div class="well">
+<div class="card card-body bg-light">
 <div id="wizardWithOptions"></div>
 <script type="text/javascript">
 Formio.createForm(

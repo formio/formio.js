@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 220
 ---
-### Data Grid Input
 Data Grids allow you to collect an array of object values.
 
 ```js
@@ -126,7 +125,7 @@ Formio.createForm(document.getElementById('formio'), {
 ````
 
 <h3>Result</h3>
-<div class='well'>
+<div class='card card-body bg-light'>
 <div id='formio'></div>
 <script type='text/javascript'>
 Formio.createForm(document.getElementById('formio'), {

@@ -4,10 +4,9 @@ layout: vtabs
 section: examples
 weight: 400
 ---
-### Kitchen Sink
 Here is a large form which includes all fields with many different configurations (the kitchen sink).
 
-<div class="well">
+<div class="card card-body bg-light">
   <div id="formio"></div>
   <script type="text/javascript">
   Formio.createForm(document.getElementById('formio'), {

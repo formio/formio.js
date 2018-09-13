@@ -20,11 +20,13 @@ section: home
 ```html
 <html>
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
     <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
     <script type="text/javascript">
       window.onload = function() {
+        Formio.icons = 'fontawesome';
         Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
       };
     </script>
@@ -36,7 +38,7 @@ section: home
 ```
 
 ### Result
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
   window.onload = function() {
