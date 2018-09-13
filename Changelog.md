@@ -4,6 +4,243 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.5.1
+### Fixed
+ - Issues where the PDF builder would not load.
+
+## 3.5.0
+### Fixed
+ - Problem where icon configurations would not get passed to sub forms.
+ - Issue when building tabs, they would reset to first tab.
+ - Adding data to add components when moving between tabs.
+ - Fixed a problem where clearOnHide would trigger when navigating between tabs.
+ - Fixed problem where extending forms would modify the Base forms.
+ - Panel style themes for Bootstrap 4 to be consistent with Bootstrap 3.
+ - Issue where the builder would resize continuously.
+
+### Changed
+ - Hide the label settings for Panels since they have a title field.
+ - Upgrade to Babel 8.0 compilations.
+ - Upgraded demo application to Bootstrap 4.
+ - Default size for EditGrid buttons to small.
+
+### Added
+ - URL component
+ - Ability to provide global icons using Formio.icons property.
+
+## 3.4.8
+### Fixed
+ - Problems where the builder sidebar would not collapse the first group causing style issues.
+ - FOR-1618: Fixed problems with infinite refresh loops when clearOnHide is used.
+ - FOR-1670: Fixed issue in EditGrid where errors would persist and not get cleared when a row is canceled.
+ - FOR-1665: Fixed issues where default hidden states would not be set for nested conditionals.
+ - Clear errors when components are hidden.
+
+### Added
+ - Option that adds the ability to add primary project id to the pdf download icon.
+ - A 'change' event to the webform builder anytime the schema changes.
+
+## 3.4.6, 3.4.7
+### Fixed
+ - Cosmetic changes with Bootstrap 4
+ - Fix namespacing of user tokens.
+
+### Changed
+ - i18next@11.7.0, sinon@6.2.0
+
+## 3.4.5
+### Fixed
+ - Issues with the setHidden not working since they were not added to containers.
+ 
+### Changed
+ - Upgrade flatpickr@4.5.2, ace@1.4.1
+
+## 3.4.4
+### Added
+ - Better settings for webcam and make it initialize properly when switching modes.
+
+### Fixed
+ - The form builder to hide sections when the others are clicked for Bootstrap 4.
+ - The form builder to show the default section at first.
+ - The signature refresh button to use the correct class for bootstrap 4.
+ - Style problem where hidden labels would add a space to the top of the control.
+
+## 3.4.3
+### Fixed
+ - Issues where sessionStorage was making the renderer crash for IE browsers.
+ - Problems with the ContainerComponent where it would reset the data objects and stop tracking data changes.
+ - Problem with the core renderer to work when it is pointing to the Form Action API.
+ - Fix web camera option for image uploads.
+
+## 3.4.2
+### Fixed
+ - Field logic simple conditional when key.
+
+## 3.4.1
+### Added
+ - FOR-1635: Add button for taking picture with webcam to image file components.
+
+### Fixed
+ - FOR-1644: Required marks missing when Hide Label is checked for a component
+ - Field logic simple conditional and set required not setting properly.
+ - FOR-1618: Fix infinite loop with hidden, clearOnHide and calculateValue.
+ - FOR-1645: Fix columns in datagrids disappearing.
+
+## 3.4.0
+### Added
+ - FOR-1614: Concept of input "widgets" which allows you to attach "calendar" to TextField. More to come.
+ - FOR-1614: Widget settings to TextField component.
+
+### Changed
+ - FOR-1616, FOR-1615: Make sure the calendar enforces an input mask and also updates the date on a blur event of the input.
+
+### Fixed
+ - Make sure to not send an invalid API call when no resource is provided.
+ - Make the select component work when project url is provided.
+ - Fixed the select component to trigger a refresh when visibility changes.
+ - Fixed the ACE editor to not trigger infinite refresh when new value and existing values are both empty.
+ - FOR-1618: Fix bug where select could get in infinite change.
+
+### Removed
+ - FOR-1579: Settings from DateTime component that no longer apply to core renderer.
+
+## 3.3.7
+### Fixed
+ - Problems with infinite onChange events firing from SelectBoxes component.
+ - FOR-1500: Error messages displaying.
+ - FOR-1500: OnChange event infinite loop on Wizard.
+ - Error from occurring in the TextArea builder modal.
+ - WYSIWYG: being empty in read only mode in Wizard on non-first page
+ - FOR-1604: Fixed issue where Select with RefreshOn + ClearOnRefresh will clear its value even when its refresh dependency does not change values.
+ - Issues with EditGrid triggering validation preemptively.
+
+### Added
+ - Edit Grid: 'formio-component-editgrid-row-open' class for case when any row is open
+ - FOR-672: Copy and paste features on the builder.
+
+## 3.3.6
+### Fixed
+ - Issues with the embed script to try and grab wrong script from the page.
+ - Problems where the default embed script is in Webpack develop mode.
+
+## 3.3.5
+### Fixed
+ - Path issues with s3 uploads that was adding empty directories to the upload paths.
+
+## 3.3.4
+### Fixed
+ - Issues with Invalid date showing up for display times in UTC.
+
+### Changed
+ - Minor text change for the form builder.
+
+## 3.3.3
+### Fixed
+ - Issue where the Content component would not work in builder with Refresh on Change checked.
+
+## 3.3.2
+### Fixed
+ - Problems with undefined promise if no timezone is used.
+ - Default datetime component to now show 24 hour time.
+ - Fixed placeholder on DateTime component to show the standard form.io time format.
+
+### Changed
+ - Added help docs to the DateTime component.
+
+## 3.3.1
+### Fixed
+ - FOR-1560: Date timezones to use moment-timezone with lazy loading zones.
+ - FOR-1445: Problems where duplicates could show up in Select component
+ - Issue that arrises when you send a malformed language code to the switch language system.
+ - Added try/catch blocks around language switching to make it so the renderer is still usable.
+
+## 3.3.0
+### Added
+ - A DataMap component that provides a dynamic key-value pair input component.
+
+ ## Changed
+  - Cleanup code around setting the locale in the DateTime component.
+
+### Fixed
+ - FOR-1570: Fixed an issue where the validation would not be removed if the form is valid.
+ - FOR-1549: Fixed a problem with Properties settings in form builder was giving wrong format. Changed to DataMap component.
+ - FOR-1326: Fixed an issue where a language change would not re-trigger conditionals.
+
+## 3.2.3
+### Fixed
+ - Datetime component crashing when using locale format.
+
+## 3.2.2
+### Fixed
+ - Issue where the timezone dropdown was not showing up on DateTime component.
+
+## 3.2.1
+### Added
+ - Allow for global overrides of components and let the form.settings override components globally.
+ - Allow for custom timezones for the DateTime component.
+ - Save the "path" and "options" in Formio class so that they can be passed along to other instances.
+ - FOR-1542: Update `build` method of `Container` component.
+
+### Fixed
+ - The acronym for offset 0 time is GST not GMT.
+ - Fix issue where select and radio components end up in an infinite refresh when hidden with "clearOnHide" set.
+
+### Changed
+ - Moved timezone formatting to utils so that it can be used in templates.
+
+## 3.2.0
+### Added
+ - A way to track submission metadata including referrer, timezone, etc.
+ - An option to view the DateTime component in either the Viewer, Submission, or GMT timezones
+ - A tableView method to show the data in a submission grid correctly.
+ - A method for working with Encrypted S3 buckets.
+ - A way to configure the Columns component so that it hides columns where all elements are hidden in that column.
+ - A different view widget to view images with file component on devices that support Camera.
+ - A way to input text into the DateTime component.
+### Changed
+ - Upgraded i18next@11.6.0 and upgraded dev dependencies.
+### Fixed
+ - Tooltip options to make them behave better.
+ - Protect calls to getAllComponents where it was sometimes on null.
+
+## 3.1.4
+### Added
+ - Emitting Edit Grid event for row addition
+### Fixed
+ - Edit Grid not firing outer calculations on 'Save' button click
+ - Problem with DataGrid where its value would not be correct when there were Panels within the DataGrid.
+
+## 3.1.3
+### Fixed
+ - Problem with the PDFBuilder component where it would remove listeners for the drag-and-drop components.
+
+## 3.1.2
+### Fixed
+ - The styles for checkbox so that it will look good for both radio and checkboxes.
+
+## 3.1.1
+### Fixed
+ - An issue where EditGrid may not default to show its values.
+ - The readonly view of EditGrid to now show add and remove buttons.
+
+## 3.1.0
+### Added
+ - Minimum search setting for Select component that would hold off on sending API until they type a certain length.
+ - Adding submission to the evalContext so you can do things like {{ submission.created }} in templates.
+ - Add validation check to edit form on builder.
+
+### Changed
+ - Upgrade text-mask-addon@3.8.0
+
+### Fixed
+ - WYSIWYG issue with cursor jumping in the beginning of line on setValue
+ - Fixed issue with EditGrid validating and adding rows in the correct order.
+ - Fixing DataGrid to not trigger infinite update loops.
+ - Making DateTime not trigger constant update handlers.
+ - Fixed the Radio component to also check for undefined values.
+ - Fixed issue with the builder resetting the sidebar when items are added.
+ - Fixed empty single select rendering improperly
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -44,6 +281,136 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
+
+## [Unreleased]
+### Fixed
+ - Data Grid excess re-rendering rows on setValue
+
+## 3.0.0
+### Fixed
+ - Issue where components in table component would not render conditions correctly.
+ - Issue with the selection of a radio component.
+ - Multiple Select: Fixed selected items being rendered outside of the input
+
+### Changed
+ - Upgraded fetch-mock@6.5.2, gulp-watch@5.0.1, karma@2.0.5, sinon@6.1.4, webpack@4.16.3, i18next@11.5.0, eslint@5.2.0, gulp-rename@1.4.0
+
+## 3.0.0-rc.26
+### Fixed
+ - Issue with the PDF builder where it would constantly update pdf components when it didn't need to.
+
+## 3.0.0-rc.25
+### Fixed
+ - Issue where the indexes on EditGrid would get messed up and could add bogus entries.
+
+### Added
+ - The lazy load setting for Select components.
+
+## 3.0.0-rc.24
+### Fixed
+ - Issues with the edit forms not overriding correctly causing inconsistencies with the forms for components.
+ - Error for Data Grid with invisible columns (Hidden components, conditionally hidden fields etc.)
+ - Issue with EditGrid where the form would invalidate when you are filling out a new row.
+ - Search placeholders on the Select dropdown.
+
+### Added
+ - CSS classes for array components buttons
+ - dataGridLabel configuration when a component is within a DataGrid element.
+
+## 3.0.0-rc.23
+### Fixed
+ - PDF builder to work much better with the drop zone handling for remote pdf forms.
+ - Fixed Data Grid components labels being rewritten to false
+ - Hidden Component value being equal to '[object Object]'
+ - DataGrid in the builder to allow for editing of the data grid.
+
+### Added
+ - Allow for editForm overrides when embedding the form builder.
+ - A way to include a "namespace" for the tokens added to your browser so this library can handle multiple projects at once.
+
+## 3.0.0-rc.22
+### Added
+ - Word and character counts along with validation to all text components.
+
+### Changed
+ - Upgraded i18next@11.3.6, babel-eslint@8.2.6, eslint@5.1.0, webpack@4.16.1
+
+### Fixed
+ - Utils `getComponent()` function.
+ - Data Grid displaying column for Hidden field
+ - Fixed the 12hr time configuration for DateTime component.
+
+## 3.0.0-rc.21
+### Fixed
+ - Issue with builder where editing a component would not work inside nested component.
+ - Fixed data grid to not show columns consisting of hidden components.
+ - Decimal separators for languages that do not use numerics.
+
+### Added
+ - Configure dragula to check if a component can be dragged using the 'no-drag' class
+
+## 3.0.0-rc.20
+### Fixed
+ - Problem where conditionally hidden select fields would not resolve their loaded promise.
+
+## 3.0.0-rc.19
+### Changed
+ - Made each build entry derive from the same formio.form entry.
+
+### Added
+ - The ability to have access to the Promise library from external mechanisms.
+
+## 3.0.0-rc.18
+### Added
+ - A way to force components visible or hidden in a hierarchial manner.
+ - A way to get access to Formio.Utils from the global Formio object.
+
+## 3.0.0-rc.17
+### Added
+ - A way to get access to the Formio.Components from within a global script.
+
+## 3.0.0-rc.16
+### Fixed
+ - Issues with all Nested components getting the "tree" parameter which messed up validators for non data components.
+
+### Changed
+ - Upgrade flatpickr@4.5.1, i18next@11.3.5, babel-loader@7.1.5, eslint@5.0.1, fetch-mock@6.5.0, sinon@6.1.3, webpack@4.15.1, gulp-eslint@5.0.0
+
+## 3.0.0-rc.15
+### Added
+ - Possibility to override i18n settings.
+ - `focus` and `blur` events.
+ - Added uploadOnly to file component
+
+### Fixed
+  - Nested forms validation.
+
+## 3.0.0-rc.14
+### Fixed
+ - Bad build from previous release.
+
+## 3.0.0-rc.13
+### Added
+ - Ability to not show any buttons in rendered form.
+ - Better feedback on the submit buttons when form is submitting and errors occur.
+
+### Fixed
+ - Wrong data being passed to EditGrid and DataGrid for some evals.
+
+## 3.0.0-rc.12
+### Fixed
+ - Problem with the PDF Builder where you would not see the builder elemements.
+ - Fix default value on checkboxes.
+ - Fix multiple required file fields not requiring uploading a file.
+
+### Added
+ - Make rowIndex available on editgrids and datagrids.
+ - Add custom class name to table component.
+ - Add the ability for events to trigger field logic.
+ - Add option to trigger validations when button is pressed.
+
+### Changed
+ - Upgrade i18next@11.3.3
 
 ## 3.0.0-rc.11
 ### Fixed
