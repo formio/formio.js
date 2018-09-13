@@ -2509,6 +2509,28 @@ dialog.fixed {
   margin-left: 5px;
 }
 
+.formio-component-submit .submit-success::after {
+  font-family: 'Glyphicons Halflings';
+  content: '\e013';
+  position: relative;
+  right: -4px;
+  top: 1;
+  line-height: 1;
+}
+
+.formio-component-submit .submit-fail::after {
+  font-family: 'Glyphicons Halflings';
+  content: '\e014';
+  position: relative;
+  right: -4px;
+  top: 1;
+  line-height: 1;
+}
+
+.formio-component-submit .submit-fail[disabled] {
+  opacity: 1;
+}
+
 .form-control.flatpickr-input {
   background-color: #fff;
 }
@@ -2982,6 +3004,33 @@ body.formio-dialog-open {
   margin-top: 5px;
 }
 
+.formio-component-label-hidden {
+  position: relative;
+}
+
+.control-label--hidden {
+  position: absolute;
+  top: 6px;
+  right: 5px;
+  font-size: 1.5em;
+}
+
+.formio-component-datetime .control-label--hidden.field-required {
+  right: 45px;
+  z-index: 3;
+}
+
+.formio-component-survey .control-label--hidden.field-required,
+.formio-component-selectboxes .control-label--hidden.field-required {
+  top: 0;
+}
+
+.formio-component-resource .control-label--hidden.field-required,
+.formio-component-select .control-label--hidden.field-required {
+  right: 40px;
+  z-index: 2;
+}
+
 .checkbox-inline label,
 .radio-inline label {
   font-weight: 400;
@@ -3002,6 +3051,10 @@ body.formio-dialog-open {
 
 .formio-choices.form-group {
   margin-bottom: 0;
+}
+
+.formio-choices[data-type=select-multiple] .form-control {
+  height: auto;
 }
 
 .form-control.formio-multiple-mask-select {
@@ -3129,4 +3182,36 @@ body.formio-dialog-open {
 
 .formio-component-tabs .ui.tabular.menu .item {
   padding: 0.8em;
+}
+
+.formio-pdf-builder {
+  position:relative;
+}
+
+.formio-drop-zone {
+  display: none;
+  position: absolute;
+  z-index:10;
+  background-color: #0d87e9;
+  opacity: 0.1;
+}
+
+.formio-drop-zone.enabled {
+  display: inherit;
+}
+
+.component-settings-button-paste {
+  display: none;
+}
+
+.builder-paste-mode .component-settings-button-paste {
+  display: inherit;
+}
+
+.wizard-page-label {
+  cursor: pointer;
+}
+
+.panel-body .drag-and-drop-alert {
+  margin-bottom: 0;
 }
