@@ -1,7 +1,7 @@
 export default {
   form: `
-<div class="card {{transform('class', 'border-' + component.theme)}}">
-  <div class="card-header">
+<div class="mb-2 card border">
+  <div class="card-header {{transform('class', 'bg-' + component.theme)}}">
     <span class="mb-0 card-title" ref="header">{{t(component.title)}}</span>
   </div>
   {% if (!collapsed) { %}

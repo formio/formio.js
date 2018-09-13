@@ -60,12 +60,14 @@ export default class LocationComponent extends TextFieldComponent {
     });
   }
 
-  attachElement(element, index) {
-    this.loadRefs(this.element, { gmapElement: 'single' });
-    super.attachElement(element, index);
+  attach(element) {
+    const ret = super.attach(element);
+    this.loadRefs(element, { gmapElement: 'multiple' });
+    return ret;
+  }
 
-    const input = this.refs.input[0];
-    const that = this;
+  attachElement(element, index) {
+    super.attachElement(element, index);
     Formio.libraryReady('googleMaps').then(() => {
       const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       const options = {
@@ -92,17 +94,17 @@ export default class LocationComponent extends TextFieldComponent {
         ]
       };
 
-      if (!this.refs.gmapElement) {
+      if (!this.refs.gmapElement[index]) {
         return;
       }
-      this.map = new google.maps.Map(this.refs.gmapElement, options);
-      this.addMarker(defaultLatlng, 'Default Marker', this.map);
+      element.map = new google.maps.Map(this.refs.gmapElement[index], options);
+      this.addMarker(defaultLatlng, 'Default Marker', element);
 
       let autocompleteOptions = {};
       if (this.component.map) {
         autocompleteOptions = this.component.map.autocompleteOptions || {};
       }
-      const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
+      const autocomplete = new google.maps.places.Autocomplete(element, autocompleteOptions);
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         if (!place.geometry) {
@@ -112,21 +114,21 @@ export default class LocationComponent extends TextFieldComponent {
 
         // If the place has a geometry, then present it on a map.
         if (place.geometry.viewport) {
-          that.map.fitBounds(place.geometry.viewport);
+          element.map.fitBounds(place.geometry.viewport);
         }
         else {
-          that.map.setCenter(place.geometry.location);
-          that.map.setZoom(17);  // Why 17? Because it looks good.
+          element.map.setCenter(place.geometry.location);
+          element.map.setZoom(17);  // Why 17? Because it looks good.
         }
-        that.marker.setIcon(/** @type {google.maps.Icon} */({
+        element.marker.setIcon(/** @type {google.maps.Icon} */({
           url: place.icon,
           size: new google.maps.Size(71, 71),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(35, 35)
         }));
-        that.marker.setPosition(place.geometry.location);
-        that.setValue(place.name);
+        element.marker.setPosition(place.geometry.location);
+        this.setValue(place.name);
       });
     });
   }
@@ -137,21 +139,20 @@ export default class LocationComponent extends TextFieldComponent {
     super.setValue(value, flags);
   }
 
-  addMarker(latlng, title, map) {
-    const that = this;
-    this.marker = new google.maps.Marker({
+  addMarker(latlng, title, element) {
+    element.marker = new google.maps.Marker({
       position: latlng,
-      map: map,
+      map: element.map,
       title: title,
       draggable:true
     });
-    this.marker.addListener('dragend', (event) => {
+    element.marker.addListener('dragend', (event) => {
       const geocoder = new google.maps.Geocoder;
       const latlng = { lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng()) };
       geocoder.geocode({ 'location': latlng }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           if (results[1]) {
-            that.setValue(results[0].formatted_address);
+            this.setValue(results[0].formatted_address);
           }
           else {
             console.log('No results found');

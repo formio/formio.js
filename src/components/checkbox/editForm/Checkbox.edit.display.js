@@ -69,13 +69,5 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.inputType' }, 'radio'] }
     }
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 440,
-    label: 'Datagrid Label',
-    key: 'datagridLabel',
-    tooltip: 'Show the label when in a datagrid.'
   }
 ];

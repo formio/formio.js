@@ -4,17 +4,18 @@ layout: vtabs
 section: examples
 weight: 15
 ---
-### External Data Load
-
 You can load in data from an external API as a result of values entered in a form.
 
 ```html
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
 <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
-<div id="formio"></div>
+<div id="formio"></formio>
 ```
 
 ```js
+Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/customerload')
   .then(function(form) {
     // Triggered when they click the submit button.
@@ -42,7 +43,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/c
 ```
 
 <h3>Result</h3>
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/customerload')

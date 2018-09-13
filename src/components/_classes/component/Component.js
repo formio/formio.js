@@ -3,18 +3,17 @@ import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
-import i18next from 'i18next';
 import * as FormioUtils from '../../../utils/utils';
 import Formio from '../../../Formio';
 import Validator from '../../Validator';
-import moment from 'moment';
 import templates from '../../../templates';
 import { boolValue } from '../../../utils/utils';
+import Widget from '../../../widgets/Widget';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
  */
-export default class Component {
+export default class Component extends Widget {
   static schema(...sources) {
     return _.merge({
       /**
@@ -83,6 +82,16 @@ export default class Component {
       clearOnHide: true,
 
       /**
+       * This will refresh this component when this field changes.
+       */
+      refreshOn: '',
+
+      /**
+       * Determines if we should clear our value when a refresh occurs.
+       */
+      clearOnRefresh: false,
+
+      /**
        * If this component should be included as a column within a submission table.
        */
       tableView: true,
@@ -104,6 +113,12 @@ export default class Component {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      widget: null,
+
+      /**
+       * This will perform the validation on either "change" or "blur" of the input element.
+       */
+      validateOn: 'change',
 
       /**
        * The validation criteria for this component.
@@ -137,6 +152,17 @@ export default class Component {
   }
 
   /**
+   * Provides a table view for this component. Override if you wish to do something different than using getView
+   * method of your instance.
+   *
+   * @param value
+   * @param options
+   */
+  /* eslint-disable no-unused-vars */
+  static tableView(value, options) {}
+  /* eslint-enable no-unused-vars */
+
+  /**
    * Initialize a new Component.
    *
    * @param {Object} component - The component JSON you wish to initialize.
@@ -145,29 +171,14 @@ export default class Component {
    */
   /* eslint-disable max-statements */
   constructor(component, options, data) {
-    this.originalComponent = _.cloneDeep(component);
-    /**
-     * The ID of this component. This value is auto-generated when the component is created, but
-     * can also be provided from the component.id value passed into the constructor.
-     * @type {string}
-     */
-    this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
-
-    /**
-     * The options for this component.
-     * @type {{}}
-     */
-    this.options = _.defaults(_.clone(options), {
-      language: 'en',
-      highlightErrors: true,
-      row: '',
+    super(_.assign({
       template: 'bootstrap3',
       renderMode: 'form',
-      attachMode: 'full',
-    });
+      attachMode: 'full'
+    }, options), (component && component.id) ? component.id : null);
 
-    // Use the i18next that is passed in, otherwise use the global version.
-    this.i18next = this.options.i18next || i18next;
+    // Save off the original component.
+    this.originalComponent = _.cloneDeep(component);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -177,14 +188,17 @@ export default class Component {
     this._hasCondition = null;
 
     /**
-     * The events that are triggered for the whole FormioForm object.
-     */
-    this.events = this.options.events;
-
-    /**
      * References to dom elements
      */
     this.refs = {};
+
+    // Allow global override for any component JSON.
+    if (
+      this.options.components &&
+      this.options.components[component.type]
+    ) {
+      _.merge(component, this.options.components[component.type]);
+    }
 
     /**
      * If the component has been attached
@@ -272,16 +286,18 @@ export default class Component {
     this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
     /**
-     * An array of event handlers so that the destry command can deregister them.
-     * @type {Array}
+     * Used to trigger a redraw event within this component.
+     *
+     * @type {Function}
      */
-    this.eventHandlers = [];
+    this.triggerRedraw = _.debounce(this.redraw.bind(this), 100);
 
     /**
      * list of attached tooltips
      * @type {Array}
      */
     this.tooltips = [];
+
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -305,6 +321,21 @@ export default class Component {
 
     // Set the template
     this.template = this.options.template;
+
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        this.root.on(logic.trigger.event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
@@ -336,6 +367,7 @@ export default class Component {
   }
 
   destroy() {
+    super.destroy();
     this.detach();
     // Can be overridden
   }
@@ -385,6 +417,19 @@ export default class Component {
     if (this.options.attachMode === 'builder' || this.options.showHiddenFields) {
       return true;
     }
+    if (
+      this.options.hide &&
+      this.options.hide[this.component.key]
+    ) {
+      return false;
+    }
+    if (
+      this.options.show &&
+      this.options.show[this.component.key]
+    ) {
+      return true;
+    }
+
     return this._visible && this._parentVisible;
   }
 
@@ -411,6 +456,7 @@ export default class Component {
         (key === 'key') ||
         (key === 'label') ||
         (key === 'input') ||
+        (key === 'tableView') ||
         !defaultSchema.hasOwnProperty(key) ||
         _.isArray(val) ||
         (val !== defaultSchema[key])
@@ -447,69 +493,6 @@ export default class Component {
     return translated || text;
   }
 
-  /**
-   * Register for a new event within this component.
-   *
-   * @example
-   * let component = new Component({
-   *   type: 'textfield',
-   *   label: 'First Name',
-   *   key: 'firstName'
-   * });
-   * component.on('componentChange', (changed) => {
-   *   console.log('this element is changed.');
-   * });
-   *
-   *
-   * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
-   */
-  on(event, cb) {
-    if (!this.events) {
-      return;
-    }
-    const type = `formio.${event}`;
-
-    // Store the component id in the handler so that we can determine which events are for this component.
-    cb.id = this.id;
-
-    // Register for this event.
-    return this.events.on(type, cb);
-  }
-
-  /**removeEventListeners
-   * Removes all listeners for a certain event.
-   *
-   * @param event
-   */
-  off(event) {
-    if (!this.events) {
-      return;
-    }
-    const type = `formio.${event}`;
-
-    // Iterate through all the internal events.
-    _.each(this.events.listeners(type), (listener) => {
-      // Ensure this event is for this component.
-      if (listener && (listener.id === this.id)) {
-        // Turn off this event handler.
-        this.events.off(type, listener);
-      }
-    });
-  }
-
-  /**
-   * Emit a new event.
-   *
-   * @param {string} event - The event to emit.
-   * @param {Object} data - The data to emit with the handler.
-   */
-  emit(event, data) {
-    if (this.events) {
-      this.events.emit(`formio.${event}`, data);
-    }
-  }
-
   get transform() {
     return this.options.templates ? this.options.templates.transform : (type, value) => value;
   }
@@ -538,6 +521,7 @@ export default class Component {
 
     data.component = this.component;
     data.self = this;
+    data.options = this.options;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
@@ -594,7 +578,7 @@ export default class Component {
       for (let i = 0; i < nav.languages.length; i++) {
         language = nav.languages[i];
         if (language && language.length) {
-          return language;
+          return language.split(';')[0];
         }
       }
     }
@@ -603,7 +587,7 @@ export default class Component {
     for (let i = 0; i < browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language && language.length) {
-        return language;
+        return language.split(';')[0];
       }
     }
 
@@ -728,19 +712,23 @@ export default class Component {
       this.id = this.element.id;
     }
 
-    this.loadRefs(element, { messageContainer: 'single', tooltip: 'multiple' });
+    this.loadRefs(element, {
+      messageContainer: 'single',
+      tooltip: 'multiple'
+    });
 
     this.refs.tooltip.forEach((tooltip, index) => {
       const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
-        delay: {
-          hide: 100
-        },
+        trigger: 'hover click',
         placement: 'right',
         html: true,
         title,
       });
     });
+
+    // Attach the refresh on events.
+    this.attachRefreshOn();
 
     // this.restoreValue();
 
@@ -763,12 +751,74 @@ export default class Component {
   /**
    * Remove all event handlers.
    */
-  detach(all) {
-    this.removeEventListeners(all);
-    this.tooltips.forEach((tooltip, index) => {
-      tooltip.dispose();
-    });
-    this.tooltips = [];
+  detach() {
+    this.removeEventListeners();
+  }
+
+  attachRefreshOn() {
+    // If they wish to refresh on a value, then add that here.
+    if (this.component.refreshOn) {
+      this.on('change', (event) => {
+        if (this.component.refreshOn === 'data') {
+          this.refresh(this.data);
+        }
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn) &
+          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+          // in fields inside EditGrids could alter their state from other rows (which is bad).
+          this.inContext(event.changed.instance)
+        ) {
+          this.refresh(event.changed.value);
+        }
+      });
+    }
+  }
+
+  /**
+   * Refreshes the component with a new value.
+   *
+   * @param value
+   */
+  refresh(value) {
+    if (this.hasOwnProperty('refreshOnValue')) {
+      this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
+    }
+    else {
+      this.refreshOnChanged = true;
+    }
+    this.refreshOnValue = value;
+    if (this.refreshOnChanged) {
+      if (this.component.clearOnRefresh) {
+        this.setValue(null);
+      }
+      this.triggerRedraw();
+    }
+  }
+
+  /**
+   * Checks to see if a separate component is in the "context" of this component. This is determined by first checking
+   * if they share the same "data" object. It will then walk up the parent tree and compare its parents data objects
+   * with the components data and returns true if they are in the same context.
+   *
+   * Different rows of the same EditGrid, for example, are in different contexts.
+   *
+   * @param component
+   */
+  inContext(component) {
+    if (component.data === this.data) {
+      return true;
+    }
+    let parent = this.parent;
+    while (parent) {
+      if (parent.data === component.data) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+
+    return false;
   }
 
   get viewOnly() {
@@ -795,10 +845,6 @@ export default class Component {
   }
 
   createViewOnlyLabel(container) {
-    // if (this.labelIsHidden()) {
-    //   return;
-    // }
-
     this.labelElement = this.ce('dt');
     this.labelElement.appendChild(this.text(this.component.label));
     this.createTooltip(this.labelElement);
@@ -832,20 +878,17 @@ export default class Component {
     return value.toString();
   }
 
+  updateItems(...args) {
+    this.restoreValue();
+    this.onChange(...args);
+  }
+
   updateViewOnlyValue() {
     if (!this.valueElement) {
       return;
     }
 
     this.setupValueElement(this.valueElement);
-  }
-
-  empty(element) {
-    if (element) {
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
-      }
-    }
   }
 
   createModal(element) {
@@ -934,17 +977,14 @@ export default class Component {
    * @return {*}
    */
   evalContext(additional) {
-    additional = additional || {};
-    return Object.assign({
+    return super.evalContext(Object.assign({
       component: this.component,
       row: this.data,
+      rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
-      _,
-      utils: FormioUtils,
-      util: FormioUtils,
-      moment,
-      instance: this
-    }, additional);
+      submission: (this.root ? this.root._submission : {}),
+      form: this.root ? this.root._form : {}
+    }, additional));
   }
 
   /**
@@ -1002,57 +1042,6 @@ export default class Component {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  /**
-   * Creates a new input mask placeholder.
-   * @param {HTMLElement} mask - The input mask.
-   * @returns {string} - The placeholder that will exist within the input as they type.
-   */
-  maskPlaceholder(mask) {
-    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
-  }
-
-  /**
-   * Wrapper method to add an event listener to an HTML element.
-   *
-   * @param obj
-   *   The DOM element to add the event to.
-   * @param evt
-   *   The event name to add.
-   * @param func
-   *   The callback function to be executed when the listener is triggered.
-   */
-  addEventListener(obj, evt, func) {
-    if (!obj) {
-      return;
-    }
-    this.eventHandlers.push({ type: evt, func: func });
-    if ('addEventListener' in obj) {
-      obj.addEventListener(evt, func, false);
-    }
-    else if ('attachEvent' in obj) {
-      obj.attachEvent(`on${evt}`, func);
-    }
-  }
-
-  /**
-   * Remove an event listener from the object.
-   *
-   * @param obj
-   * @param type
-   */
-  removeEventListener(obj, type) {
-    const indexes = [];
-    _.each(this.eventHandlers, (handler, index) => {
-      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
-        obj.removeEventListener(type, handler.func);
-        indexes.push(index);
-      }
-    });
-    if (indexes.length) {
-      _.pullAt(this.eventHandlers, indexes);
-    }
-  }
-
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
@@ -1075,159 +1064,34 @@ export default class Component {
   }
 
   removeEventListeners() {
-    if (this.events) {
-      _.each(this.events._events, (events, type) => {
-        _.each(events, (listener) => {
-          if (listener && (this.id === listener.id)) {
-            this.events.off(type, listener);
-          }
-        });
-      });
-    }
-    _.each(this.eventHandlers, (handler) => {
-      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
-        handler.obj.removeEventListener(handler.type, handler.func);
-      }
-    });
-    _.each(this.refs.input, (input) => {
-      input = this.performInputMapping(input);
-      if (input.mask) {
-        input.mask.destroy();
-      }
-    });
-    if (this.tooltip) {
-      this.tooltip.dispose();
-      this.tooltip = null;
-    }
+    super.removeEventListeners();
+    this.tooltips.forEach(tooltip => tooltip.dispose());
+    this.tooltips = [];
     this.refs.input = [];
   }
 
-  /**
-   * Append different types of children.
-   *
-   * @param child
-   */
-  appendChild(element, child) {
-    if (Array.isArray(child)) {
-      child.forEach(oneChild => {
-        this.appendChild(element, oneChild);
-      });
-    }
-    else if (child instanceof HTMLElement || child instanceof Text) {
-      element.appendChild(child);
-    }
-    else if (child) {
-      element.appendChild(this.text(child.toString()));
-    }
-  }
-
-  /**
-   * Alias for document.createElement.
-   *
-   * @param {string} type - The type of element to create
-   * @param {Object} attr - The element attributes to add to the created element.
-   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   * @param {Object} events
-   *
-   * @return {HTMLElement} - The created element.
-   */
-  ce(type, attr, children = null) {
-    // Create the element.
-    const element = document.createElement(type);
-
-    // Add attributes.
-    if (attr) {
-      this.attr(element, attr);
-    }
-
-    // Append the children.
-    this.appendChild(element, children);
-    return element;
-  }
-
-  /**
-   * Alias to create a text node.
-   * @param text
-   * @returns {Text}
-   */
-  text(text) {
-    return document.createTextNode(this.t(text));
-  }
-
-  /**
-   * Adds an object of attributes onto an element.
-   * @param {HtmlElement} element - The element to add the attributes to.
-   * @param {Object} attr - The attributes to add to the input element.
-   */
-  attr(element, attr) {
-    _.each(attr, (value, key) => {
-      if (typeof value !== 'undefined') {
-        if (key.indexOf('on') === 0) {
-          // If this is an event, add a listener.
-          this.addEventListener(element, key.substr(2).toLowerCase(), value);
-        }
-        else {
-          // Otherwise it is just an attribute.
-          element.setAttribute(key, value);
-        }
-      }
-    });
-  }
-
-  /**
-   * Determines if an element has a class.
-   *
-   * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
-   */
   hasClass(element, className) {
     if (!element) {
-      return false;
+      return;
     }
-    // Allow templates to intercept.
-    className = this.transform('class', className);
-    className = ` ${className} `;
-    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+
+    return super.hasClass(element, this.transform('class', className));
   }
 
-  /**
-   * Adds a class to a DOM element.
-   *
-   * @param element
-   *   The element to add a class to.
-   * @param className
-   *   The name of the class to add.
-   */
   addClass(element, className) {
     if (!element) {
       return;
     }
-    // Allow templates to intercept.
-    className = this.transform('class', className);
-    const classes = element.getAttribute('class');
-    if (!classes || classes.indexOf(className) === -1) {
-      element.setAttribute('class', `${classes} ${className}`);
-    }
+
+    return super.addClass(element, this.transform('class', className));
   }
 
-  /**
-   * Remove a class from a DOM element.
-   *
-   * @param element
-   *   The DOM element to remove the class from.
-   * @param className
-   *   The name of the class that is to be removed.
-   */
   removeClass(element, className) {
     if (!element) {
       return;
     }
-    // Allow templates to intercept.
-    className = this.transform('class', className);
-    let cls = element.getAttribute('class');
-    if (cls) {
-      cls = cls.replace(new RegExp(className, 'g'), '');
-      element.setAttribute('class', cls);
-    }
+
+    return super.removeClass(element, this.transform('class', className));
   }
 
   /**
@@ -1245,27 +1109,33 @@ export default class Component {
   }
 
   /**
+   * Check if this component is conditionally visible.
+   *
+   * @param data
+   * @return {boolean}
+   */
+  conditionallyVisible(data) {
+    if (!this.hasCondition()) {
+      return true;
+    }
+    data = data || (this.root ? this.root.data : {});
+    return FormioUtils.checkCondition(
+      this.component,
+      this.data,
+      data,
+      this.root ? this.root._form : {},
+      this
+    );
+  }
+
+  /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    data = data || (this.root ? this.root.data: {});
+    data = data || (this.root ? this.root.data : {});
 
     // Check advanced conditions
-    let result;
-
-    if (!this.hasCondition()) {
-      result = true;
-    }
-    else {
-      result = FormioUtils.checkCondition(
-        this.component,
-        this.data,
-        data,
-        this.root ? this.root._form : {},
-        this
-      );
-    }
-
+    const result = this.show(this.conditionallyVisible(data));
     if (this.fieldLogic(data)) {
       this.redraw();
     }
@@ -1277,13 +1147,17 @@ export default class Component {
     return result;
   }
 
+  get logic() {
+    return this.component.logic || [];
+  }
+
   /**
    * Check all triggers and apply necessary actions.
    *
    * @param data
    */
   fieldLogic(data) {
-    const logics = this.component.logic || [];
+    const logics = this.logic;
 
     // If there aren't logic, don't go further.
     if (logics.length === 0) {
@@ -1303,35 +1177,7 @@ export default class Component {
       );
 
       if (result) {
-        changed |= logic.actions.reduce((changed, action) => {
-          switch (action.type) {
-            case 'property':
-              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
-              break;
-            case 'value': {
-              const oldValue = this.getValue();
-              const newValue = this.evaluate(
-                action.value,
-                {
-                  value: _.clone(oldValue),
-                  data,
-                  component: newComponent,
-                  result
-                },
-                'value'
-              );
-              if (!_.isEqual(oldValue, newValue)) {
-                this.setValue(newValue);
-                changed = true;
-              }
-              break;
-            }
-            case 'validation':
-              // TODO
-              break;
-          }
-          return changed;
-        }, false);
+        changed |= this.applyActions(logic.actions, result, data, newComponent);
       }
       return changed;
     }, false);
@@ -1343,6 +1189,38 @@ export default class Component {
     }
 
     return changed;
+  }
+
+  applyActions(actions, result, data, newComponent) {
+    return actions.reduce((changed, action) => {
+      switch (action.type) {
+        case 'property':
+          FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
+          break;
+        case 'value': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(
+            action.value,
+            {
+              value: _.clone(oldValue),
+              data,
+              component: newComponent,
+              result
+            },
+            'value'
+          );
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+            changed = true;
+          }
+          break;
+        }
+        case 'validation':
+          // TODO
+          break;
+      }
+      return changed;
+    }, false);
   }
 
   /**
@@ -1390,35 +1268,19 @@ export default class Component {
     }
   }
 
-  /**
-   * Allow for options to hook into the functionality of this renderer.
-   * @return {*}
-   */
-  hook() {
-    const name = arguments[0];
-    if (
-      this.options &&
-      this.options.hooks &&
-      this.options.hooks[name]
-    ) {
-      return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
-    }
-    else {
-      // If this is an async hook instead of a sync.
-      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
-      if (fn) {
-        return fn(null, arguments[1]);
-      }
-      else {
-        return arguments[1];
-      }
-    }
-  }
-
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (!flags.noValidate) {
       this.pristine = false;
+    }
+
+    // If we are supposed to validate on blur, then don't trigger validation yet.
+    if (this.component.validateOn === 'blur' && !this.errors.length) {
+      flags.noValidate = true;
+    }
+
+    if (this.component.onChange) {
+      this.evaluate(this.component.onChange);
     }
 
     // Set the changed variable.
@@ -1436,6 +1298,8 @@ export default class Component {
     if (this.root && !fromRoot) {
       this.root.triggerChange(flags, changed);
     }
+
+    return changed;
   }
 
   get wysiwygDefault() {
@@ -1469,6 +1333,9 @@ export default class Component {
     return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
 
       .then(() => {
+        if (!element.parentNode) {
+          return Promise.reject();
+        }
         this.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
@@ -1579,7 +1446,9 @@ export default class Component {
    * Deletes the value of the component.
    */
   deleteValue() {
-    this.setValue(null);
+    this.setValue(null, {
+      noUpdateEvent: true
+    });
     _.unset(this.data, this.key);
   }
 
@@ -1596,9 +1465,9 @@ export default class Component {
       );
     }
 
-    if (this._inputMask) {
-      defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
-      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
+    if (this.defaultMask) {
+      defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
+      if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
         defaultValue = '';
       }
     }
@@ -1795,7 +1664,9 @@ export default class Component {
    * @return {boolean} - If the value changed during calculation.
    */
   calculateValue(data, flags) {
-    if (!this.component.calculateValue) {
+    // If no calculated value or
+    // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide)) {
       return false;
     }
 
@@ -1911,20 +1782,6 @@ export default class Component {
     return this.error ? [this.error] : [];
   }
 
-  interpolate(string, data) {
-    // the replace will stip out extra whitespace from the templates.
-    const result = FormioUtils.interpolate(string, this.evalContext(data));
-    if (!result) {
-      console.error('An error occurred interpolating a template');
-      return;
-    }
-    return result.replace(/\r?\n|\r/g, '').replace(/ +(?= )/g,'');
-  }
-
-  evaluate(func, args, ret, tokenize) {
-    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
-  }
-
   setCustomValidity(message, dirty) {
     if (this.refs.messageContainer) {
       this.empty(this.refs.messageContainer);
@@ -1948,7 +1805,7 @@ export default class Component {
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
-    _.each(this.refs.input, (input) => {
+    this.refs.input.forEach(input => {
       input = this.performInputMapping(input);
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
@@ -2072,46 +1929,12 @@ export default class Component {
     this.empty(this.getElement());
   }
 
-  appendTo(element, container) {
-    if (container) {
-      container.appendChild(element);
-    }
-  }
-
   append(element) {
     this.appendTo(element, this.element);
   }
 
-  prependTo(element, container) {
-    if (container) {
-      if (container.firstChild) {
-        try {
-          container.insertBefore(element, container.firstChild);
-        }
-        catch (err) {
-          console.warn(err);
-          container.appendChild(element);
-        }
-      }
-      else {
-        container.appendChild(element);
-      }
-    }
-  }
-
   prepend(element) {
     this.prependTo(element, this.element);
-  }
-
-  removeChildFrom(element, container) {
-    if (container && container.contains(element)) {
-      try {
-        container.removeChild(element);
-      }
-      catch (err) {
-        console.warn(err);
-      }
-    }
   }
 
   removeChild(element) {

@@ -5,8 +5,6 @@ section: examples
 weight: 20
 lib: builder
 ---
-### Custom Form Builder
-
 Not only can this library be used to render the default form builder as seen within the form builder section, but you can
 also create your own customized form builder interface by providing the components you wish to add to the builder within
 the builder configuration.
@@ -91,6 +89,14 @@ Formio.builder(document.getElementById('builder'), {}, {
         table: false
       }
     }
+  },
+  editForm: {
+    textfield: [
+      {
+        key: 'api',
+        ignore: true
+      }        
+    ]
   }
 }).then(function(builder) {
   builder.on('saveComponent', function() {
@@ -100,7 +106,7 @@ Formio.builder(document.getElementById('builder'), {}, {
 ```
 
 <h3>Result</h3>
-<div class="well">
+<div class="card card-body bg-light">
 <div id="builder"></div>
 <script type="text/javascript">
 Formio.builder(document.getElementById('builder'), {}, {
@@ -174,6 +180,14 @@ Formio.builder(document.getElementById('builder'), {}, {
         table: false
       }
     }
+  },
+  editForm: {
+    textfield: [
+      {
+        key: 'api',
+        ignore: true
+      }        
+    ]
   }
 }).then(function(builder) {
   builder.on('saveComponent', function() {

@@ -48,6 +48,10 @@ export default [
                     {
                       value: 'json',
                       label: 'JSON Logic'
+                    },
+                    {
+                      value: 'event',
+                      label: 'Event'
                     }
                   ],
                 },
@@ -72,8 +76,9 @@ export default [
                     type: 'select',
                     input: true,
                     label: 'When the form component:',
-                    key: 'conditional.when',
+                    key: 'when',
                     dataSrc: 'custom',
+                    valueProperty: 'value',
                     data: {
                       custom: `
                         utils.eachComponent(instance.root.editForm.components, function(component, path) {
@@ -117,6 +122,14 @@ export default [
                 description: '"row", "data", "component" and "_" variables are available. Return the result to be passed to the action if truthy.',
                 customConditional: 'show = row.type === "json";',
               },
+              {
+                type: 'textfield',
+                key: 'event',
+                label: 'Event Name',
+                placeholder: 'event',
+                description: 'The event that will trigger this logic. You can trigger events externally or via a button.',
+                customConditional: 'show = row.type === "event";',
+              }
             ],
             key: 'trigger',
             type: 'container',
@@ -191,7 +204,7 @@ export default [
                     },
                     {
                       label: 'required',
-                      value: 'validation.required',
+                      value: 'validate.required',
                       type: 'boolean'
                     },
                     {
@@ -200,13 +213,18 @@ export default [
                       type: 'boolean'
                     },
                     {
-                      label: 'label',
+                      label: 'Label',
                       value: 'label',
                       type: 'string'
                     },
                     {
-                      label: 'title',
+                      label: 'Title',
                       value: 'title',
+                      type: 'string'
+                    },
+                    {
+                      label: 'Tooltip',
+                      value: 'tooltip',
                       type: 'string'
                     },
                     {

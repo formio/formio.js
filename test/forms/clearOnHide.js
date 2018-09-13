@@ -1,4 +1,5 @@
 import assert from 'power-assert';
+import _ from 'lodash';
 
 const visibleData = {
   data: {
@@ -579,7 +580,7 @@ export default {
   tests: {
     'Test starting hidden'(form, done) {
       form.checkConditions(form.getValue());
-      assert.deepEqual(form.getValue(), hiddenData);
+      assert.deepEqual(_.omit(form.getValue(), ['metadata']), hiddenData);
       done();
     },
     'Test starting visible'(form, done) {

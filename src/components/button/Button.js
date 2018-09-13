@@ -16,7 +16,8 @@ export default class ButtonComponent extends Field {
       action: 'submit',
       persistent: false,
       disableOnInvalid: false,
-      theme: 'default'
+      theme: 'default',
+      dataGridLabel: true
     }, ...extend);
   }
 
@@ -106,6 +107,9 @@ export default class ButtonComponent extends Field {
   }
 
   render() {
+    if (this.viewOnly || this.options.hideButtons) {
+      this._visible = false;
+    }
     return super.render(this.renderTemplate('button', {
       component: this.component,
       input: this.inputInfo,
@@ -119,7 +123,6 @@ export default class ButtonComponent extends Field {
       return;
     }
     // this.addShortcut(this.refs.button);
-
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
@@ -131,6 +134,8 @@ export default class ButtonComponent extends Field {
         this.loading = false;
         this.disabled = false;
         this.empty(message);
+        this.addClass(this.refs.button, 'btn-success submit-success');
+        this.removeClass(this.refs.button, 'btn-danger submit-fail');
         this.addClass(message, 'has-success');
         this.removeClass(message, 'has-error');
         message.appendChild(this.buttonMessage('complete'));
@@ -140,6 +145,8 @@ export default class ButtonComponent extends Field {
         this.loading = false;
         const isValid = this.root.isValid(value.data, true);
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+        this.removeClass(this.refs.button, 'btn-success submit-success');
+        this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
           this.hasError = false;
           this.empty(message);
@@ -151,6 +158,8 @@ export default class ButtonComponent extends Field {
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
+        this.removeClass(this.refs.button, 'btn-success submit-success');
+        this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.empty(message);
         this.removeClass(message, 'has-success');
         this.addClass(message, 'has-error');
@@ -207,6 +216,9 @@ export default class ButtonComponent extends Field {
 
   onClick(event) {
     this.dataValue = true;
+    if (this.component.action !== 'submit' && this.component.showValidations) {
+      this.emit('checkValidity', this.data);
+    }
     switch (this.component.action) {
       case 'saveState':
       case 'submit':

@@ -8,7 +8,7 @@ export default class CheckBoxComponent extends Component {
       inputType: 'checkbox',
       label: 'Checkbox',
       key: 'checkbox',
-      datagridLabel: true,
+      dataGridLabel: true,
       labelPosition: 'right',
       value: '',
       name: ''

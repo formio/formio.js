@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import 'whatwg-fetch';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment';
+import moment from 'moment-timezone/moment-timezone';
+import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
+import Promise from 'native-promise-only';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -186,6 +189,9 @@ export function eachComponent(components, fn, includeAll, path, parent) {
   if (!components) return;
   path = path || '';
   components.forEach((component) => {
+    if (!component) {
+      return;
+    }
     const hasColumns = component.columns && Array.isArray(component.columns);
     const hasRows = component.rows && Array.isArray(component.rows);
     const hasComps = component.components && Array.isArray(component.components);
@@ -209,6 +215,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     const subPath = () => {
       if (
         component.key &&
+        !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
           ['datagrid', 'container', 'editgrid'].includes(component.type) ||
           component.tree
@@ -284,7 +291,7 @@ export function matchComponent(component, query) {
 export function getComponent(components, key, includeAll) {
   let result;
   eachComponent(components, (component, path) => {
-    if (matchComponent(component, key)) {
+    if (path === key) {
       component.path = path;
       result = component;
       return true;
@@ -445,16 +452,20 @@ export function checkSimpleConditional(component, condition, row, data) {
   if (_.isNil(value)) {
     value = '';
   }
+
+  const eq = String(condition.eq);
+  const show = String(condition.show);
+
   // Special check for selectboxes component.
   if (_.isObject(value) && _.has(value, condition.eq)) {
-    return value[condition.eq].toString() === condition.show.toString();
+    return String(value[condition.eq]) === show;
   }
   // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) && value.includes(condition.eq)) {
-    return (condition.show.toString() === 'true');
+  if (Array.isArray(value) && value.map(String).includes(eq)) {
+    return show === 'true';
   }
 
-  return (value.toString() === condition.eq.toString()) === (condition.show.toString() === 'true');
+  return (String(value) === eq) === (show === 'true');
 }
 
 /**
@@ -471,7 +482,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom, { row, data, form }) :
+    instance.evaluate(custom) :
     evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
@@ -705,6 +716,152 @@ export function isValidDate(date) {
   return _.isDate(date) && !_.isNaN(date.getDate());
 }
 
+/**
+ * Get the current timezone string.
+ *
+ * @return {string}
+ */
+export function currentTimezone() {
+  if (moment.currentTimezone) {
+    return moment.currentTimezone;
+  }
+  moment.currentTimezone = jtz.determine().name();
+  return moment.currentTimezone;
+}
+
+/**
+ * Get an offset date provided a date object and timezone object.
+ *
+ * @param date
+ * @param timezone
+ * @return {Date}
+ */
+export function offsetDate(date, timezone) {
+  if (timezone === 'UTC') {
+    return {
+      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      abbr: 'UTC'
+    };
+  }
+  const dateMoment = moment(date).tz(timezone);
+  return {
+    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    abbr: dateMoment.format('z')
+  };
+}
+
+/**
+ * Externally load the timezone data.
+ *
+ * @return {Promise<any> | *}
+ */
+export function loadZones(timezone) {
+  if (timezone === currentTimezone()) {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
+  }
+  if (timezone === 'UTC') {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
+  }
+
+  if (moment.zonesPromise) {
+    return moment.zonesPromise;
+  }
+  return moment.zonesPromise = fetch(
+    'https://cdn.rawgit.com/moment/moment-timezone/develop/data/packed/latest.json',
+  ).then(resp => resp.json().then(zones => {
+    moment.tz.load(zones);
+    moment.zonesLoaded = true;
+  }));
+}
+
+/**
+ * Set the timezone text and replace once timezones have loaded.
+ *
+ * @param offsetFormat
+ * @param stdFormat
+ * @return {*}
+ */
+export function timezoneText(offsetFormat, stdFormat) {
+  loadZones();
+  if (moment.zonesLoaded) {
+    return offsetFormat();
+  }
+  const id = getRandomComponentId();
+  let tries = 0;
+  moment.zonesPromise.then(function replaceZone() {
+    const element = document.getElementById(id);
+    if (element) {
+      element.innerHTML = offsetFormat();
+    }
+    else if (tries++ < 5) {
+      setTimeout(replaceZone, 100);
+    }
+  });
+  // For now just return the current format, and replace once zones are loaded.
+  return `<span id='${id}'>${stdFormat()}</span>`;
+}
+
+/**
+ * Format a date provided a value, format, and timezone object.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatDate(value, format, timezone) {
+  const momentDate = moment(value);
+  if (timezone === currentTimezone()) {
+    // See if our format contains a "z" timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      // Return the timezoneText.
+      return timezoneText(
+        () => momentDate.tz(timezone).format(convertFormatToMoment(format)),
+        () => momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')))
+      );
+    }
+
+    // Return the standard format.
+    return momentDate.format(convertFormatToMoment(format));
+  }
+  if (timezone === 'UTC') {
+    const offset = offsetDate(momentDate.toDate(), 'UTC');
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+  }
+
+  // Return the timezoneText.
+  return timezoneText(
+    () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
+    () => momentDate.format(convertFormatToMoment(format))
+  );
+}
+
+/**
+ * Pass a format function to format within a timezone.
+ *
+ * @param formatFn
+ * @param date
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatOffset(formatFn, date, format, timezone) {
+  if (timezone === currentTimezone()) {
+    return formatFn(date, format);
+  }
+  if (timezone === 'UTC') {
+    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
+  }
+
+  // Return the timezone text.
+  return timezoneText(() => {
+    const offset = offsetDate(date, timezone);
+    return `${formatFn(offset.date, format)} ${offset.abbr}`;
+  }, () => formatFn(date, format));
+}
+
 export function getLocaleDateFormatInfo(locale) {
   const formatInfo = {};
 
@@ -724,6 +881,9 @@ export function getLocaleDateFormatInfo(locale) {
  */
 export function convertFormatToFlatpickr(format) {
   return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, '')
+
     // Year conversion.
     .replace(/y/g, 'Y')
     .replace('YYYY', 'Y')
@@ -737,7 +897,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Day in month.
     .replace(/d/g, 'j')
-    .replace('jj', 'd')
+    .replace(/jj/g, 'd')
 
     // Day in week.
     .replace('EEEE', 'l')
@@ -766,6 +926,16 @@ export function convertFormatToMoment(format) {
     .replace(/E/g, 'd')
     // AM/PM marker
     .replace(/a/g, 'A');
+}
+
+export function convertFormatToMask(format) {
+  return format
+    // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, 'MM')
+    // Year conversion
+    .replace(/[ydhmsHM]/g, '9')
+    // AM/PM conversion
+    .replace(/a/g, 'AA');
 }
 
 /**
@@ -822,9 +992,16 @@ export function matchInputMask(value, inputMask) {
 
 export function getNumberSeparators(lang = 'en') {
   const formattedNumberString = (12345.6789).toLocaleString(lang);
+  const delimeters = formattedNumberString.match(/..(.)...(.)../);
+  if (!delimeters) {
+    return {
+      delimiter: ',',
+      decimalSeparator: '.'
+    };
+  }
   return {
-    delimiter: formattedNumberString.match(/12(.*)345/)[1],
-    decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',
+    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',
   };
 }
 
@@ -916,4 +1093,63 @@ export function fieldData(data, component) {
     }
     return data[component.key];
   }
+}
+
+/**
+ * Delays function execution with possibility to execute function synchronously or cancel it.
+ *
+ * @param fn Function to delay
+ * @param delay Delay time
+ * @return {*}
+ */
+export function delay(fn, delay = 0, ...args) {
+  const timer = setTimeout(fn, delay, ...args);
+
+  function cancel() {
+    clearTimeout(timer);
+  }
+
+  function earlyCall() {
+    cancel();
+    return fn(...args);
+  }
+
+  earlyCall.timer = timer;
+  earlyCall.cancel = cancel;
+
+  return earlyCall;
+}
+
+/**
+ * Iterate the given key to make it unique.
+ *
+ * @param {String} key
+ *   Modify the component key to be unique.
+ *
+ * @returns {String}
+ *   The new component key.
+ */
+export function iterateKey(key) {
+  if (!key.match(/(\d+)$/)) {
+    return `${key}2`;
+  }
+
+  return key.replace(/(\d+)$/, function(suffix) {
+    return Number(suffix) + 1;
+  });
+}
+
+/**
+ * Determines a unique key within a map provided the base key.
+ *
+ * @param map
+ * @param base
+ * @return {*}
+ */
+export function uniqueKey(map, base) {
+  let newKey = base;
+  while (map.hasOwnProperty(newKey)) {
+    newKey = iterateKey(newKey);
+  }
+  return newKey;
 }

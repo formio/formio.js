@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
@@ -18,9 +18,10 @@ export default class SelectComponent extends Field {
       },
       dataSrc: 'values',
       valueProperty: '',
-      refreshOn: '',
       filter: '',
       searchEnabled: true,
+      searchField: '',
+      minSearch: 0,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: ''
@@ -67,11 +68,8 @@ export default class SelectComponent extends Field {
     return SelectComponent.schema();
   }
 
-  refreshItems() {
-    this.triggerUpdate();
-    if (this.component.clearOnRefresh) {
-      this.setValue(null);
-    }
+  get emptyValue() {
+    return '';
   }
 
   get inputInfo() {
@@ -105,8 +103,23 @@ export default class SelectComponent extends Field {
     }
   }
 
-  itemValue(data) {
-    return (this.component.valueProperty && _.isObject(data)) ? _.get(data, this.component.valueProperty) : data;
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.component.valueProperty) {
+        return _.get(data, this.component.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
   }
 
   /**
@@ -233,6 +246,17 @@ export default class SelectComponent extends Field {
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
 
+    // See if they have not met the minimum search requirements.
+    const minSearch = parseInt(this.component.minSearch, 10);
+    if (
+      this.component.searchField &&
+      (minSearch > 0) &&
+      (!search || (search.length < minSearch))
+    ) {
+      // Set empty items.
+      return this.setItems([]);
+    }
+
     // Ensure we have a method and remove any body if method is get
     method = method || 'GET';
     if (method.toUpperCase() === 'GET') {
@@ -321,14 +345,17 @@ export default class SelectComponent extends Field {
     }, 'values') || []);
   }
 
+  /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
+      this.itemsLoadedResolve();
       return;
     }
 
     // Only load the data if it is visible.
     if (!this.checkConditions()) {
+      this.itemsLoadedResolve();
       return;
     }
 
@@ -344,8 +371,8 @@ export default class SelectComponent extends Field {
         this.updateCustomItems();
         break;
       case 'resource': {
-        if (!forceUpdate && !this.active) {
-          // If we are lazyLoading, wait until activated.
+        // If there is no resource, or we are lazyLoading, wait until active.
+        if (!this.component.data.resource || (!forceUpdate && !this.active)) {
           return;
         }
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
@@ -369,7 +396,11 @@ export default class SelectComponent extends Field {
         let body;
 
         if (url.substr(0, 1) === '/') {
-          url = Formio.getBaseUrl() + this.component.data.url;
+          let baseUrl = Formio.getProjectUrl();
+          if (!baseUrl) {
+            baseUrl = Formio.getBaseUrl();
+          }
+          url = baseUrl + this.component.data.url;
         }
 
         if (!this.component.data.method) {
@@ -389,6 +420,7 @@ export default class SelectComponent extends Field {
       }
     }
   }
+  /* eslint-enable max-statements */
 
   addPlaceholder() {
     if (!this.component.placeholder) {
@@ -414,7 +446,7 @@ export default class SelectComponent extends Field {
     else {
       this.addOption('', this.t('loading...'));
     }
-    this.refreshItems();
+    this.triggerUpdate();
   }
 
   get active() {
@@ -470,7 +502,7 @@ export default class SelectComponent extends Field {
       addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
-      searchPlaceholderValue: placeholderValue,
+      searchPlaceholderValue: this.t('Type to search'),
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
@@ -512,6 +544,14 @@ export default class SelectComponent extends Field {
     }
 
     this.addEventListener(input, 'showDropdown', () => this.update());
+    if (placeholderValue && this.choices.isSelectOneElement) {
+      this.addEventListener(input, 'removeItem', () => {
+        const items = this.choices.store.getItemsFilteredByActive();
+        if (!items.length) {
+          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
+        }
+      });
+    }
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisable;
@@ -547,7 +587,7 @@ export default class SelectComponent extends Field {
 
   set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
-    if (value && (this._visible !== value)) {
+    if (value && (!this._visible !== !value)) {
       this.triggerUpdate();
     }
     super.visible = value;
@@ -557,16 +597,27 @@ export default class SelectComponent extends Field {
     return super.visible;
   }
 
+  /**
+   * @param {*} value
+   * @param {Array} items
+   */
   addCurrentChoices(value, items) {
     if (value) {
       let found = false;
+      // Make sure that `items` and `this.selectOptions` points
+      // to the same reference. Because `this.selectOptions` is
+      // internal property and all items are populated by
+      // `this.addOption` method, we assume that items has
+      // 'label' and 'value' properties. This assumption allows
+      // us to read correct value from the item.
+      const isSelectOptions = items === this.selectOptions;
       if (items && items.length) {
         _.each(items, (choice) => {
           if (choice._id && value._id && (choice._id === value._id)) {
             found = true;
             return false;
           }
-          found |= _.isEqual(this.itemValue(choice), value);
+          found |= _.isEqual(this.itemValue(choice, isSelectOptions), value);
           return found ? false : true;
         });
       }
@@ -607,6 +658,10 @@ export default class SelectComponent extends Field {
         }
       });
       value = this.component.multiple ? values : values.shift();
+    }
+    // Choices will return undefined if nothing is selected. We really want '' to be empty.
+    if (value === undefined || value === null) {
+      value = '';
     }
     return value;
   }
@@ -690,6 +745,14 @@ export default class SelectComponent extends Field {
 
     this.updateOnChange(flags, changed);
     return changed;
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
+  deleteValue() {
+    this.setValue('');
+    _.unset(this.data, this.key);
   }
 
   /**

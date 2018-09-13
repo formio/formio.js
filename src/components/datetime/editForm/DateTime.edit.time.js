@@ -30,13 +30,5 @@ export default [
     label: '12 Hour Time (AM/PM)',
     tooltip: 'Display time in 12 hour time with AM/PM.',
     weight: 30
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    key: 'timePicker.readonlyInput',
-    label: 'Read-Only Input',
-    tooltip: 'Makes the time picker input boxes read-only. The time can only be changed by the increment/decrement buttons.',
-    weight: 40
   }
 ];

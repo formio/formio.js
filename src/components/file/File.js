@@ -2,6 +2,28 @@ import Component from '../_classes/component/Component';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
+let Camera;
+const webViewCamera = navigator.camera || Camera;
+
+// canvas.toBlob polyfill.
+if (!HTMLCanvasElement.prototype.toBlob) {
+  Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+    value: function(callback, type, quality) {
+      var canvas = this;
+      setTimeout(function() {
+        var binStr = atob(canvas.toDataURL(type, quality).split(',')[1]),
+          len = binStr.length,
+          arr = new Uint8Array(len);
+
+        for (var i = 0; i < len; i++) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback(new Blob([arr], { type: type || 'image/png' }));
+      });
+    }
+  });
+}
 
 export default class FileComponent extends Component {
   static schema(...extend) {
@@ -13,7 +35,8 @@ export default class FileComponent extends Component {
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
-      fileMaxSize: '1GB'
+      fileMaxSize: '1GB',
+      uploadOnly: false
     }, ...extend);
   }
 
@@ -36,7 +59,7 @@ export default class FileComponent extends Component {
       progress: 'upload' in new XMLHttpRequest
     };
     this.support.hasWarning = !this.support.filereader || !this.support.formdata || !this.support.progress;
-
+    this.cameraMode = false;
     this.statuses = [];
   }
 
@@ -80,10 +103,77 @@ export default class FileComponent extends Component {
     }));
   }
 
+  startVideo() {
+    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
+      console.warn('Video player not found in template.');
+      this.cameraMode = false;
+      this.redraw();
+      return;
+    }
+
+    const width = parseInt(this.component.webcamSize) || 320;
+    const height = width * 3 / 4;
+    navigator.getMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+
+    navigator.getMedia(
+      {
+        video: true,
+        audio: false
+      },
+      (stream) => {
+        if (navigator.mozGetUserMedia) {
+          this.refs.videoPlayer.mozSrcObject = stream;
+        }
+        else {
+          this.refs.videoPlayer.srcObject = stream;
+          this.refs.videoPlayer.play();
+        }
+        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        this.refs.videoPlayer.setAttribute('width', width);
+        this.refs.videoPlayer.setAttribute('height', height);
+        this.refs.videoCanvas.setAttribute('width', width);
+        this.refs.videoCanvas.setAttribute('height', height);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  takePicture() {
+    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
+      console.warn('Video player not found in template.');
+      this.cameraMode = false;
+      this.redraw();
+      return;
+    }
+
+    const width = parseInt(this.component.webcamSize) || 320;
+    const height = this.refs.videoPlayer.videoHeight / (this.refs.videoPlayer.videoWidth / width);
+    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0, width, height);
+    this.refs.videoCanvas.toBlob(blob => {
+      blob.name = `photo-${Date.now()}.png`;
+      this.upload([blob]);
+    });
+  }
+
+  get useWebViewCamera() {
+    return this.component.image && webViewCamera;
+  }
+
   attach(element) {
     this.loadRefs(element, {
       fileDrop: 'single',
       fileBrowse: 'single',
+      galleryButton: 'single',
+      cameraButton: 'single',
+      takePictureButton: 'single',
+      toggleCameraMode: 'single',
+      videoPlayer: 'single',
+      videoCanvas: 'single',
       hiddenFileInputElement: 'single',
       fileLink: 'multiple',
       removeLink: 'multiple',
@@ -153,6 +243,60 @@ export default class FileComponent extends Component {
         this.redraw();
       });
     });
+
+    if (this.refs.galleryButton && webViewCamera) {
+      this.addEventListener(this.refs.galleryButton, 'click', (event) => {
+        event.preventDefault();
+        webViewCamera.getPicture((success) => {
+          window.resolveLocalFileSystemURL(success, (fileEntry) => {
+              fileEntry.file((file) => {
+                this.upload([file]);
+              });
+            }
+          );
+        }, null, {
+          sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY
+        });
+      });
+    }
+
+    if (this.refs.cameraButton && webViewCamera) {
+      this.addEventListener(this.refs.cameraButton, 'click', (event) => {
+        event.preventDefault();
+        webViewCamera.getPicture((success) => {
+          window.resolveLocalFileSystemURL(success, (fileEntry) => {
+              fileEntry.file((file) => {
+                this.upload([file]);
+              });
+            }
+          );
+        }, null, {
+          sourceType: webViewCamera.PictureSourceType.CAMERA,
+          encodingType: webViewCamera.EncodingType.PNG,
+          mediaType: webViewCamera.MediaType.PICTURE,
+          saveToPhotoAlbum: true,
+          correctOrientation: false
+        });
+      });
+    }
+
+    if (this.refs.takePictureButton) {
+      this.addEventListener(this.refs.takePictureButton, 'click', (event) => {
+        event.preventDefault();
+        this.takePicture();
+      });
+    }
+
+    if (this.refs.toggleCameraMode) {
+      this.addEventListener(this.refs.toggleCameraMode, 'click', (event) => {
+        event.preventDefault();
+        this.cameraMode = !this.cameraMode;
+        if (this.cameraMode) {
+          this.startVideo();
+        }
+        this.redraw();
+      });
+    }
 
     const fileService = this.fileService;
     if (fileService) {

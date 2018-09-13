@@ -1,6 +1,9 @@
 export default (iconset, name, spinning) => {
   if (iconset === 'fa') {
     switch (name) {
+      case 'save':
+        name = 'download';
+        break;
       case 'zoom-in':
         name = 'search-plus';
         break;

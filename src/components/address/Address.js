@@ -466,7 +466,6 @@ export default class AddressComponent extends TextFieldComponent {
 
   attachElement(element, index) {
     super.attachElement(element, index);
-    const input = this.refs.input[index];
     Formio.libraryReady('googleMaps').then(() => {
       let autoCompleteOptions = {};
       if (this.component.map) {
@@ -482,10 +481,10 @@ export default class AddressComponent extends TextFieldComponent {
 
       if (this.component.map && this.component.map.autoCompleteFilter) {
         // Call custom autoComplete to filter suggestions
-        this.autoCompleteInit(input, autoCompleteOptions);
+        this.autoCompleteInit(element, autoCompleteOptions);
       }
       else {
-        const autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete = new google.maps.places.Autocomplete(element);
         autocomplete.addListener('place_changed', () => this.setValue(autocomplete.getPlace()));
       }
     });

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
+import Component from '../_classes/component/Component';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -9,6 +10,7 @@ export default class DataGridComponent extends NestedComponent {
       type: 'datagrid',
       clearOnHide: true,
       input: true,
+      tree: true,
       components: []
     }, ...extend);
   }
@@ -43,6 +45,18 @@ export default class DataGridComponent extends NestedComponent {
 
     this.visibleColumns = {};
     this.checkColumns(this.dataValue);
+  }
+
+  get dataValue() {
+    const dataValue = super.dataValue;
+    if (!dataValue || !_.isArray(dataValue)) {
+      return this.emptyValue;
+    }
+    return dataValue;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
   }
 
   get defaultSchema() {
@@ -151,7 +165,7 @@ export default class DataGridComponent extends NestedComponent {
     this.rows.forEach((row, rowIndex) => {
       let columnIndex = 0;
       this.component.components.forEach((col) => {
-        if (this.visibleColumns[col.key]) {
+        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
           this.attachComponents(
             this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
             [this.rows[rowIndex][col.key]],
@@ -195,6 +209,7 @@ export default class DataGridComponent extends NestedComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       components[col.key] = this.createComponent(col, options, row);
+      components[col.key].rowIndex = rowIndex;
       components[col.key].inDataGrid = true;
     });
     return components;
@@ -211,7 +226,9 @@ export default class DataGridComponent extends NestedComponent {
 
     this.rows.forEach((row) => {
       _.each(row, (col, key) => {
-        visibility[key] = !!visibility[key] || col.checkConditions(data);
+        if (col && (typeof col.checkConditions === 'function')) {
+          visibility[key] = !!visibility[key] || col.checkConditions(data);
+        }
       });
     });
     const rebuild = !_.isEqual(visibility, this.visibleColumns);
@@ -239,6 +256,11 @@ export default class DataGridComponent extends NestedComponent {
     return show;
   }
 
+  updateValue(flags, value) {
+    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
+    return Component.prototype.updateValue.call(this, flags, value);
+  }
+
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
@@ -262,19 +284,7 @@ export default class DataGridComponent extends NestedComponent {
       if (value.length <= rowIndex) {
         return;
       }
-      _.each(row, (col, key) => {
-        if (col.type === 'components') {
-          col.setValue(value[rowIndex], flags);
-        }
-        else if (value[rowIndex].hasOwnProperty(key)) {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex][key], flags);
-        }
-        else {
-          col.data = value[rowIndex];
-          col.setValue(col.defaultValue, flags);
-        }
-      });
+      _.each(row, component => this.setNestedValue(component, value[rowIndex], flags));
     });
     if (changed) {
       this.redraw();
@@ -288,17 +298,6 @@ export default class DataGridComponent extends NestedComponent {
    * @returns {*}
    */
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    const values = [];
-    _.each(this.rows, (row) => {
-      const value = {};
-      _.each(row, (col, key) => {
-        _.set(value, key, col.getValue());
-      });
-      values.push(value);
-    });
-    return values;
+    return this.dataValue;
   }
 }

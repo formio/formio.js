@@ -10,21 +10,19 @@ module.exports = function(config) {
             test: /\.js$/,
             exclude: /node_modules/,
             use: {
-              loader: 'babel-loader'
-            }
-          },
-          {
-            test: /\.html$/,
-            use: {
-              loader: 'raw-loader'
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/env'],
+                plugins: ['@babel/plugin-proposal-export-default-from']
+              }
             }
           }
         ]
       }
     },
     files: [
-      'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css',
-      'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
+      'app/bootstrap/css/bootstrap.min.css',
+      'app/fontawesome/css/font-awesome.min.css',
       'dist/formio.full.min.css',
       {
         pattern: 'dist/fonts/*',
@@ -47,7 +45,7 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.spec.js': ['webpack']
     },
-    browserNoActivityTimeout: 2000,
+    browserNoActivityTimeout: 30000,
     reporters: ['progress'],
     port: 9876,
     colors: true,
@@ -57,4 +55,4 @@ module.exports = function(config) {
     singleRun: false,
     concurrency: Infinity
   })
-};
+}

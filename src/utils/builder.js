@@ -1,25 +1,6 @@
 import _ from 'lodash';
-import { eachComponent } from './utils';
+import { eachComponent, uniqueKey } from './utils';
 export default {
-  /**
-   * Iterate the given key to make it unique.
-   *
-   * @param {String} key
-   *   Modify the component key to be unique.
-   *
-   * @returns {String}
-   *   The new component key.
-   */
-  iterateKey(key) {
-    if (!key.match(/(\d+)$/)) {
-      return `${key}1`;
-    }
-
-    return key.replace(/(\d+)$/, function(suffix) {
-      return Number(suffix) + 1;
-    });
-  },
-
   /**
    * Appends a number to a component.key to keep it unique
    *
@@ -42,8 +23,9 @@ export default {
         return;
       }
 
-      while (formKeys.hasOwnProperty(component.key)) {
-        component.key = this.iterateKey(component.key);
+      const newKey = uniqueKey(formKeys, component.key);
+      if (newKey !== component.key) {
+        component.key = newKey;
         changed = true;
       }
     }, true);

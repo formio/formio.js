@@ -1,12 +1,11 @@
-import componentEditForm from '../_classes/component/Component.form';
-
+import baseEditForm from '../_classes/component/Component.form';
 import SurveyEditDisplay from './editForm/Survey.edit.display';
 
 export default function(...extend) {
-  return componentEditForm(...extend, [
+  return baseEditForm([
     {
       key: 'display',
       components: SurveyEditDisplay
     }
-  ]);
+  ], ...extend);
 }

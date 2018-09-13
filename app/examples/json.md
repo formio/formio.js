@@ -1,10 +1,9 @@
 ---
-title: JSON Powered
+title: JSON Powered Forms
 layout: vtabs
 section: examples
 weight: 30
 ---
-### JSON Powered Forms
 All forms that are rendered within this framework are JSON powered forms.
 
 ```html
@@ -38,6 +37,14 @@ Formio.createForm(document.getElementById('formio'), {
       validate: {
         required: true
       }
+    },
+    {
+      type: 'email',
+      key: 'email',
+      label: 'Email',
+      placeholder: 'Enter your email',
+      input: true,
+      validateOn: 'blur'
     },
     {
       type: 'phoneNumber',
@@ -176,7 +183,7 @@ Formio.createForm(document.getElementById('formio'), {
 </div>
 <div class="col col-sm-6">
 <h3>Result</h3>
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), {
@@ -200,6 +207,14 @@ Formio.createForm(document.getElementById('formio'), {
       validate: {
         required: true
       }
+    },
+    {
+      type: 'email',
+      key: 'email',
+      label: 'Email',
+      placeholder: 'Enter your email',
+      input: true,
+      validateOn: 'blur'
     },
     {
       type: 'phoneNumber',

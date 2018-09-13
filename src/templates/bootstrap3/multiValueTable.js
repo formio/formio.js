@@ -6,7 +6,7 @@ export default {
   {% if (!disabled) { %}
   <tr>
     <td colspan="2">
-      <button class="btn btn-primary" ref="addButton"><i class="{{iconClass('plus')}}"></i> {{addAnother}}</button>
+      <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="{{iconClass('plus')}}"></i> {{addAnother}}</button>
     </td>
   </tr>
   {% } %}

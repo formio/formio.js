@@ -1,7 +1,7 @@
 import baseEditForm from '../component/Component.form';
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: 'data',
       ignore: true
@@ -10,5 +10,5 @@ export default function(...extend) {
       key: 'validation',
       ignore: true
     }
-  ]);
+  ], ...extend);
 }

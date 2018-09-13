@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 301
 ---
-### Muli-Language Forms
 With Form.io, you can provide multiple langauges for the forms that are rendered within your application. This
 is done like the following.
 
@@ -124,8 +123,8 @@ Formio.createForm(document.getElementById('formio'), {
 
 </div>
 <div class="col col-sm-6">
-<h3>Result</h3>
-<div class="well">
+<h3 class="mt-0">Result</h3>
+<div class="card card-body bg-light">
 <div class="btn-group">
   <button type="button" class="btn btn-default" onclick="setLanguage('sp')">Español</button>
   <button type="button" class="btn btn-default" onclick="setLanguage('en')">English</button>
@@ -147,7 +146,10 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      conditional: {
+        json: {"!==": [{var: "data.firstName"}, "Bob"]}
+      }
     },
     {
       type: 'survey',

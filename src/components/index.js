@@ -4,6 +4,7 @@ import Component from './_classes/component/Component';
 import ContentComponent from './content/Content';
 import ContainerComponent from './container/Container';
 import DataGridComponent from './datagrid/DataGrid';
+import DataMapComponent from './datamap/DataMap';
 import DateTimeComponent from './datetime/DateTime';
 import DayComponent from './day/Day';
 import EditGridComponent from './editgrid/EditGrid';
@@ -13,6 +14,7 @@ import FormComponent from './form/Form';
 import TextFieldComponent from './textfield/TextField';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import EmailComponent from './email/Email';
+import UrlComponent from './url/Url';
 import TimeComponent from './time/Time';
 import CheckBoxComponent from './checkbox/Checkbox';
 import CurrencyComponent from './currency/Currency';
@@ -44,6 +46,7 @@ export default {
   content: ContentComponent,
   container: ContainerComponent,
   datagrid: DataGridComponent,
+  datamap: DataMapComponent,
   datetime: DateTimeComponent,
   day: DayComponent,
   htmlelement: HTMLComponent,
@@ -53,6 +56,7 @@ export default {
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
+  url: UrlComponent,
   time: TimeComponent,
   checkbox: CheckBoxComponent,
   currency: CurrencyComponent,

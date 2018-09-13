@@ -5,8 +5,6 @@ section: examples
 weight: 150
 contrib: true
 ---
-
-### Stripe Checkout
 Stripe securely collect card information from your customers and create a card payment.
 This component is based on the ButtonComponent and add an overlay to call [Stripe Checkout](https://stripe.com/docs/checkout) library.
 After the customer validate his payment information, a token will be returned by Stripe API and it will be stored in the form data.
@@ -149,7 +147,7 @@ Formio.createForm(document.getElementById('formio'), {
 
 #### Result
 
-<div class="well">
+<div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), {

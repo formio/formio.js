@@ -4,7 +4,7 @@ import DayEditDisplay from './editForm/Day.edit.display';
 import DayEditValidation from './editForm/Day.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm(...extend, [
+  return baseEditForm([
     {
       key: 'display',
       components: DayEditDisplay
@@ -13,5 +13,5 @@ export default function(...extend) {
       key: 'validation',
       components: DayEditValidation
     }
-  ]);
+  ], ...extend);
 }

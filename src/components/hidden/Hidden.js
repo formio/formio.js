@@ -38,4 +38,14 @@ export default class HiddenComponent extends Input {
   get emptyValue() {
     return '';
   }
+
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
+    this.dataValue = value;
+    return this.updateValue(flags);
+  }
+
+  getValue() {
+    return this.dataValue;
+  }
 }

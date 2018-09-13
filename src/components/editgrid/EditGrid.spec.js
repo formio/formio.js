@@ -167,7 +167,7 @@ describe('EditGrid Component', () => {
       Harness.getInputValue(component, 'data[editgrid][1][field2]', 'bar');
       Harness.testElements(component, 'div.editgrid-actions button.btn-primary', 1);
       Harness.testElements(component, 'div.editgrid-actions button.btn-danger', 1);
-      assert(!component.checkValidity(component.getValue()), 'Item should not be valid');
+      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
     });
   });
 
@@ -279,13 +279,13 @@ describe('EditGrid Component', () => {
         }
       ]);
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      assert(!component.checkValidity(component.getValue()), 'Item should not be valid');
+      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      assert(component.checkValidity(component.getValue()), 'Item should be valid');
+      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      assert(!component.checkValidity(component.getValue()), 'Item should not be valid');
+      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-danger');
-      assert(component.checkValidity(component.getValue()), 'Item should be valid');
+      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
     });
   });
 
@@ -303,13 +303,7 @@ describe('EditGrid Component', () => {
       ]);
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.removeRow');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-danger');
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
     });
   });

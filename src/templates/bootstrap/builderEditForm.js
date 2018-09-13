@@ -21,7 +21,7 @@ export default {
   <div class="col col-sm-6">
     <div class="card panel preview-panel">
       <div class="card-header">
-        <h3 class="card-title">{{t('Preview')}}</h3>
+        <h4 class="card-title mb-0">{{t('Preview')}}</h4>
       </div>
       <div class="card-body">
         <div class="component-preview" ref="preview">

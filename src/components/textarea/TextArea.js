@@ -1,6 +1,7 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
+import _ from 'lodash';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -10,7 +11,11 @@ export default class TextAreaComponent extends TextFieldComponent {
       key: 'textArea',
       rows: 3,
       wysiwyg: false,
-      editor: ''
+      editor: '',
+      validate: {
+        minWords: '',
+        maxWords: ''
+      }
     }, ...extend);
   }
 
@@ -84,7 +89,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   attachElement(element, index) {
     if (this.isPlain) {
-      this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
+      this.addEventListener(element, this.inputInfo.changeEvent, () => {
+        this.updateValue(null, element.value, index);
+      });
       return;
     }
 
@@ -97,20 +104,24 @@ export default class TextAreaComponent extends TextFieldComponent {
     // }
 
     if (this.component.editor === 'ace') {
-      this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js', true)
+      element.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
         .then(() => {
           const mode = this.component.as || 'javascript';
-          this.editor = ace.edit(element);
-          this.editor.on('change', () => {
-            this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
+          element.editor = ace.edit(element);
+          element.editor.on('change', () => {
+            const newValue = this.getConvertedValue(this.editor.getValue());
+            // Do not bother to update if they are both empty.
+            if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
+              this.updateValue(null, newValue, index);
+            }
           });
-          this.editor.getSession().setTabSize(2);
-          this.editor.getSession().setMode(`ace/mode/${mode}`);
-          this.editor.on('input', () => this.acePlaceholder());
+          element.editor.getSession().setTabSize(2);
+          element.editor.getSession().setMode(`ace/mode/${mode}`);
+          element.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
-          return this.editor;
+          return element.editor;
         });
-      return this.refs.input[index];
+      return element;
     }
 
     // Normalize the configurations.
@@ -125,10 +136,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     // Add the quill editor.
-    this.editorReady = this.addQuill(
-      this.refs.input[index],
+    element.editorReady = this.addQuill(
+      element,
       this.component.wysiwyg, () => {
-        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
+        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML), index);
       }
     ).then((quill) => {
       quill.root.spellcheck = this.component.spellcheck;
@@ -137,9 +148,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       }
 
       return quill;
-    });
+    }).catch(err => console.warn(err));
 
-    return this.refs.input[index];
+    return element;
   }
 
   get isPlain() {
@@ -153,7 +164,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && value) {
       try {
-        value = JSON.stringify(value);
+        value = JSON.stringify(value, null, 2);
       }
       catch (err) {
         console.warn(err);
@@ -180,6 +191,13 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    //should set value if new value is not equal to current
+    let shouldSetValue = !_.isEqual(value, this.getValue());
+    //should set value if is in read only mode
+    shouldSetValue = shouldSetValue || this.options.readOnly;
+    if (!shouldSetValue) {
+      return;
+    }
     value = value || '';
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);

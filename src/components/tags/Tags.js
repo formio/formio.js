@@ -51,17 +51,17 @@ export default class TagsComponent extends Input {
 
   attachElement(element, index) {
     super.attachElement(element, index);
-    if (!this.refs.input[index]) {
+    if (!element) {
       return;
     }
-    this.choices = new Choices(this.refs.input[index], {
+    this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItems: false,
     });
-    this.choices.itemList.tabIndex = this.refs.input[index].tabIndex;
+    this.choices.itemList.tabIndex = element.tabIndex;
   }
 
   detach() {
@@ -82,7 +82,9 @@ export default class TagsComponent extends Input {
         value = [value];
       }
       this.choices.removeActiveItems();
-      this.choices.setValue(value);
+      if (value) {
+        this.choices.setValue(value);
+      }
     }
   }
 

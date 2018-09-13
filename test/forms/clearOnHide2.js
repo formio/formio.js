@@ -1,6 +1,6 @@
 import assert from 'power-assert';
 import _cloneDeep from 'lodash/cloneDeep';
-
+import _omit from 'lodash/omit';
 export default {
   title: 'Clear on hide Form Test',
   form: {
@@ -1207,16 +1207,14 @@ export default {
   },
   tests: {
     'Test hiding and showing components'(form, done) {
-      const fullData = _cloneDeep(form.getValue());
+      const fullData = _cloneDeep(_omit(form.getValue(), ['metadata']));
       form.getComponent('hide', component => {
         component.setValue(true);
         form.checkConditions(form.getValue());
-        assert.deepEqual(form.getValue(), {data: {hide: true}});
+        assert.deepEqual(_omit(form.getValue(), ['metadata']), {data: {hide: true}});
         component.setValue(false);
         form.checkConditions(form.getValue());
-        console.log(JSON.stringify(fullData), JSON.stringify(form.getValue()));
-        // console.log(fullData.data.selectBoxes, form.getValue().data.selectBoxes);
-        assert.deepEqual(form.getValue(), fullData);
+        assert.deepEqual(_omit(form.getValue(), ['metadata']), fullData);
         done();
       });
     }

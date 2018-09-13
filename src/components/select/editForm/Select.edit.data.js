@@ -46,6 +46,17 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    label: 'Lazy Load URL',
+    key: 'lazyLoad',
+    tooltip: 'When set, this will not fire off the request to the URL until this control is within focus. This can improve performance if you have many Select dropdowns on your form where the API\'s will only fire when the control is activated.',
+    weight: 11,
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+    }
+  },
+  {
     type: 'datagrid',
     input: true,
     label: 'Request Headers',
@@ -224,11 +235,28 @@ export default [
     }
   },
   {
+    type: 'number',
+    input: true,
+    key: 'minSearch',
+    weight: 17,
+    label: 'Minimum Search Length',
+    tooltip: 'The minimum amount of characters they must type before a search is made.',
+    defaultValue: 0,
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '!=': [{ var: 'data.searchField' }, ''] }
+        ]
+      }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'filter',
     label: 'Filter Query',
-    weight: 17,
+    weight: 18,
     description: 'The filter query for results.',
     tooltip: 'Use this to provide additional filtering using query parameters.',
     conditional: {
@@ -245,7 +273,7 @@ export default [
     input: true,
     key: 'limit',
     label: 'Limit',
-    weight: 17,
+    weight: 18,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
@@ -284,36 +312,6 @@ export default [
     tooltip: 'The HTML template for the result data items.'
   },
   {
-    type: 'select',
-    input: true,
-    key: 'refreshOn',
-    label: 'Refresh On',
-    weight: 19,
-    tooltip: 'Refresh data when another field changes.',
-    dataSrc: 'custom',
-    data: {
-      custom: `
-        values.push({label: 'Any Change', key: 'data'});
-        utils.eachComponent(instance.root.editForm.components, function(component, path) {
-          if (component.key !== data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
-      `
-    },
-    conditional: {
-      json: {
-        and: [
-          { '!==': [{ var: 'data.dataSrc' }, 'values'] },
-          { '!==': [{ var: 'data.dataSrc' }, 'json'] }
-        ]
-      }
-    }
-  },
-  {
     type: 'checkbox',
     input: true,
     weight: 20,
@@ -321,23 +319,6 @@ export default [
     label: 'Enable Static Search',
     defaultValue: true,
     tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.'
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 20,
-    key: 'clearOnRefresh',
-    label: 'Clear Value On Refresh',
-    tooltip: 'When the Refresh On field is changed, clear the selected value.',
-    conditional: {
-      json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'custom'] }
-        ]
-      }
-    }
   },
   {
     type: 'checkbox',

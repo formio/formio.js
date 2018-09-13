@@ -148,6 +148,40 @@ export default {
         return (value.length <= maxLength);
       }
     },
+    maxWords: {
+      key: 'validate.maxWords',
+      message(component, setting) {
+        return component.t(component.errorMessage('maxWords'), {
+          field: component.errorLabel,
+          length: (setting + 1),
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const maxWords = parseInt(setting, 10);
+        if (!maxWords || (typeof value !== 'string')) {
+          return true;
+        }
+        return (value.trim().split(/\s+/).length <= maxWords);
+      }
+    },
+    minWords: {
+      key: 'validate.minWords',
+      message(component, setting) {
+        return component.t(component.errorMessage('minWords'), {
+          field: component.errorLabel,
+          length: (setting + 1),
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const minWords = parseInt(setting, 10);
+        if (!minWords || (typeof value !== 'string')) {
+          return true;
+        }
+        return (value.trim().split(/\s+/).length >= minWords);
+      }
+    },
     email: {
       message(component) {
         return component.t(component.errorMessage('invalid_email'), {
@@ -162,6 +196,23 @@ export default {
         /* eslint-enable max-len */
 
         // Allow emails to be valid if the component is pristine and no value is provided.
+        return !value || re.test(value);
+      }
+    },
+    url: {
+      message(component) {
+        return component.t(component.errorMessage('invalid_url'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        /* eslint-disable max-len */
+        // From https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
+        const re = /[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
+        /* eslint-enable max-len */
+
+        // Allow urls to be valid if the component is pristine and no value is provided.
         return !value || re.test(value);
       }
     },
@@ -229,7 +280,7 @@ export default {
           value = value ? value.value : value;
         }
         else {
-          inputMask = component._inputMask;
+          inputMask = component.defaultMask;
         }
         if (value && inputMask) {
           return matchInputMask(value, inputMask);
