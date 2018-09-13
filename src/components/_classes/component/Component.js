@@ -751,7 +751,7 @@ export default class Component extends Widget {
   /**
    * Remove all event handlers.
    */
-  detach(all) {
+  detach() {
     this.removeEventListeners();
   }
 

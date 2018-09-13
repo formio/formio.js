@@ -462,7 +462,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component, keyModified, isNew) {
+  updateComponent(component) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [component] };

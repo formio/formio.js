@@ -423,31 +423,6 @@ export default class EditGridComponent extends NestedComponent {
     return true;
   }
 
-  setCustomValidity(message, dirty) {
-    // if (this.errorElement && this.errorContainer) {
-    //   this.errorElement.innerHTML = '';
-    //   this.removeChildFrom(this.errorElement, this.errorContainer);
-    // }
-    // this.removeClass(this.element, 'has-error');
-    // if (this.options.highlightErrors) {
-    //   this.removeClass(this.element, 'alert alert-danger');
-    // }
-    if (message) {
-      this.emit('componentError', this.error);
-      // this.createErrorElement();
-      // const errorMessage = this.ce('p', {
-      //   class: 'help-block'
-      // });
-      // errorMessage.appendChild(this.text(message));
-      // this.appendTo(errorMessage, this.errorElement);
-      // // Add error classes
-      // this.addClass(this.element, 'has-error');
-      // if (dirty && this.options.highlightErrors) {
-      //   this.addClass(this.element, 'alert alert-danger');
-      // }
-    }
-  }
-
   get defaultValue() {
     const value = super.defaultValue;
     return Array.isArray(value) ? value : [];
