@@ -171,7 +171,7 @@ export default class Wizard extends Webform {
       this.redraw();
       return Promise.resolve();
     }
-    else if (this.wizard.full) {
+    else if (this.wizard.full || !this.pages.length) {
       this.redraw();
       return Promise.resolve();
     }

@@ -6,15 +6,15 @@ export default {
   </div>
   <div class="col-xs-8 col-sm-9 col-md-10 formarea">
     <ol class="breadcrumb">
-      {% pages.forEach(function(page) { %}
+      {% pages.forEach(function(page, pageIndex) { %}
       <li>
-        <a title="{{page.title}}" class="label label-primary" ref="gotoPage">{{page.title}}</a>
+        <span title="{{page.title}}" class="mr-2 badge {% if (pageIndex === self.currentPage) { %}badge-primary{% } else { %}badge-info{% } %} wizard-page-label" ref="gotoPage">{{page.title}}</span>
       </li>
       {% }) %}
       <li>
-        <a title="{{t('Create Page')}}" class="label label-success" ref="addPage">
+        <span title="{{t('Create Page')}}" class="mr-2 badge badge-success wizard-page-label" ref="addPage">
           <i class="{{iconClass('plus')}}"></i> {{t('Page')}}
-        </a>
+        </span>
       </li>
     </ol>
     <div ref="form">

@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="card {{transform('class', 'border-' + component.theme)}}">
+<div class="mb-2 card {{transform('class', 'border-' + component.theme)}}">
   <div class="card-header">
     <span class="mb-0 card-title" ref="header">{{t(component.title)}}</span>
   </div>
