@@ -726,7 +726,7 @@ export default class Formio {
     }
 
     const requestToken = options.headers.get('x-jwt-token');
-    return fetch(url, options)
+    const result = fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
@@ -832,11 +832,6 @@ export default class Formio {
           resultCopy = copy(result);
         }
 
-        // Cache the response.
-        if (method === 'GET') {
-          Formio.cache[cacheKey] = resultCopy;
-        }
-
         return resultCopy;
       })
       .catch((err) => {
@@ -848,8 +843,20 @@ export default class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
+
+        if (method === 'GET') {
+          delete Formio.cache[cacheKey];
+        }
+
         return Promise.reject(err);
       });
+
+    // Cache the response.
+    if (method === 'GET') {
+      Formio.cache[cacheKey] = result;
+    }
+
+    return result;
   }
 
   // Needed to maintain reverse compatability...
