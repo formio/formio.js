@@ -348,9 +348,6 @@ export default class BaseComponent extends Component {
       }
     });
 
-    // Attach the refresh on events.
-    this.attachRefreshOn();
-
     // Allow anyone to hook into the component creation.
     this.hook('component');
   }
@@ -506,6 +503,9 @@ export default class BaseComponent extends Component {
 
       // Restore the value.
       this.restoreValue();
+
+      // Attach the refresh on events.
+      this.attachRefreshOn();
 
       this.autofocus();
     }
