@@ -44,7 +44,7 @@ export default class NestedComponent extends Component {
     const isVisible = this.visible;
     const forceShow = this.options.show && this.options.show[this.component.key];
     const forceHide = this.options.hide && this.options.hide[this.component.key];
-    this.componentComponents.forEach(component => {
+    this.components.forEach(component => {
       const conditionallyVisible = component.conditionallyVisible();
       if (forceShow || (!isVisible && conditionallyVisible)) {
         component.visible = true;
@@ -368,7 +368,7 @@ export default class NestedComponent extends Component {
   }
 
   updateValue(flags) {
-    return this.componentComponents.reduce((changed, comp) => comp.updateValue(flags) || changed, false);
+    return this.components.reduce((changed, comp) => comp.updateValue(flags) || changed, false);
   }
 
   hasChanged() {
@@ -490,13 +490,13 @@ export default class NestedComponent extends Component {
   }
 
   destroyComponents() {
-    const components = this.componentComponents.slice();
+    const components = this.components.slice();
     components.forEach((comp) => this.removeComponent(comp, this.components));
     this.components = [];
   }
 
   set disabled(disabled) {
-    this.componentComponents.forEach((component) => component.disabled = disabled);
+    this.components.forEach((component) => component.disabled = disabled);
   }
 
   get errors() {

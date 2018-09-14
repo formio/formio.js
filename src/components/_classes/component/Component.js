@@ -1135,16 +1135,16 @@ export default class Component extends Widget {
     data = data || (this.root ? this.root.data : {});
 
     // Check advanced conditions
-    const result = this.show(this.conditionallyVisible(data));
+    const visible = this.conditionallyVisible(data);
     if (this.fieldLogic(data)) {
       this.redraw();
     }
 
-    if (this.visible !== result) {
-      this.visible = result;
+    if (this.visible !== visible) {
+      this.visible = visible;
     }
 
-    return result;
+    return visible;
   }
 
   get logic() {

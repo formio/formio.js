@@ -14,10 +14,17 @@ Formio.forms = {};
 // Allow people to register components.
 Formio.registerComponent = Components.setComponent;
 
+function getIconSet(icons) {
+  if (icons === 'fontawesome') {
+    return 'fa';
+  }
+  return icons || '';
+}
+
 function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
-    icons: Formio.icons || '',
+    iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
     i18next,
   });
   if (!options.events) {

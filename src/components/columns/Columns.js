@@ -89,7 +89,7 @@ export default class ColumnsComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) =>
       this.attachComponents(column, this.columns[index], this.component.columns[index].components)
     );
-    this.on('change', () => this.justifyColumns(this.components));
+    this.on('change', () => this.justifyRow(this.components));
   }
 
   get gridSize() {

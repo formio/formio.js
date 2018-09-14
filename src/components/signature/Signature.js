@@ -134,18 +134,19 @@ export default class SignatureComponent extends Input {
       this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
         noSign: true
       });
-      // Ensure the signature is always the size of its container.
-      this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
 
-      // This has the potential to end up with infinite loops if there is no padBody.
-      // setTimeout(function checkWidth() {
-      //   if (this.refs.padBody.offsetWidth) {
-      //     this.checkSize();
-      //   }
-      //   else {
-      //     setTimeout(checkWidth.bind(this), 200);
-      //   }
-      // }.bind(this), 200);
+      // Ensure the signature is always the size of its container.
+      if (this.refs.padBody) {
+        this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
+        setTimeout(function checkWidth() {
+          if (this.refs.padBody.offsetWidth) {
+            this.checkSize();
+          }
+          else {
+            setTimeout(checkWidth.bind(this), 200);
+          }
+        }.bind(this), 200);
+      }
     }
     this.addEventListener(this.refs.refresh, 'click', (event) => {
       event.preventDefault();

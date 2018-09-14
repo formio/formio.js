@@ -160,7 +160,9 @@ export default class Input extends Multivalue {
 
     // Attach the widget.
     element.widget = this.createWidget(index);
-    element.widget.attach(element);
+    if (element.widget) {
+      element.widget.attach(element);
+    }
 
     // Add focus and blur events.
     this.addFocusBlurEvents(element);

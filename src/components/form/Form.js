@@ -133,8 +133,8 @@ export default class FormComponent extends Component {
     if (this.options && this.options.attachMode) {
       options.attachMode = this.options.attachMode;
     }
-    if (this.options && this.options.icons) {
-      options.icons = this.options.icons;
+    if (this.options && this.options.iconset) {
+      options.iconset = this.options.iconset;
     }
     return options;
   }
