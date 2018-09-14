@@ -59,10 +59,14 @@ export default class SignatureComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     super.setValue(value, flags);
-    if (value && !flags.noSign && this.signaturePad) {
-      this.signaturePad.fromDataURL(value);
-      this.signatureImage.setAttribute('src', value);
-      this.showCanvas(false);
+    if (this.signaturePad) {
+      if (value && !flags.noSign) {
+        this.signatureImage.setAttribute('src', value);
+        this.showCanvas(false);
+      }
+      if (!value) {
+        this.signaturePad.clear();
+      }
     }
   }
 
@@ -180,10 +184,12 @@ export default class SignatureComponent extends BaseComponent {
       event.preventDefault();
       this.showCanvas(true);
       this.signaturePad.clear();
+      this.setValue(null);
     });
     this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
       noSign: true
     });
+    this.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
     // Ensure the signature is always the size of its container.
     this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
