@@ -697,7 +697,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(Formio.cache[cacheKey]);
+      return Formio.cache[cacheKey];
     }
 
     // Set up and fetch request
