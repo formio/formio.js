@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -281,7 +284,7 @@ export default class TabsComponent extends NestedComponent {
    *
    * @param index
    */
-  setTab(index) {
+  setTab(index, state) {
     if (
       !this.tabs ||
       !this.component.components ||
@@ -298,7 +301,15 @@ export default class TabsComponent extends NestedComponent {
     this.empty(this.tabs[this.currentTab]);
     _.remove(this.components, (comp) =&gt; comp.component.tab === this.currentTab);
     const components = this.hook(&apos;addComponents&apos;, tab.components, this);
-    _.each(components, (component) =&gt; this.addComponent(component, this.tabs[this.currentTab]));
+    _.each(components, (component) =&gt; this.addComponent(
+      component,
+      this.tabs[this.currentTab],
+      this.data,
+      null,
+      null,
+      state
+    ));
+    this.restoreValue();
     this.checkConditions(this.root ? this.root.data : {});
 
     if (this.tabLinks.length &lt;= index) {
@@ -317,6 +328,12 @@ export default class TabsComponent extends NestedComponent {
     this.addClass(this.tabs[index], &apos;active&apos;);
   }
 
+  destroy() {
+    const state = super.destroy() || {};
+    state.currentTab = this.currentTab;
+    return state;
+  }
+
   /**
    * Make sure to include the tab on the component as it is added.
    *
@@ -326,16 +343,17 @@ export default class TabsComponent extends NestedComponent {
    * @param before
    * @return {BaseComponent}
    */
-  addComponent(component, element, data, before) {
+  addComponent(component, element, data, before, noAdd, state) {
     component.tab = this.currentTab;
-    return super.addComponent(component, element, data, before);
+    return super.addComponent(component, element, data, before, noAdd, state);
   }
 
   /**
    * Only add the components for the active tab.
    */
-  addComponents() {
-    this.setTab(this.currentTab);
+  addComponents(element, data, options, state) {
+    const currentTab = state &amp;&amp; state.currentTab ? state.currentTab : this.currentTab;
+    this.setTab(currentTab, state);
   }
 }
 </code></pre>

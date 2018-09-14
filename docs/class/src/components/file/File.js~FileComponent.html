@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -994,7 +997,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html#instance-method-buildUpload">buildUpload</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html#instance-method-buildUpload">buildUpload</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4925,34 +4928,6 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-bootstrap4Theme">bootstrap4Theme</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-build">build</a></span></span><span class="code" data-ice="signature">()</span>
         </p>
       </div>
@@ -5125,13 +5100,14 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-clear">clear</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-clear">clear</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Destroys and clears a component and returns the current state.</p>
+</div>
       </div>
     </td>
     <td>
@@ -5583,7 +5559,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-destroy">destroy</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-destroy">destroy</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -7579,7 +7555,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber463">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber474">source</a></span></span>
     </span>
   </h3>
 
@@ -7622,7 +7598,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber416">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber421">source</a></span></span>
     </span>
   </h3>
 
@@ -7665,7 +7641,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber391">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber394">source</a></span></span>
     </span>
   </h3>
 
@@ -7970,7 +7946,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber223">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber226">source</a></span></span>
     </span>
   </h3>
 
@@ -8228,7 +8204,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber485">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber496">source</a></span></span>
     </span>
   </h3>
 
@@ -8274,7 +8250,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber489">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber500">source</a></span></span>
     </span>
   </h3>
 
@@ -8377,7 +8353,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber462">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber473">source</a></span></span>
     </span>
   </h3>
 
@@ -8542,7 +8518,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber217">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber220">source</a></span></span>
     </span>
   </h3>
 
@@ -8648,11 +8624,11 @@ to perform special async functions.</p>
     
     
     
-    <span class="code" data-ice="name">buildUpload</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+    <span class="code" data-ice="name">buildUpload</span><span class="code" data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber317">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber320">source</a></span></span>
     </span>
   </h3>
 
@@ -8671,7 +8647,7 @@ to perform special async functions.</p>
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
           
         </tr>
       </tbody>
@@ -8707,7 +8683,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber483">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber494">source</a></span></span>
     </span>
   </h3>
 
@@ -8766,7 +8742,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber207">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber210">source</a></span></span>
     </span>
   </h3>
 
@@ -8837,7 +8813,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber178">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber181">source</a></span></span>
     </span>
   </h3>
 
@@ -8914,7 +8890,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber236">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber239">source</a></span></span>
     </span>
   </h3>
 
@@ -8991,7 +8967,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber525">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber536">source</a></span></span>
     </span>
   </h3>
 
@@ -9062,7 +9038,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber519">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber530">source</a></span></span>
     </span>
   </h3>
 
@@ -9157,7 +9133,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber753">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber764">source</a></span></span>
     </span>
   </h3>
 
@@ -9200,7 +9176,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber730">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber741">source</a></span></span>
     </span>
   </h3>
 
@@ -9333,7 +9309,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber561">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber572">source</a></span></span>
     </span>
   </h3>
 
@@ -9507,7 +9483,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber274">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber277">source</a></span></span>
     </span>
   </h3>
 
@@ -9550,7 +9526,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber307">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber310">source</a></span></span>
     </span>
   </h3>
 
@@ -9593,7 +9569,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber600">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber611">source</a></span></span>
     </span>
   </h3>
 
@@ -9664,7 +9640,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber655">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber666">source</a></span></span>
     </span>
   </h3>
 
@@ -9723,7 +9699,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber651">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber662">source</a></span></span>
     </span>
   </h3>
 
@@ -9800,7 +9776,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber647">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber658">source</a></span></span>
     </span>
   </h3>
 
@@ -9933,7 +9909,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber627">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/file/File.js.html#lineNumber638">source</a></span></span>
     </span>
   </h3>
 

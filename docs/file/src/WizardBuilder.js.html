@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -242,12 +245,12 @@ export default class WizardBuilder extends WebformBuilder {
     this.redraw();
   }
 
-  addComponents(element, data) {
+  addComponents(element, data, options, state) {
     element = element || this.getContainer();
     data = data || this.data;
     const components = this.hook(&apos;addComponents&apos;, this.componentComponents, this);
     _.each(components, (component, index) =&gt; {
-      this.addComponent(component, element, data, null, (index !== this.currentPage));
+      this.addComponent(component, element, data, null, (index !== this.currentPage), state);
     });
   }
 
@@ -277,9 +280,11 @@ export default class WizardBuilder extends WebformBuilder {
 
     this.empty(this.pageBar);
     _.each(pages, (page, index) =&gt; {
-      const pageLink = this.ce(&apos;a&apos;, {
+      const pageLink = this.ce(&apos;span&apos;, {
         title: page.title,
-        class: (index === this.currentPage) ? &apos;label label-primary&apos; : &apos;label label-info&apos;
+        class: (index === this.currentPage) ?
+          &apos;mr-2 badge badge-primary label label-primary wizard-page-label&apos; :
+          &apos;mr-2 badge badge-info label label-info wizard-page-label&apos;
       }, this.text(page.title));
       this.pageBar.appendChild(this.ce(&apos;li&apos;, null, pageLink));
       this.addEventListener(pageLink, &apos;click&apos;, (event) =&gt; {
@@ -288,9 +293,9 @@ export default class WizardBuilder extends WebformBuilder {
       });
     });
 
-    const newPage = this.ce(&apos;a&apos;, {
+    const newPage = this.ce(&apos;span&apos;, {
       title: this.t(&apos;Create Page&apos;),
-      class: &apos;label label-success&apos;
+      class: &apos;mr-2 badge badge-success label label-success wizard-page-label&apos;
     }, [
       this.getIcon(&apos;plus&apos;),
       this.text(&apos; PAGE&apos;)

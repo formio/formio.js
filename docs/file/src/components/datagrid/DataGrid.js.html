@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -305,12 +308,12 @@ export default class DataGridComponent extends NestedComponent {
 
   buildRows() {
     this.setVisibleComponents();
-    this.destroy();
+    const state = this.destroy();
     this.empty(this.tableElement);
 
     // Build the rows.
     const tableRows = [];
-    this.dataValue.forEach((row, rowIndex) =&gt; tableRows.push(this.buildRow(row, rowIndex)));
+    this.dataValue.forEach((row, rowIndex) =&gt; tableRows.push(this.buildRow(row, rowIndex, state)));
 
     // Create the header (must happen after build rows to get correct column length)
     const header = this.createHeader();
@@ -380,7 +383,7 @@ export default class DataGridComponent extends NestedComponent {
     return this.emptyValue;
   }
 
-  buildRow(row, index) {
+  buildRow(row, index, state) {
     this.rows[index] = {};
     let lastColumn = null;
     if (this.hasRemoveButtons()) {
@@ -400,27 +403,34 @@ export default class DataGridComponent extends NestedComponent {
     }
     return this.ce(&apos;tr&apos;, null,
       [
-        this.component.components.map((col, colIndex) =&gt; this.buildComponent(col, colIndex, row, index)),
+        this.component.components.map((col, colIndex) =&gt; this.buildComponent(col, colIndex, row, index, state)),
         lastColumn
       ]
     );
   }
 
-  destroyRows() {
-    _.each(this.rows, row =&gt; _.each(row, col =&gt; this.removeComponent(col, row)));
+  destroyRows(state) {
+    state.components = state.components || {};
+    _.each(this.rows, row =&gt; _.each(row, col =&gt; {
+      const compState = this.removeComponent(col, row);
+      if (col.key &amp;&amp; compState) {
+        state.components[col.key] = compState;
+      }
+    }));
     this.rows = [];
   }
 
-  destroy(all) {
-    super.destroy(all);
-    this.destroyRows();
+  destroy() {
+    const state = super.destroy() || {};
+    this.destroyRows(state);
+    return state;
   }
 
-  buildComponent(col, colIndex, row, rowIndex) {
+  buildComponent(col, colIndex, row, rowIndex, state) {
     var container;
     const isVisible = this.visibleColumns &amp;&amp;
       (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
-    if (isVisible) {
+    if (isVisible || this.options.builder) {
       container = this.ce(&apos;td&apos;);
       container.noDrop = true;
     }
@@ -431,11 +441,11 @@ export default class DataGridComponent extends NestedComponent {
     options.inDataGrid = true;
     const comp = this.createComponent(_.assign({}, column, {
       row: options.row
-    }), options, row);
+    }), options, row, null, state);
     comp.rowIndex = rowIndex;
     this.hook(&apos;addComponent&apos;, container, comp, this);
     this.rows[rowIndex][column.key] = comp;
-    if (isVisible) {
+    if (isVisible || this.options.builder) {
       container.appendChild(comp.getElement());
       return container;
     }

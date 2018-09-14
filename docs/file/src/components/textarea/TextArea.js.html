@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -259,7 +262,16 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   createInput(container) {
     if (this.isPlain) {
-      return super.createInput(container);
+      if (this.options.readOnly) {
+        this.input = this.ce(&apos;div&apos;, {
+          class: &apos;well&apos;
+        });
+        container.appendChild(this.input);
+        return this.input;
+      }
+      else {
+        return super.createInput(container);
+      }
     }
 
     if (this.htmlView) {
@@ -278,7 +290,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     this.addCounter(container);
 
     if (this.component.editor === &apos;ace&apos;) {
-      this.editorReady = Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, &apos;https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js&apos;, true)
+      this.editorReady = Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, &apos;https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js&apos;, true)
         .then(() =&gt; {
           const mode = this.component.as || &apos;javascript&apos;;
           this.editor = ace.edit(this.input);
@@ -366,7 +378,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
     value = value || &apos;&apos;;
     if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
+      if (this.options.readOnly) {
+        // For readOnly, just view the contents.
+        this.input.innerHTML = this.interpolate(value);
+        this.dataValue = value;
+        return;
+      }
+      else {
+        return super.setValue(this.setConvertedValue(value), flags);
+      }
     }
 
     // Set the value when the editor is ready.
@@ -402,7 +422,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (this.viewOnly || this.htmlView) {
+    if (this.viewOnly || this.htmlView || this.options.readOnly) {
       return this.dataValue;
     }
 

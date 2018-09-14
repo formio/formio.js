@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -182,14 +185,12 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/WebformBuilder.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global $ */
-
-import Webform from &apos;./Webform&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Webform from &apos;./Webform&apos;;
 import dragula from &apos;dragula&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import Components from &apos;./components/Components&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
-import { getComponent } from &apos;./utils/utils&apos;;
+import { getComponent, bootstrapVersion } from &apos;./utils/utils&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
@@ -198,6 +199,7 @@ require(&apos;./components/builder&apos;);
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
     super(element, options);
+    this.builderHeight = 0;
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
@@ -228,10 +230,10 @@ export default class WebformBuilder extends Webform {
             type: &apos;htmlelement&apos;,
             internal: true,
             tag: &apos;div&apos;,
-            className: &apos;alert alert-info&apos;,
+            className: &apos;drag-and-drop-alert alert alert-info&apos;,
             attrs: [
               { attr: &apos;id&apos;, value: `${parent.id}-placeholder` },
-              { attr: &apos;style&apos;, value: &apos;text-align:center; margin-bottom: 0px;&apos; },
+              { attr: &apos;style&apos;, value: &apos;text-align:center;&apos; },
               { attr: &apos;role&apos;, value: &apos;alert&apos; }
             ],
             content: &apos;Drag and Drop a form component&apos;
@@ -340,11 +342,11 @@ export default class WebformBuilder extends Webform {
   scrollSidebar() {
     const newTop = (window.scrollY - this.sideBarTop) + this.options.sideBarScrollOffset;
     const shouldScroll = (newTop &gt; 0);
-    if (shouldScroll &amp;&amp; ((newTop + this.sideBarElement.offsetHeight) &lt; this.element.offsetHeight)) {
+    if (shouldScroll &amp;&amp; ((newTop + this.sideBarElement.offsetHeight) &lt; this.builderHeight)) {
       this.sideBarElement.style.marginTop = `${newTop}px`;
     }
-    else if (shouldScroll &amp;&amp; (this.sideBarElement.offsetHeight &lt; this.element.offsetHeight)) {
-      this.sideBarElement.style.marginTop = `${this.element.offsetHeight - this.sideBarElement.offsetHeight}px`;
+    else if (shouldScroll &amp;&amp; (this.sideBarElement.offsetHeight &lt; this.builderHeight)) {
+      this.sideBarElement.style.marginTop = `${this.builderHeight - this.sideBarElement.offsetHeight}px`;
     }
     else {
       this.sideBarElement.style.marginTop = &apos;0px&apos;;
@@ -365,6 +367,14 @@ export default class WebformBuilder extends Webform {
 
   get ready() {
     return this.builderReady;
+  }
+
+  setForm(form) {
+    this.emit(&apos;change&apos;, form);
+    return super.setForm(form).then(retVal =&gt; {
+      setTimeout(() =&gt; (this.builderHeight = this.element.offsetHeight), 200);
+      return retVal;
+    });
   }
 
   deleteComponent(component) {
@@ -498,8 +508,8 @@ export default class WebformBuilder extends Webform {
           }, [
             this.ce(&apos;div&apos;, {
               class: &apos;card-header panel-heading&apos;
-            }, this.ce(&apos;h3&apos;, {
-              class: &apos;card-title panel-title&apos;
+            }, this.ce(&apos;h4&apos;, {
+              class: &apos;card-title panel-title mb-0&apos;
             }, this.t(&apos;Preview&apos;))),
             this.ce(&apos;div&apos;, {
               class: &apos;card-body panel-body&apos;
@@ -635,15 +645,18 @@ export default class WebformBuilder extends Webform {
     if (data) {
       const schema = JSON.parse(data);
       window.sessionStorage.removeItem(&apos;formio.clipboard&apos;);
+      BuilderUtils.uniquify(this._form, schema);
       component.parent.addComponent(schema, false, false, component.element.nextSibling);
+      this.form = this.schema;
     }
   }
 
   destroy() {
-    super.destroy();
+    const state = super.destroy();
     if (this.dragula) {
       this.dragula.destroy();
     }
+    return state;
   }
 
   /**
@@ -696,11 +709,8 @@ export default class WebformBuilder extends Webform {
       &apos;data-target&apos;: `#group-${info.key}`
     }, this.text(info.title));
 
-    // See if we have bootstrap.js installed.
-    const hasBootstrapJS = (typeof $ === &apos;function&apos;) &amp;&amp; (typeof $().collapse === &apos;function&apos;);
-
     // Add a listener when it is clicked.
-    if (!hasBootstrapJS) {
+    if (!bootstrapVersion()) {
       this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
         const clickedGroupId = event.target.getAttribute(&apos;data-target&apos;).replace(&apos;#group-&apos;, &apos;&apos;);
@@ -751,14 +761,22 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = &apos;panel-collapse collapse&apos;;
     if (info.default) {
-      groupBodyClass += &apos; in&apos;;
-      if (!hasBootstrapJS) {
-        groupBodyClass += &apos; show&apos;;
+      switch (bootstrapVersion()) {
+        case 4:
+          groupBodyClass += &apos; show&apos;;
+          break;
+        case 3:
+          groupBodyClass += &apos; in&apos;;
+          break;
+        default:
+          groupBodyClass += &apos; in show&apos;;
+          break;
       }
     }
 
     info.panel = this.ce(&apos;div&apos;, {
       class: groupBodyClass,
+      &apos;data-parent&apos;: `#${container.id}`,
       id: `group-${info.key}`
     }, info.body);
 
@@ -897,8 +915,8 @@ export default class WebformBuilder extends Webform {
   }
 
   clear() {
-    super.clear();
     this.dragContainers = [];
+    return super.clear();
   }
 
   addComponentTo(parent, schema, element, sibling) {
@@ -1035,9 +1053,9 @@ export default class WebformBuilder extends Webform {
     this.builderReadyResolve();
   }
 
-  build() {
+  build(state) {
     this.buildSidebar();
-    super.build();
+    super.build(state);
     this.updateDraggable();
     this.formReadyResolve();
   }

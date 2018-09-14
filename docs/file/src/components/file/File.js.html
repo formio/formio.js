@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -355,7 +358,10 @@ export default class FileComponent extends BaseComponent {
       type: &apos;file&apos;,
       style: &apos;opacity: 0; position: absolute;&apos;,
       tabindex: -1, // prevent focus
-      onChange: () =&gt; this.upload(this.hiddenFileInputElement.files)
+      onChange: () =&gt; {
+        this.upload(this.hiddenFileInputElement.files);
+        this.hiddenFileInputElement.value = &apos;&apos;;
+      }
     });
   }
 
@@ -456,8 +462,8 @@ export default class FileComponent extends BaseComponent {
   }
 
   startVideo() {
-    const width = 320;
-    const height = 240;
+    const width = parseInt(this.component.webcamSize) || 320;
+    const height = width * 3 / 4;
     navigator.getMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
@@ -489,7 +495,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   takePicture() {
-    const width = 320;
+    const width = parseInt(this.component.webcamSize) || 320;
     const height = this.video.videoHeight / (this.video.videoWidth / width);
     this.canvas.getContext(&apos;2d&apos;).drawImage(this.video, 0, 0, width, height);
     this.canvas.toBlob(blob =&gt; {
@@ -563,10 +569,10 @@ export default class FileComponent extends BaseComponent {
     }
 
     // If this is disabled or a single value with a value, don&apos;t show the upload div.
-    return this.ce(&apos;div&apos;, {},
+    const render = this.ce(&apos;div&apos;, {},
       (
         (!this.disabled &amp;&amp; (this.component.multiple || this.dataValue.length === 0)) ?
-          !this.cameraMode || !this.component.image ?
+          !this.cameraMode ?
             [
               this.ce(&apos;div&apos;,
                 {
@@ -589,21 +595,25 @@ export default class FileComponent extends BaseComponent {
                 [
                   this.ce(&apos;i&apos;, { class: this.iconClass(&apos;cloud-upload&apos;) }),
                   this.text(&apos; Drop files to attach, or &apos;),
-                  this.buildBrowseLink()
+                  this.buildBrowseLink(),
+                  this.component.webcam ?
+                    [
+                      this.text(&apos;, or &apos;),
+                      this.ce(&apos;a&apos;,
+                        {
+                          href: &apos;#&apos;,
+                          title: &apos;Use Web Camera&apos;,
+                          onClick: (event) =&gt; {
+                            event.preventDefault();
+                            this.cameraMode = !this.cameraMode;
+                            this.refreshDOM();
+                          }
+                        },
+                        this.ce(&apos;i&apos;, { class: this.iconClass(&apos;camera&apos;) })
+                      )
+                    ] : null
                 ]
               ),
-              this.component.image ?
-                this.ce(&apos;div&apos;,
-                  {
-                    class: &apos;btn btn-default&apos;,
-                    onClick: () =&gt; {
-                      this.cameraMode = !this.cameraMode;
-                      this.refreshDOM();
-                      this.startVideo();
-                    }
-                  },
-                  &apos;Use Camera&apos;
-                ) : null
             ] :
             [
               this.ce(&apos;div&apos;,
@@ -641,6 +651,10 @@ export default class FileComponent extends BaseComponent {
           this.ce(&apos;div&apos;)
       )
     );
+    if (this.cameraMode) {
+      this.startVideo();
+    }
+    return render;
   }
 
   buildBrowseLink() {

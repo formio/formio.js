@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -590,7 +593,16 @@ export default class Formio {
    * @return {*}
    */
   getToken(options) {
-    return Formio.getToken(options);
+    return Formio.getToken(Object.assign({ formio: this }, this.options, options));
+  }
+
+  /**
+   * Sets the JWT token for this instance.
+   *
+   * @return {*}
+   */
+  setToken(token, options) {
+    return Formio.setToken(token, Object.assign({ formio: this }, this.options, options));
   }
 
   /**
@@ -872,7 +884,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(Formio.cache[cacheKey]);
+      return Formio.cache[cacheKey];
     }
 
     // Set up and fetch request
@@ -901,7 +913,7 @@ export default class Formio {
     }
 
     const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
-    return fetch(url, options)
+    const result = fetch(url, options)
       .then((response) =&gt; {
         // Allow plugins to respond.
         response = Formio.pluginAlter(&apos;requestResponse&apos;, response, Formio);
@@ -1007,11 +1019,6 @@ export default class Formio {
           resultCopy = copy(result);
         }
 
-        // Cache the response.
-        if (method === &apos;GET&apos;) {
-          Formio.cache[cacheKey] = resultCopy;
-        }
-
         return resultCopy;
       })
       .catch((err) =&gt; {
@@ -1023,8 +1030,20 @@ export default class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
+
+        if (method === &apos;GET&apos;) {
+          delete Formio.cache[cacheKey];
+        }
+
         return Promise.reject(err);
       });
+
+    // Cache the response.
+    if (method === &apos;GET&apos;) {
+      Formio.cache[cacheKey] = result;
+    }
+
+    return result;
   }
 
   // Needed to maintain reverse compatability...

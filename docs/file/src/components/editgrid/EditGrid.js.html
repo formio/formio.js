@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -236,8 +239,8 @@ export default class EditGridComponent extends NestedComponent {
   {% }) %}
   &lt;div class=&quot;col-sm-2&quot;&gt;
     &lt;div class=&quot;btn-group pull-right&quot;&gt;
-      &lt;button class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/button&gt;
-      &lt;button class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/button&gt;
+      &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;Edit&lt;/button&gt;
+      &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;`;
@@ -257,9 +260,9 @@ export default class EditGridComponent extends NestedComponent {
     return [];
   }
 
-  build() {
+  build(state) {
     if (this.options.builder) {
-      return super.build(true);
+      return super.build(state, true);
     }
     this.createElement();
     this.createLabel(this.element);
@@ -504,6 +507,15 @@ export default class EditGridComponent extends NestedComponent {
     this.buildTable();
   }
 
+  clearErrors(rowIndex) {
+    if (this.editRows[rowIndex] &amp;&amp; Array.isArray(this.editRows[rowIndex].components)) {
+      this.editRows[rowIndex].components.forEach(comp =&gt; {
+        comp.setPristine(true);
+        comp.setCustomValidity(&apos;&apos;);
+      });
+    }
+  }
+
   cancelRow(rowIndex) {
     if (this.options.readOnly) {
       this.editRows[rowIndex].dirty = false;
@@ -515,8 +527,10 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows[rowIndex].dirty = false;
       this.editRows[rowIndex].isOpen = false;
       this.editRows[rowIndex].data = this.dataValue[rowIndex];
+      this.clearErrors(rowIndex);
     }
     else {
+      this.clearErrors(rowIndex);
       this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
     }

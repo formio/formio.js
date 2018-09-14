@@ -117,6 +117,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
@@ -127,6 +129,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
@@ -267,9 +270,9 @@ export default class DataMapComponent extends NestedComponent {
     return [this.component.valueComponent];
   }
 
-  build() {
+  build(state) {
     if (this.options.builder) {
-      return super.build(true);
+      return super.build(state, true);
     }
     this.createElement();
     this.createLabel(this.element);
@@ -282,7 +285,7 @@ export default class DataMapComponent extends NestedComponent {
     this.tableElement = this.ce(&apos;table&apos;, {
       class: tableClass
     });
-    this.buildRows();
+    this.buildRows(state);
     this.element.appendChild(this.tableElement);
     this.createDescription(this.element);
   }
@@ -349,7 +352,7 @@ export default class DataMapComponent extends NestedComponent {
     ));
   }
 
-  buildRows() {
+  buildRows(state) {
     // Do not builder rows when in builder mode.
     if (this.options.builder) {
       return;
@@ -361,7 +364,7 @@ export default class DataMapComponent extends NestedComponent {
     this.rows = {};
     this.empty(this.tableElement);
     const tableRows = [];
-    _.each(this.dataValue, (value, key) =&gt; tableRows.push(this.buildRow(value, key)));
+    _.each(this.dataValue, (value, key) =&gt; tableRows.push(this.buildRow(value, key, state)));
     this.tableElement.appendChild(this.createHeader());
     this.tableElement.appendChild(this.ce(&apos;tbody&apos;, null, tableRows));
     this.tableElement.appendChild(this.ce(&apos;tfoot&apos;, null,
@@ -373,20 +376,20 @@ export default class DataMapComponent extends NestedComponent {
     ));
   }
 
-  createValueComponent() {
+  createValueComponent(state) {
     const container = this.ce(&apos;td&apos;, {
       class: &apos;col-9 col-sm-8&apos;
     });
     const schema = this.component.valueComponent;
     schema.hideLabel = true;
-    const value = this.addComponent(schema, container, {}, null, null);
+    const value = this.addComponent(schema, container, {}, null, null, state);
     value.on(&apos;change&apos;, () =&gt; this.updateValue());
     return { value, container };
   }
 
-  buildRow(value, key) {
+  buildRow(value, key, state) {
     if (!this.rows[key]) {
-      this.rows[key] = this.createValueComponent();
+      this.rows[key] = this.createValueComponent(state);
     }
     const row = this.rows[key];
 
