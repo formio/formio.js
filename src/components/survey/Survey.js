@@ -69,7 +69,7 @@ export default class SurveyComponent extends BaseComponent {
           });
           const input = this.ce('input', {
             type: 'radio',
-            name: `data[${this.key}][${question.value}]`,
+            name: this.getInputName(question),
             value: value.value,
             id: `${this.id}-${question.value}-${value.value}`
           });
@@ -98,10 +98,10 @@ export default class SurveyComponent extends BaseComponent {
     if (!value) {
       return;
     }
-    const key = `data[${this.key}]`;
+
     _.each(this.component.questions, (question) => {
       _.each(this.inputs, (input) => {
-        if (input.name === (`${key}[${question.value}]`)) {
+        if (input.name === this.getInputName(question)) {
           input.checked = (input.value === value[question.value]);
         }
       });
@@ -118,10 +118,9 @@ export default class SurveyComponent extends BaseComponent {
       return this.dataValue;
     }
     const value = {};
-    const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
       _.each(this.inputs, (input) => {
-        if (input.checked && (input.name === (`${key}[${question.value}]`))) {
+        if (input.checked && (input.name === this.getInputName(question))) {
           value[question.value] = input.value;
           return false;
         }
@@ -167,5 +166,9 @@ export default class SurveyComponent extends BaseComponent {
 
     table.appendChild(tbody);
     return table.outerHTML;
+  }
+
+  getInputName(question) {
+    return `${this.options.name}[${question.value}]`;
   }
 }
