@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.5.2
 ### Fixed
  - FOR-1675: Textarea not displaying whole its content in readOnly mode
+ - FOR-1417: Caching logic to return promises instead of resolved responses.
+ - Fixed problem where nested components would fire calculate value of children when it is conditionally hidden.
+ - FOR-1673: Problem where the refreshOn would only trigger first time.
+ - FOR-1389: Issue where you could not upload another file when one is removed.
+
+### Added
+ - FOR-672: Add uiquify step to copyComponent method.
+
+### Changed
+ - Update lodash@4.17.11, @babel/core@7.0.1, i18next@11.9.0, sinon@6.3.2, webpack@4.19.0, whatwg-fetch@3.0.0
 
 ## 3.5.1
 ### Fixed
