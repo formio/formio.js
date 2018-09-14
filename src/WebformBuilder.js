@@ -654,7 +654,6 @@ export default class WebformBuilder extends Component {
     }
     this.addClass(this.refs.form, 'builder-paste-mode');
     const copy = _.cloneDeep(component.schema);
-    BuilderUtils.uniquify(this._form, copy);
     window.sessionStorage.setItem('formio.clipboard', JSON.stringify(copy));
   }
 
