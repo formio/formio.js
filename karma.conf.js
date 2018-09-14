@@ -47,14 +47,14 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.spec.js': ['webpack']
     },
-    browserNoActivityTimeout: 2000,
+    browserNoActivityTimeout: 20000,
     reporters: ['progress'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false,
+    singleRun: true,
     concurrency: Infinity
-  })
+  });
 };

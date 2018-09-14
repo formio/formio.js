@@ -22,11 +22,6 @@ describe('DataGrid Component', () => {
           make: 'Jeep',
           model: 'Wrangler',
           year: 1997
-        },
-        {
-          make: 'Chevy',
-          model: 'Tahoe',
-          year: 2014
         }
       ]);
     });

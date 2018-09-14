@@ -14,6 +14,7 @@ describe('Form Wizard Renderer tests', () => {
         }).catch((error) => {
           done(error);
         });
+        done();
       });
     });
   });

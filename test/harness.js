@@ -18,7 +18,7 @@ const Harness = {
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement);
     formBuilder.form = {components: []};
-    formBuilder.builderReady.then(done);
+    done();
   },
 
   builderAfter() {
@@ -35,7 +35,7 @@ const Harness = {
         return false;
       }
     });
-    const component = document.getElementById(`builder-${type}`).cloneNode(true);
+    const component = document.getElementById(`.builder-${type}`).cloneNode(true);
     formBuilder.element.appendChild(component);
     formBuilder.onDrop(component, formBuilder.element, builderGroup);
     return formBuilder;
@@ -135,6 +135,7 @@ const Harness = {
   },
   testElements(component, query, number) {
     const elements = component.element.querySelectorAll(query);
+    // console.log(component);
     if (number !== undefined) {
       assert.equal(elements.length, number);
     }
@@ -149,8 +150,9 @@ const Harness = {
   },
   testInnerHtml(component, query, content) {
     const element = component.element.querySelector(query);
+    console.log(element);
     assert(element, `${query} not found`);
-    assert.equal(element.innerHTML.trim(), content);
+    assert(element.innerHTML.trim() === content);
   },
   testAttribute(component, query, attribute, value) {
     const element = component.element.querySelector(query);

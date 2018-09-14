@@ -26,7 +26,9 @@ export default class WebformBuilder extends Component {
         this.options.builder[key] = false;
       }
     });
-
+    this.builderReady = new Promise((resolve) => {
+      this.builderReadyResolve = resolve;
+    });
     // Add the groups.
     this.groups = {};
     this.groupOrder = [];
