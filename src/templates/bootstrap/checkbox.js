@@ -9,7 +9,7 @@ export default {
       {% } %}
       {% if (checked) { %}checked=true{% } %}
       >
-    {% if (self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
+    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
     {% if (component.tooltip) { %}
       <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
     {% } %}

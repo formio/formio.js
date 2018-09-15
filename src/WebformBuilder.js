@@ -179,7 +179,8 @@ export default class WebformBuilder extends Component {
           title: this.t('Copy')
         });
 
-        component.addEventListener(component.refs.copyComponent, 'click', () => this.copyComponent(component));
+        component.addEventListener(component.refs.copyComponent, 'click', () =>
+          this.copyComponent(component));
       }
 
       if (this.refs.pasteButton) {
@@ -204,7 +205,8 @@ export default class WebformBuilder extends Component {
           title: this.t('Edit')
         });
 
-        component.addEventListener(component.refs.editComponent, 'click', () => parent.root.editComponent(component.component, parent));
+        component.addEventListener(component.refs.editComponent, 'click', () =>
+          this.editComponent(component.component, parent));
       }
 
       if (this.refs.removeComponent) {
@@ -214,7 +216,8 @@ export default class WebformBuilder extends Component {
           title: this.t('Remove')
         });
 
-        component.addEventListener(component.refs.removeComponent, 'click', () => parent.root.removeComponent(component.component, parent));
+        component.addEventListener(component.refs.removeComponent, 'click', () =>
+          this.removeComponent(component.component, parent));
       }
 
       return element;
