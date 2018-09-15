@@ -64,9 +64,8 @@ export default class WebformBuilder extends Component {
       }
     }
 
-    options.hooks = options.hooks || {};
-
-    options.hooks.renderComponent = (html, { self }) => {
+    this.options.hooks = this.options.hooks || {};
+    this.options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form' && !self.key) {
         return html;
       }
@@ -75,7 +74,7 @@ export default class WebformBuilder extends Component {
       });
     };
 
-    options.hooks.renderComponents = (html, { components, self }) => {
+    this.options.hooks.renderComponents = (html, { components, self }) => {
       // if Datagrid and already has a component, don't make it droppable.
       if (self.type === 'datagrid' && components.length > 0) {
         return html;
@@ -96,7 +95,7 @@ export default class WebformBuilder extends Component {
       });
     };
 
-    options.hooks.renderEditgrid = (html, { self }, mode) => {
+    this.options.hooks.renderEditgrid = (html, { self }, mode) => {
       // Prevent recursion.
       if (mode !== 'form') {
         return html;
@@ -106,21 +105,21 @@ export default class WebformBuilder extends Component {
       }, 'builder');
     };
 
-    options.hooks.renderInput = (html, { self }) => {
+    this.options.hooks.renderInput = (html, { self }) => {
       if (self.type === 'hidden') {
         return html + self.name;
       }
       return html;
     };
 
-    options.hooks.renderLoading = (html, { self }) => {
+    this.options.hooks.renderLoading = (html, { self }) => {
       if (self.type === 'form' && self.key) {
         return self.name;
       }
       return html;
     };
 
-    options.hooks.attachComponents = (element, components, container, component) => {
+    this.options.hooks.attachComponents = (element, components, container, component) => {
       // Attach container and component to element for later reference.
       const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
       containerElement.formioContainer = container;
@@ -138,7 +137,7 @@ export default class WebformBuilder extends Component {
       return element.children[0];
     };
 
-    options.hooks.attachDatagrid = (element, component) => {
+    this.options.hooks.attachDatagrid = (element, component) => {
       component.loadRefs(element, {
         'container': 'single',
       });
@@ -147,14 +146,14 @@ export default class WebformBuilder extends Component {
       // Need to set up horizontal rearrangement of fields.
     };
 
-    options.hooks.attachEditgrid = (element, component) => {
+    this.options.hooks.attachEditgrid = (element, component) => {
       component.loadRefs(element, {
         'container': 'single',
       });
       component.attachComponents(component.refs.container.parentNode, [], component.component.components);
     };
 
-    options.hooks.attachContent = (element, component) => {
+    this.options.hooks.attachContent = (element, component) => {
       component.addQuill(component.refs.html, component.wysiwygDefault, (element) => {
         component.component.html = element.value;
       }).then((editor) => {
@@ -162,7 +161,7 @@ export default class WebformBuilder extends Component {
       });
     };
 
-    options.hooks.attachComponent = (element, component) => {
+    this.options.hooks.attachComponent = (element, component) => {
       // Add component to element for later reference.
       element.formioComponent = component;
 
@@ -222,9 +221,8 @@ export default class WebformBuilder extends Component {
     };
 
     // Notify components if they need to modify their render.
-    options.attachMode = 'builder';
-
-    this.webform = this.createForm(options);
+    this.options.attachMode = 'builder';
+    this.webform = this.createForm(this.options);
   }
 
   createForm(options) {
@@ -251,19 +249,6 @@ export default class WebformBuilder extends Component {
         weight: 30
       }
     };
-  }
-
-  get options() {
-    if (this.webform) {
-      return this.webform.options;
-    }
-    return {};
-  }
-
-  set options(value) {
-    if (this.webform) {
-      return this.webform.options = value;
-    }
   }
 
   get form() {
@@ -426,11 +411,11 @@ export default class WebformBuilder extends Component {
   scrollSidebar() {
     const newTop = (window.scrollY - this.sideBarTop) + this.sideBarScrollOffset;
     const shouldScroll = (newTop > 0);
-    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.builderHeight)) {
+    if (shouldScroll && ((newTop + this.refs.sidebar.offsetHeight) < this.builderHeight)) {
       this.refs.sidebar.style.marginTop = `${newTop}px`;
     }
-    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.builderHeight)) {
-      this.sideBarElement.style.marginTop = `${this.builderHeight - this.sideBarElement.offsetHeight}px`;
+    else if (shouldScroll && (this.refs.sidebar.offsetHeight < this.builderHeight)) {
+      this.refs.sidebar.style.marginTop = `${this.builderHeight - this.refs.sidebar.offsetHeight}px`;
     }
     else {
       this.refs.sidebar.style.marginTop = '0px';
@@ -440,7 +425,7 @@ export default class WebformBuilder extends Component {
   setForm(form) {
     this.emit('change', form);
     return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.element.offsetHeight), 200);
+      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
       return retVal;
     });
   }
@@ -497,7 +482,7 @@ export default class WebformBuilder extends Component {
     this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
     // Allow editForm overrides per component.
-    const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
+    const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
 
     // Get the editform for this component.
     this.editForm.form = componentClass.editForm(overrides);
@@ -604,7 +589,7 @@ export default class WebformBuilder extends Component {
       if (data) {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this._form, schema);
+        BuilderUtils.uniquify(this._form.components, schema);
         component.parent.addComponent(schema, false, false, component.element.nextSibling);
         this.form = this.schema;
       }

@@ -1,20 +1,20 @@
 import EventEmitter from 'eventemitter2';
-import * as FormioUtils from '../utils/utils';
+import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from 'vanilla-text-mask';
 
 /**
- * Root component for all elements within the renderer.
+ * The root component for all elements within the Form.io renderer.
  */
-export default class Widget {
+export default class Element {
   constructor(options, id) {
     /**
      * The options for this component.
      * @type {{}}
      */
-    this.options = _.assign({
+    this.options = Object.assign({
       language: 'en',
       highlightErrors: true,
       row: '',

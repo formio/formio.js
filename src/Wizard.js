@@ -1,6 +1,4 @@
-import Promise from 'native-promise-only';
 import _ from 'lodash';
-
 import Webform from './Webform';
 import Formio from './Formio';
 import { checkCondition } from './utils/utils';

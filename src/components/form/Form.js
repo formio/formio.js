@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
-import Promise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';

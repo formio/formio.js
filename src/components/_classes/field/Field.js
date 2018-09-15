@@ -29,13 +29,6 @@ export default class Field extends Component {
     return className;
   }
 
-  labelIsHidden() {
-    return !this.component.label ||
-      (!this.inDataGrid && this.component.hideLabel) ||
-      (this.inDataGrid && !this.component.dataGridLabel) ||
-      this.options.inputsOnly;
-  }
-
   render(element) {
     return super.render(this.renderTemplate('field', {
       label: this.labelInfo,

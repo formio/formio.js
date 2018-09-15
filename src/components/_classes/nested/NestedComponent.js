@@ -1,6 +1,5 @@
 'use strict';
 import _ from 'lodash';
-import Promise from 'native-promise-only';
 import { checkCondition } from '../../../utils/utils';
 import Component from '../component/Component';
 import Components from '../../Components';
@@ -177,9 +176,9 @@ export default class NestedComponent extends Component {
   createComponent(component, options, data, before) {
     options = options || this.options;
     data = data || this.data;
+    options.parent = this;
+    options.root = this.root || this;
     const comp = Components.create(component, options, data, true);
-    comp.parent = this;
-    comp.root = this.root || this;
     comp.parentVisible = this.visible;
     comp.isBuilt = true;
     if (component.internal) {

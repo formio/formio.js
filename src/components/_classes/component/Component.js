@@ -1,19 +1,18 @@
 /* globals Quill */
 import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
-import Promise from 'native-promise-only';
 import _ from 'lodash';
 import * as FormioUtils from '../../../utils/utils';
 import Formio from '../../../Formio';
 import Validator from '../../Validator';
 import templates from '../../../templates';
 import { boolValue } from '../../../utils/utils';
-import Widget from '../../../widgets/Widget';
+import Element from '../../../Element';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
  */
-export default class Component extends Widget {
+export default class Component extends Element {
   static schema(...sources) {
     return _.merge({
       /**
@@ -171,11 +170,11 @@ export default class Component extends Widget {
    */
   /* eslint-disable max-statements */
   constructor(component, options, data) {
-    super(_.assign({
+    super(Object.assign({
       template: 'bootstrap3',
       renderMode: 'form',
       attachMode: 'full'
-    }, options), (component && component.id) ? component.id : null);
+    }, options || {}), (component && component.id) ? component.id : null);
 
     // Save off the original component.
     this.originalComponent = _.cloneDeep(component);
@@ -262,14 +261,14 @@ export default class Component extends Widget {
      *
      * @type {Component}
      */
-    this.parent = null;
+    this.parent = this.options.parent;
 
     /**
      * Points to the root component, usually the FormComponent.
      *
      * @type {Component}
      */
-    this.root = this;
+    this.root = this.options.root;
 
     this.options.name = this.options.name || 'data';
 
@@ -491,6 +490,13 @@ export default class Component extends Widget {
     params.contextSeparator = '._.';
     const translated = this.i18next.t(text, params);
     return translated || text;
+  }
+
+  labelIsHidden() {
+    return !this.component.label ||
+      (!this.inDataGrid && this.component.hideLabel) ||
+      (this.inDataGrid && !this.component.dataGridLabel) ||
+      this.options.inputsOnly;
   }
 
   get transform() {

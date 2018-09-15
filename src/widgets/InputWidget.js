@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import Widget from './Widget';
-export default class InputWidget extends Widget {
+import Element from '../Element';
+export default class InputWidget extends Element {
   constructor(settings, component) {
     super(settings);
     this.namespace = 'formio.widget';

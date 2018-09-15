@@ -1,6 +1,6 @@
 export default {
   form: `
-{% if (label.hidden || label.labelPosition !== 'bottom') { %}
+{% if (!label.hidden && label.labelPosition !== 'bottom') { %}
   <label class="{{label.className}}">
     {% if (!label.hidden) { %}
       {{ t(component.label) }}

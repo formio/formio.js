@@ -22,6 +22,7 @@ import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import loader from './loader';
 import loading from './loading';
 import map from './map';
 import message from './message';
@@ -76,6 +77,7 @@ export default {
   html,
   icon,
   input,
+  loader,
   loading,
   map,
   message,

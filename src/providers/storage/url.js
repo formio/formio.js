@@ -1,5 +1,3 @@
-import Promise from 'native-promise-only';
-
 const url = (formio) => ({
   title: 'Url',
   name: 'url',

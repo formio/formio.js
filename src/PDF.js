@@ -1,4 +1,3 @@
-import Promise from 'native-promise-only';
 import Formio from './Formio';
 import Webform from './Webform';
 

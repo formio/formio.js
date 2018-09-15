@@ -2,6 +2,7 @@ import Formio from './Formio';
 import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
+import templates from './templates';
 
 export default class Form {
   /**
@@ -20,26 +21,34 @@ export default class Form {
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.build();
    */
-  constructor() {
+  constructor(...args) {
+    this.instance = null;
+    if (args[0] instanceof HTMLElement) {
+      this.element = args[0];
+      this.form = args[1];
+      this.options = args[2];
+    }
+    else if (args[0]) {
+      this.element = null;
+      this.form = args[0];
+      this.options = args[1];
+    }
+    else {
+      this.element = null;
+      this.options = null;
+    }
     this.ready = new Promise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
-
-    this.instance = null;
-    if (arguments[0] instanceof HTMLElement) {
-      this.options = arguments[2];
-      this.form = arguments[1];
-      this.ready.then(() => this.build(arguments[0]));
-    }
-    else {
-      this.options = arguments[1];
-      this.form = arguments[0];
-    }
-
-    return this.ready;
   }
 
+  /**
+   * Create a new form instance provided the display of the form.
+   *
+   * @param {string} display - The display of the form, either "wizard", "form", or "pdf"
+   * @return {*}
+   */
   create(display) {
     switch (display) {
       case 'wizard':
@@ -51,6 +60,12 @@ export default class Form {
     }
   }
 
+  /**
+   * Sets the form. Either as JSON or a URL to a form JSON schema.
+   *
+   * @param {string|object} formParam - Either the form JSON or the URL of the form json.
+   * @return {*}
+   */
   set form(formParam) {
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
@@ -79,10 +94,21 @@ export default class Form {
     }
   }
 
+  /**
+   * Returns the loaded forms JSON.
+   *
+   * @return {object} - The loaded form's JSON
+   */
   get form() {
     return this._form;
   }
 
+  /**
+   * Changes the display of the form.
+   *
+   * @param {string} display - The display to set this form. Either "wizard", "form", or "pdf"
+   * @return {Promise<T>}
+   */
   setDisplay(display) {
     this.form.display = display;
     return this.build();
@@ -109,16 +135,31 @@ export default class Form {
     return (new Form(formElement, embed.src)).build();
   }
 
-  build(element) {
-    this.element = element;
-    return this.render().then(html => {
-      this.element.innerHTML = html;
-      return this.attach(this.element).then(() => this.instance);
+  /**
+   * Build a new form.
+   *
+   * @return {Promise<T>}
+   */
+  build() {
+    if (this.element) {
+      const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
+      const loader = templates[template].loader || templates.bootstrap.loader;
+      this.element.innerHTML = loader.form;
+    }
+    return this.ready.then(() => {
+      return this.render().then(html => {
+        if (this.element) {
+          this.element.innerHTML = html;
+          return this.attach(this.element).then(() => this.instance);
+        }
+        else {
+          return html;
+        }
+      });
     });
   }
 
   render() {
-    this.empty();
     return this.ready.then(instance => instance.render());
   }
 
@@ -132,7 +173,7 @@ export default class Form {
 Formio.embedForm = (embed) => Form.embed(embed);
 
 /**
- * Creates a new form based on the form parameter.
+ * Factory that creates a new form based on the form parameters.
  *
  * @param element {HMTLElement} - The HTML Element to add this form to.
  * @param form {string|Object} - The src of the form, or a form object.
@@ -140,8 +181,8 @@ Formio.embedForm = (embed) => Form.embed(embed);
  *
  * @return {Promise} - When the form is instance is ready.
  */
-Formio.createForm = (element, form, options) => {
-  return (new Form(element, form, options));
+Formio.createForm = (...args) => {
+  return (new Form(...args)).build();
 };
 
 Formio.Form = Form;

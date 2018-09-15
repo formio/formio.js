@@ -1,4 +1,3 @@
-import Promise from 'native-promise-only';
 import _trim from 'lodash/trim';
 const trim = function(text) {
   return _trim(text, '/');

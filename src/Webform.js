@@ -3,7 +3,6 @@ import moment from 'moment';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from './Formio';
-import Promise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { currentTimezone } from './utils/utils';
