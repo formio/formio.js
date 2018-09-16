@@ -223,15 +223,15 @@ export default class NumberComponent extends BaseComponent {
 
     const separators = getNumberSeparators(this.options.language);
 
-    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
+    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
-      if (options.hasOwnProperty(&apos;thousandsSeparator&apos;)) {
+      if (this.options.hasOwnProperty(&apos;thousandsSeparator&apos;)) {
         console.warn(&quot;Property &apos;thousandsSeparator&apos; is deprecated. Please use i18n to specify delimiter.&quot;);
       }
 
-      this.delimiter = options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = &apos;&apos;;
