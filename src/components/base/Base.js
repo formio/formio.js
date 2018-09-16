@@ -278,7 +278,6 @@ export default class BaseComponent extends Component {
      * @type {boolean}
      */
     this.pristine = true;
-    this.component.pristine = true;
 
     /**
      * Points to the parent component.
@@ -1660,7 +1659,6 @@ export default class BaseComponent extends Component {
     flags = flags || {};
     if (!flags.noValidate) {
       this.pristine = false;
-      this.component.pristine = false;
     }
 
     // If we are supposed to validate on blur, then don't trigger validation yet.
@@ -2105,7 +2103,7 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.hasInput || this.root.component.components.every(comp => comp.pristine)) {
+    if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
     }
 
