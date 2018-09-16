@@ -51,6 +51,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
   form.on('submit', function(submission) {
     console.log(submission);
   });
-});
+}); 
 </script>
 </div>

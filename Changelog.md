@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.5.3
 ### Fixed
- - Survery component input names.
+ - FOR-1586: Survery component input names.
+ - FOR-1363: Fixed issue where validations would fire twice when a button component is present.
+ - FOR-1650: Fixed problem where multiple "change" events would fire on form render.
+ - FOR-1581, FOR-1582: Fixed issues with Signature component would get in a bad state when conditional logic is applied."
 
 ## 3.5.2
 ### Fixed
