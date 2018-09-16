@@ -933,7 +933,9 @@ export default class Webform extends NestedComponent {
     value.isValid = this.checkData(value.data, flags);
     // this.showElement(true);
     this.loading = false;
-    this.emit('change', value);
+    if (!flags || !flags.noEmit) {
+      this.emit('change', value);
+    }
   }
 
   checkData(data, flags) {
