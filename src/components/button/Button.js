@@ -150,7 +150,7 @@ export default class ButtonComponent extends BaseComponent {
       });
       this.on('change', (value) => {
         this.loading = false;
-        const isValid = this.root.isValid(value.data, true);
+        const isValid = value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
         this.removeClass(this.buttonElement, 'btn-success submit-success');
         this.removeClass(this.buttonElement, 'btn-danger submit-fail');
