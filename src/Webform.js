@@ -803,7 +803,9 @@ export default class Webform extends NestedComponent {
       this.on('deleteSubmission', () => this.deleteSubmission());
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
-        this.onChange();
+        this.onChange({
+          noEmit: true
+        });
         this.emit('render');
       }, 1);
     });
@@ -858,7 +860,9 @@ export default class Webform extends NestedComponent {
     this.addComponents(null, null, null, state);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
     return setTimeout(() => {
-      this.onChange();
+      this.onChange({
+        noEmit: true
+      });
     }, 1);
   }
 
@@ -957,7 +961,9 @@ export default class Webform extends NestedComponent {
     value.isValid = this.checkData(value.data, flags);
     this.showElement(true);
     this.loading = false;
-    this.emit('change', value);
+    if (!flags || !flags.noEmit) {
+      this.emit('change', value);
+    }
   }
 
   checkData(data, flags) {
