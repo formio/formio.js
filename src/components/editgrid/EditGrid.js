@@ -52,8 +52,8 @@ export default class EditGridComponent extends NestedComponent {
   {% }) %}
   <div class="col-sm-2">
     <div class="btn-group pull-right">
-      <button class="btn btn-default btn-sm editRow">Edit</button>
-      <button class="btn btn-danger btn-sm removeRow">Delete</button>
+      <button class="btn btn-default btn-sm editRow"><i class="fa fa-pencil"></i></button>
+      <button class="btn btn-danger btn-sm removeRow"><i class="fa fa-times-circle-o"></i></button>
     </div>
   </div>
 </div>`;
