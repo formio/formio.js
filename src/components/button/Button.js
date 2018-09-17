@@ -186,6 +186,13 @@ export default class ButtonComponent extends Field {
       });
     }
 
+    if (this.component.action === 'event') {
+      this.on('change', (value) => {
+        const isValid = this.root.isValid(value.data, true);
+        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      });
+    }
+
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
     if (this.shouldDisable) {
@@ -375,4 +382,3 @@ export default class ButtonComponent extends Field {
     this.refs.button.focus();
   }
 }
-
