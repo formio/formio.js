@@ -191,6 +191,14 @@ export default class ButtonComponent extends BaseComponent {
         this.loading = false;
       });
     }
+
+    if (this.component.action === 'event') {
+      this.on('change', (value) => {
+        const isValid = this.root.isValid(value.data, true);
+        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      });
+    }
+
     this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
       if (this.component.action !== 'submit' && this.component.showValidations) {
@@ -272,6 +280,7 @@ export default class ButtonComponent extends BaseComponent {
           break;
       }
     });
+
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -382,4 +391,3 @@ export default class ButtonComponent extends BaseComponent {
     this.buttonElement.focus();
   }
 }
-
