@@ -328,21 +328,6 @@ export default class Component extends Element {
     // Set the template
     this.template = this.options.template;
 
-    this.logic.forEach(logic => {
-      if (logic.trigger.type === 'event') {
-        this.root.on(logic.trigger.event, () => {
-          const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
-            // If component definition changed, replace it.
-            if (!_.isEqual(this.component, newComponent)) {
-              this.component = newComponent;
-            }
-            this.redraw();
-          }
-        });
-      }
-    });
-
     // Allow anyone to hook into the component creation.
     this.hook('component');
 
@@ -726,6 +711,9 @@ export default class Component extends Element {
 
     // Attach the refresh on events.
     this.attachRefreshOn();
+
+    // Attach logic.
+    this.attachLogic();
 
     // this.restoreValue();
 
@@ -1833,6 +1821,24 @@ export default class Component extends Element {
 
   removeChild(element) {
     this.removeChildFrom(element, this.element);
+  }
+
+  attachLogic() {
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.on(event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
   }
 
   /**
