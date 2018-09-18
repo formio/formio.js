@@ -111,7 +111,13 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
-  // This datetime component can handle multiple items on its own.
+  isEmpty(value) {
+    if (value.toString() === 'Invalid Date') {
+      return true;
+    }
+    return super.isEmpty(value);
+  }
+
   createWrapper() {
     return false;
   }
