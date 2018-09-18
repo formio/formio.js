@@ -188,7 +188,7 @@ export default class ButtonComponent extends Field {
 
     if (this.component.action === 'event') {
       this.on('change', (value) => {
-        const isValid = this.root.isValid(value.data, true);
+        const isValid = value && value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
       });
     }
