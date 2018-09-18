@@ -120,6 +120,7 @@ export default class FileComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+    this.attachLogic();
   }
 
   refreshDOM() {

@@ -206,13 +206,12 @@ export default class ButtonComponent extends BaseComponent {
           });
           break;
         case 'event':
-          this.emit(this.component.event, this.data);
-          this.events.emit(this.component.event, this.data);
+          this.emit(this.interpolate(this.component.event), this.data);
           this.emit('customEvent', {
             type: this.component.event,
             component: this.component,
             data: this.data,
-            event: event
+            event: this.interpolate(this.component.event)
           });
           break;
         case 'custom': {
@@ -295,6 +294,7 @@ export default class ButtonComponent extends BaseComponent {
     }
 
     this.autofocus();
+    this.attachLogic();
   }
   /* eslint-enable max-statements */
 

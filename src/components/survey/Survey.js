@@ -91,6 +91,8 @@ export default class SurveyComponent extends BaseComponent {
       }
       this.autofocus();
     }
+
+    this.attachLogic();
   }
 
   setValue(value, flags) {

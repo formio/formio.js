@@ -52,6 +52,7 @@ export default class ContentComponent extends BaseComponent {
         this.on('change', () => this.setHTML());
       }
     }
+    this.attachLogic();
   }
 
   get emptyValue() {

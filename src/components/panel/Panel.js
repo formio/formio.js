@@ -78,5 +78,6 @@ export default class PanelComponent extends NestedComponent {
     this.addComponents(null, null, null, state);
     this.element.appendChild(this.panelBody);
     this.setCollapsed();
+    this.attachLogic();
   }
 }

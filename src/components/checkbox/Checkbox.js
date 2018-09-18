@@ -67,6 +67,7 @@ export default class CheckBoxComponent extends BaseComponent {
       this.disabled = true;
     }
     this.autofocus();
+    this.attachLogic();
   }
 
   get emptyValue() {

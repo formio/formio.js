@@ -209,6 +209,7 @@ export default class SignatureComponent extends BaseComponent {
     }
 
     this.autofocus();
+    this.attachLogic();
   }
   /* eslint-enable max-statements */
 

@@ -98,6 +98,7 @@ export default class DataGridComponent extends NestedComponent {
     this.errorContainer = this.element;
     this.restoreValue();
     this.createDescription(this.element);
+    this.attachLogic();
   }
 
   setVisibleComponents() {

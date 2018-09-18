@@ -101,6 +101,7 @@ export default class DataMapComponent extends NestedComponent {
     this.buildRows(state);
     this.element.appendChild(this.tableElement);
     this.createDescription(this.element);
+    this.attachLogic();
   }
 
   addKeyButton() {
