@@ -207,6 +207,7 @@ export default class ButtonComponent extends BaseComponent {
           break;
         case 'event':
           this.emit(this.interpolate(this.component.event), this.data);
+          this.events.emit(this.interpolate(this.component.event), this.data);
           this.emit('customEvent', {
             type: this.component.event,
             component: this.component,
