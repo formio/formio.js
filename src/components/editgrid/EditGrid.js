@@ -98,6 +98,7 @@ export default class EditGridComponent extends NestedComponent {
     this.createDescription(this.element);
     this.createAddButton();
     this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
+    this.attachLogic();
   }
 
   buildTable(fromBuild) {

@@ -47,6 +47,7 @@ export default class ContainerComponent extends NestedComponent {
     if (labelAtTheBottom) {
       this.createLabel(this.element);
     }
+    this.attachLogic();
   }
 
   get emptyValue() {
