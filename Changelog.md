@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
- - FOR-1705: HTML Component losing content when any Logic is applied
+ - FOR-1705: HTML Element and Content Components losing content when any Logic is applied
 
 ## 3.5.3
 ### Fixed
