@@ -699,6 +699,8 @@ export default class BaseComponent extends Component {
   createElement() {
     // If the element is already created, don't recreate.
     if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = this.className;
       return this.element;
     }
 

@@ -236,6 +236,16 @@ export default [
                       label: 'Paceholder',
                       value: 'placeholder',
                       type: 'string'
+                    },
+                    {
+                      label: 'CSS Class',
+                      value: 'className',
+                      type: 'string'
+                    },
+                    {
+                      label: 'Container Custom Class',
+                      value: 'customClass',
+                      type: 'string'
                     }
                   ],
                   values: []
