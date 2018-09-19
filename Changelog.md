@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.5.4
+### Fixed
+ - FOR-1712: Make sure that an empty time component does not trigger infinite onChange events.
+ - FOR-1711: Ensure that the builder does not execute conditionally hidden elements.
+ - FOR-1701: Fix empty check for datetime component which can be a data object.
+ - FOR-1287: Move field logic event trigger to build so context is set correctly and interpolate event so it will work with rowIndex.
+ 
+### Added
+ - FOR-1663: Added collapsible and collapsed to the Panel and also added icon to show collapsed state.
+
 ## 3.5.3
 ### Fixed
  - FOR-1586: Survery component input names.
