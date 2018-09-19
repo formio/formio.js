@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-1705: HTML Component losing content when any Logic is applied
+
 ## 3.5.3
 ### Fixed
  - FOR-1586: Survery component input names.
