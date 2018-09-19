@@ -34,11 +34,11 @@ export default class TimeComponent extends TextFieldComponent {
   }
   getValueAt(index) {
     if (!this.inputs.length || !this.inputs[index]) {
-      return null;
+      return this.emptyValue;
     }
     const val = this.inputs[index].value;
     if (!val) {
-      return null;
+      return this.emptyValue;
     }
 
     return moment(val, this.component.format).format('HH:mm:ss');

@@ -525,7 +525,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   setCollapsed(element) {
-    if (!this.component.collapsible) {
+    if (!this.component.collapsible || this.options.builder) {
       return;
     }
 
