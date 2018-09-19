@@ -171,13 +171,6 @@ export default class SignatureComponent extends Input {
     super.detach();
   }
 
-  createViewOnlyLabel(container) {
-    this.labelElement = this.ce('dt');
-    this.labelElement.appendChild(this.text(this.component.footer));
-    this.createTooltip(this.labelElement);
-    container.appendChild(this.labelElement);
-  }
-
   getView(value) {
     return value ? 'Yes' : 'No';
   }

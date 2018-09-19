@@ -1,5 +1,7 @@
 export default (iconset, name, spinning) => {
   const icons = {
+    'triangle-right': 'caret right',
+    'triangle-bottom': 'caret down',
     'question-sign': 'question circle',
     'remove-circle': 'trash alternate outline',
     'new-window': 'external alternate',

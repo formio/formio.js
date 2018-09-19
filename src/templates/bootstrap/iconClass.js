@@ -1,6 +1,12 @@
 export default (iconset, name, spinning) => {
   if (iconset === 'fa') {
     switch (name) {
+      case 'triangle-right':
+        name = 'caret-right';
+        break;
+      case 'triangle-bottom':
+        name = 'caret-down';
+        break;
       case 'save':
         name = 'download';
         break;
