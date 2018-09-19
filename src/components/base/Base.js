@@ -1416,7 +1416,7 @@ export default class BaseComponent extends Component {
    * @return {boolean}
    */
   conditionallyVisible(data) {
-    if (!this.hasCondition()) {
+    if (this.options.builder || !this.hasCondition()) {
       return true;
     }
     return FormioUtils.checkCondition(
@@ -1577,14 +1577,15 @@ export default class BaseComponent extends Component {
    */
   show(show, noClear) {
     if (
+      !this.options.builder &&
       this.options.hide &&
       this.options.hide[this.component.key]
     ) {
       show = false;
     }
     else if (
-      this.options.show &&
-      this.options.show[this.component.key]
+      this.options.builder ||
+      (this.options.show && this.options.show[this.component.key])
     ) {
       show = true;
     }
