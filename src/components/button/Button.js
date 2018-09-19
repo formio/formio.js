@@ -151,7 +151,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, 'has-error');
         this.append(message);
       });
-      onChange = function(value, isValid) {
+      onChange = (value, isValid) => {
         this.removeClass(this.buttonElement, 'btn-success submit-success');
         this.removeClass(this.buttonElement, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
@@ -162,7 +162,7 @@ export default class ButtonComponent extends BaseComponent {
           this.removeClass(message, 'has-error');
         }
       };
-      onError = function() {
+      onError = () => {
         this.hasError = true;
         this.removeClass(this.buttonElement, 'btn-success submit-success');
         this.addClass(this.buttonElement, 'btn-danger submit-fail');
