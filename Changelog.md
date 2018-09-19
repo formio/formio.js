@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## 3.5.4
+### Fixed
+ - FOR-1712: Make sure that an empty time component does not trigger infinite onChange events.
+ - FOR-1711: Ensure that the builder does not execute conditionally hidden elements.
+ - FOR-1701: Fix empty check for datetime component which can be a data object.
+ - FOR-1287: Move field logic event trigger to build so context is set correctly and interpolate event so it will work with rowIndex.
+ - The styles for the phone number component with locale configurations for Bootstrap 4.
+ 
 ### Added
  - FOR-1599: Ability to change CSS Classes using Logic
 
