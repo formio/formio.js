@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { boolValue, getInputMask, matchInputMask } from '../utils/utils';
+import moment from 'moment';
 
 export default {
   get: _.get,
@@ -309,6 +310,41 @@ export default {
           return true;
         }
         return valid;
+      }
+    },
+    maxDate: {
+      key: 'maxDate',
+      message(component, setting) {
+        return component.t(component.errorMessage('maxDate'), {
+          field: component.errorLabel,
+          maxDate: moment(setting).format(component.format),
+        });
+      },
+      check(component, setting, value) {
+        const date = moment(value);
+
+        if (_.isNull(setting)) {
+          return true;
+        }
+
+        return date.isBefore(setting) || date.isSame(setting);
+      }
+    },
+    minDate: {
+      key: 'minDate',
+      message(component, setting) {
+        return component.t(component.errorMessage('minDate'), {
+          field: component.errorLabel,
+          minDate: moment(setting).format(component.format),
+        });
+      },
+      check(component, setting, value) {
+        const date = moment(value);
+        if (_.isNull(setting)) {
+          return true;
+        }
+
+        return date.isAfter(setting) || date.isSame(setting);
       }
     }
   }
