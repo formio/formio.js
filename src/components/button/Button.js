@@ -122,7 +122,9 @@ export default class ButtonComponent extends Field {
     if (!this.refs.button) {
       return;
     }
-    // this.addShortcut(this.refs.button);
+
+    let onChange = null;
+    let onError = null;
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
@@ -141,10 +143,7 @@ export default class ButtonComponent extends Field {
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        const isValid = value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
-        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      onChange = function(value, isValid) {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
@@ -154,9 +153,8 @@ export default class ButtonComponent extends Field {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      });
-      this.on('error', () => {
-        this.loading = false;
+      };
+      onError = function() {
         this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
@@ -165,7 +163,7 @@ export default class ButtonComponent extends Field {
         this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
-      });
+      };
     }
 
     if (this.component.action === 'url') {
@@ -177,21 +175,23 @@ export default class ButtonComponent extends Field {
         this.loading = false;
         this.disabled = false;
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      });
-      this.on('error', () => {
-        this.loading = false;
-      });
     }
 
-    if (this.component.action === 'event') {
-      this.on('change', (value) => {
-        const isValid = value && value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
-        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
-      });
-    }
+    this.on('change', (value) => {
+      this.loading = false;
+      const isValid = value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      if (onChange) {
+        onChange(value, isValid);
+      }
+    });
+
+    this.on('error', () => {
+      this.loading = false;
+      if (onError) {
+        onError();
+      }
+    });
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
