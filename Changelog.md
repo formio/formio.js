@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
- - FOR-1705: HTML Element and Content Components losing content when any Logic is applied
+ - FOR-1705: HTML Element and Content Components losing content when any Logic is applied, 
+ - FOR-1705: moved 'customClass' CSS class from HTML content wrapper to regular formio component wrapper
+ - FOR-1706: Added 'CSS Class' (className) builder setting for Content component which adds 
+ 
 
 ## 3.5.3
 ### Fixed

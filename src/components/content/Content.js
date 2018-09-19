@@ -33,7 +33,7 @@ export default class ContentComponent extends BaseComponent {
     this.createElement();
     this.htmlElement = this.ce('div', {
       id: this.id,
-      class: 'form-group'
+      class: `form-group ${this.component.className}`
     });
 
     this.htmlElement.component = this;
