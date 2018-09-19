@@ -46,7 +46,7 @@ export default class PanelComponent extends NestedComponent {
   }
 
   getCollapseIcon() {
-    const collapseIcon = this.getIcon(this.collapsed ? 'triangle-right' : 'triangle-bottom');
+    const collapseIcon = this.getIcon(this.collapsed ? 'plus' : 'minus');
     this.addClass(collapseIcon, 'formio-collapse-icon');
     return collapseIcon;
   }

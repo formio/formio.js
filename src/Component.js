@@ -433,10 +433,6 @@ export default class Component {
       return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
     }
     switch (name) {
-      case 'triangle-right':
-        return 'fa fa-caret-right';
-      case 'triangle-bottom':
-        return 'fa fa-caret-down';
       case 'save':
         return 'fa fa-download';
       case 'zoom-in':
