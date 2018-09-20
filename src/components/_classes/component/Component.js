@@ -1481,7 +1481,7 @@ export default class Component extends Element {
     }
 
     flags = flags || {};
-    const newValue = value || this.getValue();
+    const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
