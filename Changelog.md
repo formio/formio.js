@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.5.5
+### Fixed
+ - Downgrade whatwg-fetch to 2.0.4 so that this library can be used in node.js without an error being thrown.
+
 ## 3.5.4
 ### Fixed
  - FOR-1712: Make sure that an empty time component does not trigger infinite onChange events.
