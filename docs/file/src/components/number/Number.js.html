@@ -270,6 +270,7 @@ export default class NumberComponent extends BaseComponent {
       mask: createNumberMask({
         prefix: &apos;&apos;,
         suffix: &apos;&apos;,
+        requireDecimal: _.get(this.component, &apos;requireDecimal&apos;, false),
         thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
         decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
         decimalLimit: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),

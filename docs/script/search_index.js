@@ -2455,13 +2455,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2683,13 +2683,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -3319,13 +3319,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3732,6 +3732,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#attachlogic",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-attachLogic",
+    "src/components/base/Base.js~BaseComponent#attachLogic",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#attachrefreshon",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-attachRefreshOn",
     "src/components/base/Base.js~BaseComponent#attachRefreshOn",
@@ -3919,13 +3925,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3973,13 +3979,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4207,13 +4213,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4909,13 +4915,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5575,13 +5581,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -5992,6 +5998,12 @@ window.esdocSearchIndex = [
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-emptyValue",
     "src/components/datetime/DateTime.js~DateTimeComponent#emptyValue",
     "member"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#isempty",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-isEmpty",
+    "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
+    "method"
   ],
   [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
@@ -7884,6 +7896,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/editform/number.edit.data.js",
+    "file/src/components/number/editForm/Number.edit.data.js.html",
+    "src/components/number/editForm/Number.edit.data.js",
+    "file"
+  ],
+  [
     "src/components/number/editform/number.edit.validation.js",
     "file/src/components/number/editForm/Number.edit.validation.js.html",
     "src/components/number/editForm/Number.edit.validation.js",
@@ -7932,6 +7950,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/panel/panel.js~panelcomponent#collapseicon",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-collapseIcon",
+    "src/components/panel/Panel.js~PanelComponent#collapseIcon",
+    "member"
+  ],
+  [
     "src/components/panel/panel.js~panelcomponent#constructor",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-constructor-constructor",
     "src/components/panel/Panel.js~PanelComponent#constructor",
@@ -7950,6 +7974,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/panel/panel.js~panelcomponent#getcollapseicon",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-getCollapseIcon",
+    "src/components/panel/Panel.js~PanelComponent#getCollapseIcon",
+    "method"
+  ],
+  [
     "src/components/panel/panel.js~panelcomponent#getcontainer",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-getContainer",
     "src/components/panel/Panel.js~PanelComponent#getContainer",
@@ -7960,6 +7990,18 @@ window.esdocSearchIndex = [
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-panelBody",
     "src/components/panel/Panel.js~PanelComponent#panelBody",
     "member"
+  ],
+  [
+    "src/components/panel/panel.js~panelcomponent#paneltitle",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-panelTitle",
+    "src/components/panel/Panel.js~PanelComponent#panelTitle",
+    "member"
+  ],
+  [
+    "src/components/panel/panel.js~panelcomponent#setcollapsed",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-setCollapsed",
+    "src/components/panel/Panel.js~PanelComponent#setCollapsed",
+    "method"
   ],
   [
     "src/components/panel/panel.js~panelcomponent.builderinfo",
