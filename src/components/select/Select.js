@@ -630,7 +630,7 @@ export default class SelectComponent extends BaseComponent {
   }
 
   getView(data) {
-    return this.itemTemplate(data);
+    return this.asString(data);
   }
 
   getValue() {
