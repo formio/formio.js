@@ -274,7 +274,9 @@ export default class DayComponent extends Field {
    * @param value
    */
   setValueAt(index, value) {
-    if (!value) {
+    // temporary solution to avoid input reset
+    // on invalid date.
+    if (!value || value === 'Invalid date') {
       return null;
     }
     const parts = value.split('/');
@@ -340,20 +342,46 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get date() {
-    const { day, month, year } = this.parts;
-    if (this.showDay && !day) {
-      // Invalid so return null
+    const options = {};
+    let defaults = [];
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+
+    if (this.component.defaultValue) {
+      defaults = this.component.defaultValue
+        .split('/')
+        .map(x => parseInt(x, 10));
+    }
+
+    const day = this.showDay ? parseInt(this.refs.day.value, 10) : NaN;
+    if (!_.isNaN(day)) {
+      options.day = day;
+    }
+    else if (defaults[DAY] && !_.isNaN(defaults[DAY])) {
+      options.day = defaults[DAY];
+    }
+
+    const month = this.showMonth ? parseInt(this.refs.month.value, 10) : NaN;
+    if (!_.isNaN(month) && month > 0) {
+      // Months are 0 indexed.
+      options.month = (month - 1);
+    }
+    else if (defaults[MONTH] && !_.isNaN(defaults[MONTH])) {
+      options.month = defaults[MONTH] - 1;
+    }
+
+    const year = this.showYear ? parseInt(this.refs.year.value) : NaN;
+    if (!_.isNaN(year)) {
+      options.year = year;
+    }
+    else if (defaults[YEAR] && !_.isNaN(defaults[YEAR])) {
+      options.year = defaults[YEAR];
+    }
+
+    if (_.isEmpty(options)) {
       return null;
     }
-    if (this.showMonth && (month < 0)) {
-      // Invalid so return null
-      return null;
-    }
-    if (this.showYear && !year) {
-      // Invalid so return null
-      return null;
-    }
-    return moment([year, month, day]);
+
+    return moment(options);
   }
 
   /**
