@@ -630,7 +630,7 @@ export default class SelectComponent extends Field {
   }
 
   getView(data) {
-    return this.itemTemplate(data);
+    return this.asString(data);
   }
 
   getValue() {
