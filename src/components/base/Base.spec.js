@@ -113,7 +113,7 @@ describe('Base Component', () => {
   it('Should allow for multiple values', (done) => {
     Harness.testCreate(BaseComponent, comp2).then((component) => {
       Harness.testElements(component, 'table', 1);
-      Harness.testElements(component, 'table tr', 2);
+      Harness.testElements(component, 'table tr', 1);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
       Harness.testElements(component, 'table tr:first-child td:last-child .glyphicon-remove-circle', 1);
