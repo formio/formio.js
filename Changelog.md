@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - FOR-1599: Ability to change CSS Classes using Logic
+ - FOR-1717: A class of formio-component-multiple for fields with multiple configurations.
 
 ## 3.5.5
 ### Fixed
