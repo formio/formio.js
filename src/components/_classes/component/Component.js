@@ -892,9 +892,6 @@ export default class Component extends Element {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
-    if (this.component.multiple) {
-      className += 'formio-component-multiple ';
-    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }

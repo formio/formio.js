@@ -90,7 +90,7 @@ describe('TextField Component', () => {
     return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
       console.log(component.element.innerHTML);
       Harness.testElements(component, 'table', 1);
-      Harness.testElements(component, 'table tr', 1);
+      Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
       Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
@@ -170,7 +170,7 @@ describe('TextField Component', () => {
   it('Should allow for multiple values', () => {
     return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
       Harness.testElements(component, 'table', 1);
-      Harness.testElements(component, 'table tr', 1);
+      Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
       Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
