@@ -252,6 +252,7 @@ export default class FormComponent extends BaseComponent {
     if (!this.options.beforeSubmit) {
       this.restoreValue();
     }
+    this.attachLogic();
   }
 
   setValue(submission, flags) {

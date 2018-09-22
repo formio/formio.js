@@ -333,21 +333,6 @@ export default class BaseComponent extends Component {
       this.info = this.elementInfo();
     }
 
-    this.logic.forEach(logic => {
-      if (logic.trigger.type === 'event') {
-        this.root.on(logic.trigger.event, () => {
-          const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
-            // If component definition changed, replace it.
-            if (!_.isEqual(this.component, newComponent)) {
-              this.component = newComponent;
-            }
-            this.redraw();
-          }
-        });
-      }
-    });
-
     // Allow anyone to hook into the component creation.
     this.hook('component');
   }
@@ -495,6 +480,7 @@ export default class BaseComponent extends Component {
         this.createLabel(this.element);
       }
       this.createDescription(this.element);
+      this.component.multiple && this.addButton();
 
       // Disable if needed.
       if (this.shouldDisable) {
@@ -509,6 +495,8 @@ export default class BaseComponent extends Component {
 
       this.autofocus();
     }
+
+    this.attachLogic();
   }
 
   attachRefreshOn() {
@@ -660,6 +648,9 @@ export default class BaseComponent extends Component {
     className += `formio-component formio-component-${this.component.type} `;
     if (this.key) {
       className += `formio-component-${this.key} `;
+    }
+    if (this.component.multiple) {
+      className += 'formio-component-multiple ';
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -873,16 +864,6 @@ export default class BaseComponent extends Component {
       this.tbody.appendChild(tr);
     });
 
-    if (!this.shouldDisable) {
-      const tr = this.ce('tr');
-      const td = this.ce('td', {
-        colspan: '2'
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-    }
-
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -897,28 +878,26 @@ export default class BaseComponent extends Component {
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The "Add New" button html element.
    */
-  addButton(justIcon) {
-    const addButton = this.ce('button', {
-      class: 'btn btn-primary formio-button-add-row'
-    });
-    this.addEventListener(addButton, 'click', (event) => {
-      event.preventDefault();
-      this.addValue();
-    });
-
-    const addIcon = this.ce('i', {
-      class: this.iconClass('plus')
-    });
-
-    if (justIcon) {
-      addButton.appendChild(addIcon);
-      return addButton;
+  addButton() {
+    if (this.options.readOnly) {
+      return;
     }
-    else {
-      addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-      return addButton;
-    }
+
+    this.element.appendChild(this.ce('div', { class: 'editgrid-add' },
+      this.ce('button', {
+        class: 'btn btn-primary formio-button-add-row',
+        role: 'button',
+        onClick: (event) => {
+          event.preventDefault();
+          this.addValue();
+        }
+      },
+      [
+        this.ce('span', { class: this.iconClass('plus'), 'aria-hidden': true }),
+        ' ',
+        this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
+      ])
+    ));
   }
 
   /**
@@ -1418,7 +1397,7 @@ export default class BaseComponent extends Component {
    * @return {boolean}
    */
   conditionallyVisible(data) {
-    if (!this.hasCondition()) {
+    if (this.options.builder || !this.hasCondition()) {
       return true;
     }
     return FormioUtils.checkCondition(
@@ -1579,14 +1558,15 @@ export default class BaseComponent extends Component {
    */
   show(show, noClear) {
     if (
+      !this.options.builder &&
       this.options.hide &&
       this.options.hide[this.component.key]
     ) {
       show = false;
     }
     else if (
-      this.options.show &&
-      this.options.show[this.component.key]
+      this.options.builder ||
+      (this.options.show && this.options.show[this.component.key])
     ) {
       show = true;
     }
@@ -2482,5 +2462,23 @@ export default class BaseComponent extends Component {
    */
   removeChild(element) {
     this.removeChildFrom(element, this.element);
+  }
+
+  attachLogic() {
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.on(event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
   }
 }

@@ -274,6 +274,13 @@ export default class DateTimeComponent extends BaseComponent {
     return &apos;&apos;;
   }
 
+  isEmpty(value) {
+    if (value.toString() === &apos;Invalid Date&apos;) {
+      return true;
+    }
+    return super.isEmpty(value);
+  }
+
   // This select component can handle multiple items on its own.
   createWrapper() {
     return false;

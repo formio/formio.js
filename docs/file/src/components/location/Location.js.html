@@ -250,6 +250,7 @@ export default class LocationComponent extends BaseComponent {
       style: &apos;min-height: 300px; height: calc(100vh - 600px);&apos;
     });
     this.element.appendChild(gmapElement);
+    this.attachLogic();
   }
 
   setValue(value, flags) {

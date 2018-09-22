@@ -45,6 +45,21 @@ export default class PanelComponent extends NestedComponent {
     return `panel panel-${this.component.theme} ${super.className}`;
   }
 
+  getCollapseIcon() {
+    const collapseIcon = this.getIcon(this.collapsed ? 'plus' : 'minus');
+    this.addClass(collapseIcon, 'formio-collapse-icon');
+    return collapseIcon;
+  }
+
+  setCollapsed(element) {
+    super.setCollapsed(element);
+    if (this.collapseIcon) {
+      const newIcon = this.getCollapseIcon();
+      this.panelTitle.replaceChild(newIcon, this.collapseIcon);
+      this.collapseIcon = newIcon;
+    }
+  }
+
   build(state) {
     this.component.theme = this.component.theme || 'default';
     let panelClass = 'mb-2 card border ';
@@ -62,12 +77,19 @@ export default class PanelComponent extends NestedComponent {
       const heading = this.ce('div', {
         class: `card-header bg-${this.component.theme} panel-heading`
       });
-      const title = this.ce('h4', {
+      this.panelTitle = this.ce('h4', {
         class: 'mb-0 card-title panel-title'
       });
-      title.appendChild(this.text(this.component.title));
-      this.createTooltip(title);
-      heading.appendChild(title);
+      let titleText = this.component.title;
+      if (this.component.collapsible) {
+        this.collapseIcon = this.getCollapseIcon();
+        this.panelTitle.appendChild(this.collapseIcon);
+        titleText = ` ${titleText}`;
+      }
+
+      this.panelTitle.appendChild(this.text(titleText));
+      this.createTooltip(this.panelTitle);
+      heading.appendChild(this.panelTitle);
       this.setCollapseHeader(heading);
       this.element.appendChild(heading);
     }
@@ -78,5 +100,6 @@ export default class PanelComponent extends NestedComponent {
     this.addComponents(null, null, null, state);
     this.element.appendChild(this.panelBody);
     this.setCollapsed();
+    this.attachLogic();
   }
 }

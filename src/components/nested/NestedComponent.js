@@ -23,6 +23,8 @@ export default class NestedComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.addComponents(null, null, null, state);
+
+    this.attachLogic();
   }
 
   get defaultSchema() {
@@ -523,7 +525,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   setCollapsed(element) {
-    if (!this.component.collapsible) {
+    if (!this.component.collapsible || this.options.builder) {
       return;
     }
 
