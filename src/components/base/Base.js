@@ -480,6 +480,7 @@ export default class BaseComponent extends Component {
         this.createLabel(this.element);
       }
       this.createDescription(this.element);
+      this.component.multiple && this.addButton();
 
       // Disable if needed.
       if (this.shouldDisable) {
@@ -647,6 +648,9 @@ export default class BaseComponent extends Component {
     className += `formio-component formio-component-${this.component.type} `;
     if (this.key) {
       className += `formio-component-${this.key} `;
+    }
+    if (this.component.multiple) {
+      className += 'formio-component-multiple ';
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -858,16 +862,6 @@ export default class BaseComponent extends Component {
       this.tbody.appendChild(tr);
     });
 
-    if (!this.shouldDisable) {
-      const tr = this.ce('tr');
-      const td = this.ce('td', {
-        colspan: '2'
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-    }
-
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -882,28 +876,26 @@ export default class BaseComponent extends Component {
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The "Add New" button html element.
    */
-  addButton(justIcon) {
-    const addButton = this.ce('button', {
-      class: 'btn btn-primary formio-button-add-row'
-    });
-    this.addEventListener(addButton, 'click', (event) => {
-      event.preventDefault();
-      this.addValue();
-    });
-
-    const addIcon = this.ce('i', {
-      class: this.iconClass('plus')
-    });
-
-    if (justIcon) {
-      addButton.appendChild(addIcon);
-      return addButton;
+  addButton() {
+    if (this.options.readOnly) {
+      return;
     }
-    else {
-      addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-      return addButton;
-    }
+
+    this.element.appendChild(this.ce('div', { class: 'editgrid-add' },
+      this.ce('button', {
+        class: 'btn btn-primary formio-button-add-row',
+        role: 'button',
+        onClick: (event) => {
+          event.preventDefault();
+          this.addValue();
+        }
+      },
+      [
+        this.ce('span', { class: this.iconClass('plus'), 'aria-hidden': true }),
+        ' ',
+        this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
+      ])
+    ));
   }
 
   /**
