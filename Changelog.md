@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1659: Form Builder preventing removing values from JS code fields (fixed Ace Textarea not firing onChange event when empty)
  - Select component `getView`.
+ - FOR-1659: Fixed Ace Textarea not firing onChange event when it gets empty
+
+### Added
+ - FOR-1599: Ability to change CSS Classes using Logic
+ - FOR-1717: A class of formio-component-multiple for fields with multiple configurations.
 
 ## 3.5.5
 ### Fixed
