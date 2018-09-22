@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [UNRELEASED]
 ### Fixed
+ - Select component `getView`.
  - FOR-1659: Form Builder preventing removing values from JS code fields (fixed Ace Textarea not firing onChange event when empty)
 
 ### Added
@@ -22,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1701: Fix empty check for datetime component which can be a data object.
  - FOR-1287: Move field logic event trigger to build so context is set correctly and interpolate event so it will work with rowIndex.
  - The styles for the phone number component with locale configurations for Bootstrap 4.
- 
+
 ### Added
  - FOR-1663: Added collapsible and collapsed to the Panel and also added icon to show collapsed state.
 
