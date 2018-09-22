@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.5.6
 ### Fixed
- - Select component `getView`.
+ - FOR-1566: Select component to use `asString` so it will show the label instead of the value.
  - FOR-1659: Form Builder preventing removing values from JS code fields (fixed Ace Textarea not firing onChange event when empty)
+ - FOR-1659: Fixed Ace Textarea not firing onChange event when it gets empty
 
 ### Added
  - FOR-1599: Ability to change CSS Classes using Logic
