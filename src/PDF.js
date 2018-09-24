@@ -51,6 +51,7 @@ export default class PDF extends Webform {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;
         form.base = this.formio.base;
+        this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
       this.postMessage({ name: 'form', data: form });
     });

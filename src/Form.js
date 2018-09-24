@@ -82,7 +82,7 @@ export default class Form {
   setForm(formParam) {
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      return (new Formio(formParam)).loadForm().then(form => {
+      return (new Formio(formParam)).loadForm().then((form) => {
         this.instance = this.create(form.display);
         this.instance.url = formParam;
         this.instance.nosubmit = false;
