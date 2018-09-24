@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.5.7
+### Fixed
+ - Prefix and Suffix for Bootstrap 4.
+
+## 3.5.6
+### Fixed
+ - FOR-1566: Select component to use `asString` so it will show the label instead of the value.
+ - FOR-1659: Form Builder preventing removing values from JS code fields (fixed Ace Textarea not firing onChange event when empty)
+ - FOR-1659: Fixed Ace Textarea not firing onChange event when it gets empty
+
+### Added
+ - FOR-1599: Ability to change CSS Classes using Logic
+ - FOR-1717: A class of formio-component-multiple for fields with multiple configurations.
+
+## 3.5.5
+### Fixed
+ - Downgrade whatwg-fetch to 2.0.4 so that this library can be used in node.js without an error being thrown.
+
 ## 3.5.4
 ### Fixed
  - FOR-1712: Make sure that an empty time component does not trigger infinite onChange events.
@@ -11,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1701: Fix empty check for datetime component which can be a data object.
  - FOR-1287: Move field logic event trigger to build so context is set correctly and interpolate event so it will work with rowIndex.
  - The styles for the phone number component with locale configurations for Bootstrap 4.
- 
+
 ### Added
  - FOR-1663: Added collapsible and collapsed to the Panel and also added icon to show collapsed state.
 

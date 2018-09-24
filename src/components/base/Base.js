@@ -648,6 +648,9 @@ export default class BaseComponent extends Component {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.component.multiple) {
+      className += 'formio-component-multiple ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -686,6 +689,8 @@ export default class BaseComponent extends Component {
   createElement() {
     // If the element is already created, don't recreate.
     if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = this.className;
       return this.element;
     }
 
@@ -1205,9 +1210,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.prefix && (typeof this.component.prefix === 'string')) {
       prefix = this.ce('div', {
-        class: 'input-group-addon'
+        class: 'input-group-addon input-group-prepend'
       });
-      prefix.appendChild(this.text(this.component.prefix));
+      prefix.appendChild(this.ce('span', {
+        class: 'input-group-text'
+      }, this.text(this.component.prefix)));
       inputGroup.appendChild(prefix);
     }
     return prefix;
@@ -1227,9 +1234,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.suffix && (typeof this.component.suffix === 'string')) {
       suffix = this.ce('div', {
-        class: 'input-group-addon'
+        class: 'input-group-addon input-group-append'
       });
-      suffix.appendChild(this.text(this.component.suffix));
+      suffix.appendChild(this.ce('span', {
+        class: 'input-group-text'
+      }, this.text(this.component.suffix)));
       inputGroup.appendChild(suffix);
     }
     return suffix;
@@ -1986,7 +1995,7 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value || this.getValue(flags);
+    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
     const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
