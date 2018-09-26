@@ -10,7 +10,7 @@ import {
 describe('Content Component', () => {
   it('Should build a content component', (done) => {
     Harness.testCreate(ContentComponent, comp1).then((component) => {
-      assert.equal(component.element.innerHTML, comp1.html);
+      assert.equal(component.htmlElement.innerHTML, comp1.html);
       done();
     });
   });

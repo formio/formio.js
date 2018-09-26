@@ -26,16 +26,17 @@ export default class ContentComponent extends BaseComponent {
   }
 
   setHTML() {
-    this.element.innerHTML = this.interpolate(this.component.html);
+    this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
   build() {
-    this.element = this.ce('div', {
+    this.createElement();
+    this.htmlElement = this.ce('div', {
       id: this.id,
-      class: `form-group ${this.component.customClass}`
+      class: `form-group ${this.component.className}`
     });
 
-    this.element.component = this;
+    this.htmlElement.component = this;
 
     if (this.options.builder) {
       const editorElement = this.ce('div');
@@ -52,6 +53,8 @@ export default class ContentComponent extends BaseComponent {
         this.on('change', () => this.setHTML());
       }
     }
+
+    this.element.appendChild(this.htmlElement);
     this.attachLogic();
   }
 
