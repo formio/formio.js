@@ -677,11 +677,11 @@ export default class WebformBuilder extends Webform {
     // Add the groups.
     _.each(this.options.builder, (info, group) => {
       if (info) {
+        info.key = group;
         if (info.type === 'button') {
           this.addBuilderButton(info, this.sideBarElement);
         }
         else {
-          info.key = group;
           this.addBuilderGroup(info, this.sideBarElement);
         }
       }
