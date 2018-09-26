@@ -61,6 +61,7 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "browser-cookies": "^1.2.0",
     "choices.js": "^3.0.4",
     "dialog-polyfill": "^0.4.10",
@@ -86,6 +87,7 @@
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
     "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
