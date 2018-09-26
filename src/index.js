@@ -1,2 +1,2 @@
 export * from './formio.form';
-export FormBuilder from './FormBuilder';
+export { FormBuilder } from './FormBuilder';
