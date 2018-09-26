@@ -240,6 +240,25 @@
         { label: &apos;No&apos;, value: &apos;none&apos; }
       ]
     }
+  },
+  {
+    weight: 650,
+    type: &apos;checkbox&apos;,
+    label: &apos;Collapsible&apos;,
+    tooltip: &apos;If checked, this will turn this Panel into a collapsible panel.&apos;,
+    key: &apos;collapsible&apos;,
+    input: true
+  },
+  {
+    weight: 651,
+    type: &apos;checkbox&apos;,
+    label: &apos;Initially Collapsed&apos;,
+    tooltip: &apos;Determines the initial collapsed state of this Panel.&apos;,
+    key: &apos;collapsed&apos;,
+    input: true,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.collapsible&apos; }, true] }
+    }
   }
 ];
 </code></pre>

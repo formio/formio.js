@@ -239,6 +239,7 @@ export default class ContentComponent extends BaseComponent {
         this.on(&apos;change&apos;, () =&gt; this.setHTML());
       }
     }
+    this.attachLogic();
   }
 
   get emptyValue() {

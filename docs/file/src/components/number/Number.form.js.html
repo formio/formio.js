@@ -187,10 +187,15 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
 
+import NumberEditData from &apos;./editForm/Number.edit.data&apos;;
 import NumberEditValidation from &apos;./editForm/Number.edit.validation&apos;;
 
 export default function(...extend) {
   return baseEditForm([
+    {
+      key: &apos;data&apos;,
+      components: NumberEditData
+    },
     {
       key: &apos;validation&apos;,
       components: NumberEditValidation

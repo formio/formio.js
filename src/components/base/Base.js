@@ -333,21 +333,6 @@ export default class BaseComponent extends Component {
       this.info = this.elementInfo();
     }
 
-    this.logic.forEach(logic => {
-      if (logic.trigger.type === 'event') {
-        this.root.on(logic.trigger.event, () => {
-          const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
-            // If component definition changed, replace it.
-            if (!_.isEqual(this.component, newComponent)) {
-              this.component = newComponent;
-            }
-            this.redraw();
-          }
-        });
-      }
-    });
-
     // Allow anyone to hook into the component creation.
     this.hook('component');
   }
@@ -509,6 +494,8 @@ export default class BaseComponent extends Component {
 
       this.autofocus();
     }
+
+    this.attachLogic();
   }
 
   attachRefreshOn() {
@@ -661,6 +648,9 @@ export default class BaseComponent extends Component {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.component.multiple) {
+      className += 'formio-component-multiple ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -699,6 +689,8 @@ export default class BaseComponent extends Component {
   createElement() {
     // If the element is already created, don't recreate.
     if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = this.className;
       return this.element;
     }
 
@@ -1218,9 +1210,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.prefix && (typeof this.component.prefix === 'string')) {
       prefix = this.ce('div', {
-        class: 'input-group-addon'
+        class: 'input-group-addon input-group-prepend'
       });
-      prefix.appendChild(this.text(this.component.prefix));
+      prefix.appendChild(this.ce('span', {
+        class: 'input-group-text'
+      }, this.text(this.component.prefix)));
       inputGroup.appendChild(prefix);
     }
     return prefix;
@@ -1240,9 +1234,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.suffix && (typeof this.component.suffix === 'string')) {
       suffix = this.ce('div', {
-        class: 'input-group-addon'
+        class: 'input-group-addon input-group-append'
       });
-      suffix.appendChild(this.text(this.component.suffix));
+      suffix.appendChild(this.ce('span', {
+        class: 'input-group-text'
+      }, this.text(this.component.suffix)));
       inputGroup.appendChild(suffix);
     }
     return suffix;
@@ -1416,7 +1412,7 @@ export default class BaseComponent extends Component {
    * @return {boolean}
    */
   conditionallyVisible(data) {
-    if (!this.hasCondition()) {
+    if (this.options.builder || !this.hasCondition()) {
       return true;
     }
     return FormioUtils.checkCondition(
@@ -1577,14 +1573,15 @@ export default class BaseComponent extends Component {
    */
   show(show, noClear) {
     if (
+      !this.options.builder &&
       this.options.hide &&
       this.options.hide[this.component.key]
     ) {
       show = false;
     }
     else if (
-      this.options.show &&
-      this.options.show[this.component.key]
+      this.options.builder ||
+      (this.options.show && this.options.show[this.component.key])
     ) {
       show = true;
     }
@@ -1998,7 +1995,7 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value || this.getValue(flags);
+    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
     const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
@@ -2480,5 +2477,23 @@ export default class BaseComponent extends Component {
    */
   removeChild(element) {
     this.removeChildFrom(element, this.element);
+  }
+
+  attachLogic() {
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.on(event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
   }
 }

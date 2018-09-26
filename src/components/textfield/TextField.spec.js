@@ -124,11 +124,11 @@ describe('TextField Builder', () => {
   });
 
   it('Should set the prefix of the input', (done) => {
-    Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon">\$<\/div>.*input/, done);
+    Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon input-group-prepend">.*<span class="input-group-text">\$<\/span><\/div>.*input/, done);
   });
 
   it('Should set the suffix of the input', (done) => {
-    Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon">USD<\/div>/, done);
+    Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon input-group-append">.*<span class="input-group-text">USD<\/span><\/div>/, done);
   });
 
   it('Should set the custom css class of the input', (done) => {

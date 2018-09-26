@@ -87,19 +87,13 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should not allow invalid months', (done) => {
+  it('Should ignore invalid months and use Jenuary as default', (done) => {
+    comp1.dayFirst = false;
+
     Harness.testCreate(DayComponent, comp1).then((component) => {
-      component.on('componentError', (err) => {
-        assert.equal(err.message, 'Date is not a valid date.');
-        assert.equal(err.component.key, 'date');
-        done();
-      });
-
-      component.on('componentChange', () => {
-        component.checkValidity();
-      });
-
       component.setValue('15/20/2017');
+      assert.equal(component.getValue(), '1/20/2017');
+      done();
     });
   });
 });

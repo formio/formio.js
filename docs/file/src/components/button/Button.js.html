@@ -319,6 +319,9 @@ export default class ButtonComponent extends BaseComponent {
         class: this.component.rightIcon
       }));
     }
+
+    let onChange = null;
+    let onError = null;
     if (this.component.action === &apos;submit&apos;) {
       const message = this.ce(&apos;div&apos;);
       this.on(&apos;submitButton&apos;, () =&gt; {
@@ -335,10 +338,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, &apos;has-error&apos;);
         this.append(message);
       });
-      this.on(&apos;change&apos;, (value) =&gt; {
-        this.loading = false;
-        const isValid = value.hasOwnProperty(&apos;isValid&apos;) ? value.isValid : this.root.isValid(value.data, true);
-        this.disabled = this.options.readOnly || (this.component.disableOnInvalid &amp;&amp; !isValid);
+      onChange = (value, isValid) =&gt; {
         this.removeClass(this.buttonElement, &apos;btn-success submit-success&apos;);
         this.removeClass(this.buttonElement, &apos;btn-danger submit-fail&apos;);
         if (isValid &amp;&amp; this.hasError) {
@@ -348,9 +348,8 @@ export default class ButtonComponent extends BaseComponent {
           this.removeClass(message, &apos;has-success&apos;);
           this.removeClass(message, &apos;has-error&apos;);
         }
-      });
-      this.on(&apos;error&apos;, () =&gt; {
-        this.loading = false;
+      };
+      onError = () =&gt; {
         this.hasError = true;
         this.removeClass(this.buttonElement, &apos;btn-success submit-success&apos;);
         this.addClass(this.buttonElement, &apos;btn-danger submit-fail&apos;);
@@ -358,7 +357,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, &apos;has-success&apos;);
         this.addClass(message, &apos;has-error&apos;);
         this.append(message);
-      });
+      };
     }
 
     if (this.component.action === &apos;url&apos;) {
@@ -370,14 +369,24 @@ export default class ButtonComponent extends BaseComponent {
         this.loading = false;
         this.disabled = false;
       });
-      this.on(&apos;change&apos;, (value) =&gt; {
-        this.loading = false;
-        this.disabled = (this.component.disableOnInvalid &amp;&amp; !this.root.isValid(value.data, true));
-      });
-      this.on(&apos;error&apos;, () =&gt; {
-        this.loading = false;
-      });
     }
+
+    this.on(&apos;change&apos;, (value) =&gt; {
+      this.loading = false;
+      const isValid = value.hasOwnProperty(&apos;isValid&apos;) ? value.isValid : this.root.isValid(value.data, true);
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid &amp;&amp; !isValid);
+      if (onChange) {
+        onChange(value, isValid);
+      }
+    });
+
+    this.on(&apos;error&apos;, () =&gt; {
+      this.loading = false;
+      if (onError) {
+        onError();
+      }
+    });
+
     this.addEventListener(this.buttonElement, &apos;click&apos;, (event) =&gt; {
       this.dataValue = true;
       if (this.component.action !== &apos;submit&apos; &amp;&amp; this.component.showValidations) {
@@ -393,10 +402,10 @@ export default class ButtonComponent extends BaseComponent {
           });
           break;
         case &apos;event&apos;:
-          this.emit(this.component.event, this.data);
-          this.events.emit(this.component.event, this.data);
+          this.emit(this.interpolate(this.component.event), this.data);
+          this.events.emit(this.interpolate(this.component.event), this.data);
           this.emit(&apos;customEvent&apos;, {
-            type: this.component.event,
+            type: this.interpolate(this.component.event),
             component: this.component,
             data: this.data,
             event: event
@@ -459,6 +468,7 @@ export default class ButtonComponent extends BaseComponent {
           break;
       }
     });
+
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -482,6 +492,7 @@ export default class ButtonComponent extends BaseComponent {
     }
 
     this.autofocus();
+    this.attachLogic();
   }
   /* eslint-enable max-statements */
 
@@ -569,7 +580,6 @@ export default class ButtonComponent extends BaseComponent {
     this.buttonElement.focus();
   }
 }
-
 </code></pre>
 
 </div>

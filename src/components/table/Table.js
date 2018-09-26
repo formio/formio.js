@@ -146,5 +146,6 @@ export default class TableComponent extends NestedComponent {
     this.addComponents(null, null, null, state);
     this.table.appendChild(this.tbody);
     this.element.appendChild(this.table);
+    this.attachLogic();
   }
 }

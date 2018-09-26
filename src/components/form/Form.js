@@ -80,7 +80,7 @@ export default class FormComponent extends BaseComponent {
   /* eslint-disable max-statements */
   loadSubForm() {
     // Only load the subform if the subform isn't loaded and the conditions apply.
-    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
+    if (this.subFormLoaded) {
       return this.subFormReady;
     }
     this.subFormLoaded = true;
@@ -152,7 +152,7 @@ export default class FormComponent extends BaseComponent {
     else {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => this.renderSubForm(formObj, srcOptions))
-        .catch(err => this.subFormReadyReject(err));
+        .catch((err) => this.subFormReadyReject(err));
     }
     return this.subFormReady;
   }
@@ -167,11 +167,9 @@ export default class FormComponent extends BaseComponent {
   }
 
   checkConditions(data) {
-    if (this.subForm) {
-      return this.subForm.checkConditions(this.dataValue.data);
-    }
-
-    return super.checkConditions(data);
+    return (super.checkConditions(data) && this.subForm)
+      ? this.subForm.checkConditions(this.dataValue.data)
+      : false;
   }
 
   calculateValue(data, flags) {
@@ -252,6 +250,7 @@ export default class FormComponent extends BaseComponent {
     if (!this.options.beforeSubmit) {
       this.restoreValue();
     }
+    this.attachLogic();
   }
 
   setValue(submission, flags) {

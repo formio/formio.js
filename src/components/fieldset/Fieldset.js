@@ -54,5 +54,6 @@ export default class FieldsetComponent extends NestedComponent {
     this.addComponents(null, null, null, state);
     this.element.appendChild(this.body);
     this.setCollapsed();
+    this.attachLogic();
   }
 }

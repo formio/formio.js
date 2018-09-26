@@ -132,6 +132,9 @@ export default class ButtonComponent extends BaseComponent {
         class: this.component.rightIcon
       }));
     }
+
+    let onChange = null;
+    let onError = null;
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
@@ -148,10 +151,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, 'has-error');
         this.append(message);
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        const isValid = value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
-        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      onChange = (value, isValid) => {
         this.removeClass(this.buttonElement, 'btn-success submit-success');
         this.removeClass(this.buttonElement, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
@@ -161,9 +161,8 @@ export default class ButtonComponent extends BaseComponent {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      });
-      this.on('error', () => {
-        this.loading = false;
+      };
+      onError = () => {
         this.hasError = true;
         this.removeClass(this.buttonElement, 'btn-success submit-success');
         this.addClass(this.buttonElement, 'btn-danger submit-fail');
@@ -171,7 +170,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, 'has-success');
         this.addClass(message, 'has-error');
         this.append(message);
-      });
+      };
     }
 
     if (this.component.action === 'url') {
@@ -183,14 +182,24 @@ export default class ButtonComponent extends BaseComponent {
         this.loading = false;
         this.disabled = false;
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      });
-      this.on('error', () => {
-        this.loading = false;
-      });
     }
+
+    this.on('change', (value) => {
+      this.loading = false;
+      const isValid = value.hasOwnProperty('isValid') ? value.isValid : this.root.isValid(value.data, true);
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      if (onChange) {
+        onChange(value, isValid);
+      }
+    });
+
+    this.on('error', () => {
+      this.loading = false;
+      if (onError) {
+        onError();
+      }
+    });
+
     this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
       if (this.component.action !== 'submit' && this.component.showValidations) {
@@ -206,10 +215,10 @@ export default class ButtonComponent extends BaseComponent {
           });
           break;
         case 'event':
-          this.emit(this.component.event, this.data);
-          this.events.emit(this.component.event, this.data);
+          this.emit(this.interpolate(this.component.event), this.data);
+          this.events.emit(this.interpolate(this.component.event), this.data);
           this.emit('customEvent', {
-            type: this.component.event,
+            type: this.interpolate(this.component.event),
             component: this.component,
             data: this.data,
             event: event
@@ -272,6 +281,7 @@ export default class ButtonComponent extends BaseComponent {
           break;
       }
     });
+
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -295,6 +305,7 @@ export default class ButtonComponent extends BaseComponent {
     }
 
     this.autofocus();
+    this.attachLogic();
   }
   /* eslint-enable max-statements */
 
@@ -382,4 +393,3 @@ export default class ButtonComponent extends BaseComponent {
     this.buttonElement.focus();
   }
 }
-
