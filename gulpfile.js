@@ -17,10 +17,7 @@ gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 
 // Run babel on source code.
 gulp.task('babel', ['eslint'], () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(babel({
-    presets: ['@babel/env'],
-    plugins: ['@babel/plugin-proposal-export-default-from']
-  }))
+  .pipe(babel())
   .pipe(gulp.dest('lib')));
 
 // Move choices.js icons into dist folder.
