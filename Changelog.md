@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Token issue for iframe.
  - Conditionals for Form component.
+ - Initial focus on HTML5 Select component.
 
 ## 3.5.7
 ### Fixed
