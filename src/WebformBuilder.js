@@ -649,6 +649,19 @@ export default class WebformBuilder extends Webform {
     return component;
   }
 
+  addBuilderButton(info, container) {
+    info.element = this.ce('div', {
+        style: 'margin: 5px 0;'
+      },
+      this.ce('span', {
+        class: `btn btn-block ${info.style || 'btn-default'}`,
+        onClick: () => this.emit(info.event)
+      }, info.title)
+    );
+    this.groups[info.key] = info;
+    this.insertInOrder(info, this.groups, info.element, container);
+  }
+
   buildSidebar() {
     // Do not rebuild the sidebar.
     if (this.sideBarElement) {
@@ -664,8 +677,13 @@ export default class WebformBuilder extends Webform {
     // Add the groups.
     _.each(this.options.builder, (info, group) => {
       if (info) {
-        info.key = group;
-        this.addBuilderGroup(info, this.sideBarElement);
+        if (info.type === 'button') {
+          this.addBuilderButton(info, this.sideBarElement);
+        }
+        else {
+          info.key = group;
+          this.addBuilderGroup(info, this.sideBarElement);
+        }
       }
     });
 
