@@ -43,7 +43,7 @@ export default class Form {
     formParam = formParam || this.form;
     this.element.innerHTML = '';
     if (typeof formParam === 'string') {
-      return (new Formio(formParam)).loadForm().then(form => {
+      return (new Formio(formParam)).loadForm().then((form) => {
         this.form = form;
         if (this.instance) {
           this.instance.destroy();

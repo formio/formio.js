@@ -877,8 +877,7 @@ export default class Formio {
     return Formio.tokens.formioToken = token || '';
   }
 
-  static setToken(token, opts) {
-    token = token || '';
+  static setToken(token = '', opts) {
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
     var tokenName = `${opts.namespace || 'formio'}Token`;
     if (!Formio.tokens) {
@@ -930,11 +929,10 @@ export default class Formio {
     }
   }
 
-  static setUser(user, opts) {
-    opts = opts || {};
+  static setUser(user, opts = {}) {
     var userName = `${opts.namespace || 'formio'}User`;
     if (!user) {
-      this.setToken(null, opts);
+      Formio.setToken(null, opts);
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -1079,7 +1077,7 @@ export default class Formio {
   static currentUser(formio, options) {
     let projectUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     projectUrl += '/current';
-    const user = this.getUser(options);
+    const user = Formio.getUser(options);
     if (user) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
         url: projectUrl,
