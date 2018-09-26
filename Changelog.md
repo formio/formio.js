@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Token issue for iframe.
+ - Conditionals for Form component.
 
 ## 3.5.7
 ### Fixed
