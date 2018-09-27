@@ -78,9 +78,16 @@ export default class Form {
     }
     const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;
     const className = embed.class || 'formio-form-wrapper';
-    let code = embed.styles ? `<link rel="stylesheet" href="${embed.styles}">` : '';
-    code += `<div id="${id}" class="${className}"></div>`;
-    document.write(code);
+
+    // Add the styles to the header.
+    if (embed.styles) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = embed.styles;
+      document.head.appendChild(link);
+    }
+
+    document.write(`<div id="${id}" class="${className}"></div>`);
     const formElement = document.getElementById(id);
     return (new Form(formElement, embed.src)).render();
   }

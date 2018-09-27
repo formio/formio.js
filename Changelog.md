@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1681: Token issue for iframe.
  - Fixed issue where externally bound events would get removed during redraw events.
  - Fixed the wizard builder page labels to be the correct colors.
+ - Issues with the Inline embed codes not working with browser updates.
 
 ## 3.5.7
 ### Fixed
