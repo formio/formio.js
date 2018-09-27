@@ -206,7 +206,6 @@ export default class Wizard extends Webform {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (checkCondition(component, this.data, this.data, this.wizard, this)) {
-          component.internal = true;
           this.pages.push(component);
         }
       }
