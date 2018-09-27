@@ -11,7 +11,6 @@ import {
 describe('DataGrid Component', () => {
   it('Should build a data grid component', (done) => {
     Harness.testCreate(DataGridComponent, comp1).then((component) => {
-      document.body.appendChild(component.getElement());
       Harness.testElements(component, 'input[type="text"]', 3);
       done();
     });
