@@ -773,8 +773,9 @@ export default class WebformBuilder extends Webform {
     }
 
     // Remove any instances of the placeholder.
-    const placeholder = document.getElementById(`${newParent.component.id}-placeholder`);
+    let placeholder = document.getElementById(`${newParent.component.id}-placeholder`);
     if (placeholder) {
+      placeholder = placeholder.parentNode;
       placeholder.parentNode.removeChild(placeholder);
     }
 
