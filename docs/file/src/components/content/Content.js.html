@@ -213,16 +213,17 @@ export default class ContentComponent extends BaseComponent {
   }
 
   setHTML() {
-    this.element.innerHTML = this.interpolate(this.component.html);
+    this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
   build() {
-    this.element = this.ce(&apos;div&apos;, {
+    this.createElement();
+    this.htmlElement = this.ce(&apos;div&apos;, {
       id: this.id,
-      class: `form-group ${this.component.customClass}`
+      class: `form-group ${this.component.className}`
     });
 
-    this.element.component = this;
+    this.htmlElement.component = this;
 
     if (this.options.builder) {
       const editorElement = this.ce(&apos;div&apos;);
@@ -236,9 +237,11 @@ export default class ContentComponent extends BaseComponent {
     else {
       this.setHTML();
       if (this.component.refreshOnChange) {
-        this.on(&apos;change&apos;, () =&gt; this.setHTML());
+        this.on(&apos;change&apos;, () =&gt; this.setHTML(), true);
       }
     }
+
+    this.element.appendChild(this.htmlElement);
     this.attachLogic();
   }
 

@@ -2083,13 +2083,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2683,13 +2683,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -2788,6 +2788,12 @@ window.esdocSearchIndex = [
     "file/src/WebformBuilder.js.html",
     "src/WebformBuilder.js",
     "file"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#addbuilderbutton",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-addBuilderButton",
+    "src/WebformBuilder.js~WebformBuilder#addBuilderButton",
+    "method"
   ],
   [
     "src/webformbuilder.js~webformbuilder#addbuildercomponent",
@@ -3319,13 +3325,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3979,13 +3985,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -5376,15 +5382,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/content/content.js~contentcomponent#element",
-    "class/src/components/content/Content.js~ContentComponent.html#instance-member-element",
-    "src/components/content/Content.js~ContentComponent#element",
-    "member"
-  ],
-  [
     "src/components/content/content.js~contentcomponent#emptyvalue",
     "class/src/components/content/Content.js~ContentComponent.html#instance-get-emptyValue",
     "src/components/content/Content.js~ContentComponent#emptyValue",
+    "member"
+  ],
+  [
+    "src/components/content/content.js~contentcomponent#htmlelement",
+    "class/src/components/content/Content.js~ContentComponent.html#instance-member-htmlElement",
+    "src/components/content/Content.js~ContentComponent#htmlElement",
     "member"
   ],
   [
@@ -5581,13 +5587,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -7062,6 +7068,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/form/form.js~formcomponent#destroy",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-destroy",
+    "src/components/form/Form.js~FormComponent#destroy",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#emptyvalue",
     "class/src/components/form/Form.js~FormComponent.html#instance-get-emptyValue",
     "src/components/form/Form.js~FormComponent#emptyValue",
@@ -7290,9 +7302,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/html/html.js~htmlcomponent#element",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-member-element",
-    "src/components/html/HTML.js~HTMLComponent#element",
+    "src/components/html/html.js~htmlcomponent#htmlelement",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-member-htmlElement",
+    "src/components/html/HTML.js~HTMLComponent#htmlElement",
     "member"
   ],
   [
@@ -10209,12 +10221,6 @@ window.esdocSearchIndex = [
     "src/formio.form.js",
     "file/src/formio.form.js.html",
     "src/formio.form.js",
-    "file"
-  ],
-  [
-    "src/formio.polyfill.js",
-    "file/src/formio.polyfill.js.html",
-    "src/formio.polyfill.js",
     "file"
   ],
   [

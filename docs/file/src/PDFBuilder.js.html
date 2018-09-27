@@ -244,8 +244,8 @@ export default class PDFBuilder extends WebformBuilder {
     return this.onElement.then(() =&gt; {
       this.build(this.clear());
       this.isBuilt = true;
-      this.on(&apos;resetForm&apos;, () =&gt; this.resetValue());
-      this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
+      this.on(&apos;resetForm&apos;, () =&gt; this.resetValue(), true);
+      this.on(&apos;refreshData&apos;, () =&gt; this.updateValue(), true);
       setTimeout(() =&gt; {
         this.onChange();
         this.emit(&apos;render&apos;);
@@ -375,7 +375,7 @@ export default class PDFBuilder extends WebformBuilder {
         this.emit(&apos;updateComponent&apos;, component);
       }
       return component;
-    });
+    }, true);
     this.pdfForm.on(&apos;iframe-componentUpdate&apos;, schema =&gt; {
       const component = this.getComponentById(schema.id);
       if (component &amp;&amp; component.component) {
@@ -389,13 +389,13 @@ export default class PDFBuilder extends WebformBuilder {
         this.emit(&apos;updateComponent&apos;, component);
       }
       return component;
-    });
+    }, true);
     this.pdfForm.on(&apos;iframe-componentClick&apos;, schema =&gt; {
       const component = this.getComponentById(schema.id);
       if (component) {
         this.editComponent(component);
       }
-    });
+    }, true);
     this.addComponents();
     this.addDropZone();
     this.updateDraggable();

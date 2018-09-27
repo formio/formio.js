@@ -185,12 +185,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Webform.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
-/* eslint-disable no-unused-vars */
-import * as polyfill from &apos;./formio.polyfill&apos;;
-/* eslint-enable no-unused-vars */
-
-import _ from &apos;lodash&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import i18next from &apos;i18next&apos;;
@@ -986,9 +981,9 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       clearTimeout(this.build(state));
       this.isBuilt = true;
-      this.on(&apos;resetForm&apos;, () =&gt; this.resetValue());
-      this.on(&apos;deleteSubmission&apos;, () =&gt; this.deleteSubmission());
-      this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
+      this.on(&apos;resetForm&apos;, () =&gt; this.resetValue(), true);
+      this.on(&apos;deleteSubmission&apos;, () =&gt; this.deleteSubmission(), true);
+      this.on(&apos;refreshData&apos;, () =&gt; this.updateValue(), true);
       setTimeout(() =&gt; {
         this.onChange({
           noEmit: true
@@ -1042,10 +1037,10 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build(state) {
-    this.on(&apos;submitButton&apos;, (options) =&gt; this.submit(false, options));
-    this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(data, true));
+    this.on(&apos;submitButton&apos;, (options) =&gt; this.submit(false, options), true);
+    this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(data, true), true);
     this.addComponents(null, null, null, state);
-    this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)));
+    this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() =&gt; {
       this.onChange({
         noEmit: true

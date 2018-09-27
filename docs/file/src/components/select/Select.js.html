@@ -665,6 +665,7 @@ export default class SelectComponent extends BaseComponent {
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
+      this.focusableElement = input;
       this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
       this.addEventListener(input, &apos;keydown&apos;, (event) =&gt; {
         const { keyCode } = event;
@@ -817,7 +818,7 @@ export default class SelectComponent extends BaseComponent {
   }
 
   getView(data) {
-    return this.itemTemplate(data);
+    return this.asString(data);
   }
 
   getValue() {

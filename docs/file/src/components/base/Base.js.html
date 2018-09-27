@@ -702,7 +702,7 @@ export default class BaseComponent extends Component {
         ) {
           this.refresh(event.changed.value);
         }
-      });
+      }, true);
     }
   }
 
@@ -835,6 +835,9 @@ export default class BaseComponent extends Component {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.component.multiple) {
+      className += &apos;formio-component-multiple &apos;;
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -873,6 +876,8 @@ export default class BaseComponent extends Component {
   createElement() {
     // If the element is already created, don&apos;t recreate.
     if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = this.className;
       return this.element;
     }
 
@@ -1392,9 +1397,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.prefix &amp;&amp; (typeof this.component.prefix === &apos;string&apos;)) {
       prefix = this.ce(&apos;div&apos;, {
-        class: &apos;input-group-addon&apos;
+        class: &apos;input-group-addon input-group-prepend&apos;
       });
-      prefix.appendChild(this.text(this.component.prefix));
+      prefix.appendChild(this.ce(&apos;span&apos;, {
+        class: &apos;input-group-text&apos;
+      }, this.text(this.component.prefix)));
       inputGroup.appendChild(prefix);
     }
     return prefix;
@@ -1414,9 +1421,11 @@ export default class BaseComponent extends Component {
     }
     if (this.component.suffix &amp;&amp; (typeof this.component.suffix === &apos;string&apos;)) {
       suffix = this.ce(&apos;div&apos;, {
-        class: &apos;input-group-addon&apos;
+        class: &apos;input-group-addon input-group-append&apos;
       });
-      suffix.appendChild(this.text(this.component.suffix));
+      suffix.appendChild(this.ce(&apos;span&apos;, {
+        class: &apos;input-group-text&apos;
+      }, this.text(this.component.suffix)));
       inputGroup.appendChild(suffix);
     }
     return suffix;
@@ -1502,8 +1511,8 @@ export default class BaseComponent extends Component {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on(&apos;update&apos;, () =&gt; this.updateValue());
-    widget.on(&apos;redraw&apos;, () =&gt; this.redraw());
+    widget.on(&apos;update&apos;, () =&gt; this.updateValue(), true);
+    widget.on(&apos;redraw&apos;, () =&gt; this.redraw(), true);
     this._widget = widget;
     return widget;
   }
@@ -1592,6 +1601,9 @@ export default class BaseComponent extends Component {
   conditionallyVisible(data) {
     if (this.options.builder || !this.hasCondition()) {
       return true;
+    }
+    if (!data) {
+      data = this.root ? this.root.data : {};
     }
     return FormioUtils.checkCondition(
       this.component,
@@ -2173,7 +2185,7 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value || this.getValue(flags);
+    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
     const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
@@ -2610,7 +2622,7 @@ export default class BaseComponent extends Component {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on(&apos;render&apos;, () =&gt; this.focus());
+      this.on(&apos;render&apos;, () =&gt; this.focus(), true);
     }
   }
 
@@ -2670,7 +2682,7 @@ export default class BaseComponent extends Component {
             }
             this.redraw();
           }
-        });
+        }, true);
       }
     });
   }

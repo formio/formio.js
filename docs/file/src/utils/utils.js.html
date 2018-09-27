@@ -635,7 +635,7 @@ export function checkSimpleConditional(component, condition, row, data) {
     value = getValue({ data: row }, condition.when);
   }
   if (data &amp;&amp; _.isNil(value)) {
-    value = getValue({ data: data }, condition.when);
+    value = getValue({ data }, condition.when);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value)) {

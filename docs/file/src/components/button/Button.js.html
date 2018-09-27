@@ -327,7 +327,7 @@ export default class ButtonComponent extends BaseComponent {
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;
-      });
+      }, true);
       this.on(&apos;submitDone&apos;, () =&gt; {
         this.loading  = false;
         this.disabled = false;
@@ -337,7 +337,7 @@ export default class ButtonComponent extends BaseComponent {
         this.addClass(message, &apos;has-success&apos;);
         this.removeClass(message, &apos;has-error&apos;);
         this.append(message);
-      });
+      }, true);
       onChange = (value, isValid) =&gt; {
         this.removeClass(this.buttonElement, &apos;btn-success submit-success&apos;);
         this.removeClass(this.buttonElement, &apos;btn-danger submit-fail&apos;);
@@ -364,11 +364,11 @@ export default class ButtonComponent extends BaseComponent {
       this.on(&apos;requestButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;
-      });
+      }, true);
       this.on(&apos;requestDone&apos;, () =&gt; {
         this.loading = false;
         this.disabled = false;
-      });
+      }, true);
     }
 
     this.on(&apos;change&apos;, (value) =&gt; {
@@ -378,14 +378,14 @@ export default class ButtonComponent extends BaseComponent {
       if (onChange) {
         onChange(value, isValid);
       }
-    });
+    }, true);
 
     this.on(&apos;error&apos;, () =&gt; {
       this.loading = false;
       if (onError) {
         onError();
       }
-    });
+    }, true);
 
     this.addEventListener(this.buttonElement, &apos;click&apos;, (event) =&gt; {
       this.dataValue = true;

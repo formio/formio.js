@@ -238,6 +238,7 @@ export default class PDF extends Webform {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;
         form.base = this.formio.base;
+        this.postMessage({ name: &apos;token&apos;, data: this.formio.getToken() });
       }
       this.postMessage({ name: &apos;form&apos;, data: form });
     });
@@ -318,10 +319,10 @@ export default class PDF extends Webform {
     // Handle an iframe submission.
     this.on(&apos;iframe-submission&apos;, (submission) =&gt; {
       this.setSubmission(submission).then(() =&gt; this.submit());
-    });
+    }, true);
 
     // Trigger when this form is ready.
-    this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve());
+    this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
 
     this.appendChild(this.element, [
       this.zoomIn,

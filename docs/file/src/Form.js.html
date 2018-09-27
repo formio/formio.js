@@ -230,7 +230,7 @@ export default class Form {
     formParam = formParam || this.form;
     this.element.innerHTML = &apos;&apos;;
     if (typeof formParam === &apos;string&apos;) {
-      return (new Formio(formParam)).loadForm().then(form =&gt; {
+      return (new Formio(formParam)).loadForm().then((form) =&gt; {
         this.form = form;
         if (this.instance) {
           this.instance.destroy();
@@ -265,9 +265,16 @@ export default class Form {
     }
     const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;
     const className = embed.class || &apos;formio-form-wrapper&apos;;
-    let code = embed.styles ? `&lt;link rel=&quot;stylesheet&quot; href=&quot;${embed.styles}&quot;&gt;` : &apos;&apos;;
-    code += `&lt;div id=&quot;${id}&quot; class=&quot;${className}&quot;&gt;&lt;/div&gt;`;
-    document.write(code);
+
+    // Add the styles to the header.
+    if (embed.styles) {
+      const link = document.createElement(&apos;link&apos;);
+      link.rel = &apos;stylesheet&apos;;
+      link.href = embed.styles;
+      document.head.appendChild(link);
+    }
+
+    document.write(`&lt;div id=&quot;${id}&quot; class=&quot;${className}&quot;&gt;&lt;/div&gt;`);
     const formElement = document.getElementById(id);
     return (new Form(formElement, embed.src)).render();
   }

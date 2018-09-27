@@ -311,11 +311,11 @@ describe(&apos;TextField Builder&apos;, () =&gt; {
   });
 
   it(&apos;Should set the prefix of the input&apos;, (done) =&gt; {
-    Harness.testBuilderProperty(&apos;prefix&apos;, &apos;&apos;, &apos;$&apos;, /div class=&quot;input-group&quot;&gt;.*&lt;div class=&quot;input-group-addon&quot;&gt;\$&lt;\/div&gt;.*input/, done);
+    Harness.testBuilderProperty(&apos;prefix&apos;, &apos;&apos;, &apos;$&apos;, /div class=&quot;input-group&quot;&gt;.*&lt;div class=&quot;input-group-addon input-group-prepend&quot;&gt;.*&lt;span class=&quot;input-group-text&quot;&gt;\$&lt;\/span&gt;&lt;\/div&gt;.*input/, done);
   });
 
   it(&apos;Should set the suffix of the input&apos;, (done) =&gt; {
-    Harness.testBuilderProperty(&apos;suffix&apos;, &apos;&apos;, &apos;USD&apos;, /div class=&quot;input-group&quot;&gt;.*input.*&lt;div class=&quot;input-group-addon&quot;&gt;USD&lt;\/div&gt;/, done);
+    Harness.testBuilderProperty(&apos;suffix&apos;, &apos;&apos;, &apos;USD&apos;, /div class=&quot;input-group&quot;&gt;.*input.*&lt;div class=&quot;input-group-addon input-group-append&quot;&gt;.*&lt;span class=&quot;input-group-text&quot;&gt;USD&lt;\/span&gt;&lt;\/div&gt;/, done);
   });
 
   it(&apos;Should set the custom css class of the input&apos;, (done) =&gt; {

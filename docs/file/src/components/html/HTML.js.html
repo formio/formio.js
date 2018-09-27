@@ -216,27 +216,27 @@ export default class HTMLComponent extends BaseComponent {
   }
 
   setHTML() {
-    this.element.innerHTML = this.interpolate(this.component.content);
+    this.htmlElement.innerHTML = this.interpolate(this.component.content);
   }
 
   build() {
-    this.element = this.ce(this.component.tag, {
+    this.createElement();
+    this.htmlElement = this.ce(this.component.tag, {
       id: this.id,
       class: this.component.className
     });
-    this.element.component = this;
     _.each(this.component.attrs, (attr) =&gt; {
       if (attr.attr) {
-        this.element.setAttribute(attr.attr, attr.value);
+        this.htmlElement.setAttribute(attr.attr, attr.value);
       }
     });
     if (this.component.content) {
       this.setHTML();
     }
-
     if (this.component.refreshOnChange) {
-      this.on(&apos;change&apos;, () =&gt; this.setHTML());
+      this.on(&apos;change&apos;, () =&gt; this.setHTML(), true);
     }
+    this.element.appendChild(this.htmlElement);
     this.attachLogic();
   }
 }
