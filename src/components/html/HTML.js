@@ -47,7 +47,7 @@ export default class HTMLComponent extends BaseComponent {
       this.setHTML();
     }
     if (this.component.refreshOnChange) {
-      this.on('change', () => this.setHTML());
+      this.on('change', () => this.setHTML(), true);
     }
     this.element.appendChild(this.htmlElement);
     this.attachLogic();

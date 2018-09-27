@@ -50,7 +50,7 @@ export default class ContentComponent extends BaseComponent {
     else {
       this.setHTML();
       if (this.component.refreshOnChange) {
-        this.on('change', () => this.setHTML());
+        this.on('change', () => this.setHTML(), true);
       }
     }
 

@@ -794,9 +794,9 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       clearTimeout(this.build(state));
       this.isBuilt = true;
-      this.on('resetForm', () => this.resetValue());
-      this.on('deleteSubmission', () => this.deleteSubmission());
-      this.on('refreshData', () => this.updateValue());
+      this.on('resetForm', () => this.resetValue(), true);
+      this.on('deleteSubmission', () => this.deleteSubmission(), true);
+      this.on('refreshData', () => this.updateValue(), true);
       setTimeout(() => {
         this.onChange({
           noEmit: true
@@ -850,10 +850,10 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build(state) {
-    this.on('submitButton', (options) => this.submit(false, options));
-    this.on('checkValidity', (data) => this.checkValidity(data, true));
+    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('checkValidity', (data) => this.checkValidity(data, true), true);
     this.addComponents(null, null, null, state);
-    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() => {
       this.onChange({
         noEmit: true

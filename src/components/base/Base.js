@@ -515,7 +515,7 @@ export default class BaseComponent extends Component {
         ) {
           this.refresh(event.changed.value);
         }
-      });
+      }, true);
     }
   }
 
@@ -1324,8 +1324,8 @@ export default class BaseComponent extends Component {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue());
-    widget.on('redraw', () => this.redraw());
+    widget.on('update', () => this.updateValue(), true);
+    widget.on('redraw', () => this.redraw(), true);
     this._widget = widget;
     return widget;
   }
@@ -2435,7 +2435,7 @@ export default class BaseComponent extends Component {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on('render', () => this.focus());
+      this.on('render', () => this.focus(), true);
     }
   }
 
@@ -2495,7 +2495,7 @@ export default class BaseComponent extends Component {
             }
             this.redraw();
           }
-        });
+        }, true);
       }
     });
   }

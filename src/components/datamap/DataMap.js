@@ -197,7 +197,7 @@ export default class DataMapComponent extends NestedComponent {
     const schema = this.component.valueComponent;
     schema.hideLabel = true;
     const value = this.addComponent(schema, container, {}, null, null, state);
-    value.on('change', () => this.updateValue());
+    value.on('change', () => this.updateValue(), true);
     return { value, container };
   }
 

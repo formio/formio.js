@@ -46,6 +46,14 @@ export default class FormComponent extends BaseComponent {
     return { data: {} };
   }
 
+  destroy() {
+    const state = super.destroy() || {};
+    if (this.subForm) {
+      this.subForm.destroy();
+    }
+    return state;
+  }
+
   /**
    * Render a subform.
    *

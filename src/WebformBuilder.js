@@ -225,6 +225,7 @@ export default class WebformBuilder extends Webform {
       this.preview.isBuilt = true;
       this.componentPreview.innerHTML = '';
       this.componentPreview.appendChild(this.preview.getElement());
+      this.preview.destroy();
     }
 
     // Ensure this component has a key.
