@@ -1415,6 +1415,9 @@ export default class BaseComponent extends Component {
     if (this.options.builder || !this.hasCondition()) {
       return true;
     }
+    if (!data) {
+      data = this.root ? this.root.data : {};
+    }
     return FormioUtils.checkCondition(
       this.component,
       this.data,
