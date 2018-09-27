@@ -281,7 +281,18 @@ export default class Component extends Element {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _.debounce(this.onChange.bind(this), 100);
+    const _triggerChange = _.debounce((...args) => {
+      if (this.root) {
+        this.root.changing = false;
+      }
+      return this.onChange(...args);
+    }, 100);
+    this.triggerChange = (...args) => {
+      if (this.root) {
+        this.root.changing = true;
+      }
+      return _triggerChange(...args);
+    };
 
     /**
      * Used to trigger a redraw event within this component.
