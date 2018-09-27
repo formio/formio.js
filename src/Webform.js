@@ -631,6 +631,7 @@ export default class Webform extends NestedComponent {
       this.options.components = form.settings.components;
     }
 
+    this.initialized = false;
     return this.createForm(form).then(() => {
       this.emit('formLoad', form);
       return form;
@@ -777,6 +778,9 @@ export default class Webform extends NestedComponent {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setValue(this.submission);
+      if (!this.changing) {
+        this.triggerChange();
+      }
       return form;
     }).catch((err) => {
       console.warn(err);
@@ -797,12 +801,7 @@ export default class Webform extends NestedComponent {
       this.on('resetForm', () => this.resetValue(), true);
       this.on('deleteSubmission', () => this.deleteSubmission(), true);
       this.on('refreshData', () => this.updateValue(), true);
-      setTimeout(() => {
-        this.onChange({
-          noEmit: true
-        });
-        this.emit('render');
-      }, 1);
+      setTimeout(() => this.emit('render'), 1);
     });
   }
 
@@ -958,6 +957,12 @@ export default class Webform extends NestedComponent {
     this.loading = false;
     if (!flags || !flags.noEmit) {
       this.emit('change', value);
+    }
+
+    // The form is initialized after the first change event occurs.
+    if (!this.initialized) {
+      this.emit('initialized');
+      this.initialized = true;
     }
   }
 
