@@ -1299,7 +1299,8 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      this.dataValue = this.emptyValue;
+      const emptyValue = this.emptyValue;
+      this.dataValue = this.component.multiple ? [emptyValue] : emptyValue;
     }
     return _.get(this.data, this.key);
   }

@@ -9,9 +9,9 @@ import {
 } from './fixtures';
 
 describe('DataGrid Component', () => {
-  it('Should build a data grid component', () => {
-    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
-      document.body.appendChild(component.getElement());
+
+  it('Should build a data grid component', (done) => {
+    Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
     });
   });
