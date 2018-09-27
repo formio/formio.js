@@ -68,6 +68,8 @@ node server</pre>
   </div>
 </div>
 <script type="text/javascript">
+var jsonElement = document.getElementById('json');
+var formElement = document.getElementById('formio');
 var subJSON = document.getElementById('subjson');
 var builder = new Formio.FormBuilder(document.getElementById("builder"), {
   display: 'form',
@@ -90,32 +92,13 @@ var onForm = function(form) {
 };
 
 var setDisplay = function(display) {
-  builder.setDisplay(display).then(function(instance) {
-     var jsonElement = document.getElementById('json');
-     var formElement = document.getElementById('formio');
-     instance.on('saveComponent', function(event) {
-       var schema = instance.schema;
-       jsonElement.innerHTML = '';
+  builder.setDisplay(display).then(function(instance) {     
+     instance.on('change', function(form) {
        formElement.innerHTML = '';
-       jsonElement.appendChild(document.createTextNode(JSON.stringify(schema, null, 4)));
-       Formio.createForm(formElement, schema).then(onForm);
-     });
-   
-     instance.on('editComponent', function(event) {
-       console.log('editComponent', event);
-     });
-     
-     instance.on('updateComponent', function(event) {
        jsonElement.innerHTML = '';
-       jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
+       jsonElement.appendChild(document.createTextNode(JSON.stringify(form, null, 4)));
+       Formio.createForm(formElement, form).then(onForm);
      });
-     
-     instance.on('deleteComponent', function(event) {
-       jsonElement.innerHTML = '';
-       jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
-     });
-     
-     Formio.createForm(formElement, instance.schema).then(onForm);
    });
 };
 
