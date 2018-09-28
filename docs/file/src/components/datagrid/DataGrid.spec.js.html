@@ -198,7 +198,6 @@ import {
 describe(&apos;DataGrid Component&apos;, () =&gt; {
   it(&apos;Should build a data grid component&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
-      document.body.appendChild(component.getElement());
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 3);
       done();
     });

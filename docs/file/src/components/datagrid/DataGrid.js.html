@@ -515,7 +515,7 @@ export default class DataGridComponent extends NestedComponent {
     const changed = this.hasChanged(value, this.dataValue);
 
     //always should build if not built yet OR is trying to set empty value (in order to prevent deleting last row)
-    let shouldBuildRows = !this.isBuilt || _.isEqual(this.emptyValue, value);
+    let shouldBuildRows = !this.isBuilt || changed || _.isEqual(this.emptyValue, value);
     //check if visible columns changed
     let visibleColumnsAmount = 0;
     _.forEach(this.visibleColumns, (value) =&gt; {
