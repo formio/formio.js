@@ -1299,8 +1299,7 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      const emptyValue = this.emptyValue;
-      this.dataValue = this.component.multiple ? [] : emptyValue;
+      this.dataValue = this.component.multiple ? [] : this.emptyValue;
     }
     return _.get(this.data, this.key);
   }
@@ -1435,7 +1434,7 @@ export default class Component extends Element {
       return false;
     }
     if (this.component.multiple && !Array.isArray(value)) {
-      value = [value];
+      value = value ? [value] : [];
     }
     // this.buildRows(value);
     const isArray = Array.isArray(value);
