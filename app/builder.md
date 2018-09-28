@@ -94,10 +94,12 @@ var onForm = function(form) {
 var setDisplay = function(display) {
   builder.setDisplay(display).then(function(instance) {     
      instance.on('change', function(form) {
-       formElement.innerHTML = '';
-       jsonElement.innerHTML = '';
-       jsonElement.appendChild(document.createTextNode(JSON.stringify(form, null, 4)));
-       Formio.createForm(formElement, form).then(onForm);
+       if (form.components) {
+          formElement.innerHTML = '';
+          jsonElement.innerHTML = '';
+          jsonElement.appendChild(document.createTextNode(JSON.stringify(form, null, 4)));
+          Formio.createForm(formElement, form).then(onForm);
+       }
      });
    });
 };
