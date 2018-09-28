@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.6.1
+### Fixed
+ - FOR-1693: Fixed data grid setValue to refresh rows when value changes.
+ - FOR-1691: Ensure the DateTime widget is disabled when the component is disabled.
+ - FOR-1507: Fixed an issue where the 'disableOnInvalid' flag for buttons would not work for forms that are in a pristine state.
+ - Fixed issues where infinite onChange event would happen for conditionally hidden elements with clearOnHide + multiple configurations checked.
+ - FOR-1718: Fixed the initialization events to be more deterministic. Also added an 'initialized' event after everyting is done initializing.
+
 ## 3.6.0
 ### Added
  - FOR-1732: Ability to have buttons in builder sidebar.
