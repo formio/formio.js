@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.6.2
+### Fixed
+ - Fixed problems with infinite onChange events when hiding a multi select component with clearOnHide enabled.
+
 ## 3.6.1
 ### Fixed
  - FOR-1693: Fixed data grid setValue to refresh rows when value changes.
