@@ -2068,8 +2068,7 @@ export default class BaseComponent extends Component {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      const emptyValue = this.emptyValue;
-      this.dataValue = this.component.multiple ? [emptyValue] : emptyValue;
+      this.dataValue = this.component.multiple ? [] : this.emptyValue;
     }
     return _.get(this.data, this.key);
   }
@@ -2469,7 +2468,7 @@ export default class BaseComponent extends Component {
       return false;
     }
     if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
-      value = [value];
+      value = value ? [value] : [];
     }
     this.buildRows(value);
     const isArray = Array.isArray(value);
