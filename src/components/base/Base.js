@@ -1882,7 +1882,7 @@ export default class BaseComponent extends Component {
     }
     if (!this.hasValue()) {
       const emptyValue = this.emptyValue;
-      this.dataValue = this.component.multiple ? [emptyValue] : emptyValue;
+      this.dataValue = this.component.multiple ? [] : emptyValue;
     }
     return _.get(this.data, this.key);
   }

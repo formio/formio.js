@@ -671,7 +671,7 @@ export default class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     const previousValue = this.dataValue;
     if (this.component.multiple && !Array.isArray(value)) {
-      value = [value];
+      value = value ? [value] : [];
     }
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
