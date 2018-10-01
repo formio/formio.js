@@ -248,7 +248,8 @@ export default class WebformBuilder extends Webform {
         'label',
         'placeholder',
         'tooltip',
-        'validate'
+        'validate',
+        'disabled'
       ]));
     }
 
@@ -355,7 +356,8 @@ export default class WebformBuilder extends Webform {
       'label',
       'placeholder',
       'tooltip',
-      'validate'
+      'validate',
+      'disabled'
     ]));
 
     // Create the form instance.
