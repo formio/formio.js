@@ -494,7 +494,7 @@ export default class SelectComponent extends Field {
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
-      removeItemButton: _.get(this.component, 'removeItemButton', true),
+      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
