@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Dynamic change to FlatPickr widget.
 
+## 3.6.2
+### Fixed
+ - Fixed problems with infinite onChange events when hiding a multi select component with clearOnHide enabled.
+
 ## 3.6.1
 ### Fixed
  - FOR-1693: Fixed data grid setValue to refresh rows when value changes.
