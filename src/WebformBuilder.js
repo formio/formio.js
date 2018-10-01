@@ -515,7 +515,8 @@ export default class WebformBuilder extends Component {
         'label',
         'placeholder',
         'tooltip',
-        'validate'
+        'validate',
+        'disabled'
       ]));
     }
 
