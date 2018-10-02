@@ -10,6 +10,9 @@ export default class TextFieldComponent extends BaseComponent {
       mask: false,
       inputType: 'text',
       inputMask: '',
+      widget: {
+        displayInTimezone: 'submission'
+      },
       validate: {
         minLength: '',
         maxLength: '',
