@@ -145,5 +145,6 @@ export default class TabsComponent extends NestedComponent {
     if (this.refs[this.tabLinkKey][index]) {
       this.addClass(this.refs[this.tabLinkKey][index], 'active');
     }
+    this.triggerChange();
   }
 }
