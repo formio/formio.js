@@ -752,7 +752,9 @@ export default class SelectComponent extends Field {
    * Deletes the value of the component.
    */
   deleteValue() {
-    this.setValue('');
+    this.setValue('', {
+      noUpdateEvent: true
+    });
     _.unset(this.data, this.key);
   }
 
