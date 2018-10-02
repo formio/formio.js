@@ -2010,7 +2010,7 @@ export default class BaseComponent extends Component {
 
     flags = flags || {};
     const newValue = value === undefined || value === null ? this.getValue(flags) : value;
-    const changed = this.hasChanged(newValue, this.dataValue);
+    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {
       this.updateViewOnlyValue(newValue);

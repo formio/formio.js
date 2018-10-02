@@ -388,9 +388,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Modify the component information in the edit form.
-    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }, {
-      noUpdateEvent: true
-    }));
+    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }));
 
     this.addEventListener(cancelButton, 'click', (event) => {
       event.preventDefault();
