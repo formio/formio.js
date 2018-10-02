@@ -123,8 +123,6 @@ export default class TabsComponent extends NestedComponent {
       state
     ));
     this.restoreValue();
-    this.checkConditions(this.root ? this.root.data : {});
-
     if (this.tabLinks.length <= index) {
       return;
     }
@@ -139,6 +137,7 @@ export default class TabsComponent extends NestedComponent {
       this.removeClass(tab, 'active');
     });
     this.addClass(this.tabs[index], 'active');
+    this.triggerChange();
   }
 
   destroy() {
