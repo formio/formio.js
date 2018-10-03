@@ -11,7 +11,9 @@ export default class TextFieldComponent extends BaseComponent {
       inputType: 'text',
       inputMask: '',
       widget: {
-        displayInTimezone: 'submission'
+        format: 'yyyy-MM-dd hh:mm a',
+        dateFormat: 'yyyy-MM-dd hh:mm a',
+        saveAs: 'text'
       },
       validate: {
         minLength: '',
