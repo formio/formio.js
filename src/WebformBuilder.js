@@ -421,6 +421,7 @@ export default class WebformBuilder extends Webform {
 
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.destroy();
+      this.preview.destroy();
       if (component.isNew) {
         this.deleteComponent(component);
       }
