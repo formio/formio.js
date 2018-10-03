@@ -108,7 +108,7 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
       // Make sure we commit the value after a blur event occurs.
-      ['blur', 'keyup'].map((event) => this.addEventListener(this.calendar._input, event, () =>
+      ['blir', 'keyup'].map((event) => this.addEventListener(this.calendar._input, event, () =>
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       ));
     }
