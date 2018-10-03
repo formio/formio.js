@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Dynamic change to FlatPickr widget.
 
+### Fixed
+ - Custom validation of components inside EditGrid.
+
 ## 3.6.2
 ### Fixed
  - Fixed problems with infinite onChange events when hiding a multi select component with clearOnHide enabled.
@@ -25,9 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1732: Ability to have buttons in builder sidebar.
 
 ### Fixed
- - FOR-1705: HTML Element and Content Components losing content when any Logic is applied, 
+ - FOR-1705: HTML Element and Content Components losing content when any Logic is applied,
  - FOR-1705: moved 'customClass' CSS class from HTML content wrapper to regular formio component wrapper
- - FOR-1706: Added 'CSS Class' (className) builder setting for Content component which adds 
+ - FOR-1706: Added 'CSS Class' (className) builder setting for Content component which adds
  - FOR-1700: Issues with IE11 by introducing polyfills.
  - FOR-1497: Initial focus on HTML5 Select component.
  - FOR-1709: Conditionals for Form component.
