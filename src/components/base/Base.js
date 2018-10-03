@@ -107,6 +107,7 @@ export default class BaseComponent extends Component {
       dbIndex: false,
       customDefaultValue: '',
       calculateValue: '',
+      allowCalculateOverride: false,
       widget: null,
 
       /**
@@ -2057,8 +2058,12 @@ export default class BaseComponent extends Component {
     }
 
     // Get the dataValue.
-    const dataValue = this.dataValue;
     let firstPass = false;
+    let dataValue = null;
+    const allowOverride = this.component.allowCalculateOverride;
+    if (allowOverride) {
+      dataValue = this.dataValue;
+    }
 
     // First pass, the calculatedValue is undefined.
     if (this.calculatedValue === undefined) {
@@ -2068,6 +2073,7 @@ export default class BaseComponent extends Component {
 
     // Check to ensure that the calculated value is different than the previously calculated value.
     if (
+      allowOverride &&
       (this.calculatedValue !== null) &&
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
@@ -2082,6 +2088,7 @@ export default class BaseComponent extends Component {
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
     if (
+      allowOverride &&
       firstPass &&
       !this.isEmpty(dataValue) &&
       !_.isEqual(dataValue, calculatedValue)
