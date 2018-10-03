@@ -246,4 +246,9 @@ export default class CalendarWidget extends InputWidget {
     }
     return value.map(val => new Date(val));
   }
+
+  destroy() {
+    super.destroy();
+    this.calendar.destroy();
+  }
 }
