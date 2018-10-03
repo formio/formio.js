@@ -672,15 +672,15 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~eachcomponent",
+    "formiojs/src/utils/formutils.js~eachcomponent",
     "function/index.html#static-function-eachComponent",
-    "<span>eachComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>eachComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~escaperegexcharacters",
+    "formiojs/src/utils/formutils.js~escaperegexcharacters",
     "function/index.html#static-function-escapeRegExCharacters",
-    "<span>escapeRegExCharacters</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>escapeRegExCharacters</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -696,21 +696,21 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~findcomponents",
+    "formiojs/src/utils/formutils.js~findcomponents",
     "function/index.html#static-function-findComponents",
-    "<span>findComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>findComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~flattencomponents",
+    "formiojs/src/utils/formutils.js~flattencomponents",
     "function/index.html#static-function-flattenComponents",
-    "<span>flattenComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>flattenComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~formatascurrency",
+    "formiojs/src/utils/formutils.js~formatascurrency",
     "function/index.html#static-function-formatAsCurrency",
-    "<span>formatAsCurrency</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>formatAsCurrency</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -726,9 +726,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~getcomponent",
+    "formiojs/src/utils/formutils.js~getcomponent",
     "function/index.html#static-function-getComponent",
-    "<span>getComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>getComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -786,9 +786,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~getvalue",
+    "formiojs/src/utils/formutils.js~getvalue",
     "function/index.html#static-function-getValue",
-    "<span>getValue</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>getValue</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -798,9 +798,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~hascondition",
+    "formiojs/src/utils/formutils.js~hascondition",
     "function/index.html#static-function-hasCondition",
-    "<span>hasCondition</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>hasCondition</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -810,9 +810,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~islayoutcomponent",
+    "formiojs/src/utils/formutils.js~islayoutcomponent",
     "function/index.html#static-function-isLayoutComponent",
-    "<span>isLayoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>isLayoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -846,9 +846,9 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
-    "formiojs/src/utils/utils.js~matchcomponent",
+    "formiojs/src/utils/formutils.js~matchcomponent",
     "function/index.html#static-function-matchComponent",
-    "<span>matchComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>matchComponent</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -864,9 +864,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~parsefloatext",
+    "formiojs/src/utils/formutils.js~parsefloatext",
     "function/index.html#static-function-parseFloatExt",
-    "<span>parseFloatExt</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "<span>parseFloatExt</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
     "function"
   ],
   [
@@ -2083,13 +2083,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2701,13 +2701,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2767,13 +2767,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3798,6 +3798,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#calculatedvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-calculatedValue",
+    "src/components/base/Base.js~BaseComponent#calculatedValue",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#checkconditions",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-checkConditions",
     "src/components/base/Base.js~BaseComponent#checkConditions",
@@ -4603,13 +4609,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4927,13 +4933,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5593,13 +5599,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -10290,6 +10296,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/utils/formutils.js",
+    "file/src/utils/formUtils.js.html",
+    "src/utils/formUtils.js",
+    "file"
+  ],
+  [
     "src/utils/index.js",
     "file/src/utils/index.js.html",
     "src/utils/index.js",
@@ -10390,6 +10402,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-defaultValue",
     "src/widgets/CalendarWidget.js~CalendarWidget#defaultValue",
     "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#destroy",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-destroy",
+    "src/widgets/CalendarWidget.js~CalendarWidget#destroy",
+    "method"
   ],
   [
     "src/widgets/calendarwidget.js~calendarwidget#disabled",
