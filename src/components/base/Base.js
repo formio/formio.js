@@ -473,7 +473,9 @@ export default class BaseComponent extends Component {
   /**
    * Builds the component.
    */
-  build() {
+  build(state) {
+    state = state || {};
+    this.calculatedValue = state.calculatedValue;
     if (this.viewOnly) {
       this.viewOnlyBuild();
     }
@@ -1372,6 +1374,7 @@ export default class BaseComponent extends Component {
   destroy() {
     const state = super.destroy() || {};
     this.destroyInputs();
+    state.calculatedValue = this.calculatedValue;
     return state;
   }
 
@@ -2053,12 +2056,46 @@ export default class BaseComponent extends Component {
       return false;
     }
 
-    flags = flags || {};
-    flags.noCheck = true;
-    return this.setValue(this.evaluate(this.component.calculateValue, {
+    // Get the dataValue.
+    const dataValue = this.dataValue;
+    let firstPass = false;
+
+    // First pass, the calculatedValue is undefined.
+    if (this.calculatedValue === undefined) {
+      firstPass = true;
+      this.calculatedValue = null;
+    }
+
+    // Check to ensure that the calculated value is different than the previously calculated value.
+    if (
+      (this.calculatedValue !== null) &&
+      !_.isEqual(dataValue, this.calculatedValue)
+    ) {
+      return false;
+    }
+
+    // Calculate the new value.
+    const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: [],
       data
-    }, 'value'), flags);
+    }, 'value');
+
+    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+    if (
+      firstPass &&
+      !this.isEmpty(dataValue) &&
+      !_.isEqual(dataValue, calculatedValue)
+    ) {
+      // Return that we have a change so it will perform another pass.
+      this.calculatedValue = calculatedValue;
+      return true;
+    }
+
+    flags = flags || {};
+    flags.noCheck = true;
+    const changed = this.setValue(calculatedValue, flags);
+    this.calculatedValue = this.dataValue;
+    return changed;
   }
 
   /**

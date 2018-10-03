@@ -127,7 +127,7 @@ export default class DataGridComponent extends NestedComponent {
 
     // Build the rows.
     const tableRows = [];
-    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state)));
+    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state.rows[rowIndex])));
 
     // Create the header (must happen after build rows to get correct column length)
     const header = this.createHeader();
@@ -198,6 +198,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   buildRow(row, index, state) {
+    state = state || {};
     this.rows[index] = {};
     let lastColumn = null;
     if (this.hasRemoveButtons()) {
@@ -217,26 +218,31 @@ export default class DataGridComponent extends NestedComponent {
     }
     return this.ce('tr', null,
       [
-        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index, state)),
+        this.component.components.map((col, colIndex) =>
+          this.buildComponent(col, colIndex, row, index, state[col.key])
+        ),
         lastColumn
       ]
     );
   }
 
-  destroyRows(state) {
-    state.components = state.components || {};
-    _.each(this.rows, row => _.each(row, col => {
+  destroyRows() {
+    const state = {};
+    state.rows = state.rows || {};
+    _.each(this.rows, (row, rowIndex) => _.each(row, col => {
+      state.rows[rowIndex] = state.rows[rowIndex] || {};
       const compState = this.removeComponent(col, row);
       if (col.key && compState) {
-        state.components[col.key] = compState;
+        state.rows[rowIndex][col.key] = compState;
       }
     }));
     this.rows = [];
+    return state;
   }
 
   destroy() {
-    const state = super.destroy() || {};
-    this.destroyRows(state);
+    const state = this.destroyRows();
+    super.destroy();
     return state;
   }
 
