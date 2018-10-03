@@ -4,9 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.6.3
+### Fixed
+ - FOR-1614: Configure the textfield calendar widget to store date as text without timezone conversion.
+ - FOR-1489: Make sure to alter the Date format according to which settings they have enabled/disabled. For Enable Time, Enable Date, and 24hr time.
+ - FOR-1754: Fixed problems where the calculateValues would not get fired when navigating between tabs.
+ - FOR-1755: Infinite onChange events being fired when editing a component in the builder.
+ - FOR-1636: Fixed when you check the 'Disabled' setting for component, you are unable to set the default value as the setting disables the Default value field
+ - FOR-1587: Issues where the remove select item button is visible when component is disabled.
+ 
 ### Added
- - Dynamic change to FlatPickr widget.
+ - FOR-1567: Make sure to commit the DateTime value as they type.
+ - FOR-1637: Ability to manually override calculated values.
+ - FOR-1558: Tests to ensure there is not an issue with setting submissions with containers.
+ 
+### Changed
+ - Upgrade @babel/cli@7.1.2, @babel/core@7.1.2, eslint@5.6.1, sinon@6.3.5
+ - Moving the Form utilities to their own separate files.
 
 ## 3.6.2
 ### Fixed
