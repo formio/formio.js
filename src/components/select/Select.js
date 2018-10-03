@@ -746,7 +746,9 @@ export default class SelectComponent extends BaseComponent {
    * Deletes the value of the component.
    */
   deleteValue() {
-    this.setValue('');
+    this.setValue('', {
+      noUpdateEvent: true
+    });
     _.unset(this.data, this.key);
   }
 
