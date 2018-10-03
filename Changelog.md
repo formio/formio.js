@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1755: Infinite onChange events being fired when editing a component in the builder.
  - FOR-1636: Fixed when you check the 'Disabled' setting for component, you are unable to set the default value as the setting disables the Default value field
  - FOR-1587: Issues where the remove select item button is visible when component is disabled.
+ - FOR-1733: Problems where the calendar would not properly destroy.
+ - FOR-1733: Issues where the component preview would not properly destroy.
  
 ### Added
  - FOR-1567: Make sure to commit the DateTime value as they type.
@@ -21,10 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Upgrade @babel/cli@7.1.2, @babel/core@7.1.2, eslint@5.6.1, sinon@6.3.5
  - Moving the Form utilities to their own separate files.
-
-### Fixed
- - FlatPickr destroy.
- - Component preview destroy.
 
 ## 3.6.2
 ### Fixed
