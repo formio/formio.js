@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1733: Issues where the component preview would not properly destroy.
  
 ### Added
- - FOR-1567: Make sure to commit the DateTime value as they type.
  - FOR-1637: Ability to manually override calculated values.
  - FOR-1558: Tests to ensure there is not an issue with setting submissions with containers.
  
