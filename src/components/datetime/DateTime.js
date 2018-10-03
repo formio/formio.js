@@ -52,6 +52,18 @@ export default class DateTimeComponent extends BaseComponent {
     super(component, options, data);
     const timezone = (this.component.timezone || this.options.timezone);
     const submissionTimezone = this.options.submissionTimezone ||  _.get(this.root, 'options.submissionTimezone');
+    const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);
+
+    // Change the format to map to the settings.
+    if (!this.component.enableDate) {
+      this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');
+    }
+    if (!this.component.enableTime) {
+      this.component.format = this.component.format.replace(/ hh:mm a$/g, '');
+    }
+    else if (time24hr) {
+      this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');
+    }
 
     /* eslint-disable camelcase */
     this.component.widget = {
@@ -69,7 +81,7 @@ export default class DateTimeComponent extends BaseComponent {
       defaultDate: this.component.defaultDate,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
-      time_24hr: !_.get(this.component, 'timePicker.showMeridian', true),
+      time_24hr: time24hr,
       minDate: _.get(this.component, 'datePicker.minDate'),
       maxDate: _.get(this.component, 'datePicker.maxDate')
     };

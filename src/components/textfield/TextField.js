@@ -10,6 +10,11 @@ export default class TextFieldComponent extends BaseComponent {
       mask: false,
       inputType: 'text',
       inputMask: '',
+      widget: {
+        format: 'yyyy-MM-dd hh:mm a',
+        dateFormat: 'yyyy-MM-dd hh:mm a',
+        saveAs: 'text'
+      },
       validate: {
         minLength: '',
         maxLength: '',

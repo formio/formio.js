@@ -2,7 +2,8 @@ import Flatpickr from 'flatpickr';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
-  convertFormatToMask, convertFormatToMoment,
+  convertFormatToMask,
+  convertFormatToMoment,
   currentTimezone,
   formatDate,
   formatOffset,
@@ -35,6 +36,7 @@ export default class CalendarWidget extends InputWidget {
       hourIncrement: 1,
       minuteIncrement: 5,
       time_24hr: false,
+      saveAs: 'date',
       displayInTimezone: '',
       timezone: '',
       minDate: '',
@@ -45,6 +47,16 @@ export default class CalendarWidget extends InputWidget {
 
   constructor(settings, component) {
     super(settings, component);
+    // Change the format to map to the settings.
+    if (this.settings.noCalendar) {
+      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');
+    }
+    if (!this.settings.enableTime) {
+      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
+    }
+    else if (this.settings.time_24hr) {
+      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
+    }
     this.component.suffix = true;
   }
 
@@ -73,6 +85,10 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
+        if (this.settings.saveAs === 'text') {
+          return Flatpickr.formatDate(date, format);
+        }
+
         if (!moment.zonesLoaded) {
           loadZones(this.timezone).then(() => this.redraw());
           return Flatpickr.formatDate(date, format);
@@ -217,6 +233,10 @@ export default class CalendarWidget extends InputWidget {
 
   getView(value, format) {
     format = format || this.dateFormat;
+    if (this.settings.saveAs === 'text') {
+      return moment(value).format(convertFormatToMoment(format));
+    }
+
     return formatDate(value, format, this.timezone);
   }
 
