@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Chanded
  - API key regex.
 
+### Fixed
+ - FOR-1756: Number component missing delimiters when rendered in Edit Grid
+
 ## 3.6.3
 ### Fixed
  - FOR-1614: Configure the textfield calendar widget to store date as text without timezone conversion.
