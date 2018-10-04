@@ -242,8 +242,7 @@ export default {
         if (!pattern) {
           return true;
         }
-        const regexStr = `^${pattern}$`;
-        const regex = new RegExp(regexStr);
+        const regex = new RegExp(`^${pattern}$`);
         return regex.test(value);
       }
     },
