@@ -43,28 +43,29 @@ export default class TableComponent extends NestedComponent {
     };
   }
 
+  constructor(component, options, data) {
+    const originalRows = _.cloneDeep(component.rows);
+    super(component, options, data);
+    if (!_.isEqual(originalRows, this.component.rows)) {
+      this.component.rows = originalRows;
+    }
+  }
+
   get defaultSchema() {
     return TableComponent.schema();
   }
 
   get schema() {
     const schema = _.omit(super.schema, 'components');
-    schema.rows = [];
+    schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
     this.eachComponent((component) => {
-      if (!schema.rows || !schema.rows.length) {
-        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
-      }
-      if (!schema.rows[component.tableRow]) {
-        schema.rows[component.tableRow] = [];
-      }
-      if (!schema.rows[component.tableRow][component.tableColumn]) {
-        schema.rows[component.tableRow][component.column] = { components: [] };
+      const row = schema.rows[component.tableRow];
+      const col = row && row[component.tableColumn];
+      if (!row || !col) {
+        return false;
       }
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
-    if (!schema.rows.length) {
-      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
-    }
     return schema;
   }
 
