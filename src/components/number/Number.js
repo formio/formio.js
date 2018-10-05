@@ -1,4 +1,4 @@
-import maskInput from 'vanilla-text-mask';
+import { maskInput, conformToMask } from 'vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import BaseComponent from '../base/Base';
@@ -58,6 +58,17 @@ export default class NumberComponent extends BaseComponent {
       this.decimalSeparator = override.decimalSeparator;
       this.delimiter = override.delimiter;
     }
+    this.numberMask = createNumberMask({
+      prefix: '',
+      suffix: '',
+      requireDecimal: _.get(this.component, 'requireDecimal', false),
+      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+      allowNegative: _.get(this.component, 'allowNegative', true),
+      allowDecimal: _.get(this.component, 'allowDecimal',
+        !(this.component.validate && this.component.validate.integer))
+    });
   }
 
   get defaultSchema() {
@@ -78,19 +89,10 @@ export default class NumberComponent extends BaseComponent {
 
   setInputMask(input) {
     input.setAttribute('pattern', '\\d*');
+
     input.mask = maskInput({
       inputElement: input,
-      mask: createNumberMask({
-        prefix: '',
-        suffix: '',
-        requireDecimal: _.get(this.component, 'requireDecimal', false),
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
-        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
-        allowNegative: _.get(this.component, 'allowNegative', true),
-        allowDecimal: _.get(this.component, 'allowDecimal',
-          !(this.component.validate && this.component.validate.integer))
-      })
+      mask: this.numberMask
     });
   }
 
@@ -148,4 +150,24 @@ export default class NumberComponent extends BaseComponent {
       input.setSelectionRange(0, input.value.length);
     }
   }
+
+  getMaskedValue(value) {
+    return conformToMask(value.toString(), this.numberMask).conformedValue;
+  }
+
+  getView(value) {
+    if (!value) {
+      return '';
+    }
+    const widget = this.widget;
+    if (widget && widget.getView) {
+      return widget.getView(value);
+    }
+
+    if (Array.isArray(value)) {
+      return value.map(this.getMaskedValue).join(', ');
+    }
+    return this.getMaskedValue(value);
+  }
 }
+
