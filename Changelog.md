@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1756: Number component missing delimiters when rendered in Edit Grid
 
+### Added
+ - FOR-1762: 'wizardNavigationClicked' event for case of Wizard's top navigation click 
+
 ## 3.6.3
 ### Fixed
  - FOR-1614: Configure the textfield calendar widget to store date as text without timezone conversion.

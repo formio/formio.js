@@ -130,7 +130,9 @@ export default class Wizard extends Webform {
     });
 
     this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
-      this.addEventListener(link, 'click', () => {
+      this.addEventListener(link, 'click', (event) => {
+        this.emit('wizardNavigationClicked', this.pages[index]);
+        event.preventDefault();
         this.setPage(index);
       });
     });
