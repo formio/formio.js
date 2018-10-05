@@ -110,8 +110,6 @@ export default class FileComponent extends Component {
       return;
     }
 
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = width * 3 / 4;
     navigator.getMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
@@ -119,7 +117,11 @@ export default class FileComponent extends Component {
 
     navigator.getMedia(
       {
-        video: true,
+        video: {
+          width: { min: 640, ideal: 1920 },
+          height: { min: 400, ideal: 1080 },
+          aspectRatio: { ideal: 1.7777777778 }
+        },
         audio: false
       },
       (stream) => {
@@ -128,13 +130,10 @@ export default class FileComponent extends Component {
         }
         else {
           this.refs.videoPlayer.srcObject = stream;
-          this.refs.videoPlayer.play();
         }
-        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        const width = parseInt(this.component.webcamSize) || 320;
         this.refs.videoPlayer.setAttribute('width', width);
-        this.refs.videoPlayer.setAttribute('height', height);
-        this.refs.videoCanvas.setAttribute('width', width);
-        this.refs.videoCanvas.setAttribute('height', height);
+        this.refs.videoPlayer.play();
       },
       (err) => {
         console.log(err);
@@ -150,9 +149,9 @@ export default class FileComponent extends Component {
       return;
     }
 
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = this.refs.videoPlayer.videoHeight / (this.refs.videoPlayer.videoWidth / width);
-    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0, width, height);
+    this.refs.videoCanvas.setAttribute('width', this.refs.videoPlayer.videoWidth);
+    this.refs.videoCanvas.setAttribute('height', this.refs.videoPlayer.videoHeight);
+    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0);
     this.refs.videoCanvas.toBlob(blob => {
       blob.name = `photo-${Date.now()}.png`;
       this.upload([blob]);
