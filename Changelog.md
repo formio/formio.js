@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [UNRELEASED]
+### Chanded
+ - API key regex.
+
 ### Fixed
  - FOR-1756: Number component missing delimiters when rendered in Edit Grid
 
