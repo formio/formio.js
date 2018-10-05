@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - FOR-1756: Number component missing delimiters when rendered in Edit Grid
+
 ### Added
  - FOR-1762: 'wizardNavigationClicked' event for case of Wizard's top navigation click 
 
