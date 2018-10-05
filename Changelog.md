@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - FOR-1762: 'wizardNavigationClicked' event for case of Wizard's top navigation click 
+
 ## 3.6.3
 ### Fixed
  - FOR-1614: Configure the textfield calendar widget to store date as text without timezone conversion.
