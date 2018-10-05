@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.6.4
 ### Chanded
- - API key regex.
+ - FOR-1591: API key regex.
 
 ### Fixed
  - FOR-1756: Number component missing delimiters when rendered in Edit Grid
+ - Allow webcam to upload at a higher resolution.
 
 ### Added
- - FOR-1762: 'wizardNavigationClicked' event for case of Wizard's top navigation click 
+ - FOR-1762: 'wizardNavigationClicked' event for case of Wizard's top navigation click
 
 ## 3.6.3
 ### Fixed
@@ -24,11 +25,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1587: Issues where the remove select item button is visible when component is disabled.
  - FOR-1733: Problems where the calendar would not properly destroy.
  - FOR-1733: Issues where the component preview would not properly destroy.
- 
+
 ### Added
  - FOR-1637: Ability to manually override calculated values.
  - FOR-1558: Tests to ensure there is not an issue with setting submissions with containers.
- 
+
 ### Changed
  - Upgrade @babel/cli@7.1.2, @babel/core@7.1.2, eslint@5.6.1, sinon@6.3.5
  - Moving the Form utilities to their own separate files.
