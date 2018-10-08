@@ -108,9 +108,12 @@ export default class CalendarWidget extends InputWidget {
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
       // Make sure we commit the value after a blur event occurs.
-      this.addEventListener(this.calendar._input, 'blur', () =>
-        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
-      );
+      this.addEventListener(this.calendar._input, 'blur', () => this.setDate());
+      this.addEventListener(this.calendar._input, 'keyup', () => {
+        if (this.calendar.parseDate(this.calendar._input.value)) {
+          this.setDate();
+        }
+      });
     }
   }
 
@@ -238,6 +241,10 @@ export default class CalendarWidget extends InputWidget {
     }
 
     return formatDate(value, format, this.timezone);
+  }
+
+  setDate() {
+    this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat);
   }
 
   validationValue(value) {
