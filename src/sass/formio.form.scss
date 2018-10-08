@@ -685,3 +685,8 @@ body.formio-dialog-open {
   cursor: pointer;
   margin-right: 4px;
 }
+
+.formio-component-datetime .form-control[type="datetime-local"] ~ .input-group-addon,
+.formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
+  width: auto;
+}
