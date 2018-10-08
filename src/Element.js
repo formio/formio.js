@@ -300,10 +300,17 @@ export default class Element {
     if (input && inputMask) {
       const mask = FormioUtils.getInputMask(inputMask);
       this.defaultMask = mask;
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
+      try {
+        input.mask = maskInput({
+          inputElement: input,
+          mask
+        });
+      }
+      catch (e) {
+        // Don't pass error up, to prevent form rejection.
+        // Internal bug of vanilla-text-mask on iOS (`selectionEnd`);
+        console.warn(e);
+      }
       if (mask.numeric) {
         input.setAttribute('pattern', '\\d*');
       }
