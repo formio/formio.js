@@ -1,109 +1,70 @@
 import Promise from 'native-promise-only';
-import _trim from 'lodash/trim';
-const trim = function(text) {
-  return _trim(text, '/');
-};
-const path = function(items) {
-  return items.filter(item => !!item).map(trim).join('/');
-};
-const s3 = (formio) => ({
+import _ from 'lodash';
+
+import Request from './Request';
+import Storage from './Storage';
+
+export default class S3 extends Storage {
+  static name = 's3';
+
   uploadFile(file, fileName, dir, progressCallback) {
     return new Promise(((resolve, reject) => {
       // Send the pre response to sign the upload.
-      const pre = new XMLHttpRequest();
-
-      // This only fires on a network error.
-      pre.onerror = (err) => {
-        err.networkError = true;
-        reject(err);
-      };
-
-      pre.onabort = reject;
-
-      pre.onload = () => {
-        if (pre.status >= 200 && pre.status < 300) {
-          const response = JSON.parse(pre.response);
+      new Request(reject)
+        .setToken(this.formio)
+        .setHeader('Accept', 'application/json')
+        .setHeader('Content-Type', 'application/json; charset=UTF-8')
+        .send(`${this.formio.formUrl}/storage/s3`, JSON.stringify({
+          name: path([dir, fileName]),
+          size: file.size,
+          type: file.type,
+        }))
+        .success((result) => {
+          const response = JSON.parse(result.response);
 
           // Send the file with data.
-          const xhr = new XMLHttpRequest();
-
-          if (typeof progressCallback === 'function') {
-            xhr.upload.onprogress = progressCallback;
-          }
-
           response.data.fileName = fileName;
           response.data.key = path([response.data.key, dir, fileName]);
 
-          // Fire on network error.
-          xhr.onerror = (err) => {
-            err.networkError = true;
-            reject(err);
-          };
+          const xhr = new Request(reject, progressCallback);
 
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve({
-                storage: 's3',
-                name: fileName,
-                bucket: response.bucket,
-                key: response.data.key,
-                url: path([response.url, response.data.key]),
-                acl: response.data.acl,
-                size: file.size,
-                type: file.type
-              });
-            }
-            else {
-              reject(xhr.response || 'Unable to upload file');
-            }
-          };
-
-          xhr.onabort = reject;
           if (response.signed) {
-            xhr.open('PUT', response.signed);
-            xhr.setRequestHeader('Content-Type', file.type);
-            xhr.send(file);
+            xhr.setHeader('Content-Type', file.type).put(response.signed, file);
           }
           else {
-            const fd = new FormData();
-            for (const key in response.data) {
-              fd.append(key, response.data[key]);
-            }
-            fd.append('file', file);
-            xhr.open('POST', response.url);
-            xhr.send(fd);
+            response.data.file = file;
+            xhr.post(response.url, response.data);
           }
-        }
-        else {
-          reject(pre.response || 'Unable to sign file');
-        }
-      };
 
-      pre.open('POST', `${formio.formUrl}/storage/s3`);
-
-      pre.setRequestHeader('Accept', 'application/json');
-      pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-      const token = formio.getToken();
-      if (token) {
-        pre.setRequestHeader('x-jwt-token', token);
-      }
-
-      pre.send(JSON.stringify({
-        name: path([dir, fileName]),
-        size: file.size,
-        type: file.type
-      }));
+          xhr.success(() => resolve(Object.assign(
+            this.getDefaultFileData(file, fileName),
+            {
+              url: path([response.url, response.data.key]),
+              bucket: response.bucket,
+              key: response.data.key,
+              acl: response.data.acl,
+            })))
+          .failure((err = 'Unable to upload file') => reject(err));
+        })
+        .failure((err = 'Unable to sign file') => reject(err));
     }));
-  },
-  downloadFile(file) {
-    if (file.acl !== 'public-read') {
-      return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${trim(file.bucket)}&key=${trim(file.key)}`, 'GET');
-    }
-    else {
-      return Promise.resolve(file);
-    }
   }
-});
 
-s3.title = 'S3';
-export default s3;
+  downloadFile(file) {
+    return (file.acl !== 'public-read')
+      ? this.formio.makeRequest(
+        'file',
+        `${this.formio.formUrl}/storage/s3?bucket=${trim(file.bucket)}&key=${trim(file.key)}`,
+        'GET'
+      )
+      : super.downloadFile(file);
+  }
+}
+
+function trim(text) {
+  return _.trim(text, '/');
+}
+
+function path(items) {
+  return items.filter(Boolean).map(trim).join('/');
+}

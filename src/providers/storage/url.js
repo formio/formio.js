@@ -1,73 +1,27 @@
-import Promise from 'native-promise-only';
+import Storage from './Storage';
 
-const url = (formio) => ({
-  title: 'Url',
-  name: 'url',
-  uploadFile(file, fileName, dir, progressCallback, url) {
-    return new Promise(((resolve, reject) => {
-      const data = {
-        dir,
-        file,
-        name: fileName
-      };
+export default class Url extends Storage {
+  static name = 'url';
 
-      // Send the file with data.
-      const xhr = new XMLHttpRequest();
+  getAdditionalFileData(response) {
+    // Need to test if xhr.response is decoded or not.
+    let respData = {};
+    try {
+      respData = (response === 'string') ? JSON.parse(response) : {};
+      respData = (respData && respData.data) ? respData.data : respData;
+    }
+    catch (err) {
+      respData = {};
+    }
 
-      if (typeof progressCallback === 'function') {
-        xhr.upload.onprogress = progressCallback;
-      }
+    const result = {
+      data: respData,
+    };
 
-      const fd = new FormData();
-      for (const key in data) {
-        fd.append(key, data[key]);
-      }
+    if (respData.url) {
+      result.url = respData.url;
+    }
 
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          // Need to test if xhr.response is decoded or not.
-          let respData = {};
-          try {
-            respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
-            respData = (respData && respData.data) ? respData.data : respData;
-          }
-          catch (err) {
-            respData = {};
-          }
-
-          const url = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${fileName}`;
-          resolve({
-            storage: 'url',
-            name: fileName,
-            url,
-            size: file.size,
-            type: file.type,
-            data: respData
-          });
-        }
-        else {
-          reject(xhr.response || 'Unable to upload file');
-        }
-      };
-
-      // Fire on network error.
-      xhr.onerror = () => reject(xhr);
-
-      xhr.onabort = () => reject(xhr);
-
-      xhr.open('POST', url);
-      const token = formio.getToken();
-      if (token) {
-        xhr.setRequestHeader('x-jwt-token', token);
-      }
-      xhr.send(fd);
-    }));
-  },
-  downloadFile(file) {
-    // Return the original as there is nothing to do.
-    return Promise.resolve(file);
+    return result;
   }
-});
-
-url.title = 'Url';
-export default url;
+}
