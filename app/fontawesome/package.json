@@ -1,33 +1,28 @@
 {
-  "_args": [
-    [
-      "font-awesome@4.7.0",
-      "/Users/randallknutson/Sites/formio.js"
-    ]
-  ],
-  "_development": true,
-  "_from": "font-awesome@4.7.0",
+  "_from": "font-awesome@^4.7.0",
   "_id": "font-awesome@4.7.0",
   "_inBundle": false,
   "_integrity": "sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=",
   "_location": "/font-awesome",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "font-awesome@4.7.0",
+    "raw": "font-awesome@^4.7.0",
     "name": "font-awesome",
     "escapedName": "font-awesome",
-    "rawSpec": "4.7.0",
+    "rawSpec": "^4.7.0",
     "saveSpec": null,
-    "fetchSpec": "4.7.0"
+    "fetchSpec": "^4.7.0"
   },
   "_requiredBy": [
-    "#DEV:/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/font-awesome/-/font-awesome-4.7.0.tgz",
-  "_spec": "4.7.0",
-  "_where": "/Users/randallknutson/Sites/formio.js",
+  "_shasum": "8fa8cf0411a1a31afd07b06d2902bb9fc815a133",
+  "_spec": "font-awesome@^4.7.0",
+  "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Dave Gandy",
     "email": "dave@fontawesome.io",
@@ -36,6 +31,7 @@
   "bugs": {
     "url": "http://github.com/FortAwesome/Font-Awesome/issues"
   },
+  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Brian Talbot",
@@ -55,6 +51,7 @@
     }
   ],
   "dependencies": {},
+  "deprecated": false,
   "description": "The iconic font and CSS framework",
   "engines": {
     "node": ">=0.10.3"
