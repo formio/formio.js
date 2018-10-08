@@ -666,7 +666,7 @@ export function guid() {
  * Return a translated date setting.
  *
  * @param date
- * @return {*}
+ * @return {(null|Date)}
  */
 export function getDateSetting(date) {
   if (_.isNil(date) || _.isNaN(date) || date === '') {

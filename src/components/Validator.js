@@ -1,5 +1,10 @@
 import _ from 'lodash';
-import { boolValue, getInputMask, matchInputMask } from '../utils/utils';
+import {
+  boolValue,
+  getInputMask,
+  matchInputMask,
+  getDateSetting
+} from '../utils/utils';
 import moment from 'moment';
 
 export default {
@@ -315,36 +320,46 @@ export default {
     maxDate: {
       key: 'maxDate',
       message(component, setting) {
+        const date = getDateSetting(setting);
         return component.t(component.errorMessage('maxDate'), {
           field: component.errorLabel,
-          maxDate: moment(setting).format(component.format),
+          maxDate: moment(date).format(component.format),
         });
       },
       check(component, setting, value) {
         const date = moment(value);
+        const maxDate = getDateSetting(setting);
 
-        if (_.isNull(setting)) {
+        if (_.isNull(maxDate)) {
           return true;
         }
+        else {
+          maxDate.setHours(0,0,0,0);
+        }
 
-        return date.isBefore(setting) || date.isSame(setting);
+        return date.isBefore(maxDate) || date.isSame(maxDate);
       }
     },
     minDate: {
       key: 'minDate',
       message(component, setting) {
+        const date = getDateSetting(setting);
         return component.t(component.errorMessage('minDate'), {
           field: component.errorLabel,
-          minDate: moment(setting).format(component.format),
+          minDate: moment(date).format(component.format),
         });
       },
       check(component, setting, value) {
         const date = moment(value);
-        if (_.isNull(setting)) {
+        const minDate = getDateSetting(setting);
+        if (_.isNull(minDate)) {
           return true;
         }
+        else {
+          minDate.setHours(0,0,0,0);
+        }
 
-        return date.isAfter(setting) || date.isSame(setting);
+        return date.isAfter(minDate) || date.isSame(minDate);
       }
     }
   }
