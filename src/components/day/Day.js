@@ -43,7 +43,7 @@ export default class DayComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.validators.push('date');
+    this.validators = this.validators.concat(['date', 'maxDate', 'minDate']);
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
