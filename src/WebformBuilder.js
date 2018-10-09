@@ -553,6 +553,9 @@ export default class WebformBuilder extends Component {
       data: componentCopy,
     };
 
+    if (this.preview) {
+      this.preview.destroy();
+    }
     this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
     this.componentEdit = this.ce('div');
