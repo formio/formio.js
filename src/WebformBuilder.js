@@ -210,6 +210,9 @@ export default class WebformBuilder extends Webform {
   updateComponent(component) {
     // Update the preview.
     if (this.componentPreview) {
+      if (this.preview) {
+        this.preview.destroy();
+      }
       this.preview = Components.create(component.component, {
         preview: true,
         events: new EventEmitter({
