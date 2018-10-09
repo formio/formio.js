@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Issue with preview destroy on change.
+
+## 3.6.5
+### Fixed
+ - Broken build.
+
 ## 3.6.4
 ### Chanded
  - FOR-1591: API key regex.
