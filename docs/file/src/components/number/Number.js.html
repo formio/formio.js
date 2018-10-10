@@ -185,7 +185,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;vanilla-text-mask&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { maskInput, conformToMask } from &apos;vanilla-text-mask&apos;;
 import _ from &apos;lodash&apos;;
 import { createNumberMask } from &apos;text-mask-addons&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
@@ -245,6 +245,17 @@ export default class NumberComponent extends BaseComponent {
       this.decimalSeparator = override.decimalSeparator;
       this.delimiter = override.delimiter;
     }
+    this.numberMask = createNumberMask({
+      prefix: &apos;&apos;,
+      suffix: &apos;&apos;,
+      requireDecimal: _.get(this.component, &apos;requireDecimal&apos;, false),
+      thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
+      decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
+      decimalLimit: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
+      allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
+      allowDecimal: _.get(this.component, &apos;allowDecimal&apos;,
+        !(this.component.validate &amp;&amp; this.component.validate.integer))
+    });
   }
 
   get defaultSchema() {
@@ -265,19 +276,10 @@ export default class NumberComponent extends BaseComponent {
 
   setInputMask(input) {
     input.setAttribute(&apos;pattern&apos;, &apos;\\d*&apos;);
+
     input.mask = maskInput({
       inputElement: input,
-      mask: createNumberMask({
-        prefix: &apos;&apos;,
-        suffix: &apos;&apos;,
-        requireDecimal: _.get(this.component, &apos;requireDecimal&apos;, false),
-        thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
-        decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
-        decimalLimit: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
-        allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
-        allowDecimal: _.get(this.component, &apos;allowDecimal&apos;,
-          !(this.component.validate &amp;&amp; this.component.validate.integer))
-      })
+      mask: this.numberMask
     });
   }
 
@@ -335,7 +337,27 @@ export default class NumberComponent extends BaseComponent {
       input.setSelectionRange(0, input.value.length);
     }
   }
+
+  getMaskedValue(value) {
+    return conformToMask(value.toString(), this.numberMask).conformedValue;
+  }
+
+  getView(value) {
+    if (!value) {
+      return &apos;&apos;;
+    }
+    const widget = this.widget;
+    if (widget &amp;&amp; widget.getView) {
+      return widget.getView(value);
+    }
+
+    if (Array.isArray(value)) {
+      return value.map(this.getMaskedValue).join(&apos;, &apos;);
+    }
+    return this.getMaskedValue(value);
+  }
 }
+
 </code></pre>
 
 </div>

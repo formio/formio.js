@@ -217,6 +217,24 @@
     tooltip: &apos;A required field must be filled in before the form can be submitted.&apos;,
     key: &apos;fields.year.required&apos;,
     input: true
+  },
+  {
+    weight: 30,
+    type: &apos;textfield&apos;,
+    label: &apos;Maximum Day&apos;,
+    placeholder: &apos;yyyy-MM-dd&apos;,
+    tooltip: &apos;A maximum day that can be set. You can also use Moment.js functions. For example: \n \n moment().add(10, \&apos;days\&apos;)&apos;,
+    key: &apos;maxDate&apos;,
+    input: true,
+  },
+  {
+    weight: 40,
+    type: &apos;textfield&apos;,
+    label: &apos;Minimum Day&apos;,
+    placeholder: &apos;yyyy-MM-dd&apos;,
+    tooltip: &apos;A minimum date that can be set. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \&apos;days\&apos;)&apos;,
+    key: &apos;minDate&apos;,
+    input: true,
   }
 ];
 </code></pre>

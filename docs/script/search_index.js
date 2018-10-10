@@ -2455,13 +2455,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -3331,13 +3331,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3943,13 +3943,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3997,13 +3997,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4933,13 +4933,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5599,13 +5599,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6273,6 +6273,12 @@ window.esdocSearchIndex = [
     "src/components/day/day.js~daycomponent#validationvalue",
     "class/src/components/day/Day.js~DayComponent.html#instance-get-validationValue",
     "src/components/day/Day.js~DayComponent#validationValue",
+    "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#validators",
+    "class/src/components/day/Day.js~DayComponent.html#instance-member-validators",
+    "src/components/day/Day.js~DayComponent#validators",
     "member"
   ],
   [
@@ -7872,10 +7878,28 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/number/number.js~numbercomponent#getmaskedvalue",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getMaskedValue",
+    "src/components/number/Number.js~NumberComponent#getMaskedValue",
+    "method"
+  ],
+  [
     "src/components/number/number.js~numbercomponent#getvalueat",
     "class/src/components/number/Number.js~NumberComponent.html#instance-method-getValueAt",
     "src/components/number/Number.js~NumberComponent#getValueAt",
     "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#getview",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getView",
+    "src/components/number/Number.js~NumberComponent#getView",
+    "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#numbermask",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-member-numberMask",
+    "src/components/number/Number.js~NumberComponent#numberMask",
+    "member"
   ],
   [
     "src/components/number/number.js~numbercomponent#parsenumber",
@@ -9153,6 +9177,12 @@ window.esdocSearchIndex = [
     "src/components/table/table.js~tablecomponent#buildheader",
     "class/src/components/table/Table.js~TableComponent.html#instance-method-buildHeader",
     "src/components/table/Table.js~TableComponent#buildHeader",
+    "method"
+  ],
+  [
+    "src/components/table/table.js~tablecomponent#constructor",
+    "class/src/components/table/Table.js~TableComponent.html#instance-constructor-constructor",
+    "src/components/table/Table.js~TableComponent#constructor",
     "method"
   ],
   [

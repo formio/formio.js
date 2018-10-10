@@ -504,6 +504,7 @@ export default class Wizard extends Webform {
 
       if (clickable) {
         this.addEventListener(pageButton, &apos;click&apos;, (event) =&gt; {
+          this.emit(&apos;wizardNavigationClicked&apos;, this.pages[i]);
           event.preventDefault();
           this.setPage(i);
         });

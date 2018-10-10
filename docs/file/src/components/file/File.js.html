@@ -463,8 +463,6 @@ export default class FileComponent extends BaseComponent {
   }
 
   startVideo() {
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = width * 3 / 4;
     navigator.getMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
@@ -472,7 +470,11 @@ export default class FileComponent extends BaseComponent {
 
     navigator.getMedia(
       {
-        video: true,
+        video: {
+          width: { min: 640, ideal: 1920 },
+          height: { min: 400, ideal: 1080 },
+          aspectRatio: { ideal: 1.7777777778 }
+        },
         audio: false
       },
       (stream) =&gt; {
@@ -481,13 +483,10 @@ export default class FileComponent extends BaseComponent {
         }
         else {
           this.video.srcObject = stream;
-          this.video.play();
         }
-        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        const width = parseInt(this.component.webcamSize) || 320;
         this.video.setAttribute(&apos;width&apos;, width);
-        this.video.setAttribute(&apos;height&apos;, height);
-        this.canvas.setAttribute(&apos;width&apos;, width);
-        this.canvas.setAttribute(&apos;height&apos;, height);
+        this.video.play();
       },
       (err) =&gt; {
         console.log(err);
@@ -496,9 +495,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   takePicture() {
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = this.video.videoHeight / (this.video.videoWidth / width);
-    this.canvas.getContext(&apos;2d&apos;).drawImage(this.video, 0, 0, width, height);
+    this.canvas.setAttribute(&apos;width&apos;, this.video.videoWidth);
+    this.canvas.setAttribute(&apos;height&apos;, this.video.videoHeight);
+    this.canvas.getContext(&apos;2d&apos;).drawImage(this.video, 0, 0);
     this.canvas.toBlob(blob =&gt; {
       blob.name = `photo-${Date.now()}.png`;
       this.upload([blob]);
