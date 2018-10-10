@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.6.6
 ### Fixed
- - Issue with preview destroy on change.
-
+ - FOR-1733: Fixed issue with preview destroy on change.
+ - FOR-1728: Problems with running the renderer within iOS applications.
+ - FOR-1567: Date/Time to commit the values of the picker while you are typing.
+ 
 ## 3.6.5
 ### Fixed
  - Broken build.
