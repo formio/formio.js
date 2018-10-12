@@ -667,6 +667,11 @@ export default class SelectComponent extends Field {
     return value;
   }
 
+  redraw() {
+    super.redraw();
+    this.triggerUpdate();
+  }
+
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     const previousValue = this.dataValue;
