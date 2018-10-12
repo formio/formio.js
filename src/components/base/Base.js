@@ -1361,7 +1361,6 @@ export default class BaseComponent extends Component {
       return;
     }
     this.build(this.clear());
-    this.triggerUpdate();
   }
 
   destroyInputs() {
