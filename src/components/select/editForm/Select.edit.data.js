@@ -118,7 +118,7 @@ export default [
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
     label: 'Resource',
-    key: 'resource',
+    key: 'data.resource',
     weight: 10,
     tooltip: 'The resource to be used with this field.',
     conditional: {
@@ -132,7 +132,7 @@ export default [
     key: 'valueProperty',
     tooltip: 'The field to use as the value.',
     weight: 11,
-    refreshOn: 'resource',
+    refreshOn: 'data.resource',
     template: '<span>{{ item.label }}</span>',
     valueProperty: 'key',
     dataSrc: 'url',
