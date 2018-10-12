@@ -306,13 +306,24 @@ export default class BaseComponent extends Component {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
+    let lastChanged = null;
     const _triggerChange = _.debounce((...args) => {
       if (this.root) {
         this.root.changing = false;
       }
+      if (!args[1] && lastChanged) {
+        // Set the changed component if one isn't provided.
+        args[1] = lastChanged;
+      }
+      lastChanged = null;
       return this.onChange(...args);
     }, 100);
     this.triggerChange = (...args) => {
+      if (args[1]) {
+        // Make sure that during the debounce that we always track lastChanged component, even if they
+        // don't provide one later.
+        lastChanged = args[1];
+      }
       if (this.root) {
         this.root.changing = true;
       }
