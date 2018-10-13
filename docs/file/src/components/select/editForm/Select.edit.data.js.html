@@ -305,7 +305,7 @@ export default [
     template: &apos;&lt;span&gt;{{ item.title }}&lt;/span&gt;&apos;,
     valueProperty: &apos;_id&apos;,
     label: &apos;Resource&apos;,
-    key: &apos;resource&apos;,
+    key: &apos;data.resource&apos;,
     weight: 10,
     tooltip: &apos;The resource to be used with this field.&apos;,
     conditional: {
@@ -319,7 +319,7 @@ export default [
     key: &apos;valueProperty&apos;,
     tooltip: &apos;The field to use as the value.&apos;,
     weight: 11,
-    refreshOn: &apos;resource&apos;,
+    refreshOn: &apos;data.resource&apos;,
     template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
     valueProperty: &apos;key&apos;,
     dataSrc: &apos;url&apos;,

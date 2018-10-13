@@ -205,9 +205,10 @@ export default [
     weight: 110,
     tooltip: &apos;Refresh data when another field changes.&apos;,
     dataSrc: &apos;custom&apos;,
+    valueProperty: &apos;value&apos;,
     data: {
       custom: `
-        values.push({label: &apos;Any Change&apos;, key: &apos;data&apos;});
+        values.push({label: &apos;Any Change&apos;, value: &apos;data&apos;});
         utils.eachComponent(instance.root.editForm.components, function(component, path) {
           if (component.key !== data.key) {
             values.push({

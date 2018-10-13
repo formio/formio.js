@@ -2083,13 +2083,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2455,13 +2455,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2533,13 +2533,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2689,25 +2689,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
-    "src/Webform.js~Webform#src",
-    "member"
-  ],
-  [
-    "src/webform.js~webform#src",
     "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
-    "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
-    "src/Webform.js~Webform#submission",
+    "src/webform.js~webform#src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
+    "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
     "class/src/Webform.js~Webform.html#instance-set-submission",
+    "src/Webform.js~Webform#submission",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3331,13 +3331,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3943,13 +3943,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4231,13 +4231,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4609,13 +4609,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5599,13 +5599,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -8608,6 +8608,12 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-loading",
     "src/components/select/Select.js~SelectComponent#loading",
     "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#redraw",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-redraw",
+    "src/components/select/Select.js~SelectComponent#redraw",
+    "method"
   ],
   [
     "src/components/select/select.js~selectcomponent#requestheaders",

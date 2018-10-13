@@ -215,6 +215,10 @@ Formio.Components.addComponent('checkmatrix', CheckMatrixComponent);
 </script>
 ```
 
+<div class="alert alert-info">
+<p>For an <strong>ES6</strong> version of this component, check out the following - <a href="https://github.com/formio/angular-demo/blob/master/src/app/components/CheckMatrix.js">ES6 CheckMatrix</a>
+</div>
+
 <h3>Result</h3>
 <script type="text/javascript">
 var BaseComponent = Formio.Components.components.base;
