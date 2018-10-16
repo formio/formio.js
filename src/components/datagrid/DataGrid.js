@@ -49,7 +49,7 @@ export default class DataGridComponent extends NestedComponent {
 
   get dataValue() {
     const dataValue = super.dataValue;
-    if (!dataValue || !_.isArray(dataValue)) {
+    if (!dataValue || !Array.isArray(dataValue)) {
       return this.emptyValue;
     }
     return dataValue;
@@ -73,7 +73,7 @@ export default class DataGridComponent extends NestedComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
-    if (_.isArray(value)) {
+    if (Array.isArray(value)) {
       return value;
     }
     if (value && (typeof value === 'object')) {
@@ -324,5 +324,9 @@ export default class DataGridComponent extends NestedComponent {
    */
   getValue() {
     return this.dataValue;
+  }
+
+  restoreComponentsContext() {
+    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
   }
 }

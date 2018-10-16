@@ -467,4 +467,8 @@ export default class EditGridComponent extends NestedComponent {
   getValue() {
     return this.dataValue;
   }
+
+  restoreComponentsContext() {
+    return;
+  }
 }
