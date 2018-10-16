@@ -110,14 +110,14 @@ export default class EditGridComponent extends NestedComponent {
       return this.addRow(true);
     }
     let tableClass = 'editgrid-listgroup list-group ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {
       if (this.component[prop]) {
         tableClass += `table-${prop} `;
       }
     });
     const tableElement = this.ce('ul', { class: tableClass }, [
       this.headerElement = this.createHeader(),
-      this.rowElements = _.map(this.editRows, this.createRow.bind(this)),
+      this.rowElements = this.editRows.map(this.createRow.bind(this)),
       this.footerElement = this.createFooter(),
     ]);
 
@@ -128,9 +128,7 @@ export default class EditGridComponent extends NestedComponent {
       this.element.appendChild(tableElement);
     }
     //add open class to the element if any edit grid row is open
-    const isAnyRowOpen = _.some(this.editRows, function(row) {
-      return row.isOpen;
-    });
+    const isAnyRowOpen = this.editRows.some((row) => row.isOpen);
     if (isAnyRowOpen) {
       this.addClass(this.element, `formio-component-${this.component.type}-row-open`);
     }
@@ -549,5 +547,9 @@ export default class EditGridComponent extends NestedComponent {
    */
   getValue() {
     return this.dataValue;
+  }
+
+  restoreComponentsContext() {
+    return;
   }
 }
