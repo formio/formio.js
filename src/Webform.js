@@ -1032,11 +1032,6 @@ export default class Webform extends NestedComponent {
           // Ensure err is an array.
           err = Array.isArray(err) ? err : [err];
 
-          // Mark each error as custom so they won't clear.
-          err.forEach(err => {
-            err.custom = true;
-          });
-
           // Set as custom errors.
           this.customErrors = err;
 
