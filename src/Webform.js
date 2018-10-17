@@ -1026,17 +1026,19 @@ export default class Webform extends NestedComponent {
 
       submission.state = options.state || 'submitted';
       const isDraft = (submission.state === 'draft');
+
+      // Run validations before submit hook.
+      if (!isDraft && !submission.data) {
+        return reject('Invalid Submission');
+      }
+
+      if (!isDraft && !this.checkValidity(submission.data, true)) {
+        return reject();
+      }
+
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
           return reject(err);
-        }
-
-        if (!isDraft && !submission.data) {
-          return reject('Invalid Submission');
-        }
-
-        if (!isDraft && !this.checkValidity(submission.data, true)) {
-          return reject();
         }
 
         this.loading = true;
