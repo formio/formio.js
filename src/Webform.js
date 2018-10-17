@@ -103,6 +103,7 @@ export default class Webform extends NestedComponent {
     this._loading = false;
     this._submission = {};
     this._form = {};
+    this.customErrors = [];
 
     /**
      * Determines if this form should submit the API on submit.
@@ -877,10 +878,24 @@ export default class Webform extends NestedComponent {
         errors.push(error);
       }
     }
+
+    errors = errors.concat(this.customErrors);
+
     if (!errors.length) {
       this.setAlert(false);
       return;
     }
+
+    // Mark any components as invalid if in a custom message.
+    this.customErrors.forEach(err => {
+      if (err.custom && err.component) {
+        const component = this.getComponent(err.component);
+        if (component) {
+          component.setCustomValidity(err.message, true);
+        }
+      }
+    });
+
     const message = `
       <p>${this.t('error')}</p>
       <ul>
@@ -949,6 +964,11 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed) {
+    // For any change events, clear any custom errors for that component.
+    if (changed && changed.component) {
+      this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
+    }
+
     super.onChange(flags, true);
     const value = _.clone(this._submission);
     value.changed = changed;
@@ -1028,7 +1048,18 @@ export default class Webform extends NestedComponent {
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
-          return reject(err);
+          // Ensure err is an array.
+          err = Array.isArray(err) ? err : [err];
+
+          // Mark each error as custom so they won't clear.
+          err.forEach(err => {
+            err.custom = true;
+          });
+
+          // Set as custom errors.
+          this.customErrors = err;
+
+          return reject();
         }
 
         if (!isDraft && !submission.data) {
