@@ -468,6 +468,14 @@ export default class EditGridComponent extends NestedComponent {
     return this.dataValue;
   }
 
+  clearOnHide(show) {
+    super.clearOnHide(show);
+    if (this.component.clearOnHide) {
+      this.editRows = [];
+    }
+    this.buildTable();
+  }
+
   restoreComponentsContext() {
     return;
   }
