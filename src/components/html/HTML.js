@@ -3,6 +3,7 @@ import Component from '../_classes/component/Component';
 export default class HTMLComponent extends Component {
   static schema(...extend) {
     return Component.schema({
+      label: 'HTML',
       type: 'htmlelement',
       tag: 'p',
       attrs: [],
