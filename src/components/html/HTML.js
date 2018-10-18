@@ -4,6 +4,7 @@ import BaseComponent from '../base/Base';
 export default class HTMLComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
+      label: 'HTML',
       type: 'htmlelement',
       tag: 'p',
       attrs: [],

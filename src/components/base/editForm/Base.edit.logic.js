@@ -1,6 +1,7 @@
 /* eslint-disable quotes, max-len */
 export default [
   {
+    weight: 0,
     input: true,
     label: 'Advanced Logic',
     key: 'logic',
@@ -14,6 +15,7 @@ export default [
     saveRow: 'Save Logic',
     components: [
       {
+        weight: 0,
         input: true,
         inputType: 'text',
         label: 'Logic Name',
@@ -24,14 +26,17 @@ export default [
         type: 'textfield'
       },
       {
+        weight: 10,
         key: 'triggerPanel',
         input: false,
         title: 'Trigger',
         components: [
           {
+            weight: 0,
             input: true,
             components: [
               {
+                weight: 0,
                 input: true,
                 label: 'Type',
                 key: 'type',
@@ -60,6 +65,7 @@ export default [
                 type: 'select',
               },
               {
+                weight: 10,
                 label: '',
                 key: 'simple',
                 type: 'container',
@@ -101,6 +107,7 @@ export default [
                 ]
               },
               {
+                weight: 10,
                 type: 'textarea',
                 key: 'javascript',
                 rows: 5,
@@ -111,6 +118,7 @@ export default [
                 customConditional: 'show = row.type === "javascript";'
               },
               {
+                weight: 10,
                 type: 'textarea',
                 key: 'json',
                 rows: 5,
@@ -123,6 +131,7 @@ export default [
                 customConditional: 'show = row.type === "json";',
               },
               {
+                weight: 10,
                 type: 'textfield',
                 key: 'event',
                 label: 'Event Name',
@@ -138,6 +147,7 @@ export default [
         type: 'panel',
       },
       {
+        weight: 20,
         input: true,
         label: 'Actions',
         key: 'actions',
@@ -151,12 +161,14 @@ export default [
         saveRow: 'Save Action',
         components: [
           {
+            weight: 0,
             title: 'Action',
             input: false,
             key: 'actionPanel',
             type: 'panel',
             components: [
               {
+                weight: 0,
                 input: true,
                 inputType: 'text',
                 label: 'Action Name',
@@ -167,6 +179,7 @@ export default [
                 type: 'textfield',
               },
               {
+                weight: 10,
                 input: true,
                 label: 'Type',
                 key: 'type',
@@ -191,7 +204,7 @@ export default [
                 type: 'select',
               },
               {
-
+                weight: 20,
                 type: 'select',
                 template: '<span>{{ item.label }}</span>',
                 dataSrc: 'json',
@@ -203,7 +216,7 @@ export default [
                       type: 'boolean'
                     },
                     {
-                      label: 'required',
+                      label: 'Required',
                       value: 'validate.required',
                       type: 'boolean'
                     },
@@ -256,6 +269,7 @@ export default [
                 customConditional: 'show = row.type === "property";',
               },
               {
+                weight: 30,
                 input: true,
                 label: 'Set State',
                 key: 'state',
@@ -277,6 +291,7 @@ export default [
                 customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "boolean";',
               },
               {
+                weight: 30,
                 type: 'textfield',
                 key: 'text',
                 label: 'Text',
@@ -286,6 +301,7 @@ export default [
                 customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "string";',
               },
               {
+                weight: 20,
                 input: true,
                 label: 'Value (Javascript)',
                 key: 'value',
