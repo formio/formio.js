@@ -1029,13 +1029,7 @@ export default class Webform extends NestedComponent {
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
-          // Ensure err is an array.
-          err = Array.isArray(err) ? err : [err];
-
-          // Set as custom errors.
-          this.customErrors = err;
-
-          return reject();
+          return reject(err);
         }
 
         if (!isDraft && !submission.data) {
@@ -1046,27 +1040,46 @@ export default class Webform extends NestedComponent {
           return reject();
         }
 
-        this.loading = true;
+        this.hook('customValidation', submission, (err) => {
+          if (err) {
+            // If string is returned, cast to object.
+            if (typeof err === 'string') {
+              err = {
+                message: err
+              };
+            }
 
-        // Use the form action to submit the form if available.
-        let submitFormio = this.formio;
-        if (this._form && this._form.action) {
-          submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
-        }
+            // Ensure err is an array.
+            err = Array.isArray(err) ? err : [err];
 
-        if (this.nosubmit || !submitFormio) {
-          return resolve({
-            submission: submission,
-            saved: false
-          });
-        }
+            // Set as custom errors.
+            this.customErrors = err;
 
-        // If this is an actionUrl, then make sure to save the action and not the submission.
-        const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
-        submitFormio[submitMethod](submission).then(result => resolve({
-          submission: result,
-          saved: true
-        })).catch(reject);
+            return reject();
+          }
+
+          this.loading = true;
+
+          // Use the form action to submit the form if available.
+          let submitFormio = this.formio;
+          if (this._form && this._form.action) {
+            submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
+          }
+
+          if (this.nosubmit || !submitFormio) {
+            return resolve({
+              submission: submission,
+              saved: false
+            });
+          }
+
+          // If this is an actionUrl, then make sure to save the action and not the submission.
+          const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
+          submitFormio[submitMethod](submission).then(result => resolve({
+            submission: result,
+            saved: true
+          })).catch(reject);
+        });
       });
     });
   }
