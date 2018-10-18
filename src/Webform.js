@@ -872,7 +872,7 @@ export default class Webform extends NestedComponent {
 
     // Mark any components as invalid if in a custom message.
     this.customErrors.forEach(err => {
-      if (err.custom && err.component) {
+      if (err.component) {
         const component = this.getComponent(err.component);
         if (component) {
           component.setCustomValidity(err.message, true);
