@@ -422,7 +422,7 @@ export default class BaseComponent extends Component {
    */
   t(text, params) {
     params = params || {};
-    params.data = this.root ? this.root.data : this.data;
+    params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
     return super.t(text, params);
@@ -769,7 +769,7 @@ export default class BaseComponent extends Component {
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
-      data: (this.root ? this.root.data : this.data),
+      data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {}
     }, additional));
@@ -843,7 +843,7 @@ export default class BaseComponent extends Component {
   addValue() {
     this.addNewValue();
     this.buildRows();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     this.restoreValue();
     if (this.root) {
       this.root.onChange();
@@ -1438,16 +1438,26 @@ export default class BaseComponent extends Component {
    * @return {boolean}
    */
   conditionallyVisible(data) {
+    data = data || this.rootValue;
     if (this.options.builder || !this.hasCondition()) {
       return true;
     }
-    if (!data) {
-      data = this.root ? this.root.data : {};
-    }
+    return this.checkCondition(null, data);
+  }
+
+  /**
+   * Checks the condition of this component.
+   *
+   * @param row - The row contextual data.
+   * @param data - The global data object.
+   *
+   * @return {boolean} - True if the condition applies to this component.
+   */
+  checkCondition(row, data) {
     return FormioUtils.checkCondition(
       this.component,
-      this.data,
-      data,
+      row || this.data,
+      data || this.rootValue,
       this.root ? this.root._form : {},
       this
     );
@@ -1457,7 +1467,7 @@ export default class BaseComponent extends Component {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    data = data || (this.root ? this.root.data: {});
+    data = data || this.rootValue;
 
     // Check advanced conditions
     const result = this.show(this.conditionallyVisible(data));
@@ -1478,6 +1488,7 @@ export default class BaseComponent extends Component {
    * @param data
    */
   fieldLogic(data) {
+    data = data || this.rootValue;
     const logics = this.logic;
 
     // If there aren't logic, don't go further.
@@ -1888,6 +1899,15 @@ export default class BaseComponent extends Component {
   }
 
   /**
+   * Get the data value at the root level.
+   *
+   * @return {*}
+   */
+  get rootValue() {
+    return this.root ? this.root.data : this.data;
+  }
+
+  /**
    * Get the static value of this component.
    * @return {*}
    */
@@ -2153,13 +2173,7 @@ export default class BaseComponent extends Component {
    */
   invalidMessage(data, dirty, ignoreCondition) {
     // Force valid if component is conditionally hidden.
-    if (!ignoreCondition && !FormioUtils.checkCondition(
-      this.component,
-      data,
-      this.data,
-      this.root ? this.root._form : {},
-      this
-    )) {
+    if (!ignoreCondition && !this.checkCondition(null, data)) {
       return '';
     }
 
@@ -2187,9 +2201,9 @@ export default class BaseComponent extends Component {
     return !this.invalidMessage(data, dirty);
   }
 
-  checkValidity(data, dirty) {
+  checkValidity(data, dirty, rowData) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!this.checkCondition(rowData, data)) {
       this.setCustomValidity('');
       return true;
     }
