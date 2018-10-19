@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.6.9
 ### Fixed
  - FOR-1747: Fixed many issues related to contextual data getting swapped (row vs. data) for certain checks within the renderer.
+ - Issues where error messages for fields would get drowned out (color-wise) when errors are showing up per-field.
 
 ## 3.6.8
 ### Fixed
