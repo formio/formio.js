@@ -2379,7 +2379,7 @@ export default class BaseComponent extends Component {
    */
   set disabled(disabled) {
     // Do not allow a component to be disabled if it should be always...
-    if (!disabled && this.shouldDisable) {
+    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
       return;
     }
 
