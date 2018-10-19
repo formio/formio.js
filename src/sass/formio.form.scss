@@ -675,6 +675,23 @@ body.formio-dialog-open {
   display: none;
 }
 
+.has-error.alert-danger .help-block,
+.has-error.alert-danger .control-label,
+.has-error.alert-danger .radio,
+.has-error.alert-danger .checkbox,
+.has-error.alert-danger .radio-inline,
+.has-error.alert-danger .checkbox-inline,
+.has-error.alert-danger.radio label,
+.has-error.alert-danger.checkbox label,
+.has-error.alert-danger.radio-inline label,
+.has-error.alert-danger.checkbox-inline label {
+  color: white;
+}
+
+.has-error.alert-danger .form-group {
+  color: #333;
+}
+
 .formio-collapse-icon {
   cursor: pointer;
   color: #666;
