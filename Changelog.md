@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.6.8
+### Fixed
+ - FOR-1793: Fixed an issue where a "/" would be appended to the Day component value when "Hide Year" was checked.
+ - Fixed a small bug where components may disable when they are not supposed to be.
+ - Problems where the highlighted errors and custom errors would not persist when they are presented.
+ - FOR-1789: Fixed an error where day component would cause beta portal to show 'Cannot read property data of undefined' in data section.
+
+### Changed
+ - Upgrade gulp-sass@4.0.2, i18next@11.10.0, eslint@5.7.0, webpack@4.21.0
+
 ## 3.6.7
 ### Fixed
  - Problems with the Select component not working with Refresh On property for some cases.
