@@ -402,7 +402,7 @@ export default class EditGridComponent extends NestedComponent {
     const isDirty = dirty || !!this.editRows[rowIndex].dirty;
     this.editRows[rowIndex].components.forEach(comp => {
       comp.setPristine(!isDirty);
-      check &= comp.checkValidity(this.editRows[rowIndex].data, isDirty);
+      check &= comp.checkValidity(this.root ? this.root.data : this.data, isDirty);
     });
 
     if (this.component.validate && this.component.validate.row) {

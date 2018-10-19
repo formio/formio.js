@@ -57,6 +57,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Upgrade @babel/cli@7.1.2, @babel/core@7.1.2, eslint@5.6.1, sinon@6.3.5
  - Moving the Form utilities to their own separate files.
 
+### Fixed
+ - Custom validation of components inside EditGrid.
+
 ## 3.6.2
 ### Fixed
  - Fixed problems with infinite onChange events when hiding a multi select component with clearOnHide enabled.
