@@ -413,7 +413,7 @@ export default class DayComponent extends BaseComponent {
     if (this.showYear) {
       format += 'YYYY';
     }
-    return format;
+    return _.trimEnd(format, '/');
   }
 
   /**
