@@ -333,8 +333,12 @@ export default class DayComponent extends Field {
     }
     if (this.showYear) {
       format += 'YYYY';
+      return format;
     }
-    return _.trimEnd(format, '/');
+    else {
+      // Trim off the "/" from the end of the format string.
+      return format.length ? format.substring(0, format.length - 1) : format;
+    }
   }
 
   /**
