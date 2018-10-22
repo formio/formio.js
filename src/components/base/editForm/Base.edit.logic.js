@@ -298,7 +298,7 @@ export default [
                 inputType: 'text',
                 input: true,
                 description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
-                customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "string";',
+                customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "string" && !row.property.component;',
               },
               {
                 weight: 20,
