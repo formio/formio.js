@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Content property to HTML and Content components Logic.
+
 ## 3.6.7
 ### Fixed
  - Problems with the Select component not working with Refresh On property for some cases.
