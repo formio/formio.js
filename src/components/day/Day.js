@@ -109,11 +109,22 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
+  getInputValue(input, defaultValue) {
+    if (_.isObject(input)) {
+      if (!_.isNaN(input.value)) {
+        return parseInt(input.value, 10);
+      }
+    }
+
+    return defaultValue;
+  }
+
   validateRequired(setting, value) {
-    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
-    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
-    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
-    if (this.dayRequired && !day) {
+    const day = this.getInputValue(this.dayInput, 0);
+    const month = this.getInputValue(this.monthInput, 0) - 1;
+    const year = this.getInputValue(this.yearInput, 0);
+
+    if (this.dayRequired && day === 0) {
       return false;
     }
 
@@ -121,7 +132,7 @@ export default class DayComponent extends BaseComponent {
       return false;
     }
 
-    if (this.yearRequired && !year) {
+    if (this.yearRequired && year === 0) {
       return false;
     }
 
