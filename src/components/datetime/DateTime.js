@@ -51,8 +51,6 @@ export default class DateTimeComponent extends Input {
   constructor(component, options, data) {
     super(component, options, data);
     const timezone = (this.component.timezone || this.options.timezone);
-    const submissionTimezone = this.options.submissionTimezone ||  _.get(this.root, 'options.submissionTimezone');
-
     const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);
 
     // Change the format to map to the settings.
@@ -94,6 +92,13 @@ export default class DateTimeComponent extends Input {
 
     // Add the validators date.
     this.validators.push('date');
+  }
+
+  performInputMapping(input) {
+    if (input.widget && this.widget.settings) {
+      input.widget.settings.submissionTimezone = this.submissionTimezone;
+    }
+    return input;
   }
 
   get defaultSchema() {

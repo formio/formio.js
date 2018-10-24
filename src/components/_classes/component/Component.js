@@ -642,6 +642,16 @@ export default class Component extends Element {
     return Promise.resolve(true);
   }
 
+  /**
+   * Return the submission timezone.
+   *
+   * @return {*}
+   */
+  get submissionTimezone() {
+    this.options.submissionTimezone = this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
+    return this.options.submissionTimezone;
+  }
+
   get shouldDisable() {
     return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
   }
