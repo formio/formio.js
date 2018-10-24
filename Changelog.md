@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.6.10
+### Fixed
+ - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1812: Fixed issues where timezones were not converting properly.
+
 ## 3.6.9
 ### Fixed
  - FOR-1747: Fixed many issues related to contextual data getting swapped (row vs. data) for certain checks within the renderer.
