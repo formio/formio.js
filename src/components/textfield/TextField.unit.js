@@ -1,6 +1,5 @@
 import TextFieldComponent from './TextField';
 import assert from 'assert';
-import Component from '../_classes/component/Component';
 describe('TextField Unit Tests', () => {
   it('Should create a new TextField', () => {
     const textField = new TextFieldComponent({

@@ -1,6 +1,5 @@
 import ButtonComponent from './Button';
 import assert from 'assert';
-import Component from '../_classes/component/Component';
 describe('Button Unit Tests', () => {
   it('Should create a new Button', () => {
     const button = new ButtonComponent({

@@ -1,6 +1,5 @@
 import CheckBoxComponent from './Checkbox';
 import assert from 'assert';
-import Component from '../_classes/component/Component';
 describe('Checkbox Unit Tests', () => {
   it('Should create a new Checkbox component', () => {
     const checkbox = new CheckBoxComponent({
