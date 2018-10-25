@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.6.11
+### Changed
+ - Export the "moment" object in FormioUtils so that it can be accessed from outside libraries.
+
 ## 3.6.10
 ### Fixed
  - FOR-1491: Fix bug with Day when form rendered as HTML 
