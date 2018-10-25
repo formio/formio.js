@@ -87,14 +87,15 @@ describe('Base Component Unit Tests', () => {
     const component = new Component({
       label:'Test Component',
       key: 'testComponent',
+      defaultValue: 'My Value',
       validate: {
         required: true
       }
     });
-    console.log(component.errors);
+
     assert.equal(component.label,'Test Component');
     assert.equal(component.key,'testComponent');
-    assert.equal(component.error,'');
+    assert.equal(component.isValid(component.defaultValue,true),true);
   });
   it('Setting custom class',() => {
     const component = new Component({
