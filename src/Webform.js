@@ -103,6 +103,7 @@ export default class Webform extends NestedComponent {
     this._loading = false;
     this._submission = {};
     this._form = {};
+    this.customErrors = [];
 
     /**
      * Determines if this form should submit the API on submit.
@@ -850,7 +851,7 @@ export default class Webform extends NestedComponent {
    */
   build(state) {
     this.on('submitButton', (options) => this.submit(false, options), true);
-    this.on('checkValidity', (data) => this.checkValidity(data, true), true);
+    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() => {
@@ -877,10 +878,24 @@ export default class Webform extends NestedComponent {
         errors.push(error);
       }
     }
+
+    errors = errors.concat(this.customErrors);
+
     if (!errors.length) {
       this.setAlert(false);
       return;
     }
+
+    // Mark any components as invalid if in a custom message.
+    this.customErrors.forEach(err => {
+      if (err.component) {
+        const component = this.getComponent(err.component);
+        if (component) {
+          component.setCustomValidity(err.message, true);
+        }
+      }
+    });
+
     const message = `
       <p>${this.t('error')}</p>
       <ul>
@@ -949,6 +964,11 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed) {
+    // For any change events, clear any custom errors for that component.
+    if (changed && changed.component) {
+      this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
+    }
+
     super.onChange(flags, true);
     const value = _.clone(this._submission);
     value.changed = changed;
@@ -1039,27 +1059,46 @@ export default class Webform extends NestedComponent {
           return reject();
         }
 
-        this.loading = true;
+        this.hook('customValidation', submission, (err) => {
+          if (err) {
+            // If string is returned, cast to object.
+            if (typeof err === 'string') {
+              err = {
+                message: err
+              };
+            }
 
-        // Use the form action to submit the form if available.
-        let submitFormio = this.formio;
-        if (this._form && this._form.action) {
-          submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
-        }
+            // Ensure err is an array.
+            err = Array.isArray(err) ? err : [err];
 
-        if (this.nosubmit || !submitFormio) {
-          return resolve({
-            submission: submission,
-            saved: false
-          });
-        }
+            // Set as custom errors.
+            this.customErrors = err;
 
-        // If this is an actionUrl, then make sure to save the action and not the submission.
-        const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
-        submitFormio[submitMethod](submission).then(result => resolve({
-          submission: result,
-          saved: true
-        })).catch(reject);
+            return reject();
+          }
+
+          this.loading = true;
+
+          // Use the form action to submit the form if available.
+          let submitFormio = this.formio;
+          if (this._form && this._form.action) {
+            submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
+          }
+
+          if (this.nosubmit || !submitFormio) {
+            return resolve({
+              submission: submission,
+              saved: false
+            });
+          }
+
+          // If this is an actionUrl, then make sure to save the action and not the submission.
+          const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
+          submitFormio[submitMethod](submission).then(result => resolve({
+            submission: result,
+            saved: true
+          })).catch(reject);
+        });
       });
     });
   }

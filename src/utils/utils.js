@@ -29,7 +29,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic };
+export { jsonLogic, moment };
 
 /**
  * Evaluate a method.
@@ -468,16 +468,34 @@ export function offsetDate(date, timezone) {
 }
 
 /**
+ * Returns if the zones are loaded.
+ *
+ * @return {boolean}
+ */
+export function zonesLoaded() {
+  return moment.zonesLoaded;
+}
+
+/**
+ * Returns if we should load the zones.
+ *
+ * @param timezone
+ * @return {boolean}
+ */
+export function shouldLoadZones(timezone) {
+  if (timezone === currentTimezone() || timezone === 'UTC') {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Externally load the timezone data.
  *
  * @return {Promise<any> | *}
  */
 export function loadZones(timezone) {
-  if (timezone === currentTimezone()) {
-    // Return non-resolving promise.
-    return new Promise(_.noop);
-  }
-  if (timezone === 'UTC') {
+  if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
     return new Promise(_.noop);
   }
@@ -490,34 +508,33 @@ export function loadZones(timezone) {
   ).then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
     moment.zonesLoaded = true;
+
+    // Trigger a global event that the timezones have finished loading.
+    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+      var event = document.createEvent('Event');
+      event.initEvent('zonesLoaded', true, true);
+      document.body.dispatchEvent(event);
+    }
   }));
 }
 
 /**
- * Set the timezone text and replace once timezones have loaded.
+ * Get the moment date object for translating dates with timezones.
  *
- * @param offsetFormat
- * @param stdFormat
+ * @param value
+ * @param format
+ * @param timezone
  * @return {*}
  */
-export function timezoneText(offsetFormat, stdFormat) {
-  loadZones();
-  if (moment.zonesLoaded) {
-    return offsetFormat();
+export function momentDate(value, format, timezone) {
+  const momentDate = moment(value);
+  if (timezone === 'UTC') {
+    timezone = 'Etc/UTC';
   }
-  const id = getRandomComponentId();
-  let tries = 0;
-  moment.zonesPromise.then(function replaceZone() {
-    const element = document.getElementById(id);
-    if (element) {
-      element.innerHTML = offsetFormat();
-    }
-    else if (tries++ < 5) {
-      setTimeout(replaceZone, 100);
-    }
-  });
-  // For now just return the current format, and replace once zones are loaded.
-  return `<span id='${id}'>${stdFormat()}</span>`;
+  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+    return momentDate.tz(timezone);
+  }
+  return momentDate;
 }
 
 /**
@@ -533,11 +550,13 @@ export function formatDate(value, format, timezone) {
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
-      // Return the timezoneText.
-      return timezoneText(
-        () => momentDate.tz(timezone).format(convertFormatToMoment(format)),
-        () => momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')))
-      );
+      loadZones();
+      if (moment.zonesLoaded) {
+        return momentDate.tz(timezone).format(convertFormatToMoment(format));
+      }
+      else {
+        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
+      }
     }
 
     // Return the standard format.
@@ -548,11 +567,14 @@ export function formatDate(value, format, timezone) {
     return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
   }
 
-  // Return the timezoneText.
-  return timezoneText(
-    () => momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`),
-    () => momentDate.format(convertFormatToMoment(format))
-  );
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded) {
+    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  }
+  else {
+    return momentDate.format(convertFormatToMoment(format));
+  }
 }
 
 /**
@@ -572,11 +594,15 @@ export function formatOffset(formatFn, date, format, timezone) {
     return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
   }
 
-  // Return the timezone text.
-  return timezoneText(() => {
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded) {
     const offset = offsetDate(date, timezone);
     return `${formatFn(offset.date, format)} ${offset.abbr}`;
-  }, () => formatFn(date, format));
+  }
+  else {
+    return formatFn(date, format);
+  }
 }
 
 export function getLocaleDateFormatInfo(locale) {

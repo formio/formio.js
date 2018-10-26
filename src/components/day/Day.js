@@ -109,11 +109,22 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
+  getInputValue(input, defaultValue) {
+    if (_.isObject(input)) {
+      if (!_.isNaN(input.value)) {
+        return parseInt(input.value, 10);
+      }
+    }
+
+    return defaultValue;
+  }
+
   validateRequired(setting, value) {
-    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
-    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
-    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
-    if (this.dayRequired && !day) {
+    const day = this.getInputValue(this.dayInput, 0);
+    const month = this.getInputValue(this.monthInput, 0) - 1;
+    const year = this.getInputValue(this.yearInput, 0);
+
+    if (this.dayRequired && day === 0) {
       return false;
     }
 
@@ -121,7 +132,7 @@ export default class DayComponent extends BaseComponent {
       return false;
     }
 
-    if (this.yearRequired && !year) {
+    if (this.yearRequired && year === 0) {
       return false;
     }
 
@@ -412,28 +423,31 @@ export default class DayComponent extends BaseComponent {
     }
     if (this.showYear) {
       format += 'YYYY';
+      return format;
     }
-    return format;
+    else {
+      // Trim off the "/" from the end of the format string.
+      return format.length ? format.substring(0, format.length - 1) : format;
+    }
   }
 
   /**
-   * Return the date object for this component.
-   * @returns {Date}
+   * Return the date for this component.
+   *
+   * @param value
+   * @return {*}
    */
-  get date() {
+  getDate(value) {
     const options = {};
     let defaults = [];
     // Map positions to identifiers
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
-
-    if (this.component.defaultValue) {
-      defaults = this.component.defaultValue
-        .split('/')
-        .map(x => parseInt(x, 10));
+    const defaultValue = value || this.component.defaultValue;
+    if (defaultValue) {
+      defaults = defaultValue.split('/').map(x => parseInt(x, 10));
     }
 
-    const day = this.showDay ? parseInt(this.dayInput.value, 10) : NaN;
-
+    const day = (this.showDay && this.dayInput) ? parseInt(this.dayInput.value, 10) : NaN;
     if (!_.isNaN(day)) {
       options.day = day;
     }
@@ -441,8 +455,7 @@ export default class DayComponent extends BaseComponent {
       options.day = defaults[DAY];
     }
 
-    const month = this.showMonth ? parseInt(this.monthInput.value, 10) : NaN;
-
+    const month = (this.showMonth && this.monthInput) ? parseInt(this.monthInput.value, 10) : NaN;
     if (!_.isNaN(month) && month > 0) {
       // Months are 0 indexed.
       options.month = (month - 1);
@@ -451,8 +464,7 @@ export default class DayComponent extends BaseComponent {
       options.month = defaults[MONTH] - 1;
     }
 
-    const year = this.showYear ? parseInt(this.yearInput.value) : NaN;
-
+    const year = (this.showYear && this.yearInput) ? parseInt(this.yearInput.value) : NaN;
     if (!_.isNaN(year)) {
       options.year = year;
     }
@@ -465,6 +477,14 @@ export default class DayComponent extends BaseComponent {
     }
 
     return moment(options);
+  }
+
+  /**
+   * Return the date object for this component.
+   * @returns {Date}
+   */
+  get date() {
+    return this.getDate();
   }
 
   /**
@@ -499,8 +519,14 @@ export default class DayComponent extends BaseComponent {
     }
   }
 
-  getView() {
-    const date = this.date;
+  /**
+   * Get the view of the date.
+   *
+   * @param value
+   * @return {null}
+   */
+  getView(value) {
+    const date = this.getDate(value);
     if (!date) {
       return null;
     }
