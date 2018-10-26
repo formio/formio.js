@@ -61,13 +61,13 @@ export default class NumberComponent extends BaseComponent {
     this.numberMask = createNumberMask({
       prefix: '',
       suffix: '',
-      requireDecimal: _.get(this.component, 'requireDecimal', false),
-      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
-      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
-      allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal',
-        !(this.component.validate && this.component.validate.integer))
+      requireDecimal: this.component.requireDecimal ?? false,
+      thousandsSeparatorSymbol: this.component.thousandsSeparator ?? this.delimiter,
+      decimalSymbol: this.component.decimalSymbol ?? this.decimalSeparator,
+      decimalLimit: this.component.decimalLimit ?? this.decimalLimit,
+      allowNegative: this.component.allowNegative ?? true,
+      allowDecimal: this.component.allowDecimal ?? !this.component.validate?.integer,
+      fillGaps: this.component.decimalLimit && this.component.requireDecimal,
     });
   }
 
@@ -92,7 +92,8 @@ export default class NumberComponent extends BaseComponent {
 
     input.mask = maskInput({
       inputElement: input,
-      mask: this.numberMask
+      mask: this.numberMask,
+      placeholderChar: '0',
     });
   }
 
