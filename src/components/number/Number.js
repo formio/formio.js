@@ -112,7 +112,7 @@ export default class NumberComponent extends BaseComponent {
     const val = this.inputs[index].value;
 
     if (!val) {
-      return undefined;
+      return this.emptyValue;
     }
 
     return this.parseNumber(val);
@@ -132,8 +132,9 @@ export default class NumberComponent extends BaseComponent {
   }
 
   formatValue(value) {
-    if (this.component.requireDecimal && value && !value.includes(this.decimalSeparator)) {
-      return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
+    if (this.component.requireDecimal && value) {
+      const [integer, fraction = ''] = value.split(this.decimalSeparator);
+      return `${integer}${this.decimalSeparator}${fraction}${_.repeat('0', this.decimalLimit - fraction.length)}`;
     }
 
     return value;

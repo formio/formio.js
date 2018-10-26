@@ -2020,13 +2020,9 @@ export default class BaseComponent extends Component {
    * @return {boolean}
    */
   hasChanged(before, after) {
-    if (
-      ((before === undefined) || (before === null)) &&
-      ((after === undefined) || (after === null))
-    ) {
-      return false;
-    }
-    return !_.isEqual(before, after);
+    return (_.isNil(before) && _.isNil(after))
+      ? false
+      : !_.isEqual(before, after);
   }
 
   /**
@@ -2054,7 +2050,7 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
+    const newValue = value ?? this.getValue(flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {

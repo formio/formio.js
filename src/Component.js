@@ -42,7 +42,7 @@ export default class Component {
      *
      * @type {EventEmitter}
      */
-    this.events = (options && options.events) ? options.events : new EventEmitter({
+    this.events = options?.events ?? new EventEmitter({
       wildcard: false,
       maxListeners: 0
     });
