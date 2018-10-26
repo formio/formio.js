@@ -318,7 +318,7 @@ export default class DataGridComponent extends NestedComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
-      this.dataValue = this.emptyValue;
+      this.dataValue = this.defaultValue;
       this.buildRows();
       return;
     }
