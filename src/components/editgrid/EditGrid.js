@@ -501,6 +501,8 @@ export default class EditGridComponent extends NestedComponent {
 
   setValue(value) {
     if (!value) {
+      this.editRows = this.defaultValue;
+      this.buildTable();
       return;
     }
     if (!Array.isArray(value)) {
@@ -551,10 +553,10 @@ export default class EditGridComponent extends NestedComponent {
 
   clearOnHide(show) {
     super.clearOnHide(show);
-    if (this.component.clearOnHide) {
-      this.editRows = [];
+    if (!this.component.clearOnHide) {
+      // If some components set to clearOnHide we need to clear them.
+      this.buildTable();
     }
-    this.buildTable();
   }
 
   restoreComponentsContext() {
