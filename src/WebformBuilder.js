@@ -654,14 +654,16 @@ export default class WebformBuilder extends Webform {
   }
 
   addBuilderButton(info, container) {
+    let button;
     info.element = this.ce('div', {
         style: 'margin: 5px 0;'
       },
-      this.ce('span', {
+      button = this.ce('span', {
         class: `btn btn-block ${info.style || 'btn-default'}`,
-        onClick: () => this.emit(info.event)
       }, info.title)
     );
+    // Make sure it persists across refreshes.
+    this.addEventListener(button, 'click', () => this.emit(info.event), true);
     this.groups[info.key] = info;
     this.insertInOrder(info, this.groups, info.element, container);
   }
