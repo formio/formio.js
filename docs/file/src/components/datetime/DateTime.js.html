@@ -172,11 +172,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timezoneText">timezoneText</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -238,7 +240,6 @@ export default class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     const timezone = (this.component.timezone || this.options.timezone);
-    const submissionTimezone = this.options.submissionTimezone ||  _.get(this.root, &apos;options.submissionTimezone&apos;);
     const time24hr = !_.get(this.component, &apos;timePicker.showMeridian&apos;, true);
 
     // Change the format to map to the settings.
@@ -257,7 +258,7 @@ export default class DateTimeComponent extends BaseComponent {
       type: &apos;calendar&apos;,
       timezone,
       displayInTimezone: _.get(this.component, &apos;displayInTimezone&apos;, &apos;viewer&apos;),
-      submissionTimezone,
+      submissionTimezone: this.submissionTimezone,
       language: this.options.language,
       useLocaleSettings: _.get(this.component, &apos;useLocaleSettings&apos;, false),
       allowInput: _.get(this.component, &apos;allowInput&apos;, true),
@@ -269,6 +270,7 @@ export default class DateTimeComponent extends BaseComponent {
       hourIncrement: _.get(this.component, &apos;timePicker.hourStep&apos;, 1),
       minuteIncrement: _.get(this.component, &apos;timePicker.minuteStep&apos;, 5),
       time_24hr: time24hr,
+      readOnly: this.options.readOnly,
       minDate: _.get(this.component, &apos;datePicker.minDate&apos;),
       maxDate: _.get(this.component, &apos;datePicker.maxDate&apos;)
     };
@@ -276,6 +278,13 @@ export default class DateTimeComponent extends BaseComponent {
 
     // Add the validators date.
     this.validators.push(&apos;date&apos;);
+  }
+
+  performInputMapping(input) {
+    if (input.widget &amp;&amp; this.widget.settings) {
+      input.widget.settings.submissionTimezone = this.submissionTimezone;
+    }
+    return input;
   }
 
   get defaultSchema() {

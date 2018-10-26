@@ -858,6 +858,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/utils.js~momentdate",
+    "function/index.html#static-function-momentDate",
+    "<span>momentDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~offsetdate",
     "function/index.html#static-function-offsetDate",
     "<span>offsetDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -882,9 +888,9 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/utils/utils.js~timezonetext",
-    "function/index.html#static-function-timezoneText",
-    "<span>timezoneText</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "formiojs/src/utils/utils.js~shouldloadzones",
+    "function/index.html#static-function-shouldLoadZones",
+    "<span>shouldLoadZones</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -903,6 +909,12 @@ window.esdocSearchIndex = [
     "formiojs/src/providers/storage/url.js~url",
     "function/index.html#static-function-url",
     "<span>url</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/url.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~zonesloaded",
+    "function/index.html#static-function-zonesLoaded",
+    "<span>zonesLoaded</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -2083,13 +2095,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2424,6 +2436,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#customerrors",
+    "class/src/Webform.js~Webform.html#instance-member-customErrors",
+    "src/Webform.js~Webform#customErrors",
+    "member"
+  ],
+  [
     "src/webform.js~webform#deletesubmission",
     "class/src/Webform.js~Webform.html#instance-method-deleteSubmission",
     "src/Webform.js~Webform#deleteSubmission",
@@ -2455,13 +2473,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2533,13 +2551,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2701,13 +2719,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2767,13 +2785,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3804,6 +3822,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#checkcondition",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-checkCondition",
+    "src/components/base/Base.js~BaseComponent#checkCondition",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#checkconditions",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-checkConditions",
     "src/components/base/Base.js~BaseComponent#checkConditions",
@@ -3943,13 +3967,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4231,13 +4255,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4404,6 +4428,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#rootvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-rootValue",
+    "src/components/base/Base.js~BaseComponent#rootValue",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#row",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-row",
     "src/components/base/Base.js~BaseComponent#row",
@@ -4504,6 +4534,12 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-splice",
     "src/components/base/Base.js~BaseComponent#splice",
     "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#submissiontimezone",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-submissionTimezone",
+    "src/components/base/Base.js~BaseComponent#submissionTimezone",
+    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#t",
@@ -4609,13 +4645,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5599,13 +5635,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6024,6 +6060,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#performinputmapping",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-performInputMapping",
+    "src/components/datetime/DateTime.js~DateTimeComponent#performInputMapping",
+    "method"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-builderInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent.builderInfo",
@@ -6190,6 +6232,18 @@ window.esdocSearchIndex = [
     "class/src/components/day/Day.js~DayComponent.html#instance-get-format",
     "src/components/day/Day.js~DayComponent#format",
     "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#getdate",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-getDate",
+    "src/components/day/Day.js~DayComponent#getDate",
+    "method"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#getinputvalue",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-getInputValue",
+    "src/components/day/Day.js~DayComponent#getInputValue",
+    "method"
   ],
   [
     "src/components/day/day.js~daycomponent#getvalueat",
@@ -10452,6 +10506,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/widgets/calendarwidget.js~calendarwidget#getdatevalue",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getDateValue",
+    "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",
+    "method"
+  ],
+  [
     "src/widgets/calendarwidget.js~calendarwidget#getvalue",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getValue",
     "src/widgets/CalendarWidget.js~CalendarWidget#getValue",
@@ -10468,6 +10528,12 @@ window.esdocSearchIndex = [
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-input",
     "src/widgets/CalendarWidget.js~CalendarWidget#input",
     "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#loadzones",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-loadZones",
+    "src/widgets/CalendarWidget.js~CalendarWidget#loadZones",
+    "method"
   ],
   [
     "src/widgets/calendarwidget.js~calendarwidget#localeformat",

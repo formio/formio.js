@@ -2,7 +2,6 @@ import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
-import { checkCondition } from '../../utils/utils';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -254,9 +253,9 @@ export default class EditGridComponent extends NestedComponent {
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
-      comp.checkConditions(this.editRows[index].data);
+      comp.checkConditions(data);
       if (!flags.noValidate) {
-        valid &= comp.checkValidity(this.editRows[index].data, !this.editRows[index].isOpen);
+        valid &= comp.checkValidity(data, !this.editRows[index].isOpen);
       }
     });
 
@@ -400,7 +399,7 @@ export default class EditGridComponent extends NestedComponent {
     const isDirty = dirty || !!this.editRows[rowIndex].dirty;
     this.editRows[rowIndex].components.forEach(comp => {
       comp.setPristine(!isDirty);
-      check &= comp.checkValidity(this.editRows[rowIndex].data, isDirty);
+      check &= comp.checkValidity(null, isDirty, this.editRows[rowIndex].data);
     });
 
     if (this.component.validate && this.component.validate.row) {
@@ -425,7 +424,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
     }

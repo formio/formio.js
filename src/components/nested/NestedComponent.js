@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import { checkCondition } from '../../utils/utils';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 
@@ -423,7 +422,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
     }

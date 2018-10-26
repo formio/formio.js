@@ -172,11 +172,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timezoneText">timezoneText</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -185,13 +187,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import CalendarWidget from &apos;<span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber19">formiojs/src/widgets/CalendarWidget.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import CalendarWidget from &apos;<span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber22">formiojs/src/widgets/CalendarWidget.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber19">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber22">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -796,13 +798,43 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getDateValue">getDateValue</a></span></span><span class="code" data-ice="signature">(date: <span>*</span>, format: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Return the date value.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getValue">getValue</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Return the value of the selected date.</p>
+</div>
       </div>
     </td>
     <td>
@@ -852,13 +884,43 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-loadZones">loadZones</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Load the timezones.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Set the selected date value.</p>
+</div>
       </div>
     </td>
     <td>
@@ -2302,7 +2364,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber21">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber24">source</a></span></span>
     </span>
   </h3>
 
@@ -2349,7 +2411,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber48">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber51">source</a></span></span>
     </span>
   </h3>
 
@@ -2395,7 +2457,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber105">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber121">source</a></span></span>
     </span>
   </h3>
 
@@ -2438,7 +2500,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber75">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber96">source</a></span></span>
     </span>
   </h3>
 
@@ -2481,7 +2543,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber187">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber203">source</a></span></span>
     </span>
   </h3>
 
@@ -2524,7 +2586,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber183">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber199">source</a></span></span>
     </span>
   </h3>
 
@@ -2567,7 +2629,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber195">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber211">source</a></span></span>
     </span>
   </h3>
 
@@ -2623,7 +2685,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -2666,7 +2728,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber132">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber148">source</a></span></span>
     </span>
   </h3>
 
@@ -2709,7 +2771,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber199">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber215">source</a></span></span>
     </span>
   </h3>
 
@@ -2752,7 +2814,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber151">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber167">source</a></span></span>
     </span>
   </h3>
 
@@ -2795,7 +2857,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber165">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber181">source</a></span></span>
     </span>
   </h3>
 
@@ -2838,7 +2900,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber169">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber185">source</a></span></span>
     </span>
   </h3>
 
@@ -2881,7 +2943,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber117">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber133">source</a></span></span>
     </span>
   </h3>
 
@@ -2924,7 +2986,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber97">source</a></span></span>
     </span>
   </h3>
 
@@ -2967,7 +3029,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber77">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber98">source</a></span></span>
     </span>
   </h3>
 
@@ -3013,7 +3075,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber136">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber152">source</a></span></span>
     </span>
   </h3>
 
@@ -3084,7 +3146,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber63">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -3143,7 +3205,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber250">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber293">source</a></span></span>
     </span>
   </h3>
 
@@ -3176,6 +3238,84 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getDateValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">getDateValue</span><span class="code" data-ice="signature">(date: <span>*</span>, format: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber227">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Return the date value.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">date</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">format</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-getValue">
     <span class="access" data-ice="access">public</span>
     
@@ -3187,14 +3327,15 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber204">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber236">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Return the value of the selected date.</p>
+</div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/widgets/InputWidget.js~InputWidget.html#instance-method-getValue">InputWidget#getValue</a></span></div>
 
@@ -3242,7 +3383,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber234">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber277">source</a></span></span>
     </span>
   </h3>
 
@@ -3308,6 +3449,63 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-loadZones">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">loadZones</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber71">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Load the timezones.</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>TRUE if the zones are loading, FALSE otherwise.</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-setValue">
     <span class="access" data-ice="access">public</span>
     
@@ -3319,14 +3517,15 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber222">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber260">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Set the selected date value.</p>
+</div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/widgets/InputWidget.js~InputWidget.html#instance-method-setValue">InputWidget#setValue</a></span></div>
 
@@ -3390,7 +3589,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber243">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/widgets/CalendarWidget.js.html#lineNumber286">source</a></span></span>
     </span>
   </h3>
 

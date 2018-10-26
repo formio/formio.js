@@ -172,11 +172,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timezoneText">timezoneText</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -196,6 +198,9 @@ import {
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
+  momentDate,
+  zonesLoaded,
+  shouldLoadZones,
   loadZones
 } from &apos;../utils/utils&apos;;
 import moment from &apos;moment&apos;;
@@ -247,6 +252,24 @@ export default class CalendarWidget extends InputWidget {
     this.component.suffix = true;
   }
 
+  /**
+   * Load the timezones.
+   *
+   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.
+   */
+  loadZones() {
+    const timezone = this.timezone;
+    if (!zonesLoaded() &amp;&amp; shouldLoadZones(timezone)) {
+      loadZones(timezone).then(() =&gt; this.emit(&apos;redraw&apos;));
+
+      // Return zones are loading.
+      return true;
+    }
+
+    // Zones are already loaded.
+    return false;
+  }
+
   attach(input) {
     super.attach(input);
     if (input &amp;&amp; !input.getAttribute(&apos;placeholder&apos;)) {
@@ -272,16 +295,11 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) =&gt; {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly &amp;&amp; (format === this.settings.altFormat)) {
-        if (this.settings.saveAs === &apos;text&apos;) {
+        if (this.settings.saveAs === &apos;text&apos; || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
-        if (!moment.zonesLoaded) {
-          loadZones(this.timezone).then(() =&gt; this.redraw());
-          return Flatpickr.formatDate(date, format);
-        }
-
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () =&gt; this.emit(&apos;redraw&apos;));
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
       return Flatpickr.formatDate(date, format);
@@ -388,6 +406,22 @@ export default class CalendarWidget extends InputWidget {
     return defaultDate ? defaultDate.toISOString() : &apos;&apos;;
   }
 
+  /**
+   * Return the date value.
+   *
+   * @param date
+   * @param format
+   * @return {string}
+   */
+  getDateValue(date, format) {
+    return moment(date).format(convertFormatToMoment(format));
+  }
+
+  /**
+   * Return the value of the selected date.
+   *
+   * @return {*}
+   */
   getValue() {
     // Standard output format.
     if (!this.calendar) {
@@ -400,18 +434,29 @@ export default class CalendarWidget extends InputWidget {
       return super.getValue();
     }
 
-    // Return a formatted version of the date to store in string format.
-    return (dates[0] instanceof Date) ?
-      this.getView(dates[0], this.valueFormat) :
-      &apos;Invalid Date&apos;;
+    if (!(dates[0] instanceof Date)) {
+      return &apos;Invalid Date&apos;;
+    }
+
+    return this.getDateValue(dates[0], this.valueFormat);
   }
 
+  /**
+   * Set the selected date value.
+   *
+   * @param value
+   */
   setValue(value) {
     if (!this.calendar) {
       return super.setValue(value);
     }
     if (value) {
-      this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
+      if ((this.settings.saveAs !== &apos;text&apos;) &amp;&amp; this.settings.readOnly &amp;&amp; !this.loadZones()) {
+        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
+      }
+      else {
+        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
+      }
     }
     else {
       this.calendar.clear(false);
@@ -421,7 +466,7 @@ export default class CalendarWidget extends InputWidget {
   getView(value, format) {
     format = format || this.dateFormat;
     if (this.settings.saveAs === &apos;text&apos;) {
-      return moment(value).format(convertFormatToMoment(format));
+      return this.getDateValue(value, format);
     }
 
     return formatDate(value, format, this.timezone);
