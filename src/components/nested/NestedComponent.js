@@ -139,6 +139,11 @@ export default class NestedComponent extends BaseComponent {
   createComponent(component, options, data, before, state) {
     options = options || this.options;
     data = data || this.data;
+
+    if (this.component.clearOnHide) {
+      component.clearOnHide = true;
+    }
+
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
@@ -346,7 +351,14 @@ export default class NestedComponent extends BaseComponent {
 
   clearOnHide(show) {
     super.clearOnHide(show);
+    if (this.component.clearOnHide && this.hasValue()) {
+      this.restoreComponentsContext();
+    }
     this.getComponents().forEach((component) => component.clearOnHide(show));
+  }
+
+  restoreComponentsContext() {
+    this.getComponents().forEach((component) => component.data = this.dataValue);
   }
 
   show(show) {

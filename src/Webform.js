@@ -232,6 +232,8 @@ export default class Webform extends NestedComponent {
     this.localize().then(() => {
       this.language = this.options.language;
     });
+
+    this.component.clearOnHide = false;
   }
   /* eslint-enable max-statements */
 

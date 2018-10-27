@@ -2076,7 +2076,7 @@ export default class BaseComponent extends Component {
     }
     else {
       const defaultValue = this.defaultValue;
-      if (defaultValue) {
+      if (!_.isNil(defaultValue)) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
