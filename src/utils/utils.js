@@ -319,9 +319,10 @@ export function setActionProperty(component, action, row, data, result, instance
         component,
         result
       };
+      const textValue = action.property.component ? action[action.property.component] : action.text;
       const newValue = (instance && instance.interpolate) ?
-        instance.interpolate(action.text, evalData) :
-        interpolate(action.text, evalData);
+        instance.interpolate(textValue, evalData) :
+        interpolate(textValue, evalData);
       if (newValue !== _.get(component, action.property.value, '')) {
         _.set(component, action.property.value, newValue);
       }

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Children components context for Container, DataGrid and EditGrid component.
+### Added
+ - Content property to HTML and Content components Logic.
 
 ## 3.6.11
 ### Changed
