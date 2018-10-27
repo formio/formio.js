@@ -193,6 +193,7 @@ import BaseComponent from &apos;../base/Base&apos;;
 export default class HTMLComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
+      label: &apos;HTML&apos;,
       type: &apos;htmlelement&apos;,
       tag: &apos;p&apos;,
       attrs: [],

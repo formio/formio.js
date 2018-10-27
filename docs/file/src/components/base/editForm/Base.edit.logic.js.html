@@ -190,6 +190,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable quotes, max-len */
 export default [
   {
+    weight: 0,
     input: true,
     label: &apos;Advanced Logic&apos;,
     key: &apos;logic&apos;,
@@ -203,6 +204,7 @@ export default [
     saveRow: &apos;Save Logic&apos;,
     components: [
       {
+        weight: 0,
         input: true,
         inputType: &apos;text&apos;,
         label: &apos;Logic Name&apos;,
@@ -213,14 +215,17 @@ export default [
         type: &apos;textfield&apos;
       },
       {
+        weight: 10,
         key: &apos;triggerPanel&apos;,
         input: false,
         title: &apos;Trigger&apos;,
         components: [
           {
+            weight: 0,
             input: true,
             components: [
               {
+                weight: 0,
                 input: true,
                 label: &apos;Type&apos;,
                 key: &apos;type&apos;,
@@ -249,6 +254,7 @@ export default [
                 type: &apos;select&apos;,
               },
               {
+                weight: 10,
                 label: &apos;&apos;,
                 key: &apos;simple&apos;,
                 type: &apos;container&apos;,
@@ -290,6 +296,7 @@ export default [
                 ]
               },
               {
+                weight: 10,
                 type: &apos;textarea&apos;,
                 key: &apos;javascript&apos;,
                 rows: 5,
@@ -300,6 +307,7 @@ export default [
                 customConditional: &apos;show = row.type === &quot;javascript&quot;;&apos;
               },
               {
+                weight: 10,
                 type: &apos;textarea&apos;,
                 key: &apos;json&apos;,
                 rows: 5,
@@ -312,6 +320,7 @@ export default [
                 customConditional: &apos;show = row.type === &quot;json&quot;;&apos;,
               },
               {
+                weight: 10,
                 type: &apos;textfield&apos;,
                 key: &apos;event&apos;,
                 label: &apos;Event Name&apos;,
@@ -327,6 +336,7 @@ export default [
         type: &apos;panel&apos;,
       },
       {
+        weight: 20,
         input: true,
         label: &apos;Actions&apos;,
         key: &apos;actions&apos;,
@@ -340,12 +350,14 @@ export default [
         saveRow: &apos;Save Action&apos;,
         components: [
           {
+            weight: 0,
             title: &apos;Action&apos;,
             input: false,
             key: &apos;actionPanel&apos;,
             type: &apos;panel&apos;,
             components: [
               {
+                weight: 0,
                 input: true,
                 inputType: &apos;text&apos;,
                 label: &apos;Action Name&apos;,
@@ -356,6 +368,7 @@ export default [
                 type: &apos;textfield&apos;,
               },
               {
+                weight: 10,
                 input: true,
                 label: &apos;Type&apos;,
                 key: &apos;type&apos;,
@@ -380,7 +393,7 @@ export default [
                 type: &apos;select&apos;,
               },
               {
-
+                weight: 20,
                 type: &apos;select&apos;,
                 template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
                 dataSrc: &apos;json&apos;,
@@ -392,7 +405,7 @@ export default [
                       type: &apos;boolean&apos;
                     },
                     {
-                      label: &apos;required&apos;,
+                      label: &apos;Required&apos;,
                       value: &apos;validate.required&apos;,
                       type: &apos;boolean&apos;
                     },
@@ -445,6 +458,7 @@ export default [
                 customConditional: &apos;show = row.type === &quot;property&quot;;&apos;,
               },
               {
+                weight: 30,
                 input: true,
                 label: &apos;Set State&apos;,
                 key: &apos;state&apos;,
@@ -466,15 +480,17 @@ export default [
                 customConditional: &apos;show = row.type === &quot;property&quot; &amp;&amp; row.hasOwnProperty(&quot;property&quot;) &amp;&amp; row.property.type === &quot;boolean&quot;;&apos;,
               },
               {
+                weight: 30,
                 type: &apos;textfield&apos;,
                 key: &apos;text&apos;,
                 label: &apos;Text&apos;,
                 inputType: &apos;text&apos;,
                 input: true,
                 description: &apos;Can use templating with {{ data.myfield }}. &quot;data&quot;, &quot;row&quot;, &quot;component&quot; and &quot;result&quot; variables are available.&apos;,
-                customConditional: &apos;show = row.type === &quot;property&quot; &amp;&amp; row.hasOwnProperty(&quot;property&quot;) &amp;&amp; row.property.type === &quot;string&quot;;&apos;,
+                customConditional: &apos;show = row.type === &quot;property&quot; &amp;&amp; row.hasOwnProperty(&quot;property&quot;) &amp;&amp; row.property.type === &quot;string&quot; &amp;&amp; !row.property.component;&apos;,
               },
               {
+                weight: 20,
                 input: true,
                 label: &apos;Value (Javascript)&apos;,
                 key: &apos;value&apos;,

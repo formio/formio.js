@@ -194,6 +194,7 @@ import BaseComponent from &apos;../base/Base&apos;;
 export default class ContainerComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
+      label: &apos;Container&apos;,
       type: &apos;container&apos;,
       key: &apos;container&apos;,
       clearOnHide: true,

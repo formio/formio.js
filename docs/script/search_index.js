@@ -2473,13 +2473,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2551,13 +2551,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2707,25 +2707,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
-    "src/Webform.js~Webform#src",
-    "member"
-  ],
-  [
-    "src/webform.js~webform#src",
     "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
-    "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
-    "src/Webform.js~Webform#submission",
+    "src/webform.js~webform#src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
+    "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
     "class/src/Webform.js~Webform.html#instance-set-submission",
+    "src/Webform.js~Webform#submission",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3967,13 +3967,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4255,13 +4255,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4969,13 +4969,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5472,6 +5472,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/content/editform/content.edit.logic.js",
+    "file/src/components/content/editForm/Content.edit.logic.js.html",
+    "src/components/content/editForm/Content.edit.logic.js",
+    "file"
+  ],
+  [
     "src/components/content/fixtures/comp1.js",
     "file/src/components/content/fixtures/comp1.js.html",
     "src/components/content/fixtures/comp1.js",
@@ -5635,13 +5641,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -5734,6 +5740,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-numRows",
     "src/components/datagrid/DataGrid.js~DataGridComponent#numRows",
     "member"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#restorecomponentscontext",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-restoreComponentsContext",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#restoreComponentsContext",
+    "method"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#rows",
@@ -6444,6 +6456,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#clearonhide",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-clearOnHide",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#clearOnHide",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#constructor",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-constructor-constructor",
     "src/components/editgrid/EditGrid.js~EditGridComponent#constructor",
@@ -6525,6 +6543,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#removerowcomponents",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-removeRowComponents",
     "src/components/editgrid/EditGrid.js~EditGridComponent#removeRowComponents",
+    "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#restorecomponentscontext",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-restoreComponentsContext",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#restoreComponentsContext",
     "method"
   ],
   [
@@ -7410,6 +7434,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/html/editform/html.edit.logic.js",
+    "file/src/components/html/editForm/HTML.edit.logic.js.html",
+    "src/components/html/editForm/HTML.edit.logic.js",
+    "file"
+  ],
+  [
     "src/components/html/fixtures/comp1.js",
     "file/src/components/html/fixtures/comp1.js.html",
     "src/components/html/fixtures/comp1.js",
@@ -7785,6 +7815,12 @@ window.esdocSearchIndex = [
     "src/components/nested/nestedcomponent.js~nestedcomponent#resetvalue",
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-resetValue",
     "src/components/nested/NestedComponent.js~NestedComponent#resetValue",
+    "method"
+  ],
+  [
+    "src/components/nested/nestedcomponent.js~nestedcomponent#restorecomponentscontext",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-restoreComponentsContext",
+    "src/components/nested/NestedComponent.js~NestedComponent#restoreComponentsContext",
     "method"
   ],
   [

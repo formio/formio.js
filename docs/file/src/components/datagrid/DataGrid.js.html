@@ -271,7 +271,7 @@ export default class DataGridComponent extends NestedComponent {
     this.createElement();
     this.createLabel(this.element);
     let tableClass = &apos;table datagrid-table table-bordered form-group formio-data-grid &apos;;
-    _.each([&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;], (prop) =&gt; {
+    [&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;].forEach((prop) =&gt; {
       if (this.component[prop]) {
         tableClass += `table-${prop} `;
       }
@@ -305,7 +305,7 @@ export default class DataGridComponent extends NestedComponent {
       return this.visibleComponents;
     }
 
-    this.visibleComponents = _.filter(this.component.components, comp =&gt; this.visibleColumns[comp.key]);
+    this.visibleComponents = this.component.components.filter((comp) =&gt; this.visibleColumns[comp.key]);
     this.numColumns += this.visibleComponents.length;
   }
 
@@ -365,7 +365,7 @@ export default class DataGridComponent extends NestedComponent {
 
   get dataValue() {
     const dataValue = super.dataValue;
-    if (!dataValue || !_.isArray(dataValue)) {
+    if (!dataValue || !Array.isArray(dataValue)) {
       return this.emptyValue;
     }
     return dataValue;
@@ -377,7 +377,7 @@ export default class DataGridComponent extends NestedComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
-    if (_.isArray(value)) {
+    if (Array.isArray(value)) {
       return value;
     }
     if (value &amp;&amp; (typeof value === &apos;object&apos;)) {
@@ -418,7 +418,7 @@ export default class DataGridComponent extends NestedComponent {
   destroyRows() {
     const state = {};
     state.rows = state.rows || {};
-    _.each(this.rows, (row, rowIndex) =&gt; _.each(row, col =&gt; {
+    this.rows.forEach((row, rowIndex) =&gt; _.forIn(row, col =&gt; {
       state.rows[rowIndex] = state.rows[rowIndex] || {};
       const compState = this.removeComponent(col, row);
       if (col.key &amp;&amp; compState) {
@@ -470,9 +470,9 @@ export default class DataGridComponent extends NestedComponent {
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    _.each(this.component.components, (col) =&gt; {
+    this.component.components.forEach((col) =&gt; {
       let showColumn = false;
-      _.each(this.rows, (comps) =&gt; {
+      this.rows.forEach((comps) =&gt; {
         if (comps &amp;&amp; comps[col.key] &amp;&amp; typeof comps[col.key].checkConditions === &apos;function&apos;) {
           showColumn |= comps[col.key].checkConditions(data);
         }
@@ -507,6 +507,7 @@ export default class DataGridComponent extends NestedComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
+      this.dataValue = this.defaultValue;
       this.buildRows();
       return;
     }
@@ -559,11 +560,11 @@ export default class DataGridComponent extends NestedComponent {
     if (shouldBuildRows) {
       this.buildRows();
     }
-    _.each(this.rows, (row, index) =&gt; {
+    this.rows.forEach((row, index) =&gt; {
       if (value.length &lt;= index) {
         return;
       }
-      _.each(row, component =&gt; this.setNestedValue(component, value[index], flags));
+      _.forIn(row, component =&gt; this.setNestedValue(component, value[index], flags));
     });
     return changed;
   }
@@ -576,6 +577,10 @@ export default class DataGridComponent extends NestedComponent {
    */
   getValue() {
     return this.dataValue;
+  }
+
+  restoreComponentsContext() {
+    this.rows.forEach((row, index) =&gt; _.forIn(row, (component) =&gt; component.data = this.dataValue[index]));
   }
 }
 </code></pre>
