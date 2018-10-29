@@ -71,7 +71,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return false;
+    return undefined;
   }
 
   createElement() {
@@ -129,10 +129,6 @@ export default class CheckBoxComponent extends BaseComponent {
         marginLeft: 0
       });
     }
-  }
-
-  isEmpty(value) {
-    return super.isEmpty(value) || value === false;
   }
 
   createLabel(container, input) {

@@ -525,7 +525,9 @@ export default class SelectComponent extends BaseComponent {
     else {
       this.focusableElement = this.choices.containerInner;
       this.choices.containerOuter.setAttribute('tabIndex', '-1');
-      this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+      if (useSearch) {
+        this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+      }
     }
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
