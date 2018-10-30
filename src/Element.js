@@ -317,7 +317,10 @@ export default class Element {
       if (placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
       }
-      this.inputMasks.push(input.mask);
+      // prevent pushing undefined value to array in case of vanilla-text-mask error catched above
+      if (input.mask) {
+        this.inputMasks.push(input.mask);
+      }
     }
   }
 
