@@ -287,14 +287,27 @@ export default class NestedComponent extends BaseComponent {
     }
     else {
       const components = this.hook('addComponents', this.componentComponents, this) || [];
-      components.forEach((component) => {
-        let compState = {};
-        if (state && state.components && state.components[component.key]) {
-          compState = state.components[component.key];
-        }
-        this.addComponent(component, element, data, null, null, compState);
-      });
+      components.forEach((component) => this.addComponent(
+        component,
+        element,
+        data,
+        null,
+        null,
+        this.getComponentState(component, state)
+      ));
     }
+  }
+
+  getComponentState(component = {}, state = {}) {
+    const { key } = component;
+    const { components } = state;
+    const substate = {};
+
+    if (components) {
+      Object.assign(substate, components[key]);
+    }
+
+    return substate;
   }
 
   updateValue(flags) {

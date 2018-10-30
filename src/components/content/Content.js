@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import BaseComponent from '../base/Base';
 
 export default class ContentComponent extends BaseComponent {
@@ -30,7 +31,8 @@ export default class ContentComponent extends BaseComponent {
     this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
-  build() {
+  build(state = {}) {
+    const { quill = {} } = state;
     this.createElement();
     this.htmlElement = this.ce('div', {
       id: this.id,
@@ -45,7 +47,22 @@ export default class ContentComponent extends BaseComponent {
       this.addQuill(editorElement, this.wysiwygDefault, (element) => {
         this.component.html = element.value;
       }).then((editor) => {
-        editor.setContents(editor.clipboard.convert(this.component.html));
+        let contents = quill.contents;
+        if (_.isString(contents)) {
+          try {
+            contents = JSON.parse(contents);
+          }
+          catch (err) {
+            console.warn(err);
+          }
+        }
+
+        if (_.isObject(contents)) {
+          editor.setContents(contents);
+        }
+        else {
+          editor.clipboard.dangerouslyPasteHTML(this.component.html);
+        }
       }).catch(err => console.warn(err));
     }
     else {
@@ -61,5 +78,22 @@ export default class ContentComponent extends BaseComponent {
 
   get emptyValue() {
     return '';
+  }
+
+  destroy() {
+    const state = super.destroy();
+
+    if (this.quill) {
+      try {
+        state.quill = {
+          contents: JSON.stringify(this.quill.getContents())
+        };
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    return state;
   }
 }
