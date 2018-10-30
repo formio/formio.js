@@ -4,6 +4,7 @@ export default class ColumnComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+    this.hideOnChildrenHidden = this.component.hideOnChildrenHidden != null ? this.component.hideOnChildrenHidden : true;
   }
 
   get className() {
@@ -17,7 +18,7 @@ export default class ColumnComponent extends NestedComponent {
 
   conditionallyVisible(data) {
     const allChildrenHidden = _.every(this.getComponents(), ['visible', false]);
-    if (allChildrenHidden) {
+    if (allChildrenHidden && this.hideOnChildrenHidden) {
       return false;
     }
     return super.conditionallyVisible(data);
