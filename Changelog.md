@@ -4,17 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Number component min and max validation.
+
 ## 3.6.12
 ### Fixed
  - FOR-1745: Children components context for Container, DataGrid and EditGrid component.
  - Make sidebar buttons work after adding component.
- 
+
 ### Added
  - FOR-1757: Content property to HTML and Content components Logic.
 
 ### Changed
  - Upgraded webpack@4.23.1, eslint@5.8.0, i18next@12.0.0
- 
+
 ## 3.6.11
 ### Changed
  - Export the "moment" object in FormioUtils so that it can be accessed from outside libraries.
