@@ -97,7 +97,7 @@ export default {
       },
       check(component, setting, value) {
         const min = parseFloat(setting);
-        if (!min || (!_.isNumber(value))) {
+        if (Number.isNaN(min) || (!_.isNumber(value))) {
           return true;
         }
         return parseFloat(value) >= min;
@@ -114,7 +114,7 @@ export default {
       },
       check(component, setting, value) {
         const max = parseFloat(setting);
-        if (!max || (!_.isNumber(value))) {
+        if (Number.isNaN(max) || (!_.isNumber(value))) {
           return true;
         }
         return parseFloat(value) <= max;
