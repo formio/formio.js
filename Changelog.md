@@ -8,6 +8,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Content property to HTML and Content components Logic.
 
+### Fixed
+ - Number component min and max validation.
+
+## 3.6.12
+### Fixed
+ - FOR-1745: Children components context for Container, DataGrid and EditGrid component.
+ - Make sidebar buttons work after adding component.
+
+### Added
+ - FOR-1757: Content property to HTML and Content components Logic.
+
+### Changed
+ - Upgraded webpack@4.23.1, eslint@5.8.0, i18next@12.0.0
+
+## 3.6.11
+### Changed
+ - Export the "moment" object in FormioUtils so that it can be accessed from outside libraries.
+
+## 3.6.10
+### Fixed
+ - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1812: Fixed issues where timezones were not converting properly.
+
+## 3.6.9
+### Fixed
+ - FOR-1747: Fixed many issues related to contextual data getting swapped (row vs. data) for certain checks within the renderer.
+ - Issues where error messages for fields would get drowned out (color-wise) when errors are showing up per-field.
+
+## 3.6.8
+### Fixed
+ - FOR-1793: Fixed an issue where a "/" would be appended to the Day component value when "Hide Year" was checked.
+ - Fixed a small bug where components may disable when they are not supposed to be.
+ - Problems where the highlighted errors and custom errors would not persist when they are presented.
+ - FOR-1789: Fixed an error where day component would cause beta portal to show 'Cannot read property data of undefined' in data section.
+
+### Changed
+ - Upgrade gulp-sass@4.0.2, i18next@11.10.0, eslint@5.7.0, webpack@4.21.0
+
 ## 3.6.7
 ### Fixed
  - Issue with preview destroy on change.
