@@ -48,9 +48,6 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    // See if this should use the template.
-    this.useTemplate = (this.component.dataSrc !== 'values') && this.component.template;
-
     // If this component has been activated.
     this.activated = false;
 
@@ -85,7 +82,7 @@ export default class SelectComponent extends Field {
     }
 
     // Perform a fast interpretation if we should not use the template.
-    if (data && !this.useTemplate) {
+    if (data && !this.component.template) {
       const itemLabel = data.label || data;
       return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
     }
