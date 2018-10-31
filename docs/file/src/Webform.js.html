@@ -1324,7 +1324,7 @@ export default class Webform extends NestedComponent {
    */
   submit(before, options) {
     if (!before) {
-      return this.beforeSubmit(options).then(() =&gt; this.executeSubmit(options)).catch(err =&gt; console.warn(err));
+      return this.beforeSubmit(options).then(() =&gt; this.executeSubmit(options));
     }
     else {
       return this.executeSubmit(options);
