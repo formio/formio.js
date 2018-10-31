@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Content property to HTML and Content components Logic.
  - FOR-1806: languageChanged event
 
+### Fixed
+ - Select component Values template.
+
 ## 3.6.13
 ### Fixed
  - FOR-1821: Number component min and max validation.
