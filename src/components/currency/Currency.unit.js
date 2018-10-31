@@ -1,6 +1,5 @@
 import CurrencyComponent from './Currency';
 import assert from 'assert';
-import currencyComponent from '../currency/currency';
 describe('Currency Unit Tests', () => {
   it('Should create a new Currency component', () => {
     const currency = new CurrencyComponent({
