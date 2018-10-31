@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Content property to HTML and Content components Logic.
+ - FOR-1806: languageChanged event
+
+## 3.6.13
+### Fixed
+ - FOR-1821: Number component min and max validation.
+ - FOR-1731: Fix bug with Content component in Wizard builder.
+ - FOR-1728: Fixed more issues around text masks and iOS browsers.
+ - FOR-1646: Blur events are forcing the select dropdowns to close.
+ - FOR-1647: Checkboxes are not getting set in the correct default states.
 
 ### Fixed
  - Number component min and max validation.
