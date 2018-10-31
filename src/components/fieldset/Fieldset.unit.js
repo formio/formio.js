@@ -1,4 +1,4 @@
-import FieldsetComponent from './FieldSet';
+import FieldsetComponent from './Fieldset';
 import assert from 'assert';
 describe('FieldSet Unit Tests', () => {
   it('Should create a new FieldSet component', () => {
