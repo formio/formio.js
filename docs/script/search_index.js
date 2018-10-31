@@ -2473,13 +2473,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2551,13 +2551,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2707,25 +2707,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
-    "src/Webform.js~Webform#src",
-    "member"
-  ],
-  [
-    "src/webform.js~webform#src",
     "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
-    "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
-    "src/Webform.js~Webform#submission",
+    "src/webform.js~webform#src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
+    "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
     "class/src/Webform.js~Webform.html#instance-get-submission",
+    "src/Webform.js~Webform#submission",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3349,13 +3349,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4969,13 +4969,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5050,12 +5050,6 @@ window.esdocSearchIndex = [
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-input",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#input",
     "member"
-  ],
-  [
-    "src/components/checkbox/checkbox.js~checkboxcomponent#isempty",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-isEmpty",
-    "src/components/checkbox/Checkbox.js~CheckBoxComponent#isEmpty",
-    "method"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#key",
@@ -5428,6 +5422,12 @@ window.esdocSearchIndex = [
     "class/src/components/content/Content.js~ContentComponent.html#instance-get-defaultSchema",
     "src/components/content/Content.js~ContentComponent#defaultSchema",
     "member"
+  ],
+  [
+    "src/components/content/content.js~contentcomponent#destroy",
+    "class/src/components/content/Content.js~ContentComponent.html#instance-method-destroy",
+    "src/components/content/Content.js~ContentComponent#destroy",
+    "method"
   ],
   [
     "src/components/content/content.js~contentcomponent#emptyvalue",
@@ -7749,6 +7749,12 @@ window.esdocSearchIndex = [
     "src/components/nested/nestedcomponent.js~nestedcomponent#getcomponentbyid",
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-getComponentById",
     "src/components/nested/NestedComponent.js~NestedComponent#getComponentById",
+    "method"
+  ],
+  [
+    "src/components/nested/nestedcomponent.js~nestedcomponent#getcomponentstate",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-getComponentState",
+    "src/components/nested/NestedComponent.js~NestedComponent#getComponentState",
     "method"
   ],
   [

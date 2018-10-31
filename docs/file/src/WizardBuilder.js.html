@@ -227,8 +227,19 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   deleteComponent(component) {
-    if (super.deleteComponent(component)) {
-      this.gotoPage(0);
+    let cb;
+    const isPage = this.components.includes(component);
+
+    if (isPage) {
+      cb = () =&gt; this.currentPage = 0;
+
+      this.on(&apos;deleteComponent&apos;, cb);
+    }
+
+    super.deleteComponent(component);
+
+    if (isPage) {
+      this.off(&apos;deleteComponent&apos;, cb);
     }
   }
 
@@ -244,16 +255,20 @@ export default class WizardBuilder extends WebformBuilder {
     this.addComponent(newPage);
     this.emit(&apos;saveComponent&apos;, newPage);
     this.form = this.schema;
-    this.redraw();
   }
 
   addComponents(element, data, options, state) {
     element = element || this.getContainer();
     data = data || this.data;
     const components = this.hook(&apos;addComponents&apos;, this.componentComponents, this);
-    _.each(components, (component, index) =&gt; {
-      this.addComponent(component, element, data, null, (index !== this.currentPage), state);
-    });
+    _.each(components, (component, index) =&gt; this.addComponent(
+      component,
+      element,
+      data,
+      null,
+      (index !== this.currentPage),
+      this.getComponentState(component, state)
+    ));
   }
 
   gotoPage(page) {
@@ -311,8 +326,8 @@ export default class WizardBuilder extends WebformBuilder {
     this.pageBar.appendChild(this.ce(&apos;li&apos;, null, newPage));
   }
 
-  build() {
-    super.build();
+  build(state) {
+    super.build(state);
     this.builderReady.then(() =&gt; this.buildPageBar());
   }
 }

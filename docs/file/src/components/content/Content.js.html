@@ -187,7 +187,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/content/Content.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import BaseComponent from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import BaseComponent from &apos;../base/Base&apos;;
 
 export default class ContentComponent extends BaseComponent {
   static schema(...extend) {
@@ -219,7 +220,8 @@ export default class ContentComponent extends BaseComponent {
     this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
-  build() {
+  build(state = {}) {
+    const { quill = {} } = state;
     this.createElement();
     this.htmlElement = this.ce(&apos;div&apos;, {
       id: this.id,
@@ -234,7 +236,22 @@ export default class ContentComponent extends BaseComponent {
       this.addQuill(editorElement, this.wysiwygDefault, (element) =&gt; {
         this.component.html = element.value;
       }).then((editor) =&gt; {
-        editor.setContents(editor.clipboard.convert(this.component.html));
+        let contents = quill.contents;
+        if (_.isString(contents)) {
+          try {
+            contents = JSON.parse(contents);
+          }
+          catch (err) {
+            console.warn(err);
+          }
+        }
+
+        if (_.isObject(contents)) {
+          editor.setContents(contents);
+        }
+        else {
+          editor.clipboard.dangerouslyPasteHTML(this.component.html);
+        }
       }).catch(err =&gt; console.warn(err));
     }
     else {
@@ -250,6 +267,23 @@ export default class ContentComponent extends BaseComponent {
 
   get emptyValue() {
     return &apos;&apos;;
+  }
+
+  destroy() {
+    const state = super.destroy();
+
+    if (this.quill) {
+      try {
+        state.quill = {
+          contents: JSON.stringify(this.quill.getContents())
+        };
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    return state;
   }
 }
 </code></pre>

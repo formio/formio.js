@@ -2007,6 +2007,9 @@ export default class BaseComponent extends Component {
       theme: &apos;snow&apos;,
       placeholder: this.t(this.component.placeholder),
       modules: {
+        clipboard: {
+          matchVisual: false
+        },
         toolbar: [
           [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
           [{ &apos;header&apos;: [1, 2, 3, 4, 5, 6, false] }],

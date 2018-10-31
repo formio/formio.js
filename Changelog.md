@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.6.13
 ### Fixed
- - Number component min and max validation.
+ - FOR-1821: Number component min and max validation.
+ - FOR-1731: Fix bug with Content component in Wizard builder.
+ - FOR-1728: Fixed more issues around text masks and iOS browsers.
+ - FOR-1646: Blur events are forcing the select dropdowns to close.
+ - FOR-1647: Checkboxes are not getting set in the correct default states.
+
+### Changed
+ - Upgraded moment-timezone@0.5.23
 
 ## 3.6.12
 ### Fixed
