@@ -44,38 +44,6 @@ describe('Base Component Unit Tests', () => {
 
     assert.equal(component.name,'This is the placeholder.');
   });
-  // it('Setting prefix',() => {
-  //   const component = new Component({
-  //     label:'Test Component',
-  //     key: 'testComponent',
-  //     prefix:'Prefix'
-  //   });
-  //   assert.equal(component.label,'Test Component');
-  //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.prefix,'Prefix');
-  // });
-  // it('Setting suffix',() => {
-  //   const component = new Component({
-  //     label:'Test Component',
-  //     key: 'testComponent',
-  //     suffix:'Suffix'
-  //   });
-  //   assert.equal(component.label,'Test Component');
-  //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.suffix,'Suffix');
-  // });
-  // it('Setting suffix and prefix',() => {
-  //   const component = new Component({
-  //     label:'Test Component',
-  //     key: 'testComponent',
-  //     suffix: 'Suffix',
-  //     prefix: 'Prefix'
-  //   });
-  //   assert.equal(component.label,'Test Component');
-  //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.suffix,'Suffix');
-  //   assert.equal(component.component.prefix,'Prefix');
-  // });
   it('Setting component to be required',() => {
     const component = new Component({
       key: 'testComponent',
@@ -86,7 +54,7 @@ describe('Base Component Unit Tests', () => {
 
     assert.equal(component.className,'form-group has-feedback formio-component formio-component-undefined formio-component-testComponent  required');
   });
-  it('Fulfilling required field with default value.',() => {
+  it('Invalid message for required.',() => {
     const component = new Component({
       key: 'testComponent',
       defaultValue: '',
@@ -95,27 +63,58 @@ describe('Base Component Unit Tests', () => {
       }
     });
 
-    assert.equal(component.invalidMessage(component.dataValue,true,true),'required');
+    assert.equal(component.invalidMessage(component.validationValue,true,true),'required');
   });
-  // it('Setting custom class',() => {
+  it('Setting component to be visible sets the default value',() => {
+    const component = new Component({
+      key: 'testComponent',
+      defaultValue:'defaultValue'
+    });
+
+    component.visible = true;
+    assert.equal(component.visible,true);
+    assert.equal(component.dataValue,'defaultValue');
+  });
+  it('Setting component to be not visible sets the default value to null',() => {
+    const component = new Component({
+      key: 'testComponent',
+      defaultValue:'defaultValue'
+    });
+
+    component.visible = false;
+    assert.equal(component.dataValue,null);
+    assert.equal(component.hasValue(),false);
+  });
+  it('Checking the schema of the component',() => {
+    const component = new Component({
+      key: 'testComponent'
+    });
+
+    assert.equal(component.schema.key,'testComponent');
+    assert.equal(component.schema.input,true);
+    assert.equal(component.schema.tableView,true);
+    assert.equal(component.schema.label,'');
+  });
+  it('Calculating the value of the component',() => {
+    const component = new Component({
+      key: 'testComponent',
+      calculateValue: function() {
+        return 'testData';
+      }
+    });
+
+    component.calculateValue('',null);
+    assert.equal(component.dataValue,'testData');
+  });
+  // it('Setting suffix and prefix',() => {
   //   const component = new Component({
-  //     key: 'testComponent',
-  //     customClass: 'my-custom-class'
+  //     key: 'testComponent'
   //   });
-  //   var element = component.createElement();
-  //   console.log('ele',element);
-  //   assert.equal(component.label,'Test Comonent');
-  //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.customClass,'my-custom-class');
-  // });
-  // it('Setting multiple values',() => {
-  //   const component = new Component({
-  //     label:'Test Component',
-  //     key: 'testComponent',
-  //     multiple: true
-  //   });
+  //
+  //   console.log(component.setCustomValidity('InValid',true));
   //   assert.equal(component.label,'Test Component');
   //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.multiple,true);
+  //   assert.equal(component.component.suffix,'Suffix');
+  //   assert.equal(component.component.prefix,'Prefix');
   // });
 });
