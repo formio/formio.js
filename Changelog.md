@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-1815: Time component for Safari
+
 ## 3.6.13
 ### Fixed
  - FOR-1821: Number component min and max validation.
