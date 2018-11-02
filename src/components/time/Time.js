@@ -12,6 +12,16 @@ export default class TimeComponent extends TextFieldComponent {
     }, ...extend);
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    //check if <input type="time" /> is supported to fallback to input with mask (for Safari and IE)
+    const input = this.ce('time');
+    this.timeInputSupported = (input.type === 'time');
+    if (!this.timeInputSupported) {
+      this.component.inputMask = '99:99';
+    }
+  }
+
   static get builderInfo() {
     return {
       title: 'Time',
@@ -46,6 +56,6 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   setValueAt(index, value) {
-    this.refs.input[index].value = moment(value, 'HH:mm:ss').format(this.component.format);
+    this.refs.input[index].value = value ? moment(value, 'HH:mm:ss').format(this.component.format) : value;
   }
 }
