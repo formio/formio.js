@@ -4,6 +4,7 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
+      label: 'Tabs',
       type: 'tabs',
       input: false,
       key: 'tabs',
@@ -12,9 +13,9 @@ export default class TabsComponent extends NestedComponent {
         {
           label: 'Tab 1',
           key: 'tab1',
-          components: []
-        }
-      ]
+          components: [],
+        },
+      ],
     }, ...extend);
   }
 
@@ -25,7 +26,7 @@ export default class TabsComponent extends NestedComponent {
       icon: 'folder-o',
       weight: 50,
       documentation: 'http://help.form.io/userguide/#tabs',
-      schema: TabsComponent.schema()
+      schema: TabsComponent.schema(),
     };
   }
 
@@ -35,14 +36,13 @@ export default class TabsComponent extends NestedComponent {
 
   get schema() {
     const schema = super.schema;
-    schema.components = [];
-    const allComponents = _.groupBy(this.getComponents(), 'component.tab');
-    _.each(this.component.components, (tab, index) => {
-      const tabSchema = tab;
-      tabSchema.components = [];
-      _.each(allComponents[index], (component) => tabSchema.components.push(component.schema));
-      schema.components.push(tabSchema);
+    schema.components = this.component.components.map((tab, index) => {
+      if (index === this.currentTab) {
+        tab.components = this.getComponents().map((component) => component.schema);
+      }
+      return tab;
     });
+
     return schema;
   }
 

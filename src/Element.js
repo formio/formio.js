@@ -139,6 +139,8 @@ export default class Element {
     else if ('attachEvent' in obj) {
       obj.attachEvent(`on${type}`, func);
     }
+
+    return this;
   }
 
   /**
@@ -158,6 +160,8 @@ export default class Element {
     if (indexes.length) {
       _.pullAt(this.eventHandlers, indexes);
     }
+
+    return this;
   }
 
   removeEventListeners() {
@@ -192,9 +196,8 @@ export default class Element {
    * @param container
    */
   appendTo(element, container) {
-    if (container) {
-      container.appendChild(element);
-    }
+    container?.appendChild(element);
+    return this;
   }
 
   /**
@@ -218,6 +221,8 @@ export default class Element {
         container.appendChild(element);
       }
     }
+
+    return this;
   }
 
   /**
@@ -235,6 +240,8 @@ export default class Element {
         console.warn(err);
       }
     }
+
+    return this;
   }
 
   /**
@@ -268,9 +275,7 @@ export default class Element {
    */
   appendChild(element, child) {
     if (Array.isArray(child)) {
-      child.forEach(oneChild => {
-        this.appendChild(element, oneChild);
-      });
+      child.forEach((oneChild) => this.appendChild(element, oneChild));
     }
     else if (child instanceof HTMLElement || child instanceof Text) {
       element.appendChild(child);
@@ -278,6 +283,8 @@ export default class Element {
     else if (child) {
       element.appendChild(this.text(child.toString()));
     }
+
+    return this;
   }
 
   /**
@@ -396,13 +403,15 @@ export default class Element {
    */
   addClass(element, className) {
     if (!element) {
-      return;
+      return this;
     }
     // Allow templates to intercept.
     const classes = element.getAttribute('class');
-    if (!classes || classes.indexOf(className) === -1) {
+    if (!classes?.includes(className)) {
       element.setAttribute('class', `${classes} ${className}`);
     }
+
+    return this;
   }
 
   /**
@@ -415,7 +424,7 @@ export default class Element {
    */
   removeClass(element, className) {
     if (!element) {
-      return;
+      return this;
     }
     // Allow templates to intercept.
     let cls = element.getAttribute('class');
@@ -423,6 +432,8 @@ export default class Element {
       cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
       element.setAttribute('class', cls);
     }
+
+    return this;
   }
 
   /**
