@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - FOR-1806: languageChanged event
+ 
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
 
