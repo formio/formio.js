@@ -21,7 +21,7 @@ gulp.task('babel', ['eslint'], () => gulp.src(['./src/**/*.js', '!./src/**/*.spe
   .pipe(gulp.dest('lib')));
 
 // Move choices.js icons into dist folder.
-gulp.task('icons', () => gulp.src('node_modules/choices.js/assets/icons/*').pipe(gulp.dest('dist/icons')));
+gulp.task('icons', () => gulp.src('node_modules/choices.js/src/icons/*').pipe(gulp.dest('dist/icons')));
 
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts')));
@@ -43,14 +43,14 @@ const compileStyles = (styles, file) => {
 };
 gulp.task('styles-form', () => compileStyles([
   './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/choices.js/public/assets/styles/choices.min.css',
   './node_modules/dialog-polyfill/dialog-polyfill.css',
   './node_modules/@yaireo/tagify/dist/tagify.css',
   './src/sass/formio.form.scss'
 ], 'formio.form'));
 gulp.task('styles-builder', () => compileStyles([
   './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/choices.js/public/assets/styles/choices.min.css',
   './node_modules/dialog-polyfill/dialog-polyfill.css',
   './node_modules/@yaireo/tagify/dist/tagify.css',
   './node_modules/dragula/dist/dragula.css',
@@ -59,7 +59,7 @@ gulp.task('styles-builder', () => compileStyles([
 ], 'formio.builder'));
 gulp.task('styles-full', ['builder-fonts'], () => compileStyles([
   './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/choices.js/public/assets/styles/choices.min.css',
   './node_modules/dialog-polyfill/dialog-polyfill.css',
   './node_modules/@yaireo/tagify/dist/tagify.css',
   './node_modules/dragula/dist/dragula.css',
@@ -120,10 +120,14 @@ gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
 // Watch for changes.
 gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.full.js']));
 
+// Copy over the moment-timezones to the resource folder.
+gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
+
 // Create a new build.
 gulp.task('build', sync.sync([['clean'], 'babel', 'package-version', [
   'icons',
   'jquery',
+  'timezones',
   'fontawesome',
   'bootstrap',
   'bootswatch',

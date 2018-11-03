@@ -29,7 +29,7 @@ export default [
     valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/b8b3b3dd51c3ca01469ce18d8f00fd3e/raw/timezones.json'
+      url: 'https://formio.github.io/formio.js/resources/timezones.json'
     },
     template: '<span>{{ item.label }}</span>',
     conditional: {
