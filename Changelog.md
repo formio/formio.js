@@ -4,8 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## [Unreleased]
+### Added
+ - FOR-1806: languageChanged event
+ 
 ### Fixed
+ - FOR-1595: Placement of description for Edit Grid
  - Select component Values template.
 
 ## 3.6.13
