@@ -51,6 +51,17 @@ export default [
     weight: 30
   },
   {
+    type: 'checkbox',
+    input: true,
+    key: 'privateDownload',
+    label: 'Private Download',
+    tooltip: 'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
+    weight: 31,
+    conditional: {
+      json: { '===': [{ var: 'data.storage' }, 'url'] }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'imageSize',

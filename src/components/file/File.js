@@ -30,6 +30,7 @@ export default class FileComponent extends BaseComponent {
       label: 'Upload',
       key: 'file',
       image: false,
+      privateDownload: false,
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
@@ -710,6 +711,9 @@ export default class FileComponent extends BaseComponent {
         this.uploadStatusList.appendChild(uploadStatus);
 
         if (fileUpload.status !== 'error') {
+          if (this.component.privateDownload) {
+            file.private = true;
+          }
           fileService.uploadFile(this.component.storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -742,6 +746,9 @@ export default class FileComponent extends BaseComponent {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
+    }
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
