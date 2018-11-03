@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 
 export default class TabsComponent extends NestedComponent {
