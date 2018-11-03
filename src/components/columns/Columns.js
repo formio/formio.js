@@ -15,7 +15,8 @@ export default class ColumnsComponent extends NestedComponent {
       input: false,
       tableView: false,
       persistent: false,
-      autoAdjust: false
+      autoAdjust: false,
+      hideOnChildrenHidden: false
     }, ...extend);
   }
 
@@ -70,6 +71,7 @@ export default class ColumnsComponent extends NestedComponent {
         column.components = [];
       }
       _.each(column.components, (component) => {
+        component.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
         this.columns[index].push(this.createComponent(component));
       });
     });
