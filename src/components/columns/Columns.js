@@ -133,11 +133,10 @@ export default class ColumnsComponent extends NestedComponent {
 
   checkConditions(data) {
     if (this.component.autoAdjust) {
-      const before = this.nbVisible;
       const result = super.checkConditions(data);
-      if (before !== this.nbVisible) {
-        this.justify();
-      }
+
+      this.justify();
+
       return result;
     }
     else {
