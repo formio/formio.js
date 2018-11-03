@@ -252,6 +252,7 @@ export default class Webform extends NestedComponent {
             return reject(err);
           }
           this.redraw();
+          this.emit('languageChanged');
           resolve();
         });
       }
