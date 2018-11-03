@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Select component Values template.
  - FOR-1816: DateTime -> Unchecking '12 Hour Time (AM/PM)' checkbox not changing date format automatically
  - FOR-1815: Time component for Safari
+ - Tabs component issues when building.
 
 ## 3.6.13
 ### Fixed
