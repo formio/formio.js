@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-1595: Placement of description for Edit Grid
  - Select component Values template.
  - FOR-1816: DateTime -> Unchecking '12 Hour Time (AM/PM)' checkbox not changing date format automatically
+ - FOR-1815: Time component for Safari
 
 ## 3.6.13
 ### Fixed
