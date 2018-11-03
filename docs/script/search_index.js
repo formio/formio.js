@@ -72,12 +72,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/component.js~component",
-    "class/src/Component.js~Component.html",
-    "<span>Component</span> <span class=\"search-result-import-path\">formiojs/src/Component.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/components.js~components",
     "class/src/components/Components.js~Components.html",
     "<span>Components</span> <span class=\"search-result-import-path\">formiojs/src/components/Components.js</span>",
@@ -1200,216 +1194,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "src/component.js",
-    "file/src/Component.js.html",
-    "src/Component.js",
-    "file"
-  ],
-  [
-    "src/component.js~component#_inputmask",
-    "class/src/Component.js~Component.html#instance-member-_inputMask",
-    "src/Component.js~Component#_inputMask",
-    "member"
-  ],
-  [
-    "src/component.js~component#addclass",
-    "class/src/Component.js~Component.html#instance-method-addClass",
-    "src/Component.js~Component#addClass",
-    "method"
-  ],
-  [
-    "src/component.js~component#addeventlistener",
-    "class/src/Component.js~Component.html#instance-method-addEventListener",
-    "src/Component.js~Component#addEventListener",
-    "method"
-  ],
-  [
-    "src/component.js~component#appendchild",
-    "class/src/Component.js~Component.html#instance-method-appendChild",
-    "src/Component.js~Component#appendChild",
-    "method"
-  ],
-  [
-    "src/component.js~component#appendto",
-    "class/src/Component.js~Component.html#instance-method-appendTo",
-    "src/Component.js~Component#appendTo",
-    "method"
-  ],
-  [
-    "src/component.js~component#attr",
-    "class/src/Component.js~Component.html#instance-method-attr",
-    "src/Component.js~Component#attr",
-    "method"
-  ],
-  [
-    "src/component.js~component#ce",
-    "class/src/Component.js~Component.html#instance-method-ce",
-    "src/Component.js~Component#ce",
-    "method"
-  ],
-  [
-    "src/component.js~component#constructor",
-    "class/src/Component.js~Component.html#instance-constructor-constructor",
-    "src/Component.js~Component#constructor",
-    "method"
-  ],
-  [
-    "src/component.js~component#destroy",
-    "class/src/Component.js~Component.html#instance-method-destroy",
-    "src/Component.js~Component#destroy",
-    "method"
-  ],
-  [
-    "src/component.js~component#emit",
-    "class/src/Component.js~Component.html#instance-method-emit",
-    "src/Component.js~Component#emit",
-    "method"
-  ],
-  [
-    "src/component.js~component#empty",
-    "class/src/Component.js~Component.html#instance-method-empty",
-    "src/Component.js~Component#empty",
-    "method"
-  ],
-  [
-    "src/component.js~component#evalcontext",
-    "class/src/Component.js~Component.html#instance-method-evalContext",
-    "src/Component.js~Component#evalContext",
-    "method"
-  ],
-  [
-    "src/component.js~component#evaluate",
-    "class/src/Component.js~Component.html#instance-method-evaluate",
-    "src/Component.js~Component#evaluate",
-    "method"
-  ],
-  [
-    "src/component.js~component#eventhandlers",
-    "class/src/Component.js~Component.html#instance-member-eventHandlers",
-    "src/Component.js~Component#eventHandlers",
-    "member"
-  ],
-  [
-    "src/component.js~component#events",
-    "class/src/Component.js~Component.html#instance-member-events",
-    "src/Component.js~Component#events",
-    "member"
-  ],
-  [
-    "src/component.js~component#geticon",
-    "class/src/Component.js~Component.html#instance-method-getIcon",
-    "src/Component.js~Component#getIcon",
-    "method"
-  ],
-  [
-    "src/component.js~component#hasclass",
-    "class/src/Component.js~Component.html#instance-method-hasClass",
-    "src/Component.js~Component#hasClass",
-    "method"
-  ],
-  [
-    "src/component.js~component#hook",
-    "class/src/Component.js~Component.html#instance-method-hook",
-    "src/Component.js~Component#hook",
-    "method"
-  ],
-  [
-    "src/component.js~component#i18next",
-    "class/src/Component.js~Component.html#instance-member-i18next",
-    "src/Component.js~Component#i18next",
-    "member"
-  ],
-  [
-    "src/component.js~component#iconclass",
-    "class/src/Component.js~Component.html#instance-method-iconClass",
-    "src/Component.js~Component#iconClass",
-    "method"
-  ],
-  [
-    "src/component.js~component#id",
-    "class/src/Component.js~Component.html#instance-member-id",
-    "src/Component.js~Component#id",
-    "member"
-  ],
-  [
-    "src/component.js~component#inputmasks",
-    "class/src/Component.js~Component.html#instance-member-inputMasks",
-    "src/Component.js~Component#inputMasks",
-    "member"
-  ],
-  [
-    "src/component.js~component#interpolate",
-    "class/src/Component.js~Component.html#instance-method-interpolate",
-    "src/Component.js~Component#interpolate",
-    "method"
-  ],
-  [
-    "src/component.js~component#maskplaceholder",
-    "class/src/Component.js~Component.html#instance-method-maskPlaceholder",
-    "src/Component.js~Component#maskPlaceholder",
-    "method"
-  ],
-  [
-    "src/component.js~component#off",
-    "class/src/Component.js~Component.html#instance-method-off",
-    "src/Component.js~Component#off",
-    "method"
-  ],
-  [
-    "src/component.js~component#on",
-    "class/src/Component.js~Component.html#instance-method-on",
-    "src/Component.js~Component#on",
-    "method"
-  ],
-  [
-    "src/component.js~component#options",
-    "class/src/Component.js~Component.html#instance-member-options",
-    "src/Component.js~Component#options",
-    "member"
-  ],
-  [
-    "src/component.js~component#prependto",
-    "class/src/Component.js~Component.html#instance-method-prependTo",
-    "src/Component.js~Component#prependTo",
-    "method"
-  ],
-  [
-    "src/component.js~component#removechildfrom",
-    "class/src/Component.js~Component.html#instance-method-removeChildFrom",
-    "src/Component.js~Component#removeChildFrom",
-    "method"
-  ],
-  [
-    "src/component.js~component#removeclass",
-    "class/src/Component.js~Component.html#instance-method-removeClass",
-    "src/Component.js~Component#removeClass",
-    "method"
-  ],
-  [
-    "src/component.js~component#removeeventlistener",
-    "class/src/Component.js~Component.html#instance-method-removeEventListener",
-    "src/Component.js~Component#removeEventListener",
-    "method"
-  ],
-  [
-    "src/component.js~component#setinputmask",
-    "class/src/Component.js~Component.html#instance-method-setInputMask",
-    "src/Component.js~Component#setInputMask",
-    "method"
-  ],
-  [
-    "src/component.js~component#t",
-    "class/src/Component.js~Component.html#instance-method-t",
-    "src/Component.js~Component#t",
-    "method"
-  ],
-  [
-    "src/component.js~component#text",
-    "class/src/Component.js~Component.html#instance-method-text",
-    "src/Component.js~Component#text",
-    "method"
-  ],
-  [
     "src/form.js",
     "file/src/Form.js.html",
     "src/Form.js",
@@ -2473,13 +2257,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2551,13 +2335,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2719,13 +2503,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2785,13 +2569,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3349,13 +3133,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4021,13 +3805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4255,13 +4039,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4645,13 +4429,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -8784,12 +8568,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#usetemplate",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-useTemplate",
-    "src/components/select/Select.js~SelectComponent#useTemplate",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#validatemultiple",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-validateMultiple",
     "src/components/select/Select.js~SelectComponent#validateMultiple",
@@ -9384,6 +9162,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tabs/tabs.js~tabscomponent#components",
+    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-components",
+    "src/components/tabs/Tabs.js~TabsComponent#components",
+    "member"
+  ],
+  [
     "src/components/tabs/tabs.js~tabscomponent#constructor",
     "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-constructor-constructor",
     "src/components/tabs/Tabs.js~TabsComponent#constructor",
@@ -9432,18 +9216,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/tabs/tabs.js~tabscomponent#tabbar",
-    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabBar",
-    "src/components/tabs/Tabs.js~TabsComponent#tabBar",
-    "member"
-  ],
-  [
-    "src/components/tabs/tabs.js~tabscomponent#tabcontent",
-    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabContent",
-    "src/components/tabs/Tabs.js~TabsComponent#tabContent",
-    "member"
-  ],
-  [
     "src/components/tabs/tabs.js~tabscomponent#tablinks",
     "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabLinks",
     "src/components/tabs/Tabs.js~TabsComponent#tabLinks",
@@ -9453,6 +9225,18 @@ window.esdocSearchIndex = [
     "src/components/tabs/tabs.js~tabscomponent#tabs",
     "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabs",
     "src/components/tabs/Tabs.js~TabsComponent#tabs",
+    "member"
+  ],
+  [
+    "src/components/tabs/tabs.js~tabscomponent#tabsbar",
+    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabsBar",
+    "src/components/tabs/Tabs.js~TabsComponent#tabsBar",
+    "member"
+  ],
+  [
+    "src/components/tabs/tabs.js~tabscomponent#tabscontent",
+    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-tabsContent",
+    "src/components/tabs/Tabs.js~TabsComponent#tabsContent",
     "member"
   ],
   [
@@ -9942,6 +9726,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/time/time.js~timecomponent#constructor",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-constructor-constructor",
+    "src/components/time/Time.js~TimeComponent#constructor",
+    "method"
+  ],
+  [
     "src/components/time/time.js~timecomponent#defaultschema",
     "class/src/components/time/Time.js~TimeComponent.html#instance-get-defaultSchema",
     "src/components/time/Time.js~TimeComponent#defaultSchema",
@@ -9964,6 +9754,12 @@ window.esdocSearchIndex = [
     "class/src/components/time/Time.js~TimeComponent.html#instance-method-setValueAt",
     "src/components/time/Time.js~TimeComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/time/time.js~timecomponent#timeinputsupported",
+    "class/src/components/time/Time.js~TimeComponent.html#instance-member-timeInputSupported",
+    "src/components/time/Time.js~TimeComponent#timeInputSupported",
+    "member"
   ],
   [
     "src/components/time/time.js~timecomponent.builderinfo",

@@ -29,8 +29,7 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -230,7 +229,16 @@
     tooltip: &apos;Will automatically adjust columns based on if nested components are hidden.&apos;,
     key: &apos;autoAdjust&apos;,
     input: true
-  }];
+  },
+  {
+    weight: 161,
+    type: &apos;checkbox&apos;,
+    label: &apos;Hide Column when Children Hidden&apos;,
+    key: &apos;hideOnChildrenHidden&apos;,
+    tooltip: &apos;Check this if you would like to hide any column when the children within that column are also hidden&apos;,
+    input: true
+  }
+];
 </code></pre>
 
 </div>

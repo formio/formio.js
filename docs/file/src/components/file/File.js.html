@@ -29,8 +29,7 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -219,6 +218,7 @@ export default class FileComponent extends BaseComponent {
       label: &apos;Upload&apos;,
       key: &apos;file&apos;,
       image: false,
+      privateDownload: false,
       imageSize: &apos;200&apos;,
       filePattern: &apos;*&apos;,
       fileMinSize: &apos;0KB&apos;,
@@ -899,6 +899,9 @@ export default class FileComponent extends BaseComponent {
         this.uploadStatusList.appendChild(uploadStatus);
 
         if (fileUpload.status !== &apos;error&apos;) {
+          if (this.component.privateDownload) {
+            file.private = true;
+          }
           fileService.uploadFile(this.component.storage, file, fileName, dir, evt =&gt; {
             fileUpload.status = &apos;progress&apos;;
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -931,6 +934,9 @@ export default class FileComponent extends BaseComponent {
     const fileService = this.fileService;
     if (!fileService) {
       return alert(&apos;File Service not provided&apos;);
+    }
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
     }
     fileService.downloadFile(fileInfo).then((file) =&gt; {
       if (file) {

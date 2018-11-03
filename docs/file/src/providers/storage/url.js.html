@@ -29,8 +29,7 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -189,27 +188,20 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/url.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
 
-const url = (formio) =&gt; ({
-  title: &apos;Url&apos;,
-  name: &apos;url&apos;,
-  uploadFile(file, fileName, dir, progressCallback, url) {
-    return new Promise(((resolve, reject) =&gt; {
-      const data = {
-        dir,
-        file,
-        name: fileName
-      };
-
-      // Send the file with data.
+const url = (formio) =&gt; {
+  const xhrRequest = (url, name, query, data, onprogress) =&gt; {
+    return new Promise((resolve, reject) =&gt; {
       const xhr = new XMLHttpRequest();
-
-      if (typeof progressCallback === &apos;function&apos;) {
-        xhr.upload.onprogress = progressCallback;
+      const json = (typeof data === &apos;string&apos;);
+      const fd = new FormData();
+      if (typeof onprogress === &apos;function&apos;) {
+        xhr.upload.onprogress = onprogress;
       }
 
-      const fd = new FormData();
-      for (const key in data) {
-        fd.append(key, data[key]);
+      if (!json) {
+        for (const key in data) {
+          fd.append(key, data[key]);
+        }
       }
 
       xhr.onload = () =&gt; {
@@ -224,39 +216,92 @@ const url = (formio) =&gt; ({
             respData = {};
           }
 
-          const url = respData.hasOwnProperty(&apos;url&apos;) ? respData.url : `${xhr.responseURL}/${fileName}`;
-          resolve({
-            storage: &apos;url&apos;,
-            name: fileName,
-            url,
-            size: file.size,
-            type: file.type,
-            data: respData
-          });
+          // Get the url of the file.
+          let respUrl = respData.hasOwnProperty(&apos;url&apos;) ? respData.url : `${xhr.responseURL}/${name}`;
+
+          // If they provide relative url, then prepend the url.
+          if (respUrl &amp;&amp; respUrl[0] === &apos;/&apos;) {
+            respUrl = `${url}${respUrl}`;
+          }
+          resolve({ url: respUrl, data: respData });
         }
         else {
           reject(xhr.response || &apos;Unable to upload file&apos;);
         }
       };
 
-      // Fire on network error.
       xhr.onerror = () =&gt; reject(xhr);
-
       xhr.onabort = () =&gt; reject(xhr);
 
-      xhr.open(&apos;POST&apos;, url);
+      let requestUrl = `${url}?`;
+      for (const key in query) {
+        requestUrl += `${key}=${query[key]}&amp;`;
+      }
+      if (requestUrl[requestUrl.length - 1] === &apos;&amp;&apos;) {
+        requestUrl = requestUrl.substr(0, requestUrl.length - 1);
+      }
+
+      xhr.open(&apos;POST&apos;, requestUrl);
+      if (json) {
+        xhr.setRequestHeader(&apos;Content-Type&apos;, &apos;application/json&apos;);
+      }
       const token = formio.getToken();
       if (token) {
         xhr.setRequestHeader(&apos;x-jwt-token&apos;, token);
       }
-      xhr.send(fd);
-    }));
-  },
-  downloadFile(file) {
-    // Return the original as there is nothing to do.
-    return Promise.resolve(file);
-  }
-});
+      xhr.send(json ? data : fd);
+    });
+  };
+
+  return {
+    title: &apos;Url&apos;,
+    name: &apos;url&apos;,
+    uploadFile(file, name, dir, progressCallback, url) {
+      const uploadRequest = function(form) {
+        return xhrRequest(url, name, {
+          baseUrl: encodeURIComponent(formio.projectUrl),
+          project: form ? form.project : &apos;&apos;,
+          form: form ? form._id : &apos;&apos;
+        }, {
+          file,
+          name,
+          dir
+        }, progressCallback).then(response =&gt; {
+          // Store the project and form url along with the metadata.
+          response.data = response.data || {};
+          response.data.baseUrl = formio.projectUrl;
+          response.data.project = form ? form.project : &apos;&apos;;
+          response.data.form = form ? form._id : &apos;&apos;;
+          return {
+            storage: &apos;url&apos;,
+            name,
+            url: response.url,
+            size: file.size,
+            type: file.type,
+            data: response.data
+          };
+        });
+      };
+      if (file.private &amp;&amp; formio.formId) {
+        return formio.loadForm().then((form) =&gt; uploadRequest(form));
+      }
+      else {
+        return uploadRequest();
+      }
+    },
+    downloadFile(file) {
+      if (file.private) {
+        if (formio.submissionId &amp;&amp; file.data) {
+          file.data.submission = formio.submissionId;
+        }
+        return xhrRequest(file.url, file.name, {}, JSON.stringify(file)).then(response =&gt; response.data);
+      }
+
+      // Return the original as there is nothing to do.
+      return Promise.resolve(file);
+    }
+  };
+};
 
 url.title = &apos;Url&apos;;
 export default url;

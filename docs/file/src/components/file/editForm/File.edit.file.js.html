@@ -29,8 +29,7 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Component.js~Component.html">Component</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
@@ -238,6 +237,17 @@ export default [
     label: &apos;Display as image(s)&apos;,
     tooltip: &apos;Instead of a list of linked files, images will be rendered in the view.&apos;,
     weight: 30
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;privateDownload&apos;,
+    label: &apos;Private Download&apos;,
+    tooltip: &apos;When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.&apos;,
+    weight: 31,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.storage&apos; }, &apos;url&apos;] }
+    }
   },
   {
     type: &apos;textfield&apos;,
