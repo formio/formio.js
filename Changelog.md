@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
+ - Select component Values template.
 
 ## 3.6.13
 ### Fixed
