@@ -41,4 +41,13 @@ export default [
     tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
     key: 'autoAdjust',
     input: true
-  }];
+  },
+  {
+    weight: 161,
+    type: 'checkbox',
+    label: 'Hide Column when Children Hidden',
+    key: 'hideOnChildrenHidden',
+    tooltip: 'Check this if you would like to hide any column when the children within that column are also hidden',
+    input: true
+  }
+];
