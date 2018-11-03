@@ -94,7 +94,7 @@ const url = (formio) => {
           };
         });
       };
-      if (formio.formId) {
+      if (file.private && formio.formId) {
         return formio.loadForm().then((form) => uploadRequest(form));
       }
       else {

@@ -456,6 +456,9 @@ export default class FileComponent extends Component {
         this.redraw();
 
         if (fileUpload.status !== 'error') {
+          if (this.component.privateDownload) {
+            file.private = true;
+          }
           fileService.uploadFile(this.component.storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
