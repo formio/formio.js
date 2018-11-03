@@ -32,6 +32,7 @@ export default class FileComponent extends Component {
       label: 'Upload',
       key: 'file',
       image: false,
+      privateDownload: false,
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
@@ -486,6 +487,9 @@ export default class FileComponent extends Component {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
+    }
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
