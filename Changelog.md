@@ -5,15 +5,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.7.0
+### Changed
+ - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
+ 
 ### Added
  - FOR-1806: languageChanged event
+ - FOR-1844: Support for private file downloads with the URL file configuration. Also added a File Upload server @ https://github.com/formio/formio-upload that supports this feature.
  
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
- - Select component Values template.
+ - FOR-1657: Select component Values template.
+ - Fix bug with widget field being displayed on TextArea and Password
  - FOR-1816: DateTime -> Unchecking '12 Hour Time (AM/PM)' checkbox not changing date format automatically
  - FOR-1815: Time component for Safari
- - Tabs component issues when building.
+ - FOR-1688, FOR-1508: Tabs component issues when building.
+ - FOR-1398: Make columns component adjust on each render
 
 ## 3.6.13
 ### Fixed
