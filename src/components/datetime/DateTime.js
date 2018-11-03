@@ -63,6 +63,9 @@ export default class DateTimeComponent extends BaseComponent {
     else if (time24hr) {
       this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');
     }
+    else {
+      this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');
+    }
 
     /* eslint-disable camelcase */
     this.component.widget = {
