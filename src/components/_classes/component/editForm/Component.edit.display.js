@@ -142,6 +142,20 @@ export default [
   },
   {
     weight: 700,
+    type: 'radio',
+    label: 'Persistent',
+    tooltip: 'A persistent field will be stored in database when the form is submitted.',
+    key: 'persistent',
+    input: true,
+    inline: true,
+    values: [
+      { label: 'None', value: false },
+      { label: 'Server', value: true },
+      { label: 'Client', value: 'client-only' },
+    ]
+  },
+  {
+    weight: 800,
     type: 'checkbox',
     label: 'Multiple Values',
     tooltip: 'Allows multiple values to be entered for this field.',
@@ -149,7 +163,7 @@ export default [
     input: true
   },
   {
-    weight: 800,
+    weight: 900,
     type: 'checkbox',
     label: 'Clear Value When Hidden',
     key: 'clearOnHide',
@@ -157,19 +171,11 @@ export default [
     input: true
   },
   {
-    weight: 900,
+    weight: 1000,
     type: 'checkbox',
     label: 'Protected',
     tooltip: 'A protected field will not be returned when queried via API.',
     key: 'protected',
-    input: true
-  },
-  {
-    weight: 1000,
-    type: 'checkbox',
-    label: 'Persistent',
-    tooltip: 'A persistent field will be stored in database when the form is submitted.',
-    key: 'persistent',
     input: true
   },
   {
