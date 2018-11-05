@@ -1062,6 +1062,13 @@ export default class Webform extends NestedComponent {
           return reject();
         }
 
+        this.getAllComponents().forEach((comp) => {
+          const { persistent, key } = comp.component;
+          if (persistent === 'client-only') {
+            delete submission.data[key];
+          }
+        });
+
         this.hook('customValidation', submission, (err) => {
           if (err) {
             // If string is returned, cast to object.
