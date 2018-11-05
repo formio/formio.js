@@ -4,14 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Possibility to hide PDF submit button.
+
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
- 
+
 ### Added
  - FOR-1806: languageChanged event
  - FOR-1844: Support for private file downloads with the URL file configuration. Also added a File Upload server @ https://github.com/formio/formio-upload that supports this feature.
- 
+
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
  - FOR-1657: Select component Values template.
@@ -49,7 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.10
 ### Fixed
- - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1491: Fix bug with Day when form rendered as HTML
  - FOR-1812: Fixed issues where timezones were not converting properly.
 
 ## 3.6.9
@@ -75,7 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1733: Fixed issue with preview destroy on change.
  - FOR-1728: Problems with running the renderer within iOS applications.
- 
+
 ## 3.6.5
 ### Fixed
  - Broken build.
