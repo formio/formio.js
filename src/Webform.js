@@ -1012,7 +1012,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = this.submission || {};
+      const submission = _.cloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
