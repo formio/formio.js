@@ -207,6 +207,11 @@ export default class PDFBuilder extends WebformBuilder {
       if (component) {
         this.editComponent(component);
       }
+    }, true);
+    this.on('componentChange', (event) => {
+      if (event.component.key === 'formio.hidePdfSubmit') {
+        this.form = this.schema;
+      }
     });
     this.addComponents();
     this.addDropZone();
