@@ -71,7 +71,11 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return undefined;
+    return false;
+  }
+
+  isEmpty(value) {
+    return super.isEmpty(value) || value === false;
   }
 
   createElement() {
