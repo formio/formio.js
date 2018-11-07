@@ -34,6 +34,10 @@ export default class CheckBoxComponent extends BaseComponent {
     return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
   }
 
+  get hasSetValue() {
+    return this.hasValue();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

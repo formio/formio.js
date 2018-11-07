@@ -2068,11 +2068,15 @@ export default class BaseComponent extends Component {
     return changed;
   }
 
+  get hasSetValue() {
+    return this.hasValue() && !this.isEmpty(this.dataValue);
+  }
+
   /**
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
+    if (this.hasSetValue) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
