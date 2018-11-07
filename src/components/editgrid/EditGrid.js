@@ -48,12 +48,14 @@ export default class EditGridComponent extends NestedComponent {
       {{ getView(component, row[component.key]) }}
     </div>
   {% }) %}
-  <div class="col-sm-2">
-    <div class="btn-group pull-right">
-      <button class="btn btn-default btn-sm editRow">Edit</button>
-      <button class="btn btn-danger btn-sm removeRow">Delete</button>
+  {% if (!instance.options.readOnly) { %}
+    <div class="col-sm-2">
+      <div class="btn-group pull-right">
+        <button class="btn btn-default btn-sm editRow">Edit</button>
+        <button class="btn btn-danger btn-sm removeRow">Delete</button>
+      </div>
     </div>
-  </div>
+  {% } %}
 </div>`;
   }
 
