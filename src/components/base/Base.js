@@ -1481,7 +1481,7 @@ export default class BaseComponent extends Component {
 
     // Check advanced conditions
     const result = this.show(this.conditionallyVisible(data));
-    if (this.fieldLogic(data)) {
+    if (!this.options.builder && this.fieldLogic(data)) {
       this.redraw();
     }
 
