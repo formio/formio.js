@@ -1137,7 +1137,7 @@ export default class Component extends Element {
 
     // Check advanced conditions
     const visible = this.conditionallyVisible(data);
-    if (this.fieldLogic(data)) {
+    if (this.options.attachMode !== 'builder' && this.fieldLogic(data)) {
       this.redraw();
     }
 
