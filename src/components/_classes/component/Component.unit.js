@@ -1,5 +1,6 @@
 import Component from './Component';
 import assert from 'assert';
+import Element from '../../../Element';
 
 describe('Base Component Unit Tests', () => {
   it('Should create a Base Component', () => {
@@ -106,15 +107,4 @@ describe('Base Component Unit Tests', () => {
     component.calculateValue('',null);
     assert.equal(component.dataValue,'testData');
   });
-  // it('Setting suffix and prefix',() => {
-  //   const component = new Component({
-  //     key: 'testComponent'
-  //   });
-  //
-  //   console.log(component.setCustomValidity('InValid',true));
-  //   assert.equal(component.label,'Test Component');
-  //   assert.equal(component.key,'testComponent');
-  //   assert.equal(component.component.suffix,'Suffix');
-  //   assert.equal(component.component.prefix,'Prefix');
-  // });
 });
