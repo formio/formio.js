@@ -58,6 +58,11 @@ export default class ButtonComponent extends BaseComponent {
   }
 
   set disabled(disabled) {
+	// Do not allow a component to be disabled if it should be always...
+    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
+      return;
+    }
+	  
     super.disabled = disabled;
     this.setDisabled(this.buttonElement, disabled);
   }
