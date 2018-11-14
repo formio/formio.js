@@ -153,6 +153,49 @@ describe('Formio Form Renderer tests', () => {
     });
   });
 
+  it('When submitted should strip fields with persistent: client-only from submission', done => {
+    const formElement = document.createElement('div');
+    simpleForm = new Webform(formElement);
+    /* eslint-disable quotes */
+    simpleForm.setForm({
+      title: 'Simple Form',
+      components: [
+        {
+          "label": "Name",
+          "allowMultipleMasks": false,
+          "showWordCount": false,
+          "showCharCount": false,
+          "tableView": true,
+          "type": "textfield",
+          "input": true,
+          "key": "name",
+          "widget": {
+            "type": ""
+          }
+        },
+        {
+          "label": "Age",
+          "persistent": "client-only",
+          "mask": false,
+          "tableView": true,
+          "type": "number",
+          "input": true,
+          "key": "age"
+        }
+      ]
+    });
+    /* eslint-enable quotes */
+
+    Harness.testSubmission(simpleForm, {
+      data: { name: 'noname', age: '1' }
+    });
+
+    simpleForm.submit().then((submission) => {
+      assert.deepEqual(submission.data, { name: 'noname' });
+      done();
+    });
+  });
+
   each(FormTests, (formTest) => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
