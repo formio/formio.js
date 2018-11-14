@@ -341,6 +341,49 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
     });
   });
 
+  it(&apos;When submitted should strip fields with persistent: client-only from submission&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    simpleForm = new Webform(formElement);
+    /* eslint-disable quotes */
+    simpleForm.setForm({
+      title: &apos;Simple Form&apos;,
+      components: [
+        {
+          &quot;label&quot;: &quot;Name&quot;,
+          &quot;allowMultipleMasks&quot;: false,
+          &quot;showWordCount&quot;: false,
+          &quot;showCharCount&quot;: false,
+          &quot;tableView&quot;: true,
+          &quot;type&quot;: &quot;textfield&quot;,
+          &quot;input&quot;: true,
+          &quot;key&quot;: &quot;name&quot;,
+          &quot;widget&quot;: {
+            &quot;type&quot;: &quot;&quot;
+          }
+        },
+        {
+          &quot;label&quot;: &quot;Age&quot;,
+          &quot;persistent&quot;: &quot;client-only&quot;,
+          &quot;mask&quot;: false,
+          &quot;tableView&quot;: true,
+          &quot;type&quot;: &quot;number&quot;,
+          &quot;input&quot;: true,
+          &quot;key&quot;: &quot;age&quot;
+        }
+      ]
+    });
+    /* eslint-enable quotes */
+
+    Harness.testSubmission(simpleForm, {
+      data: { name: &apos;noname&apos;, age: &apos;1&apos; }
+    });
+
+    simpleForm.submit().then((submission) =&gt; {
+      assert.deepEqual(submission.data, { name: &apos;noname&apos; });
+      done();
+    });
+  });
+
   each(FormTests, (formTest) =&gt; {
     each(formTest.tests, (formTestTest, title) =&gt; {
       it(title, (done) =&gt; {

@@ -237,12 +237,14 @@ export default class EditGridComponent extends NestedComponent {
       {{ getView(component, row[component.key]) }}
     &lt;/div&gt;
   {% }) %}
-  &lt;div class=&quot;col-sm-2&quot;&gt;
-    &lt;div class=&quot;btn-group pull-right&quot;&gt;
-      &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;Edit&lt;/button&gt;
-      &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
+  {% if (!instance.options.readOnly) { %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;
+      &lt;div class=&quot;btn-group pull-right&quot;&gt;
+        &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;Edit&lt;/button&gt;
+        &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
+  {% } %}
 &lt;/div&gt;`;
   }
 

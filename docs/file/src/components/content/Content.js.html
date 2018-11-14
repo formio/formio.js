@@ -186,8 +186,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/content/Content.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import BaseComponent from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import BaseComponent from &apos;../base/Base&apos;;
 
 export default class ContentComponent extends BaseComponent {
   static schema(...extend) {
@@ -219,8 +218,7 @@ export default class ContentComponent extends BaseComponent {
     this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
-  build(state = {}) {
-    const { quill = {} } = state;
+  build() {
     this.createElement();
     this.htmlElement = this.ce(&apos;div&apos;, {
       id: this.id,
@@ -232,25 +230,11 @@ export default class ContentComponent extends BaseComponent {
     if (this.options.builder) {
       const editorElement = this.ce(&apos;div&apos;);
       this.element.appendChild(editorElement);
-      this.addQuill(editorElement, this.wysiwygDefault, (element) =&gt; {
-        this.component.html = element.value;
+      this.addCKE(editorElement, null, (html) =&gt; {
+        this.component.html = html;
       }).then((editor) =&gt; {
-        let contents = quill.contents;
-        if (_.isString(contents)) {
-          try {
-            contents = JSON.parse(contents);
-          }
-          catch (err) {
-            console.warn(err);
-          }
-        }
-
-        if (_.isObject(contents)) {
-          editor.setContents(contents);
-        }
-        else {
-          editor.clipboard.dangerouslyPasteHTML(this.component.html);
-        }
+        this.editor = editor;
+        this.editor.data.set(this.component.html);
       }).catch(err =&gt; console.warn(err));
     }
     else {
@@ -270,18 +254,9 @@ export default class ContentComponent extends BaseComponent {
 
   destroy() {
     const state = super.destroy();
-
-    if (this.quill) {
-      try {
-        state.quill = {
-          contents: JSON.stringify(this.quill.getContents())
-        };
-      }
-      catch (err) {
-        console.warn(err);
-      }
+    if (this.editor) {
+      this.editor.destroy();
     }
-
     return state;
   }
 }
