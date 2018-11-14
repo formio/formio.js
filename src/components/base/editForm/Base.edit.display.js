@@ -226,6 +226,14 @@ export default [
     tooltip: 'Shows this value within the table view of the submissions.',
     key: 'tableView',
     input: true
+  },
+  {
+    weight: 1550,
+    type: 'checkbox',
+    label: 'Always enabled',
+    tooltip: 'Make this field always enabled, even if the form is disabled',
+    key: 'alwaysEnabled',
+    input: true
   }
 ];
 /* eslint-enable max-len */
