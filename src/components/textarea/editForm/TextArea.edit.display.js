@@ -35,7 +35,7 @@ export default [
         { label: 'None', value: '' },
         { label: 'CKEditor', value: 'ckeditor' },
         { label: 'ACE', value: 'ace' },
-        { label: 'Quill', value: 'quill' },
+        { label: 'Quill', value: 'quill' }
       ]
     },
     weight: 415

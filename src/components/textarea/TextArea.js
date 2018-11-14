@@ -214,17 +214,16 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       case 'ckeditor':
-        this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js', true)
-          .then((ClassicEditor) => {
-            settings = settings || {};
-            settings.base64Upload = true;
-            return ClassicEditor.create(element, settings).then(editor => {
-              editor.model.document.on('change', () => this.updateValue(null, editor.data.get()));
-              this.editor = editor;
-              this.editor.data.set(this.setConvertedValue(this.dataValue));
-              return this.editor;
-            });
-          });
+        settings = settings || {};
+        settings.base64Upload = true;
+        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateValue(null, newValue)).then((editor) => {
+          this.editor = editor;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.isReadOnly = true;
+          }
+          editor.data.set(this.setConvertedValue(this.dataValue));
+          return editor;
+        });
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
