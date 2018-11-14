@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BaseComponent from '../base/Base';
 
 export default class ContentComponent extends BaseComponent {
@@ -31,8 +30,7 @@ export default class ContentComponent extends BaseComponent {
     this.htmlElement.innerHTML = this.interpolate(this.component.html);
   }
 
-  build(state = {}) {
-    const { quill = {} } = state;
+  build() {
     this.createElement();
     this.htmlElement = this.ce('div', {
       id: this.id,
@@ -44,25 +42,11 @@ export default class ContentComponent extends BaseComponent {
     if (this.options.builder) {
       const editorElement = this.ce('div');
       this.element.appendChild(editorElement);
-      this.addQuill(editorElement, this.wysiwygDefault, (element) => {
-        this.component.html = element.value;
+      this.addCKE(editorElement, null, (html) => {
+        this.component.html = html;
       }).then((editor) => {
-        let contents = quill.contents;
-        if (_.isString(contents)) {
-          try {
-            contents = JSON.parse(contents);
-          }
-          catch (err) {
-            console.warn(err);
-          }
-        }
-
-        if (_.isObject(contents)) {
-          editor.setContents(contents);
-        }
-        else {
-          editor.clipboard.dangerouslyPasteHTML(this.component.html);
-        }
+        this.editor = editor;
+        this.editor.data.set(this.component.html);
       }).catch(err => console.warn(err));
     }
     else {
@@ -82,18 +66,9 @@ export default class ContentComponent extends BaseComponent {
 
   destroy() {
     const state = super.destroy();
-
-    if (this.quill) {
-      try {
-        state.quill = {
-          contents: JSON.stringify(this.quill.getContents())
-        };
-      }
-      catch (err) {
-        console.warn(err);
-      }
+    if (this.editor) {
+      this.editor.destroy();
     }
-
     return state;
   }
 }
