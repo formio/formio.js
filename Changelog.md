@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Addded
+ - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+
+## 3.8.0
+### Added
+ - Added the CKEditor WYSIWYG available for textarea editors.
+ - FOR-1758: Allow for another option of persistence called "client-only" which won't send the data to the server.
+
+### Changed
+ - Changed the Content building to use CKEditor.
+
 ### Fixed
  - FOR-1845: Builder buttons missing for components with Logic
 
