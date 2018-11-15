@@ -23,8 +23,11 @@
     "publish": "npm test;gulp build;npm run tag;npm publish lib --tag alpha;",
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "mocha --compilers js:@babel/register src/**/*.unit.js -b --exit;#karma start --verbose --single-run",
-    "test:watch": "karma start --no-single-run --auto-watch"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "mocha --compilers js:@babel/register src/**/*.unit.js -b --exit",
+    "test:unit:watch": "mocha --compilers js:@babel/register src/**/*.unit.js d--watch",
+    "test:e2e": "karma start --verbose --single-run",
+    "test:e2e:watch": "karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
@@ -102,6 +105,7 @@
     "eslint": "^5.5.0",
     "eslint-config-formio": "^1.1.4",
     "fetch-mock": "^6.5.2",
+    "file-loader": "^2.0.0",
     "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
