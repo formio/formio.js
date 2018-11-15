@@ -51,8 +51,8 @@ describe('Day Component', () => {
       assert.equal(inputs[0].id, `${component.component.key}-month`);
       assert.equal(inputs[1].id, `${component.component.key}-day`);
       assert.equal(inputs[2].id, `${component.component.key}-year`);
-      component.setValue('3/20/2017');
-      assert.equal(component.getValue(), '3/20/2017');
+      component.setValue('03/20/2017');
+      assert.equal(component.getValue(), '03/20/2017');
       done();
     });
   });
@@ -64,8 +64,8 @@ describe('Day Component', () => {
       assert.equal(inputs[0].id, `${component.component.key}-day`);
       assert.equal(inputs[1].id, `${component.component.key}-month`);
       assert.equal(inputs[2].id, `${component.component.key}-year`);
-      component.setValue('20/3/2017');
-      assert.equal(component.getValue(), '20/3/2017');
+      component.setValue('20/03/2017');
+      assert.equal(component.getValue(), '20/03/2017');
       done();
     });
   });
@@ -74,7 +74,7 @@ describe('Day Component', () => {
     comp1.dayFirst = false;
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.on('componentError', (err) => {
-        assert.equal(err.message, 'Date is not a valid date.');
+        assert.equal(err.message, 'Date is not a valid day.');
         assert.equal(err.component.key, 'date');
         done();
       });
@@ -87,12 +87,12 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should ignore invalid months and use Jenuary as default', (done) => {
+  it('Should ignore invalid months and use zeros as default', (done) => {
     comp1.dayFirst = false;
 
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.setValue('15/20/2017');
-      assert.equal(component.getValue(), '1/20/2017');
+      assert.equal(component.getValue(), '00/20/2017');
       done();
     });
   });
