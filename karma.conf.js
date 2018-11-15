@@ -16,6 +16,12 @@ module.exports = function(config) {
                 plugins: ['@babel/plugin-proposal-export-default-from']
               }
             }
+          },
+          {
+            test: /\.html$/,
+            use: {
+              loader: 'raw-loader'
+            }
           }
         ]
       }
@@ -45,7 +51,7 @@ module.exports = function(config) {
     preprocessors: {
       'src/**/*.spec.js': ['webpack']
     },
-    browserNoActivityTimeout: 30000,
+    browserNoActivityTimeout: 2000,
     reporters: ['progress'],
     port: 9876,
     colors: true,
@@ -54,5 +60,5 @@ module.exports = function(config) {
     browsers: ['Chrome'],
     singleRun: false,
     concurrency: Infinity
-  })
-}
+  });
+};
