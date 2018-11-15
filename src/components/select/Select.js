@@ -497,7 +497,7 @@ export default class SelectComponent extends Field {
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
-        containerInner: 'form-control'
+        containerInner: 'form-control ui fluid selection dropdown'
       },
       addItemText: false,
       placeholder: !!this.component.placeholder,
