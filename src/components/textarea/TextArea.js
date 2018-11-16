@@ -74,7 +74,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.component.wysiwyg) {
       value = this.interpolate(value);
     }
-    element.innerHTML = value;
+    if (element) {
+      element.innerHTML = value;
+    }
   }
 
   acePlaceholder() {
@@ -276,7 +278,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.htmlView) {
       // For HTML view, just view the contents.
-      this.input.innerHTML = this.interpolate(value);
+      if (this.input) {
+        this.input.innerHTML = this.interpolate(value);
+      }
     }
     else if (this.editorReady) {
       this.editorReady.then((editor) => {

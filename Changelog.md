@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Addded
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+### Fixed
+ - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
 
 ## 3.8.0
 ### Added
