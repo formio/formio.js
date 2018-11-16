@@ -212,7 +212,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.isPlain) {
       if (this.options.readOnly) {
         // For readOnly, just view the contents.
-        this.input.innerHTML = this.interpolate(value);
+        if (this.input) {
+          this.input.innerHTML = this.interpolate(value);
+        }
         this.dataValue = value;
         return;
       }
@@ -226,7 +228,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.htmlView) {
       // For HTML view, just view the contents.
-      this.input.innerHTML = this.interpolate(value);
+      if (this.input) {
+        this.input.innerHTML = this.interpolate(value);
+      }
     }
     else if (this.editorReady) {
       this.editorReady.then((editor) => {
