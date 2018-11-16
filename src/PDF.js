@@ -1,6 +1,4 @@
 import Promise from 'native-promise-only';
-import _ from 'lodash';
-import Components from './components/Components';
 import Formio from './Formio';
 import Webform from './Webform';
 
@@ -146,11 +144,7 @@ export default class PDF extends Webform {
       this.iframe
     ]);
 
-    if (
-      !this.options.builder &&
-      !this.options.readOnly &&
-      !(String(_.get(this.form, 'properties.formio.hidePdfSubmit', false)) === 'true')
-    ) {
+    if (!this.options.readOnly) {
       this.submitButton = this.ce('button', {
         type: 'button',
         class: 'btn btn-primary'
@@ -160,17 +154,6 @@ export default class PDF extends Webform {
         this.postMessage({ name: 'getSubmission' });
       });
       this.appendChild(this.element, this.submitButton);
-    }
-
-    if (this.options.builder) {
-      this.form.properties = this.form.properties || {};
-      this.hideSubmit = Components.create({
-        type: 'checkbox',
-        label: 'Hide submit button',
-        key: 'formio.hidePdfSubmit',
-        input: true
-      }, this.options, this.form.properties);
-      this.appendChild(this.element, this.hideSubmit.element);
     }
 
     this.addComponents();
