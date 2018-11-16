@@ -330,6 +330,20 @@ export default [
   },
   {
     weight: 700,
+    type: &apos;radio&apos;,
+    label: &apos;Persistent&apos;,
+    tooltip: &apos;A persistent field will be stored in database when the form is submitted.&apos;,
+    key: &apos;persistent&apos;,
+    input: true,
+    inline: true,
+    values: [
+      { label: &apos;None&apos;, value: false },
+      { label: &apos;Server&apos;, value: true },
+      { label: &apos;Client&apos;, value: &apos;client-only&apos; },
+    ]
+  },
+  {
+    weight: 800,
     type: &apos;checkbox&apos;,
     label: &apos;Multiple Values&apos;,
     tooltip: &apos;Allows multiple values to be entered for this field.&apos;,
@@ -337,7 +351,7 @@ export default [
     input: true
   },
   {
-    weight: 800,
+    weight: 900,
     type: &apos;checkbox&apos;,
     label: &apos;Clear Value When Hidden&apos;,
     key: &apos;clearOnHide&apos;,
@@ -345,19 +359,11 @@ export default [
     input: true
   },
   {
-    weight: 900,
+    weight: 1000,
     type: &apos;checkbox&apos;,
     label: &apos;Protected&apos;,
     tooltip: &apos;A protected field will not be returned when queried via API.&apos;,
     key: &apos;protected&apos;,
-    input: true
-  },
-  {
-    weight: 1000,
-    type: &apos;checkbox&apos;,
-    label: &apos;Persistent&apos;,
-    tooltip: &apos;A persistent field will be stored in database when the form is submitted.&apos;,
-    key: &apos;persistent&apos;,
     input: true
   },
   {
@@ -407,6 +413,14 @@ export default [
     label: &apos;Table View&apos;,
     tooltip: &apos;Shows this value within the table view of the submissions.&apos;,
     key: &apos;tableView&apos;,
+    input: true
+  },
+  {
+    weight: 1550,
+    type: &apos;checkbox&apos;,
+    label: &apos;Always enabled&apos;,
+    tooltip: &apos;Make this field always enabled, even if the form is disabled&apos;,
+    key: &apos;alwaysEnabled&apos;,
     input: true
   }
 ];

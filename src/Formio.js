@@ -721,8 +721,8 @@ export default class Formio {
 
     // Allow plugins to alter the options.
     options = Formio.pluginAlter('requestOptions', options, url);
-    if (options.namespace) {
-      opts.namespace = options.namespace;
+    if (options.namespace || Formio.namespace) {
+      opts.namespace = options.namespace ||  Formio.namespace;
     }
 
     const requestToken = options.headers.get('x-jwt-token');
@@ -879,7 +879,7 @@ export default class Formio {
 
   static setToken(token = '', opts) {
     opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
-    var tokenName = `${opts.namespace || 'formio'}Token`;
+    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
@@ -911,7 +911,7 @@ export default class Formio {
 
   static getToken(options) {
     options = (typeof options === 'string') ? { namespace: options } : options || {};
-    var tokenName = `${options.namespace || 'formio'}Token`;
+    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
@@ -930,7 +930,7 @@ export default class Formio {
   }
 
   static setUser(user, opts = {}) {
-    var userName = `${opts.namespace || 'formio'}User`;
+    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
       Formio.setToken(null, opts);
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -952,7 +952,7 @@ export default class Formio {
 
   static getUser(options) {
     options = options || {};
-    var userName = `${options.namespace || 'formio'}User`;
+    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
       return JSON.parse(localStorage.getItem(userName) || null);
     }

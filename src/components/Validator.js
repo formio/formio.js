@@ -233,6 +233,63 @@ export default {
         return (value !== 'Invalid date');
       }
     },
+    day: {
+      message(component) {
+        return component.t(component.errorMessage('invalid_day'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        if (!value) {
+          return true;
+        }
+        const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+        const values = value.split('/').map(x => parseInt(x, 10)),
+          day = values[DAY],
+          month = values[MONTH],
+          year = values[YEAR],
+          maxDay = getDaysInMonthCount(month, year);
+
+        if (day < 0 || day > maxDay) {
+          return false;
+        }
+        if (month < 0 || month > 12) {
+          return false;
+        }
+        if (year < 0 || year > 9999) {
+          return false;
+        }
+        return true;
+
+        function isLeapYear(year) {
+          // Year is leap if it is evenly divisible by 400 or evenly divisible by 4 and not evenly divisible by 100.
+          return !(year % 400) || (!!(year % 100) && !(year % 4));
+        }
+
+        function getDaysInMonthCount(month, year) {
+          switch (month) {
+            case 1:     // January
+            case 3:     // March
+            case 5:     // May
+            case 7:     // July
+            case 8:     // August
+            case 10:    // October
+            case 12:    // December
+              return 31;
+            case 4:     // April
+            case 6:     // June
+            case 9:     // September
+            case 11:    // November
+              return 30;
+            case 2:     // February
+              return isLeapYear(year) ? 29 : 28;
+            default:
+              return 31;
+          }
+        }
+      }
+    },
     pattern: {
       key: 'validate.pattern',
       message(component, setting) {
@@ -326,6 +383,10 @@ export default {
         });
       },
       check(component, setting, value) {
+        //if any parts of day are missing, skip maxDate validation
+        if (component.isPartialDay && component.isPartialDay(value)) {
+          return true;
+        }
         const date = moment(value);
         const maxDate = getDateSetting(setting);
 
@@ -333,7 +394,7 @@ export default {
           return true;
         }
         else {
-          maxDate.setHours(0,0,0,0);
+          maxDate.setHours(0, 0, 0, 0);
         }
 
         return date.isBefore(maxDate) || date.isSame(maxDate);
@@ -349,13 +410,17 @@ export default {
         });
       },
       check(component, setting, value) {
+        //if any parts of day are missing, skip minDate validation
+        if (component.isPartialDay && component.isPartialDay(value)) {
+          return true;
+        }
         const date = moment(value);
         const minDate = getDateSetting(setting);
         if (_.isNull(minDate)) {
           return true;
         }
         else {
-          minDate.setHours(0,0,0,0);
+          minDate.setHours(0, 0, 0, 0);
         }
 
         return date.isAfter(minDate) || date.isSame(minDate);
