@@ -21,14 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - FOR-1845: Builder buttons missing for components with Logic
+ - Possibility to hide PDF submit button.
 
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
-
+ 
 ### Added
  - Content property to HTML and Content components Logic.
  - FOR-1806: languageChanged event
+ - FOR-1844: Support for private file downloads with the URL file configuration. Also added a File Upload server @ https://github.com/formio/formio-upload that supports this feature.
 
 ### Fixed
  - Select component Values template.
@@ -84,8 +86,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.7
 ### Fixed
+<<<<<<< HEAD
  - Issue with preview destroy on change.
 
+=======
+ - Problems with the Select component not working with Refresh On property for some cases.
+
+## 3.6.6
+### Fixed
+ - FOR-1733: Fixed issue with preview destroy on change.
+ - FOR-1728: Problems with running the renderer within iOS applications.
+ 
+>>>>>>> b9e94cb... FOR-1803: Fixed.
 ## 3.6.5
 ### Fixed
  - Broken build.
