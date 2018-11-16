@@ -54,7 +54,7 @@ export default [
     type: 'checkbox',
     label: 'Encrypt',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not be suitable for passwords.',
-    key: 'encrypt',
+    key: 'encrypted',
     input: true
   },
   {
