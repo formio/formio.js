@@ -355,6 +355,10 @@ export default {
         })
         .catch((error) => {
           // Should returns a success
+          if (error[0] instanceof Error) {
+            done(error[0]);
+          }
+
           done(error);
         })
 
@@ -411,21 +415,22 @@ export default {
             const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
             const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
             assert.deepEqual(buttonsText, buttonsToValid);
-            form.submit().then((submission) => {
-              // Check submission
-              assert.deepEqual(submission.data, {
-                a: 'a',
-                b: 'b',
-                c: 'directSubmit',
-                d: '',
-                e: '',
-                f: '',
-                g: ''
-              });
+            form.submit()
+              .then((submission) => {
+                // Check submission
+                assert.deepEqual(submission.data, {
+                  a: 'a',
+                  b: 'b',
+                  c: 'directSubmit',
+                  d: '',
+                  e: '',
+                  f: '',
+                  g: ''
+                });
 
-              // Call done.
-              done();
-            });
+                done();
+              })
+              .catch(done);
           });
 
           // Write data

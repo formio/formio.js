@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Webform from './Webform';
+import Component from './components/_classes/component/Component';
 import Formio from './Formio';
 import { checkCondition } from './utils/utils';
 
@@ -19,20 +20,39 @@ export default class Wizard extends Webform {
     this.components = [];
     this.page = 0;
     this.history = [];
+    this._seenPages = [0];
   }
 
-  getPages() {
+  isLastPage() {
+    const next = this.getNextPage(this.submission.data, this.page);
+
+    if (_.isNumber(next)) {
+      return 0 < next && next >= this.pages.length;
+    }
+
+    return _.isNull(next);
+  }
+
+  getPages(args = {}) {
+    const { all = false } = args;
     const pageOptions = _.clone(this.options);
     const components = _.clone(this.components);
+    const pages = this.pages
+          .filter(all ? _.identity : (p, index) => this._seenPages.includes(index))
+          .map((page, index) => this.createComponent(
+            page,
+            _.assign(pageOptions, { components: index === this.page ? components : null })
+          ));
 
-    // We shouldn't recreate a components on the page we currently on to avoid duplicate inputs desync.
-    return this.pages.map((page, index) => this.createComponent(page, Object.assign({}, pageOptions, {
-      components: index === this.page ? components : null,
-    })));
+    this.components = components;
+
+    return pages;
   }
 
   getComponents() {
-    return this.submitting ? this.getPages() : super.getComponents();
+    return this.submitting
+      ? this.getPages({ all: this.isLastPage() })
+      : super.getComponents();
   }
 
   resetValue() {
@@ -170,6 +190,9 @@ export default class Wizard extends Webform {
     }
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.currentPage = num;
+      if (!this._seenPages.includes(num)) {
+        this._seenPages = this._seenPages.concat(num);
+      }
       this.redraw();
       return Promise.resolve();
     }
@@ -236,7 +259,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form builed, before go to the next page
-    if (this.checkPageValidity(this.submission.data, true)) {
+    if (this.checkCurrentPageValidity(this.submission.data, true)) {
       this.checkData(this.submission.data, {
         noValidate: true
       });
@@ -363,6 +386,35 @@ export default class Wizard extends Webform {
     this.destroyComponents();
     this.addComponents();
     this.redraw();
+  }
+
+  checkCurrentPageValidity(...args) {
+    return super.checkValidity(...args);
+  }
+
+  checkPagesValidity(pages, ...args) {
+    const isValid = Component.prototype.checkValidity.apply(this, args);
+    return pages.reduce((check, pageComp) => {
+      return pageComp.checkValidity(...args) && check;
+    }, isValid);
+  }
+
+  checkValidity(data, dirty) {
+    return this.checkPagesValidity(this.getPages(), data, dirty);
+  }
+
+  get errors() {
+    if (this.isLastPage()) {
+      const pages = this.getPages({ all: true });
+
+      this.checkPagesValidity(pages, this.submission.data, true);
+
+      return pages.reduce((errors, pageComp) => {
+        return errors.concat(pageComp.errors || []);
+      }, []);
+    }
+
+    return super.errors;
   }
 }
 
