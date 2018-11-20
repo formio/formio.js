@@ -82,6 +82,10 @@ export default class FileComponent extends BaseComponent {
     return Array.isArray(value) ? value : [];
   }
 
+  get hasTypes() {
+    return this.component.fileTypes && Array.isArray(this.component.fileTypes) && this.component.fileTypes.length > 1;
+  }
+
   // File is always an array.
   validateMultiple() {
     return false;
@@ -154,12 +158,14 @@ export default class FileComponent extends BaseComponent {
         this.ce('div', { class: 'row' },
           [
             this.ce('div', { class: 'col-md-1' }),
-            this.ce('div', { class: 'col-md-9' },
+            this.ce('div', { class: `col-md-${this.hasTypes ? '7' : '9'}` },
               this.ce('strong', {}, this.text('File Name'))
             ),
             this.ce('div', { class: 'col-md-2' },
               this.ce('strong', {}, this.text('Size'))
-            )
+            ),
+            this.hasTypes ?
+              this.ce('div', { class: 'col-md-2' }, this.ce('strong', {}, this.text('Type'))): null,
           ]
         )
       ),
@@ -202,8 +208,10 @@ export default class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce('div', { class: 'col-md-9' }, this.createFileLink(fileInfo)),
-          this.ce('div', { class: 'col-md-2' }, this.fileSize(fileInfo.size))
+          this.ce('div', { class: `col-md-${this.hasTypes ? '7' : '9'}` }, this.createFileLink(fileInfo)),
+          this.ce('div', { class: 'col-md-2' }, this.fileSize(fileInfo.size)),
+          this.hasTypes ?
+            this.ce('div', { class: 'col-md-2' }, this.createTypeSelect(fileInfo)): null,
         ]
       )
     );
@@ -217,6 +225,22 @@ export default class FileComponent extends BaseComponent {
       href: file.url, target: '_blank',
       onClick: this.getFile.bind(this, file)
     }, file.originalName || file.name);
+  }
+
+  createTypeSelect(file) {
+    return this.ce('select', {
+      class: 'file-type',
+      onChange: (event) => {
+        file.fileType = event.target.value;
+        this.triggerChange();
+      }
+    }, this.component.fileTypes.map(type => this.ce('option', {
+          value: type.value,
+          class: 'test',
+          selected: type.value === file.fileType ? 'selected' : undefined,
+        }, type.label)
+      )
+    );
   }
 
   buildImageList() {
@@ -724,6 +748,10 @@ export default class FileComponent extends BaseComponent {
           }, this.component.url)
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
+              // Default to first type.
+              if (this.hasTypes) {
+                fileInfo.fileType = this.component.fileTypes[0].value;
+              }
               fileInfo.originalName = file.name;
               this.dataValue.push(fileInfo);
               this.refreshDOM();
