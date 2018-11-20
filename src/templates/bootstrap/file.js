@@ -7,8 +7,11 @@ export default {
       {% if (!disabled) { %}
       <div class="col-md-1"></div>
       {% } %}
-      <div class="col-md-9"><strong>File Name</strong></div>
+      <div class="col-md-{% if (self.hasTypes) { %}7{% } else { %}9{% } %}"><strong>File Name</strong></div>
       <div class="col-md-2"><strong>Size</strong></div>
+      {% if (self.hasTypes) { %}
+        <div class="col-md-2"><strong>Type</strong></div>
+      {% } %}
     </div>
   </li>
   {% files.forEach(function(file) { %}
@@ -17,7 +20,7 @@ export default {
       {% if (!disabled) { %}
       <div class="col-md-1"><i class="{{iconClass('remove')}}" ref="removeLink"></i></div>
       {% } %}
-      <div class="col-md-9">
+      <div class="col-md-{% if (self.hasTypes) { %}7{% } else { %}9{% } %}">
         {% if (component.uploadOnly) { %}
           {{file.originalName || file.name}}
         {% } else { %}
@@ -25,6 +28,15 @@ export default {
         {% } %}
       </div>
       <div class="col-md-2">{{fileSize(file.size)}}</div>
+      {% if (self.hasTypes) { %}
+        <div class="col-md-2">
+          <select class="file-type">
+            {% component.fileTypes.map(function(type) { %}
+              <option class="test" value="{{ type.value }}" {% if (type.value === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
+            {% }); %}
+          </select>
+        </div>
+      {% } %}
     </div>
   </li>
   {% }) %}

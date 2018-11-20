@@ -409,6 +409,10 @@ export default class FileComponent extends Component {
     return file.size - 0.1 <= this.translateScalars(val);
   }
 
+  get hasTypes() {
+    return this.component.fileTypes && Array.isArray(this.component.fileTypes) && this.component.fileTypes.length > 1;
+  }
+
   upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
