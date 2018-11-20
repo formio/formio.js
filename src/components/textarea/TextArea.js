@@ -123,6 +123,25 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.input;
     }
 
+    if (this.component.editor === 'ckeditor') {
+      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateValue(null, newValue)).then((editor) => {
+        this.editor = editor;
+        if (this.options.readOnly || this.component.disabled) {
+          this.editor.isReadOnly = true;
+        }
+
+        // Set the default rows.
+        let value = '';
+        const numRows = parseInt(this.component.rows, 10);
+        for (let i = 0; i < numRows; i++) {
+          value += '<p></p>';
+        }
+        editor.data.set(value);
+        return editor;
+      });
+      return this.input;
+    }
+
     // Normalize the configurations.
     if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
       console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
@@ -213,6 +232,10 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.editorReady.then((editor) => {
         if (this.component.editor === 'ace') {
           editor.setValue(this.setConvertedValue(value));
+        }
+        else if (this.component.editor === 'ckeditor') {
+          editor.data.set(this.setConvertedValue(value));
+          this.updateValue(flags);
         }
         else {
           editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));

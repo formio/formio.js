@@ -27,6 +27,7 @@ export default [
       values: [
         { label: 'None', value: '' },
         { label: 'Quill', value: 'quill' },
+        { label: 'CKEditor', value: 'ckeditor' },
         { label: 'ACE', value: 'ace' }
       ]
     },

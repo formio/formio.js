@@ -1879,13 +1879,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2257,13 +2257,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2491,13 +2491,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -3450,6 +3450,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#addcke",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addCKE",
+    "src/components/base/Base.js~BaseComponent#addCKE",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#addfocusblurevents",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-addFocusBlurEvents",
     "src/components/base/Base.js~BaseComponent#addFocusBlurEvents",
@@ -3972,6 +3978,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#hassetvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-hasSetValue",
+    "src/components/base/Base.js~BaseComponent#hasSetValue",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#hasvalue",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasValue",
     "src/components/base/Base.js~BaseComponent#hasValue",
@@ -4039,13 +4051,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4753,13 +4765,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -4830,10 +4842,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#hassetvalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-hasSetValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#hasSetValue",
+    "member"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#input",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-input",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#input",
     "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#isempty",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-isEmpty",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#isEmpty",
+    "method"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#key",
@@ -5214,6 +5238,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/content/content.js~contentcomponent#editor",
+    "class/src/components/content/Content.js~ContentComponent.html#instance-member-editor",
+    "src/components/content/Content.js~ContentComponent#editor",
+    "member"
+  ],
+  [
     "src/components/content/content.js~contentcomponent#emptyvalue",
     "class/src/components/content/Content.js~ContentComponent.html#instance-get-emptyValue",
     "src/components/content/Content.js~ContentComponent#emptyValue",
@@ -5425,13 +5455,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],

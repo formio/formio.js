@@ -1,4 +1,4 @@
-/* globals Quill */
+/* globals Quill, ClassicEditor */
 import { conformToMask } from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -8,6 +8,7 @@ import Formio from '../../Formio';
 import Validator from '../Validator';
 import Widgets from '../../widgets';
 import Component from '../../Component';
+const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/master/build/ckeditor.js';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -1481,7 +1482,7 @@ export default class BaseComponent extends Component {
 
     // Check advanced conditions
     const result = this.show(this.conditionallyVisible(data));
-    if (this.fieldLogic(data)) {
+    if (!this.options.builder && this.fieldLogic(data)) {
       this.redraw();
     }
 
@@ -1835,6 +1836,20 @@ export default class BaseComponent extends Component {
     };
   }
 
+  addCKE(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? null : settings;
+    return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
+      .then(() => {
+        if (!element.parentNode) {
+          return Promise.reject();
+        }
+        return ClassicEditor.create(element, settings).then(editor => {
+          editor.model.document.on('change', () => onChange(editor.data.get()));
+          return editor;
+        });
+      });
+  }
+
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
@@ -2068,11 +2083,15 @@ export default class BaseComponent extends Component {
     return changed;
   }
 
+  get hasSetValue() {
+    return this.hasValue() && !this.isEmpty(this.dataValue);
+  }
+
   /**
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
+    if (this.hasSetValue) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });

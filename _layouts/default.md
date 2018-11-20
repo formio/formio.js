@@ -29,7 +29,7 @@
   <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
   <script src="{{ site.baseurl }}/app/bootstrap/js/bootstrap.min.js"></script>
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  <script src="{{ site.baseurl }}/dist/formio.full.min.js"></script>
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}

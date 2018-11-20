@@ -1221,7 +1221,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = this.submission || {};
+      const submission = _.cloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
@@ -1249,6 +1249,13 @@ export default class Webform extends NestedComponent {
         if (!isDraft &amp;&amp; !this.checkValidity(submission.data, true)) {
           return reject();
         }
+
+        this.getAllComponents().forEach((comp) =&gt; {
+          const { persistent, key } = comp.component;
+          if (persistent === &apos;client-only&apos;) {
+            delete submission.data[key];
+          }
+        });
 
         this.hook(&apos;customValidation&apos;, submission, (err) =&gt; {
           if (err) {

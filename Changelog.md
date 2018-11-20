@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Addded
+ - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+
+## 3.8.0
+### Added
+ - Added the CKEditor WYSIWYG available for textarea editors.
+ - FOR-1758: Allow for another option of persistence called "client-only" which won't send the data to the server.
+
+### Changed
+ - Changed the Content building to use CKEditor.
+
+### Fixed
+ - FOR-1845: Builder buttons missing for components with Logic
+ - Hide "edit" and "delete" on readOnly for EditGrid
+ - Button was disabled while it shouldn't be for Read Only forms, or when configured to always be enabled.
+
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
