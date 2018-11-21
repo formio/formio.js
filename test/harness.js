@@ -162,8 +162,9 @@ const Harness = {
     return element;
   },
   testSetGet(component, value) {
+    const originValue = _.cloneDeep(value);
     component.setValue(value);
-    assert.deepEqual(component.getValue(), value);
+    assert.deepEqual(component.getValue(), originValue);
     return component;
   },
   setInputValue(component, name, value) {
