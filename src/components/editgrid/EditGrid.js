@@ -172,7 +172,6 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   renderRow(row, rowIndex) {
-    console.log('renderRow', row, rowIndex);
     if (row.isOpen) {
       return this.renderComponents(row.components);
     }

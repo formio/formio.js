@@ -15,7 +15,6 @@ export default class NestedComponent extends Component {
     super(component, options, data);
     this.type = 'components';
     this._collapsed = !!this.component.collapsed;
-    this.components = [];
   }
 
   get defaultSchema() {
@@ -489,7 +488,7 @@ export default class NestedComponent extends Component {
   }
 
   destroyComponents() {
-    const components = this.components.slice();
+    const components = this.getComponents().slice();
     components.forEach((comp) => this.removeComponent(comp, this.components));
     this.components = [];
   }

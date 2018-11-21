@@ -127,6 +127,9 @@ export default class Element {
    *   If this listener should persist beyond "destroy" commands.
    */
   addEventListener(obj, type, func, persistent) {
+    if (!obj) {
+      return;
+    }
     if (!persistent) {
       this.eventHandlers.push({ id: this.id, obj, type, func });
     }

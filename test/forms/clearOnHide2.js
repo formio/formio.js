@@ -1214,6 +1214,7 @@ export default {
         assert.deepEqual(_omit(form.getValue(), ['metadata']), {data: {hide: true}});
         component.setValue(false);
         form.checkConditions(form.getValue());
+        console.log(JSON.stringify(_omit(form.getValue(), ['metadata'])), JSON.stringify(fullData));
         assert.deepEqual(_omit(form.getValue(), ['metadata']), fullData);
         done();
       });
