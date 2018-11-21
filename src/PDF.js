@@ -1,4 +1,7 @@
 import Promise from 'native-promise-only';
+
+import _ from 'lodash';
+
 import Formio from './Formio';
 import Webform from './Webform';
 
@@ -143,7 +146,10 @@ export default class PDF extends Webform {
       this.iframe
     ]);
 
-    if (!this.options.readOnly) {
+    if (
+      !this.options.readOnly &&
+      _.find(this.form.components, (component) => component.type === 'button' && component.action === 'submit')
+    ) {
       this.submitButton = this.ce('button', {
         type: 'button',
         class: 'btn btn-primary'
