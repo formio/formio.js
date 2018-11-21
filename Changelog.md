@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-### Addded
+### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+### Fixed
+ - FOR-1850: Wrong key for Encrypted setting in builder
 
 ### Fixed
  - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
