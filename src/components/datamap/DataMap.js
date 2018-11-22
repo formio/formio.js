@@ -119,7 +119,8 @@ export default class DataMapComponent extends NestedComponent {
     addButton.appendChild(this.ce('i', {
       class: this.iconClass('plus')
     }));
-    addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+    addButton.appendChild(this.text(' '));
+    addButton.appendChild(this.text(this.component.addAnother || 'Add Another'));
     return addButton;
   }
 

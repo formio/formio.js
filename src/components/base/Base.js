@@ -942,7 +942,8 @@ export default class BaseComponent extends Component {
     }
     else {
       addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+      addButton.appendChild(this.text(' '));
+      addButton.appendChild(this.text(this.component.addAnother || 'Add Another'));
       return addButton;
     }
   }
