@@ -270,6 +270,10 @@ export default class FileComponent extends BaseComponent {
     return Array.isArray(value) ? value : [];
   }
 
+  get hasTypes() {
+    return this.component.fileTypes &amp;&amp; Array.isArray(this.component.fileTypes) &amp;&amp; this.component.fileTypes.length &gt; 1;
+  }
+
   // File is always an array.
   validateMultiple() {
     return false;
@@ -342,12 +346,14 @@ export default class FileComponent extends BaseComponent {
         this.ce(&apos;div&apos;, { class: &apos;row&apos; },
           [
             this.ce(&apos;div&apos;, { class: &apos;col-md-1&apos; }),
-            this.ce(&apos;div&apos;, { class: &apos;col-md-9&apos; },
+            this.ce(&apos;div&apos;, { class: `col-md-${this.hasTypes ? &apos;7&apos; : &apos;9&apos;}` },
               this.ce(&apos;strong&apos;, {}, this.text(&apos;File Name&apos;))
             ),
             this.ce(&apos;div&apos;, { class: &apos;col-md-2&apos; },
               this.ce(&apos;strong&apos;, {}, this.text(&apos;Size&apos;))
-            )
+            ),
+            this.hasTypes ?
+              this.ce(&apos;div&apos;, { class: &apos;col-md-2&apos; }, this.ce(&apos;strong&apos;, {}, this.text(&apos;Type&apos;))): null,
           ]
         )
       ),
@@ -390,8 +396,10 @@ export default class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce(&apos;div&apos;, { class: &apos;col-md-9&apos; }, this.createFileLink(fileInfo)),
-          this.ce(&apos;div&apos;, { class: &apos;col-md-2&apos; }, this.fileSize(fileInfo.size))
+          this.ce(&apos;div&apos;, { class: `col-md-${this.hasTypes ? &apos;7&apos; : &apos;9&apos;}` }, this.createFileLink(fileInfo)),
+          this.ce(&apos;div&apos;, { class: &apos;col-md-2&apos; }, this.fileSize(fileInfo.size)),
+          this.hasTypes ?
+            this.ce(&apos;div&apos;, { class: &apos;col-md-2&apos; }, this.createTypeSelect(fileInfo)): null,
         ]
       )
     );
@@ -405,6 +413,22 @@ export default class FileComponent extends BaseComponent {
       href: file.url, target: &apos;_blank&apos;,
       onClick: this.getFile.bind(this, file)
     }, file.originalName || file.name);
+  }
+
+  createTypeSelect(file) {
+    return this.ce(&apos;select&apos;, {
+      class: &apos;file-type&apos;,
+      onChange: (event) =&gt; {
+        file.fileType = event.target.value;
+        this.triggerChange();
+      }
+    }, this.component.fileTypes.map(type =&gt; this.ce(&apos;option&apos;, {
+          value: type.value,
+          class: &apos;test&apos;,
+          selected: type.value === file.fileType ? &apos;selected&apos; : undefined,
+        }, type.label)
+      )
+    );
   }
 
   buildImageList() {
@@ -912,6 +936,10 @@ export default class FileComponent extends BaseComponent {
           }, this.component.url)
             .then(fileInfo =&gt; {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
+              // Default to first type.
+              if (this.hasTypes) {
+                fileInfo.fileType = this.component.fileTypes[0].value;
+              }
               fileInfo.originalName = file.name;
               this.dataValue.push(fileInfo);
               this.refreshDOM();

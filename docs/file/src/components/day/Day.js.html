@@ -187,7 +187,6 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/day/Day.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import moment from &apos;moment&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import { boolValue, getLocaleDateFormatInfo } from &apos;../../utils/utils&apos;;
 
@@ -231,7 +230,7 @@ export default class DayComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.validators = this.validators.concat([&apos;date&apos;, &apos;maxDate&apos;, &apos;minDate&apos;]);
+    this.validators = this.validators.concat([&apos;day&apos;, &apos;maxDate&apos;, &apos;minDate&apos;]);
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
@@ -280,7 +279,7 @@ export default class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      { value: 0, label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;) },
+      { value: undefined, label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;) },
       { value: 1, label: this.t(&apos;january&apos;) },
       { value: 2, label: this.t(&apos;february&apos;) },
       { value: 3, label: this.t(&apos;march&apos;) },
@@ -580,17 +579,22 @@ export default class DayComponent extends BaseComponent {
       return null;
     }
     const parts = value.split(&apos;/&apos;);
+    let day, month, year;
     if (this.component.dayFirst &amp;&amp; this.showDay) {
-      this.dayInput.value = parseInt(parts.shift(), 10);
+      day = parts.shift();
+      this.dayInput.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
     }
     if (this.showMonth) {
-      this.monthInput.value = parseInt(parts.shift(), 10);
+      month = parts.shift();
+      this.monthInput.value = month === &apos;00&apos; ? undefined : parseInt(month, 10);
     }
     if (!this.component.dayFirst &amp;&amp; this.showDay) {
-      this.dayInput.value = parseInt(parts.shift(), 10);
+      day = parts.shift();
+      this.dayInput.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
     }
     if (this.showYear) {
-      this.yearInput.value = parseInt(parts.shift(), 10);
+      year = parts.shift();
+      this.yearInput.value = year === &apos;0000&apos; ? undefined : parseInt(year, 10);
     }
   }
 
@@ -626,45 +630,46 @@ export default class DayComponent extends BaseComponent {
    * @return {*}
    */
   getDate(value) {
-    const options = {};
-    let defaults = [];
-    // Map positions to identifiers
+    let defaults = [], day, month, year;
+    // Map positions to identifiers to get default values for each part of day
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = value || this.component.defaultValue;
     if (defaultValue) {
       defaults = defaultValue.split(&apos;/&apos;).map(x =&gt; parseInt(x, 10));
     }
-
-    const day = (this.showDay &amp;&amp; this.dayInput) ? parseInt(this.dayInput.value, 10) : NaN;
-    if (!_.isNaN(day)) {
-      options.day = day;
+    if (this.showDay &amp;&amp; this.dayInput) {
+      day = parseInt(this.dayInput.value, 10);
     }
-    else if (defaults[DAY] &amp;&amp; !_.isNaN(defaults[DAY])) {
-      options.day = defaults[DAY];
+    if (day === undefined || _.isNaN(day)) {
+      day = defaults[DAY] &amp;&amp; !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
     }
-
-    const month = (this.showMonth &amp;&amp; this.monthInput) ? parseInt(this.monthInput.value, 10) : NaN;
-    if (!_.isNaN(month) &amp;&amp; month &gt; 0) {
-      // Months are 0 indexed.
-      options.month = (month - 1);
+    if (this.showMonth &amp;&amp; this.monthInput) {
+      month = parseInt(this.monthInput.value, 10);
     }
-    else if (defaults[MONTH] &amp;&amp; !_.isNaN(defaults[MONTH])) {
-      options.month = defaults[MONTH] - 1;
+    if (month === undefined || _.isNaN(month)) {
+      month = defaults[MONTH] &amp;&amp; !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
     }
-
-    const year = (this.showYear &amp;&amp; this.yearInput) ? parseInt(this.yearInput.value) : NaN;
-    if (!_.isNaN(year)) {
-      options.year = year;
+    if (this.showYear &amp;&amp; this.yearInput) {
+      year = parseInt(this.yearInput.value);
     }
-    else if (defaults[YEAR] &amp;&amp; !_.isNaN(defaults[YEAR])) {
-      options.year = defaults[YEAR];
+    if (year === undefined || _.isNaN(year)) {
+      year = defaults[YEAR] &amp;&amp; !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
     }
-
-    if (_.isEmpty(options)) {
-      return null;
+    let result;
+    if (!day &amp;&amp; !month &amp;&amp; !year) {
+      return undefined;
     }
-
-    return moment(options);
+    //add trailing zeros
+    day = day.toString().padStart(2, 0);
+    month = month.toString().padStart(2, 0);
+    year = year.toString().padStart(4, 0);
+    if (this.component.dayFirst) {
+      result = `${day}/${month}/${year}`;
+    }
+    else {
+      result = `${month}/${day}/${year}`;
+    }
+    return result;
   }
 
   /**
@@ -681,12 +686,7 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get validationValue() {
-    const date = this.date;
-    if (!date) {
-      return null;
-    }
-
-    return date.format();
+    return this.date;
   }
 
   /**
@@ -698,7 +698,7 @@ export default class DayComponent extends BaseComponent {
   getValueAt(index) {
     const date = this.date;
     if (date) {
-      this.inputs[index].value = date.format(this.format);
+      this.inputs[index].value = date;
       return this.inputs[index].value;
     }
     else {
@@ -714,11 +714,7 @@ export default class DayComponent extends BaseComponent {
    * @return {null}
    */
   getView(value) {
-    const date = this.getDate(value);
-    if (!date) {
-      return null;
-    }
-    return date.isValid() ? date.format(this.format) : null;
+    return this.getDate(value);
   }
 
   focus() {
@@ -731,6 +727,15 @@ export default class DayComponent extends BaseComponent {
     else if (!this.showDay &amp;&amp; !this.showDay &amp;&amp; this.showYear) {
       this.yearInput.focus();
     }
+  }
+
+  isPartialDay(value) {
+    if (!value) {
+      return false;
+    }
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const values = value.split(&apos;/&apos;);
+    return (values[DAY] === &apos;00&apos; || values[MONTH] === &apos;00&apos; || values[YEAR] === &apos;0000&apos;);
   }
 }
 </code></pre>

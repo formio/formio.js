@@ -1879,13 +1879,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2257,13 +2257,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2335,13 +2335,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2569,13 +2569,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -2880,6 +2880,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/wizard.js~wizard#_seenpages",
+    "class/src/Wizard.js~Wizard.html#instance-member-_seenPages",
+    "src/Wizard.js~Wizard#_seenPages",
+    "member"
+  ],
+  [
     "src/wizard.js~wizard#addglobalcomponents",
     "class/src/Wizard.js~Wizard.html#instance-method-addGlobalComponents",
     "src/Wizard.js~Wizard#addGlobalComponents",
@@ -2922,6 +2928,30 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/wizard.js~wizard#checkcurrentpagevalidity",
+    "class/src/Wizard.js~Wizard.html#instance-method-checkCurrentPageValidity",
+    "src/Wizard.js~Wizard#checkCurrentPageValidity",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#checkpagesvalidity",
+    "class/src/Wizard.js~Wizard.html#instance-method-checkPagesValidity",
+    "src/Wizard.js~Wizard#checkPagesValidity",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#checkvalidity",
+    "class/src/Wizard.js~Wizard.html#instance-method-checkValidity",
+    "src/Wizard.js~Wizard#checkValidity",
+    "method"
+  ],
+  [
+    "src/wizard.js~wizard#components",
+    "class/src/Wizard.js~Wizard.html#instance-member-components",
+    "src/Wizard.js~Wizard#components",
+    "member"
+  ],
+  [
     "src/wizard.js~wizard#constructor",
     "class/src/Wizard.js~Wizard.html#instance-constructor-constructor",
     "src/Wizard.js~Wizard#constructor",
@@ -2932,6 +2962,12 @@ window.esdocSearchIndex = [
     "class/src/Wizard.js~Wizard.html#instance-method-currentPage",
     "src/Wizard.js~Wizard#currentPage",
     "method"
+  ],
+  [
+    "src/wizard.js~wizard#errors",
+    "class/src/Wizard.js~Wizard.html#instance-get-errors",
+    "src/Wizard.js~Wizard#errors",
+    "member"
   ],
   [
     "src/wizard.js~wizard#getcomponents",
@@ -2992,6 +3028,12 @@ window.esdocSearchIndex = [
     "class/src/Wizard.js~Wizard.html#instance-member-history",
     "src/Wizard.js~Wizard#history",
     "member"
+  ],
+  [
+    "src/wizard.js~wizard#islastpage",
+    "class/src/Wizard.js~Wizard.html#instance-method-isLastPage",
+    "src/Wizard.js~Wizard#isLastPage",
+    "method"
   ],
   [
     "src/wizard.js~wizard#nextpage",
@@ -3757,13 +3799,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4765,13 +4807,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5455,13 +5497,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6088,6 +6130,12 @@ window.esdocSearchIndex = [
     "class/src/components/day/Day.js~DayComponent.html#instance-member-hideInputLabels",
     "src/components/day/Day.js~DayComponent#hideInputLabels",
     "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#ispartialday",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-isPartialDay",
+    "src/components/day/Day.js~DayComponent#isPartialDay",
+    "method"
   ],
   [
     "src/components/day/day.js~daycomponent#monthinput",
@@ -6720,6 +6768,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#createtypeselect",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-createTypeSelect",
+    "src/components/file/File.js~FileComponent#createTypeSelect",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#createuploadstatus",
     "class/src/components/file/File.js~FileComponent.html#instance-method-createUploadStatus",
     "src/components/file/File.js~FileComponent#createUploadStatus",
@@ -6796,6 +6850,12 @@ window.esdocSearchIndex = [
     "class/src/components/file/File.js~FileComponent.html#instance-method-globStringToRegex",
     "src/components/file/File.js~FileComponent#globStringToRegex",
     "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#hastypes",
+    "class/src/components/file/File.js~FileComponent.html#instance-get-hasTypes",
+    "src/components/file/File.js~FileComponent#hasTypes",
+    "member"
   ],
   [
     "src/components/file/file.js~filecomponent#hiddenfileinputelement",

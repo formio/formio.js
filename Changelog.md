@@ -4,14 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.9.0
 ### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+ - Added File types
+ 
 ### Fixed
  - FOR-1850: Wrong key for Encrypted setting in builder
-
-### Fixed
  - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
+ - FOR-1779: Fixed issues with multiple errors showing up on wizards.
  - Possibility to hide PDF submit button.
 
 ## 3.8.0
