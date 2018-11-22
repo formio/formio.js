@@ -240,7 +240,8 @@ export default class ResourceComponent extends SelectComponent {
       class: this.iconClass(&apos;plus&apos;)
     });
     addButton.appendChild(addIcon);
-    addButton.appendChild(this.text(` ${this.component.addResourceLabel || &apos;Add Resource&apos;}`));
+    addButton.appendChild(this.text(&apos; &apos;));
+    addButton.appendChild(this.text(this.component.addResourceLabel || &apos;Add Resource&apos;));
 
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
