@@ -530,7 +530,9 @@ export default class WebformBuilder extends Component {
     }
     let saved = false;
     const componentCopy = _.cloneDeep(component);
-    const componentClass = Components.components[componentCopy.type];
+    let componentClass = Components.components[componentCopy.type];
+    const isCustom = componentClass === undefined;
+    componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
@@ -549,9 +551,18 @@ export default class WebformBuilder extends Component {
     this.editForm.editForm = this.form;
     this.editForm.editComponent = component;
 
-    this.editForm.submission = {
-      data: componentCopy,
-    };
+    if (isCustom) {
+      this.editForm.submission = {
+        data: {
+          componentJson: componentCopy
+        },
+      };
+    }
+    else {
+      this.editForm.submission = {
+        data: componentCopy,
+      };
+    }
 
     if (this.preview) {
       this.preview.destroy();
@@ -578,7 +589,7 @@ export default class WebformBuilder extends Component {
     this.editForm.on('change', (event) => {
       if (event.changed) {
         // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component && (event.changed.component.key === 'key'))) {
+        if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
           componentCopy.keyModified = true;
         }
 
@@ -595,6 +606,11 @@ export default class WebformBuilder extends Component {
               this.editForm.submission = {
                 data: event.data
               };
+            }
+
+            // Set the component to the componentJson if this is a custom component.
+            if (event.data.type === 'custom' && event.data.componentJson) {
+              event.data = event.data.componentJson;
             }
 
             // Set a unique key for this component.

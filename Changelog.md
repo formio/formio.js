@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+[Unreleased]
+### Added
+ - FOR-1736: Custom component to core builder
+
+## 3.9.0
 ### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
 ### Fixed
