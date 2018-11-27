@@ -64,6 +64,7 @@ export default {
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
     if (result && (customErrorMessage || validateCustom)) {
       result = component.t(customErrorMessage || result, {
+        field: component.errorLabel,
         data: component.data
       });
     }
