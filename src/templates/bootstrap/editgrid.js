@@ -15,7 +15,7 @@ export default {
   {% rows.forEach(function(row, rowIndex) { %}
   <li class="list-group-item" ref="{{editgridKey}}">
     {{row}}
-    {% if (openRows[rowIndex] && !options.readOnly) { %}
+    {% if (openRows[rowIndex] && !readOnly) { %}
     <div class="editgrid-actions">
       <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
       {% if (component.removeRow) { %}
@@ -32,7 +32,7 @@ export default {
   </li>
   {% } %}
 </ul>
-{% if (!options.readOnly) { %}
+{% if (!readOnly) { %}
 <button class="btn btn-primary" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>

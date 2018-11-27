@@ -11,7 +11,7 @@ describe('Content Component', () => {
   it('Should build a content component', () => {
     return Harness.testCreate(ContentComponent, comp1).then((component) => {
       const html = component.element.querySelector('[ref="html"]');
-      assert.equal(html.innerHTML, comp1.html.trim());
+      assert.equal(html.innerHTML.trim(), comp1.html.trim());
     });
   });
 });

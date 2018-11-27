@@ -18,7 +18,7 @@ const Harness = {
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement);
     formBuilder.form = {components: []};
-    formBuilder.builderReady.then(done);
+    formBuilder.webform.ready.then(() => done());
   },
 
   builderAfter() {

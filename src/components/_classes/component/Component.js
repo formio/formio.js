@@ -527,7 +527,7 @@ export default class Component extends Element {
 
     data.component = this.component;
     data.self = this;
-    data.options = this.options;
+    data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;

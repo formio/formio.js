@@ -13,7 +13,7 @@ describe('Button Component', () => {
       const buttons = Harness.testElements(component, 'button[type="submit"]', 1);
       for (const button of buttons) {
         assert.equal(button.name, `data[${comp1.key}]`);
-        assert.equal(button.innerHTML, comp1.label);
+        assert.equal(button.innerHTML.trim(), comp1.label);
       }
     });
   });

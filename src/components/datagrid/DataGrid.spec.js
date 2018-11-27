@@ -51,23 +51,21 @@ describe('DataGrid Component', () => {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: ''
         }
       ]);
-      done();
     });
   });
 });
 
 describe('DataGrid Panels', () => {
-  it('Should build a data grid component', (done) => {
-    Harness.testCreate(DataGridComponent, comp2).then((component) => {
-      done();
-    });
+  it('Should build a data grid component', () => {
+    return Harness.testCreate(DataGridComponent, comp2);
   });
 
-  it('Should be able to set the values of one panel in the DataGrid.', (done) => {
-    Harness.testCreate(DataGridComponent, comp2).then((component) => {
+  it('Should be able to set the values of one panel in the DataGrid.', () => {
+    return Harness.testCreate(DataGridComponent, comp2).then((component) => {
       Harness.testSetGet(component, [
         {
           firstName: 'Joe',
@@ -76,7 +74,7 @@ describe('DataGrid Panels', () => {
       ]);
 
       // Now add a new row.
-      component.addValue();
+      component.addRow();
       assert.deepEqual(component.getValue(), [
         {
           firstName: 'Joe',
