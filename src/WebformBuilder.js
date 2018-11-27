@@ -539,7 +539,10 @@ export default class WebformBuilder extends Component {
     }
 
     // This is the render step.
-    this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
+    this.editForm = new Webform(
+      _.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
+      { language: this.options.language }
+    );
 
     // Allow editForm overrides per component.
     const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
