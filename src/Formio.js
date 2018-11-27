@@ -9,7 +9,6 @@ import _get from 'lodash/get';
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
 const isObject = (val) => val && typeof val === 'object';
-var Headers;
 
 /**
  * The Formio interface class.

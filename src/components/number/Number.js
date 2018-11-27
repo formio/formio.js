@@ -64,6 +64,10 @@ export default class NumberComponent extends Input {
     return NumberComponent.schema();
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
@@ -109,7 +113,7 @@ export default class NumberComponent extends Input {
     const val = this.refs.input[index].value;
 
     if (!val) {
-      return undefined;
+      return '';
     }
 
     return this.parseNumber(val);

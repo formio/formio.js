@@ -22,11 +22,17 @@ export default class Form {
    * form.build();
    */
   constructor(...args) {
+    this.ready = new Promise((resolve, reject) => {
+      this.readyResolve = resolve;
+      this.readyReject = reject;
+    });
+
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
       this.form = args[1];
       this.options = args[2];
+      this.build();
     }
     else if (args[0]) {
       this.element = null;
@@ -37,10 +43,7 @@ export default class Form {
       this.element = null;
       this.options = null;
     }
-    this.ready = new Promise((resolve, reject) => {
-      this.readyResolve = resolve;
-      this.readyReject = reject;
-    });
+    return this.ready;
   }
 
   /**
@@ -141,20 +144,19 @@ export default class Form {
    * @return {Promise<T>}
    */
   build() {
-    if (this.element) {
-      const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
-      const loader = templates[template].loader || templates.bootstrap.loader;
-      this.element.innerHTML = loader.form;
+    if (!this.element) {
+      return Promise.reject('No DOM element for form.');
     }
+
+    // Add temporary loader.
+    const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
+    const loader = templates[template].loader || templates.bootstrap.loader;
+    this.element.innerHTML = loader.form;
+
     return this.ready.then(() => {
       return this.render().then(html => {
-        if (this.element) {
-          this.element.innerHTML = html;
-          return this.attach(this.element).then(() => this.instance);
-        }
-        else {
-          return html;
-        }
+        this.element.innerHTML = html;
+        return this.attach(this.element).then(() => this.instance);
       });
     });
   }
