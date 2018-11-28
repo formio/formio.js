@@ -1987,7 +1987,8 @@ export default class BaseComponent extends Component {
    */
   deleteValue() {
     this.setValue(null, {
-      noUpdateEvent: true
+      noUpdateEvent: true,
+      noDefault: true
     });
     _.unset(this.data, this.key);
   }
@@ -2314,8 +2315,9 @@ export default class BaseComponent extends Component {
    * @param index
    * @param value
    */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.inputs[index]);
@@ -2388,7 +2390,7 @@ export default class BaseComponent extends Component {
     const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
     return this.updateValue(flags);
