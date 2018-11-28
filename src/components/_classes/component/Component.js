@@ -1388,7 +1388,8 @@ export default class Component extends Element {
    */
   deleteValue() {
     this.setValue(null, {
-      noUpdateEvent: true
+      noUpdateEvent: true,
+      noDefault: true
     });
     _.unset(this.data, this.key);
   }
@@ -1483,7 +1484,7 @@ export default class Component extends Element {
     const isArray = Array.isArray(value);
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
     return this.updateValue(flags);
@@ -1495,8 +1496,9 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
