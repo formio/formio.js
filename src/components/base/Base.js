@@ -2073,7 +2073,13 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
+    let newValue = value;
+    if (!this.visible && this.component.clearOnHide) {
+      newValue = this.dataValue;
+    }
+    else if (value === undefined || value === null) {
+      newValue = this.getValue(flags);
+    }
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {
