@@ -366,7 +366,7 @@ export default class WebformBuilder extends Webform {
     ]));
 
     // Create the form instance.
-    this.editForm = new Webform(formioForm);
+    this.editForm = new Webform(formioForm, { language: this.options.language });
 
     // Set the form to the edit form.
     this.editForm.form = editForm;
