@@ -260,6 +260,7 @@ export default class WebformBuilder extends Webform {
     this.emit('updateComponent', component);
   }
 
+  /* eslint-disable max-statements */
   editComponent(component) {
     const componentCopy = _.cloneDeep(component);
     let componentClass = Components.components[componentCopy.component.type];
@@ -460,6 +461,7 @@ export default class WebformBuilder extends Webform {
     // Called when we edit a component.
     this.emit('editComponent', component);
   }
+  /* eslint-enable max-statements */
 
   /**
    * Creates copy of component schema and stores it under sessionStorage.

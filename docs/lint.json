@@ -302,27 +302,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2064,
+        "lineNumber": 2065,
         "line": "  /**"
       },
       {
-        "lineNumber": 2065,
+        "lineNumber": 2066,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2066,
+        "lineNumber": 2067,
         "line": "   *"
       },
       {
-        "lineNumber": 2067,
+        "lineNumber": 2068,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2068,
+        "lineNumber": 2069,
         "line": "   */"
       },
       {
-        "lineNumber": 2069,
+        "lineNumber": 2070,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -339,35 +339,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2109,
+        "lineNumber": 2116,
         "line": "  /**"
       },
       {
-        "lineNumber": 2110,
+        "lineNumber": 2117,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2111,
+        "lineNumber": 2118,
         "line": "   *"
       },
       {
-        "lineNumber": 2112,
+        "lineNumber": 2119,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2113,
+        "lineNumber": 2120,
         "line": "   *"
       },
       {
-        "lineNumber": 2114,
+        "lineNumber": 2121,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2115,
+        "lineNumber": 2122,
         "line": "   */"
       },
       {
-        "lineNumber": 2116,
+        "lineNumber": 2123,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -384,35 +384,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2199,
+        "lineNumber": 2206,
         "line": "  /**"
       },
       {
-        "lineNumber": 2200,
+        "lineNumber": 2207,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2201,
+        "lineNumber": 2208,
         "line": "   *"
       },
       {
-        "lineNumber": 2202,
+        "lineNumber": 2209,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2203,
+        "lineNumber": 2210,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2204,
+        "lineNumber": 2211,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2205,
+        "lineNumber": 2212,
         "line": "   */"
       },
       {
-        "lineNumber": 2206,
+        "lineNumber": 2213,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -424,6 +424,49 @@
     "docParams": [
       "data",
       "dirty"
+    ]
+  },
+  {
+    "name": "BaseComponent#setValueAt",
+    "filePath": "src/components/base/Base.js",
+    "lines": [
+      {
+        "lineNumber": 2318,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 2319,
+        "line": "   * Set the value at a specific index."
+      },
+      {
+        "lineNumber": 2320,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 2321,
+        "line": "   * @param index"
+      },
+      {
+        "lineNumber": 2322,
+        "line": "   * @param value"
+      },
+      {
+        "lineNumber": 2323,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2324,
+        "line": "  setValueAt(index, value, flags) {"
+      }
+    ],
+    "codeParams": [
+      "index",
+      "value",
+      "flags"
+    ],
+    "docParams": [
+      "index",
+      "value"
     ]
   },
   {

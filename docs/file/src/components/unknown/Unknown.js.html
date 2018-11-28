@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
@@ -189,10 +190,48 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import BaseComponent from &apos;../base/Base&apos;;
 
 export default class UnknownComponent extends BaseComponent {
+  static schema() {
+    return {
+      type: &apos;custom&apos;,
+      key: &apos;custom&apos;,
+      protected: false,
+      persistent: true
+    };
+  }
+
+  static get builderInfo() {
+    return {
+      title: &apos;Custom&apos;,
+      icon: &apos;fa fa-cubes&apos;,
+      group: &apos;advanced&apos;,
+      documentation: &apos;https://help.form.io/userguide/form-components/#custom&apos;,
+      weight: 120,
+      schema: UnknownComponent.schema()
+    };
+  }
+
   build() {
     this.createElement();
-    this.element.appendChild(this.text(`Unknown component: ${this.component.type}`));
+    if (this.options.builder) {
+      const builderElement = this.ce(&apos;div&apos;, {
+        class: &apos;panel panel-default&apos;
+      }, [
+        this.ce(&apos;div&apos;, {
+          class: &apos;panel-body text-muted text-center&apos;
+        }, [
+          document.createTextNode(`${this.t(&apos;Custom Component&apos;)} (${this.t(this.component.type)})`)
+        ])
+      ]);
+      this.append(builderElement);
+    }
+    else {
+      this.element.appendChild(this.text(`Unknown component: ${this.component.type}`));
+    }
     return this.element;
+  }
+
+  get defaultSchema() {
+    return UnknownComponent.schema();
   }
 }
 </code></pre>

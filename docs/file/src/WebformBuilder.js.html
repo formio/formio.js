@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
@@ -450,7 +451,9 @@ export default class WebformBuilder extends Webform {
 
   editComponent(component) {
     const componentCopy = _.cloneDeep(component);
-    const componentClass = Components.components[componentCopy.component.type];
+    let componentClass = Components.components[componentCopy.component.type];
+    const isCustom = componentClass === undefined;
+    componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
@@ -538,7 +541,7 @@ export default class WebformBuilder extends Webform {
     const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
 
     // Get the editform for this component.
-    const editForm = Components.components[componentCopy.component.type].editForm(overrides);
+    const editForm = componentClass.editForm(overrides);
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, &apos;defaultValue&apos;);
@@ -552,7 +555,7 @@ export default class WebformBuilder extends Webform {
     ]));
 
     // Create the form instance.
-    this.editForm = new Webform(formioForm);
+    this.editForm = new Webform(formioForm, { language: this.options.language });
 
     // Set the form to the edit form.
     this.editForm.form = editForm;
@@ -567,13 +570,20 @@ export default class WebformBuilder extends Webform {
     // Register for when the edit form changes.
     this.editForm.on(&apos;change&apos;, (event) =&gt; {
       if (event.changed) {
-        // See if this is a manually modified key.
-        if (event.changed.component &amp;&amp; (event.changed.component.key === &apos;key&apos;)) {
+        // See if this is a manually modified key. Treat custom component keys as manually modified
+        if ((event.changed.component &amp;&amp; (event.changed.component.key === &apos;key&apos;)) || isCustom) {
           componentCopy.keyModified = true;
         }
 
         // Set the component JSON to the new data.
-        componentCopy.component = this.editForm.getValue().data;
+        var editFormData = this.editForm.getValue().data;
+        //for custom component use value in &apos;componentJson&apos; field as JSON of component
+        if (editFormData.type === &apos;custom&apos; &amp;&amp; editFormData.componentJson) {
+          componentCopy.component = editFormData.componentJson;
+        }
+        else {
+          componentCopy.component = editFormData;
+        }
 
         // Update the component.
         this.updateComponent(componentCopy);
@@ -581,7 +591,19 @@ export default class WebformBuilder extends Webform {
     });
 
     // Modify the component information in the edit form.
-    this.editForm.formReady.then(() =&gt; this.editForm.setValue({ data: componentCopy.component }));
+    this.editForm.formReady.then(() =&gt; {
+      //for custom component populate component setting with component JSON
+      if (isCustom) {
+        this.editForm.setValue({
+          data: {
+            componentJson: _.cloneDeep(componentCopy.component)
+          }
+        });
+      }
+      else {
+        this.editForm.setValue({ data: componentCopy.component });
+      }
+    });
 
     this.addEventListener(cancelButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
@@ -601,7 +623,13 @@ export default class WebformBuilder extends Webform {
       }
       event.preventDefault();
       component.isNew = false;
-      component.component = componentCopy.component;
+      //for custom component use value in &apos;componentJson&apos; field as JSON of component
+      if (isCustom) {
+        component.component = this.editForm.data.componentJson;
+      }
+      else {
+        component.component = componentCopy.component;
+      }
       if (component.dragEvents &amp;&amp; component.dragEvents.onSave) {
         component.dragEvents.onSave(component);
       }

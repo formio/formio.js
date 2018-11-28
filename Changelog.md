@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-[Unreleased]
+## 3.9.1
+### Fixed
+ - More issues with infinite onChange events getting called.
+ - Language is lost when WebForm is created
+ - Some style issues for RTL forms.
+ - Text to remove superfluous spaces
+
 ### Added
  - FOR-1736: Custom component to core builder
+ - Added field for component custom validation
+
+### Changed
+ - Upgraded webpack@4.26.1, i18next@12.1.0, hoek@6.1.0
 
 ## 3.9.0
 ### Added

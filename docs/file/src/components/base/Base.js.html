@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
@@ -2176,7 +2177,8 @@ export default class BaseComponent extends Component {
    */
   deleteValue() {
     this.setValue(null, {
-      noUpdateEvent: true
+      noUpdateEvent: true,
+      noDefault: true
     });
     _.unset(this.data, this.key);
   }
@@ -2261,7 +2263,13 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
+    let newValue = value;
+    if (!this.visible &amp;&amp; this.component.clearOnHide) {
+      newValue = this.dataValue;
+    }
+    else if (value === undefined || value === null) {
+      newValue = this.getValue(flags);
+    }
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {
@@ -2503,8 +2511,9 @@ export default class BaseComponent extends Component {
    * @param index
    * @param value
    */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault &amp;&amp; (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.inputs[index]);
@@ -2577,7 +2586,7 @@ export default class BaseComponent extends Component {
     const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
     return this.updateValue(flags);
