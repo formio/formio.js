@@ -184,23 +184,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1180,
+        "lineNumber": 1181,
         "line": "  /**"
       },
       {
-        "lineNumber": 1181,
+        "lineNumber": 1182,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 1182,
+        "lineNumber": 1183,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 1183,
+        "lineNumber": 1184,
         "line": "   */"
       },
       {
-        "lineNumber": 1184,
+        "lineNumber": 1185,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -218,27 +218,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1619,
+        "lineNumber": 1620,
         "line": "  /**"
       },
       {
-        "lineNumber": 1620,
+        "lineNumber": 1621,
         "line": "   * Hide or Show an element."
       },
       {
-        "lineNumber": 1621,
+        "lineNumber": 1622,
         "line": "   *"
       },
       {
-        "lineNumber": 1622,
+        "lineNumber": 1623,
         "line": "   * @param show"
       },
       {
-        "lineNumber": 1623,
+        "lineNumber": 1624,
         "line": "   */"
       },
       {
-        "lineNumber": 1624,
+        "lineNumber": 1625,
         "line": "  show(show, noClear) {"
       }
     ],
@@ -255,35 +255,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1760,
+        "lineNumber": 1761,
         "line": "  /**"
       },
       {
-        "lineNumber": 1761,
+        "lineNumber": 1762,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1762,
+        "lineNumber": 1763,
         "line": "   *"
       },
       {
-        "lineNumber": 1763,
+        "lineNumber": 1764,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1764,
+        "lineNumber": 1765,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1765,
+        "lineNumber": 1766,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1766,
+        "lineNumber": 1767,
         "line": "   */"
       },
       {
-        "lineNumber": 1767,
+        "lineNumber": 1768,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -302,27 +302,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2063,
+        "lineNumber": 2064,
         "line": "  /**"
       },
       {
-        "lineNumber": 2064,
+        "lineNumber": 2065,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2065,
+        "lineNumber": 2066,
         "line": "   *"
       },
       {
-        "lineNumber": 2066,
+        "lineNumber": 2067,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2067,
+        "lineNumber": 2068,
         "line": "   */"
       },
       {
-        "lineNumber": 2068,
+        "lineNumber": 2069,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -339,35 +339,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2108,
+        "lineNumber": 2109,
         "line": "  /**"
       },
       {
-        "lineNumber": 2109,
+        "lineNumber": 2110,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2110,
-        "line": "   *"
-      },
-      {
         "lineNumber": 2111,
-        "line": "   * @param data - The global data object."
+        "line": "   *"
       },
       {
         "lineNumber": 2112,
-        "line": "   *"
+        "line": "   * @param data - The global data object."
       },
       {
         "lineNumber": 2113,
-        "line": "   * @return {boolean} - If the value changed during calculation."
+        "line": "   *"
       },
       {
         "lineNumber": 2114,
-        "line": "   */"
+        "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
         "lineNumber": 2115,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2116,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -384,35 +384,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2198,
+        "lineNumber": 2199,
         "line": "  /**"
       },
       {
-        "lineNumber": 2199,
+        "lineNumber": 2200,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2200,
+        "lineNumber": 2201,
         "line": "   *"
       },
       {
-        "lineNumber": 2201,
+        "lineNumber": 2202,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2202,
+        "lineNumber": 2203,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2203,
+        "lineNumber": 2204,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2204,
+        "lineNumber": 2205,
         "line": "   */"
       },
       {
-        "lineNumber": 2205,
+        "lineNumber": 2206,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],

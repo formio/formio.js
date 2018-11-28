@@ -432,11 +432,14 @@ export default class FileComponent extends BaseComponent {
                 },
                 [
                   this.ce('i', { class: this.iconClass('cloud-upload') }),
-                  this.text(' Drop files to attach, or '),
+                  this.text(' '),
+                  this.text('Drop files to attach, or'),
+                  this.text(' '),
                   this.buildBrowseLink(),
                   this.component.webcam ?
                     [
-                      this.text(', or '),
+                      this.text(', or'),
+                      this.text(' '),
                       this.ce('a',
                         {
                           href: '#',

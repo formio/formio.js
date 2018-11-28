@@ -1130,7 +1130,8 @@ export default class BaseComponent extends Component {
     }
     else {
       addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || &apos; Add Another&apos;));
+      addButton.appendChild(this.text(&apos; &apos;));
+      addButton.appendChild(this.text(this.component.addAnother || &apos;Add Another&apos;));
       return addButton;
     }
   }

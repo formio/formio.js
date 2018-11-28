@@ -80,14 +80,13 @@ export default class PanelComponent extends NestedComponent {
       this.panelTitle = this.ce('h4', {
         class: 'mb-0 card-title panel-title'
       });
-      let titleText = this.component.title;
       if (this.component.collapsible) {
         this.collapseIcon = this.getCollapseIcon();
         this.panelTitle.appendChild(this.collapseIcon);
-        titleText = ` ${titleText}`;
+        this.panelTitle.appendChild(this.text(' '));
       }
 
-      this.panelTitle.appendChild(this.text(titleText));
+      this.panelTitle.appendChild(this.text(this.component.title));
       this.createTooltip(this.panelTitle);
       heading.appendChild(this.panelTitle);
       this.setCollapseHeader(heading);
