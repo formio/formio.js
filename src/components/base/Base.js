@@ -1988,7 +1988,8 @@ export default class BaseComponent extends Component {
    */
   deleteValue() {
     this.setValue(null, {
-      noUpdateEvent: true
+      noUpdateEvent: true,
+      noDefault: true
     });
     _.unset(this.data, this.key);
   }
@@ -2073,7 +2074,13 @@ export default class BaseComponent extends Component {
     }
 
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue(flags) : value;
+    let newValue = value;
+    if (!this.visible && this.component.clearOnHide) {
+      newValue = this.dataValue;
+    }
+    else if (value === undefined || value === null) {
+      newValue = this.getValue(flags);
+    }
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {
@@ -2315,8 +2322,9 @@ export default class BaseComponent extends Component {
    * @param index
    * @param value
    */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.inputs[index]);
@@ -2389,7 +2397,7 @@ export default class BaseComponent extends Component {
     const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
     return this.updateValue(flags);
