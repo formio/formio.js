@@ -10,6 +10,10 @@ module.exports = {
       },
     ],
   ],
+  ignore: [
+    '**/*.spec.js',
+    '**/*.unit.js'
+  ],
   plugins: [
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-optional-chaining',

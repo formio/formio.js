@@ -1,5 +1,7 @@
-<div id="phoneNumber" class="form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumber form-group" ref="component">
-  <label class="col-form-label "> Phone Number </label>
+<div id="phoneNumber" class="form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumber  form-group" ref="component">
+  <label class="control-label ">
+    Phone Number
+  </label>
   <table class="table table-bordered">
     <tbody>
       <tr ref="row">
@@ -7,15 +9,14 @@
           <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" value=""></input>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow">
-            <i class="fa fa-times-circle-o"></i>
+          <button type="button" class="btn btn-default" ref="removeRow">
+            <i class="glyphicons glyphicons-remove-circle"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary" ref="addButton">
-            <i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>

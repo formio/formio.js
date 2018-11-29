@@ -16,7 +16,6 @@ describe('TextField Component', () => {
     });
   });
 
-
   it('Should provide required validation', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
@@ -94,7 +93,7 @@ describe('TextField Component', () => {
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .fa-times-circle-o', 1);
+      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
     });
   });
 
@@ -174,7 +173,7 @@ describe('TextField Component', () => {
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .fa-times-circle-o', 1);
+      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
     });
   });
 });

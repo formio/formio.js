@@ -22,7 +22,6 @@ const fixComponent = (instance, index = 0) => {
   }
 };
 
-
 describe('Rendering Tests', () => {
   before(() => {
     return new Promise((resolve, reject) => {
@@ -38,11 +37,11 @@ describe('Rendering Tests', () => {
     describe(`Framework ${framework}`, () => {
       describe('Form Renders', () => {
         Object.keys(forms).forEach(form => {
-          it(`Form renders ${form}`, (done) => {
-            const instance = new Form(forms[form]);
-            fixComponent(instance);
-            assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render()));
-            done();
+          it(`Form renders ${form}`, () => {
+            return new Form(forms[form]).then(instance => {
+              fixComponent(instance);
+              assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
+            });
           });
         });
       });
@@ -52,8 +51,8 @@ describe('Rendering Tests', () => {
           it(`Renders ${component} for ${framework}`, (done) => {
             const instance = new AllComponents[component]();
             fixComponent(instance);
-            console.log(renders[`component-${framework}-${component}`], pretty(instance.render()));
-            assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render()));
+            console.log(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
+            assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
             done();
           });
           it(`Renders ${component} for ${framework} as required`, (done) => {
@@ -63,7 +62,7 @@ describe('Rendering Tests', () => {
               }
             });
             fixComponent(instance);
-            assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render()));
+            assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
             done();
           });
           it(`Renders ${component} for ${framework} as multiple`, (done) => {
@@ -71,7 +70,7 @@ describe('Rendering Tests', () => {
               multiple: true
             });
             fixComponent(instance);
-            assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render()));
+            assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));
             done();
           });
         });

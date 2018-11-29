@@ -1,10 +1,25 @@
-<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime form-group" ref="component">
-  <label class="col-form-label "> Date / Time </label>
-  <div ref="element">
-    <div class="input-group">
-      <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
-      <div class="input-group-append"> <span class="input-group-text"> <i ref="dateTimeToggle" class="fa fa-calendar" style="cursor: pointer"></i> </span></div>
-    </div>
-  </div>
+<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  form-group" ref="component">
+  <label class="control-label ">
+    Date / Time
+  </label>
+  <table class="table table-bordered">
+    <tbody>
+      <tr ref="row">
+        <td>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+        </td>
+        <td>
+          <button type="button" class="btn btn-default" ref="removeRow">
+            <i class="glyphicons glyphicons-remove-circle"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
 </div>

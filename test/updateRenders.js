@@ -32,13 +32,15 @@ const fixComponent = (instance, index = 0) => {
 const renderForm = (form) => {
   const instance = new Form(form)
   fixComponent(instance);
-  return pretty(instance.render());
+  return instance.render().then(html => {
+    return pretty(html, { ocd: true });
+  }).catch((err) => console.log(err));
 };
 
 const renderComponent = (Type, definition) => {
   const instance = new Type(definition);
   fixComponent(instance);
-  return pretty(instance.render());
+  return pretty(instance.render(), { ocd: true });
 };
 
 const renders = [];
@@ -47,7 +49,9 @@ Object.keys(templates).forEach(framework => {
   // Render forms
   Object.keys(forms).forEach(form => {
     renders.push(`form-${framework}-${form}`);
-    fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, renderForm(forms[form], {}));
+    renderForm(forms[form], {}).then(html => {
+      fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, html);
+    }).catch(err => console.log(err));
   });
   // Object.keys(formtests).forEach(form => {
   //   renders.push(`form-${framework}-${form}`);
@@ -84,3 +88,8 @@ renders.forEach(key => {
 });
 
 index.end();
+
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});

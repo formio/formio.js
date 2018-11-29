@@ -43,7 +43,6 @@ export default class Form {
       this.element = null;
       this.options = null;
     }
-    return this.ready;
   }
 
   /**

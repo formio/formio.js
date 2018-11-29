@@ -17,7 +17,7 @@ describe('SelectBoxes Component', () => {
     return Harness.testCreate(SelectBoxesComponent, comp2).then((component) => {
       Harness.testElements(component, 'input[type="checkbox"]', 8);
       Harness.testElements(component, 'label.form-check-label > span', 8);
-      Harness.testElements(component, 'label.col-form-label.field-required', 1);
+      Harness.testElements(component, 'label.control-label.field-required', 1);
     });
   });
 });

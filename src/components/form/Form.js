@@ -86,9 +86,7 @@ export default class FormComponent extends Component {
     // Ensure components is set.
     this.component.components = this.component.components || [];
 
-    // TODO: This is currently broken because I had to switch Form constructor back to returning a promise.
-    // Need to figure out how to make it asynchronous again here.
-    this.subForm = new Form(this.component, srcOptions);
+    this.subForm = new Form(this.component, srcOptions).instance;
     this.subForm.on('change', () => {
       this.dataValue = this.subForm.getValue();
       this.onChange();
@@ -211,7 +209,7 @@ export default class FormComponent extends Component {
     }
 
     // Determine if we already have a loaded form object.
-    if (this.component && this.component.components && this.component.components.length) {
+    if (this.component && this.component.components && Array.isArray(this.component.components)) {
       this.filterSubForm();
       this.subFormReadyResolve(this.subForm);
       return this.subFormReady;
