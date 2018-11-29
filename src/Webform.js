@@ -322,6 +322,14 @@ export default class Webform extends NestedComponent {
     this.wrapper.appendChild(this.element);
     this.showElement(false);
     this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
+    this.element.addEventListener('dragover', (e) => {
+      e = e || event;
+      e.preventDefault();
+    },false);
+    this.element.addEventListener('drop', (e) => {
+      e = e || event;
+      e.preventDefault();
+    },false);
     let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
     this.addClass(this.wrapper, classNames);
