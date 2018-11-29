@@ -38,8 +38,9 @@ describe('Rendering Tests', () => {
       describe('Form Renders', () => {
         Object.keys(forms).forEach(form => {
           it(`Form renders ${form}`, () => {
-            return new Form(forms[form]).then(instance => {
+            return new Form(forms[form]).ready.then(instance => {
               fixComponent(instance);
+              console.log(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
               assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
             });
           });

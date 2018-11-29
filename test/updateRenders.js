@@ -30,11 +30,10 @@ const fixComponent = (instance, index = 0) => {
 };
 
 const renderForm = (form) => {
-  const instance = new Form(form)
-  fixComponent(instance);
-  return instance.render().then(html => {
-    return pretty(html, { ocd: true });
-  }).catch((err) => console.log(err));
+  return new Form(form).ready.then(instance => {
+    fixComponent(instance);
+    return pretty(instance.render(), { ocd: true });
+  });
 };
 
 const renderComponent = (Type, definition) => {

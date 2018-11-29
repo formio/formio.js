@@ -307,8 +307,16 @@ export default class Component extends Element {
       this.type = this.component.type;
       if (this.hasInput && this.key) {
         this.options.name += `[${this.key}]`;
-        // Ensure the dataValue is set.
-        this.dataValue = this.dataValue;
+        // If component is visible or not set to clear on hide, set the default value.
+        if (this.visible || !this.component.clearOnHide) {
+          if (!this.data.hasOwnProperty(this.key)) {
+            this.dataValue = this.defaultValue;
+          }
+          else {
+            // Ensure the dataValue is set.
+            this.dataValue = this.dataValue;
+          }
+        }
       }
 
       /**
@@ -338,11 +346,6 @@ export default class Component extends Element {
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
-
-    // If component is visible or not set to clear on hide, set the default value.
-    if (this.visible || !this.component.clearOnHide) {
-      this.dataValue = this.defaultValue;
-    }
 
     this.init();
   }

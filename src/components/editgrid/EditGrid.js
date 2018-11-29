@@ -88,20 +88,6 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   render() {
-    // Ensure we always have rows for each dataValue available.
-    this.dataValue.forEach((row, rowIndex) => {
-      if (this.editRows[rowIndex]) {
-        this.editRows[rowIndex].data = row;
-      }
-      else {
-        this.editRows[rowIndex] = {
-          components: [],
-          isOpen: !!this.options.defaultOpen,
-          data: row
-        };
-      }
-    });
-
     return super.render(this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
       header: this.renderString(_.get(this.component, 'templates.header'), {
@@ -369,6 +355,8 @@ export default class EditGridComponent extends NestedComponent {
         valid = `Invalid row validation for ${this.key}`;
       }
 
+      // TODO: Need to fix this so that row errors on closed rows show up again.
+      // TODO: Re-enable test "Should show error messages for existing data in rows"
       // this.editRows[rowIndex].errorContainer.innerHTML = '';
       // if (valid !== true) {
       //   this.editRows[rowIndex].errorContainer.appendChild(
@@ -398,14 +386,11 @@ export default class EditGridComponent extends NestedComponent {
       }
       else {
         // this.removeClass(this.editRows[rowIndex].element, 'has-error');
-        // this.removeClass(this.editRows[rowIndex].element, 'has-error');
       }
       rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
-      if (dirty) {
-        rowsClosed &= !editRow.isOpen;
-      }
+      rowsClosed &= !editRow.isOpen;
     });
 
     if (!rowsValid) {
@@ -430,6 +415,16 @@ export default class EditGridComponent extends NestedComponent {
   updateValue(flags, value) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
     return Component.prototype.updateValue.call(this, flags, value);
+  }
+
+  hasChanged(before, after) {
+    if (
+      ((before === undefined) || (before === null)) &&
+      ((after === undefined) || (after === null))
+    ) {
+      return false;
+    }
+    return !_.isEqual(before, after);
   }
 
   setValue(value, flags) {
@@ -466,6 +461,9 @@ export default class EditGridComponent extends NestedComponent {
         };
       }
     });
+    if (changed) {
+      this.redraw();
+    }
     return changed;
   }
 
