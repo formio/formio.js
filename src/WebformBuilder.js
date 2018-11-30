@@ -232,7 +232,7 @@ export default class WebformBuilder extends Webform {
 
     // Ensure this component has a key.
     if (component.isNew) {
-      if (!component.keyModified) {
+      if (!component.component.key) {
         component.component.key = _.camelCase(
           component.component.label ||
           component.component.placeholder ||
