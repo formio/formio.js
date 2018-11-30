@@ -1,9 +1,9 @@
 import Component from '../_classes/component/Component';
-import NestedComponent from '../_classes/nested/NestedComponent';
+// import NestedComponent from '../_classes/nested/NestedComponent';
 import _ from 'lodash';
 import { uniqueKey } from '../../utils/utils';
 
-export default class DataMapComponent extends NestedComponent {
+export default class DataMapComponent extends Component {
   static schema(...extend) {
     return Component.schema({
       label: 'Data Map',
