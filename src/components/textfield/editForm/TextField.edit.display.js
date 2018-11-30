@@ -25,7 +25,8 @@ export default [
     key: 'widget',
     label: 'Widget Settings',
     calculateValue: (context) => {
-      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
+      context.data = context.data || { widget: {} };
+      if (context.data && _.isEmpty(_.omit(context.data.widget, 'type'))) {
         let settings = {};
         if (context.data.widget && context.data.widget.type) {
           settings = Widgets[context.data.widget.type].defaultSettings;

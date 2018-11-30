@@ -260,23 +260,23 @@ export default class DataMapComponent extends Component {
     return Component.prototype.updateValue.call(this, flags, value);
   }
 
-  setValue(value) {
-    const changed = this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
-    this.buildRows();
-    return changed;
-  }
+  // setValue(value) {
+  //   const changed = this.hasChanged(value, this.dataValue);
+  //   this.dataValue = value;
+  //   this.buildRows();
+  //   return changed;
+  // }
 
   /**
    * Get the value of this component.
    *
    * @returns {*}
    */
-  getValue() {
-    const value = {};
-    _.each(this.rows, row => {
-      value[row.keyInput.value] = row.value.getValue();
-    });
-    return value;
-  }
+  // getValue() {
+  //   const value = {};
+  //   _.each(this.rows, row => {
+  //     value[row.keyInput.value] = row.value.getValue();
+  //   });
+  //   return value;
+  // }
 }

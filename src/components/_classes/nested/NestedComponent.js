@@ -264,7 +264,7 @@ export default class NestedComponent extends Component {
   }
 
   renderComponents(components) {
-    components = components || this.components;
+    components = components || this.getComponents();
     const children = components.map(component => component.render());
     return this.renderTemplate('components', {
       children,
