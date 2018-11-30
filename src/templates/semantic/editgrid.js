@@ -18,7 +18,11 @@ export default {
       {% } %}
     </div>
     {% } %}
-    <div class="has-error"></div>
+    <div class="has-error">
+      <div class="editgrid-row-error help-block">
+        {{errors[rowIndex]}}
+      </div>
+    </div>
   </div>
   {% }) %}
   {% if (footer) { %}

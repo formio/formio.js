@@ -100,6 +100,7 @@ export default class EditGridComponent extends NestedComponent {
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map(row => row.isOpen),
+      errors: this.editRows.map(row => row.error)
     }));
   }
 
@@ -194,7 +195,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     });
 
-    valid &= this.validateRow(index);
+    valid &= (this.validateRow(index) === true);
 
     // Trigger the change if the values changed.
     if (changed) {
@@ -259,8 +260,8 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows.splice(rowIndex, 1);
     }
 
-    this.redraw();
     this.checkValidity(this.data, true);
+    this.redraw();
   }
 
   saveRow(rowIndex) {
@@ -271,7 +272,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     this.editRows[rowIndex].dirty = true;
-    if (!this.validateRow(rowIndex)) {
+    if (this.validateRow(rowIndex) !== true) {
       return;
     }
 
@@ -291,8 +292,8 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows[rowIndex].isOpen = false;
     this.updateValue();
     this.triggerChange();
-    this.redraw();
     this.checkValidity(this.data, true);
+    this.redraw();
   }
 
   removeRow(rowIndex) {
@@ -303,8 +304,8 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.triggerChange();
-    this.redraw();
     this.checkValidity(this.data, true);
+    this.redraw();
   }
 
   createRowComponents(row, rowIndex) {
@@ -336,37 +337,33 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   validateRow(rowIndex, dirty) {
-    let check = true;
+    let valid = true;
 
     if (this.editRows[rowIndex].isOpen) {
       const isDirty = dirty || !!this.editRows[rowIndex].dirty;
       this.editRows[rowIndex].components.forEach(comp => {
         comp.setPristine(!isDirty);
-        check &= comp.checkValidity(this.editRows[rowIndex].data, isDirty);
+        valid &= comp.checkValidity(this.editRows[rowIndex].data, isDirty);
       });
     }
 
     if (this.component.validate && this.component.validate.row) {
-      let valid = this.evaluate(this.component.validate.row, {
-        valid: true,
+      valid = this.evaluate(this.component.validate.row, {
+        valid,
         row: this.editRows[rowIndex].data
       }, 'valid', true);
+      if (valid.toString() !== 'true') {
+        this.editRows[rowIndex].error = valid;
+      }
+      else {
+        delete this.editRows[rowIndex].error;
+      }
       if (valid === null) {
         valid = `Invalid row validation for ${this.key}`;
       }
-
-      // TODO: Need to fix this so that row errors on closed rows show up again.
-      // TODO: Re-enable test "Should show error messages for existing data in rows"
-      // this.editRows[rowIndex].errorContainer.innerHTML = '';
-      // if (valid !== true) {
-      //   this.editRows[rowIndex].errorContainer.appendChild(
-      //     this.ce('div', { class: 'editgrid-row-error help-block' }, valid)
-      //   );
-      //   return false;
-      // }
     }
 
-    return check;
+    return valid;
   }
 
   checkValidity(data, dirty) {
@@ -380,13 +377,7 @@ export default class EditGridComponent extends NestedComponent {
     this.editRows.forEach((editRow, rowIndex) => {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(rowIndex, dirty);
-      // Add has-error class to row.
-      if (!rowValid) {
-        // this.addClass(this.editRows[rowIndex].element, 'has-error');
-      }
-      else {
-        // this.removeClass(this.editRows[rowIndex].element, 'has-error');
-      }
+
       rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
@@ -462,6 +453,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     });
     if (changed) {
+      this.checkValidity(this.data);
       this.redraw();
     }
     return changed;
