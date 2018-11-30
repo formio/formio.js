@@ -778,7 +778,7 @@ export default class Webform extends NestedComponent {
   attach(element) {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
-    this.attachComponents(this.refs.webform);
+    const childPromise = this.attachComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('checkValidity', (data) => this.checkValidity(data, true));
@@ -787,6 +787,7 @@ export default class Webform extends NestedComponent {
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
     this.on('refreshData', () => this.updateValue());
     this.emit('render');
+    return childPromise;
   }
 
   resetValue() {

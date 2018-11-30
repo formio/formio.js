@@ -279,8 +279,9 @@ export default class NestedComponent extends Component {
       [this.nestedKey]: 'single',
     });
 
+    let childPromise = Promise.resolve();
     if (this.refs[this.nestedKey]) {
-      this.attachComponents(this.refs[this.nestedKey]);
+      childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
 
     if (this.component.collapsible && this.refs.header) {
@@ -289,7 +290,10 @@ export default class NestedComponent extends Component {
       });
     }
 
-    super.attach(element);
+    return Promise.all([
+      super.attach(element),
+      childPromise
+    ]);
   }
 
   attachComponents(element, components, container) {
@@ -302,12 +306,14 @@ export default class NestedComponent extends Component {
     }
 
     let index = 0;
+    const promises = [];
     Array.prototype.slice.call(element.children).forEach(child => {
       if (!child.getAttribute('data-noattach') && components[index]) {
-        components[index].attach(child);
+        promises.push(components[index].attach(child));
         index++;
       }
     });
+    return Promise.all(promises);
   }
 
   /**

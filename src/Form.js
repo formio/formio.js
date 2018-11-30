@@ -30,14 +30,21 @@ export default class Form {
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
-      this.form = args[1];
       this.options = args[2];
-      this.build();
+      this.setForm(args[1])
+        .then(() => {
+          this.build()
+            .then(() => this.readyResolve(this.instance))
+            .catch(this.readyReject);
+        })
+        .catch(this.readyReject);
     }
     else if (args[0]) {
       this.element = null;
-      this.form = args[0];
       this.options = args[1];
+      this.setForm(args[0])
+        .then(() => this.readyResolve(this.instance))
+        .catch(this.readyReject);
     }
     else {
       this.element = null;
@@ -69,17 +76,19 @@ export default class Form {
    * @return {*}
    */
   set form(formParam) {
+    return this.setForm(formParam);
+  }
+
+  setForm(formParam) {
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
       return (new Formio(formParam)).loadForm().then(form => {
         this.instance = this.create(form.display);
         this.instance.url = formParam;
         this.instance.nosubmit = false;
-        this.instance.loadSubmission();
         this._form = this.instance.form = form;
         return this.instance.ready.then(() => {
-          this.readyResolve(this.instance);
-          return this.ready;
+          return this.instance.loadSubmission();
         });
       });
     }
@@ -89,10 +98,7 @@ export default class Form {
       }
       this.instance = this.create(formParam.display);
       this._form = this.instance.form = formParam;
-      return this.instance.ready.then(() => {
-        this.readyResolve(this.instance);
-        return this.ready;
-      });
+      return this.instance.ready;
     }
   }
 
@@ -143,6 +149,10 @@ export default class Form {
    * @return {Promise<T>}
    */
   build() {
+    if (!this.instance) {
+      return Promise.reject('Form not ready. Use form.ready promise');
+    }
+
     if (!this.element) {
       return Promise.reject('No DOM element for form.');
     }
@@ -152,21 +162,25 @@ export default class Form {
     const loader = templates[template].loader || templates.bootstrap.loader;
     this.element.innerHTML = loader.form;
 
-    return this.ready.then(() => {
-      return this.render().then(html => {
-        this.element.innerHTML = html;
-        return this.attach(this.element).then(() => this.instance);
-      });
+    return this.render().then(html => {
+      this.element.innerHTML = html;
+      return this.attach(this.element).then(() => this.instance);
     });
   }
 
   render() {
-    return this.ready.then(instance => instance.render());
+    if (!this.instance) {
+      return Promise.reject('Form not ready. Use form.ready promise');
+    }
+    return Promise.resolve(this.instance.render());
   }
 
   attach(element) {
+    if (!this.instance) {
+      return Promise.reject('Form not ready. Use form.ready promise');
+    }
     this.element = element;
-    return this.ready.then(instance => instance.attach(this.element));
+    return this.instance.attach(this.element);
   }
 }
 
