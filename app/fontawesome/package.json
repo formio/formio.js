@@ -1,79 +1,48 @@
 {
-  "_args": [
-    [
-      "font-awesome@4.7.0",
-      "/Users/travistidwell/Desktop/formio.js"
-    ]
-  ],
-  "_development": true,
-  "_from": "font-awesome@4.7.0",
-  "_id": "font-awesome@4.7.0",
-  "_inBundle": false,
-  "_integrity": "sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=",
-  "_location": "/font-awesome",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "font-awesome@4.7.0",
-    "name": "font-awesome",
-    "escapedName": "font-awesome",
-    "rawSpec": "4.7.0",
-    "saveSpec": null,
-    "fetchSpec": "4.7.0"
+  "name": "font-awesome",
+  "description": "The iconic font and CSS framework",
+  "version": "4.7.0",
+  "style": "css/font-awesome.css",
+  "keywords": ["font", "awesome", "fontawesome", "icon", "font", "bootstrap"],
+  "homepage": "http://fontawesome.io/",
+  "bugs": {
+    "url" : "http://github.com/FortAwesome/Font-Awesome/issues"
   },
-  "_requiredBy": [
-    "#DEV:/"
-  ],
-  "_resolved": "https://registry.npmjs.org/font-awesome/-/font-awesome-4.7.0.tgz",
-  "_spec": "4.7.0",
-  "_where": "/Users/travistidwell/Desktop/formio.js",
   "author": {
     "name": "Dave Gandy",
     "email": "dave@fontawesome.io",
-    "url": "http://twitter.com/davegandy"
+    "web": "http://twitter.com/davegandy"
   },
-  "bugs": {
-    "url": "http://github.com/FortAwesome/Font-Awesome/issues"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FortAwesome/Font-Awesome.git"
   },
   "contributors": [
     {
       "name": "Brian Talbot",
-      "url": "http://twitter.com/talbs"
+      "web": "http://twitter.com/talbs"
     },
     {
       "name": "Travis Chase",
-      "url": "http://twitter.com/supercodepoet"
+      "web": "http://twitter.com/supercodepoet"
     },
     {
       "name": "Rob Madole",
-      "url": "http://twitter.com/robmadole"
+      "web": "http://twitter.com/robmadole"
     },
     {
       "name": "Geremia Taglialatela",
-      "url": "http://twitter.com/gtagliala"
+      "web": "http://twitter.com/gtagliala"
     }
   ],
-  "dependencies": {},
-  "description": "The iconic font and CSS framework",
-  "engines": {
-    "node": ">=0.10.3"
-  },
-  "homepage": "http://fontawesome.io/",
-  "keywords": [
-    "font",
-    "awesome",
-    "fontawesome",
-    "icon",
-    "font",
-    "bootstrap"
-  ],
   "license": "(OFL-1.1 AND MIT)",
-  "name": "font-awesome",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FortAwesome/Font-Awesome.git"
+  "dependencies": {
   },
-  "style": "css/font-awesome.css",
-  "version": "4.7.0"
+  "engines" : {
+    "node" : ">=0.10.3"
+  }
+
+,"_resolved": "https://registry.npmjs.org/font-awesome/-/font-awesome-4.7.0.tgz"
+,"_integrity": "sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM="
+,"_from": "font-awesome@4.7.0"
 }
