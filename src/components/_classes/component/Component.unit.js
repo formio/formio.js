@@ -1,6 +1,5 @@
 import Component from './Component';
 import assert from 'assert';
-import Element from '../../../Element';
 
 describe('Base Component Unit Tests', () => {
   it('Should create a Base Component', () => {
