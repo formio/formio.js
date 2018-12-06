@@ -1,42 +1,22 @@
 import ButtonComponent from './Button';
 import assert from 'assert';
 describe('Button Unit Tests', () => {
-  it('Should create a new Button', () => {
-    const button = new ButtonComponent({
-      label: 'Submit',
-      key: 'submit',
-      type: 'button'
-    });
-
-    assert.equal(button.component.key, 'submit');
-    assert.equal(button.component.theme,'default');
+  it('Checking schema of the button', () => {
+    const button = new ButtonComponent();
+    assert.equal(button.defaultSchema.key, 'submit');
+    assert.equal(button.defaultSchema.label,'Submit');
+    assert.equal(button.defaultSchema.action,'submit');
+    assert.equal(button.defaultSchema.theme,'default');
   });
-  it('Checking theme', () => {
-    const button = new ButtonComponent({
-      label: 'Submit',
-      key: 'submit',
-      type: 'button'
-    });
-
-    assert.equal(button.component.theme,'default');
+  it('Checking input info of the button', () => {
+    const button = new ButtonComponent();
+    assert.equal(button.inputInfo.type, 'button');
+    assert.equal(button.inputInfo.content,'Submit');
   });
-  it('Checking size of the button', () => {
-    const button = new ButtonComponent({
-      label: 'Submit',
-      key: 'submit',
-      type: 'button'
-    });
-
-    assert.equal(button.component.size,'md');
-  });
-  it('Setting custom class', () => {
-    const button = new ButtonComponent({
-      label: 'Submit',
-      key: 'submit',
-      type: 'button',
-      customClass: 'my-custom-class'
-    });
-
-    assert.equal(button.component.customClass,'my-custom-class');
+  it('Rendering a button', () => {
+    const button = new ButtonComponent();
+    assert.equal(button.rendered,false);
+    button.render();
+    assert.equal(button.rendered,true);
   });
 });

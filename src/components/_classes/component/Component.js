@@ -1517,6 +1517,7 @@ export default class Component extends Element {
    * @returns {*}
    */
   getValueAt(index) {
+    console.log(this.refs.input);
     const input = this.performInputMapping(this.refs.input[index]);
     return input ? input.value : undefined;
   }
