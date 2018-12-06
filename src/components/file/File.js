@@ -80,6 +80,14 @@ export default class FileComponent extends Component {
     const value = super.defaultValue;
     return Array.isArray(value) ? value : [];
   }
+
+  get hasTypes() {
+    return this.component.fileTypes &&
+      Array.isArray(this.component.fileTypes) &&
+      this.component.fileTypes.length !== 0 &&
+      (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
+  }
+
   get fileService() {
     if (this.options.fileService) {
       return this.options.fileService;
@@ -407,10 +415,6 @@ export default class FileComponent extends Component {
 
   validateMaxSize(file, val) {
     return file.size - 0.1 <= this.translateScalars(val);
-  }
-
-  get hasTypes() {
-    return this.component.fileTypes && Array.isArray(this.component.fileTypes) && this.component.fileTypes.length > 1;
   }
 
   upload(files) {
