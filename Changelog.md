@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.9.3
+### Fixed
+ - Problem where wizards with panels with the same key would end up getting caught in infinite refresh loop.
+ - Fix single file types still staying hidden.
+ - Typos
+ - Fix bug with number#getView when value equals to 0
+
+### Changed
+ - Upgraded chance@1.0.18, hoek@6.1.2, karma@3.1.3, @babel/cli@7.2.0, @babel/core@7.2.0, @babel/plugin-proposal-export-default-from@7.2.0, @babel/plugin-proposal-optional-chaining@7.2.0, @babel/preset-env@7.2.0, webpack@4.27.1, webpack-stream@5.2.1
+
+## 3.9.2
+### Fixed
+ - File type settings
+
 ## 3.9.1
 ### Fixed
  - More issues with infinite onChange events getting called.

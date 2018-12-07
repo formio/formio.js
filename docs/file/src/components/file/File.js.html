@@ -272,7 +272,10 @@ export default class FileComponent extends BaseComponent {
   }
 
   get hasTypes() {
-    return this.component.fileTypes &amp;&amp; Array.isArray(this.component.fileTypes) &amp;&amp; this.component.fileTypes.length &gt; 1;
+    return this.component.fileTypes &amp;&amp;
+      Array.isArray(this.component.fileTypes) &amp;&amp;
+      this.component.fileTypes.length !== 0 &amp;&amp;
+      (this.component.fileTypes[0].label !== &apos;&apos; || this.component.fileTypes[0].value !== &apos;&apos;);
   }
 
   // File is always an array.
