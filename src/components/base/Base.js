@@ -1201,7 +1201,7 @@ export default class BaseComponent extends Component {
       trigger: 'hover click',
       placement: 'right',
       html: true,
-      title: this.interpolate(component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />'))
+      title: this.interpolate(component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />')
     });
   }
 
