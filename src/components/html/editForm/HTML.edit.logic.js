@@ -42,12 +42,12 @@ export default [
                       type: 'string',
                     },
                     {
-                      label: 'Decription',
+                      label: 'Description',
                       value: 'description',
                       type: 'string',
                     },
                     {
-                      label: 'Paceholder',
+                      label: 'Placeholder',
                       value: 'placeholder',
                       type: 'string',
                     },
