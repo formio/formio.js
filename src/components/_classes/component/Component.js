@@ -738,7 +738,7 @@ export default class Component extends Element {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title,
+        title: this.interpolate(title),
       });
     });
 
