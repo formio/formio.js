@@ -14,12 +14,25 @@ describe('Element Class Unit Tests', () => {
     element.on('Test Event',() => {
       console.log('The element is changed.');
     });
-
-    console.log(element.eventHandlers.length);
+    assert.equal(element.eventHandlers.length,0);
     element.addEventListener(element.events,'Test Event',function() {
       console.log('Test');
     },false);
-    console.log(element.eventHandlers.length);
-    assert.equal(element.events._events.hasOwnProperty('formio.Test Event'),true);
+    assert.equal(element.eventHandlers.length,1);
+  });
+  it('Destroying event listeners', () => {
+    const element = new Element({});
+    element.on('Test Event',() => {
+      console.log('The element is changed.');
+    });
+    element.addEventListener(element.events,'Test Event',function() {
+      console.log('Test');
+    },false);
+    element.addEventListener(element.events,'Test Event',function() {
+      console.log('Test');
+    },false);
+    assert.equal(element.eventHandlers.length,2);
+    element.destroy();
+    assert.equal(element.eventHandlers.length,0);
   });
 });
