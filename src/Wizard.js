@@ -345,7 +345,8 @@ export default class Wizard extends Webform {
 
   pageId(page) {
     if (page.key) {
-      return page.key;
+      // Some panels have the same key....
+      return `${page.key}-${page.title}`;
     }
     else if (
       page.components &&
