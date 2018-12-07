@@ -82,6 +82,11 @@ export default class BaseComponent extends Component {
       clearOnHide: true,
 
       /**
+       * If the component's key should be generated automaticaly.
+       */
+      lockKey: false,      
+      
+      /**
        * If this component should be included as a column within a submission table.
        */
       tableView: true,
