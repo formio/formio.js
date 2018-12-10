@@ -54,6 +54,7 @@ export default class TagsComponent extends Input {
     if (!element) {
       return;
     }
+    element.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
