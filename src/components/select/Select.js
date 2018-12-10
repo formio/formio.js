@@ -514,6 +514,7 @@ export default class SelectComponent extends BaseComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
+    input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
 
     if (this.component.multiple) {
