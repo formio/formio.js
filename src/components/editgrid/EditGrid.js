@@ -329,14 +329,6 @@ export default class EditGridComponent extends NestedComponent {
     return components;
   }
 
-  removeRowComponents(rowIndex) {
-    // Clean up components list.
-    this.editRows[rowIndex].components.forEach(comp => {
-      this.removeComponent(comp, this.components);
-    });
-    this.editRows[rowIndex].components = [];
-  }
-
   validateRow(rowIndex, dirty) {
     let valid = true;
 
