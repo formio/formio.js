@@ -872,13 +872,23 @@ export default class Webform extends NestedComponent {
     }
 
     // Mark any components as invalid if in a custom message.
-    this.customErrors.forEach(err => {
+    errors.forEach(err => {
+      const { components = [] } = err;
+
       if (err.component) {
-        const component = this.getComponent(err.component);
-        if (component) {
-          component.setCustomValidity(err.message, true);
-        }
+        components.push(err.component);
       }
+
+      if (err.path) {
+        components.push(err.path);
+      }
+
+      components.forEach((path) => {
+        const component = this.getComponent(path);
+        const components = _.compact(Array.isArray(component) ? component : [component]);
+
+        components.forEach((component) => component.setCustomValidity(err.message, true));
+      });
     });
 
     const message = `
@@ -1076,16 +1086,16 @@ export default class Webform extends NestedComponent {
 
           if (this.nosubmit || !submitFormio) {
             return resolve({
-              submission: submission,
-              saved: false
+              submission,
+              saved: false,
             });
           }
 
           // If this is an actionUrl, then make sure to save the action and not the submission.
           const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
-          submitFormio[submitMethod](submission).then(result => resolve({
+          submitFormio[submitMethod](submission).then((result) => resolve({
             submission: result,
-            saved: true
+            saved: true,
           })).catch(reject);
         });
       });
@@ -1096,7 +1106,7 @@ export default class Webform extends NestedComponent {
     this.submitted = true;
     this.submitting = true;
     return this.submitForm(options)
-      .then((result) => this.onSubmit(result.submission, result.saved))
+      .then(({ submission, saved }) => this.onSubmit(submission, saved))
       .catch((err) => Promise.reject(this.onSubmissionError(err)));
   }
 
