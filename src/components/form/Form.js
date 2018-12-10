@@ -36,7 +36,6 @@ export default class FormComponent extends Component {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
-
     const srcOptions = this.getSubOptions();
 
     // Make sure that if reference is provided, the form must submit.
@@ -118,6 +117,12 @@ export default class FormComponent extends Component {
     }
     if (this.options && this.options.readOnly) {
       options.readOnly = this.options.readOnly;
+    }
+    if (this.options && this.options.breadcrumbSettings) {
+      options.breadcrumbSettings = this.options.breadcrumbSettings;
+    }
+    if (this.options && this.options.buttonSettings) {
+      options.buttonSettings = this.options.buttonSettings;
     }
     if (this.options && this.options.viewAsHtml) {
       options.viewAsHtml = this.options.viewAsHtml;
