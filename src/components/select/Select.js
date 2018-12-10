@@ -630,7 +630,9 @@ export default class SelectComponent extends BaseComponent {
   }
 
   getView(data) {
-    return this.asString(data);
+    return (this.component.multiple && Array.isArray(data))
+      ? data.map(this.asString.bind(this)).join(', ')
+      : this.asString(data);
   }
 
   getValue() {
