@@ -190,10 +190,9 @@ export default class ButtonComponent extends BaseComponent {
 
     this.on('change', (value) => {
       this.loading = false;
-      const isValid = this.root ? this.root.isValid(value.data, true) : value.isValid;
-      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
       if (onChange) {
-        onChange(value, isValid);
+        onChange(value, value.isValid);
       }
     }, true);
 
