@@ -139,6 +139,9 @@ export default class NumberComponent extends Input {
     if (this.component.requireDecimal && value && !value.includes(this.decimalSeparator)) {
       return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
     }
+    else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {
+      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)})}`;
+    }
 
     return value;
   }
@@ -157,6 +160,17 @@ export default class NumberComponent extends Input {
 
   getMaskedValue(value) {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
+  }
+
+  build(state) {
+    super.build(state);
+    this.inputs.forEach((input, index) => {
+      this.addEventListener(input, 'blur', (event) => {
+        if (this.component.requireDecimal) {
+          this.setValueAt(index, event.target.value);
+        }
+      });
+    });
   }
 
   getView(value) {
