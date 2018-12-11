@@ -156,7 +156,7 @@ export default class NumberComponent extends BaseComponent {
   }
 
   getView(value) {
-    if (!value) {
+    if (!value && value !== 0) {
       return '';
     }
     const widget = this.widget;
@@ -170,4 +170,3 @@ export default class NumberComponent extends BaseComponent {
     return this.getMaskedValue(value);
   }
 }
-
