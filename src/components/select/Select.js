@@ -94,7 +94,31 @@ export default class SelectComponent extends BaseComponent {
       return this.t(data);
     }
 
-    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+    //const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+    var template, me=this;
+    var itemTemplate = this.component.template;
+    if(itemTemplate ){
+      if(Array.isArray(data) ) {
+        template = '';
+        data.forEach(function(v){
+          var d = me.interpolate(itemTemplate, {
+              item: v
+          });
+          if(d){ template+=d+'<br>'; }
+        });
+        if(template!=''){
+          template = template.slice(0,-4);
+        }else{
+          template=undefined;
+        }
+      }else{
+        template=me.interpolate(itemTemplate, {
+          item: data
+        });
+      }
+    }else{
+      template = data.label;
+    }
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       return template.replace(label, this.t(label));
