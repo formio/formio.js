@@ -273,6 +273,7 @@ export default class BaseComponent extends Component {
      * Determines if this component is visible, or not.
      */
     this._visible = true;
+    this._parentVisible = true;
 
     /**
      * If this input has been input and provided value.
@@ -1646,7 +1647,7 @@ export default class BaseComponent extends Component {
       return show;
     }
 
-    this._visible = show;
+    this.visible = show;
     this.showElement(show && !this.component.hidden);
     if (!noClear) {
       this.clearOnHide(show);
@@ -1697,11 +1698,21 @@ export default class BaseComponent extends Component {
   }
 
   set visible(visible) {
-    this.show(visible);
+    this._visible = visible;
   }
 
   get visible() {
-    return this._visible;
+    return this._visible && this._parentVisible;
+  }
+
+  set parentVisible(value) {
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+    }
+  }
+
+  get parentVisible() {
+    return this._parentVisible;
   }
 
   onChange(flags, fromRoot) {

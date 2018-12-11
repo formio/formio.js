@@ -37,6 +37,28 @@ export default class NestedComponent extends BaseComponent {
     return schema;
   }
 
+  set visible(value) {
+    super.visible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
   getComponents() {
     return this.components;
   }
