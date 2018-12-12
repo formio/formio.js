@@ -298,3 +298,112 @@ export function getValue(submission, key) {
 
   return search(submission.data);
 }
+
+/**
+ * Iterate over all components in a form and get string values for translation.
+ * @param form
+ */
+export function getStrings(form) {
+  const properties = ['label', 'title', 'legend', 'tooltip', 'description', 'placeholder', 'prefix', 'suffix', 'errorLabel'];
+  const strings = [];
+  eachComponent(form.components, component => {
+    properties.forEach(property => {
+      if (component.hasOwnProperty(property) && component[property]) {
+        strings.push({
+          key: component.key,
+          property,
+          string: component[property]
+        });
+      }
+    });
+    if ((!component.dataSrc || component.dataSrc === 'values') && component.hasOwnProperty('values') && Array.isArray(component.values) && component.values.length) {
+      component.values.forEach((value, index) => {
+        strings.push({
+          key: component.key,
+          property: `value[${index}].label`,
+          string: component.values[index].label
+        });
+      });
+    }
+
+    // Hard coded values from Day component
+    if (component.type === 'day') {
+      [
+        'day',
+        'month',
+        'year',
+        'Day',
+        'Month',
+        'Year',
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december'
+      ].forEach(string => {
+        strings.push({
+          key: component.key,
+          property: 'day',
+          string,
+        });
+      });
+
+      if (component.fields.day.placeholder) {
+        strings.push({
+          key: component.key,
+          property: 'fields.day.placeholder',
+          string: component.fields.day.placeholder,
+        });
+      }
+
+      if (component.fields.month.placeholder) {
+        strings.push({
+          key: component.key,
+          property: 'fields.month.placeholder',
+          string: component.fields.month.placeholder,
+        });
+      }
+
+      if (component.fields.year.placeholder) {
+        strings.push({
+          key: component.key,
+          property: 'fields.year.placeholder',
+          string: component.fields.year.placeholder,
+        });
+      }
+    }
+
+    if (component.type === 'editgrid') {
+      const string = this.component.addAnother || 'Add Another';
+      if (component.addAnother) {
+        strings.push({
+          key: component.key,
+          property: 'addAnother',
+          string,
+        });
+      }
+    }
+
+    if (component.type === 'select') {
+      [
+        'loading...',
+        'Type to search'
+      ].forEach(string => {
+        strings.push({
+          key: component.key,
+          property: 'select',
+          string,
+        });
+      });
+    }
+  }, true);
+
+  return strings;
+}
