@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.9.4
+### Fixed
+ - Problem where a component can get in an infinite loop if its parent is not visible but it is visible and cleanOnHide is set.
+ - FOR-1759: Default Values doesn't include required decimals
+ - FOR-1911: Problem where some configurations would not get passed to the wizard components.
+ - FOR-1336: Fix bug with double validation
+ - Typos
+ 
+### Added
+ - Add ability to get all translatable strings from a form definition.
+ - RTL support for select dropdowns.
+ - Added component tooltip interpolation
+ 
+
 ## 3.9.3
 ### Fixed
  - Problem where wizards with panels with the same key would end up getting caught in infinite refresh loop.
