@@ -47,6 +47,7 @@ export default class TagsComponent extends BaseComponent {
     if (!input) {
       return;
     }
+    input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, {
       delimiter: (this.component.delimeter || ','),
       editItems: true,
