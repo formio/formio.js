@@ -45,6 +45,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.9.0
 ### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
+ - Added File types
+
 ### Fixed
  - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
  - FOR-1850: Wrong key for Encrypted setting in builder
@@ -64,7 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
- 
+
 ### Added
  - Content property to HTML and Content components Logic.
  - FOR-1806: languageChanged event
@@ -104,7 +106,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.10
 ### Fixed
- - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1491: Fix bug with Day when form rendered as HTML
  - FOR-1812: Fixed issues where timezones were not converting properly.
 
 ## 3.6.9
@@ -124,18 +126,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.7
 ### Fixed
-<<<<<<< HEAD
  - Issue with preview destroy on change.
-
-=======
  - Problems with the Select component not working with Refresh On property for some cases.
 
 ## 3.6.6
 ### Fixed
  - FOR-1733: Fixed issue with preview destroy on change.
  - FOR-1728: Problems with running the renderer within iOS applications.
- 
->>>>>>> b9e94cb... FOR-1803: Fixed.
+
 ## 3.6.5
 ### Fixed
  - Broken build.
