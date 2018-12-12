@@ -270,6 +270,12 @@ td > .form-group {
   padding: 2px;
 }
 
+/* fix for choices.js .choices__input container in rtl */
+.choices[dir="rtl"] > * {
+  text-align: right;
+}
+/* end fix for choices.js .choices__input container in rtl */
+
 /* fix for choices.js deletable items in rtl */
 .choices[dir="rtl"] .choices__list--multiple .choices__item[data-deletable] {
   padding-left: 5px;

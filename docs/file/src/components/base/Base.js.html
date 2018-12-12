@@ -134,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
@@ -462,6 +463,7 @@ export default class BaseComponent extends Component {
      * Determines if this component is visible, or not.
      */
     this._visible = true;
+    this._parentVisible = true;
 
     /**
      * If this input has been input and provided value.
@@ -1390,7 +1392,7 @@ export default class BaseComponent extends Component {
       trigger: &apos;hover click&apos;,
       placement: &apos;right&apos;,
       html: true,
-      title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
+      title: this.interpolate(component.tooltip).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
     });
   }
 
@@ -1835,7 +1837,7 @@ export default class BaseComponent extends Component {
       return show;
     }
 
-    this._visible = show;
+    this.visible = show;
     this.showElement(show &amp;&amp; !this.component.hidden);
     if (!noClear) {
       this.clearOnHide(show);
@@ -1886,11 +1888,21 @@ export default class BaseComponent extends Component {
   }
 
   set visible(visible) {
-    this.show(visible);
+    this._visible = visible;
   }
 
   get visible() {
-    return this._visible;
+    return this._visible &amp;&amp; this._parentVisible;
+  }
+
+  set parentVisible(value) {
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+    }
+  }
+
+  get parentVisible() {
+    return this._parentVisible;
   }
 
   onChange(flags, fromRoot) {

@@ -134,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
@@ -191,12 +192,26 @@
 import FormComponent from &apos;./Form&apos;;
 
 import {
-  comp1
+  comp1,
+  comp3
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Form Component&apos;, () =&gt; {
   it(&apos;Should build a form component&apos;, (done) =&gt; {
     Harness.testCreate(FormComponent, comp1).then(() =&gt; {
+      done();
+    });
+  });
+});
+
+describe(&apos;Wizard Component&apos;, () =&gt; {
+  it(&apos;Should build a wizard component and disable cancel, next and breadcrumbs&apos;, (done) =&gt; {
+    Harness.testCreate(FormComponent, comp3, {
+      breadcrumbSettings:
+        { clickable: false },
+      buttonSettings:
+        { showCancel: false, showPrevious: false }
+    }).then(() =&gt; {
       done();
     });
   });

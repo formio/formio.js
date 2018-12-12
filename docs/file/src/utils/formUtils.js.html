@@ -134,6 +134,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
@@ -486,6 +487,115 @@ export function getValue(submission, key) {
   };
 
   return search(submission.data);
+}
+
+/**
+ * Iterate over all components in a form and get string values for translation.
+ * @param form
+ */
+export function getStrings(form) {
+  const properties = [&apos;label&apos;, &apos;title&apos;, &apos;legend&apos;, &apos;tooltip&apos;, &apos;description&apos;, &apos;placeholder&apos;, &apos;prefix&apos;, &apos;suffix&apos;, &apos;errorLabel&apos;];
+  const strings = [];
+  eachComponent(form.components, component =&gt; {
+    properties.forEach(property =&gt; {
+      if (component.hasOwnProperty(property) &amp;&amp; component[property]) {
+        strings.push({
+          key: component.key,
+          property,
+          string: component[property]
+        });
+      }
+    });
+    if ((!component.dataSrc || component.dataSrc === &apos;values&apos;) &amp;&amp; component.hasOwnProperty(&apos;values&apos;) &amp;&amp; Array.isArray(component.values) &amp;&amp; component.values.length) {
+      component.values.forEach((value, index) =&gt; {
+        strings.push({
+          key: component.key,
+          property: `value[${index}].label`,
+          string: component.values[index].label
+        });
+      });
+    }
+
+    // Hard coded values from Day component
+    if (component.type === &apos;day&apos;) {
+      [
+        &apos;day&apos;,
+        &apos;month&apos;,
+        &apos;year&apos;,
+        &apos;Day&apos;,
+        &apos;Month&apos;,
+        &apos;Year&apos;,
+        &apos;january&apos;,
+        &apos;february&apos;,
+        &apos;march&apos;,
+        &apos;april&apos;,
+        &apos;may&apos;,
+        &apos;june&apos;,
+        &apos;july&apos;,
+        &apos;august&apos;,
+        &apos;september&apos;,
+        &apos;october&apos;,
+        &apos;november&apos;,
+        &apos;december&apos;
+      ].forEach(string =&gt; {
+        strings.push({
+          key: component.key,
+          property: &apos;day&apos;,
+          string,
+        });
+      });
+
+      if (component.fields.day.placeholder) {
+        strings.push({
+          key: component.key,
+          property: &apos;fields.day.placeholder&apos;,
+          string: component.fields.day.placeholder,
+        });
+      }
+
+      if (component.fields.month.placeholder) {
+        strings.push({
+          key: component.key,
+          property: &apos;fields.month.placeholder&apos;,
+          string: component.fields.month.placeholder,
+        });
+      }
+
+      if (component.fields.year.placeholder) {
+        strings.push({
+          key: component.key,
+          property: &apos;fields.year.placeholder&apos;,
+          string: component.fields.year.placeholder,
+        });
+      }
+    }
+
+    if (component.type === &apos;editgrid&apos;) {
+      const string = this.component.addAnother || &apos;Add Another&apos;;
+      if (component.addAnother) {
+        strings.push({
+          key: component.key,
+          property: &apos;addAnother&apos;,
+          string,
+        });
+      }
+    }
+
+    if (component.type === &apos;select&apos;) {
+      [
+        &apos;loading...&apos;,
+        &apos;Type to search&apos;
+      ].forEach(string =&gt; {
+        strings.push({
+          key: component.key,
+          property: &apos;select&apos;,
+          string,
+        });
+      });
+    }
+  }, true);
+
+  return strings;
 }
 </code></pre>
 
