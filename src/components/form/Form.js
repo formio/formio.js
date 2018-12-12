@@ -102,6 +102,12 @@ export default class FormComponent extends BaseComponent {
     if (this.options && this.options.readOnly) {
       srcOptions.readOnly = this.options.readOnly;
     }
+    if (this.options && this.options.breadcrumbSettings) {
+      srcOptions.breadcrumbSettings = this.options.breadcrumbSettings;
+    }
+    if (this.options && this.options.buttonSettings) {
+      srcOptions.buttonSettings = this.options.buttonSettings;
+    }
     if (this.options && this.options.icons) {
       srcOptions.icons = this.options.icons;
     }
