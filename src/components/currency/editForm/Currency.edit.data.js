@@ -2,7 +2,7 @@ export default [
   {
     type: 'select',
     input: true,
-    weight: 100,
+    weight: 50,
     key: 'currency',
     label: 'Currency',
     tooltip: 'The currency to use in currency formatting. Possible values are (ISO-4217) currency codes.',
