@@ -782,6 +782,12 @@ export default class SelectComponent extends BaseComponent {
       return value;
     }
 
+    if (Array.isArray(value)) {
+      const templates = [];
+      value.forEach(item => templates.push(this.itemTemplate(item)));
+      return templates.length > 0 ? templates.join('<br />') : '-';
+    }
+
     return _.isObject(value)
       ? this.itemTemplate(value)
       : '-';
