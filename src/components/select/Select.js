@@ -793,9 +793,9 @@ export default class SelectComponent extends Field {
     }
 
     if (Array.isArray(value)) {
-      const templates = [];
-      value.forEach(item => templates.push(this.itemTemplate(item)));
-      return templates.length > 0 ? templates.join('<br />') : '-';
+      const items = [];
+      value.forEach(item => items.push(this.itemTemplate(item)));
+      return items.length > 0 ? items.join('<br />') : '-';
     }
 
     return _.isObject(value)
