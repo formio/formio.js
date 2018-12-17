@@ -28,10 +28,10 @@ export default class Form {
   }
 
   create() {
-    if (this.form.display === 'wizard') {
+    if (this.form.display === 'wizard' && !this.options.flatten) {
       return new Wizard(this.element, this.options);
     }
-    else if (this.form.display === 'pdf') {
+    else if (this.form.display === 'pdf' && !this.options.flatten) {
       return new PDF(this.element, this.options);
     }
     else {
