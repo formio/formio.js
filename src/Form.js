@@ -59,6 +59,9 @@ export default class Form {
    * @return {*}
    */
   create(display) {
+    if (this.options.flatten) {
+      display = 'form';
+    }
     switch (display) {
       case 'wizard':
         return new Wizard(this.options);
