@@ -775,7 +775,9 @@ export default class SelectComponent extends BaseComponent {
     value = value || this.getValue();
 
     if (this.component.dataSrc === 'values') {
-      value = _.find(this.component.data.values, ['value', value]);
+      value = this.component.multiple
+        ? _.filter(this.component.data.values, item => value.indexOf(item.value) !== -1)
+        :_.find(this.component.data.values, ['value', value]);
     }
 
     if (_.isString(value)) {
