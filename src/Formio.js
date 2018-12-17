@@ -6,7 +6,7 @@
 import Promise from 'native-promise-only';
 import 'whatwg-fetch';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
-import cookies from 'browser-cookies';
+import hardtack from 'hardtack';
 import copy from 'shallow-copy';
 import * as providers from './providers';
 import _get from 'lodash/get';
@@ -896,7 +896,7 @@ export default class Formio {
         return localStorage.removeItem(tokenName);
       }
       catch (err) {
-        return cookies.erase(tokenName, { path: '/' });
+        return hardtack.remove(tokenName, { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -904,7 +904,7 @@ export default class Formio {
       localStorage.setItem(tokenName, token);
     }
     catch (err) {
-      cookies.set(tokenName, token, { path: '/' });
+      hardtack.set(tokenName, token, { path: '/' });
     }
     return Formio.currentUser(opts.formio, opts); // Run this so user is updated if null
   }
@@ -924,7 +924,7 @@ export default class Formio {
       return Formio.tokens[tokenName];
     }
     catch (e) {
-      Formio.tokens[tokenName] = cookies.get(tokenName);
+      Formio.tokens[tokenName] = hardtack.get(tokenName);
       return Formio.tokens[tokenName];
     }
   }
@@ -938,7 +938,7 @@ export default class Formio {
         return localStorage.removeItem(userName);
       }
       catch (err) {
-        return cookies.erase(userName, { path: '/' });
+        return hardtack.remove(userName, { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -946,7 +946,7 @@ export default class Formio {
       localStorage.setItem(userName, JSON.stringify(user));
     }
     catch (err) {
-      cookies.set(userName, JSON.stringify(user), { path: '/' });
+      hardtack.set(userName, JSON.stringify(user), { path: '/' });
     }
   }
 
@@ -957,7 +957,7 @@ export default class Formio {
       return JSON.parse(localStorage.getItem(userName) || null);
     }
     catch (e) {
-      return JSON.parse(cookies.get(userName));
+      return JSON.parse(hardtack.get(userName));
     }
   }
 
