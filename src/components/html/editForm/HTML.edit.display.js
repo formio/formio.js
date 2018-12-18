@@ -59,4 +59,19 @@ export default [
     key: 'refreshOnChange',
     input: true
   },
+  {
+  type: 'select',
+  input: true,
+  weight: 0,
+  tooltip: 'Allow Translation',
+  key: 'translateHtml',
+  label: 'Allow Translation',
+  data: {
+    values: [
+      { label: 'False', value: 'false' },
+      { label: 'True', value: 'true' }
+     
+    ]
+  }
+},
 ];
