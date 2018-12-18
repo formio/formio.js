@@ -219,8 +219,10 @@ export default class DayComponent extends Field {
     this.addEventListener(this.refs.month, 'change', () => this.updateValue());
     // Change day max input when month changes.
     this.addEventListener(this.refs.month, 'change', () => {
-      this.refs.day.max = new Date(this.refs.year.value, this.refs.month.value, 0).getDate();
-      if (this.refs.day.value > this.refs.day.max) {
+      const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+      const day = this.getFieldValue('day');
+      this.refs.day.max = maxDay;
+      if (day > maxDay) {
         this.refs.day.value = this.refs.day.max;
       }
     });
@@ -309,7 +311,9 @@ export default class DayComponent extends Field {
     else if (this.component.fields[name].type === 'select') {
       val = this.refs[name].options[this.refs[name].selectedIndex].value;
     }
-    return _.isNaN(val) ? 0 : parseInt(val, 10);
+
+    val = parseInt(val, 10);
+    return (!_.isNaN(val) && _.isNumber(val)) ? val : 0;
   }
 
   get parts() {
