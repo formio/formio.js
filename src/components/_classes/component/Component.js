@@ -964,9 +964,9 @@ export default class Component extends Element {
    * @param additional
    * @return {*}
    */
-
   evalContext(additional) {
     return super.evalContext(Object.assign({
+      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
