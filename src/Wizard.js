@@ -18,6 +18,7 @@ export default class Wizard extends Webform {
     super(element, options);
     this.wizard = null;
     this.pages = [];
+    this.pageComponents = [];
     this.globalComponents = [];
     this.page = 0;
     this.history = [];
@@ -35,20 +36,10 @@ export default class Wizard extends Webform {
     return _.isNull(next);
   }
 
-  getPages(args = {}) {
-    const { all = false } = args;
-    const pageOptions = _.clone(this.options);
-    const components = _.clone(this.components);
-    const pages = this.pages
+  getPages({ all = false } = {}) {
+    return this.pages
           .filter(all ? _.identity : (p, index) => this._seenPages.includes(index))
-          .map((page, index) => this.createComponent(
-            page,
-            _.assign(pageOptions, { components: index === this.page ? components : null })
-          ));
-
-    this.components = components;
-
-    return pages;
+          .map((page, index) => this.pageComponents[index]);
   }
 
   getComponents() {
@@ -66,7 +57,7 @@ export default class Wizard extends Webform {
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
       if (!this._seenPages.includes(num)) {
-        this._seenPages = this._seenPages.concat(num);
+        this._seenPages.push(num);
       }
       return super.setForm(this.currentPage());
     }
@@ -225,11 +216,16 @@ export default class Wizard extends Webform {
 
   buildPages(form) {
     this.pages = [];
+    this.pageComponents = [];
     form.components.forEach((component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (checkCondition(component, this.data, this.data, this.wizard, this)) {
           this.pages.push(component);
+          this.pageComponents.push(this.createComponent(
+            component,
+            _.clone(this.options)
+          ));
         }
       }
       else if (component.type === 'hidden') {

@@ -36,6 +36,8 @@ export default class FormComponent extends BaseComponent {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+    // Forms don't have inputs.
+    this.component.input = false;
   }
 
   get defaultSchema() {
@@ -44,6 +46,14 @@ export default class FormComponent extends BaseComponent {
 
   get emptyValue() {
     return { data: {} };
+  }
+
+  hasChanged(before, after) {
+    // For submissions, limit change test to only data.
+    if (before.hasOwnProperty('data') && after.hasOwnProperty('data')) {
+      return !_.isEqual(before.data, after.data);
+    }
+    return super.hasChanged(before, after);
   }
 
   destroy() {
