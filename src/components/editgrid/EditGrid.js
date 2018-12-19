@@ -80,20 +80,22 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.createElement();
     this.createLabel(this.element);
-
-    // Ensure we always have rows for each dataValue available.
-    this.dataValue.forEach((row, rowIndex) => {
-      if (this.editRows[rowIndex]) {
-        this.editRows[rowIndex].data = row;
-      }
-      else {
-        this.editRows[rowIndex] = {
-          components: [],
-          isOpen: !!this.options.defaultOpen,
-          data: row
-        };
-      }
-    });
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      // Ensure we always have rows for each dataValue available.
+      dataValue.forEach((row, rowIndex) => {
+        if (this.editRows[rowIndex]) {
+          this.editRows[rowIndex].data = row;
+        }
+        else {
+          this.editRows[rowIndex] = {
+            components: [],
+            isOpen: !!this.options.defaultOpen,
+            data: row
+          };
+        }
+      });
+    }
 
     this.buildTable();
     this.createAddButton();
@@ -517,25 +519,28 @@ export default class EditGridComponent extends NestedComponent {
 
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      // Refresh editRow data when data changes.
+      dataValue.forEach((row, rowIndex) => {
+        if (this.editRows[rowIndex]) {
+          this.editRows[rowIndex].data = row;
+        }
+        else {
+          this.editRows[rowIndex] = {
+            components: [],
+            isOpen: !!this.options.defaultOpen,
+            data: row
+          };
+        }
+      });
 
-    // Refresh editRow data when data changes.
-    this.dataValue.forEach((row, rowIndex) => {
-      if (this.editRows[rowIndex]) {
-        this.editRows[rowIndex].data = row;
-      }
-      else {
-        this.editRows[rowIndex] = {
-          components: [],
-          isOpen: !!this.options.defaultOpen,
-          data: row
-        };
-      }
-    });
-    // Remove any extra edit rows.
-    if (this.dataValue.length < this.editRows.length) {
-      for (let rowIndex = this.editRows.length - 1; rowIndex >= this.dataValue.length; rowIndex--) {
-        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
-        this.editRows.splice(rowIndex, 1);
+      // Remove any extra edit rows.
+      if (dataValue.length < this.editRows.length) {
+        for (let rowIndex = this.editRows.length - 1; rowIndex >= dataValue.length; rowIndex--) {
+          this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+          this.editRows.splice(rowIndex, 1);
+        }
       }
     }
 
