@@ -268,7 +268,7 @@ export default class ButtonComponent extends Field {
       case 'url':
         this.emit('requestButton');
         this.emit('requestUrl', {
-          url: this.component.url,
+          url: this.interpolate(this.component.url),
           headers: this.component.headers
         });
         break;
