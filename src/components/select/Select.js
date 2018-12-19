@@ -412,7 +412,8 @@ export default class SelectComponent extends Field {
             body = null;
           }
         }
-        this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
+        const query = this.component.authenticate ? {} : { noToken: true };
+        this.loadItems(url, searchInput, this.requestHeaders, query, method, body);
         break;
       }
     }
