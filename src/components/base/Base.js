@@ -777,6 +777,7 @@ export default class BaseComponent extends Component {
 
   evalContext(additional) {
     return super.evalContext(Object.assign({
+      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
