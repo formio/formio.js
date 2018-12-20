@@ -1006,7 +1006,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"formio-dialog formio-dialog-theme-default component-settings\\\">\\n  <div class=\\\"formio-dialog-overlay\\\" ref=\\\"dialogOverlay\\\"></div>\\n  <div class=\\\"formio-dialog-content tab-content\\\" ref=\\\"dialogContents\\\">\\n    <div ref=\\\"dialogContents\\\"></div>\\n    <button class=\\\"formio-dialog-close float-right btn btn-secondary btn-sm\\\" aria-label=\\\"close\\\" ref=\\\"dialogClose\\\"></button>\\n  </div>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/dialog.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"formio-dialog formio-dialog-theme-default component-settings\\\">\\n  <div class=\\\"formio-dialog-overlay\\\" ref=\\\"dialogOverlay\\\"></div>\\n  <div class=\\\"formio-dialog-content\\\" ref=\\\"dialogContents\\\">\\n    <div ref=\\\"dialogContents\\\"></div>\\n    <button class=\\\"formio-dialog-close float-right btn btn-secondary btn-sm\\\" aria-label=\\\"close\\\" ref=\\\"dialogClose\\\"></button>\\n  </div>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/dialog.js?");
 
 /***/ }),
 
@@ -1906,7 +1906,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _default = function _default(iconset, name, spinning) {\n  var icons = {\n    'question-sign': 'question circle',\n    'remove-circle': 'trash alternate outline',\n    'new-window': 'external alternate',\n    'files-o': 'file outline'\n  };\n\n  if (icons.hasOwnProperty(name)) {\n    name = icons[name];\n  }\n\n  name = name.replace(/-/g, ' ');\n  name = name.replace(/ o$/, ' outline');\n  return spinning ? \"icon \".concat(name, \" loading\") : \"icon \".concat(name);\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/iconClass.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _default = function _default(iconset, name, spinning) {\n  var icons = {\n    'question-sign': 'question circle',\n    'remove-circle': 'trash alternate outline',\n    'new-window': 'external alternate',\n    'files-o': 'file outline'\n  };\n\n  if (icons.hasOwnProperty(name)) {\n    name = icons[name];\n  }\n\n  name = name || '';\n  name = name.replace(/-/g, ' ');\n  name = name.replace(/ o$/, ' outline');\n  return spinning ? \"icon \".concat(name, \" loading\") : \"icon \".concat(name);\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/iconClass.js?");
 
 /***/ }),
 
