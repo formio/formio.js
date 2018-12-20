@@ -28,10 +28,11 @@ export default class Form {
   }
 
   create() {
-    if (this.form.display === 'wizard' && !this.options.flatten) {
+    const isFlat = this.options && this.options.flatten;
+    if (this.form.display === 'wizard' && !isFlat) {
       return new Wizard(this.element, this.options);
     }
-    else if (this.form.display === 'pdf' && !this.options.flatten) {
+    else if (this.form.display === 'pdf' && !isFlat) {
       return new PDF(this.element, this.options);
     }
     else {

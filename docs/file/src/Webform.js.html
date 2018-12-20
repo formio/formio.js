@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -1080,13 +1081,23 @@ export default class Webform extends NestedComponent {
     }
 
     // Mark any components as invalid if in a custom message.
-    this.customErrors.forEach(err =&gt; {
+    errors.forEach((err) =&gt; {
+      const { components = [] } = err;
+
       if (err.component) {
-        const component = this.getComponent(err.component);
-        if (component) {
-          component.setCustomValidity(err.message, true);
-        }
+        components.push(err.component);
       }
+
+      if (err.path) {
+        components.push(err.path);
+      }
+
+      components.forEach((path) =&gt; {
+        const component = this.getComponent(path, _.identity, err);
+        const components = _.compact(Array.isArray(component) ? component : [component]);
+
+        components.forEach((component) =&gt; component.setCustomValidity(err.message, true));
+      });
     });
 
     const message = `
@@ -1287,16 +1298,16 @@ export default class Webform extends NestedComponent {
 
           if (this.nosubmit || !submitFormio) {
             return resolve({
-              submission: submission,
-              saved: false
+              submission,
+              saved: false,
             });
           }
 
           // If this is an actionUrl, then make sure to save the action and not the submission.
           const submitMethod = submitFormio.actionUrl ? &apos;saveAction&apos; : &apos;saveSubmission&apos;;
-          submitFormio[submitMethod](submission).then(result =&gt; resolve({
+          submitFormio[submitMethod](submission).then((result) =&gt; resolve({
             submission: result,
-            saved: true
+            saved: true,
           })).catch(reject);
         });
       });
@@ -1307,7 +1318,7 @@ export default class Webform extends NestedComponent {
     this.submitted = true;
     this.submitting = true;
     return this.submitForm(options)
-      .then((result) =&gt; this.onSubmit(result.submission, result.saved))
+      .then(({ submission, saved }) =&gt; this.onSubmit(submission, saved))
       .catch((err) =&gt; Promise.reject(this.onSubmissionError(err)));
   }
 

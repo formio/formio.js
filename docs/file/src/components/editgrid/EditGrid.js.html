@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -270,20 +271,22 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.createElement();
     this.createLabel(this.element);
-
-    // Ensure we always have rows for each dataValue available.
-    this.dataValue.forEach((row, rowIndex) =&gt; {
-      if (this.editRows[rowIndex]) {
-        this.editRows[rowIndex].data = row;
-      }
-      else {
-        this.editRows[rowIndex] = {
-          components: [],
-          isOpen: !!this.options.defaultOpen,
-          data: row
-        };
-      }
-    });
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      // Ensure we always have rows for each dataValue available.
+      dataValue.forEach((row, rowIndex) =&gt; {
+        if (this.editRows[rowIndex]) {
+          this.editRows[rowIndex].data = row;
+        }
+        else {
+          this.editRows[rowIndex] = {
+            components: [],
+            isOpen: !!this.options.defaultOpen,
+            data: row
+          };
+        }
+      });
+    }
 
     this.buildTable();
     this.createAddButton();
@@ -578,14 +581,6 @@ export default class EditGridComponent extends NestedComponent {
     this.updateGrid();
   }
 
-  removeRowComponents(rowIndex) {
-    // Clean up components list.
-    this.editRows[rowIndex].components.forEach(comp =&gt; {
-      this.removeComponent(comp, this.components);
-    });
-    this.editRows[rowIndex].components = [];
-  }
-
   validateRow(rowIndex, dirty) {
     let check = true;
     const isDirty = dirty || !!this.editRows[rowIndex].dirty;
@@ -707,25 +702,28 @@ export default class EditGridComponent extends NestedComponent {
 
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      // Refresh editRow data when data changes.
+      dataValue.forEach((row, rowIndex) =&gt; {
+        if (this.editRows[rowIndex]) {
+          this.editRows[rowIndex].data = row;
+        }
+        else {
+          this.editRows[rowIndex] = {
+            components: [],
+            isOpen: !!this.options.defaultOpen,
+            data: row
+          };
+        }
+      });
 
-    // Refresh editRow data when data changes.
-    this.dataValue.forEach((row, rowIndex) =&gt; {
-      if (this.editRows[rowIndex]) {
-        this.editRows[rowIndex].data = row;
-      }
-      else {
-        this.editRows[rowIndex] = {
-          components: [],
-          isOpen: !!this.options.defaultOpen,
-          data: row
-        };
-      }
-    });
-    // Remove any extra edit rows.
-    if (this.dataValue.length &lt; this.editRows.length) {
-      for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= this.dataValue.length; rowIndex--) {
-        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
-        this.editRows.splice(rowIndex, 1);
+      // Remove any extra edit rows.
+      if (dataValue.length &lt; this.editRows.length) {
+        for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= dataValue.length; rowIndex--) {
+          this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+          this.editRows.splice(rowIndex, 1);
+        }
       }
     }
 

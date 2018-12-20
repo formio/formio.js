@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -194,7 +195,8 @@ import Harness from &apos;../../../test/harness&apos;;
 import DayComponent from &apos;./Day&apos;;
 
 import {
-  comp1
+  comp1,
+  comp2
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Day Component&apos;, () =&gt; {
@@ -283,6 +285,53 @@ describe(&apos;Day Component&apos;, () =&gt; {
     Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
       component.setValue(&apos;15/20/2017&apos;);
       assert.equal(component.getValue(), &apos;00/20/2017&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should keep day value when switching months&apos;, (done) =&gt; {
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;01/05/2018&apos;);
+      assert.equal(component.getValue(), &apos;01/05/2018&apos;);
+      component.on(&apos;componentChange&apos;, () =&gt; {
+        assert.equal(component.getValue(), &apos;02/05/2018&apos;);
+        done();
+      });
+      component.monthInput.value = 2;
+      component.monthInput.dispatchEvent(new Event(&apos;change&apos;));
+    });
+  });
+
+  it(&apos;Should adjust day value when day is great then maxDay of month&apos;, (done) =&gt; {
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;01/31/2018&apos;);
+      assert.equal(component.getValue(), &apos;01/31/2018&apos;);
+      component.on(&apos;componentChange&apos;, () =&gt; {
+        assert.equal(component.getValue(), &apos;02/28/2018&apos;);
+        done();
+      });
+      component.monthInput.value = 2;
+      component.monthInput.dispatchEvent(new Event(&apos;change&apos;));
+    });
+  });
+
+  it(&apos;Should validate required fields&apos;, (done) =&gt; {
+    Harness.testCreate(DayComponent, comp2).then((component) =&gt; {
+      const valid = () =&gt; component.checkValidity(null, true);
+      const tests = {
+        &apos;12/18/2018&apos;: true,
+        &apos;12/00/0000&apos;: false,
+        &apos;00/18/0000&apos;: false,
+        &apos;00/00/2018&apos;: false,
+        &apos;01/05/2018&apos;: true,
+      };
+
+      for (const v in tests) {
+        component.setValue(v);
+        console.log(valid(), tests[v]);
+        assert.equal(valid(), tests[v]);
+      }
+
       done();
     });
   });

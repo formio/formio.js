@@ -159,6 +159,7 @@ export default class TreeComponent extends NestedComponent {
     }, ...extend);
   }
 
+  /* Ignore builder until we work out the kinks in builder mode.
   static get builderInfo() {
     return {
       title: 'Tree',
@@ -168,6 +169,7 @@ export default class TreeComponent extends NestedComponent {
       schema: TreeComponent.schema(),
     };
   }
+  */
 
   static get defaultEditTemplate() {
     return (
