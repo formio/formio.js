@@ -10,7 +10,7 @@ export default class SignatureComponent extends Input {
       key: 'signature',
       footer: 'Sign above',
       width: '100%',
-      height: '150',
+      height: '150px',
       penColor: 'black',
       backgroundColor: 'rgb(245,245,235)',
       minWidth: '0.5',
