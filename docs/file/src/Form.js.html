@@ -219,10 +219,11 @@ export default class Form {
   }
 
   create() {
-    if (this.form.display === &apos;wizard&apos; &amp;&amp; !this.options.flatten) {
+    const isFlat = this.options &amp;&amp; this.options.flatten;
+    if (this.form.display === &apos;wizard&apos; &amp;&amp; !isFlat) {
       return new Wizard(this.element, this.options);
     }
-    else if (this.form.display === &apos;pdf&apos; &amp;&amp; !this.options.flatten) {
+    else if (this.form.display === &apos;pdf&apos; &amp;&amp; !isFlat) {
       return new PDF(this.element, this.options);
     }
     else {

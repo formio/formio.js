@@ -567,7 +567,7 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/Form.js",
-    "content": "import Formio from './Formio';\nimport Wizard from './Wizard';\nimport PDF from './PDF';\nimport Webform from './Webform';\n\nexport default class Form {\n  /**\n   * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.\n   *\n   * @param {Object} element - The DOM element you wish to render this form within.\n   * @param {Object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.\n   * @param {Object} options - The options to create a new form instance.\n   * @param {boolean} options.readOnly - Set this form to readOnly\n   * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.\n   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js\n   * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.\n   *\n   * @example\n   * import Form from 'formiojs/Form';\n   * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');\n   * form.render();\n   */\n  constructor(element, form, options) {\n    this.instance = null;\n    this.element = element;\n    this.form = form;\n    this.options = options;\n  }\n\n  create() {\n    if (this.form.display === 'wizard' && !this.options.flatten) {\n      return new Wizard(this.element, this.options);\n    }\n    else if (this.form.display === 'pdf' && !this.options.flatten) {\n      return new PDF(this.element, this.options);\n    }\n    else {\n      return new Webform(this.element, this.options);\n    }\n  }\n\n  setForm(formParam) {\n    formParam = formParam || this.form;\n    this.element.innerHTML = '';\n    if (typeof formParam === 'string') {\n      return (new Formio(formParam)).loadForm().then((form) => {\n        this.form = form;\n        if (this.instance) {\n          this.instance.destroy();\n        }\n        this.instance = this.create();\n        this.instance.url = formParam;\n        this.instance.nosubmit = false;\n        this.instance.loadSubmission();\n        this.form = this.instance.form = form;\n        return this.instance.ready.then(() => this.instance);\n      });\n    }\n    else {\n      this.form = formParam;\n      if (this.instance) {\n        this.instance.destroy();\n      }\n      this.instance = this.create();\n      this.instance.form = this.form;\n      return this.instance.ready.then(() => this.instance);\n    }\n  }\n\n  setDisplay(display) {\n    this.form.display = display;\n    return this.render();\n  }\n\n  static embed(embed) {\n    if (!embed || !embed.src) {\n      return null;\n    }\n    const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;\n    const className = embed.class || 'formio-form-wrapper';\n\n    // Add the styles to the header.\n    if (embed.styles) {\n      const link = document.createElement('link');\n      link.rel = 'stylesheet';\n      link.href = embed.styles;\n      document.head.appendChild(link);\n    }\n\n    document.write(`<div id=\"${id}\" class=\"${className}\"></div>`);\n    const formElement = document.getElementById(id);\n    return (new Form(formElement, embed.src)).render();\n  }\n\n  render(form) {\n    return this.setForm(form);\n  }\n}\n\n// Allow simple embedding.\nFormio.embedForm = (embed) => Form.embed(embed);\n\n/**\n * Creates a new form based on the form parameter.\n *\n * @param element {HMTLElement} - The HTML Element to add this form to.\n * @param form {string|Object} - The src of the form, or a form object.\n * @param options {Object} - The options to create this form.\n *\n * @return {Promise} - When the form is instance is ready.\n */\nFormio.createForm = (element, form, options) => {\n  return (new Form(element, form, options)).render();\n};\n\nFormio.Form = Form;\n",
+    "content": "import Formio from './Formio';\nimport Wizard from './Wizard';\nimport PDF from './PDF';\nimport Webform from './Webform';\n\nexport default class Form {\n  /**\n   * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.\n   *\n   * @param {Object} element - The DOM element you wish to render this form within.\n   * @param {Object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.\n   * @param {Object} options - The options to create a new form instance.\n   * @param {boolean} options.readOnly - Set this form to readOnly\n   * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.\n   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js\n   * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.\n   *\n   * @example\n   * import Form from 'formiojs/Form';\n   * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');\n   * form.render();\n   */\n  constructor(element, form, options) {\n    this.instance = null;\n    this.element = element;\n    this.form = form;\n    this.options = options;\n  }\n\n  create() {\n    const isFlat = this.options && this.options.flatten;\n    if (this.form.display === 'wizard' && !isFlat) {\n      return new Wizard(this.element, this.options);\n    }\n    else if (this.form.display === 'pdf' && !isFlat) {\n      return new PDF(this.element, this.options);\n    }\n    else {\n      return new Webform(this.element, this.options);\n    }\n  }\n\n  setForm(formParam) {\n    formParam = formParam || this.form;\n    this.element.innerHTML = '';\n    if (typeof formParam === 'string') {\n      return (new Formio(formParam)).loadForm().then((form) => {\n        this.form = form;\n        if (this.instance) {\n          this.instance.destroy();\n        }\n        this.instance = this.create();\n        this.instance.url = formParam;\n        this.instance.nosubmit = false;\n        this.instance.loadSubmission();\n        this.form = this.instance.form = form;\n        return this.instance.ready.then(() => this.instance);\n      });\n    }\n    else {\n      this.form = formParam;\n      if (this.instance) {\n        this.instance.destroy();\n      }\n      this.instance = this.create();\n      this.instance.form = this.form;\n      return this.instance.ready.then(() => this.instance);\n    }\n  }\n\n  setDisplay(display) {\n    this.form.display = display;\n    return this.render();\n  }\n\n  static embed(embed) {\n    if (!embed || !embed.src) {\n      return null;\n    }\n    const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;\n    const className = embed.class || 'formio-form-wrapper';\n\n    // Add the styles to the header.\n    if (embed.styles) {\n      const link = document.createElement('link');\n      link.rel = 'stylesheet';\n      link.href = embed.styles;\n      document.head.appendChild(link);\n    }\n\n    document.write(`<div id=\"${id}\" class=\"${className}\"></div>`);\n    const formElement = document.getElementById(id);\n    return (new Form(formElement, embed.src)).render();\n  }\n\n  render(form) {\n    return this.setForm(form);\n  }\n}\n\n// Allow simple embedding.\nFormio.embedForm = (embed) => Form.embed(embed);\n\n/**\n * Creates a new form based on the form parameter.\n *\n * @param element {HMTLElement} - The HTML Element to add this form to.\n * @param form {string|Object} - The src of the form, or a form object.\n * @param options {Object} - The options to create this form.\n *\n * @return {Promise} - When the form is instance is ready.\n */\nFormio.createForm = (element, form, options) => {\n  return (new Form(element, form, options)).render();\n};\n\nFormio.Form = Form;\n",
     "static": true,
     "longname": "/Users/travistidwell/Desktop/formio.js/src/Form.js",
     "access": "public",
@@ -778,7 +778,7 @@
     "longname": "src/Form.js~Form#setForm",
     "access": "public",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 43,
     "undocument": true,
     "params": [
       {
@@ -805,7 +805,7 @@
     "longname": "src/Form.js~Form#setDisplay",
     "access": "public",
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 71,
     "undocument": true,
     "params": [
       {
@@ -832,7 +832,7 @@
     "longname": "src/Form.js~Form.embed",
     "access": "public",
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 76,
     "undocument": true,
     "params": [
       {
@@ -859,7 +859,7 @@
     "longname": "src/Form.js~Form#render",
     "access": "public",
     "description": null,
-    "lineNumber": 95,
+    "lineNumber": 96,
     "undocument": true,
     "params": [
       {
