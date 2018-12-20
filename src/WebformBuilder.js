@@ -11,6 +11,7 @@ import _ from 'lodash';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
+// eslint-disable-next-line max-statements
   constructor(options) {
     super(null, options);
     this.builderHeight = 0;
@@ -18,6 +19,15 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
+
+    const componentInfo = {};
+    for (const type in Components.components) {
+      const component = Components.components[type];
+      if (component.builderInfo) {
+        component.type = type;
+        componentInfo[type] = component.builderInfo;
+      }
+    }
 
     // Setup the builder options.
     this.builder = _.defaultsDeep({}, this.options.builder, this.defaultGroups);
@@ -36,11 +46,14 @@ export default class WebformBuilder extends Component {
       if (this.builder[group]) {
         this.builder[group].key = group;
         this.groups[group] = this.builder[group];
-        this.groupOrder.push(this.builder[group]);
+        this.groups[group].components = this.groups[group].components || {};
+        this.groups[group].componentOrder = this.groups[group].componentOrder || [];
+        this.groupOrder.push(this.groups[group]);
       }
     }
 
     this.groupOrder = this.groupOrder
+      .filter(group => group && !group.ignore)
       .sort((a, b) => a.weight - b.weight)
       .map(group => group.key);
 
@@ -54,17 +67,32 @@ export default class WebformBuilder extends Component {
         this.addBuilderComponentInfo(builderInfo);
       }
     }
+    // Filter out any extra components.
+    // Add the components in each group.
+    for (const group in this.groups) {
+      const info = this.groups[group];
+      for (const key in info.components) {
+        const comp = info.components[key];
+        if (comp) {
+          info.components[key] = comp === true ? componentInfo[key] : comp;
+          info.components[key].key = key;
+        }
+      }
+    }
 
     // Need to create a component order for each group.
     for (const group in this.groups) {
       if (this.groups[group] && this.groups[group].components) {
-        this.groups[group].componentOrder = this.groups[group].componentOrder
+        this.groups[group].componentOrder = Object.keys(this.groups[group].components)
+          .map(key => this.groups[group].components[key])
+          .filter(component => component && !component.ignore)
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
       }
     }
 
     this.options.hooks = this.options.hooks || {};
+
     this.options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form' && !self.key) {
         return html;
@@ -337,7 +365,7 @@ export default class WebformBuilder extends Component {
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
 
-    this.webform.attach(this.refs.form);
+    return this.webform.attach(this.refs.form);
   }
 
   detach() {
@@ -614,13 +642,6 @@ export default class WebformBuilder extends Component {
 
     component = _.clone(component);
     const groupInfo = this.groups[component.group];
-    if (!groupInfo.components) {
-      groupInfo.components = {};
-    }
-    if (!groupInfo.componentOrder) {
-      groupInfo.componentOrder = [];
-    }
-    groupInfo.componentOrder.push(component);
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
