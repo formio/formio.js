@@ -55,7 +55,7 @@ export default class TabsComponent extends NestedComponent {
   build(state, showLabel) {
     if (this.options.flatten) {
       this.element = super.createElement();
-      this.component.components.forEach((tab, index) => {
+      this.component.components.forEach((tab) => {
         let body;
         const panel = this.ce('div', {
           id: this.id,
