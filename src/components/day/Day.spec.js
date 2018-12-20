@@ -4,7 +4,8 @@ import Harness from '../../../test/harness';
 import DayComponent from './Day';
 
 import {
-  comp1
+  comp1,
+  comp2
 } from './fixtures';
 
 describe('Day Component', () => {
@@ -93,6 +94,53 @@ describe('Day Component', () => {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.setValue('15/20/2017');
       assert.equal(component.getValue(), '00/20/2017');
+      done();
+    });
+  });
+
+  it('Should keep day value when switching months', (done) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('01/05/2018');
+      assert.equal(component.getValue(), '01/05/2018');
+      component.on('componentChange', () => {
+        assert.equal(component.getValue(), '02/05/2018');
+        done();
+      });
+      component.monthInput.value = 2;
+      component.monthInput.dispatchEvent(new Event('change'));
+    });
+  });
+
+  it('Should adjust day value when day is great then maxDay of month', (done) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('01/31/2018');
+      assert.equal(component.getValue(), '01/31/2018');
+      component.on('componentChange', () => {
+        assert.equal(component.getValue(), '02/28/2018');
+        done();
+      });
+      component.monthInput.value = 2;
+      component.monthInput.dispatchEvent(new Event('change'));
+    });
+  });
+
+  it('Should validate required fields', (done) => {
+    Harness.testCreate(DayComponent, comp2).then((component) => {
+      const valid = () => component.checkValidity(null, true);
+      const tests = {
+        '12/18/2018': true,
+        '12/00/0000': false,
+        '00/18/0000': false,
+        '00/00/2018': false,
+        '01/05/2018': true,
+      };
+
+      for (const v in tests) {
+        component.setValue(v);
+        console.log(valid(), tests[v]);
+        assert.equal(valid(), tests[v]);
+      }
+
       done();
     });
   });
