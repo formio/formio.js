@@ -8,6 +8,7 @@ export default [
     },
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
+    authenticate: true,
     label: 'Form',
     key: 'form',
     weight: 10,

@@ -61,6 +61,13 @@ export default class FormComponent extends BaseComponent {
    * @param options
    */
   renderSubForm(form, options) {
+    if (this.options.builder) {
+      this.element.appendChild(this.ce('div', {
+        class: 'text-muted text-center p-2'
+      }, this.text(form.title)));
+      return;
+    }
+
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) => {
       if ((component.type === 'button') && (component.action === 'submit')) {
@@ -129,13 +136,17 @@ export default class FormComponent extends BaseComponent {
       !this.options.formio &&
       (this.component.form || this.component.path)
     ) {
-      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
+        this.formSrc = Formio.getBaseUrl();
         // Check to see if it is a MongoID.
         if (isMongoId(this.component.project)) {
           this.formSrc += '/project';
         }
         this.formSrc += `/${this.component.project}`;
+        srcOptions.project = this.formSrc;
+      }
+      else {
+        this.formSrc = Formio.getProjectUrl();
         srcOptions.project = this.formSrc;
       }
       if (this.component.form) {
@@ -164,7 +175,8 @@ export default class FormComponent extends BaseComponent {
       this.renderSubForm(this.component, srcOptions);
     }
     else {
-      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      const query = { params: { live: 1 } };
+      (new Formio(this.formSrc)).loadForm(query)
         .then((formObj) => this.renderSubForm(formObj, srcOptions))
         .catch((err) => this.subFormReadyReject(err));
     }
