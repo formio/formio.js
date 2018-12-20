@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - FOR-1948: editorReady promise for Content component
+
 ## 3.9.4
 ### Fixed
  - Problem where a component can get in an infinite loop if its parent is not visible but it is visible and cleanOnHide is set.
