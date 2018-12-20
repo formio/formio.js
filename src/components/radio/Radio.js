@@ -114,7 +114,7 @@ export default class RadioComponent extends Field {
 
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        if (input && input.value === value.toString()) {
+        if (input && input.value.toString() === value.toString()) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
         }
