@@ -2062,7 +2062,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"formio-dialog formio-dialog-theme-default component-settings\\\">\\n  <div class=\\\"formio-dialog-overlay\\\" ref=\\\"dialogOverlay\\\"></div>\\n  <div class=\\\"formio-dialog-content\\\" ref=\\\"dialogContents\\\">\\n    <div ref=\\\"dialogContents\\\"></div>\\n    <button class=\\\"formio-dialog-close float-right btn btn-secondary btn-sm\\\" aria-label=\\\"close\\\" ref=\\\"dialogClose\\\"></button>\\n  </div>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/dialog.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"formio-dialog formio-dialog-theme-default component-settings\\\">\\n  <div class=\\\"formio-dialog-overlay\\\" ref=\\\"dialogOverlay\\\"></div>\\n  <div class=\\\"formio-dialog-content tab-content\\\" ref=\\\"dialogContents\\\">\\n    <div ref=\\\"dialogContents\\\"></div>\\n    <button class=\\\"formio-dialog-close float-right btn btn-secondary btn-sm\\\" aria-label=\\\"close\\\" ref=\\\"dialogClose\\\"></button>\\n  </div>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/dialog.js?");
 
 /***/ }),
 
@@ -2842,7 +2842,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"ui checkbox\\\">\\n  <{{input.type}} \\n    ref=\\\"input\\\" \\n    id=\\\"{{id}}\\\"\\n    {% for (var attr in input.attr) { %}\\n    {{attr}}=\\\"{{input.attr[attr]}}\\\"\\n    {% } %}\\n    {% if (checked) { %}checked=true{% } %}\\n    >\\n  </{{input.type}}>\\n  <label class=\\\"{{input.labelClass}}\\\" for=\\\"{{id}}\\\">\\n    {{input.content}}\\n    {% if (self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}\\n    {% if (component.tooltip) { %}\\n      <i ref=\\\"tooltip\\\" class=\\\"{{iconClass('question-sign')}}\\\"></i>\\n    {% } %}\\n  </label>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/checkbox.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  form: \"\\n<div class=\\\"ui checkbox\\\">\\n  <{{input.type}} \\n    ref=\\\"input\\\" \\n    id=\\\"{{id}}\\\"\\n    {% for (var attr in input.attr) { %}\\n    {{attr}}=\\\"{{input.attr[attr]}}\\\"\\n    {% } %}\\n    {% if (checked) { %}checked=true{% } %}\\n    >\\n  </{{input.type}}>\\n  <label class=\\\"{{input.labelClass}}\\\" for=\\\"{{id}}\\\">\\n    {{input.content}}\\n    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}\\n    {% if (component.tooltip) { %}\\n      <i ref=\\\"tooltip\\\" class=\\\"{{iconClass('question-sign')}}\\\"></i>\\n    {% } %}\\n  </label>\\n</div>\\n\"\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/checkbox.js?");
 
 /***/ }),
 

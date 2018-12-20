@@ -12,7 +12,7 @@ export default {
   </{{input.type}}>
   <label class="{{input.labelClass}}" for="{{id}}">
     {{input.content}}
-    {% if (self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
+    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
     {% if (component.tooltip) { %}
       <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
     {% } %}
