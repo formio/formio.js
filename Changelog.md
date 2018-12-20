@@ -4,9 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.10.0
+### Fixed
+ - Signature field has invalid height attribute of "150" instead of "150px"
+ - Fixed some potential crashes within the EditGrid component.
+ - The form component in builder mode.
+ - The form component "form" selection configuration to work within the form manager application.
+ - The "authenticate" parameter to work with Select components, where it will pass Form.io authentication to the URL.
+ - Fixed view for select multiple
+ - A crash in the isEmpty method for DateTime component.
+ - Fix bug with editForm Data tab for container components
+ - Fix issue where if radio value is true it won't have radio-selected class set on it.
+
 ### Added
+ - Tree Component for building nested tree-based controls.
  - FOR-1948: editorReady promise for Content component
+ - Interpolate to the Button urls so that {{ }} can be used.
+ - FOR-1912: Added tests to the Select component to demonstrate no-reproducibility of this issue.
+ - Ability to flatten wizard and tab components for better printing capability.
+ - Currency Component: Support other currencies - Add suffix / prefix options
+ - Allow translating other Choice.js labels.
 
 ## 3.9.4
 ### Fixed
