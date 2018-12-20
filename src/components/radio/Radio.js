@@ -202,7 +202,7 @@ export default class RadioComponent extends BaseComponent {
 
       _.each(this.wrappers, (wrapper, index) => {
         const input = this.inputs[index];
-        if (input.value === value) {
+        if (input.value === value.toString()) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
         }
