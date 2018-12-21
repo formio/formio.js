@@ -131,16 +131,25 @@ export default class Form {
   }
 
   static embed(embed) {
-    if (!embed || !embed.src) {
-      return null;
-    }
-    const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;
-    const className = embed.class || 'formio-form-wrapper';
-    let code = embed.styles ? `<link rel="stylesheet" href="${embed.styles}">` : '';
-    code += `<div id="${id}" class="${className}"></div>`;
-    document.write(code);
-    const formElement = document.getElementById(id);
-    return (new Form(formElement, embed.src)).build();
+    return new Promise((resolve, reject) => {
+      if (!embed || !embed.src) {
+        resolve();
+      }
+      const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;
+      const className = embed.class || 'formio-form-wrapper';
+      let code = embed.styles ? `<link rel="stylesheet" href="${embed.styles}">` : '';
+      code += `<div id="${id}" class="${className}"></div>`;
+      document.write(code);
+      let attempts = 0;
+      const wait = setInterval(() => {
+        attempts++;
+        const formElement = document.getElementById(id);
+        if (formElement || attempts > 10) {
+          resolve(new Form(formElement, embed.src).ready);
+          clearInterval(wait);
+        }
+      }, 10);
+    });
   }
 
   /**
@@ -197,7 +206,7 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (...args) => {
-  return (new Form(...args)).build();
+  return (new Form(...args).ready);
 };
 
 Formio.Form = Form;
