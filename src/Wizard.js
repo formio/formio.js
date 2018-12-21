@@ -99,7 +99,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.currentPage]]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.currentPage]]);
 
     [
       { name: 'cancel',    method: 'cancel' },
@@ -134,6 +134,8 @@ export default class Wizard extends Webform {
         this.setPage(index);
       });
     });
+
+    return promises;
   }
 
   addComponents() {
@@ -295,10 +297,8 @@ export default class Wizard extends Webform {
       return;
     }
     this.wizard = form;
-    return this.init().then(() => {
-      this.emit('formLoad', form);
-      return form;
-    });
+    this.component.components = form.components;
+    return super.setForm(form);
   }
 
   hasButton(name, nextPage) {
