@@ -547,7 +547,7 @@ export default class Component extends Element {
     data.transform = this.transform;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
-    data.value = this.value;
+    data.value = data.value || this.value;
 
     // Allow more specific template names
     const names = [
@@ -735,8 +735,7 @@ export default class Component extends Element {
 
     this.loadRefs(element, {
       messageContainer: 'single',
-      tooltip: 'multiple',
-      value: 'multiple'
+      tooltip: 'multiple'
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
@@ -1565,9 +1564,6 @@ export default class Component extends Element {
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
-      }
-      if (this.refs.value.hasOwnProperty(i)) {
-        this.refs.value[i].innerHTML = isArray ? value[i] : value;
       }
     }
     return this.updateValue(flags);

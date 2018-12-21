@@ -18,7 +18,7 @@ the submission as a HTML view.
 ```js
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9', {
   readOnly: true,
-  viewAsHtml: true
+  renderMode: 'html'
 });
 ```
 
@@ -28,7 +28,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w
 <script type="text/javascript">
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9', {
   readOnly: true,
-  viewAsHtml: true
+  renderMode: 'html'
 });
 </script>
 </div>
