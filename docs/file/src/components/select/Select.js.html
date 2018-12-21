@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -615,7 +616,8 @@ export default class SelectComponent extends BaseComponent {
             body = null;
           }
         }
-        this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
+        const query = this.component.authenticate ? {} : { noToken: true };
+        this.loadItems(url, searchInput, this.requestHeaders, query, method, body);
         break;
       }
     }
@@ -689,6 +691,8 @@ export default class SelectComponent extends BaseComponent {
       addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
+      noResultsText: this.t(&apos;No results found&apos;),
+      noChoicesText: this.t(&apos;No choices to choose from&apos;),
       searchPlaceholderValue: this.t(&apos;Type to search&apos;),
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;),
@@ -821,7 +825,9 @@ export default class SelectComponent extends BaseComponent {
   }
 
   getView(data) {
-    return this.asString(data);
+    return (this.component.multiple &amp;&amp; Array.isArray(data))
+      ? data.map(this.asString.bind(this)).join(&apos;, &apos;)
+      : this.asString(data);
   }
 
   getValue() {
@@ -965,11 +971,19 @@ export default class SelectComponent extends BaseComponent {
     value = value || this.getValue();
 
     if (this.component.dataSrc === &apos;values&apos;) {
-      value = _.find(this.component.data.values, [&apos;value&apos;, value]);
+      value = this.component.multiple
+        ? _.filter(this.component.data.values, item =&gt; value.indexOf(item.value) !== -1)
+        :_.find(this.component.data.values, [&apos;value&apos;, value]);
     }
 
     if (_.isString(value)) {
       return value;
+    }
+
+    if (Array.isArray(value)) {
+      const items = [];
+      value.forEach(item =&gt; items.push(this.itemTemplate(item)));
+      return items.length &gt; 0 ? items.join(&apos;&lt;br /&gt;&apos;) : &apos;-&apos;;
     }
 
     return _.isObject(value)

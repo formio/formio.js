@@ -42,11 +42,12 @@ export default class ContentComponent extends BaseComponent {
     if (this.options.builder) {
       const editorElement = this.ce('div');
       this.element.appendChild(editorElement);
-      this.addCKE(editorElement, null, (html) => {
+      this.editorReady = this.addCKE(editorElement, null, (html) => {
         this.component.html = html;
       }).then((editor) => {
         this.editor = editor;
         this.editor.data.set(this.component.html);
+        return editor;
       }).catch(err => console.warn(err));
     }
     else {

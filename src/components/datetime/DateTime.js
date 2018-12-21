@@ -110,7 +110,7 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   isEmpty(value) {
-    if (value.toString() === 'Invalid Date') {
+    if (value && (value.toString() === 'Invalid Date')) {
       return true;
     }
     return super.isEmpty(value);

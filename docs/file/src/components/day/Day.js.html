@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -300,8 +301,10 @@ export default class DayComponent extends BaseComponent {
 
   getInputValue(input, defaultValue) {
     if (_.isObject(input)) {
-      if (!_.isNaN(input.value)) {
-        return parseInt(input.value, 10);
+      const value = parseInt(input.value, 10);
+
+      if (!_.isNaN(value) &amp;&amp; _.isNumber(value)) {
+        return value;
       }
     }
 
@@ -413,8 +416,10 @@ export default class DayComponent extends BaseComponent {
 
     // Ensure the day limits match up with the months selected.
     this.monthInput.onchange = function() {
-      self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
-      if (self.dayInput.value &gt; self.dayInput.max) {
+      const maxDay = parseInt(new Date(self.yearInput.value, this.value, 0).getDate(), 0);
+      const day = self.getInputValue(self.dayInput, 0);
+      self.dayInput.max = maxDay;
+      if (day &gt; maxDay) {
         self.dayInput.value = self.dayInput.max;
       }
       self.updateValue();

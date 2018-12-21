@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.10.0
+### Fixed
+ - Signature field has invalid height attribute of "150" instead of "150px"
+ - Fixed some potential crashes within the EditGrid component.
+ - The form component in builder mode.
+ - The form component "form" selection configuration to work within the form manager application.
+ - The "authenticate" parameter to work with Select components, where it will pass Form.io authentication to the URL.
+ - Fixed view for select multiple
+ - A crash in the isEmpty method for DateTime component.
+ - Fix bug with editForm Data tab for container components
+ - Fix issue where if radio value is true it won't have radio-selected class set on it.
+
+### Added
+ - Tree Component for building nested tree-based controls.
+ - FOR-1948: editorReady promise for Content component
+ - Interpolate to the Button urls so that {{ }} can be used.
+ - FOR-1912: Added tests to the Select component to demonstrate no-reproducibility of this issue.
+ - Ability to flatten wizard and tab components for better printing capability.
+ - Currency Component: Support other currencies - Add suffix / prefix options
+ - Allow translating other Choice.js labels.
+
 ## 3.9.4
 ### Fixed
  - Problem where a component can get in an infinite loop if its parent is not visible but it is visible and cleanOnHide is set.
@@ -50,7 +71,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
  - Added File types
- 
+
 ### Fixed
  - FOR-1850: Wrong key for Encrypted setting in builder
  - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
@@ -73,11 +94,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
- 
+
 ### Added
  - FOR-1806: languageChanged event
  - FOR-1844: Support for private file downloads with the URL file configuration. Also added a File Upload server @ https://github.com/formio/formio-upload that supports this feature.
- 
+
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
  - FOR-1657: Select component Values template.
@@ -115,7 +136,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.10
 ### Fixed
- - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1491: Fix bug with Day when form rendered as HTML
  - FOR-1812: Fixed issues where timezones were not converting properly.
 
 ## 3.6.9
@@ -141,7 +162,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1733: Fixed issue with preview destroy on change.
  - FOR-1728: Problems with running the renderer within iOS applications.
- 
+
 ## 3.6.5
 ### Fixed
  - Broken build.

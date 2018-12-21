@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -188,7 +189,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.spec.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import Harness from &apos;../../../test/harness&apos;;
 import SelectComponent from &apos;./Select&apos;;
 
 import {
@@ -217,6 +219,34 @@ describe(&apos;Select Component&apos;, () =&gt; {
       const element = component.element.getElementsByClassName(&apos;choices__list choices__list--single&apos;)[0];
       Harness.testElementAttribute(element, &apos;tabindex&apos;, &apos;0&apos;);
       done();
+    });
+  });
+
+  describe(&apos;#setValue&apos;, () =&gt; {
+    it(&apos;should set component value&apos;, (done) =&gt; {
+      Harness.testCreate(SelectComponent, comp1).then((component) =&gt; {
+        assert.equal(component.dataValue, &apos;&apos;);
+        component.setValue(&apos;red&apos;);
+        assert.equal(component.dataValue, &apos;red&apos;);
+        done();
+      });
+    });
+
+    it(&apos;should reset input value when called with empty value&apos;, (done) =&gt; {
+      const comp = Object.assign({}, comp1);
+      delete comp.placeholder;
+
+      Harness.testCreate(SelectComponent, comp).then((component) =&gt; {
+        assert.equal(component.dataValue, &apos;&apos;);
+        assert.equal(component.inputs[0].value, &apos;&apos;);
+        component.setValue(&apos;red&apos;);
+        assert.equal(component.dataValue, &apos;red&apos;);
+        assert.equal(component.inputs[0].value, &apos;red&apos;);
+        component.setValue(&apos;&apos;);
+        assert.equal(component.dataValue, &apos;&apos;);
+        assert.equal(component.inputs[0].value, &apos;&apos;);
+        done();
+      });
     });
   });
 });

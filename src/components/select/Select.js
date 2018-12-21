@@ -425,7 +425,8 @@ export default class SelectComponent extends BaseComponent {
             body = null;
           }
         }
-        this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
+        const query = this.component.authenticate ? {} : { noToken: true };
+        this.loadItems(url, searchInput, this.requestHeaders, query, method, body);
         break;
       }
     }
@@ -499,6 +500,8 @@ export default class SelectComponent extends BaseComponent {
       addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
+      noResultsText: this.t('No results found'),
+      noChoicesText: this.t('No choices to choose from'),
       searchPlaceholderValue: this.t('Type to search'),
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
@@ -631,7 +634,9 @@ export default class SelectComponent extends BaseComponent {
   }
 
   getView(data) {
-    return this.asString(data);
+    return (this.component.multiple && Array.isArray(data))
+      ? data.map(this.asString.bind(this)).join(', ')
+      : this.asString(data);
   }
 
   getValue() {
@@ -775,11 +780,19 @@ export default class SelectComponent extends BaseComponent {
     value = value || this.getValue();
 
     if (this.component.dataSrc === 'values') {
-      value = _.find(this.component.data.values, ['value', value]);
+      value = this.component.multiple
+        ? _.filter(this.component.data.values, item => value.indexOf(item.value) !== -1)
+        :_.find(this.component.data.values, ['value', value]);
     }
 
     if (_.isString(value)) {
       return value;
+    }
+
+    if (Array.isArray(value)) {
+      const items = [];
+      value.forEach(item => items.push(this.itemTemplate(item)));
+      return items.length > 0 ? items.join('<br />') : '-';
     }
 
     return _.isObject(value)

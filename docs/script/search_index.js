@@ -522,6 +522,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/tree/tree.form.js~tree",
+    "function/index.html#static-function-Tree",
+    "<span>Tree</span> <span class=\"search-result-import-path\">formiojs/src/components/tree/Tree.form.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/components/unknown/unknown.form.js~unknown",
     "function/index.html#static-function-Unknown",
     "<span>Unknown</span> <span class=\"search-result-import-path\">formiojs/src/components/unknown/Unknown.form.js</span>",
@@ -2581,13 +2587,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3187,13 +3193,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3609,6 +3615,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#asstring",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-asString",
     "src/components/base/Base.js~BaseComponent#asString",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#attachactions",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-attachActions",
+    "src/components/base/Base.js~BaseComponent#attachActions",
     "method"
   ],
   [
@@ -4183,13 +4195,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -4266,9 +4278,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#renderelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-renderElement",
+    "src/components/base/Base.js~BaseComponent#renderElement",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#rendertemplate",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-renderTemplate",
     "src/components/base/Base.js~BaseComponent#renderTemplate",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#rendertemplatetoelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-renderTemplateToElement",
+    "src/components/base/Base.js~BaseComponent#renderTemplateToElement",
     "method"
   ],
   [
@@ -4513,13 +4537,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4837,13 +4861,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5316,6 +5340,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/content/content.js~contentcomponent#editorready",
+    "class/src/components/content/Content.js~ContentComponent.html#instance-member-editorReady",
+    "src/components/content/Content.js~ContentComponent#editorReady",
+    "member"
+  ],
+  [
     "src/components/content/content.js~contentcomponent#emptyvalue",
     "class/src/components/content/Content.js~ContentComponent.html#instance-get-emptyValue",
     "src/components/content/Content.js~ContentComponent#emptyValue",
@@ -5454,6 +5484,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/editform/currency.edit.data.js",
+    "file/src/components/currency/editForm/Currency.edit.data.js.html",
+    "src/components/currency/editForm/Currency.edit.data.js",
+    "file"
+  ],
+  [
+    "src/components/currency/editform/currency.edit.display.js",
+    "file/src/components/currency/editForm/Currency.edit.display.js.html",
+    "src/components/currency/editForm/Currency.edit.display.js",
+    "file"
+  ],
+  [
     "src/components/currency/fixtures/comp1.js",
     "file/src/components/currency/fixtures/comp1.js.html",
     "src/components/currency/fixtures/comp1.js",
@@ -5572,6 +5614,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-errorContainer",
     "src/components/datagrid/DataGrid.js~DataGridComponent#errorContainer",
     "member"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#getcomponent",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getComponent",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#getComponent",
+    "method"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#getvalue",
@@ -6288,6 +6336,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/day/fixtures/comp2.js",
+    "file/src/components/day/fixtures/comp2.js.html",
+    "src/components/day/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/day/fixtures/index.js",
     "file/src/components/day/fixtures/index.js.html",
     "src/components/day/fixtures/index.js",
@@ -6429,12 +6483,6 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#removerow",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-removeRow",
     "src/components/editgrid/EditGrid.js~EditGridComponent#removeRow",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#removerowcomponents",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-removeRowComponents",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#removeRowComponents",
     "method"
   ],
   [
@@ -9318,6 +9366,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tabs/tabs.js~tabscomponent#build",
+    "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-method-build",
+    "src/components/tabs/Tabs.js~TabsComponent#build",
+    "method"
+  ],
+  [
     "src/components/tabs/tabs.js~tabscomponent#components",
     "class/src/components/tabs/Tabs.js~TabsComponent.html#instance-member-components",
     "src/components/tabs/Tabs.js~TabsComponent#components",
@@ -9951,6 +10005,12 @@ window.esdocSearchIndex = [
     "src/components/time/fixtures/index.js",
     "file/src/components/time/fixtures/index.js.html",
     "src/components/time/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/tree/tree.form.js",
+    "file/src/components/tree/Tree.form.js.html",
+    "src/components/tree/Tree.form.js",
     "file"
   ],
   [

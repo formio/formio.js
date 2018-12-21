@@ -778,6 +778,7 @@ export default class BaseComponent extends Component {
 
   evalContext(additional) {
     return super.evalContext(Object.assign({
+      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
@@ -1413,21 +1414,26 @@ export default class BaseComponent extends Component {
    * @return {HTMLElement} - The created element.
    */
   renderTemplate(template, data, actions = []) {
-    // Create a container div.
-    const div = this.ce('div');
+    return this.renderTemplateToElement(this.ce('div'), template, data, actions);
+  }
 
-    // Interpolate the template and populate
-    div.innerHTML = this.interpolate(template, data);
+  renderElement(template, data, actions = []) {
+    return this.renderTemplate(template, data, actions).firstChild;
+  }
 
-    // Add actions to matching elements.
-    actions.forEach(action => {
-      const elements = div.getElementsByClassName(action.class);
-      Array.prototype.forEach.call(elements, element => {
+  renderTemplateToElement(element, template, data, actions = []) {
+    element.innerHTML = this.interpolate(template, data).trim();
+    this.attachActions(element, actions);
+    return element;
+  }
+
+  attachActions(element, actions) {
+    actions.forEach((action) => {
+      const elements = element.getElementsByClassName(action.class);
+      Array.prototype.forEach.call(elements, (element) => {
         element.addEventListener(action.event, action.action);
       });
     });
-
-    return div;
   }
 
   /**

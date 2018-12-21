@@ -115,6 +115,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
@@ -251,6 +252,13 @@ export default class FormComponent extends BaseComponent {
    * @param options
    */
   renderSubForm(form, options) {
+    if (this.options.builder) {
+      this.element.appendChild(this.ce(&apos;div&apos;, {
+        class: &apos;text-muted text-center p-2&apos;
+      }, this.text(form.title)));
+      return;
+    }
+
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) =&gt; {
       if ((component.type === &apos;button&apos;) &amp;&amp; (component.action === &apos;submit&apos;)) {
@@ -319,13 +327,17 @@ export default class FormComponent extends BaseComponent {
       !this.options.formio &amp;&amp;
       (this.component.form || this.component.path)
     ) {
-      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
+        this.formSrc = Formio.getBaseUrl();
         // Check to see if it is a MongoID.
         if (isMongoId(this.component.project)) {
           this.formSrc += &apos;/project&apos;;
         }
         this.formSrc += `/${this.component.project}`;
+        srcOptions.project = this.formSrc;
+      }
+      else {
+        this.formSrc = Formio.getProjectUrl();
         srcOptions.project = this.formSrc;
       }
       if (this.component.form) {
@@ -354,7 +366,8 @@ export default class FormComponent extends BaseComponent {
       this.renderSubForm(this.component, srcOptions);
     }
     else {
-      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      const query = { params: { live: 1 } };
+      (new Formio(this.formSrc)).loadForm(query)
         .then((formObj) =&gt; this.renderSubForm(formObj, srcOptions))
         .catch((err) =&gt; this.subFormReadyReject(err));
     }

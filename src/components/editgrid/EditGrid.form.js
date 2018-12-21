@@ -9,6 +9,13 @@ export default function(...extend) {
       key: 'templates',
       weight: 5,
       components: EditGridEditTemplates
+    },
+    {
+      key: 'data',
+      components: [{
+        key: 'defaultValue',
+        ignore: true
+      }]
     }
   ], ...extend);
 }
