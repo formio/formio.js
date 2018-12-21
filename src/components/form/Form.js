@@ -105,6 +105,10 @@ export default class FormComponent extends Component {
     return { data: {} };
   }
 
+  get ready() {
+    return this.subFormReady;
+  }
+
   getSubOptions(options = {}) {
     if (this.options && this.options.base) {
       options.base = this.options.base;
@@ -209,7 +213,7 @@ export default class FormComponent extends Component {
     }
 
     // Determine if we already have a loaded form object.
-    if (this.component && this.component.components && Array.isArray(this.component.components)) {
+    if (this.component && this.component.components && Array.isArray(this.component.components) && this.component.components.length) {
       this.filterSubForm();
       this.subFormReadyResolve(this.subForm);
       return this.subFormReady;

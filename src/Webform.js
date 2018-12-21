@@ -498,7 +498,9 @@ export default class Webform extends NestedComponent {
    */
   get ready() {
     return this.formReady.then(() => {
-      return this.loadingSubmission ? this.submissionReady : true;
+      return super.ready.then(() => {
+        return this.loadingSubmission ? this.submissionReady : true;
+      });
     });
   }
 

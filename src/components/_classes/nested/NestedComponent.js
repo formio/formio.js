@@ -73,6 +73,10 @@ export default class NestedComponent extends Component {
     return super.parentVisible;
   }
 
+  get ready() {
+    return Promise.all(this.getComponents().map(component => component.ready));
+  }
+
   getComponents() {
     return this.components || [];
   }

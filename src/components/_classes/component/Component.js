@@ -351,7 +351,7 @@ export default class Component extends Element {
   }
   /* eslint-enable max-statements */
 
-  // For legacy.
+  // Allow componets to notify when ready.
   get ready() {
     return Promise.resolve(this);
   }
@@ -506,14 +506,20 @@ export default class Component extends Element {
     return this.options.templates ? this.options.templates.transform : (type, value) => value;
   }
 
-  getTemplate(names, mode) {
-    // Allow just passing a string.
-    if (!Array.isArray(names)) {
-      names = [names];
+  getTemplate(names, modes) {
+    modes = Array.isArray(modes) ? modes : [modes];
+    names = Array.isArray(names) ? names : [names];
+    if (!modes.includes('form')) {
+      modes.push('form');
     }
+
     for (const name of names) {
       if (this.options.templates[name]) {
-        return this.options.templates[name][mode];
+        for (const mode of modes) {
+          if (this.options.templates[name][mode]) {
+            return this.options.templates[name][mode];
+          }
+        }
       }
     }
     // Default back to bootstrap if not defined.
@@ -521,7 +527,12 @@ export default class Component extends Element {
     if (!templates['bootstrap'][name]) {
       return `Unknown template: ${name}`;
     }
-    return templates['bootstrap'][name][mode];
+    for (const mode of modes) {
+      if (templates['bootstrap'][name][mode]) {
+        return templates['bootstrap'][name][mode];
+      }
+      return templates['bootstrap'][name]['form'];
+    }
   }
 
   renderTemplate(name, data = {}, modeOption) {
@@ -536,6 +547,7 @@ export default class Component extends Element {
     data.transform = this.transform;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
+    data.value = this.value;
 
     // Allow more specific template names
     const names = [
@@ -723,7 +735,8 @@ export default class Component extends Element {
 
     this.loadRefs(element, {
       messageContainer: 'single',
-      tooltip: 'multiple'
+      tooltip: 'multiple',
+      value: 'multiple'
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
@@ -1552,6 +1565,9 @@ export default class Component extends Element {
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
+      }
+      if (this.refs.value.hasOwnProperty(i)) {
+        this.refs.value[i].innerHTML = isArray ? value[i] : value;
       }
     }
     return this.updateValue(flags);

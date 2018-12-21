@@ -22,4 +22,5 @@ export default {
 </div>
 {% } %}
 `,
+  html: '<div ref="value">{{value}}</div>'
 };

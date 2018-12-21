@@ -96,6 +96,7 @@ export default class Input extends Multivalue {
     info.attr.value = value;
     return this.renderTemplate('input', {
       input: info,
+      value,
       index
     });
   }
