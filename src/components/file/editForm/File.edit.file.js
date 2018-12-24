@@ -34,6 +34,26 @@ export default [
     }
   },
   {
+    type: 'textarea',
+    key: 'options',
+    label: 'Custom request options',
+    tooltip: 'Pass your custom xhr options(optional)',
+    rows: 5,
+    editor: 'ace',
+    input: true,
+    weight: 15,
+    placeholder: `{
+      "withCredentials": true
+    }`,
+    conditional: {
+      json: {
+        '===': [{
+          var: 'data.storage'
+        }, 'url']
+      }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'dir',

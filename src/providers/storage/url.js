@@ -1,7 +1,7 @@
 import Promise from 'native-promise-only';
 
 const url = (formio) => {
-  const xhrRequest = (url, name, query, data, onprogress) => {
+  const xhrRequest = (url, name, query, data, options, onprogress) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === 'string');
@@ -61,6 +61,14 @@ const url = (formio) => {
       if (token) {
         xhr.setRequestHeader('x-jwt-token', token);
       }
+
+      //Overrides previous request props
+      if (options) {
+        const parsedOptions = JSON.parse(options);
+        for (const prop in parsedOptions) {
+          xhr[prop] = parsedOptions[prop];
+        }
+      }
       xhr.send(json ? data : fd);
     });
   };
@@ -68,7 +76,7 @@ const url = (formio) => {
   return {
     title: 'Url',
     name: 'url',
-    uploadFile(file, name, dir, progressCallback, url) {
+    uploadFile(file, name, dir, progressCallback, url, options) {
       const uploadRequest = function(form) {
         return xhrRequest(url, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
@@ -78,7 +86,7 @@ const url = (formio) => {
           file,
           name,
           dir
-        }, progressCallback).then(response => {
+        }, options, progressCallback).then(response => {
           // Store the project and form url along with the metadata.
           response.data = response.data || {};
           response.data.baseUrl = formio.projectUrl;
