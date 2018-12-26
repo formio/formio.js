@@ -158,15 +158,21 @@ export default class NumberComponent extends BaseComponent {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
   }
 
-  build(state) {
-    super.build(state);
-    this.inputs.forEach((input, index) => {
-      this.addEventListener(input, 'blur', (event) => {
-        if (this.component.requireDecimal) {
-          this.setValueAt(index, event.target.value);
+  /** @override **/
+  createInput(...args) {
+    const input = super.createInput(...args);
+
+    if (this.component.requireDecimal) {
+      this.addEventListener(input, 'blur', () => {
+        const index = this.inputs.indexOf(input);
+
+        if (index !== -1) {
+          this.setValueAt(index, this.getValueAt(index));
         }
       });
-    });
+    }
+
+    return input;
   }
 
   getView(value) {
