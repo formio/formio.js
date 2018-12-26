@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.10.1
+### Fixed
+ - FOR-1964: Fix bug with delimiter setting in Number
+ - Problems where the valueProperty would not show in the Select component settings.
+ 
+### Changed
+ - Switch to Karma mocha reporter.
+ - Upgraded i18next@13.0.1, @babel/cli@7.2.3, @babel/preset-env@7.2.3, webpack@4.28.2, @babel/polyfill@7.2.5, bootstrap@4.2.1, eslint@5.11.0
+
 ## 3.10.0
 ### Fixed
  - Signature field has invalid height attribute of "150" instead of "150px"

@@ -1897,13 +1897,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2275,13 +2275,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2509,13 +2509,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -2587,13 +2587,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3829,13 +3829,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -3883,13 +3883,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4629,6 +4629,12 @@ window.esdocSearchIndex = [
     "src/components/base/editform/utils.js",
     "file/src/components/base/editForm/utils.js.html",
     "src/components/base/editForm/utils.js",
+    "file"
+  ],
+  [
+    "src/components/base/editform/utils.spec.js",
+    "file/src/components/base/editForm/utils.spec.js.html",
+    "src/components/base/editForm/utils.spec.js",
     "file"
   ],
   [
@@ -7759,13 +7765,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -7902,12 +7908,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/number/number.js~numbercomponent#build",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-build",
-    "src/components/number/Number.js~NumberComponent#build",
-    "method"
-  ],
-  [
     "src/components/number/number.js~numbercomponent#clearinput",
     "class/src/components/number/Number.js~NumberComponent.html#instance-method-clearInput",
     "src/components/number/Number.js~NumberComponent#clearInput",
@@ -7917,6 +7917,12 @@ window.esdocSearchIndex = [
     "src/components/number/number.js~numbercomponent#constructor",
     "class/src/components/number/Number.js~NumberComponent.html#instance-constructor-constructor",
     "src/components/number/Number.js~NumberComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#createinput",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-createInput",
+    "src/components/number/Number.js~NumberComponent#createInput",
     "method"
   ],
   [
@@ -8049,6 +8055,18 @@ window.esdocSearchIndex = [
     "src/components/number/fixtures/comp2.js",
     "file/src/components/number/fixtures/comp2.js.html",
     "src/components/number/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/number/fixtures/comp3.js",
+    "file/src/components/number/fixtures/comp3.js.html",
+    "src/components/number/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/number/fixtures/comp4.js",
+    "file/src/components/number/fixtures/comp4.js.html",
+    "src/components/number/fixtures/comp4.js",
     "file"
   ],
   [

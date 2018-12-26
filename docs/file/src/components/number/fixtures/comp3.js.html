@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/number/Number.spec.js | formiojs</title>
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">src/components/number/fixtures/comp3.js | formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -188,274 +188,20 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.spec.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
-import _ from &apos;lodash&apos;;
-import _merge from &apos;lodash/merge&apos;;
-import Harness from &apos;../../../test/harness&apos;;
-import NumberComponent from &apos;./Number&apos;;
-
-import {
-  comp1,
-  comp2,
-  comp3,
-  comp4
-} from &apos;./fixtures&apos;;
-
-describe(&apos;Number Component&apos;, () =&gt; {
-  it(&apos;Should build an number component&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp1).then((component) =&gt; {
-      Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
-      done();
-    });
-  });
-
-  it(&apos;Should limit decimals using step&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, _merge({}, comp2, {
-      validate: {
-        step: &apos;0.001&apos;
-      }
-    })).then((component) =&gt; {
-      Harness.testSetInput(component, 123456789.123456789, 123456789.123, &apos;123,456,789.123&apos;);
-      Harness.testSetInput(component, -123456789.123456789, -123456789.123, &apos;-123,456,789.123&apos;);
-      Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.123, &apos;123,456,789.123&apos;);
-      Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.123, &apos;-123,456,789.123&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should format numbers for USA locale&apos;, (done) =&gt; {
-    /* eslint-disable max-statements */
-    Harness.testCreate(NumberComponent, comp2, { language: &apos;en-US&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, undefined, null, &apos;&apos;);
-      Harness.testSetInput(component, &apos;&apos;, null, &apos;&apos;);
-      Harness.testSetInput(component, {}, null, &apos;&apos;);
-      Harness.testSetInput(component, [], null, &apos;&apos;);
-      Harness.testSetInput(component, [&apos;&apos;], null, &apos;&apos;);
-      Harness.testSetInput(component, [&apos;1&apos;], 1, &apos;1&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, 1000.00, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, -1000.00, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1,000.01&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1,000.01&apos;);
-      Harness.testSetInput(component, 1000.001, 1000.001, &apos;1,000.001&apos;);
-      Harness.testSetInput(component, -1000.001, -1000.001, &apos;-1,000.001&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1,234,567,890.12&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1,234,567,890.12&apos;);
-      Harness.testSetInput(component, 12.123456789, 12.123456789, &apos;12.123456789&apos;);
-      Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12.123456789&apos;);
-      // These tests run into the maximum number of significant digits for floats.
-      Harness.testSetInput(component, 123456789.123456789, 123456789.123456789, &apos;123,456,789.12345679&apos;);
-      Harness.testSetInput(component, -123456789.123456789, -123456789.123456789, &apos;-123,456,789.12345679&apos;);
-      Harness.testSetInput(component, &apos;0&apos;, 0, &apos;0&apos;);
-      Harness.testSetInput(component, &apos;1&apos;, 1, &apos;1&apos;);
-      Harness.testSetInput(component, &apos;-1&apos;, -1, &apos;-1&apos;);
-      Harness.testSetInput(component, &apos;1000&apos;, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, &apos;-1000&apos;, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, &apos;1000.01&apos;, 1000.01, &apos;1,000.01&apos;);
-      Harness.testSetInput(component, &apos;-1000.01&apos;, -1000.01, &apos;-1,000.01&apos;);
-      Harness.testSetInput(component, &apos;1000.00&apos;, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, &apos;-1000.00&apos;, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, &apos;1000.001&apos;, 1000.001, &apos;1,000.001&apos;);
-      Harness.testSetInput(component, &apos;-1000.001&apos;, -1000.001, &apos;-1,000.001&apos;);
-      Harness.testSetInput(component, &apos;1234567890.12&apos;, 1234567890.12, &apos;1,234,567,890.12&apos;);
-      Harness.testSetInput(component, &apos;-1234567890.12&apos;, -1234567890.12, &apos;-1,234,567,890.12&apos;);
-      Harness.testSetInput(component, &apos;12.123456789&apos;, 12.123456789, &apos;12.123456789&apos;);
-      Harness.testSetInput(component, &apos;-12.123456789&apos;, -12.123456789, &apos;-12.123456789&apos;);
-      Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.123456789, &apos;123,456,789.12345679&apos;);
-      Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.123456789, &apos;-123,456,789.12345679&apos;);
-      done();
-    });
-    /* eslint-enable max-statements */
-  });
-
-  it(&apos;Should format numbers for British locale&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp2, { language: &apos;en-GB&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, 1000.00, 1000, &apos;1,000&apos;);
-      Harness.testSetInput(component, -1000.00, -1000, &apos;-1,000&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1,000.01&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1,000.01&apos;);
-      Harness.testSetInput(component, 1000.001, 1000.001, &apos;1,000.001&apos;);
-      Harness.testSetInput(component, -1000.001, -1000.001, &apos;-1,000.001&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1,234,567,890.12&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1,234,567,890.12&apos;);
-      Harness.testSetInput(component, 12.123456789, 12.123456789, &apos;12.123456789&apos;);
-      Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12.123456789&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should format numbers for French locale&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp2, { language: &apos;fr&apos; }).then((component) =&gt; {
-      // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1&#xA0;000&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1&#xA0;000&apos;);
-      Harness.testSetInput(component, 1000.00, 1000, &apos;1&#xA0;000&apos;);
-      Harness.testSetInput(component, -1000.00, -1000, &apos;-1&#xA0;000&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1&#xA0;000,01&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1&#xA0;000,01&apos;);
-      Harness.testSetInput(component, 1000.001, 1000.001, &apos;1&#xA0;000,001&apos;);
-      Harness.testSetInput(component, -1000.001, -1000.001, &apos;-1&#xA0;000,001&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1&#xA0;234&#xA0;567&#xA0;890,12&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1&#xA0;234&#xA0;567&#xA0;890,12&apos;);
-      Harness.testSetInput(component, 12.123456789, 12.123456789, &apos;12,123456789&apos;);
-      Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12,123456789&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should format numbers for German locale&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp2, { language: &apos;de&apos; }).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1.000&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1.000&apos;);
-      Harness.testSetInput(component, 1000.00, 1000, &apos;1.000&apos;);
-      Harness.testSetInput(component, -1000.00, -1000, &apos;-1.000&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1.000,01&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1.000,01&apos;);
-      Harness.testSetInput(component, 1000.001, 1000.001, &apos;1.000,001&apos;);
-      Harness.testSetInput(component, -1000.001, -1000.001, &apos;-1.000,001&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1.234.567.890,12&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1.234.567.890,12&apos;);
-      Harness.testSetInput(component, 12.123456789, 12.123456789, &apos;12,123456789&apos;);
-      Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12,123456789&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should display default integer value&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp3).then(number =&gt; {
-      assert.deepEqual(_.get(number, [&apos;inputs&apos;, &apos;0&apos;, &apos;value&apos;]), &apos;42&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should display default decimal value&apos;, (done) =&gt; {
-    const TEST_VAL = 4.2;
-    const comp = _.cloneDeep(comp3);
-
-    comp.defaultValue = TEST_VAL;
-    comp.decimalLimit = 2;
-    comp.requireDecimal = true;
-
-    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
-      assert.deepEqual(_.get(number, [&apos;inputs&apos;, &apos;0&apos;, &apos;value&apos;]), &apos;4.20&apos;);
-      done();
-    });
-  });
-
-  it(&apos;Should add trailing zeros on blur, if decimal required&apos;, (done) =&gt; {
-    const comp = _.cloneDeep(comp3);
-
-    comp.decimalLimit = 2;
-    comp.requireDecimal = true;
-
-    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
-      const testset = [
-        // [inv, outv, display]
-        [&apos;42&apos;,        42,       &apos;42.00&apos;],
-        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
-        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
-        [&apos;4200&apos;,      4200,     &apos;4200.00&apos;],
-        [&apos;4200.4&apos;,    4200.4,   &apos;4200.40&apos;],
-        [&apos;4200.42&apos;,   4200.42,  &apos;4200.42&apos;],
-        [&apos;4200.&apos;,     4200,     &apos;4200.00&apos;],
-        [&apos;99999999.&apos;, 99999999, &apos;99999999.00&apos;]
-      ];
-
-      testset.forEach((set, index) =&gt; {
-        try {
-          Harness.testNumberBlur(number, ...set);
-        }
-        catch (err) {
-          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
-        }
-      });
-
-      done();
-    }, done);
-  });
-
-  it(&apos;Should add trailing zeros on blur, if decimal and delimiter is required&apos;, (done) =&gt; {
-    const comp = _.cloneDeep(comp3);
-
-    comp.decimalLimit = 2;
-    comp.requireDecimal = true;
-    comp.delimiter = true;
-
-    /* eslint-disable max-statements */
-    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
-      const testset = [
-        // [inv, outv, display]
-        [&apos;42&apos;,        42,       &apos;42.00&apos;],
-        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
-        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
-        [&apos;4200&apos;,      4200,     &apos;4,200.00&apos;],
-        [&apos;4200.4&apos;,    4200.4,   &apos;4,200.40&apos;],
-        [&apos;4200.42&apos;,   4200.42,  &apos;4,200.42&apos;],
-        [&apos;4200.&apos;,     4200,     &apos;4,200.00&apos;],
-        [&apos;99999999.&apos;, 99999999, &apos;99,999,999.00&apos;]
-      ];
-
-      testset.forEach((set, index) =&gt; {
-        try {
-          Harness.testNumberBlur(number, ...set);
-        }
-        catch (err) {
-          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
-        }
-      });
-
-      done();
-    }, done);
-  });
-
-  it(&apos;Should add trailing zeros on blur with `multiple` flag&apos;, (done) =&gt; {
-    Harness.testCreate(NumberComponent, comp4).then(number =&gt; {
-      const testset = [
-        [&apos;42&apos;,        42,       &apos;42.00&apos;],
-        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
-        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
-        [&apos;4200&apos;,      4200,     &apos;4,200.00&apos;],
-        [&apos;4200.4&apos;,    4200.4,   &apos;4,200.40&apos;],
-        [&apos;4200.42&apos;,   4200.42,  &apos;4,200.42&apos;],
-        [&apos;4200.&apos;,     4200,     &apos;4,200.00&apos;],
-        [&apos;99999999.&apos;, 99999999, &apos;99,999,999.00&apos;]
-      ];
-
-      testset.forEach((set, index) =&gt; {
-        try {
-          assert.strictEqual(number.inputs.length, index + 1);
-          Harness.testNumberBlur(number, ...set, index);
-          number.addValue();
-        }
-        catch (err) {
-          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
-        }
-      });
-
-      done();
-    }, done);
-  });
-});
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/number/fixtures/comp3.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default {
+  label: &apos;Number&apos;,
+  mask: false,
+  tableView: true,
+  alwaysEnabled: false,
+  type: &apos;number&apos;,
+  input: true,
+  key: &apos;number&apos;,
+  delimiter: false,
+  requireDecimal: false,
+  encrypted: false,
+  defaultValue: 42
+};
 </code></pre>
 
 </div>
