@@ -46,7 +46,7 @@ module.exports = function(config) {
       'src/**/*.spec.js': ['webpack']
     },
     browserNoActivityTimeout: 30000,
-    reporters: ['progress'],
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
