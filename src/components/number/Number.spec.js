@@ -1,11 +1,14 @@
+import assert from 'power-assert';
+import _ from 'lodash';
 import _merge from 'lodash/merge';
-
 import Harness from '../../../test/harness';
 import NumberComponent from './Number';
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3,
+  comp4
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -139,5 +142,120 @@ describe('Number Component', () => {
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12,123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12,123456789');
     });
+  });
+
+  it('Should display default integer value', (done) => {
+    Harness.testCreate(NumberComponent, comp3).then(number => {
+      assert.deepEqual(_.get(number, ['inputs', '0', 'value']), '42');
+      done();
+    });
+  });
+
+  it('Should display default decimal value', (done) => {
+    const TEST_VAL = 4.2;
+    const comp = _.cloneDeep(comp3);
+
+    comp.defaultValue = TEST_VAL;
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+
+    Harness.testCreate(NumberComponent, comp).then(number => {
+      assert.deepEqual(_.get(number, ['inputs', '0', 'value']), '4.20');
+      done();
+    });
+  });
+
+  it('Should add trailing zeros on blur, if decimal required', (done) => {
+    const comp = _.cloneDeep(comp3);
+
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+
+    Harness.testCreate(NumberComponent, comp).then(number => {
+      const testset = [
+        // [inv, outv, display]
+        ['42',        42,       '42.00'],
+        ['42.1',      42.1,     '42.10'],
+        ['42.01',     42.01,    '42.01'],
+        ['4200',      4200,     '4200.00'],
+        ['4200.4',    4200.4,   '4200.40'],
+        ['4200.42',   4200.42,  '4200.42'],
+        ['4200.',     4200,     '4200.00'],
+        ['99999999.', 99999999, '99999999.00']
+      ];
+
+      testset.forEach((set, index) => {
+        try {
+          Harness.testNumberBlur(number, ...set);
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
+  });
+
+  it('Should add trailing zeros on blur, if decimal and delimiter is required', (done) => {
+    const comp = _.cloneDeep(comp3);
+
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+    comp.delimiter = true;
+
+    /* eslint-disable max-statements */
+    Harness.testCreate(NumberComponent, comp).then(number => {
+      const testset = [
+        // [inv, outv, display]
+        ['42',        42,       '42.00'],
+        ['42.1',      42.1,     '42.10'],
+        ['42.01',     42.01,    '42.01'],
+        ['4200',      4200,     '4,200.00'],
+        ['4200.4',    4200.4,   '4,200.40'],
+        ['4200.42',   4200.42,  '4,200.42'],
+        ['4200.',     4200,     '4,200.00'],
+        ['99999999.', 99999999, '99,999,999.00']
+      ];
+
+      testset.forEach((set, index) => {
+        try {
+          Harness.testNumberBlur(number, ...set);
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
+  });
+
+  it('Should add trailing zeros on blur with `multiple` flag', (done) => {
+    Harness.testCreate(NumberComponent, comp4).then(number => {
+      const testset = [
+        ['42',        42,       '42.00'],
+        ['42.1',      42.1,     '42.10'],
+        ['42.01',     42.01,    '42.01'],
+        ['4200',      4200,     '4,200.00'],
+        ['4200.4',    4200.4,   '4,200.40'],
+        ['4200.42',   4200.42,  '4,200.42'],
+        ['4200.',     4200,     '4,200.00'],
+        ['99999999.', 99999999, '99,999,999.00']
+      ];
+
+      testset.forEach((set, index) => {
+        try {
+          assert.strictEqual(number.inputs.length, index + 1);
+          Harness.testNumberBlur(number, ...set, index);
+          number.addValue();
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
   });
 });

@@ -293,6 +293,13 @@ const Harness = {
       form.on('nextPage', onNextPage);
     }
     return form.nextPage();
+  },
+  testNumberBlur(cmp, inv, outv, display, index = 0) {
+    const input = _.get(cmp, ['inputs', index], {});
+    input.value = inv;
+    input.dispatchEvent(new Event('blur'));
+    assert.strictEqual(cmp.getValueAt(index), outv);
+    assert.strictEqual(input.value, display);
   }
 };
 export default Harness;
