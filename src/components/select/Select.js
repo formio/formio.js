@@ -467,6 +467,7 @@ export default class SelectComponent extends Field {
     return element;
   }
 
+  /* eslint-disable max-statements */
   attach(element) {
     super.attach(element);
     this.loadRefs(element, { selectContainer: 'single' });

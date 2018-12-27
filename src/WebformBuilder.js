@@ -548,7 +548,7 @@ export default class WebformBuilder extends Component {
     const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
 
     // Get the editform for this component.
-    this.editForm.form = componentClass.editForm(overrides);
+    this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
