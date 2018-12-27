@@ -25,7 +25,7 @@ export default class SelectComponent extends BaseComponent {
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
-      customOptions: '{}'
+      customOptions: {}
     }, ...extend);
   }
 
