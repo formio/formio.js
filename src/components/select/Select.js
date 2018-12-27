@@ -24,7 +24,8 @@ export default class SelectComponent extends Field {
       minSearch: 0,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
-      selectFields: ''
+      selectFields: '',
+	  customOptions: {}
     }, ...extend);
   }
 
@@ -492,6 +493,7 @@ export default class SelectComponent extends Field {
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
+		...this.component.customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {

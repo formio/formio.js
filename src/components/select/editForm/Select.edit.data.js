@@ -343,5 +343,16 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 22,
+    input: true,
+    key: 'customOptions',
+    label: 'Custom default options',
+    tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
+	defaultValue: {}
   }
 ];
