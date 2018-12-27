@@ -74,6 +74,9 @@ export default class WebformBuilder extends Component {
       for (const key in info.components) {
         const comp = info.components[key];
         if (comp) {
+          if (comp.schema) {
+            this.schemas[key] = comp.schema;
+          }
           info.components[key] = comp === true ? componentInfo[key] : comp;
           info.components[key].key = key;
         }

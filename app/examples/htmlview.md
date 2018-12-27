@@ -4,7 +4,7 @@ layout: vtabs
 section: examples
 weight: 12
 ---
-Not only can you view a submission as a disabled filled out webform, but you can also provide the **viewAsHtml** option, to view
+Not only can you view a submission as a disabled filled out webform, but you can also provide the **renderMode** option, to view
 the submission as a HTML view.
 
 ```html
