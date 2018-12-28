@@ -10,6 +10,7 @@ import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
 import _get from 'lodash/get';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -697,7 +698,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return _cloneDeep(Formio.cache[cacheKey]);
     }
 
     // Set up and fetch request
@@ -853,7 +854,7 @@ export default class Formio {
 
     // Cache the response.
     if (method === 'GET') {
-      Formio.cache[cacheKey] = result;
+      Formio.cache[cacheKey] = _cloneDeep(result);
     }
 
     return result;
