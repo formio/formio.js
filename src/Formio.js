@@ -820,6 +820,11 @@ export default class Formio {
           return result;
         }
 
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = _cloneDeep(result);
+        }
+
         let resultCopy = {};
 
         // Shallow copy result so modifications don't end up in cache
@@ -851,11 +856,6 @@ export default class Formio {
 
         return Promise.reject(err);
       });
-
-    // Cache the response.
-    if (method === 'GET') {
-      Formio.cache[cacheKey] = _cloneDeep(result);
-    }
 
     return result;
   }
