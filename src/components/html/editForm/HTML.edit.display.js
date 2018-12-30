@@ -60,18 +60,11 @@ export default [
     input: true
   },
   {
-  type: 'select',
-  input: true,
-  weight: 0,
-  tooltip: 'Allow Translation',
-  key: 'translateHtml',
-  label: 'Allow Translation',
-  data: {
-    values: [
-      { label: 'False', value: 'false' },
-      { label: 'True', value: 'true' }
-     
-    ]
-  }
+   type: 'checkbox',
+   input: true,
+   weight: 0,
+   tooltip: 'Allow Translation',
+   key: 'translateHtml',
+   label: 'Allow Translation'
 },
 ];
