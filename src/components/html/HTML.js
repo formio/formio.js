@@ -11,7 +11,7 @@ export default class HTMLComponent extends BaseComponent {
       content: '',
       input: false,
       persistent: false,
-	  translateHtml: 'false',
+	    translateHtml: false,
     }, ...extend);
   }
 
@@ -33,7 +33,7 @@ export default class HTMLComponent extends BaseComponent {
   setHTML() {
 		this.htmlElement.innerHTML = this.interpolate(this.component.content);
 
-		if (this.component.translateHtml == 'true') {
+		if (this.component.translateHtml) {
 			const walker = document.createTreeWalker(this.htmlElement, NodeFilter.SHOW_TEXT, null, false);
 			let node = walker.nextNode();
 			while (node) {
