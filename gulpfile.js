@@ -28,7 +28,7 @@ gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').p
 
 // Generate styles
 const compileStyles = (styles, file) => {
-  const sassFilter = filter(['*.scss'], {restore: true});
+  const sassFilter = filter('**/*.scss', { restore: true });
   return gulp.src(styles)
     .pipe(sassFilter)
     .pipe(sass().on('error', sass.logError))
@@ -38,7 +38,7 @@ const compileStyles = (styles, file) => {
     .pipe(replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
     .pipe(rename(`${file}.min.css`))
-    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('dist'));
 };
 gulp.task('styles-form', () => compileStyles([
