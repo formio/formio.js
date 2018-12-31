@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.10.2
+### Fixed
+ - Issues with file uploads where ? can exist in urls twice.
+ - Cut reference for values stored in cache
+ - Fix bug with compilation skipping for scss files
+ - WebformBuilder default editform options mutation.
+ - FOR-1962: Removing CSS white color by default
+
+### Added
+ - Added option in Data tab to specify custom options that will be used in the Choices JS library
+
 ## 3.10.1
 ### Fixed
  - FOR-1964: Fix bug with delimiter setting in Number

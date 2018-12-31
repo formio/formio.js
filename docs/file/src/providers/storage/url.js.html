@@ -192,7 +192,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
 
 const url = (formio) =&gt; {
-  const xhrRequest = (url, name, query, data, onprogress) =&gt; {
+  const xhrRequest = (url, name, query, data, options, onprogress) =&gt; {
     return new Promise((resolve, reject) =&gt; {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === &apos;string&apos;);
@@ -236,7 +236,7 @@ const url = (formio) =&gt; {
       xhr.onerror = () =&gt; reject(xhr);
       xhr.onabort = () =&gt; reject(xhr);
 
-      let requestUrl = `${url}?`;
+      let requestUrl = url + (url.indexOf(&apos;?&apos;) &gt; -1 ? &apos;&amp;&apos; : &apos;?&apos;);
       for (const key in query) {
         requestUrl += `${key}=${query[key]}&amp;`;
       }
@@ -252,6 +252,14 @@ const url = (formio) =&gt; {
       if (token) {
         xhr.setRequestHeader(&apos;x-jwt-token&apos;, token);
       }
+
+      //Overrides previous request props
+      if (options) {
+        const parsedOptions = JSON.parse(options);
+        for (const prop in parsedOptions) {
+          xhr[prop] = parsedOptions[prop];
+        }
+      }
       xhr.send(json ? data : fd);
     });
   };
@@ -259,7 +267,7 @@ const url = (formio) =&gt; {
   return {
     title: &apos;Url&apos;,
     name: &apos;url&apos;,
-    uploadFile(file, name, dir, progressCallback, url) {
+    uploadFile(file, name, dir, progressCallback, url, options) {
       const uploadRequest = function(form) {
         return xhrRequest(url, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
@@ -269,7 +277,7 @@ const url = (formio) =&gt; {
           file,
           name,
           dir
-        }, progressCallback).then(response =&gt; {
+        }, options, progressCallback).then(response =&gt; {
           // Store the project and form url along with the metadata.
           response.data = response.data || {};
           response.data.baseUrl = formio.projectUrl;

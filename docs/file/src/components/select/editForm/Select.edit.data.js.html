@@ -535,6 +535,17 @@ export default [
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] }
     }
+  },
+  {
+    type: &apos;textarea&apos;,
+    as: &apos;json&apos;,
+    editor: &apos;ace&apos;,
+    weight: 22,
+    input: true,
+    key: &apos;customOptions&apos;,
+    label: &apos;Custom default options&apos;,
+    tooltip: &apos;A raw JSON object to use as default options for the Select component (Choices JS).&apos;,
+	defaultValue: {}
   }
 ];
 </code></pre>
