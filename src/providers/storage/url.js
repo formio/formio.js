@@ -45,7 +45,7 @@ const url = (formio) => {
       xhr.onerror = () => reject(xhr);
       xhr.onabort = () => reject(xhr);
 
-      let requestUrl = `${url}?`;
+      let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
       for (const key in query) {
         requestUrl += `${key}=${query[key]}&`;
       }
