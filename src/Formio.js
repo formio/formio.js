@@ -472,7 +472,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -487,7 +487,7 @@ export default class Formio {
             if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
               }
               else {
                 throw ('Storage provider not found');
