@@ -263,6 +263,15 @@ export default class WebformBuilder extends Component {
     return new Webform(options);
   }
 
+  /**
+   * Called when everything is ready.
+   *
+   * @returns {Promise} - Wait for webform to be ready.
+   */
+  get ready() {
+    return this.webform.ready;
+  }
+
   get defaultGroups() {
     return {
       basic: {
