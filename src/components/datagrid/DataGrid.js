@@ -394,7 +394,7 @@ export default class DataGridComponent extends NestedComponent {
     this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
   }
 
-  getComponent(path, fn, err) {
+  getComponent(path, fn, err = {}) {
     const { index } = err;
     path = Array.isArray(path) ? path : [path];
     const [key, ...remainingPath] = path;
@@ -412,7 +412,7 @@ export default class DataGridComponent extends NestedComponent {
 
         let comp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+          comp = component.getComponent(remainingPath, fn, err);
         }
         else if (fn) {
           fn(component, components);

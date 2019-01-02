@@ -117,7 +117,7 @@ export default class NestedComponent extends BaseComponent {
    * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(path, fn) {
+  getComponent(path, fn, err = {}) {
     path = Array.isArray(path) ? path : [path];
     const [key, ...remainingPath] = path;
     let comp = null;
@@ -130,7 +130,7 @@ export default class NestedComponent extends BaseComponent {
       if (component.component.key === key) {
         comp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
+          comp = component.getComponent(remainingPath, fn, err);
         }
         else if (fn) {
           fn(component, components);
