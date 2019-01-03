@@ -113,37 +113,43 @@ export default class FormComponent extends Component {
   }
 
   getSubOptions(options = {}) {
-    if (this.options && this.options.base) {
+    if (!this.options) {
+      return options;
+    }
+    if (this.options.base) {
       options.base = this.options.base;
     }
-    if (this.options && this.options.project) {
+    if (this.options.project) {
       options.project = this.options.project;
     }
-    if (this.options && this.options.readOnly) {
+    if (this.options.readOnly) {
       options.readOnly = this.options.readOnly;
     }
-    if (this.options && this.options.breadcrumbSettings) {
+    if (this.options.breadcrumbSettings) {
       options.breadcrumbSettings = this.options.breadcrumbSettings;
     }
-    if (this.options && this.options.buttonSettings) {
+    if (this.options.buttonSettings) {
       options.buttonSettings = this.options.buttonSettings;
     }
-    if (this.options && this.options.viewAsHtml) {
+    if (this.options.viewAsHtml) {
       options.viewAsHtml = this.options.viewAsHtml;
     }
-    if (this.options && this.options.template) {
+    if (this.options.language) {
+      options.language = this.options.language;
+    }
+    if (this.options.template) {
       options.template = this.options.template;
     }
-    if (this.options && this.options.templates) {
+    if (this.options.templates) {
       options.templates = this.options.templates;
     }
-    if (this.options && this.options.renderMode) {
+    if (this.options.renderMode) {
       options.renderMode = this.options.renderMode;
     }
-    if (this.options && this.options.attachMode) {
+    if (this.options.attachMode) {
       options.attachMode = this.options.attachMode;
     }
-    if (this.options && this.options.iconset) {
+    if (this.options.iconset) {
       options.iconset = this.options.iconset;
     }
     return options;
