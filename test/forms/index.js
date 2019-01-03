@@ -5,6 +5,7 @@ import FieldLogic from './fieldLogic';
 import ClearOnHide from './clearOnHide';
 import ClearOnHide2 from './clearOnHide2';
 import SubmissionSetter from './submissionSetter';
+import NestedFormTests from './nested-form-tests';
 
 export default [
   Simple,
@@ -13,5 +14,6 @@ export default [
   Calculated,
   FieldLogic,
   ClearOnHide,
-  ClearOnHide2
+  ClearOnHide2,
+  NestedFormTests,
 ];
