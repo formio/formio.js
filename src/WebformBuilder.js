@@ -100,6 +100,11 @@ export default class WebformBuilder extends Component {
       if (self.type === 'form' && !self.key) {
         return html;
       }
+
+      if (this.options.disabled && this.options.disabled.includes(self.key)) {
+        return html;
+      }
+
       return this.renderTemplate('builderComponent', {
         html,
       });
@@ -203,7 +208,7 @@ export default class WebformBuilder extends Component {
         pasteComponnt: 'single'
       });
 
-      if (this.refs.copyButton) {
+      if (component.refs.copyButton) {
         new Tooltip(component.refs.copyComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -214,7 +219,7 @@ export default class WebformBuilder extends Component {
           this.copyComponent(component));
       }
 
-      if (this.refs.pasteButton) {
+      if (component.refs.pasteButton) {
         const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -229,7 +234,7 @@ export default class WebformBuilder extends Component {
 
       const parent = this.getParentElement(element);
 
-      if (this.refs.editComponent) {
+      if (component.refs.editComponent) {
         new Tooltip(component.refs.editComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -240,7 +245,7 @@ export default class WebformBuilder extends Component {
           this.editComponent(component.component, parent));
       }
 
-      if (this.refs.removeComponent) {
+      if (component.refs.removeComponent) {
         new Tooltip(component.refs.removeComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -365,9 +370,23 @@ export default class WebformBuilder extends Component {
       });
     }
 
+    const options = this.options;
     this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
       moves(el) {
-        return !el.classList.contains('no-drag');
+        let moves = true;
+
+        const list = Array.from(el.classList).filter(item => item.indexOf('formio-component-') === 0);
+        list.forEach(item => {
+          const key = item.slice('formio-component-'.length);
+          if (options.disabled && options.disabled.includes(key)) {
+            moves = false;
+          }
+        });
+
+        if (el.classList.contains('no-drag')) {
+          moves = false;
+        }
+        return moves;
       },
       copy(el) {
         return el.classList.contains('drag-copy');
