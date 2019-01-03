@@ -53,6 +53,11 @@ export default class EditTableComponent extends DataGridComponent {
     return false;
   }
 
+  /** @override **/
+  hasAddButton() {
+    return super.hasAddButton() && this.hasColumns();
+  }
+
   componentSchema(...extend) {
     return ModalEdit.schema({
       rows: 0,
@@ -134,6 +139,8 @@ export default class EditTableComponent extends DataGridComponent {
     if (this.options.builder && !this.hasColumns()) {
       this.element.appendChild(this.builderView());
     }
+
+    this.setMeta();
   }
 
   buildRows() {
@@ -243,10 +250,32 @@ export default class EditTableComponent extends DataGridComponent {
   }
 
   builderView() {
-    return this.ce('div', { class: 'well' }, [
+    return this.ce('div', { class: 'well edittable-placeholder' }, [
       this.ce('i', { class: this.iconClass('warning-sign') }),
       ' ',
       this.t('No columns provided')
     ]);
+  }
+
+  getMeta() {
+    const groups = this.getGroups();
+    if (this.hasColumns && groups.length) {
+      return groups.reduce((info, g) => {
+        info[g.label] = g.numberOfRows;
+        return info;
+      }, {});
+    }
+    else {
+      return null;
+    }
+  }
+
+  setMeta() {
+    const key = _.get(this.component, 'key');
+    const data = this.getMeta();
+
+    if (key && data) {
+      _.set(this.root, ['_submission', 'metadata', key], data);
+    }
   }
 }
