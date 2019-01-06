@@ -345,10 +345,18 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    weight: 22,
+    key: 'readOnlyValue',
+    label: 'Read Only Value',
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+  },
+  {
     type: 'textarea',
     as: 'json',
     editor: 'ace',
-    weight: 22,
+    weight: 23,
     input: true,
     key: 'customOptions',
     label: 'Custom default options',

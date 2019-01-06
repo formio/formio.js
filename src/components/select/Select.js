@@ -22,6 +22,7 @@ export default class SelectComponent extends Field {
       searchEnabled: true,
       searchField: '',
       minSearch: 0,
+      readOnlyValue: false,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
@@ -80,6 +81,11 @@ export default class SelectComponent extends Field {
   itemTemplate(data) {
     if (!data) {
       return '';
+    }
+
+    // If they wish to show the value in read only mode, then just return the itemValue here.
+    if (this.options.readOnly && this.options.readOnlyValue) {
+      return this.itemValue(data);
     }
 
     // Perform a fast interpretation if we should not use the template.
