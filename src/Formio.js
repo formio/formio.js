@@ -930,6 +930,10 @@ export default class Formio {
     var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
       Formio.setToken(null, opts);
+
+      // Emit an event on the cleared user.
+      Formio.events.emit('formio.user', null);
+
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -945,6 +949,9 @@ export default class Formio {
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: '/' });
     }
+
+    // Emit an event on the authenticated user.
+    Formio.events.emit('formio.user', user);
   }
 
   static getUser(options) {

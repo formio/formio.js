@@ -25,6 +25,8 @@ function getOptions(options) {
     submitOnEnter: false,
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
     i18next,
+    saveDraft: false,
+    saveDraftThrottle: 5000
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -43,6 +45,8 @@ export default class Webform extends NestedComponent {
    * Creates a new Form instance.
    *
    * @param {Object} options - The options to create a new form instance.
+   * @param {boolean} options.saveDraft - Set this if you would like to enable the save draft feature.
+   * @param {boolean} options.saveDraftThrottle - The throttle for the save draft feature.
    * @param {boolean} options.readOnly - Set this form to readOnly
    * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
    * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
@@ -118,6 +122,15 @@ export default class Webform extends NestedComponent {
     this._src = '';
     this._loading = false;
     this._form = {};
+    this.draftEnabled = false;
+    this.savingDraft = true;
+    if (this.options.saveDraftThrottle) {
+      this.triggerSaveDraft = _.throttle(this.saveDraft.bind(this), this.options.saveDraftThrottle);
+    }
+    else {
+      this.triggerSaveDraft = this.saveDraft.bind(this);
+    }
+
     this.customErrors = [];
 
     /**
@@ -163,6 +176,12 @@ export default class Webform extends NestedComponent {
      * @type {Promise}
      */
     this.onSubmission = null;
+
+    /**
+     * Determines if this submission is explicitly set.
+     * @type {boolean}
+     */
+    this.submissionSet = false;
 
     /**
      * Promise that executes when the form is ready and rendered.
@@ -228,6 +247,18 @@ export default class Webform extends NestedComponent {
     this.localize().then(() => {
       this.language = this.options.language;
     });
+
+    // See if we need to restore the draft from a user.
+    if (this.options.saveDraft && Formio.events) {
+      Formio.events.on('formio.user', (user) => {
+        this.formReady.then(() => {
+          // Only restore a draft if the submission isn't explicitly set.
+          if (!this.submissionSet) {
+            this.restoreDraft(user._id);
+          }
+        });
+      });
+    }
 
     this.component.clearOnHide = false;
   }
@@ -668,6 +699,7 @@ export default class Webform extends NestedComponent {
     return this.onSubmission = this.formReady.then(
       () => {
         // If nothing changed, still trigger an update.
+        this.submissionSet = true;
         if (!this.setValue(submission, flags)) {
           this.triggerChange({
             noValidate: true
@@ -679,6 +711,64 @@ export default class Webform extends NestedComponent {
     ).catch(
       (err) => this.submissionReadyReject(err)
     );
+  }
+
+  /**
+   * Saves a submission draft.
+   */
+  saveDraft() {
+    if (!this.draftEnabled) {
+      return;
+    }
+    if (!this.formio) {
+      console.warn('Cannot save draft because there is no formio instance.');
+      return;
+    }
+    if (!Formio.getUser()) {
+      console.warn('Cannot save draft unless a user is authenticated.');
+      return;
+    }
+    const draft = _.cloneDeep(this.submission);
+    draft.state = 'draft';
+    if (!this.savingDraft) {
+      this.savingDraft = true;
+      this.formio.saveSubmission(draft).then((sub) => {
+        this.savingDraft = false;
+        this.emit('saveDraft', sub);
+      });
+    }
+  }
+
+  /**
+   * Restores a draft submission based on the user who is authenticated.
+   *
+   * @param {userId} - The user id where we need to restore the draft from.
+   */
+  restoreDraft(userId) {
+    if (!this.formio) {
+      console.warn('Cannot restore draft because there is no formio instance.');
+      return;
+    }
+    this.savingDraft = true;
+    this.formio.loadSubmissions({
+      params: {
+        state: 'draft',
+        owner: userId
+      }
+    }).then(submissions => {
+      if (submissions.length > 0) {
+        const draft = _.cloneDeep(submissions[0]);
+        return this.setSubmission(draft).then(() => {
+          this.draftEnabled = true;
+          this.savingDraft = false;
+          this.emit('restoreDraft', draft);
+        });
+      }
+      // Enable drafts so that we can keep track of changes.
+      this.draftEnabled = true;
+      this.savingDraft = false;
+      this.emit('restoreDraft', null);
+    });
   }
 
   get schema() {
@@ -967,6 +1057,12 @@ export default class Webform extends NestedComponent {
     value.isValid = this.checkData(value.data, flags);
     // this.showElement(true);
     this.loading = false;
+
+    // See if we need to save the draft of the form.
+    if (this.options.saveDraft) {
+      this.triggerSaveDraft();
+    }
+
     if (!flags || !flags.noEmit) {
       this.emit('change', value);
     }
