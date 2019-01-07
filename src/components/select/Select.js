@@ -88,7 +88,7 @@ export default class SelectComponent extends BaseComponent {
     }
 
     // If they wish to show the value in read only mode, then just return the itemValue here.
-    if (this.options.readOnly && this.options.readOnlyValue) {
+    if (this.options.readOnly && this.component.readOnlyValue) {
       return this.itemValue(data);
     }
 
