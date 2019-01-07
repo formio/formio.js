@@ -121,6 +121,9 @@ export default class FormComponent extends BaseComponent {
     if (this.options && this.options.viewAsHtml) {
       srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
+    if (_.has(this.options, 'language')) {
+      srcOptions.language = this.options.language;
+    }
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
