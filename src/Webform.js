@@ -1080,7 +1080,7 @@ export default class Webform extends NestedComponent {
     this.loading = false;
 
     // See if we need to save the draft of the form.
-    if (this.options.saveDraft) {
+    if (flags && flags.modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
