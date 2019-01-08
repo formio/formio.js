@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
+import { expect } from 'chai';
 
 import i18Defaults from '../src/i18n';
 import WebformBuilder from '../src/WebformBuilder';
@@ -12,6 +13,14 @@ Components.setComponents(AllComponents);
 
 let formBuilderElement = null;
 let formBuilder = null;
+
+function onNext(cmp, event, cb) {
+  expect(cmp.events).to.be.an('object');
+  expect(cmp.events.once).to.be.a('function');
+  const fullEvent = `${cmp.options.namespace}.${event}`;
+  cmp.events.once(fullEvent, cb);
+}
+
 const Harness = {
   builderBefore(done) {
     formBuilderElement = document.createElement('div');
@@ -208,9 +217,13 @@ const Harness = {
       form.off('error');
       done();
     });
+
+    onNext(form, 'change', () => {
+      form.submit().catch(done);
+    });
+
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
-    form.submit();
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {
@@ -300,6 +313,7 @@ const Harness = {
     input.dispatchEvent(new Event('blur'));
     assert.strictEqual(cmp.getValueAt(index), outv);
     assert.strictEqual(input.value, display);
-  }
+  },
+  onNext
 };
 export default Harness;

@@ -3,6 +3,7 @@ import NestedComponent from './NestedComponent';
 import Harness from '../../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
+import { expect } from 'chai';
 
 let component = null;
 
@@ -129,6 +130,67 @@ describe('NestedComponent class', () => {
       assert.equal(comp.components[1]._visible, false);
       assert.equal(comp.components[1].components[0]._visible, true);
       assert.equal(comp.components[1].components[1]._visible, true);
+    });
+  });
+
+  describe('set/get visible', () => {
+    it('should set/get visible flag on instance and child components', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          expect(nested.visible).to.be.true;
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.visible = false;
+
+          expect(nested.visible).to.be.false;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.visible = true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
+
+  describe('set/get parentVisible', () => {
+    it('should set/get parentVisible flag on instance and child components', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.parentVisible = false;
+
+          expect(nested.parentVisible).to.be.false;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.parentVisible = true;
+
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
     });
   });
 });

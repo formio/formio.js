@@ -362,4 +362,28 @@ export default class FormComponent extends Component {
     }
     return this.subForm.getAllComponents();
   }
+
+  updateSubFormVisibility() {
+    if (this.subForm) {
+      this.subForm.parentVisible = this.visible;
+    }
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  set visible(value) {
+    super.visible = value;
+    this.updateSubFormVisibility();
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.updateSubFormVisibility();
+  }
 }
