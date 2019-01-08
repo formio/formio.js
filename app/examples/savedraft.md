@@ -4,7 +4,7 @@ layout: vtabs
 section: examples
 weight: 30
 ---
-Within the Form.io renderer, you can also enable a Save as Draft feature which will automatically save a submission in "draft" mode periodically (every 5 seconds) as the user
+Within the Form.io renderer, you can also enable a Save as Draft feature which will save a submission in "draft" mode either periodically (every 5 seconds), or manually, as the user
 is filling out the form. This system will also "restore" a draft submission if the user leaves the page, and then comes back in a later session. A common term used to describe this process is "save and return" capability.
 
 This feature works along with our authentication system to attach a "draft" submission to a user who has been authenticated, to periodically store the draft of that submission as that user is using the form.
@@ -65,5 +65,45 @@ Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example', {
   saveDraft: true,
   saveDraftThrottle: 10000
+});
+```
+
+## Manual Draft Submissions
+You can also enable draft submissions to occur manually through the use of our Button component, configured with the Action of "Save State" and the "State" option configured as "draft". Then when this button is pressed, it will save the submission in "draft" mode.
+
+```js
+// Create a manual form with a Draft button, and submit the data to a specific API.
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'textfield',
+      key: 'firstName',
+      label: 'First Name',
+      input: true
+    },
+    {
+      type: 'textfield',
+      key: 'lastName',
+      label: 'Last Name',
+      input: true
+    },
+    {
+      type: 'button',
+      action: 'submit',
+      key: 'submit',
+      label: 'Save Submission'
+    },
+    {
+      type: 'button',
+      action: 'saveState',
+      state: 'draft',
+      key: 'saveDraft',
+      label: 'Save as Draft'
+    }
+  ]
+}).then(function(form) {
+  // Set the url so that it knows where to submit the data to.
+  form.url = 'https://examples.form.io/example';
+  form.nosubmit = false;
 });
 ```
