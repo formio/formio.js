@@ -235,10 +235,15 @@ describe('Test the saveDraft and restoreDraft feature', () => {
     form.src = 'https://savedraft.form.io/myform';
     Formio.setUser(user);
     form.on('restoreDraft', (existing) => {
-      assert.equal(existing ? existing.data : null, draft);
-      form.setSubmission({ data: newData });
+      assert.deepEqual(existing ? existing.data : null, draft);
+      form.setSubmission({ data: newData }, { modified: true });
     });
     form.on('saveDraft', (saved) => {
+      // Make sure the modified class was added to the components.
+      const a = form.getComponent('a');
+      const b = form.getComponent('b');
+      assert.equal(a.hasClass(a.getElement(), 'formio-modified'), true);
+      assert.equal(b.hasClass(b.getElement(), 'formio-modified'), true);
       assert.deepEqual(saved.data, newData);
       form.draftEnabled = false;
       done();
