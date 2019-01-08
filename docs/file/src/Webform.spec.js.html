@@ -191,10 +191,11 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Webform.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
 import each from &apos;lodash/each&apos;;
-
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
+import Formio from &apos;./Formio&apos;;
 import Webform from &apos;./Webform&apos;;
+import { APIMock } from &apos;../test/APIMock&apos;;
 
 describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   let simpleForm = null;
@@ -400,6 +401,86 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
       });
     });
   });
+});
+
+describe(&apos;Test the saveDraft and restoreDraft feature&apos;, () =&gt; {
+  APIMock.submission(&apos;https://savedraft.form.io/myform&apos;, {
+    components: [
+      {
+        type: &apos;textfield&apos;,
+        key: &apos;a&apos;,
+        label: &apos;A&apos;
+      },
+      {
+        type: &apos;textfield&apos;,
+        key: &apos;b&apos;,
+        label: &apos;B&apos;
+      }
+    ]
+  });
+
+  const saveDraft = function(user, draft, newData, done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement, {
+      saveDraft: true,
+      saveDraftThrottle: false
+    });
+    form.src = &apos;https://savedraft.form.io/myform&apos;;
+    Formio.setUser(user);
+    form.on(&apos;restoreDraft&apos;, (existing) =&gt; {
+      assert.deepEqual(existing ? existing.data : null, draft);
+      form.setSubmission({ data: newData }, { modified: true });
+    });
+    form.on(&apos;saveDraft&apos;, (saved) =&gt; {
+      // Make sure the modified class was added to the components.
+      const a = form.getComponent(&apos;a&apos;);
+      const b = form.getComponent(&apos;b&apos;);
+      assert.equal(a.hasClass(a.getElement(), &apos;formio-modified&apos;), true);
+      assert.equal(b.hasClass(b.getElement(), &apos;formio-modified&apos;), true);
+      assert.deepEqual(saved.data, newData);
+      form.draftEnabled = false;
+      done();
+    });
+    form.formReady.then(() =&gt; {
+      assert.equal(form.savingDraft, true);
+    });
+  };
+
+  it(&apos;Should allow a user to start a save draft session.&apos;, (done) =&gt; saveDraft({
+    _id: &apos;1234&apos;,
+    data: {
+      firstName: &apos;Joe&apos;,
+      lastName: &apos;Smith&apos;
+    }
+  }, null, {
+    a: &apos;one&apos;,
+    b: &apos;two&apos;
+  }, done));
+
+  it(&apos;Should allow a different user to start a new draft session&apos;, (done) =&gt; saveDraft({
+    _id: &apos;2468&apos;,
+    data: {
+      firstName: &apos;Sally&apos;,
+      lastName: &apos;Thompson&apos;
+    }
+  }, null, {
+    a: &apos;three&apos;,
+    b: &apos;four&apos;
+  }, done));
+
+  it(&apos;Should restore a users existing draft&apos;, (done) =&gt; saveDraft({
+    _id: &apos;1234&apos;,
+    data: {
+      firstName: &apos;Joe&apos;,
+      lastName: &apos;Smith&apos;
+    }
+  }, {
+    a: &apos;one&apos;,
+    b: &apos;two&apos;
+  }, {
+    a: &apos;five&apos;,
+    b: &apos;six&apos;
+  }, done));
 });
 </code></pre>
 

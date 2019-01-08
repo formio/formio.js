@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.10.4
+### Added
+ - FOR-1939: Added the saveDraft feature to automatically save submission drafts as the user is filling out the form.
+ - Added a class "formio-modified" to any field that is manually modified.
+
 ## 3.10.3
 ### Added
  - The ability to configure a select dropdown to show only the value in readOnly mode.
