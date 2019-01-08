@@ -201,6 +201,7 @@ import cookies from &apos;browser-cookies&apos;;
 import copy from &apos;shallow-copy&apos;;
 import * as providers from &apos;./providers&apos;;
 import _get from &apos;lodash/get&apos;;
+import _cloneDeep from &apos;lodash/cloneDeep&apos;;
 
 const isBoolean = (val) =&gt; typeof val === typeof true;
 const isNil = (val) =&gt; val === null || val === undefined;
@@ -662,7 +663,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
     const requestArgs = {
       provider: storage,
       method: &apos;upload&apos;,
@@ -677,7 +678,7 @@ export default class Formio {
             if (storage &amp;&amp; isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
               }
               else {
                 throw (&apos;Storage provider not found&apos;);
@@ -888,7 +889,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return _cloneDeep(Formio.cache[cacheKey]);
     }
 
     // Set up and fetch request
@@ -1010,6 +1011,11 @@ export default class Formio {
           return result;
         }
 
+        // Cache the response.
+        if (method === &apos;GET&apos;) {
+          Formio.cache[cacheKey] = _cloneDeep(result);
+        }
+
         let resultCopy = {};
 
         // Shallow copy result so modifications don&apos;t end up in cache
@@ -1041,11 +1047,6 @@ export default class Formio {
 
         return Promise.reject(err);
       });
-
-    // Cache the response.
-    if (method === &apos;GET&apos;) {
-      Formio.cache[cacheKey] = result;
-    }
 
     return result;
   }
@@ -1124,6 +1125,10 @@ export default class Formio {
     var userName = `${opts.namespace || Formio.namespace || &apos;formio&apos;}User`;
     if (!user) {
       Formio.setToken(null, opts);
+
+      // Emit an event on the cleared user.
+      Formio.events.emit(&apos;formio.user&apos;, null);
+
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -1139,6 +1144,9 @@ export default class Formio {
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: &apos;/&apos; });
     }
+
+    // Emit an event on the authenticated user.
+    Formio.events.emit(&apos;formio.user&apos;, user);
   }
 
   static getUser(options) {

@@ -321,6 +321,7 @@ export default [
     input: true,
     label: &apos;Value Property&apos;,
     key: &apos;valueProperty&apos;,
+    skipMerge: true,
     tooltip: &apos;The field to use as the value.&apos;,
     weight: 11,
     refreshOn: &apos;data.resource&apos;,
@@ -368,6 +369,7 @@ export default [
     input: true,
     label: &apos;Value Property&apos;,
     key: &apos;valueProperty&apos;,
+    skipMerge: true,
     weight: 13,
     description: &quot;The selected item&apos;s property to save.&quot;,
     tooltip: &apos;The property of each item in the data source to use as the select value. If not specified, the item itself will be used.&apos;,
@@ -533,6 +535,25 @@ export default [
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] }
     }
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    weight: 22,
+    key: &apos;readOnlyValue&apos;,
+    label: &apos;Read Only Value&apos;,
+    tooltip: &apos;Check this if you would like to show just the value when in Read Only mode.&apos;
+  },
+  {
+    type: &apos;textarea&apos;,
+    as: &apos;json&apos;,
+    editor: &apos;ace&apos;,
+    weight: 23,
+    input: true,
+    key: &apos;customOptions&apos;,
+    label: &apos;Custom default options&apos;,
+    tooltip: &apos;A raw JSON object to use as default options for the Select component (Choices JS).&apos;,
+	defaultValue: {}
   }
 ];
 </code></pre>

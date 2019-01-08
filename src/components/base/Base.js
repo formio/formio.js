@@ -1727,6 +1727,11 @@ export default class BaseComponent extends Component {
       this.pristine = false;
     }
 
+    if (flags.modified) {
+      // Add a modified class if this element was manually modified.
+      this.addClass(this.getElement(), 'formio-modified');
+    }
+
     // If we are supposed to validate on blur, then don't trigger validation yet.
     if (this.component.validateOn === 'blur' && !this.errors.length) {
       flags.noValidate = true;
@@ -1773,7 +1778,9 @@ export default class BaseComponent extends Component {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({
+      modified: true
+    }));
   }
 
   /**

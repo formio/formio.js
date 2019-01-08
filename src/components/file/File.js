@@ -744,14 +744,15 @@ export default class FileComponent extends BaseComponent {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          fileService.uploadFile(this.component.storage, file, fileName, dir, evt => {
+          const { storage, url, options } = this.component;
+          fileService.uploadFile(storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             const originalStatus = uploadStatus;
             uploadStatus = this.createUploadStatus(fileUpload);
             this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
-          }, this.component.url)
+          }, url, options)
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               // Default to first type.

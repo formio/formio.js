@@ -353,7 +353,7 @@ export default class WebformBuilder extends Webform {
     const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
 
     // Get the editform for this component.
-    const editForm = componentClass.editForm(overrides);
+    const editForm = componentClass.editForm(_.cloneDeep(overrides));
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');

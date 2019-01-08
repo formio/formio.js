@@ -6,6 +6,9 @@ const EditFormUtils = {
   },
   unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
+      if (objValue.skipMerge || srcValue.skipMerge) {
+        return false;
+      }
       if (objValue.key === srcValue.key) {
         // Create complete objects by including missing keys.
         _.each(objValue, (value, prop) => {

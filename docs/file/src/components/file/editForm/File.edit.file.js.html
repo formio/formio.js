@@ -225,6 +225,26 @@ export default [
     }
   },
   {
+    type: &apos;textarea&apos;,
+    key: &apos;options&apos;,
+    label: &apos;Custom request options&apos;,
+    tooltip: &apos;Pass your custom xhr options(optional)&apos;,
+    rows: 5,
+    editor: &apos;ace&apos;,
+    input: true,
+    weight: 15,
+    placeholder: `{
+      &quot;withCredentials&quot;: true
+    }`,
+    conditional: {
+      json: {
+        &apos;===&apos;: [{
+          var: &apos;data.storage&apos;
+        }, &apos;url&apos;]
+      }
+    }
+  },
+  {
     type: &apos;textfield&apos;,
     input: true,
     key: &apos;dir&apos;,

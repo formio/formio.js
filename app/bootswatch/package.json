@@ -1,25 +1,44 @@
 {
-  "name": "bootswatch",
+  "_args": [
+    [
+      "bootswatch@4.2.1",
+      "/Users/travistidwell/Desktop/formio.js"
+    ]
+  ],
+  "_development": true,
+  "_from": "bootswatch@4.2.1",
+  "_id": "bootswatch@4.2.1",
+  "_inBundle": false,
+  "_integrity": "sha512-2UV3a/3sleGVsOa8q3t5O4+u+ONfQvscMTKwqMVd0tkcypGhiLeE3W461qJ4uZzo6AzCSuYBTzGmOSdel0g9/A==",
+  "_location": "/bootswatch",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "bootswatch@4.2.1",
+    "name": "bootswatch",
+    "escapedName": "bootswatch",
+    "rawSpec": "4.2.1",
+    "saveSpec": null,
+    "fetchSpec": "4.2.1"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.2.1.tgz",
+  "_spec": "4.2.1",
+  "_where": "/Users/travistidwell/Desktop/formio.js",
+  "author": {
+    "name": "Thomas Park"
+  },
+  "bugs": {
+    "url": "https://github.com/thomaspark/bootswatch/issues"
+  },
+  "dependencies": {},
   "description": "Bootswatch is a collection of themes for Bootstrap.",
-  "version": "4.1.3",
-  "author": "Thomas Park",
-  "homepage": "https://bootswatch.com",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/thomaspark/bootswatch.git"
-  },
-  "engines": {
-    "node": ">=6"
-  },
-  "scripts": {
-    "postcss": "postcss --no-map --use autoprefixer --config build/js/postcss.js --replace dist/*/bootstrap.css"
-  },
-  "dependencies": {
-  },
   "devDependencies": {
-    "bootstrap": "^4.1.3",
     "autoprefixer": "^7.1.2",
+    "bootstrap": "^4.2.1",
     "font-awesome": "~4.7.0",
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
@@ -34,9 +53,19 @@
     "popper.js": "^1.14.0",
     "postcss-cli": "^4.1.0",
     "postcss-flexbugs-fixes": "^2.0.0"
-  }
-
-,"_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.1.3.tgz"
-,"_integrity": "sha1-MONyOxn6iVaM/83JyJQ7RponRek="
-,"_from": "bootswatch@4.1.3"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "homepage": "https://bootswatch.com",
+  "license": "MIT",
+  "name": "bootswatch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaspark/bootswatch.git"
+  },
+  "scripts": {
+    "postcss": "postcss --no-map --use autoprefixer --config build/js/postcss.js --replace dist/*/bootstrap.css"
+  },
+  "version": "4.2.1"
 }

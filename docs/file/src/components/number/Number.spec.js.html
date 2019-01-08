@@ -189,14 +189,17 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.spec.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _merge from &apos;lodash/merge&apos;;
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import _ from &apos;lodash&apos;;
+import _merge from &apos;lodash/merge&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import NumberComponent from &apos;./Number&apos;;
 
 import {
   comp1,
-  comp2
+  comp2,
+  comp3,
+  comp4
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Number Component&apos;, () =&gt; {
@@ -336,6 +339,121 @@ describe(&apos;Number Component&apos;, () =&gt; {
       Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12,123456789&apos;);
       done();
     });
+  });
+
+  it(&apos;Should display default integer value&apos;, (done) =&gt; {
+    Harness.testCreate(NumberComponent, comp3).then(number =&gt; {
+      assert.deepEqual(_.get(number, [&apos;inputs&apos;, &apos;0&apos;, &apos;value&apos;]), &apos;42&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should display default decimal value&apos;, (done) =&gt; {
+    const TEST_VAL = 4.2;
+    const comp = _.cloneDeep(comp3);
+
+    comp.defaultValue = TEST_VAL;
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+
+    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
+      assert.deepEqual(_.get(number, [&apos;inputs&apos;, &apos;0&apos;, &apos;value&apos;]), &apos;4.20&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should add trailing zeros on blur, if decimal required&apos;, (done) =&gt; {
+    const comp = _.cloneDeep(comp3);
+
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+
+    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
+      const testset = [
+        // [inv, outv, display]
+        [&apos;42&apos;,        42,       &apos;42.00&apos;],
+        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
+        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
+        [&apos;4200&apos;,      4200,     &apos;4200.00&apos;],
+        [&apos;4200.4&apos;,    4200.4,   &apos;4200.40&apos;],
+        [&apos;4200.42&apos;,   4200.42,  &apos;4200.42&apos;],
+        [&apos;4200.&apos;,     4200,     &apos;4200.00&apos;],
+        [&apos;99999999.&apos;, 99999999, &apos;99999999.00&apos;]
+      ];
+
+      testset.forEach((set, index) =&gt; {
+        try {
+          Harness.testNumberBlur(number, ...set);
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
+  });
+
+  it(&apos;Should add trailing zeros on blur, if decimal and delimiter is required&apos;, (done) =&gt; {
+    const comp = _.cloneDeep(comp3);
+
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+    comp.delimiter = true;
+
+    /* eslint-disable max-statements */
+    Harness.testCreate(NumberComponent, comp).then(number =&gt; {
+      const testset = [
+        // [inv, outv, display]
+        [&apos;42&apos;,        42,       &apos;42.00&apos;],
+        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
+        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
+        [&apos;4200&apos;,      4200,     &apos;4,200.00&apos;],
+        [&apos;4200.4&apos;,    4200.4,   &apos;4,200.40&apos;],
+        [&apos;4200.42&apos;,   4200.42,  &apos;4,200.42&apos;],
+        [&apos;4200.&apos;,     4200,     &apos;4,200.00&apos;],
+        [&apos;99999999.&apos;, 99999999, &apos;99,999,999.00&apos;]
+      ];
+
+      testset.forEach((set, index) =&gt; {
+        try {
+          Harness.testNumberBlur(number, ...set);
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
+  });
+
+  it(&apos;Should add trailing zeros on blur with `multiple` flag&apos;, (done) =&gt; {
+    Harness.testCreate(NumberComponent, comp4).then(number =&gt; {
+      const testset = [
+        [&apos;42&apos;,        42,       &apos;42.00&apos;],
+        [&apos;42.1&apos;,      42.1,     &apos;42.10&apos;],
+        [&apos;42.01&apos;,     42.01,    &apos;42.01&apos;],
+        [&apos;4200&apos;,      4200,     &apos;4,200.00&apos;],
+        [&apos;4200.4&apos;,    4200.4,   &apos;4,200.40&apos;],
+        [&apos;4200.42&apos;,   4200.42,  &apos;4,200.42&apos;],
+        [&apos;4200.&apos;,     4200,     &apos;4,200.00&apos;],
+        [&apos;99999999.&apos;, 99999999, &apos;99,999,999.00&apos;]
+      ];
+
+      testset.forEach((set, index) =&gt; {
+        try {
+          assert.strictEqual(number.inputs.length, index + 1);
+          Harness.testNumberBlur(number, ...set, index);
+          number.addValue();
+        }
+        catch (err) {
+          done(new Error(`Test case #${index}, set: ${set}, err: ${err.message}`));
+        }
+      });
+
+      done();
+    }, done);
   });
 });
 </code></pre>

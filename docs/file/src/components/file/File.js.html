@@ -935,14 +935,15 @@ export default class FileComponent extends BaseComponent {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          fileService.uploadFile(this.component.storage, file, fileName, dir, evt =&gt; {
+          const { storage, url, options } = this.component;
+          fileService.uploadFile(storage, file, fileName, dir, evt =&gt; {
             fileUpload.status = &apos;progress&apos;;
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             const originalStatus = uploadStatus;
             uploadStatus = this.createUploadStatus(fileUpload);
             this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
-          }, this.component.url)
+          }, url, options)
             .then(fileInfo =&gt; {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               // Default to first type.

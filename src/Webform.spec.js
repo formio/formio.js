@@ -1,9 +1,10 @@
 import assert from 'power-assert';
 import each from 'lodash/each';
-
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
+import Formio from './Formio';
 import Webform from './Webform';
+import { APIMock } from '../test/APIMock';
 
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
@@ -209,4 +210,84 @@ describe('Formio Form Renderer tests', () => {
       });
     });
   });
+});
+
+describe('Test the saveDraft and restoreDraft feature', () => {
+  APIMock.submission('https://savedraft.form.io/myform', {
+    components: [
+      {
+        type: 'textfield',
+        key: 'a',
+        label: 'A'
+      },
+      {
+        type: 'textfield',
+        key: 'b',
+        label: 'B'
+      }
+    ]
+  });
+
+  const saveDraft = function(user, draft, newData, done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      saveDraft: true,
+      saveDraftThrottle: false
+    });
+    form.src = 'https://savedraft.form.io/myform';
+    Formio.setUser(user);
+    form.on('restoreDraft', (existing) => {
+      assert.deepEqual(existing ? existing.data : null, draft);
+      form.setSubmission({ data: newData }, { modified: true });
+    });
+    form.on('saveDraft', (saved) => {
+      // Make sure the modified class was added to the components.
+      const a = form.getComponent('a');
+      const b = form.getComponent('b');
+      assert.equal(a.hasClass(a.getElement(), 'formio-modified'), true);
+      assert.equal(b.hasClass(b.getElement(), 'formio-modified'), true);
+      assert.deepEqual(saved.data, newData);
+      form.draftEnabled = false;
+      done();
+    });
+    form.formReady.then(() => {
+      assert.equal(form.savingDraft, true);
+    });
+  };
+
+  it('Should allow a user to start a save draft session.', (done) => saveDraft({
+    _id: '1234',
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  }, null, {
+    a: 'one',
+    b: 'two'
+  }, done));
+
+  it('Should allow a different user to start a new draft session', (done) => saveDraft({
+    _id: '2468',
+    data: {
+      firstName: 'Sally',
+      lastName: 'Thompson'
+    }
+  }, null, {
+    a: 'three',
+    b: 'four'
+  }, done));
+
+  it('Should restore a users existing draft', (done) => saveDraft({
+    _id: '1234',
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  }, {
+    a: 'one',
+    b: 'two'
+  }, {
+    a: 'five',
+    b: 'six'
+  }, done));
 });
