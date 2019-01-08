@@ -648,3 +648,13 @@ body.formio-dialog-open {
 .formio-component-datetime .form-control[type="datetime-local"] ~ .input-group-addon,
 .formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
   width: auto; }
+
+.formio-component-select select[disabled="disabled"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: ''; }
+
+.formio-component-select div[disabled="disabled"] button,
+.formio-component-select .choices.is-disabled[data-type*=select-one]:after {
+  display: none; }
