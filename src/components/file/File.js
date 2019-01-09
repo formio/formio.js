@@ -96,7 +96,7 @@ export default class FileComponent extends Component {
   render() {
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
-      files: this.dataValue,
+      files: this.dataValue || [],
       statuses: this.statuses,
       disabled: this.shouldDisable,
       support: this.support,

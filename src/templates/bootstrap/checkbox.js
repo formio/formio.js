@@ -18,4 +18,11 @@ export default {
   </label>
 </div>
 `,
+  html: `
+<label class="{{input.labelClass}}">
+    {{input.content}}
+    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
+</label>
+<div ref="value">{% if (checked) { %}True{% } else { %}False{% } %}</div>
+`
 };

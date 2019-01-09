@@ -547,7 +547,7 @@ export default class Component extends Element {
     data.transform = this.transform;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
-    data.value = data.value || this.value;
+    data.value = data.value || this.dataValue;
 
     // Allow more specific template names
     const names = [

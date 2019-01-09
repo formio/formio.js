@@ -23,4 +23,22 @@ export default {
   </tbody>
 </table>
 `,
+  html: `
+<table class="ui table striped celled">
+  <tbody>
+    {% component.questions.forEach(function(question) { %}
+    <tr>
+      <th>{{t(question.label)}}</th>
+      <td>
+      {% component.values.forEach(function(item) { %}
+        {% if (value && value.hasOwnProperty(question.value) && value[question.value] === item.value) { %}
+          {{t(item.label)}}
+        {% } %}
+      {% }) %}
+      </td>
+    </tr>
+    {% }) %}
+  </tbody>
+</table>
+  `
 };

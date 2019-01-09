@@ -69,4 +69,40 @@ export default {
   {% } %}
 </table>
 `,
+  html: `
+<label class="col-form-label" style="">{{t(component.label)}}</label>
+<table class="table datagrid-table table-bordered
+    {{ component.striped ? 'table-striped' : ''}}
+    {{ component.hover ? 'table-hover' : ''}}
+    {{ component.condensed ? 'table-sm' : ''}} 
+    ">
+  {% if (hasHeader) { %}
+  <thead>
+    <tr>
+      {% component.components.forEach(function(col) { %}
+      {% if (visibleColumns[col.key]) { %}
+      <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+        {{ col.hideLabel ? '' : t(col.label || col.title) }}
+        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{col.tooltip}}"></i>{% } %}
+      </th>
+      {% } %}
+      {% }) %}
+    </tr>
+  </thead>
+  {% } %}
+  <tbody>
+    {% rows.forEach(function(row) { %}
+    <tr>
+      {% component.components.forEach(function(col) { %}
+      {% if (visibleColumns[col.key]) { %}
+      <td ref="{{datagridKey}}">
+        {{row[col.key]}}
+      </td>
+      {% } %}
+      {% }) %}
+    </tr>
+    {% }) %}
+  </tbody>
+</table>
+  `
 };

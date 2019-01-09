@@ -83,11 +83,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly) {
       return this.renderTemplate('well', {
-        children: value
+        children: value,
+        value
       });
     }
     return this.renderTemplate('input', {
       input: info,
+      value,
       index
     });
   }

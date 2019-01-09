@@ -22,5 +22,5 @@ export default {
 </div>
 {% } %}
 `,
-  html: '<div ref="value">{{value}}</div>'
+  html: '<div ref="value">{% if (value) { %}{{value}}{% } else { %}-{% } %}</div>'
 };

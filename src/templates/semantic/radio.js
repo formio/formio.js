@@ -23,4 +23,10 @@ export default {
   {% }) %}
 </div>
 `,
+  html: `
+  <div ref="value">
+  {% var values = values.filter(function(item) {return value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])}).map(function(item) { return t(item.label)}).join(', ') %}
+  {{values}}
+  </div>
+  `
 };

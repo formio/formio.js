@@ -9,4 +9,5 @@ export default {
   {{t(option.label)}}
 </option>
 `,
+  html: '{% if (selected) { %}{{t(option.label)}}{% } %}'
 };

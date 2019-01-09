@@ -12,4 +12,5 @@ export default {
 {% if (component.rightIcon) { %}&nbsp;<i class="{{component.rightIcon}}"></i>{% } %}
 </{{input.type}}>
 `,
+  html: ' '
 };
