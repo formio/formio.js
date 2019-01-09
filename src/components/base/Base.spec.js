@@ -1,5 +1,6 @@
 import assert from 'power-assert';
 import _merge from 'lodash/merge';
+import { expect } from 'chai';
 
 import Harness from '../../../test/harness';
 import BaseComponent from './Base';
@@ -118,6 +119,47 @@ describe('Base Component', () => {
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
       Harness.testElements(component, 'table tr:first-child td:last-child .glyphicon-remove-circle', 1);
       done();
+    });
+  });
+
+  describe('shouldSkipValidation', () => {
+    it('should return true if component is hidden', done => {
+      Harness.testCreate(BaseComponent, comp1)
+        .then(cmp => {
+          cmp.visible = false;
+          cmp.checkCondition = () => true;
+          expect(cmp.visible).to.be.false;
+          expect(cmp.checkCondition()).to.be.true;
+          expect(cmp.shouldSkipValidation()).to.be.true;
+          done();
+        }, done)
+        .catch(done);
+    });
+
+    it('should return true if component is conditionally hidden', done => {
+      Harness.testCreate(BaseComponent, comp1)
+        .then(cmp => {
+          cmp.visible = true;
+          cmp.checkCondition = () => false;
+          expect(cmp.visible).to.be.true;
+          expect(cmp.checkCondition()).to.be.false;
+          expect(cmp.shouldSkipValidation()).to.be.true;
+          done();
+        }, done)
+        .catch(done);
+    });
+
+    it('should return false if not hidden', done => {
+      Harness.testCreate(BaseComponent, comp1)
+        .then(cmp => {
+          cmp.visible = true;
+          cmp.checkCondition = () => true;
+          expect(cmp.visible).to.be.true;
+          expect(cmp.checkCondition()).to.be.true;
+          expect(cmp.shouldSkipValidation()).to.be.false;
+          done();
+        }, done)
+        .catch(done);
     });
   });
 });
