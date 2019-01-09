@@ -304,13 +304,14 @@ export function getValue(submission, key) {
  * @param form
  */
 export function getStrings(form) {
-  const properties = ['label', 'title', 'legend', 'tooltip', 'description', 'placeholder', 'prefix', 'suffix', 'errorLabel'];
+  const properties = ['label', 'title', 'legend', 'tooltip', 'description', 'placeholder', 'prefix', 'suffix', 'errorLabel', 'content'];
   const strings = [];
   eachComponent(form.components, component => {
     properties.forEach(property => {
       if (component.hasOwnProperty(property) && component[property]) {
         strings.push({
           key: component.key,
+          type: component.type,
           property,
           string: component[property]
         });
