@@ -608,3 +608,39 @@ describe('delay', () => {
     }
   });
 });
+
+describe('withSwitch', () => {
+  it('should return Array with two functions', () => {
+    const fns = utils.withSwitch();
+
+    expect(fns).to.be.an('array').and.have.lengthOf(2);
+    expect(fns[0]).to.be.a('function');
+    expect(fns[1]).to.be.a('function');
+  });
+
+  describe('#get', () => {
+    it('should return one of state', () => {
+      const [get] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+    });
+
+    it('should be pure', () => {
+      const [get] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+    });
+  });
+
+  describe('#toggle', () => {
+    it('should cycle between states', () => {
+      const [get, toggle] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+      toggle();
+      expect(get()).to.be.equal(24);
+      toggle();
+      expect(get()).to.be.equal(42);
+    });
+  });
+});
