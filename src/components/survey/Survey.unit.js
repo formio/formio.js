@@ -17,4 +17,12 @@ describe('Survey Unit Tests', () => {
     survey.render();
     assert.equal(survey.rendered,true);
   });
+  it('Should be able to add Questions and Values to survey component',() => {
+   const survey = new Survey({
+     key: 'survey',
+     questions: 'Test',
+     value: 'Yes'
+   });
+  });
 });
+
