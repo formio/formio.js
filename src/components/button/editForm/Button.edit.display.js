@@ -12,12 +12,24 @@ export default [
     data: {
       values: [
         { label: 'Submit', value: 'submit' },
+        { label: 'Save State', value: 'saveState' },
         { label: 'Event', value: 'event' },
         { label: 'Custom', value: 'custom' },
         { label: 'Reset', value: 'reset' },
         { label: 'OAuth', value: 'oauth' },
         { label: 'POST to URL', value: 'url' }
       ]
+    }
+  },
+  {
+    type: 'textfield',
+    label: 'Save State',
+    key: 'state',
+    weight: 112,
+    tooltip: 'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
+    input: true,
+    conditional: {
+      json: { '!==': [{ var: 'data.action' }, 'saveState'] }
     }
   },
   {

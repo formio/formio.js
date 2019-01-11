@@ -186,6 +186,18 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/edittable/edittable.form.js~edittable",
+    "function/index.html#static-function-EditTable",
+    "<span>EditTable</span> <span class=\"search-result-import-path\">formiojs/src/components/edittable/EditTable.form.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/components/edittable/edittable.js~edittablecomponent",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html",
+    "<span>EditTableComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/edittable/EditTable.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/email/email.form.js~email",
     "function/index.html#static-function-Email",
     "<span>Email</span> <span class=\"search-result-import-path\">formiojs/src/components/email/Email.form.js</span>",
@@ -291,6 +303,18 @@ window.esdocSearchIndex = [
     "formiojs/src/components/location/location.js~locationcomponent",
     "class/src/components/location/Location.js~LocationComponent.html",
     "<span>LocationComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/location/Location.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/components/modaledit/modaledit.form.js~modaledit",
+    "function/index.html#static-function-ModalEdit",
+    "<span>ModalEdit</span> <span class=\"search-result-import-path\">formiojs/src/components/modaledit/ModalEdit.form.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/components/modaledit/modaledit.js~modaleditcomponent",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html",
+    "<span>ModalEditComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/modaledit/ModalEdit.js</span>",
     "class"
   ],
   [
@@ -921,6 +945,12 @@ window.esdocSearchIndex = [
     "formiojs/src/providers/storage/url.js~url",
     "function/index.html#static-function-url",
     "<span>url</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/url.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~withswitch",
+    "function/index.html#static-function-withSwitch",
+    "<span>withSwitch</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -2281,13 +2311,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2359,13 +2389,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2545,13 +2575,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2623,13 +2653,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3229,13 +3259,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4159,13 +4189,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4446,6 +4476,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#shouldskipvalidation",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-shouldSkipValidation",
+    "src/components/base/Base.js~BaseComponent#shouldSkipValidation",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#show",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-show",
     "src/components/base/Base.js~BaseComponent#show",
@@ -4573,13 +4609,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4903,13 +4939,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5611,13 +5647,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6636,6 +6672,198 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/edittable/edittable.form.js",
+    "file/src/components/edittable/EditTable.form.js.html",
+    "src/components/edittable/EditTable.form.js",
+    "file"
+  ],
+  [
+    "src/components/edittable/edittable.js",
+    "file/src/components/edittable/EditTable.js.html",
+    "src/components/edittable/EditTable.js",
+    "file"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#addemptyrows",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-addEmptyRows",
+    "src/components/edittable/EditTable.js~EditTableComponent#addEmptyRows",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#build",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-build",
+    "src/components/edittable/EditTable.js~EditTableComponent#build",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#buildgroup",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-buildGroup",
+    "src/components/edittable/EditTable.js~EditTableComponent#buildGroup",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#buildgroups",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-buildGroups",
+    "src/components/edittable/EditTable.js~EditTableComponent#buildGroups",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#buildrow",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-buildRow",
+    "src/components/edittable/EditTable.js~EditTableComponent#buildRow",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#buildrows",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-buildRows",
+    "src/components/edittable/EditTable.js~EditTableComponent#buildRows",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#builderview",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-builderView",
+    "src/components/edittable/EditTable.js~EditTableComponent#builderView",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#componentcomponents",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-get-componentComponents",
+    "src/components/edittable/EditTable.js~EditTableComponent#componentComponents",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#componentschema",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-componentSchema",
+    "src/components/edittable/EditTable.js~EditTableComponent#componentSchema",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#constructor",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-constructor-constructor",
+    "src/components/edittable/EditTable.js~EditTableComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#datavalue",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-member-dataValue",
+    "src/components/edittable/EditTable.js~EditTableComponent#dataValue",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#emptycolumn",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-get-emptyColumn",
+    "src/components/edittable/EditTable.js~EditTableComponent#emptyColumn",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#getcolumns",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-getColumns",
+    "src/components/edittable/EditTable.js~EditTableComponent#getColumns",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#getgroups",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-getGroups",
+    "src/components/edittable/EditTable.js~EditTableComponent#getGroups",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#getmeta",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-getMeta",
+    "src/components/edittable/EditTable.js~EditTableComponent#getMeta",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#getrowchunks",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-getRowChunks",
+    "src/components/edittable/EditTable.js~EditTableComponent#getRowChunks",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#groupsmode",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-get-groupsMode",
+    "src/components/edittable/EditTable.js~EditTableComponent#groupsMode",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#hasaddbutton",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-hasAddButton",
+    "src/components/edittable/EditTable.js~EditTableComponent#hasAddButton",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#hascolumns",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-hasColumns",
+    "src/components/edittable/EditTable.js~EditTableComponent#hasColumns",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#hasextracolumn",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-hasExtraColumn",
+    "src/components/edittable/EditTable.js~EditTableComponent#hasExtraColumn",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#removebutton",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-removeButton",
+    "src/components/edittable/EditTable.js~EditTableComponent#removeButton",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#setmeta",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-setMeta",
+    "src/components/edittable/EditTable.js~EditTableComponent#setMeta",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#tableclass",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-get-tableClass",
+    "src/components/edittable/EditTable.js~EditTableComponent#tableClass",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent#totalrowsnumber",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#instance-method-totalRowsNumber",
+    "src/components/edittable/EditTable.js~EditTableComponent#totalRowsNumber",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent.builderinfo",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#static-get-builderInfo",
+    "src/components/edittable/EditTable.js~EditTableComponent.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/edittable/edittable.js~edittablecomponent.schema",
+    "class/src/components/edittable/EditTable.js~EditTableComponent.html#static-method-schema",
+    "src/components/edittable/EditTable.js~EditTableComponent.schema",
+    "method"
+  ],
+  [
+    "src/components/edittable/edittable.spec.js",
+    "file/src/components/edittable/EditTable.spec.js.html",
+    "src/components/edittable/EditTable.spec.js",
+    "file"
+  ],
+  [
+    "src/components/edittable/editform/edittable.edit.display.js",
+    "file/src/components/edittable/editForm/EditTable.edit.display.js.html",
+    "src/components/edittable/editForm/EditTable.edit.display.js",
+    "file"
+  ],
+  [
+    "src/components/edittable/fixtures/basic.js",
+    "file/src/components/edittable/fixtures/basic.js.html",
+    "src/components/edittable/fixtures/basic.js",
+    "file"
+  ],
+  [
+    "src/components/edittable/fixtures/index.js",
+    "file/src/components/edittable/fixtures/index.js.html",
+    "src/components/edittable/fixtures/index.js",
+    "file"
+  ],
+  [
     "src/components/email/email.form.js",
     "file/src/components/email/Email.form.js.html",
     "src/components/email/Email.form.js",
@@ -7194,6 +7422,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-parentVisible",
+    "src/components/form/Form.js~FormComponent#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
+    "src/components/form/Form.js~FormComponent#parentVisible",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#rendersubform",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-renderSubForm",
     "src/components/form/Form.js~FormComponent#renderSubForm",
@@ -7239,6 +7479,24 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#subformreadyresolve",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-subFormReadyResolve",
     "src/components/form/Form.js~FormComponent#subFormReadyResolve",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#updatesubformvisibility",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-updateSubFormVisibility",
+    "src/components/form/Form.js~FormComponent#updateSubFormVisibility",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "src/components/form/Form.js~FormComponent#visible",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
@@ -7584,6 +7842,114 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/modaledit/modaledit.form.js",
+    "file/src/components/modaledit/ModalEdit.form.js.html",
+    "src/components/modaledit/ModalEdit.form.js",
+    "file"
+  ],
+  [
+    "src/components/modaledit/modaledit.js",
+    "file/src/components/modaledit/ModalEdit.js.html",
+    "src/components/modaledit/ModalEdit.js",
+    "file"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#addcke",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-method-addCKE",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#addCKE",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#build",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-method-build",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#build",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#buildeditmode",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-method-buildEditMode",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#buildEditMode",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#buildviewmode",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-method-buildViewMode",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#buildViewMode",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#constructor",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-constructor-constructor",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#defaulteditorsize",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-get-defaultEditorSize",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#defaultEditorSize",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#defaultlayout",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-get-defaultLayout",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#defaultLayout",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#editelement",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-member-editElement",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#editElement",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#getmode",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-member-getMode",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#getMode",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#layoutoptions",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-get-layoutOptions",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#layoutOptions",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#preview",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-member-preview",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#preview",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#togglemode",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-member-toggleMode",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#toggleMode",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent#updateview",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#instance-method-updateView",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent#updateView",
+    "method"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent.builderinfo",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#static-get-builderInfo",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/modaledit/modaledit.js~modaleditcomponent.schema",
+    "class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html#static-method-schema",
+    "src/components/modaledit/ModalEdit.js~ModalEditComponent.schema",
+    "method"
+  ],
+  [
+    "src/components/modaledit/editform/modaledit.edit.display.js",
+    "file/src/components/modaledit/editForm/ModalEdit.edit.display.js.html",
+    "src/components/modaledit/editForm/ModalEdit.edit.display.js",
+    "file"
+  ],
+  [
     "src/components/nested/nestedcomponent.form.js",
     "file/src/components/nested/NestedComponent.form.js.html",
     "src/components/nested/NestedComponent.form.js",
@@ -7909,13 +8275,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
@@ -7929,6 +8295,18 @@ window.esdocSearchIndex = [
     "src/components/nested/nestedcomponent.spec.js",
     "file/src/components/nested/NestedComponent.spec.js.html",
     "src/components/nested/NestedComponent.spec.js",
+    "file"
+  ],
+  [
+    "src/components/nested/fixtures/comp1.js",
+    "file/src/components/nested/fixtures/comp1.js.html",
+    "src/components/nested/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/nested/fixtures/index.js",
+    "file/src/components/nested/fixtures/index.js.html",
+    "src/components/nested/fixtures/index.js",
     "file"
   ],
   [

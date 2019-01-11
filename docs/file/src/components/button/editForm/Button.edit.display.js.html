@@ -67,6 +67,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-edittable">components/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -81,6 +83,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-location">components/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-modaledit">components/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-nested">components/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
@@ -180,6 +184,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
@@ -203,12 +208,24 @@ export default [
     data: {
       values: [
         { label: &apos;Submit&apos;, value: &apos;submit&apos; },
+        { label: &apos;Save State&apos;, value: &apos;saveState&apos; },
         { label: &apos;Event&apos;, value: &apos;event&apos; },
         { label: &apos;Custom&apos;, value: &apos;custom&apos; },
         { label: &apos;Reset&apos;, value: &apos;reset&apos; },
         { label: &apos;OAuth&apos;, value: &apos;oauth&apos; },
         { label: &apos;POST to URL&apos;, value: &apos;url&apos; }
       ]
+    }
+  },
+  {
+    type: &apos;textfield&apos;,
+    label: &apos;Save State&apos;,
+    key: &apos;state&apos;,
+    weight: 112,
+    tooltip: &apos;The state you wish to save the submission under when this button is pressed. Example &quot;draft&quot; would save the submission in Draft Mode.&apos;,
+    input: true,
+    conditional: {
+      json: { &apos;!==&apos;: [{ var: &apos;data.action&apos; }, &apos;saveState&apos;] }
     }
   },
   {
