@@ -299,6 +299,8 @@ td > .form-group {
   box-sizing: border-box;
   font-size: 0.8em;
   color: #666; }
+  .formio-dialog.formio-modaledit-dialog {
+    font-size: inherit; }
 
 .formio-dialog *,
 .formio-dialog *:before,
@@ -648,6 +650,69 @@ body.formio-dialog-open {
 .formio-component-datetime .form-control[type="datetime-local"] ~ .input-group-addon,
 .formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
   width: auto; }
+
+.formio-component-edittable .formio-edittable-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  visibility: hidden; }
+
+.formio-component-edittable .formio-edittable-table {
+  table-layout: fixed; }
+  .formio-component-edittable .formio-edittable-table > tbody > tr > td:last-child {
+    position: relative; }
+  .formio-component-edittable .formio-edittable-table > tbody > tr:hover > td:last-child .formio-edittable-remove {
+    visibility: visible; }
+
+.formio-component-edittable .edittable-group-label {
+  background-color: #ddd; }
+
+.formio-component-modaledit .formio-modaledit-view-container {
+  position: relative;
+  border: 1px solid #ddd;
+  min-height: 34px;
+  padding: 6px 12px;
+  cursor: text; }
+  td .formio-component-modaledit .formio-modaledit-view-container {
+    padding: 0;
+    border-style: none; }
+
+.formio-component-modaledit .formio-modaledit-edit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms linear, visibility 0ms 200ms; }
+
+.formio-component-modaledit .formio-modaledit-view-container:hover .formio-modaledit-edit {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0ms, opacity 200ms linear; }
+
+.formio-modaledit-dialog .formio-modaledit-close {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  border-radius: 0; }
+
+.reset-margins html, .reset-margins body, .reset-margins div, .reset-margins span, .reset-margins applet, .reset-margins object, .reset-margins iframe,
+.reset-margins h1, .reset-margins h2, .reset-margins h3, .reset-margins h4, .reset-margins h5, .reset-margins h6, .reset-margins p, .reset-margins blockquote, .reset-margins pre,
+.reset-margins a, .reset-margins abbr, .reset-margins acronym, .reset-margins address, .reset-margins big, .reset-margins cite, .reset-margins code,
+.reset-margins del, .reset-margins dfn, .reset-margins em, .reset-margins img, .reset-margins ins, .reset-margins kbd, .reset-margins q, .reset-margins s, .reset-margins samp,
+.reset-margins small, .reset-margins strike, .reset-margins strong, .reset-margins sub, .reset-margins sup, .reset-margins tt, .reset-margins var,
+.reset-margins b, .reset-margins u, .reset-margins i, .reset-margins center,
+.reset-margins dl, .reset-margins dt, .reset-margins dd, .reset-margins ol, .reset-margins ul, .reset-margins li,
+.reset-margins fieldset, .reset-margins form, .reset-margins label, .reset-margins legend,
+.reset-margins table, .reset-margins caption, .reset-margins tbody, .reset-margins tfoot, .reset-margins thead, .reset-margins tr, .reset-margins th, .reset-margins td,
+.reset-margins article, .reset-margins aside, .reset-margins canvas, .reset-margins details, .reset-margins embed,
+.reset-margins figure, .reset-margins figcaption, .reset-margins footer, .reset-margins header, .reset-margins hgroup,
+.reset-margins menu, .reset-margins nav, .reset-margins output, .reset-margins ruby, .reset-margins section, .reset-margins summary,
+.reset-margins time, .reset-margins mark, .reset-margins audio, .reset-margins video {
+  margin: 0; }
+
+.ck-body .ck.ck-balloon-panel {
+  z-index: 101000; }
 
 .formio-component-select select[disabled="disabled"] {
   -webkit-appearance: none;

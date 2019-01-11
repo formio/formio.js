@@ -16,6 +16,8 @@ export default class EditTableComponent extends DataGridComponent {
   }
 
   static get builderInfo() {
+    return false;
+    /*
     return {
       title: 'Edit Table',
       icon: 'fa fa-th',
@@ -23,6 +25,7 @@ export default class EditTableComponent extends DataGridComponent {
       weight: 20,
       schema: EditTableComponent.schema()
     };
+    */
   }
 
   constructor(...args) {

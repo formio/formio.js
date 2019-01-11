@@ -2,7 +2,6 @@
 const gulp = require('gulp');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
-const sync = require('gulp-sync')(gulp);
 const babel = require('gulp-babel');
 const filter = require('gulp-filter');
 const sass = require('gulp-sass');
@@ -15,16 +14,30 @@ const eslint = require('gulp-eslint');
 // Clean lib folder.
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 
+// ESLint
+gulp.task('eslint', function eslintTask() {
+  return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+});
+
 // Run babel on source code.
-gulp.task('babel', ['eslint'], () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(babel())
-  .pipe(gulp.dest('lib')));
+gulp.task('babel', gulp.series('eslint', function babelTask() {
+  return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+    .pipe(babel())
+    .pipe(gulp.dest('lib'));
+}));
 
 // Move choices.js icons into dist folder.
-gulp.task('icons', () => gulp.src('node_modules/choices.js/assets/icons/*').pipe(gulp.dest('dist/icons')));
+gulp.task('icons', function icons() {
+  return gulp.src('node_modules/choices.js/assets/icons/*').pipe(gulp.dest('dist/icons'));
+});
 
 // Move font-awesome fonts into dist folder.
-gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts')));
+gulp.task('builder-fonts', function builderFonts() {
+  return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
+});
 
 // Generate styles
 const compileStyles = (styles, file) => {
@@ -41,32 +54,35 @@ const compileStyles = (styles, file) => {
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('dist'));
 };
-gulp.task('styles-form', () => compileStyles([
-  './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
-  './node_modules/dialog-polyfill/dialog-polyfill.css',
-  './node_modules/@yaireo/tagify/dist/tagify.css',
-  './src/sass/formio.form.scss'
-], 'formio.form'));
-gulp.task('styles-builder', () => compileStyles([
-  './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
-  './node_modules/dialog-polyfill/dialog-polyfill.css',
-  './node_modules/@yaireo/tagify/dist/tagify.css',
-  './node_modules/dragula/dist/dragula.css',
-  './src/sass/formio.form.scss',
-  './src/sass/formio.form.builder.scss'
-], 'formio.builder'));
-gulp.task('styles-full', ['builder-fonts'], () => compileStyles([
-  './node_modules/flatpickr/dist/flatpickr.min.css',
-  './node_modules/choices.js/assets/styles/css/choices.min.css',
-  './node_modules/dialog-polyfill/dialog-polyfill.css',
-  './node_modules/@yaireo/tagify/dist/tagify.css',
-  './node_modules/dragula/dist/dragula.css',
-  './node_modules/font-awesome/css/font-awesome.css',
-  './src/sass/formio.form.scss',
-  './src/sass/formio.form.builder.scss'
-], 'formio.full'));
+gulp.task('styles-form', function formStyles() {
+  return compileStyles([
+    './node_modules/flatpickr/dist/flatpickr.min.css',
+    './node_modules/choices.js/assets/styles/css/choices.min.css',
+    './node_modules/dialog-polyfill/dialog-polyfill.css',
+    './src/sass/formio.form.scss'
+  ], 'formio.form');
+});
+gulp.task('styles-builder', function builderStyles() {
+  return compileStyles([
+    './node_modules/flatpickr/dist/flatpickr.min.css',
+    './node_modules/choices.js/assets/styles/css/choices.min.css',
+    './node_modules/dialog-polyfill/dialog-polyfill.css',
+    './node_modules/dragula/dist/dragula.css',
+    './src/sass/formio.form.scss',
+    './src/sass/formio.form.builder.scss'
+  ], 'formio.builder');
+});
+gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
+  return compileStyles([
+    './node_modules/flatpickr/dist/flatpickr.min.css',
+    './node_modules/choices.js/assets/styles/css/choices.min.css',
+    './node_modules/dialog-polyfill/dialog-polyfill.css',
+    './node_modules/dragula/dist/dragula.css',
+    './node_modules/font-awesome/css/font-awesome.css',
+    './src/sass/formio.form.scss',
+    './src/sass/formio.form.builder.scss'
+  ], 'formio.full');
+}));
 
 // Script builds.
 const webpackDev = require('./config/webpack.dev');
@@ -77,7 +93,7 @@ const build = (input, output) => {
   const prodFile = output.replace(/\.js$/, '.min.js');
   gulp.task(output, () => buildDev(input, output));
   gulp.task(prodFile, () => buildProd(input, prodFile));
-  return [output, prodFile];
+  return gulp.parallel(output, prodFile);
 };
 gulp.task('scripts-formio', build('Formio.js', 'formio.js'));
 gulp.task('scripts-utils', build('utils/utils.js', 'formio.utils.js'));
@@ -88,15 +104,8 @@ gulp.task('formio.embed.js', () =>
   gulp.src('./dist/formio.embed.min.js')
     .pipe(rename('formio.embed.js'))
     .pipe(gulp.dest('dist')));
-gulp.task('scripts-embed', sync.sync([['formio.embed.min.js'], 'formio.embed.js']));
+gulp.task('scripts-embed', gulp.series('formio.embed.min.js', 'formio.embed.js'));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
-
-// ESLint
-gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(eslint())
-  .pipe(eslint.format())
-  .pipe(eslint.failAfterError())
-);
 
 gulp.task('jquery', () => gulp.src('./node_modules/jquery/dist/**/*.*').pipe(gulp.dest('./app/jquery')));
 gulp.task('fontawesome', () => gulp.src('./node_modules/font-awesome/**/*.*').pipe(gulp.dest('./app/fontawesome')));
@@ -124,23 +133,31 @@ gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.f
 gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
 
 // Create a new build.
-gulp.task('build', sync.sync([['clean'], 'babel', 'package-version', [
-  'icons',
-  'jquery',
-  'timezones',
-  'fontawesome',
-  'bootstrap',
-  'bootswatch',
-  'styles-form',
-  'styles-builder',
-  'styles-full',
-  'scripts-formio',
-  'scripts-utils',
-  'scripts-embed',
-  'scripts-contrib',
-  'scripts-form',
-  'scripts-full'
-], 'dist']));
+gulp.task('build', gulp.series(
+  'clean',
+  'babel',
+  'package-version',
+  gulp.parallel(
+    'icons',
+    'jquery',
+    'timezones',
+    'fontawesome',
+    'bootstrap',
+    'bootswatch'
+  ),
+  gulp.parallel(
+    'styles-form',
+    'styles-builder',
+    'styles-full',
+    'scripts-formio',
+    'scripts-utils',
+    'scripts-embed',
+    'scripts-contrib',
+    'scripts-form',
+    'scripts-full'
+  ),
+  'dist'
+));
 
 // Default task. Build and watch.
-gulp.task('default', ['babel', 'scripts-full', 'watch']);
+gulp.task('default', gulp.series('babel', 'scripts-full', 'watch'));
