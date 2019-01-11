@@ -500,7 +500,7 @@ export function getValue(submission, key) {
  * @param form
  */
 export function getStrings(form) {
-  const properties = [&apos;label&apos;, &apos;title&apos;, &apos;legend&apos;, &apos;tooltip&apos;, &apos;description&apos;, &apos;placeholder&apos;, &apos;prefix&apos;, &apos;suffix&apos;, &apos;errorLabel&apos;, &apos;content&apos;];
+  const properties = [&apos;label&apos;, &apos;title&apos;, &apos;legend&apos;, &apos;tooltip&apos;, &apos;description&apos;, &apos;placeholder&apos;, &apos;prefix&apos;, &apos;suffix&apos;, &apos;errorLabel&apos;, &apos;content&apos;, &apos;html&apos;];
   const strings = [];
   eachComponent(form.components, component =&gt; {
     properties.forEach(property =&gt; {
