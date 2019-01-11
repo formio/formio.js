@@ -3,7 +3,7 @@ import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import { getComponent, findComponent, bootstrapVersion } from './utils/utils';
+import { getComponent, bootstrapVersion } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
