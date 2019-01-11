@@ -908,3 +908,29 @@ export function bootstrapVersion() {
   }
   return 0;
 }
+
+/**
+ * Retrun provided argument.
+ * If argument is a function, returns the result of a function call.
+ * @param {*} e;
+ *
+ * @return {*}
+ */
+export function unfold(e) {
+  if (typeof e === 'function') {
+    return e();
+  }
+
+  return e;
+}
+
+/**
+ * Map values through unfold and return first non-nil value.
+ * @param {Array<T>} collection;
+ *
+ * @return {T}
+ */
+export const firstNonNil = _.flow([
+  _.partialRight(_.map, unfold),
+  _.partialRight(_.find, v => !_.isUndefined(v))
+]);
