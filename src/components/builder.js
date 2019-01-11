@@ -39,6 +39,7 @@ import WellForm from './well/Well.form';
 import FileForm from './file/File.form';
 import ModalEditForm from './modaledit/ModalEdit.form';
 import UnknownForm from './unknown/Unknown.form';
+import ReCaptchaForm from './recaptcha/ReCaptcha.form';
 
 Components.address.editForm = AddressForm;
 Components.content.editForm = ContentForm;
@@ -80,5 +81,6 @@ Components.well.editForm = WellForm;
 Components.file.editForm = FileForm;
 Components.modaledit.editForm = ModalEditForm;
 Components.unknown.editForm = UnknownForm;
+Components.recaptcha.editForm = ReCaptchaForm;
 
 export default Components;

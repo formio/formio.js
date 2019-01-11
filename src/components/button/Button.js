@@ -166,6 +166,8 @@ export default class ButtonComponent extends Field {
       };
     }
 
+    this.triggerReCaptcha();
+
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
@@ -379,5 +381,16 @@ export default class ButtonComponent extends Field {
 
   focus() {
     this.refs.button.focus();
+  }
+
+  triggerReCaptcha() {
+    const recaptchaComponent = this.root.components.find((component) => {
+      return component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key;
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.component.key}Click`);
+    }
   }
 }

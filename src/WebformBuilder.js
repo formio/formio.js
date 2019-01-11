@@ -6,7 +6,7 @@ import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import { getComponent } from './utils/utils';
+import { getComponent, eachComponent } from './utils/utils';
 import _ from 'lodash';
 require('./components/builder');
 
@@ -477,6 +477,25 @@ export default class WebformBuilder extends Component {
   }
 
   setForm(form) {
+    //populate isEnabled for recaptcha form settings
+    var isRecaptchaEnabled = false;
+    if (form.components) {
+      eachComponent(form.components, component => {
+        if (isRecaptchaEnabled) {
+          return;
+        }
+        if (component.type === 'recaptcha') {
+          isRecaptchaEnabled = true;
+          return false;
+        }
+      });
+      if (isRecaptchaEnabled) {
+        _.set(form, 'settings.recaptcha.isEnabled', true);
+      }
+      else if (_.get(form, 'settings.recaptcha.isEnabled')) {
+        _.set(form, 'settings.recaptcha.isEnabled', false);
+      }
+    }
     this.emit('change', form);
     return super.setForm(form).then(retVal => {
       setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);

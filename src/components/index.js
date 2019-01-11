@@ -42,6 +42,7 @@ import TabsComponent from './tabs/Tabs';
 import TreeComponent from './tree/Tree';
 import UnknownComponent from './unknown/Unknown';
 import ModalEdit from './modaledit/ModalEdit';
+import ReCaptchaComponent from './recaptcha/ReCaptcha';
 
 export default {
   nested: NestedComponent,
@@ -88,4 +89,5 @@ export default {
   tree: TreeComponent,
   unknown: UnknownComponent,
   modaledit: ModalEdit,
+  recaptcha: ReCaptchaComponent,
 };
