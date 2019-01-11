@@ -146,7 +146,7 @@ export default class ButtonComponent extends BaseComponent {
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
-        this.loading  = false;
+        this.loading = false;
         this.disabled = false;
         this.empty(message);
         this.addClass(this.buttonElement, 'btn-success submit-success');
@@ -283,6 +283,7 @@ export default class ButtonComponent extends BaseComponent {
 
           break;
       }
+      this.triggerReCaptcha();
     });
 
     if (this.shouldDisable) {
@@ -394,5 +395,16 @@ export default class ButtonComponent extends BaseComponent {
 
   focus() {
     this.buttonElement.focus();
+  }
+
+  triggerReCaptcha() {
+    const recaptchaComponent = this.root.components.find((component) => {
+      return component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key;
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.component.key}Click`);
+    }
   }
 }

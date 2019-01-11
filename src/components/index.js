@@ -40,6 +40,7 @@ import LocationComponent from './location/Location';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
 import TreeComponent from './tree/Tree';
+import ReCaptchaComponent from './recaptcha/ReCaptcha';
 
 export default {
   nested: NestedComponent,
@@ -84,4 +85,5 @@ export default {
   location: LocationComponent,
   file: FileComponent,
   tree: TreeComponent,
+  recaptcha: ReCaptchaComponent
 };

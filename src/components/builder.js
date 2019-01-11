@@ -38,6 +38,7 @@ import TimeForm from './time/Time.form';
 import TreeForm from './tree/Tree.form';
 import WellForm from './well/Well.form';
 import UnknownForm from './unknown/Unknown.form';
+import ReCaptchaForm from './recaptcha/ReCaptcha.form';
 
 Components.address.editForm = AddressForm;
 Components.button.editForm = ButtonForm;
@@ -77,5 +78,6 @@ Components.time.editForm = TimeForm;
 Components.tree.editForm = TreeForm;
 Components.well.editForm = WellForm;
 Components.unknown.editForm = UnknownForm;
+Components.recaptcha.editForm = ReCaptchaForm;
 
 export default Components;

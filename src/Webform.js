@@ -669,6 +669,7 @@ export default class Webform extends NestedComponent {
     this.initialized = false;
     return this.createForm(form).then(() => {
       this.emit('formLoad', form);
+      this.triggerRecaptcha();
       return form;
     });
   }
@@ -1292,6 +1293,16 @@ export default class Webform extends NestedComponent {
       this.emit('error', 'You should add a URL to this button.');
       this.setAlert('warning', 'You should add a URL to this button.');
       return console.warn('You should add a URL to this button.');
+    }
+  }
+
+  triggerRecaptcha() {
+    const recaptchaComponent = this.root.components.find((component) => {
+      return component.component.type === 'recaptcha' &&
+        component.component.eventType === 'formLoad';
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 }
