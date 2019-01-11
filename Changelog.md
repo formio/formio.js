@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.11.1
+### Fixed
+ - Issues with the choices icons not making their way into external librarys such as Angular, etc.
+ - Added "HTML" property type to extract html content from the HTML5 component
+ 
+## 3.11.0
+### Added
+ - The ModalEdit component which allows for inline editing of content with modal overlay.
+ - Add html content and component type to strings.
+
+### Fixed
+ - FOR-1970: Fixed metadata missing in nested child form
+
+## 3.10.4
+### Added
+ - FOR-1939: Added the saveDraft feature to automatically save submission drafts as the user is filling out the form.
+ - Added a class "formio-modified" to any field that is manually modified.
+
+## 3.10.3
+### Added
+ - The ability to configure a select dropdown to show only the value in readOnly mode.
+ 
+### Fixed
+ - FOR-1934: Problem where the language configurations was not getting passed into nested forms.
+ 
+### Changed
+ - Upgraded babel-loader@8.0.5, i18next@13.1.0, eslint@5.12.0, marked@0.6.0
+
 ## 3.10.2
 ### Fixed
  - Issues with file uploads where ? can exist in urls twice.

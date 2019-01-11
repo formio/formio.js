@@ -931,3 +931,27 @@ export function bootstrapVersion() {
   }
   return 0;
 }
+
+/**
+ * Create enclosed state.
+ * Returns functions to getting and cycling between states.
+ * @param {*} a - initial state.
+ * @param {*} b - next state.
+ * @return {Functions[]} -- [get, toggle];
+ */
+export function withSwitch(a, b) {
+  let state = a;
+  let next = b;
+
+  function get() {
+    return state;
+  }
+
+  function toggle() {
+    const prev = state;
+    state = next;
+    next = prev;
+  }
+
+  return [get, toggle];
+}

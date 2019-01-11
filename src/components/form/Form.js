@@ -77,6 +77,8 @@ export default class FormComponent extends BaseComponent {
 
     (new Form(this.element, form, options)).render().then((instance) => {
       this.subForm = instance;
+      this.subForm.parent = this;
+      this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
         this.onChange();
@@ -120,6 +122,9 @@ export default class FormComponent extends BaseComponent {
     }
     if (this.options && this.options.viewAsHtml) {
       srcOptions.viewAsHtml = this.options.viewAsHtml;
+    }
+    if (_.has(this.options, 'language')) {
+      srcOptions.language = this.options.language;
     }
 
     // Make sure that if reference is provided, the form must submit.
@@ -310,5 +315,29 @@ export default class FormComponent extends BaseComponent {
       return [];
     }
     return this.subForm.getAllComponents();
+  }
+
+  updateSubFormVisibility() {
+    if (this.subForm) {
+      this.subForm.parentVisible = this.visible;
+    }
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  set visible(value) {
+    super.visible = value;
+    this.updateSubFormVisibility();
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.updateSubFormVisibility();
   }
 }
