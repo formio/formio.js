@@ -3,7 +3,7 @@ import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import { getComponent, bootstrapVersion } from './utils/utils';
+import { getComponent, findComponent, bootstrapVersion } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -200,7 +200,7 @@ export default class WebformBuilder extends Webform {
       remove = window.confirm(this.t(message));
     }
     if (remove) {
-      this.emit('deleteComponent', component);
+      this.emit('deleteComponent', { component });
       component.parent.removeComponentById(component.id);
       this.form = this.schema;
     }
@@ -434,6 +434,7 @@ export default class WebformBuilder extends Webform {
         return;
       }
       event.preventDefault();
+      const originalComponent = component.component;
       component.isNew = false;
       //for custom component use value in 'componentJson' field as JSON of component
       if (isCustom) {
@@ -445,7 +446,7 @@ export default class WebformBuilder extends Webform {
       if (component.dragEvents && component.dragEvents.onSave) {
         component.dragEvents.onSave(component);
       }
-      this.emit('saveComponent', component);
+      this.emit('saveComponent', { component, originalComponent });
       this.form = this.schema;
       this.dialog.close();
     });
@@ -459,7 +460,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Called when we edit a component.
-    this.emit('editComponent', component);
+    this.emit('editComponent', { component });
   }
   /* eslint-enable max-statements */
 
@@ -844,6 +845,11 @@ export default class WebformBuilder extends Webform {
       if (target.dragEvents) {
         component.dragEvents = target.dragEvents;
       }
+
+      // TODO: Need to find a way to determine path and index.
+      const path = 'components';
+      const index = 0;
+      this.emit('addComponent', { component, path, index });
 
       // Edit the component.
       this.editComponent(component);
