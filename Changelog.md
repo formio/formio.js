@@ -4,6 +4,79 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - reCAPTCHA component
+
+## 3.11.1
+### Fixed
+ - Issues with the choices icons not making their way into external librarys such as Angular, etc.
+ - Added "HTML" property type to extract html content from the HTML5 component
+ 
+## 3.11.0
+### Added
+ - The ModalEdit component which allows for inline editing of content with modal overlay.
+ - Add html content and component type to strings.
+
+### Fixed
+ - FOR-1970: Fixed metadata missing in nested child form
+
+## 3.10.4
+### Added
+ - FOR-1939: Added the saveDraft feature to automatically save submission drafts as the user is filling out the form.
+ - Added a class "formio-modified" to any field that is manually modified.
+
+## 3.10.3
+### Added
+ - The ability to configure a select dropdown to show only the value in readOnly mode.
+ 
+### Fixed
+ - FOR-1934: Problem where the language configurations was not getting passed into nested forms.
+ 
+### Changed
+ - Upgraded babel-loader@8.0.5, i18next@13.1.0, eslint@5.12.0, marked@0.6.0
+
+## 3.10.2
+### Fixed
+ - Issues with file uploads where ? can exist in urls twice.
+ - Cut reference for values stored in cache
+ - Fix bug with compilation skipping for scss files
+ - WebformBuilder default editform options mutation.
+ - FOR-1962: Removing CSS white color by default
+
+### Added
+ - Added option in Data tab to specify custom options that will be used in the Choices JS library
+
+## 3.10.1
+### Fixed
+ - FOR-1964: Fix bug with delimiter setting in Number
+ - Problems where the valueProperty would not show in the Select component settings.
+ 
+### Changed
+ - Switch to Karma mocha reporter.
+ - Upgraded i18next@13.0.1, @babel/cli@7.2.3, @babel/preset-env@7.2.3, webpack@4.28.2, @babel/polyfill@7.2.5, bootstrap@4.2.1, eslint@5.11.0
+
+## 3.10.0
+### Fixed
+ - Signature field has invalid height attribute of "150" instead of "150px"
+ - Fixed some potential crashes within the EditGrid component.
+ - The form component in builder mode.
+ - The form component "form" selection configuration to work within the form manager application.
+ - The "authenticate" parameter to work with Select components, where it will pass Form.io authentication to the URL.
+ - Fixed view for select multiple
+ - A crash in the isEmpty method for DateTime component.
+ - Fix bug with editForm Data tab for container components
+ - Fix issue where if radio value is true it won't have radio-selected class set on it.
+
+### Added
+ - Tree Component for building nested tree-based controls.
+ - FOR-1948: editorReady promise for Content component
+ - Interpolate to the Button urls so that {{ }} can be used.
+ - FOR-1912: Added tests to the Select component to demonstrate no-reproducibility of this issue.
+ - Ability to flatten wizard and tab components for better printing capability.
+ - Currency Component: Support other currencies - Add suffix / prefix options
+ - Allow translating other Choice.js labels.
+
 ## 3.9.4
 ### Fixed
  - Problem where a component can get in an infinite loop if its parent is not visible but it is visible and cleanOnHide is set.
