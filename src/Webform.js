@@ -1140,11 +1140,9 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = _.cloneDeep(this.submission || {});
-
       // Add in metadata about client submitting the form
-      submission.metadata = submission.metadata || {};
-      _.defaults(submission.metadata, {
+      this.submission.metadata = this.submission.metadata || {};
+      _.defaults(this.submission.metadata, {
         timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
         offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
         referrer: document.referrer,
@@ -1153,6 +1151,8 @@ export default class Webform extends NestedComponent {
         pathName: window.location.pathname,
         onLine: navigator.onLine,
       });
+
+      const submission = _.cloneDeep(this.submission || {});
 
       submission.state = options.state || 'submitted';
       const isDraft = (submission.state === 'draft');

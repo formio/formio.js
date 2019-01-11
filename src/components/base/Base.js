@@ -2266,8 +2266,7 @@ export default class BaseComponent extends Component {
   }
 
   checkValidity(data, dirty, rowData) {
-    // Force valid if component is conditionally hidden.
-    if (!this.checkCondition(rowData, data)) {
+    if (this.shouldSkipValidation(data, dirty, rowData)) {
       this.setCustomValidity('');
       return true;
     }
@@ -2338,6 +2337,17 @@ export default class BaseComponent extends Component {
         input.setCustomValidity(message, dirty);
       }
     });
+  }
+
+  shouldSkipValidation(data, dirty, rowData) {
+    const rules = [
+      // Force valid if component is hidden.
+      () => !this.visible,
+      // Force valid if component is conditionally hidden.
+      () => !this.checkCondition(rowData, data)
+    ];
+
+    return rules.some(pred => pred());
   }
 
   /**

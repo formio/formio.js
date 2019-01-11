@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.11.1
+### Fixed
+ - Issues with the choices icons not making their way into external librarys such as Angular, etc.
+ - Added "HTML" property type to extract html content from the HTML5 component
+ 
+## 3.11.0
+### Added
+ - The ModalEdit component which allows for inline editing of content with modal overlay.
+ - Add html content and component type to strings.
+
+### Fixed
+ - FOR-1970: Fixed metadata missing in nested child form
+
 ## 3.10.4
 ### Added
  - FOR-1939: Added the saveDraft feature to automatically save submission drafts as the user is filling out the form.
