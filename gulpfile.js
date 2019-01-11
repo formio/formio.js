@@ -29,11 +29,6 @@ gulp.task('babel', gulp.series('eslint', function babelTask() {
     .pipe(gulp.dest('lib'));
 }));
 
-// Move choices.js icons into dist folder.
-gulp.task('icons', function icons() {
-  return gulp.src('node_modules/choices.js/assets/icons/*').pipe(gulp.dest('dist/icons'));
-});
-
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {
   return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
@@ -48,6 +43,10 @@ const compileStyles = (styles, file) => {
     .pipe(sassFilter.restore)
     .pipe(concat(`${file}.css`))
     .pipe(replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+    /* eslint-disable quotes */
+    .pipe(replace('icons/cross.svg', `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23FFF" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`))
+    .pipe(replace('icons/cross-inverse.svg', `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23000" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`))
+    /* eslint-enable quotes */
     .pipe(replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
     .pipe(rename(`${file}.min.css`))
@@ -138,7 +137,6 @@ gulp.task('build', gulp.series(
   'babel',
   'package-version',
   gulp.parallel(
-    'icons',
     'jquery',
     'timezones',
     'fontawesome',
