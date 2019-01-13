@@ -22,9 +22,11 @@ export default class SelectComponent extends BaseComponent {
       searchEnabled: true,
       searchField: '',
       minSearch: 0,
+      readOnlyValue: false,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
-      selectFields: ''
+      selectFields: '',
+      customOptions: {}
     }, ...extend);
   }
 
@@ -83,6 +85,11 @@ export default class SelectComponent extends BaseComponent {
   itemTemplate(data) {
     if (!data) {
       return '';
+    }
+
+    // If they wish to show the value in read only mode, then just return the itemValue here.
+    if (this.options.readOnly && this.component.readOnlyValue) {
+      return this.itemValue(data);
     }
 
     // Perform a fast interpretation if we should not use the template.
@@ -490,7 +497,19 @@ export default class SelectComponent extends BaseComponent {
 
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
+    let customOptions = this.component.customOptions || {};
+    if (typeof customOptions == 'string') {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
     const choicesOptions = {
+      ...customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {

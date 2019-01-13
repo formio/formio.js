@@ -67,6 +67,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-edittable">components/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
@@ -81,6 +83,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-location">components/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-modaledit">components/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-nested">components/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
@@ -180,6 +184,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
@@ -191,27 +196,16 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/nested/NestedComponent.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
 import each from &apos;lodash/each&apos;;
+import { expect } from &apos;chai&apos;;
 
 import Harness from &apos;../../../test/harness&apos;;
 import NestedComponent from &apos;./NestedComponent&apos;;
+import { comp1 } from &apos;./fixtures&apos;;
 
 describe(&apos;NestedComponent class&apos;, () =&gt; {
   let component = null;
   it(&apos;Should create a new NestedComponent class&apos;, (done) =&gt; {
-    Harness.testCreate(NestedComponent, {
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          key: &apos;firstName&apos;,
-          input: true
-        },
-        {
-          type: &apos;textfield&apos;,
-          key: &apos;lastName&apos;,
-          input: true
-        }
-      ]
-    }).then((_component) =&gt; {
+    Harness.testCreate(NestedComponent, comp1).then((_component) =&gt; {
       component = _component;
       Harness.testElements(component, &apos;input[name=&quot;data[firstName]&quot;]&apos;, 1);
       Harness.testElements(component, &apos;input[name=&quot;data[lastName]&quot;]&apos;, 1);
@@ -317,6 +311,67 @@ describe(&apos;NestedComponent class&apos;, () =&gt; {
       assert.equal(comp.components[1].components[0]._visible, true);
       assert.equal(comp.components[1].components[1]._visible, true);
       done();
+    });
+  });
+
+  describe(&apos;set/get visible&apos;, () =&gt; {
+    it(&apos;should set/get visible flag on instance and child components&apos;, done =&gt; {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested =&gt; {
+          expect(nested.visible).to.be.true;
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.visible = false;
+
+          expect(nested.visible).to.be.false;
+
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.visible = true;
+
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
+
+  describe(&apos;set/get parentVisible&apos;, () =&gt; {
+    it(&apos;should set/get parentVisible flag on instance and child components&apos;, done =&gt; {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested =&gt; {
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.parentVisible = false;
+
+          expect(nested.parentVisible).to.be.false;
+
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.parentVisible = true;
+
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp =&gt; {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
     });
   });
 });

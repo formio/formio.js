@@ -10,6 +10,7 @@ import hardtack from 'hardtack';
 import copy from 'shallow-copy';
 import * as providers from './providers';
 import _get from 'lodash/get';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -471,7 +472,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -486,7 +487,7 @@ export default class Formio {
             if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
               }
               else {
                 throw ('Storage provider not found');
@@ -697,7 +698,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return _cloneDeep(Formio.cache[cacheKey]);
     }
 
     // Set up and fetch request
@@ -819,6 +820,11 @@ export default class Formio {
           return result;
         }
 
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = _cloneDeep(result);
+        }
+
         let resultCopy = {};
 
         // Shallow copy result so modifications don't end up in cache
@@ -850,11 +856,6 @@ export default class Formio {
 
         return Promise.reject(err);
       });
-
-    // Cache the response.
-    if (method === 'GET') {
-      Formio.cache[cacheKey] = result;
-    }
 
     return result;
   }
@@ -933,6 +934,10 @@ export default class Formio {
     var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
       Formio.setToken(null, opts);
+
+      // Emit an event on the cleared user.
+      Formio.events.emit('formio.user', null);
+
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -948,6 +953,9 @@ export default class Formio {
     catch (err) {
       hardtack.set(userName, JSON.stringify(user), { path: '/' });
     }
+
+    // Emit an event on the authenticated user.
+    Formio.events.emit('formio.user', user);
   }
 
   static getUser(options) {

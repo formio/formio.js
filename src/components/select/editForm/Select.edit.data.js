@@ -344,5 +344,24 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 22,
+    key: 'readOnlyValue',
+    label: 'Read Only Value',
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 23,
+    input: true,
+    key: 'customOptions',
+    label: 'Custom default options',
+    tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
+	defaultValue: {}
   }
 ];
