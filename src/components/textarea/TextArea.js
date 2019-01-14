@@ -1,6 +1,8 @@
+/* global ace, Quill */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';
+import { uniqueName } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -164,8 +166,10 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.editorReady = Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
           .then((Editor) => {
             this.editor = new Editor(element, settings);
-
             this.editor.root.spellcheck = this.component.spellcheck;
+            if (this.component.isUploadEnabled) {
+              this.editor .getModule('toolbar').addHandler('image', () => this.imageHandler());
+            }
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
             const txtArea = document.createElement('textarea');
@@ -217,6 +221,57 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     return element;
+  }
+
+  imageHandler() {
+    let fileInput = this.container.querySelector('input.ql-image[type=file]');
+    if (fileInput == null) {
+      fileInput = document.createElement('input');
+      fileInput.setAttribute('type', 'file');
+      fileInput.setAttribute('accept', 'image/*');
+      fileInput.classList.add('ql-image');
+      fileInput.addEventListener('change', () => {
+        const files = fileInput.files;
+        const range = this.editor.getSelection(true);
+
+        if (!files || !files.length) {
+          console.warn('No files selected');
+          return;
+        }
+
+        this.editor.enable(false);
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        this.root.formio
+          .uploadFile(
+            uploadStorage,
+            files[0],
+            uniqueName(files[0].name),
+            uploadDir || '', //should pass empty string if undefined
+            null,
+            uploadUrl,
+            uploadOptions
+          )
+          .then((result) => {
+            return this.root.formio.downloadFile(result);
+          })
+          .then(result => {
+            this.editor.enable(true);
+            const Delta = Quill.import('delta');
+            this.editor.updateContents(new Delta()
+                .retain(range.index)
+                .delete(range.length)
+                .insert({ image: result.url })
+              , Quill.sources.USER);
+            fileInput.value = '';
+          }).catch(error => {
+          console.warn('Quill image upload failed');
+          console.warn(error);
+          this.editor.enable(true);
+        });
+      });
+      this.container.appendChild(fileInput);
+    }
+    fileInput.click();
   }
 
   get isPlain() {
