@@ -274,7 +274,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.dataValue;
     }
 
-    return this.component.multiple ? [] : this.dataValue || '';
+    return this.component.multiple ? [] : '';
   }
 
   elementInfo() {
