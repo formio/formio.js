@@ -1,5 +1,6 @@
 import baseEditForm from '../_classes/component/Component.form';
 
+import EditGridEditData from './editForm/EditGrid.data.template';
 import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 
 export default function(...extend) {
@@ -12,10 +13,7 @@ export default function(...extend) {
     },
     {
       key: 'data',
-      components: [{
-        key: 'defaultValue',
-        ignore: true
-      }]
+      components: EditGridEditData,
     }
   ], ...extend);
 }
