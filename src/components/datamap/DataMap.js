@@ -1,9 +1,9 @@
 import Component from '../_classes/component/Component';
-// import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 import _ from 'lodash';
 import { uniqueKey } from '../../utils/utils';
 
-export default class DataMapComponent extends Component {
+export default class DataMapComponent extends NestedComponent {
   static schema(...extend) {
     return Component.schema({
       label: 'Data Map',
@@ -59,6 +59,36 @@ export default class DataMapComponent extends Component {
     return {};
   }
 
+  render() {
+    return super.render(this.renderTemplate('datagrid', {
+      rows: [],
+      // rows: this.rows.map(row => {
+      //   const components = {};
+      //   _.each(row, (col, key) => {
+      //     components[key] = col.render();
+      //   });
+      //   return components;
+      // }),
+      visibleColumns: this.visibleColumns,
+      hasHeader: true,
+      // hasHeader: this.component.components.reduce((hasHeader, col) => {
+      //   // If any of the components has a title and it isn't hidden, display the header.
+      //   return hasHeader || ((col.label || col.title) && !col.hideLabel);
+      // }, false),
+      hasExtraColumn: true,
+      hasAddButton: true,
+      hasRemoveButtons: true,
+      hasTopSubmit: false,
+      hasBottomSubmit: true,
+      numColumns: 1,
+      datagridKey: this.datagridKey,
+      builder: this.options.attachMode === 'builder',
+      placeholder: '',
+    }));
+  }
+
+  /** Old **/
+
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
@@ -83,25 +113,25 @@ export default class DataMapComponent extends Component {
     return [this.component.valueComponent];
   }
 
-  build() {
-    if (this.options.builder) {
-      return super.build(true);
-    }
-    this.createElement();
-    this.createLabel(this.element);
-    let tableClass = 'table datagrid-table table-bordered form-group formio-data-map ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
-      }
-    });
-    this.tableElement = this.ce('table', {
-      class: tableClass
-    });
-    this.buildRows();
-    this.element.appendChild(this.tableElement);
-    this.createDescription(this.element);
-  }
+  // build() {
+  //   if (this.options.builder) {
+  //     return super.build(true);
+  //   }
+  //   this.createElement();
+  //   this.createLabel(this.element);
+  //   let tableClass = 'table datagrid-table table-bordered form-group formio-data-map ';
+  //   _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+  //     if (this.component[prop]) {
+  //       tableClass += `table-${prop} `;
+  //     }
+  //   });
+  //   this.tableElement = this.ce('table', {
+  //     class: tableClass
+  //   });
+  //   this.buildRows();
+  //   this.element.appendChild(this.tableElement);
+  //   this.createDescription(this.element);
+  // }
 
   addKeyButton() {
     if (!this.hasAddButton()) {
