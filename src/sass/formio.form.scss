@@ -737,30 +737,31 @@ body.formio-dialog-open {
   width: auto;
 }
 
-.formio-component-edittable .formio-edittable-remove {
+.formio-component-datagrid .formio-datagrid-remove {
   position: absolute;
   top: 0;
   right: 0;
   visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms linear, visibility 0ms 200ms;
 }
 
-.formio-component-edittable {
-  .formio-edittable-table {
-    table-layout: fixed;
-
+.formio-component-datagrid {
+  .datagrid-table {
     &>tbody>tr>td:last-child {
       position: relative;
     }
 
-    &>tbody>tr:hover>td:last-child .formio-edittable-remove {
+    &>tbody>tr:hover>td:last-child .formio-datagrid-remove {
       visibility: visible;
+      opacity: 1;
+      transition: visibility 0ms, opacity 200ms linear;
     }
   }
 
-  .edittable-group-label {
-    background-color: #ddd;
-  }
-
+  // .edittable-group-label {
+  //   background-color: #ddd;
+  // }
 }
 
 .formio-component-modaledit {
@@ -836,4 +837,34 @@ body.formio-dialog-open {
 .formio-component-select div[disabled="disabled"] button,
 .formio-component-select .choices.is-disabled[data-type*=select-one]:after {
   display: none;
+}
+
+.datagrid-group-label.collapsed > td {
+  display: none;
+}
+
+.datagrid-group-header {
+  &.clickable {
+    cursor: pointer;
+
+    .datagrid-group-label {
+      &:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: '▾';
+        margin: 0 5px;
+      }
+    }
+  }
+
+  &.clickable.collapsed {
+    .datagrid-group-label {
+      &:before {
+        content: '▸';
+      }
+    }
+  }
+}
+
+.datagrid-group-label {
 }
