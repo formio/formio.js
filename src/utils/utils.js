@@ -8,6 +8,7 @@ import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import Promise from 'native-promise-only';
 import { getValue } from './formUtils';
+import stringHash from 'string-hash';
 
 export * from './formUtils';
 
@@ -332,6 +333,29 @@ export function setActionProperty(component, action, row, data, result, instance
   return component;
 }
 
+const templateCache = {};
+const templateHashCache = {};
+
+function interpolateTemplate(template) {
+  const templateSettings = {
+    evaluate: /\{%([\s\S]+?)%\}/g,
+    interpolate: /\{\{([\s\S]+?)\}\}/g,
+    escape: /\{\{\{([\s\S]+?)\}\}\}/g
+  };
+  try {
+    return _.template(template, templateSettings);
+  }
+  catch (err) {
+    console.warn('Error while processing template', err, template);
+  }
+}
+
+export function addTemplateHash(template) {
+  const hash = stringHash(template);
+  templateHashCache[hash] = interpolateTemplate(template);
+  return hash;
+}
+
 /**
  * Interpolate a string and add data replacements.
  *
@@ -339,17 +363,16 @@ export function setActionProperty(component, action, row, data, result, instance
  * @param data
  * @returns {XML|string|*|void}
  */
-export function interpolate(string, data) {
-  const templateSettings = {
-    evaluate: /\{%(.+?)%\}/g,
-    interpolate: /\{\{(.+?)\}\}/g,
-    escape: /\{\{\{(.+?)\}\}\}/g
-  };
+export function interpolate(rawTemplate, data) {
+  const template = _.isNumber(rawTemplate)
+    ? templateHashCache[rawTemplate]
+    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
+
   try {
-    return _.template(string, templateSettings)(data);
+    return template(data);
   }
   catch (err) {
-    console.warn('Error interpolating template', err, string, data);
+    console.warn('Error interpolating template', err, rawTemplate, data);
   }
 }
 

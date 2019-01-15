@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Possibility to skip proxy value for EditGrid.
+ - Hashing and caching for `interpolate` function.
+ - Ability to upload images to File Storage for Quill WYSIWYG
 
 ## 3.11.1
 ### Fixed
