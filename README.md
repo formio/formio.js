@@ -28,7 +28,8 @@ This library has a very powerful JSON form builder, and can be used like the fol
     <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
-        Formio.builder(document.getElementById('builder'));
+        let formioComponents;
+        Formio.builder(document.getElementById('builder'), {components: this.formioComponents});
       };
     </script>
   </head>
