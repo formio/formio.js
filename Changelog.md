@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - reCAPTCHA component
  - Ability to upload images to File Storage for Quill WYSIWYG
  - Possibility to skip proxy value for EditGrid.
+ - Hashing and caching for `interpolate` function.
 
 ## 3.11.1
 ### Fixed
