@@ -10,7 +10,8 @@ export default class HTMLComponent extends BaseComponent {
       attrs: [],
       content: '',
       input: false,
-      persistent: false
+      persistent: false,
+	    translateHtml: false,
     }, ...extend);
   }
 
@@ -30,8 +31,20 @@ export default class HTMLComponent extends BaseComponent {
   }
 
   setHTML() {
-    this.htmlElement.innerHTML = this.interpolate(this.component.content);
-  }
+		this.htmlElement.innerHTML = this.interpolate(this.component.content);
+
+		if (this.component.translateHtml) {
+			const walker = document.createTreeWalker(this.htmlElement, NodeFilter.SHOW_TEXT, null, false);
+			let node = walker.nextNode();
+			while (node) {
+				const text = node.parentNode.nodeName !== 'SCRIPT') ? node.nodeValue.trim(): false;
+			if (text) {
+				node.nodeValue = this.t(text);
+			}
+			node = walk.nextNode();
+		}
+	}
+	}
 
   build() {
     this.createElement();

@@ -59,4 +59,12 @@ export default [
     key: 'refreshOnChange',
     input: true
   },
+  {
+   type: 'checkbox',
+   input: true,
+   weight: 0,
+   tooltip: 'Allow Translation',
+   key: 'translateHtml',
+   label: 'Allow Translation'
+},
 ];
