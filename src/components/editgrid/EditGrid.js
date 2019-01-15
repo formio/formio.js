@@ -15,7 +15,7 @@ export default class EditGridComponent extends NestedComponent {
       defaultOpen: false,
       removeRow: '',
       components: [],
-      skipProxy: false,
+      inlineEdit: false,
       templates: {
         header: this.defaultHeaderTemplate,
         row: this.defaultRowTemplate,
@@ -304,14 +304,14 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: dataObj,
     });
-    if (this.component.skipProxy) {
+    if (this.component.inlineEdit) {
       this.dataValue.push(dataObj);
     }
     this.emit('editGridAddRow', {
       component: this.component,
       row: this.editRows[this.editRows.length - 1]
     });
-    if (this.component.skipProxy) {
+    if (this.component.inlineEdit) {
       this.updateGrid();
     }
     else {
@@ -325,7 +325,7 @@ export default class EditGridComponent extends NestedComponent {
     editRow.isOpen = true;
     editRow.editing = true;
     const dataSnapshot = _.cloneDeep(this.dataValue[rowIndex]);
-    if (this.component.skipProxy) {
+    if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
       this.updateGrid();
     }
@@ -362,7 +362,7 @@ export default class EditGridComponent extends NestedComponent {
     if (editRow.editing) {
       editRow.dirty = false;
       editRow.isOpen = false;
-      if (this.component.skipProxy) {
+      if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
       }
       editRow.data = this.dataValue[rowIndex];
@@ -370,7 +370,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       this.clearErrors(rowIndex);
-      if (this.component.skipProxy) {
+      if (this.component.inlineEdit) {
         this.splice(rowIndex);
       }
       this.removeChildFrom(editRow.element, this.tableElement);
@@ -394,7 +394,7 @@ export default class EditGridComponent extends NestedComponent {
     editRow.dirty = false;
     editRow.isOpen = false;
 
-    if (!this.component.skipProxy) {
+    if (!this.component.inlineEdit) {
       if (editRow.editing) {
         this.dataValue[rowIndex] = editRow.data;
       }
