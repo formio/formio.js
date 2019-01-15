@@ -145,6 +145,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -196,6 +197,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/EditGrid.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
 
+import EditGridEditData from &apos;./editForm/EditGrid.edit.data&apos;;
 import EditGridEditTemplates from &apos;./editForm/EditGrid.edit.templates&apos;;
 
 export default function(...extend) {
@@ -208,10 +210,7 @@ export default function(...extend) {
     },
     {
       key: &apos;data&apos;,
-      components: [{
-        key: &apos;defaultValue&apos;,
-        ignore: true
-      }]
+      components: EditGridEditData,
     }
   ], ...extend);
 }

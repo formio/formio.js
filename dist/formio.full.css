@@ -3012,21 +3012,21 @@ body.formio-dialog-open {
 .formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
   width: auto; }
 
-.formio-component-edittable .formio-edittable-remove {
+.formio-component-datagrid .formio-datagrid-remove {
   position: absolute;
   top: 0;
   right: 0;
-  visibility: hidden; }
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms linear, visibility 0ms 200ms; }
 
-.formio-component-edittable .formio-edittable-table {
-  table-layout: fixed; }
-  .formio-component-edittable .formio-edittable-table > tbody > tr > td:last-child {
-    position: relative; }
-  .formio-component-edittable .formio-edittable-table > tbody > tr:hover > td:last-child .formio-edittable-remove {
-    visibility: visible; }
+.formio-component-datagrid .datagrid-table > tbody > tr > td:last-child {
+  position: relative; }
 
-.formio-component-edittable .edittable-group-label {
-  background-color: #ddd; }
+.formio-component-datagrid .datagrid-table > tbody > tr:hover > td:last-child .formio-datagrid-remove {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0ms, opacity 200ms linear; }
 
 .formio-component-modaledit .formio-modaledit-view-container {
   position: relative;
@@ -3084,6 +3084,20 @@ body.formio-dialog-open {
 .formio-component-select div[disabled="disabled"] button,
 .formio-component-select .choices.is-disabled[data-type*=select-one]:after {
   display: none; }
+
+.datagrid-group-label.collapsed > td {
+  display: none; }
+
+.datagrid-group-header.clickable {
+  cursor: pointer; }
+  .datagrid-group-header.clickable .datagrid-group-label:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: '▾';
+    margin: 0 5px; }
+
+.datagrid-group-header.clickable.collapsed .datagrid-group-label:before {
+  content: '▸'; }
 
 .formbuilder {
   position: relative; }

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Added "Inline Edit" mode for the edit grid to commit the changed rows inline with the submission value.
  - Hashing and caching for `interpolate` function.
  - Ability to upload images to File Storage for Quill WYSIWYG
+ - Row groups feature to Data Grid.
+ - Static table configuration options to Data Grid component.
+
+### Changed
+ - Upgrade i18next@13.1.2
 
 ## 3.11.1
 ### Fixed

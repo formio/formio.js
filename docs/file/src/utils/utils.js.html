@@ -145,6 +145,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -204,6 +205,7 @@ import jtz from &apos;jstimezonedetect&apos;;
 import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import { getValue } from &apos;./formUtils&apos;;
+import stringHash from &apos;string-hash&apos;;
 
 export * from &apos;./formUtils&apos;;
 
@@ -528,6 +530,29 @@ export function setActionProperty(component, action, row, data, result, instance
   return component;
 }
 
+const templateCache = {};
+const templateHashCache = {};
+
+function interpolateTemplate(template) {
+  const templateSettings = {
+    evaluate: /\{%([\s\S]+?)%\}/g,
+    interpolate: /\{\{([\s\S]+?)\}\}/g,
+    escape: /\{\{\{([\s\S]+?)\}\}\}/g
+  };
+  try {
+    return _.template(template, templateSettings);
+  }
+  catch (err) {
+    console.warn(&apos;Error while processing template&apos;, err, template);
+  }
+}
+
+export function addTemplateHash(template) {
+  const hash = stringHash(template);
+  templateHashCache[hash] = interpolateTemplate(template);
+  return hash;
+}
+
 /**
  * Interpolate a string and add data replacements.
  *
@@ -535,17 +560,16 @@ export function setActionProperty(component, action, row, data, result, instance
  * @param data
  * @returns {XML|string|*|void}
  */
-export function interpolate(string, data) {
-  const templateSettings = {
-    evaluate: /\{%(.+?)%\}/g,
-    interpolate: /\{\{(.+?)\}\}/g,
-    escape: /\{\{\{(.+?)\}\}\}/g
-  };
+export function interpolate(rawTemplate, data) {
+  const template = _.isNumber(rawTemplate)
+    ? templateHashCache[rawTemplate]
+    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
+
   try {
-    return _.template(string, templateSettings)(data);
+    return template(data);
   }
   catch (err) {
-    console.warn(&apos;Error interpolating template&apos;, err, string, data);
+    console.warn(&apos;Error interpolating template&apos;, err, rawTemplate, data);
   }
 }
 

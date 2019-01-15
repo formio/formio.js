@@ -145,6 +145,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -194,10 +195,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global ace */
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global ace, Quill */
 import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import Formio from &apos;../../Formio&apos;;
 import _ from &apos;lodash&apos;;
+import { uniqueName } from &apos;../../utils/utils&apos;;
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -270,6 +272,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   createInput(container) {
+    const _this = this;
     if (this.isPlain) {
       if (this.options.readOnly) {
         this.input = this.ce(&apos;div&apos;, {
@@ -356,6 +359,9 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
       }
     ).then((quill) =&gt; {
+      if (this.component.isUploadEnabled) {
+        quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, imageHandler);
+      }
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
         quill.disable();
@@ -365,6 +371,58 @@ export default class TextAreaComponent extends TextFieldComponent {
     }).catch(err =&gt; console.warn(err));
 
     return this.input;
+
+    function imageHandler() {
+      let fileInput = this.container.querySelector(&apos;input.ql-image[type=file]&apos;);
+
+      if (fileInput == null) {
+        fileInput = document.createElement(&apos;input&apos;);
+        fileInput.setAttribute(&apos;type&apos;, &apos;file&apos;);
+        fileInput.setAttribute(&apos;accept&apos;, &apos;image/*&apos;);
+        fileInput.classList.add(&apos;ql-image&apos;);
+        fileInput.addEventListener(&apos;change&apos;, () =&gt; {
+          const files = fileInput.files;
+          const range = this.quill.getSelection(true);
+
+          if (!files || !files.length) {
+            console.warn(&apos;No files selected&apos;);
+            return;
+          }
+
+          this.quill.enable(false);
+          const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = _this.component;
+          _this.root.formio
+            .uploadFile(
+              uploadStorage,
+              files[0],
+              uniqueName(files[0].name),
+              uploadDir || &apos;&apos;, //should pass empty string if undefined
+              null,
+              uploadUrl,
+              uploadOptions
+            )
+            .then(result =&gt; {
+              return _this.root.formio.downloadFile(result);
+            })
+            .then(result =&gt; {
+              this.quill.enable(true);
+              const Delta = Quill.import(&apos;delta&apos;);
+              this.quill.updateContents(new Delta()
+                  .retain(range.index)
+                  .delete(range.length)
+                  .insert({ image: result.url })
+                , Quill.sources.USER);
+              fileInput.value = &apos;&apos;;
+            }).catch(error =&gt; {
+            console.warn(&apos;Quill image upload failed&apos;);
+            console.warn(error);
+            this.quill.enable(true);
+          });
+        });
+        this.container.appendChild(fileInput);
+      }
+      fileInput.click();
+    }
   }
 
   setConvertedValue(value) {
