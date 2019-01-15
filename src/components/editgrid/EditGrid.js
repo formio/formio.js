@@ -14,7 +14,7 @@ export default class EditGridComponent extends NestedComponent {
       tree: true,
       defaultOpen: false,
       components: [],
-      skipProxy: false,
+      inlineEdit: false,
       templates: {
         header: this.defaultHeaderTemplate,
         row: this.defaultRowTemplate,
@@ -223,7 +223,7 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: dataObj
     });
-    if (this.component.skipProxy) {
+    if (this.component.inlineEdit) {
       this.dataValue.push(dataObj);
     }
     const rowIndex = this.editRows.length - 1;
@@ -243,7 +243,7 @@ export default class EditGridComponent extends NestedComponent {
     editRow.isOpen = true;
     editRow.editing = true;
     const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
-    if (this.component.skipProxy) {
+    if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
     }
     else {
@@ -275,7 +275,7 @@ export default class EditGridComponent extends NestedComponent {
       const dataValue = this.dataValue || [];
       editRow.dirty = false;
       editRow.isOpen = false;
-      if (this.component.skipProxy) {
+      if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
       }
       editRow.data = dataValue[rowIndex] || {};
@@ -283,7 +283,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       this.clearErrors(rowIndex);
-      if (this.component.skipProxy) {
+      if (this.component.inlineEdit) {
         this.splice(rowIndex);
       }
       this.editRows.splice(rowIndex, 1);
@@ -306,7 +306,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
 
-    if (!this.component.skipProxy) {
+    if (!this.component.inlineEdit) {
       const dataValue = this.dataValue || [];
       if (editRow.editing) {
         dataValue[rowIndex] = editRow.data;
