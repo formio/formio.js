@@ -1,6 +1,6 @@
 import baseEditForm from '../base/Base.form';
 
-import EditGridEditData from './editForm/EditGrid.data.template';
+import EditGridEditData from './editForm/EditGrid.edit.data';
 import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 
 export default function(...extend) {
