@@ -3,6 +3,7 @@ import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 import NestedComponent from '../nested/NestedComponent';
+import Utils from '../../utils';
 
 class Node {
   constructor(
@@ -238,6 +239,13 @@ export default class TreeComponent extends NestedComponent {
     super(component, options, data);
     this.type = 'tree';
     this.changingNodeClassName = 'formio-component-tree-node-changing';
+
+    this.templateHash = {
+      edit: Utils.addTemplateHash(this.component.template?.edit || TreeComponent.defaultEditTemplate),
+      view: Utils.addTemplateHash(this.component.template?.view || TreeComponent.defaultViewTemplate),
+      child: Utils.addTemplateHash(this.component.template?.child || TreeComponent.defaultChildTemplate),
+      children: Utils.addTemplateHash(this.component.template?.children || TreeComponent.defaultChildrenTemplate),
+    };
   }
 
   getComponents() {
@@ -284,8 +292,7 @@ export default class TreeComponent extends NestedComponent {
 
   buildNodes(parent) {
     const childNodes = parent.children.map(this.buildNode.bind(this));
-    const childrenTemplate = this.component.template?.children || TreeComponent.defaultChildrenTemplate;
-    const element = this.renderElement(childrenTemplate, {
+    const element = this.renderElement(this.templateHash.children, {
       node: parent,
       nodeData: parent.persistentData,
       data: this.data,
@@ -307,10 +314,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   buildNode(node) {
-    const editTemplate = this.component.template?.edit || TreeComponent.defaultEditTemplate;
-    const viewTemplate = this.component.template?.view || TreeComponent.defaultViewTemplate;
-    const childTemplate = this.component.template?.child || TreeComponent.defaultChildTemplate;
-    const element = this.renderElement(childTemplate, {
+    const element = this.renderElement(this.templateHash.child, {
       node,
       nodeData: node.persistentData,
       data: this.data,
@@ -332,7 +336,7 @@ export default class TreeComponent extends NestedComponent {
 
       this.renderTemplateToElement(
         element,
-        editTemplate,
+        this.templateHash.edit,
         {
           node,
           nodeData: node.data,
@@ -360,7 +364,7 @@ export default class TreeComponent extends NestedComponent {
     else {
       this.renderTemplateToElement(
         element,
-        viewTemplate,
+        this.templateHash.view,
         {
           node,
           nodeData: node.persistentData,
