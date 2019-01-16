@@ -200,9 +200,9 @@ export default class WebformBuilder extends Webform {
       remove = window.confirm(this.t(message));
     }
     if (remove) {
-      this.emit('deleteComponent', { component });
       component.parent.removeComponentById(component.id);
       this.form = this.schema;
+      this.emit('deleteComponent', component);
     }
     return remove;
   }
@@ -446,8 +446,8 @@ export default class WebformBuilder extends Webform {
       if (component.dragEvents && component.dragEvents.onSave) {
         component.dragEvents.onSave(component);
       }
-      this.emit('saveComponent', { component, originalComponent });
       this.form = this.schema;
+      this.emit('saveComponent', component, originalComponent);
       this.dialog.close();
     });
 
@@ -460,7 +460,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Called when we edit a component.
-    this.emit('editComponent', { component });
+    this.emit('editComponent', component);
   }
   /* eslint-enable max-statements */
 
@@ -846,10 +846,23 @@ export default class WebformBuilder extends Webform {
         component.dragEvents = target.dragEvents;
       }
 
-      // TODO: Need to find a way to determine path and index.
-      const path = 'components';
-      const index = 0;
-      this.emit('addComponent', { component, path, index });
+      // Get path to the component in the parent component.
+      let path = 'components';
+      switch (component.parent.type) {
+        case 'table':
+          path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+          break;
+        case 'columns':
+          path = `columns[${component.column}].components`;
+          break;
+        case 'tabs':
+          path = `components[${component.tab}].components`;
+          break;
+      }
+      // Index within container
+      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.key }) || 0;
+
+      this.emit('addComponent', component, path, index);
 
       // Edit the component.
       this.editComponent(component);

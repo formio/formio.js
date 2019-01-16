@@ -1,6 +1,7 @@
 import get from 'lodash/get';
 import set from 'lodash/set';
 import has from 'lodash/has';
+import findIndex from 'lodash/findIndex';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
 import isString from 'lodash/isString';
@@ -260,8 +261,7 @@ export function removeComponent(components, path) {
   components.splice(index, 1);
 }
 
-export function generateFormChange(type, data) {
-  const { component } = data;
+export function generateFormChange(type, component, one, two) {
   let change;
   switch (type) {
     case 'add':
@@ -269,16 +269,16 @@ export function generateFormChange(type, data) {
         op: 'add',
         key: component.key,
         container: component.parent.key, // Parent component
-        path: data.path || 'components', // Path to container within parent component
-        index: data.index || 0, // Index within container
+        path: one, // Path to container within parent component.
+        index: two, // Index of component in parent container.
         component: component.component
       };
       break;
     case 'edit':
       change = {
         op: 'edit',
-        key: data.originalComponent.key,
-        patches: jsonpatch.compare(data.originalComponent, component.component)
+        key: one.key,
+        patches: jsonpatch.compare(one, component.component)
       };
 
       // Don't save if nothing changed.
