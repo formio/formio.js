@@ -261,24 +261,24 @@ export function removeComponent(components, path) {
   components.splice(index, 1);
 }
 
-export function generateFormChange(type, component, one, two) {
+export function generateFormChange(type, data) {
   let change;
   switch (type) {
     case 'add':
       change = {
         op: 'add',
-        key: component.key,
-        container: component.parent.key, // Parent component
-        path: one, // Path to container within parent component.
-        index: two, // Index of component in parent container.
-        component: component.component
+        key: data.component.key,
+        container: data.component.parent.key, // Parent component
+        path: data.path, // Path to container within parent component.
+        index: data.index, // Index of component in parent container.
+        component: data.component.component
       };
       break;
     case 'edit':
       change = {
         op: 'edit',
-        key: one.key,
-        patches: jsonpatch.compare(one, component.component)
+        key: data.originalComponent.key,
+        patches: jsonpatch.compare(data.originalComponent, data.component.component)
       };
 
       // Don't save if nothing changed.
@@ -289,7 +289,7 @@ export function generateFormChange(type, component, one, two) {
     case 'remove':
       change = {
         op: 'remove',
-        key: component.key,
+        key: data.component.key,
       };
       break;
   }
