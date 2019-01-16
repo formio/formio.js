@@ -343,10 +343,14 @@ export default class SelectComponent extends Field {
     return headers;
   }
 
-  updateCustomItems() {
-    this.setItems(this.evaluate(this.component.data.custom, {
+  getCustomItems() {
+    return this.evaluate(this.component.data.custom, {
       values: []
-    }, 'values') || []);
+    }, 'values');
+  }
+
+  updateCustomItems() {
+    this.setItems(this.getCustomItems() || []);
   }
 
   /* eslint-disable max-statements */
@@ -805,10 +809,25 @@ export default class SelectComponent extends Field {
   asString(value) {
     value = value || this.getValue();
 
-    if (this.component.dataSrc === 'values') {
-      value = this.component.multiple
-        ? _.filter(this.component.data.values, item => value.indexOf(item.value) !== -1)
-        :_.find(this.component.data.values, ['value', value]);
+    if (['values', 'custom'].includes(this.component.dataSrc)) {
+      const {
+        items,
+        valueProperty,
+      } = this.component.dataSrc === 'values'
+        ? {
+          items: this.component.data.values,
+          valueProperty: 'value',
+        }
+        : {
+          items: this.getCustomItems(),
+          valueProperty: this.component.valueProperty,
+        };
+
+      value = (this.component.multiple && Array.isArray(value))
+        ? _.filter(items, (item) => value.includes(item.value))
+        : valueProperty
+          ? _.find(items, [valueProperty, value])
+          : value;
     }
 
     if (_.isString(value)) {
@@ -821,7 +840,7 @@ export default class SelectComponent extends Field {
       return items.length > 0 ? items.join('<br />') : '-';
     }
 
-    return _.isObject(value)
+    return !_.isNil(value)
       ? this.itemTemplate(value)
       : '-';
   }
