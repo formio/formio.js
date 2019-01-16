@@ -1,7 +1,6 @@
 import get from 'lodash/get';
 import set from 'lodash/set';
 import has from 'lodash/has';
-import findIndex from 'lodash/findIndex';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
 import isString from 'lodash/isString';
