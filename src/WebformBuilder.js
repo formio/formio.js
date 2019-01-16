@@ -532,6 +532,9 @@ export default class WebformBuilder extends Component {
   }
 
   editComponent(component, parent, isNew) {
+    if (!component.key) {
+      return;
+    }
     let saved = false;
     const componentCopy = _.cloneDeep(component);
     const componentClass = Components.components[componentCopy.type];

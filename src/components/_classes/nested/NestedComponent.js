@@ -415,7 +415,7 @@ export default class NestedComponent extends Component {
 
     // Trigger the change if the values changed.
     if (changed) {
-      this.triggerChange(flags);
+      this.triggerChange(flags, changed);
     }
 
     // Return if the value is valid.

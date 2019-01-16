@@ -122,7 +122,7 @@ export default class CheckBoxComponent extends Component {
       return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
     }
     else {
-      return value;
+      return !!value;
     }
   }
 

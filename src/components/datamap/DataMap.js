@@ -59,33 +59,33 @@ export default class DataMapComponent extends NestedComponent {
     return {};
   }
 
-  render() {
-    return super.render(this.renderTemplate('datagrid', {
-      rows: [],
-      // rows: this.rows.map(row => {
-      //   const components = {};
-      //   _.each(row, (col, key) => {
-      //     components[key] = col.render();
-      //   });
-      //   return components;
-      // }),
-      visibleColumns: this.visibleColumns,
-      hasHeader: true,
-      // hasHeader: this.component.components.reduce((hasHeader, col) => {
-      //   // If any of the components has a title and it isn't hidden, display the header.
-      //   return hasHeader || ((col.label || col.title) && !col.hideLabel);
-      // }, false),
-      hasExtraColumn: true,
-      hasAddButton: true,
-      hasRemoveButtons: true,
-      hasTopSubmit: false,
-      hasBottomSubmit: true,
-      numColumns: 1,
-      datagridKey: this.datagridKey,
-      builder: this.options.attachMode === 'builder',
-      placeholder: '',
-    }));
-  }
+  // render() {
+  //   return super.render(this.renderTemplate('datagrid', {
+  //     rows: [],
+  //     // rows: this.rows.map(row => {
+  //     //   const components = {};
+  //     //   _.each(row, (col, key) => {
+  //     //     components[key] = col.render();
+  //     //   });
+  //     //   return components;
+  //     // }),
+  //     visibleColumns: this.visibleColumns,
+  //     hasHeader: true,
+  //     // hasHeader: this.component.components.reduce((hasHeader, col) => {
+  //     //   // If any of the components has a title and it isn't hidden, display the header.
+  //     //   return hasHeader || ((col.label || col.title) && !col.hideLabel);
+  //     // }, false),
+  //     hasExtraColumn: true,
+  //     hasAddButton: true,
+  //     hasRemoveButtons: true,
+  //     hasTopSubmit: false,
+  //     hasBottomSubmit: true,
+  //     numColumns: 1,
+  //     datagridKey: this.datagridKey,
+  //     builder: this.options.attachMode === 'builder',
+  //     placeholder: '',
+  //   }));
+  // }
 
   /** Old **/
 

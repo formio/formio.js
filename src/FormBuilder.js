@@ -5,6 +5,10 @@ import PDFBuilder from './PDFBuilder';
 import Form from './Form';
 
 export default class FormBuilder extends Form {
+  constructor(element, form, options) {
+    super(element, form, options);
+  }
+
   create(display) {
     if (display === 'wizard') {
       return new WizardBuilder(this.options);
