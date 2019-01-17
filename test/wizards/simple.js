@@ -1,5 +1,6 @@
 import _map from 'lodash/map';
 import assert from 'power-assert';
+import { expect } from 'chai';
 
 import Harness from '../harness';
 
@@ -218,13 +219,7 @@ export default {
       // Try to go to previous page. Stay on page 0
       return Harness.testWizardPrevPage(form)
         .then(() => {
-          // Should returns a reject
-          done('Should not be called');
-        })
-        .catch((error) => {
-          // Catch prev page error
-          assert.equal(form.page, 0);
-          assert.equal(error, 'Page not found');
+          expect(form.page, 'should stay on page 0').to.equal(0);
         })
         .then(() => {
           return form.submit();
@@ -474,8 +469,21 @@ export default {
           done();
         });
     },
-    'Test wizard control': (wizard, done) => {
-      done();
+    'Test Wizard.setPage with invalid page number': (form, done) => {
+      let res;
+      try {
+        res = form.setPage(-1);
+      }
+      catch (error) {
+        done(error);
+      }
+
+      res
+        .then(() => expect.fail('should reject'))
+        .catch(error => {
+          expect(error).to.equal('Page not found');
+          done();
+        });
     }
   }
 };
