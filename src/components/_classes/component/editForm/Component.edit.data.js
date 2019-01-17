@@ -53,7 +53,7 @@ export default [
     type: 'checkbox',
     label: 'Encrypt',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not be suitable for passwords.',
-    key: 'autofocus',
+    key: 'encrypt',
     input: true
   },
   {

@@ -45,7 +45,7 @@ export default class CalendarWidget extends InputWidget {
 
   constructor(settings, component) {
     super(settings, component);
-    this.component.suffix = true;
+    // this.component.suffix = true;
   }
 
   attach(input) {

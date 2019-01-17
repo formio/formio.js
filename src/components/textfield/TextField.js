@@ -55,31 +55,6 @@ export default class TextFieldComponent extends Input {
     return '';
   }
 
-  // createInput(container) {
-  //   if (!this.isMultipleMasksField) {
-  //     return super.createInput(container);
-  //   }
-  //   //if component should have multiple masks
-  //   const id = `${this.key}`;
-  //   const attr = this.info.attr;
-  //   attr.class += ' formio-multiple-mask-input';
-  //   attr.id = id;
-  //   const textInput = this.ce('input', attr);
-  //
-  //   const inputGroup = this.ce('div', {
-  //     class: 'input-group formio-multiple-mask-container'
-  //   });
-  //   this.addPrefix(textInput, inputGroup);
-  //   const maskInput = this.createMaskInput(textInput);
-  //   this.addTextInputs(textInput, maskInput, inputGroup);
-  //   this.addSuffix(textInput, inputGroup);
-  //
-  //   this.errorContainer = container;
-  //   this.setInputStyles(inputGroup);
-  //   container.appendChild(inputGroup);
-  //   return inputGroup;
-  // }
-
   setValueAt(index, value) {
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value);
@@ -132,14 +107,6 @@ export default class TextFieldComponent extends Input {
     return input && input.text ? input.text : input;
   }
 
-  // buildInput(container, value, index) {
-  //   if (!this.isMultipleMasksField) {
-  //     return super.buildInput(container, value, index);
-  //   }
-  //   this.createInput(container);
-  //   this.setValueAt(index, value);
-  // }
-
   isEmpty(value) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty(value);
@@ -162,17 +129,4 @@ export default class TextFieldComponent extends Input {
     };
     return maskInput;
   }
-
-  // addTextInputs(textInput, maskInput, container) {
-  //   if (textInput && maskInput && container) {
-  //     const input = {
-  //       mask: maskInput,
-  //       text: textInput
-  //     };
-  //   this.refs.input.push(input);
-  //     container.appendChild(maskInput);
-  //     container.appendChild(textInput);
-  //   }
-  //   this.hook('input', textInput, container);
-  // }
 }

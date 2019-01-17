@@ -673,29 +673,6 @@ export default class Component extends Element {
     }
   }
 
-  /**
-   * Create the outside wrapping element for this component.
-   * @returns {HTMLElement}
-   */
-  createElement() {
-    // If the element is already created, don't recreate.
-    if (this.element) {
-      return this.element;
-    }
-
-    this.element = this.ce('div', {
-      id: this.id,
-      class: this.className,
-      style: this.customStyle
-    });
-
-    // Ensure you can get the component info from the element.
-    this.element.component = this;
-
-    this.hook('element', this.element);
-    return this.element;
-  }
-
   loadRefs(element, refs) {
     for (const ref in refs) {
       if (refs[ref] === 'single') {
@@ -846,12 +823,6 @@ export default class Component extends Element {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
-  viewOnlyBuild() {
-    this.createViewOnlyElement();
-    this.createViewOnlyLabel(this.element);
-    this.createViewOnlyValue(this.element);
-  }
-
   createViewOnlyElement() {
     this.element = this.ce('dl', {
       id: this.id
@@ -863,25 +834,6 @@ export default class Component extends Element {
     }
 
     return this.element;
-  }
-
-  createViewOnlyLabel(container) {
-    this.labelElement = this.ce('dt');
-    this.labelElement.appendChild(this.text(this.component.label));
-    this.createTooltip(this.labelElement);
-    container.appendChild(this.labelElement);
-  }
-
-  createViewOnlyValue(container) {
-    this.valueElement = this.ce('dd');
-    this.setupValueElement(this.valueElement);
-    container.appendChild(this.valueElement);
-  }
-
-  setupValueElement(element) {
-    let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-    element.innerHTML = value;
   }
 
   get defaultViewOnlyValue() {
@@ -902,14 +854,6 @@ export default class Component extends Element {
   updateItems(...args) {
     this.restoreValue();
     this.onChange(...args);
-  }
-
-  updateViewOnlyValue() {
-    if (!this.valueElement) {
-      return;
-    }
-
-    this.setupValueElement(this.valueElement);
   }
 
   createModal(element) {

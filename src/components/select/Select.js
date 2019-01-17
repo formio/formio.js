@@ -785,10 +785,6 @@ export default class SelectComponent extends Field {
       : '-';
   }
 
-  setupValueElement(element) {
-    element.innerHTML = this.asString();
-  }
-
   detach() {
     super.detach();
     if (this.choices) {

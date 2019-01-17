@@ -247,6 +247,7 @@ export default class Element {
    * @return {HTMLElement} - The created element.
    */
   ce(type, attr, children = null) {
+    console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
     // Create the element.
     const element = document.createElement(type);
 

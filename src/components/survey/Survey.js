@@ -88,35 +88,4 @@ export default class SurveyComponent extends Field {
     return this.component.questions.reduce((result, question) =>
       result && Boolean(value[question.value]), true);
   }
-
-  getView(value) {
-    if (!value) {
-      return '';
-    }
-    const table = this.ce('table', {
-      class: 'table table-striped table-bordered table-condensed'
-    });
-    const tbody = this.ce('tbody');
-
-    _.each(value, (value, question) => {
-      const row = this.ce('tr');
-
-      const questionCell = this.ce('th');
-      const valueCell = this.ce('td');
-
-      const questionText = _.find(this.component.questions, ['value', question]).label;
-      const valueText = _.find(this.component.values, ['value', value]).label;
-
-      questionCell.appendChild(this.text(questionText));
-      valueCell.appendChild(this.text(valueText));
-
-      row.appendChild(questionCell);
-      row.appendChild(valueCell);
-
-      tbody.appendChild(row);
-    });
-
-    table.appendChild(tbody);
-    return table.outerHTML;
-  }
 }
