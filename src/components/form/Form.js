@@ -70,7 +70,10 @@ export default class FormComponent extends BaseComponent {
 
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) => {
-      if ((component.type === 'button') && (component.action === 'submit')) {
+      if (
+        (component.type === 'button') &&
+        ((component.action === 'submit') || !component.action)
+      ) {
         component.hidden = true;
       }
     });
