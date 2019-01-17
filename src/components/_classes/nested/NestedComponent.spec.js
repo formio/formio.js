@@ -4,9 +4,10 @@ import Harness from '../../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import { expect } from 'chai';
+import { comp1 } from './fixtures';
+import _map from 'lodash/map';
 
 let component = null;
-
 describe('NestedComponent class', () => {
   it('Should create a new NestedComponent class', () => {
     return Harness.testCreate(NestedComponent, {
@@ -188,6 +189,21 @@ describe('NestedComponent class', () => {
             expect(cmp.parentVisible).to.be.true;
           });
 
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
+
+  describe('get schema', () => {
+    it('components array shouldn\'t have duplicates', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          const child = nested.components[0];
+          nested.components = [...nested.components, child, child, child];
+          expect(nested.components).to.have.lengthOf(5);
+          expect(nested.schema.components).to.be.lengthOf(2);
+          expect(_map(nested.schema.components, 'key')).to.deep.equal(['firstName', 'lastName']);
           done();
         }, done)
         .catch(done);
