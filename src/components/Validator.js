@@ -5,6 +5,8 @@ import {
   matchInputMask,
   getDateSetting
 } from '../utils/utils';
+
+import * as consts from '../utils/constants';
 import moment from 'moment';
 
 export default {
@@ -426,6 +428,42 @@ export default {
 
         return date.isAfter(minDate) || date.isSame(minDate);
       }
+    },
+    maxSafeNum: {
+      key: 'maxSafeNum',
+      message(component) {
+        return component.t(component.errorMessage('maxSafeNum'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const val = parseFloat(value);
+
+        if (_.isNumber(val) && !_.isNaN(val)) {
+          return val <= consts.MAX_SAFE_NUM;
+        }
+
+        return true;
+      }
+    },
+    minSafeNum: {
+      key: 'minSafeNum',
+      message(component) {
+        return component.t(component.errorMessage('minSafeNum'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const val = parseFloat(value);
+
+        if (_.isNumber(val) && !_.isNaN(val)) {
+          return val >= consts.MIN_SAFE_NUM;
+        }
+
+        return true;
+      }
     }
-  }
+  },
 };

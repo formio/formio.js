@@ -1,0 +1,4 @@
+export const MAX_SAFE_NUM = 1000000000.000000;
+export const MIN_SAFE_NUM = -1000000000.000000;
+export const NUM_DECIMAL_LIMIT = 6;
+export const NUM_INTEGER_LIMIT = 10;

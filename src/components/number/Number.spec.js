@@ -16,7 +16,7 @@ describe('Number Component', () => {
     Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
       done();
-    });
+    }).catch(done);
   });
 
   it('Should limit decimals using step', (done) => {
@@ -30,7 +30,7 @@ describe('Number Component', () => {
       Harness.testSetInput(component, '123456789.123456789', 123456789.123, '123,456,789.123');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123, '-123,456,789.123');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should format numbers for USA locale', (done) => {
@@ -79,7 +79,7 @@ describe('Number Component', () => {
       Harness.testSetInput(component, '123456789.123456789', 123456789.123456789, '123,456,789.12345679');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123456789, '-123,456,789.12345679');
       done();
-    });
+    }).catch(done);
     /* eslint-enable max-statements */
   });
 
@@ -102,7 +102,7 @@ describe('Number Component', () => {
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12.123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12.123456789');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should format numbers for French locale', (done) => {
@@ -125,7 +125,7 @@ describe('Number Component', () => {
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12,123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12,123456789');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should format numbers for German locale', (done) => {
@@ -147,14 +147,14 @@ describe('Number Component', () => {
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12,123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12,123456789');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should display default integer value', (done) => {
     Harness.testCreate(NumberComponent, comp3).then(number => {
       assert.deepEqual(_.get(number, ['inputs', '0', 'value']), '42');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should display default decimal value', (done) => {
@@ -168,7 +168,7 @@ describe('Number Component', () => {
     Harness.testCreate(NumberComponent, comp).then(number => {
       assert.deepEqual(_.get(number, ['inputs', '0', 'value']), '4.20');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should add trailing zeros on blur, if decimal required', (done) => {
@@ -200,7 +200,7 @@ describe('Number Component', () => {
       });
 
       done();
-    }, done);
+    }, done).catch(done);
   });
 
   it('Should add trailing zeros on blur, if decimal and delimiter is required', (done) => {
@@ -234,7 +234,7 @@ describe('Number Component', () => {
       });
 
       done();
-    }, done);
+    }, done).catch(done);
   });
 
   it('Should add trailing zeros on blur with `multiple` flag', (done) => {
@@ -262,6 +262,6 @@ describe('Number Component', () => {
       });
 
       done();
-    }, done);
+    }, done).catch(done);
   });
 });

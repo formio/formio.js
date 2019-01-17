@@ -13,6 +13,8 @@ export default {
         max: '{{field}} cannot be greater than {{max}}.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
         minDate: '{{field}} should not contain date before {{- minDate}}',
+        maxSafeNum: '{{field}} number too large',
+        minSafeNum: '{{field}} number too small',
         invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
         invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
         invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase

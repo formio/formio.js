@@ -9,6 +9,7 @@ import { lodashOperators } from './jsonlogic/operators';
 import Promise from 'native-promise-only';
 import { getValue } from './formUtils';
 import stringHash from 'string-hash';
+import * as consts from './constants';
 
 export * from './formUtils';
 
@@ -773,13 +774,13 @@ export function getNumberSeparators(lang = 'en') {
 
 export function getNumberDecimalLimit(component) {
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-  let decimalLimit = 20;
+  let decimalLimit = consts.NUM_DECIMAL_LIMIT;
   const step = _.get(component, 'validate.step', 'any');
 
   if (step !== 'any') {
     const parts = step.toString().split('.');
     if (parts.length > 1) {
-      decimalLimit = parts[1].length;
+      decimalLimit = Math.min(parts[1].length, consts.NUM_DECIMAL_LIMIT);
     }
   }
 

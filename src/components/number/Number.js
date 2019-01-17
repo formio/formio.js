@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { createNumberMask } from 'text-mask-addons';
 import BaseComponent from '../base/Base';
 import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
+import * as consts from '../../utils/constants';
 
 export default class NumberComponent extends BaseComponent {
   static schema(...extend) {
@@ -32,7 +33,7 @@ export default class NumberComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.validators = this.validators.concat(['min', 'max']);
+    this.validators = this.validators.concat(['minSafeNum', 'maxSafeNum', 'min', 'max']);
 
     const separators = getNumberSeparators(this.options.language);
 
@@ -64,7 +65,8 @@ export default class NumberComponent extends BaseComponent {
       requireDecimal: _.get(this.component, 'requireDecimal', false),
       thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+      decimalLimit: Math.min(_.get(this.component, 'decimalLimit', this.decimalLimit), consts.NUM_DECIMAL_LIMIT),
+      integerLimit: consts.NUM_INTEGER_LIMIT,
       allowNegative: _.get(this.component, 'allowNegative', true),
       allowDecimal: _.get(this.component, 'allowDecimal',
         !(this.component.validate && this.component.validate.integer))
@@ -85,6 +87,13 @@ export default class NumberComponent extends BaseComponent {
     else {
       return parseFloat(value);
     }
+  }
+
+  applyBondary(value) {
+    let result = value;
+    result = Math.min(consts.MAX_SAFE_NUM, result);
+    result = Math.max(consts.MIN_SAFE_NUM, result);
+    return result;
   }
 
   setInputMask(input) {
@@ -109,13 +118,25 @@ export default class NumberComponent extends BaseComponent {
       return null;
     }
 
-    const val = this.inputs[index].value;
+    const input = this.inputs[index];
+    const val = input.value;
 
     if (!val) {
       return undefined;
     }
 
-    return this.parseNumber(val);
+    const current = this.parseNumber(val);
+    const limited = this.applyBondary(current);
+
+    if (current === limited) {
+      return current;
+    }
+    else {
+      if (input.mask) {
+        input.mask.textMaskInputElement.update(limited);
+      }
+      return limited;
+    }
   }
 
   clearInput(input) {
@@ -143,7 +164,14 @@ export default class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    return super.setValueAt(index, this.formatValue(this.clearInput(value)));
+    let data = value;
+
+    if (!_.isNull(data)) {
+      data = this.clearInput(data);
+      data = this.formatValue(data);
+    }
+
+    return super.setValueAt(index, data);
   }
 
   focus() {

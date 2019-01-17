@@ -13,7 +13,12 @@ export default [
     weight: 80,
     key: 'decimalLimit',
     label: 'Decimal Places',
-    tooltip: 'The maximum number of decimal places.'
+    tooltip: 'The maximum number of decimal places (up to 6).',
+    defaultValue: 6,
+    validate: {
+      max: 6,
+      min: 1
+    }
   },
   {
     type: 'checkbox',
