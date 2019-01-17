@@ -182,7 +182,7 @@ export default class FormComponent extends BaseComponent {
     if (this.component && this.component.components && this.component.components.length) {
       this.renderSubForm(this.component, srcOptions);
     }
-    else {
+    else if (this.formSrc) {
       const query = { params: { live: 1 } };
       (new Formio(this.formSrc)).loadForm(query)
         .then((formObj) => this.renderSubForm(formObj, srcOptions))
