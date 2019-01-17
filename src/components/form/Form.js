@@ -235,7 +235,7 @@ export default class FormComponent extends Component {
       this.subFormReadyResolve(this.subForm);
       return this.subFormReady;
     }
-    else {
+    else if (this.formSrc) {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.component.components = formObj.components;
