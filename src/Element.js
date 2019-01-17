@@ -108,9 +108,9 @@ export default class Element {
    * @param {string} event - The event to emit.
    * @param {Object} data - The data to emit with the handler.
    */
-  emit(event, data) {
+  emit(event, ...data) {
     if (this.events) {
-      this.events.emit(`${this.options.namespace}.${event}`, data);
+      this.events.emit(`${this.options.namespace}.${event}`, ...data);
     }
   }
 

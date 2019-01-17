@@ -608,9 +608,10 @@ export default class WebformBuilder extends Component {
       event.preventDefault();
       saved = true;
       this.editForm.detach();
+      const originalComponent = parent.formioContainer[parent.formioContainer.indexOf(component)];
       parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
       parent.formioComponent.rebuild();
-      this.emit('saveComponent', component);
+      this.emit('saveComponent', component, originalComponent);
       this.dialog.close();
     });
 
