@@ -267,17 +267,17 @@ export function generateFormChange(type, data) {
       change = {
         op: 'add',
         key: data.component.key,
-        container: data.component.parent.key, // Parent component
+        container: data.parent.key, // Parent component
         path: data.path, // Path to container within parent component.
         index: data.index, // Index of component in parent container.
-        component: data.component.component
+        component: data.component
       };
       break;
     case 'edit':
       change = {
         op: 'edit',
         key: data.originalComponent.key,
-        patches: jsonpatch.compare(data.originalComponent, data.component.component)
+        patches: jsonpatch.compare(data.originalComponent, data.component)
       };
 
       // Don't save if nothing changed.
