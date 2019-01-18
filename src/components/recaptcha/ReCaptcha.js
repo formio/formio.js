@@ -55,19 +55,35 @@ export default class ReCaptchaComponent extends BaseComponent {
       this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
     }
     if (this.recaptchaApiReady) {
-      this.recaptchaApiReady.then(() => {
-        grecaptcha.ready(() => {
-          grecaptcha.execute(siteKey, {
-            action: actionName
-          }).then((token) => {
-            this.sendVerificationRequest(token)
-              .then(verificationResult => {
-                this.setValue(verificationResult);
-              });
+      this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
+        this.recaptchaApiReady
+          .then(() => {
+            grecaptcha.ready(() => {
+              grecaptcha
+                .execute(siteKey, {
+                  action: actionName
+                })
+                .then((token) => {
+                  return this.sendVerificationRequest(token);
+                })
+                .then(verificationResult => {
+                  this.setValue(verificationResult);
+                  return resolve(verificationResult);
+                });
+            });
+          })
+          .catch(() => {
+            return reject();
           });
-        });
       });
     }
+  }
+
+  beforeSubmit() {
+    if (this.recaptchaVerifiedPromise) {
+      return this.recaptchaVerifiedPromise;
+    }
+    return super.beforeSubmit();
   }
 
   sendVerificationRequest(token) {

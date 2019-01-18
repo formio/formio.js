@@ -204,6 +204,7 @@ export default class ButtonComponent extends BaseComponent {
     }, true);
 
     this.addEventListener(this.buttonElement, 'click', (event) => {
+      this.triggerReCaptcha();
       this.dataValue = true;
       if (this.component.action !== 'submit' && this.component.showValidations) {
         this.emit('checkValidity', this.data);
@@ -283,7 +284,6 @@ export default class ButtonComponent extends BaseComponent {
 
           break;
       }
-      this.triggerReCaptcha();
     });
 
     if (this.shouldDisable) {
