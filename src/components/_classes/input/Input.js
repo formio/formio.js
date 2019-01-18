@@ -156,7 +156,10 @@ export default class Input extends Multivalue {
 
   attachElement(element, index) {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
-      return this.updateValue(null, element.value, index);
+      // Delay update slightly to give input mask a chance to run.
+      setTimeout(() => {
+        return this.updateValue(null, element.value, index);
+      }, 1);
     });
 
     // Attach the widget.

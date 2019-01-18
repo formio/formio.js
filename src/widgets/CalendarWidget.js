@@ -120,7 +120,6 @@ export default class CalendarWidget extends InputWidget {
       this.calendar = new Flatpickr(this._input, this.settings);
 
       // Enforce the input mask of the format.
-      console.log(convertFormatToMask(this.settings.format));
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
       // Make sure we commit the value after a blur event occurs.
