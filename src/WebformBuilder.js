@@ -573,10 +573,35 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
-        this.updateComponent(event.data, event.data.key === component.key);
+        // See if this is a manually modified key. Treat custom component keys as manually modified
+        if ((event.changed.component && (event.changed.component.key === 'key'))) {
+          componentCopy.keyModified = true;
+        }
+
+        if (event.changed.component && (event.changed.component.key === 'label')) {
+          // Ensure this component has a key.
+          if (isNew) {
+            if (!event.data.keyModified) {
+              console.log(event.data.key);
+              event.data.key = _.camelCase(
+                event.data.label ||
+                event.data.placeholder ||
+                event.data.type
+              );
+              this.editForm.submission = {
+                data: event.data
+              };
+            }
+
+            // Set a unique key for this component.
+            BuilderUtils.uniquify(this._form, event.data);
+          }
+        }
+
+        // Update the component.
+        this.updateComponent(event.data);
       }
     });
-
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
       event.preventDefault();
       this.editForm.detach();

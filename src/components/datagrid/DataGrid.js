@@ -219,7 +219,7 @@ export default class DataGridComponent extends NestedComponent {
     let show = false;
 
     if (!this.rows || !this.rows.length) {
-      return;
+      return { rebuld: false, show: false };
     }
 
     const visibility = {};
