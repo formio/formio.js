@@ -1,7 +1,9 @@
 import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
+import { flattenComponents } from '../../utils/formUtils';
 import PanelComponent from './Panel';
+import panelEditForm from './Panel.form';
 
 import {
   comp1
@@ -24,6 +26,19 @@ describe('Panel Component', () => {
       assert(component.element.childNodes[0].childNodes[0].getAttribute('class').indexOf('card-title panel-title') !== -1);
       assert(component.element.childNodes[1].getAttribute('class').indexOf('card-body panel-body') !== -1);
       done();
+    });
+  });
+
+  describe('Edit Form', () => {
+    it('should include components for important settings', () => {
+      const components = flattenComponents(panelEditForm().components);
+      const keys = Object.keys(components).map(path => components[path].key);
+      const settings = [
+        'breadcrumb',
+        'breadcrumbClickable'
+      ];
+
+      assert(settings.every(s => keys.includes(s)));
     });
   });
 });

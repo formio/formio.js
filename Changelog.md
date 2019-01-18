@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.12.2
+### Fixed
+ - An error from getting thrown when you add a nested from without a form configured.
+
+## 3.12.1
+### Added
+ - Some merge utilities to assist with the form merge system.
+ - Improvements to Select component asString method.
+
+### Changed
+ - Upgrade i18next@13.1.4
+ 
+### Fixed
+ - Problem where nested form would show the submit buttons.
+ - Fixed bug with schema getter when it returns duplicates within components array.
+
+## 3.12.0
+### Added
+ - Added "Inline Edit" mode for the edit grid to commit the changed rows inline with the submission value.
+ - Hashing and caching for `interpolate` function.
+ - Ability to upload images to File Storage for Quill WYSIWYG
+ - Row groups feature to Data Grid.
+ - Static table configuration options to Data Grid component.
+
+### Changed
+ - Upgrade i18next@13.1.2
+
 ## 3.11.1
 ### Fixed
  - Issues with the choices icons not making their way into external librarys such as Angular, etc.

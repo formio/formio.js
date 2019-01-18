@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from '.';
@@ -606,6 +606,36 @@ describe('delay', () => {
     if (score === 1) {
       done();
     }
+  });
+});
+
+describe('unfold', () => {
+  it('should return provided argument', () => {
+    const parameters = [{}, 1, null, 'string'];
+
+    parameters.forEach(p => {
+      assert(p === utils.unfold(p));
+    });
+  });
+
+  it('should call parameter, if it is function and return result', () => {
+    const x = Symbol('__unfold__');
+    assert(utils.unfold(() => x) === x);
+  });
+});
+
+describe('firstNonNil', () => {
+  it('should return first non nil value', () => {
+    expect(utils.firstNonNil([1])).to.equal(1);
+    expect(utils.firstNonNil([1, 3])).to.equal(1);
+    expect(utils.firstNonNil([3, 2, 1])).to.equal(3);
+    expect(utils.firstNonNil([undefined, undefined, 3, 1])).to.equal(3);
+  });
+
+  it('should unfold all functions in array', () => {
+    expect(utils.firstNonNil([() => 1])).to.equal(1);
+    expect(utils.firstNonNil([() => 1, 3])).to.equal(1);
+    expect(utils.firstNonNil([undefined, undefined, () => 3, 1])).to.equal(3);
   });
 });
 
