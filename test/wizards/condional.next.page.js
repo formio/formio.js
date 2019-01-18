@@ -1,5 +1,6 @@
 import _map from 'lodash/map';
 import assert from 'power-assert';
+import { expect } from 'chai';
 
 import Harness from '../harness';
 
@@ -218,7 +219,7 @@ export default {
 
     'Wizard With Condinal Next Page: ByPass page'(form, done) {
       // Check current page
-      assert.equal(form.page, 0);
+      expect(form.page, 'shod start form page 0').to.equal(0);
       Harness.testElements(form, 'input[type="text"]', 2);
       const buttonsToValid = ['Cancel', 'Next'];
       const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
@@ -261,16 +262,18 @@ export default {
           });
         })
         .then(() => {
-          // Go to first page.
+          // Go to prev page.
           return Harness.testWizardPrevPage(form, null, (data) => {
             // Check prevPage event
-            assert.equal(data.page, 0);
+            assert.equal(data.page, 1);
             assert.deepEqual(data.submission.data, {
               a: 'goTo2',
               b: 'b',
               e: 'e',
               f: 'f',
-              g: 'g'
+              g: 'g',
+              c: '',
+              d: ''
             });
           });
         })
@@ -280,9 +283,9 @@ export default {
         })
         .then(() => {
           // Check previous page
-          assert.equal(form.page, 0);
+          assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          const buttonsToValid = ['Cancel', 'Next'];
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
           const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
@@ -296,7 +299,9 @@ export default {
               b: 'b',
               e: 'e',
               f: 'f',
-              g: 'g'
+              g: 'g',
+              c: '',
+              d: ''
             });
           });
         })
@@ -319,7 +324,9 @@ export default {
             b: 'b',
             e: 'e',
             f: 'f',
-            g: 'g'
+            g: 'g',
+            c: '',
+            d: ''
           };
           Harness.testSubmission(form, {
             data: wizardData
