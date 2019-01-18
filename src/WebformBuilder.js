@@ -189,14 +189,6 @@ export default class WebformBuilder extends Component {
       component.attachComponents(component.refs.container.parentNode, [], component.component.components);
     };
 
-    this.options.hooks.attachContent = (element, component) => {
-      component.addQuill(component.refs.html, component.wysiwygDefault, (element) => {
-        component.component.html = element.value;
-      }).then((editor) => {
-        editor.setContents(editor.clipboard.convert(component.component.html));
-      });
-    };
-
     this.options.hooks.attachComponent = (element, component) => {
       // Add component to element for later reference.
       element.formioComponent = component;

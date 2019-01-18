@@ -1,4 +1,3 @@
-/* globals Quill */
 import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
@@ -1265,76 +1264,6 @@ export default class Component extends Element {
     }
 
     return changed;
-  }
-
-  get wysiwygDefault() {
-    return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
-  }
-
-  addQuill(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
-
-    // Lazy load the quill css.
-    Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
-    ], true);
-
-    // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
-
-      .then(() => {
-        if (!element.parentNode) {
-          return Promise.reject();
-        }
-        this.quill = new Quill(element, settings);
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        const txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        this.quill.addContainer('ql-custom').appendChild(txtArea);
-        const qlSource = element.parentNode.querySelector('.ql-source');
-        if (qlSource) {
-          this.addEventListener(qlSource, 'click', (event) => {
-            event.preventDefault();
-            if (txtArea.style.display === 'inherit') {
-              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
-            }
-            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-          });
-        }
-        /** END CODEBLOCK **/
-
-        // Make sure to select cursor when they click on the element.
-        this.addEventListener(element, 'click', () => this.quill.focus());
-
-        // Allows users to skip toolbar items when tabbing though form
-        const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          onChange(txtArea);
-        });
-
-        return this.quill;
-      });
   }
 
   /**

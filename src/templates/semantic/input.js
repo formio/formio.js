@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="ui input fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}">
+<div class="ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}">
 {% if (component.prefix) { %}
 <label class="ui label">{{component.prefix}}</label>
 {% } %}
