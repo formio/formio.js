@@ -2,12 +2,16 @@ import Flatpickr from 'flatpickr';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
-  convertFormatToMask, convertFormatToMoment,
+  convertFormatToMask,
+  convertFormatToMoment,
   currentTimezone,
   formatDate,
   formatOffset,
   getDateSetting,
   getLocaleDateFormatInfo,
+  momentDate,
+  zonesLoaded,
+  shouldLoadZones,
   loadZones
 } from '../utils/utils';
 import moment from 'moment';
@@ -35,6 +39,7 @@ export default class CalendarWidget extends InputWidget {
       hourIncrement: 1,
       minuteIncrement: 5,
       time_24hr: false,
+      saveAs: 'date',
       displayInTimezone: '',
       timezone: '',
       minDate: '',
@@ -45,7 +50,34 @@ export default class CalendarWidget extends InputWidget {
 
   constructor(settings, component) {
     super(settings, component);
-    // this.component.suffix = true;
+    // Change the format to map to the settings.
+    if (this.settings.noCalendar) {
+      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');
+    }
+    if (!this.settings.enableTime) {
+      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
+    }
+    else if (this.settings.time_24hr) {
+      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
+    }
+  }
+
+  /**
+   * Load the timezones.
+   *
+   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.
+   */
+  loadZones() {
+    const timezone = this.timezone;
+    if (!zonesLoaded() && shouldLoadZones(timezone)) {
+      loadZones(timezone).then(() => this.emit('redraw'));
+
+      // Return zones are loading.
+      return true;
+    }
+
+    // Zones are already loaded.
+    return false;
   }
 
   attach(input) {
@@ -57,7 +89,7 @@ export default class CalendarWidget extends InputWidget {
     const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
-      time: 'h:i K'
+      time: 'G:i K'
     };
 
     this.closedOn = 0;
@@ -73,12 +105,11 @@ export default class CalendarWidget extends InputWidget {
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!moment.zonesLoaded) {
-          loadZones(this.timezone).then(() => this.redraw());
+        if (this.settings.saveAs === 'text' || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, () => this.emit('redraw'));
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
       return Flatpickr.formatDate(date, format);
@@ -89,6 +120,7 @@ export default class CalendarWidget extends InputWidget {
       this.calendar = new Flatpickr(this._input, this.settings);
 
       // Enforce the input mask of the format.
+      console.log(convertFormatToMask(this.settings.format));
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
 
       // Make sure we commit the value after a blur event occurs.
@@ -135,6 +167,12 @@ export default class CalendarWidget extends InputWidget {
   set disabled(disabled) {
     super.disabled = disabled;
     if (this.calendar) {
+      if (disabled) {
+        this.calendar._input.setAttribute('disabled', 'disabled');
+      }
+      else {
+        this.calendar._input.removeAttribute('disabled');
+      }
       this.calendar.close();
       this.calendar.redraw();
     }
@@ -179,6 +217,22 @@ export default class CalendarWidget extends InputWidget {
     return defaultDate ? defaultDate.toISOString() : '';
   }
 
+  /**
+   * Return the date value.
+   *
+   * @param date
+   * @param format
+   * @return {string}
+   */
+  getDateValue(date, format) {
+    return moment(date).format(convertFormatToMoment(format));
+  }
+
+  /**
+   * Return the value of the selected date.
+   *
+   * @return {*}
+   */
   getValue() {
     // Standard output format.
     if (!this.calendar) {
@@ -191,18 +245,29 @@ export default class CalendarWidget extends InputWidget {
       return super.getValue();
     }
 
-    // Return a formatted version of the date to store in string format.
-    return (dates[0] instanceof Date) ?
-      this.getView(dates[0], this.valueFormat) :
-      'Invalid Date';
+    if (!(dates[0] instanceof Date)) {
+      return 'Invalid Date';
+    }
+
+    return this.getDateValue(dates[0], this.valueFormat);
   }
 
+  /**
+   * Set the selected date value.
+   *
+   * @param value
+   */
   setValue(value) {
     if (!this.calendar) {
       return super.setValue(value);
     }
     if (value) {
-      this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
+      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {
+        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
+      }
+      else {
+        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
+      }
     }
     else {
       this.calendar.clear(false);
@@ -211,6 +276,10 @@ export default class CalendarWidget extends InputWidget {
 
   getView(value, format) {
     format = format || this.dateFormat;
+    if (this.settings.saveAs === 'text') {
+      return this.getDateValue(value, format);
+    }
+
     return formatDate(value, format, this.timezone);
   }
 
@@ -219,5 +288,10 @@ export default class CalendarWidget extends InputWidget {
       return new Date(value);
     }
     return value.map(val => new Date(val));
+  }
+
+  destroy() {
+    super.destroy();
+    this.calendar.destroy();
   }
 }
