@@ -1263,8 +1263,9 @@ Formio.libraries = {};
 Formio.Promise = Promise;
 if (typeof Headers !== 'undefined') {
   Formio.Headers = Headers;
-} else {
-  Formio.Headers = {}
+}
+else {
+  Formio.Headers = {};
 }
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
