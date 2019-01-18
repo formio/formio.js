@@ -1297,9 +1297,13 @@ export default class Webform extends NestedComponent {
   }
 
   triggerRecaptcha() {
-    const recaptchaComponent = this.root.components.find((component) => {
-      return component.component.type === 'recaptcha' &&
-        component.component.eventType === 'formLoad';
+    let recaptchaComponent;
+    this.root.everyComponent((component) => {
+      if (component.component.type === 'recaptcha' &&
+        component.component.eventType === 'formLoad') {
+        recaptchaComponent = component;
+        return false;
+      }
     });
     if (recaptchaComponent) {
       recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
