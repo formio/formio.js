@@ -2,7 +2,7 @@ export default [
   {
     weight: 10,
     type: 'textarea',
-    editor: 'ace',
+    editor: 'ckeditor',
     label: 'Content',
     input: true,
     key: 'html',

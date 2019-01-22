@@ -194,6 +194,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor.on('text-change', () => {
               this.updateValue(null, this.getConvertedValue(this.editor.root.innerHTML));
             });
+
             return this.editor;
           });
         break;
@@ -217,7 +218,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get isPlain() {
-    return (!this.component.wysiwyg && !this.component.editor);
+    return (!this.component.wysiwyg || !this.component.editor);
   }
 
   get htmlView() {
@@ -287,7 +288,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
             break;
           case 'ckeditor':
-            // editor.data.set(this.setConvertedValue(value));
+            super.setValue(this.setConvertedValue(value), flags);
             break;
           default:
         }

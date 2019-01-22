@@ -54,6 +54,6 @@ export default class InputWidget extends Element {
   }
 
   setValue(value) {
-    this._input.value = value;
+    return null;
   }
 }

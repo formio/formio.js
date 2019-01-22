@@ -12,7 +12,7 @@ export default function(...extend) {
   const components = _.cloneDeep([
     {
       type: 'tabs',
-      key: 'settings-tabs',
+      key: 'tabs',
       components: [
         {
           label: 'Display',

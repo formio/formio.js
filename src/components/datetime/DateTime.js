@@ -100,6 +100,13 @@ export default class DateTimeComponent extends Input {
     return DateTimeComponent.schema();
   }
 
+  setValue(value, flags) {
+    if (this.widget) {
+      this.widget.setValue(value);
+    }
+    super.setValue(value, flags);
+  }
+
   get emptyValue() {
     return '';
   }

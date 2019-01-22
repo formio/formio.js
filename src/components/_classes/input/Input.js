@@ -95,7 +95,7 @@ export default class Input extends Multivalue {
     info.attr = info.attr || {};
     info.attr.value = value;
     // This should be in the calendar widget but it doesn't have access to renderTemplate.
-    if (this.component.widget.type === 'calendar') {
+    if (this.component.widget && this.component.widget.type === 'calendar') {
       this.component.suffix = this.renderTemplate('icon', {
         ref: 'icon',
         className: this.iconClass(this.component.enableDate ? 'calendar' : 'time'),
