@@ -113,6 +113,7 @@ export default class DataMapComponent extends NestedComponent {
     return [this.component.valueComponent];
   }
 
+  build() {}
   // build() {
   //   if (this.options.builder) {
   //     return super.build(true);
@@ -290,6 +291,9 @@ export default class DataMapComponent extends NestedComponent {
     return Component.prototype.updateValue.call(this, flags, value);
   }
 
+  setValue(value) {
+    return false;
+  }
   // setValue(value) {
   //   const changed = this.hasChanged(value, this.dataValue);
   //   this.dataValue = value;
@@ -302,6 +306,9 @@ export default class DataMapComponent extends NestedComponent {
    *
    * @returns {*}
    */
+  getValue() {
+    return {};
+  }
   // getValue() {
   //   const value = {};
   //   _.each(this.rows, row => {

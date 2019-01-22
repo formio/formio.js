@@ -104,7 +104,7 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
-  // This select component can handle multiple items on its own.
+  // This datetime component can handle multiple items on its own.
   createWrapper() {
     return false;
   }

@@ -4,7 +4,7 @@ export default {
 <div class="input-group">
 {% } %}
 {% if (component.prefix) { %}
-<div class="input-group-prepend">
+<div class="input-group-prepend" ref="prefix">
   <span class="input-group-text">
     {{component.prefix}}
   </span>
@@ -20,7 +20,7 @@ export default {
 <span class="text-muted pull-right" ref="counter"></span>
 {% } %}
 {% if (component.suffix) { %}
-<div class="input-group-append">
+<div class="input-group-append" ref="suffix">
   <span class="input-group-text">
     {{component.suffix}}
   </span>

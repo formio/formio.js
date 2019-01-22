@@ -2,7 +2,7 @@ export default {
   form: `
 <div class="ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}">
 {% if (component.prefix) { %}
-<label class="ui label">{{component.prefix}}</label>
+<label class="ui label" ref="prefix">{{component.prefix}}</label>
 {% } %}
 <{{input.type}} 
   ref="{{input.ref ? input.ref : 'input'}}" 
@@ -14,7 +14,7 @@ export default {
 <span class="ui right floated" ref="counter"></span>
 {% } %}
 {% if (component.suffix) { %}
-<div class="ui label">{{component.suffix}}</div>
+<div class="ui label" ref="suffix">{{component.suffix}}</div>
 {% } %}
 </div>
 `,

@@ -94,6 +94,15 @@ export default class Input extends Multivalue {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.attr.value = value;
+    // This should be in the calendar widget but it doesn't have access to renderTemplate.
+    if (this.component.widget.type === 'calendar') {
+      this.component.suffix = this.renderTemplate('icon', {
+        ref: 'icon',
+        className: this.iconClass(this.component.enableDate ? 'calendar' : 'time'),
+        styles: '',
+        content: ''
+      });
+    }
     return this.renderTemplate('input', {
       input: info,
       value,
@@ -147,11 +156,12 @@ export default class Input extends Multivalue {
   }
 
   attach(element) {
-    const ret = super.attach(element);
     this.loadRefs(element, {
-      counter: 'multiple'
+      counter: 'multiple',
+      prefix: 'multiple',
+      suffix: 'multiple'
     });
-    return ret;
+    return super.attach(element);
   }
 
   attachElement(element, index) {
@@ -166,6 +176,12 @@ export default class Input extends Multivalue {
     element.widget = this.createWidget(index);
     if (element.widget) {
       element.widget.attach(element);
+      if (this.refs.prefix && this.refs.prefix[index]) {
+        element.widget.addPrefix(this.refs.prefix[index]);
+      }
+      if (this.refs.suffix && this.refs.suffix[index]) {
+        element.widget.addSuffix(this.refs.suffix[index]);
+      }
     }
 
     // Add focus and blur events.

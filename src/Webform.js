@@ -743,6 +743,8 @@ export default class Webform extends NestedComponent {
     else {
       this.component = this.form;
     }
+    this.component.type = 'form';
+    this.component.input = false;
 
     this.addComponents();
     this.isBuilt = true;
