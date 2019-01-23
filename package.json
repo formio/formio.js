@@ -23,8 +23,8 @@
     "publish": "npm test;gulp build;npm run tag;npm publish lib;",
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "karma start --verbose --single-run",
-    "test:watch": "karma start --no-single-run --auto-watch"
+    "test": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
+    "test:watch": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
