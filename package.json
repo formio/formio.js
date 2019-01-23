@@ -26,8 +26,8 @@
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "mocha --compilers js:@babel/register src/**/*.unit.js -b --exit",
     "test:unit:watch": "mocha --compilers js:@babel/register src/**/*.unit.js d--watch",
-    "test:e2e": "karma start --verbose --single-run",
-    "test:e2e:watch": "karma start --no-single-run --auto-watch"
+    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
+    "test:e2e:watch": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
