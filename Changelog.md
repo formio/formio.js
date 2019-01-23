@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Wizard cancel.
+
 ## 3.12.2
 ### Fixed
  - An error from getting thrown when you add a nested from without a form configured.
