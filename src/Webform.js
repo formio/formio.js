@@ -1067,6 +1067,7 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed) {
+    let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
       this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
@@ -1086,10 +1087,11 @@ export default class Webform extends NestedComponent {
 
     if (!flags || !flags.noEmit) {
       this.emit('change', value);
+      isChangeEventEmitted = true;
     }
 
     // The form is initialized after the first change event occurs.
-    if (!this.initialized) {
+    if (isChangeEventEmitted && !this.initialized) {
       this.emit('initialized');
       this.initialized = true;
     }
