@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ##[Unreleased]
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
+ - Wizard cancel.
 
 ## 3.12.2
 ### Fixed
@@ -1539,7 +1540,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.19.0
 ### Fixed
  - Performance issues with large forms with conditionals.
- - Issue with select list not saving values accross pages.
+ - Issue with select list not saving values across pages.
  - Fixed issue with prepend not working if no firstChild is provided.
  - Loader from not showing up.
  - Issue with the form component not validating correctly.

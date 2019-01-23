@@ -1,4 +1,5 @@
 import assert from 'power-assert';
+import { expect } from 'chai';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -152,6 +153,44 @@ describe('Formio Form Renderer tests', () => {
       assert.equal(label.innerHTML, 'Spanish Label');
       done();
     });
+  });
+
+  it('Should keep translation after redraw', done => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+
+    try {
+      form.setForm(schema)
+        .then(() => {
+          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);
+          return form.language = 'ru';
+        }, done)
+        .then(() => {
+          expect(form.options.language).to.equal('ru');
+          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          form.redraw();
+          expect(form.options.language).to.equal('ru');
+          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (error) {
+      done(error);
+    }
   });
 
   it('When submitted should strip fields with persistent: client-only from submission', done => {
