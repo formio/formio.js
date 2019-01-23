@@ -4,7 +4,7 @@ import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent, bootstrapVersion } from './utils/utils';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
@@ -367,7 +367,11 @@ export default class WebformBuilder extends Webform {
     ]));
 
     // Create the form instance.
-    this.editForm = new Webform(formioForm, { language: this.options.language });
+    const editFormOptions = _.get(this, 'options.editForm', {});
+    this.editForm = new Webform(formioForm, {
+      language: this.options.language,
+      ...editFormOptions
+    });
 
     // Set the form to the edit form.
     this.editForm.form = editForm;
