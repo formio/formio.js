@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Components from './components/Components';

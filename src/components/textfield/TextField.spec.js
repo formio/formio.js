@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
+import EventEmitter from '../../EventEmitter';
 
 import {
   comp1,
@@ -181,8 +182,22 @@ describe('TextField Component', () => {
 describe('TextField Builder', () => {
   let builder = null;
 
-  before((done) => Harness.builderBefore(done));
-  after(() => Harness.builderAfter());
+  before((done) => {
+    // Incrise Events limit for this tests set
+    Harness.builderBefore(done, {
+      editForm: {
+        events: new EventEmitter({
+          wildcard: false,
+          maxListeners: 0,
+          loadLimit: 250,
+          log: true,
+        })
+      }
+    });
+  });
+  after(() => {
+    Harness.builderAfter();
+  });
 
   it('Should create a new textfield component', () => {
     builder = Harness.buildComponent('textfield');

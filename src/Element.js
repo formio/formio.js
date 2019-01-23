@@ -1,4 +1,4 @@
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';

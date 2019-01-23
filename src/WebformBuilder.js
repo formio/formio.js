@@ -5,8 +5,8 @@ import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
+import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
-import { getComponent, eachComponent } from './utils/utils';
 import _ from 'lodash';
 require('./components/builder');
 
@@ -558,9 +558,13 @@ export default class WebformBuilder extends Component {
     }
 
     // This is the render step.
+    const editFormOptions = _.get(this, 'options.editForm', {});
     this.editForm = new Webform(
       _.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
-      { language: this.options.language }
+      {
+        language: this.options.language,
+        ...editFormOptions
+      }
     );
 
     // Allow editForm overrides per component.

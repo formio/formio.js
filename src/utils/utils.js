@@ -981,3 +981,28 @@ export function withSwitch(a, b) {
 
   return [get, toggle];
 }
+
+export function observeOverload(callback, options = {}) {
+  const { limit = 50, delay = 500 } = options;
+  let callCount = 0;
+  let timeoutID = 0;
+
+  const reset = () => callCount = 0;
+
+  return () => {
+    if (timeoutID !== 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+    }
+
+    timeoutID = setTimeout(reset, delay);
+
+    callCount += 1;
+
+    if (callCount >= limit) {
+      clearTimeout(timeoutID);
+      reset();
+      return callback();
+    }
+  };
+}
