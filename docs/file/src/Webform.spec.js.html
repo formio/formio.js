@@ -203,6 +203,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Webform.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import { expect } from &apos;chai&apos;;
 import each from &apos;lodash/each&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
@@ -356,6 +357,44 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
       assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
       done();
     });
+  });
+
+  it(&apos;Should keep translation after redraw&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+    const schema = {
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    };
+
+    try {
+      form.setForm(schema)
+        .then(() =&gt; {
+          form.addLanguage(&apos;ru&apos;, { &apos;Default Label&apos;: &apos;Russian Label&apos; }, true);
+          return form.language = &apos;ru&apos;;
+        }, done)
+        .then(() =&gt; {
+          expect(form.options.language).to.equal(&apos;ru&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML).to.equal(&apos;Russian Label&apos;);
+          form.redraw();
+          expect(form.options.language).to.equal(&apos;ru&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML).to.equal(&apos;Russian Label&apos;);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (error) {
+      done(error);
+    }
   });
 
   it(&apos;When submitted should strip fields with persistent: client-only from submission&apos;, done =&gt; {

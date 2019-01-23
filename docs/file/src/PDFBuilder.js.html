@@ -404,6 +404,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit(&apos;updateComponent&apos;, component);
+        this.emit(&apos;change&apos;, this.form);
       }
       return component;
     }, true);

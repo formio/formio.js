@@ -360,6 +360,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
+    const value = this.dataValue;
     return this.ce(&apos;ul&apos;, { class: &apos;list-group list-group-striped&apos; }, [
       this.ce(&apos;li&apos;, { class: &apos;list-group-item list-group-header hidden-xs hidden-sm&apos; },
         this.ce(&apos;div&apos;, { class: &apos;row&apos; },
@@ -376,7 +377,7 @@ export default class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.dataValue.map((fileInfo, index) =&gt; this.createFileListItem(fileInfo, index))
+      Array.isArray(value) ? value.map((fileInfo, index) =&gt; this.createFileListItem(fileInfo, index)) : null
     ]);
   }
 
@@ -451,8 +452,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildImageList() {
+    const value = this.dataValue;
     return this.ce(&apos;div&apos;, {},
-      this.dataValue.map((fileInfo, index) =&gt; this.createImageListItem(fileInfo, index))
+      Array.isArray(value) ? value.map((fileInfo, index) =&gt; this.createImageListItem(fileInfo, index)) : null
     );
   }
 

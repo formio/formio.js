@@ -4,10 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[Unreleased]
+## 3.12.3
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
- - Wizard cancel.
+ - Issue with W``izard cancel.
+ - Issue where an error of dataValue.map is not a function would trigger in file components.
+ - Problem with Headers not being defined for non-brower implementations.
+
+### Added
+ - FOR-1736: Added test for Custom Component.
+ - Test to prove the language change occurs in nested forms.
+ 
+### Changed
+ - Upgraded i18next@13.1.5, eslint@5.12.1, sinon@7.2.3, moment@2.24.0, @babel/preset-env@7.3.1, webpack@4.29.0
 
 ## 3.12.2
 ### Fixed

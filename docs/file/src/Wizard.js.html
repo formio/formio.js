@@ -265,7 +265,7 @@ export default class Wizard extends Webform {
   }
 
   resetValue() {
-    this.getPages().forEach((page) =&gt; page.resetValue());
+    this.getPages({ all: true }).forEach((page) =&gt; page.resetValue());
     this.setPristine(true);
   }
 
