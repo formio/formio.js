@@ -120,18 +120,10 @@ export default class DataGridComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('datagrid', {
-      rows: this.rows.map(row => {
-        const components = {};
-        _.each(row, (col, key) => {
-          components[key] = col.render();
-        });
-        return components;
-      }),
+      rows: this.getRows(),
+      columns: this.getColumns(),
       visibleColumns: this.visibleColumns,
-      hasHeader: this.component.components.reduce((hasHeader, col) => {
-        // If any of the components has a title and it isn't hidden, display the header.
-        return hasHeader || ((col.label || col.title) && !col.hideLabel);
-      }, false),
+      hasHeader: this.hasHeader(),
       hasExtraColumn: this.hasExtraColumn(),
       hasAddButton: this.hasAddButton(),
       hasRemoveButtons: this.hasRemoveButtons,
@@ -141,9 +133,30 @@ export default class DataGridComponent extends NestedComponent {
       datagridKey: this.datagridKey,
       builder: this.options.attachMode === 'builder',
       placeholder: this.renderTemplate('builderPlaceholder', {
-        position: this.component.components.length,
+        position: this.componentComponents.length,
       }),
     }));
+  }
+
+  getRows() {
+    return this.rows.map(row => {
+      const components = {};
+      _.each(row, (col, key) => {
+        components[key] = col.render();
+      });
+      return components;
+    });
+  }
+
+  getColumns() {
+    return this.component.components;
+  }
+
+  hasHeader() {
+    return this.component.components.reduce((hasHeader, col) => {
+      // If any of the components has a title and it isn't hidden, display the header.
+      return hasHeader || ((col.label || col.title) && !col.hideLabel);
+    }, false);
   }
 
   attach(element) {
@@ -164,7 +177,7 @@ export default class DataGridComponent extends NestedComponent {
     const rowLength = _.filter(this.visibleColumns).length;
     this.rows.forEach((row, rowIndex) => {
       let columnIndex = 0;
-      this.component.components.forEach((col) => {
+      this.getColumns().forEach((col) => {
         if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
           this.attachComponents(
             this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],

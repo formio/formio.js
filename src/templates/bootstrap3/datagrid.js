@@ -9,7 +9,7 @@ export default {
   {% if (hasHeader) { %}
   <thead>
     <tr>
-      {% component.components.forEach(function(col) { %}
+      {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
         {{ col.hideLabel ? '' : t(col.label || col.title) }}
@@ -32,7 +32,7 @@ export default {
   <tbody>
     {% rows.forEach(function(row) { %}
     <tr>
-      {% component.components.forEach(function(col) { %}
+      {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <td ref="{{datagridKey}}">
         {{row[col.key]}}
@@ -72,7 +72,7 @@ export default {
   {% if (hasHeader) { %}
   <thead>
     <tr>
-      {% component.components.forEach(function(col) { %}
+      {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
         {{ col.hideLabel ? '' : t(col.label || col.title) }}
@@ -86,7 +86,7 @@ export default {
   <tbody>
     {% rows.forEach(function(row) { %}
     <tr>
-      {% component.components.forEach(function(col) { %}
+      {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <td ref="{{datagridKey}}">
         {{row[col.key]}}
