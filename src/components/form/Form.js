@@ -36,6 +36,7 @@ export default class FormComponent extends BaseComponent {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+    this.subscribe();
   }
 
   get defaultSchema() {
@@ -44,6 +45,33 @@ export default class FormComponent extends BaseComponent {
 
   get emptyValue() {
     return { data: {} };
+  }
+
+  set root(inst) {
+    this._root = inst;
+    this.nosubmit = inst.nosubmit;
+  }
+
+  get root() {
+    return this._root;
+  }
+
+  set nosubmit(value = false) {
+    this._nosubmit = value;
+
+    if (this.subForm) {
+      this.subForm.nosubmit = value;
+    }
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
+
+  subscribe() {
+    this.on('nosubmit', value => {
+      this.nosubmit = value;
+    });
   }
 
   destroy() {
@@ -80,14 +108,15 @@ export default class FormComponent extends BaseComponent {
 
     (new Form(this.element, form, options)).render().then((instance) => {
       this.subForm = instance;
+      this.subForm.root = this.root;
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
-        this.onChange();
+        this.triggerChange();
       });
       this.subForm.url = this.formSrc;
-      this.subForm.nosubmit = false;
+      this.subForm.nosubmit = this.nosubmit;
       this.restoreValue();
       this.subFormReadyResolve(this.subForm);
       return this.subForm;

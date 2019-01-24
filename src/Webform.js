@@ -1294,6 +1294,15 @@ export default class Webform extends NestedComponent {
       return console.warn('You should add a URL to this button.');
     }
   }
+
+  set nosubmit(value = false) {
+    this._nosubmit = value;
+    this.emit('nosubmit', value);
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
 }
 
 Webform.setBaseUrl = Formio.setBaseUrl;
