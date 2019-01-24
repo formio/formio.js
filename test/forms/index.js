@@ -6,6 +6,7 @@ import ClearOnHide from './clearOnHide';
 import ClearOnHide2 from './clearOnHide2';
 import SubmissionSetter from './submissionSetter';
 import NestedFormTests from './nested-form-tests';
+import NestedFormNoSubmit from './nested-nosubmit.js';
 import ChildMetadata from './childMetadata';
 import NestedFormValidation from './nested-form-validation';
 
@@ -18,6 +19,7 @@ export default [
   ClearOnHide,
   ClearOnHide2,
   NestedFormTests,
-  ChildMetadata,
-  NestedFormValidation
+  NestedFormValidation,
+  NestedFormNoSubmit,
+  ChildMetadata
 ];

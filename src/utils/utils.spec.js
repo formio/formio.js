@@ -645,7 +645,6 @@ describe('withSwitch', () => {
   });
 });
 
-<<<<<<< HEAD
 describe('unfold', () => {
   it('should return provided argument', () => {
     const parameters = [{}, 1, null, 'string'];

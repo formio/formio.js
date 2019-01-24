@@ -1,5 +1,6 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -302,6 +303,22 @@ describe('Formio Form Renderer tests', () => {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
+    });
+  });
+
+  describe('set/get nosubmit', () => {
+    it('should set/get nosubmit flag and emit nosubmit event', () => {
+      const form = new Webform(null, {});
+      const emit = sinon.spy(form, 'emit');
+      expect(form.nosubmit).to.be.false;
+      form.nosubmit = true;
+      expect(form.nosubmit).to.be.true;
+      expect(emit.callCount).to.equal(1);
+      expect(emit.args[0]).to.deep.equal(['nosubmit', true]);
+      form.nosubmit = false;
+      expect(form.nosubmit).to.be.false;
+      expect(emit.callCount).to.equal(2);
+      expect(emit.args[1]).to.deep.equal(['nosubmit', false]);
     });
   });
 

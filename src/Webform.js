@@ -1286,6 +1286,15 @@ export default class Webform extends NestedComponent {
       recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
+
+  set nosubmit(value = false) {
+    this._nosubmit = value;
+    this.emit('nosubmit', value);
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
 }
 
 Webform.setBaseUrl = Formio.setBaseUrl;

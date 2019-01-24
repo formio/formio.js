@@ -36,6 +36,8 @@ export default class FormComponent extends Component {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+
+    this.subscribe();
     const srcOptions = this.getSubOptions();
 
     // Make sure that if reference is provided, the form must submit.
@@ -90,12 +92,14 @@ export default class FormComponent extends Component {
     this.component.components = this.component.components || [];
 
     this.subForm = new Form(this.component, srcOptions).instance;
+    this.subForm.root = this.root;
     this.subForm.on('change', () => {
       this.dataValue = this.subForm.getValue();
       this.triggerChange();
     });
     this.loadSubForm().then(this.redraw.bind(this));
     this.subForm.url = this.formSrc;
+    this.subForm.nosubmit = this.nosubmit;
     this.subForm.nosubmit = false;
     this.restoreValue();
   }
@@ -172,6 +176,32 @@ export default class FormComponent extends Component {
       this.subForm.detach();
     }
     super.detach();
+  }
+
+  set root(inst) {
+    this._root = inst;
+    this.nosubmit = inst.nosubmit;
+  }
+
+  get root() {
+    return this._root;
+  }
+
+  set nosubmit(value) {
+    this._nosubmit = !!value;
+    if (this.subForm) {
+      this.subForm.nosubmit = this._nosubmit;
+    }
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
+
+  subscribe() {
+    this.on('nosubmit', value => {
+      this.nosubmit = value;
+    });
   }
 
   destroy() {

@@ -127,6 +127,39 @@ describe('Form Component', () => {
         .catch(done);
     });
   });
+
+  describe('set/get nosubmit', () => {
+    it('should set/get nosubmit flag', done => {
+      Harness.testCreate(FormComponent, comp1)
+        .then(formcmp => {
+          formcmp.nosubmit = false;
+          expect(formcmp.nosubmit).to.be.false;
+          formcmp.nosubmit = true;
+          expect(formcmp.nosubmit).to.be.true;
+          formcmp.nosubmit = false;
+          expect(formcmp.nosubmit).to.be.false;
+          done();
+        }, done)
+        .catch(done);
+    });
+
+    it('should set nosubmit flag on subForm', done => {
+      Harness.testCreate(FormComponent, comp1)
+        .then(formcmp => {
+          const fakeSubForm = {};
+          formcmp.subForm = fakeSubForm;
+          formcmp.nosubmit = false;
+          expect(formcmp.subForm).to.have.property('nosubmit');
+          expect(formcmp.subForm.nosubmit).to.be.false;
+          formcmp.nosubmit = true;
+          expect(formcmp.subForm.nosubmit).to.be.true;
+          formcmp.nosubmit = false;
+          expect(formcmp.subForm.nosubmit).to.be.false;
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
 });
 
 describe('Wizard Component', () => {
