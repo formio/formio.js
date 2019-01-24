@@ -1253,13 +1253,13 @@ export default class Webform extends NestedComponent {
     if (headers && headers.length > 0) {
       headers.map((e) => {
         if (e.header !== '' && e.value !== '') {
-          settings.headers[e.header] = e.value;
+          settings.headers[e.header] = this.interpolate(e.value, submission);
         }
       });
     }
     if (API_URL && settings) {
       try {
-        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then(() => {
+        Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         });

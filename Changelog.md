@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
  - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
+ - FOR-2000: POST to URL button not passing headers, added interpolation to header value
 
 ## 3.12.3
 ### Fixed
