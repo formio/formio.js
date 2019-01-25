@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.13.0
 ### Fixed
+ - Issue where calling Formio.request by itself could return a non-Promise cached response.
+ - FOR-2020: Fixed issue with the nosubmit flag not getting passed to nested forms.
  - FOR-2000: POST to URL button not passing headers, added interpolation to header value
  - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
+ - FOR-1901: Fixed infinite loop performance issues with nested forms.
 
 ### Added
  - reCAPTCHA component
+ - Azure Blob Storage support
+ - FOR-1802: Added tests to ensure the change event is fired within PDF's
 
 ## 3.12.3
 ### Fixed

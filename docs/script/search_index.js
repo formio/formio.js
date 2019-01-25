@@ -210,6 +210,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/eventemitter.js~eventemitter",
+    "class/src/EventEmitter.js~EventEmitter.html",
+    "<span>EventEmitter</span> <span class=\"search-result-import-path\">formiojs/src/EventEmitter.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/fieldset/fieldset.form.js~fieldset",
     "function/index.html#static-function-Fieldset",
     "<span>Fieldset</span> <span class=\"search-result-import-path\">formiojs/src/components/fieldset/Fieldset.form.js</span>",
@@ -399,6 +405,18 @@ window.esdocSearchIndex = [
     "formiojs/src/components/radio/radio.js~radiocomponent",
     "class/src/components/radio/Radio.js~RadioComponent.html",
     "<span>RadioComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/radio/Radio.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/components/recaptcha/recaptcha.form.js~recaptcha",
+    "function/index.html#static-function-ReCaptcha",
+    "<span>ReCaptcha</span> <span class=\"search-result-import-path\">formiojs/src/components/recaptcha/ReCaptcha.form.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/components/recaptcha/recaptcha.js~recaptchacomponent",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html",
+    "<span>ReCaptchaComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/recaptcha/ReCaptcha.js</span>",
     "class"
   ],
   [
@@ -612,6 +630,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/providers/storage/xhr.js~xhr",
+    "variable/index.html#static-variable-XHR",
+    "<span>XHR</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/xhr.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/utils/utils.js~addtemplatehash",
     "function/index.html#static-function-addTemplateHash",
     "<span>addTemplateHash</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -621,6 +645,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/formutils.js~applyformchanges",
     "function/index.html#static-function-applyFormChanges",
     "<span>applyFormChanges</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/providers/storage/azure.js~azure",
+    "function/index.html#static-function-azure",
+    "<span>azure</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/azure.js</span>",
     "function"
   ],
   [
@@ -927,6 +957,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~momentdate",
     "function/index.html#static-function-momentDate",
     "<span>momentDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/utils.js~observeoverload",
+    "function/index.html#static-function-observeOverload",
+    "<span>observeOverload</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
     "function"
   ],
   [
@@ -1288,6 +1324,24 @@ window.esdocSearchIndex = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
     "src/.external-ecmascript.js~undefined",
     "external"
+  ],
+  [
+    "src/eventemitter.js",
+    "file/src/EventEmitter.js.html",
+    "src/EventEmitter.js",
+    "file"
+  ],
+  [
+    "src/eventemitter.js~eventemitter#constructor",
+    "class/src/EventEmitter.js~EventEmitter.html#instance-constructor-constructor",
+    "src/EventEmitter.js~EventEmitter#constructor",
+    "method"
+  ],
+  [
+    "src/eventemitter.js~eventemitter#emit",
+    "class/src/EventEmitter.js~EventEmitter.html#instance-member-emit",
+    "src/EventEmitter.js~EventEmitter#emit",
+    "member"
   ],
   [
     "src/form.js",
@@ -2232,6 +2286,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdfbuilder.spec.js",
+    "file/src/PDFBuilder.spec.js.html",
+    "src/PDFBuilder.spec.js",
+    "file"
+  ],
+  [
     "src/webform.js",
     "file/src/Webform.js.html",
     "src/Webform.js",
@@ -2247,6 +2307,12 @@ window.esdocSearchIndex = [
     "src/webform.js~webform#_loading",
     "class/src/Webform.js~Webform.html#instance-member-_loading",
     "src/Webform.js~Webform#_loading",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#_nosubmit",
+    "class/src/Webform.js~Webform.html#instance-member-_nosubmit",
+    "src/Webform.js~Webform#_nosubmit",
     "member"
   ],
   [
@@ -2437,13 +2503,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2467,7 +2533,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-member-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "src/Webform.js~Webform#nosubmit",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2623,13 +2695,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -2688,6 +2760,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/webform.js~webform#triggerrecaptcha",
+    "class/src/Webform.js~Webform.html#instance-method-triggerRecaptcha",
+    "src/Webform.js~Webform#triggerRecaptcha",
+    "method"
+  ],
+  [
     "src/webform.js~webform#triggersavedraft",
     "class/src/Webform.js~Webform.html#instance-member-triggerSaveDraft",
     "src/Webform.js~Webform#triggerSaveDraft",
@@ -2701,13 +2779,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3301,13 +3379,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -3991,13 +4069,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4303,13 +4381,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -4908,6 +4986,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/button/button.js~buttoncomponent#triggerrecaptcha",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-method-triggerReCaptcha",
+    "src/components/button/Button.js~ButtonComponent#triggerReCaptcha",
+    "method"
+  ],
+  [
     "src/components/button/button.js~buttoncomponent.builderinfo",
     "class/src/components/button/Button.js~ButtonComponent.html#static-get-builderInfo",
     "src/components/button/Button.js~ButtonComponent.builderInfo",
@@ -4981,13 +5065,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5701,13 +5785,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -7428,6 +7512,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/form.js~formcomponent#_nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_nosubmit",
+    "src/components/form/Form.js~FormComponent#_nosubmit",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#_root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_root",
+    "src/components/form/Form.js~FormComponent#_root",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#beforenext",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-beforeNext",
     "src/components/form/Form.js~FormComponent#beforeNext",
@@ -7518,9 +7614,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/form/form.js~formcomponent#parentvisible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
-    "src/components/form/Form.js~FormComponent#parentVisible",
+    "src/components/form/form.js~formcomponent#nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
+    "src/components/form/Form.js~FormComponent#nosubmit",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
+    "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
@@ -7530,10 +7632,28 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/form/form.js~formcomponent#parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
+    "src/components/form/Form.js~FormComponent#parentVisible",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#rendersubform",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-renderSubForm",
     "src/components/form/Form.js~FormComponent#renderSubForm",
     "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
+    "src/components/form/Form.js~FormComponent#root",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
+    "src/components/form/Form.js~FormComponent#root",
+    "member"
   ],
   [
     "src/components/form/form.js~formcomponent#setpristine",
@@ -7578,6 +7698,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/form/form.js~formcomponent#subscribe",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-subscribe",
+    "src/components/form/Form.js~FormComponent#subscribe",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#updatesubformvisibility",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-updateSubFormVisibility",
     "src/components/form/Form.js~FormComponent#updateSubFormVisibility",
@@ -7585,13 +7711,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
@@ -8263,13 +8389,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -8371,13 +8497,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
@@ -8949,6 +9075,114 @@ window.esdocSearchIndex = [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.form.js",
+    "file/src/components/recaptcha/ReCaptcha.form.js.html",
+    "src/components/recaptcha/ReCaptcha.form.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js",
+    "file/src/components/recaptcha/ReCaptcha.js.html",
+    "src/components/recaptcha/ReCaptcha.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#beforesubmit",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-beforeSubmit",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#beforeSubmit",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#createinput",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-createInput",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createInput",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#createlabel",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-createLabel",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createLabel",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#datavalue",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-dataValue",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#dataValue",
+    "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#getvalue",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-getValue",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#recaptchaapiready",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-recaptchaApiReady",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaApiReady",
+    "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#recaptchaverifiedpromise",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-member-recaptchaVerifiedPromise",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaVerifiedPromise",
+    "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#sendverificationrequest",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-sendVerificationRequest",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#sendVerificationRequest",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#setvalue",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-setValue",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#verify",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-verify",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#verify",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent.builderinfo",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-get-builderInfo",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent.schema",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-method-schema",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.schema",
+    "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.spec.js",
+    "file/src/components/recaptcha/ReCaptcha.spec.js.html",
+    "src/components/recaptcha/ReCaptcha.spec.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/editform/recaptcha.edit.display.js",
+    "file/src/components/recaptcha/editForm/ReCaptcha.edit.display.js.html",
+    "src/components/recaptcha/editForm/ReCaptcha.edit.display.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/fixtures/comp1.js",
+    "file/src/components/recaptcha/fixtures/comp1.js.html",
+    "src/components/recaptcha/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/recaptcha/fixtures/index.js",
+    "file/src/components/recaptcha/fixtures/index.js.html",
+    "src/components/recaptcha/fixtures/index.js",
     "file"
   ],
   [
@@ -10992,6 +11226,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/providers/storage/azure.js",
+    "file/src/providers/storage/azure.js.html",
+    "src/providers/storage/azure.js",
+    "file"
+  ],
+  [
     "src/providers/storage/base64.js",
     "file/src/providers/storage/base64.js.html",
     "src/providers/storage/base64.js",
@@ -11019,6 +11259,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/url.js",
     "file/src/providers/storage/url.js.html",
     "src/providers/storage/url.js",
+    "file"
+  ],
+  [
+    "src/providers/storage/xhr.js",
+    "file/src/providers/storage/xhr.js.html",
+    "src/providers/storage/xhr.js",
     "file"
   ],
   [
