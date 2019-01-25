@@ -5,13 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
+
 ### Added
  - reCAPTCHA component
 
 ## 3.12.3
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
- - Issue with W``izard cancel.
+ - Issue with Wizard cancel.
  - Issue where an error of dataValue.map is not a function would trigger in file components.
  - Problem with Headers not being defined for non-brower implementations.
 
