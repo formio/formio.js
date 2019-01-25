@@ -1298,6 +1298,15 @@ export default class Webform extends NestedComponent {
     }
   }
 
+  set nosubmit(value = false) {
+    this._nosubmit = value;
+    this.emit('nosubmit', value);
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
+
   triggerRecaptcha() {
     let recaptchaComponent;
     this.root.everyComponent((component) => {
