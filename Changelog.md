@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
+ - FOR-2000: POST to URL button not passing headers, added interpolation to header value
  - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
 
 ### Added
