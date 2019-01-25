@@ -40,6 +40,7 @@ import TreeForm from './tree/Tree.form';
 import WellForm from './well/Well.form';
 import ModalEditForm from './modaledit/ModalEdit.form';
 import UnknownForm from './unknown/Unknown.form';
+import ReCaptchaForm from './recaptcha/ReCaptcha.form';
 
 Components.address.editForm = AddressForm;
 Components.button.editForm = ButtonForm;
@@ -81,5 +82,6 @@ Components.tree.editForm = TreeForm;
 Components.well.editForm = WellForm;
 Components.modaledit.editForm = ModalEditForm;
 Components.unknown.editForm = UnknownForm;
+Components.recaptcha.editForm = ReCaptchaForm;
 
 export default Components;

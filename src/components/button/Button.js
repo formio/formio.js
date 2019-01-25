@@ -146,7 +146,7 @@ export default class ButtonComponent extends BaseComponent {
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
-        this.loading  = false;
+        this.loading = false;
         this.disabled = false;
         this.empty(message);
         this.addClass(this.buttonElement, 'btn-success submit-success');
@@ -204,6 +204,7 @@ export default class ButtonComponent extends BaseComponent {
     }, true);
 
     this.addEventListener(this.buttonElement, 'click', (event) => {
+      this.triggerReCaptcha();
       this.dataValue = true;
       if (this.component.action !== 'submit' && this.component.showValidations) {
         this.emit('checkValidity', this.data);
@@ -394,5 +395,20 @@ export default class ButtonComponent extends BaseComponent {
 
   focus() {
     this.buttonElement.focus();
+  }
+
+  triggerReCaptcha() {
+    let recaptchaComponent;
+    this.root.everyComponent((component) => {
+      if (component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key) {
+        recaptchaComponent = component;
+        return false;
+      }
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.component.key}Click`);
+    }
   }
 }

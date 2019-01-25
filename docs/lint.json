@@ -859,51 +859,51 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 135,
+        "lineNumber": 137,
         "line": "/**"
       },
       {
-        "lineNumber": 136,
+        "lineNumber": 138,
         "line": " * Get a component by its key"
       },
       {
-        "lineNumber": 137,
-        "line": " *"
-      },
-      {
-        "lineNumber": 138,
-        "line": " * @param {Object} components"
-      },
-      {
         "lineNumber": 139,
-        "line": " *   The components to iterate."
+        "line": " *"
       },
       {
         "lineNumber": 140,
-        "line": " * @param {String|Object} key"
+        "line": " * @param {Object} components"
       },
       {
         "lineNumber": 141,
-        "line": " *   The key of the component to get, or a query of the component to search."
+        "line": " *   The components to iterate."
       },
       {
         "lineNumber": 142,
-        "line": " *"
+        "line": " * @param {String|Object} key"
       },
       {
         "lineNumber": 143,
-        "line": " * @returns {Object}"
+        "line": " *   The key of the component to get, or a query of the component to search."
       },
       {
         "lineNumber": 144,
-        "line": " *   The component that matches the given key, or undefined if not found."
+        "line": " *"
       },
       {
         "lineNumber": 145,
-        "line": " */"
+        "line": " * @returns {Object}"
       },
       {
         "lineNumber": 146,
+        "line": " *   The component that matches the given key, or undefined if not found."
+      },
+      {
+        "lineNumber": 147,
+        "line": " */"
+      },
+      {
+        "lineNumber": 148,
         "line": "export function getComponent(components, key, includeAll) {"
       }
     ],
@@ -915,6 +915,64 @@
     "docParams": [
       "components",
       "key"
+    ]
+  },
+  {
+    "name": "findComponent",
+    "filePath": "src/utils/formUtils.js",
+    "lines": [
+      {
+        "lineNumber": 190,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 191,
+        "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form."
+      },
+      {
+        "lineNumber": 192,
+        "line": " *"
+      },
+      {
+        "lineNumber": 193,
+        "line": " * @param components"
+      },
+      {
+        "lineNumber": 194,
+        "line": " * @param key"
+      },
+      {
+        "lineNumber": 195,
+        "line": " * @param fn"
+      },
+      {
+        "lineNumber": 196,
+        "line": " * @param path"
+      },
+      {
+        "lineNumber": 197,
+        "line": " * @returns {*}"
+      },
+      {
+        "lineNumber": 198,
+        "line": " */"
+      },
+      {
+        "lineNumber": 199,
+        "line": "export function findComponent(components, key, path, fn) {"
+      }
+    ],
+    "codeParams": [
+      "components",
+      "key",
+      "path",
+      "fn"
+    ],
+    "docParams": [
+      "components",
+      "key",
+      "fn",
+      "path"
     ]
   },
   {
@@ -1366,6 +1424,50 @@
     "docParams": [
       "fn",
       "delay"
+    ]
+  },
+  {
+    "name": "unfold",
+    "filePath": "src/utils/utils.js",
+    "lines": [
+      {
+        "lineNumber": 934,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 935,
+        "line": " * Retrun provided argument."
+      },
+      {
+        "lineNumber": 936,
+        "line": " * If argument is a function, returns the result of a function call."
+      },
+      {
+        "lineNumber": 937,
+        "line": " * @param {*} e;"
+      },
+      {
+        "lineNumber": 938,
+        "line": " *"
+      },
+      {
+        "lineNumber": 939,
+        "line": " * @return {*}"
+      },
+      {
+        "lineNumber": 940,
+        "line": " */"
+      },
+      {
+        "lineNumber": 941,
+        "line": "export function unfold(e) {"
+      }
+    ],
+    "codeParams": [
+      "e"
+    ],
+    "docParams": [
+      "e;"
     ]
   }
 ]
