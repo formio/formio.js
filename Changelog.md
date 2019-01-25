@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - reCAPTCHA component
+
 ## 3.12.3
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
