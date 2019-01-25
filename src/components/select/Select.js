@@ -84,7 +84,10 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
-    return '';
+    if (this.component.valueProperty) {
+      return '';
+    }
+    return {};
   }
 
   get inputInfo() {
@@ -835,7 +838,7 @@ export default class SelectComponent extends Field {
     if (this.viewOnly || this.loading || !this.selectOptions.length) {
       return this.dataValue;
     }
-    let value = '';
+    let value = this.emptyValue;
     if (this.choices) {
       value = this.choices.getValue(true);
 
@@ -845,7 +848,7 @@ export default class SelectComponent extends Field {
         this.component.placeholder &&
         (value === this.t(this.component.placeholder))
       ) {
-        value = '';
+        value = this.emptyValue;
       }
     }
     else {
