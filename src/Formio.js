@@ -5,7 +5,7 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from 'native-promise-only';
 import 'whatwg-fetch';
-import { EventEmitter2 as EventEmitter } from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
