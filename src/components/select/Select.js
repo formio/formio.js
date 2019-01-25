@@ -68,7 +68,10 @@ export default class SelectComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return '';
+    if (this.component.valueProperty) {
+      return '';
+    }
+    return {};
   }
 
   elementInfo() {
@@ -666,7 +669,7 @@ export default class SelectComponent extends BaseComponent {
     if (this.viewOnly || this.loading || !this.selectOptions.length) {
       return this.dataValue;
     }
-    let value = '';
+    let value = this.emptyValue;
     if (this.choices) {
       value = this.choices.getValue(true);
 
@@ -676,7 +679,7 @@ export default class SelectComponent extends BaseComponent {
         this.component.placeholder &&
         (value === this.t(this.component.placeholder))
       ) {
-        value = '';
+        value = this.emptyValue;
       }
     }
     else {
@@ -690,7 +693,7 @@ export default class SelectComponent extends BaseComponent {
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
     if (value === undefined || value === null) {
-      value = '';
+      value = this.emptyValue;
     }
     return value;
   }
