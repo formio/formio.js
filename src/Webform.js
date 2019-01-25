@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
@@ -669,6 +669,7 @@ export default class Webform extends NestedComponent {
     this.initialized = false;
     return this.createForm(form).then(() => {
       this.emit('formLoad', form);
+      this.triggerRecaptcha();
       return form;
     });
   }
@@ -1294,6 +1295,20 @@ export default class Webform extends NestedComponent {
       this.emit('error', 'You should add a URL to this button.');
       this.setAlert('warning', 'You should add a URL to this button.');
       return console.warn('You should add a URL to this button.');
+    }
+  }
+
+  triggerRecaptcha() {
+    let recaptchaComponent;
+    this.root.everyComponent((component) => {
+      if (component.component.type === 'recaptcha' &&
+        component.component.eventType === 'formLoad') {
+        recaptchaComponent = component;
+        return false;
+      }
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 }

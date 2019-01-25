@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
 
+### Added
+ - reCAPTCHA component
+
 ## 3.12.3
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
