@@ -710,7 +710,7 @@ export default class SelectComponent extends BaseComponent {
       value = value ? [value] : [];
     }
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : value;
+    const hasValue = Array.isArray(value) ? value.length : typeof value === 'object' ? Object.keys(value).length : value;
     const changed = this.hasChanged(value, previousValue);
     this.dataValue = value;
 
