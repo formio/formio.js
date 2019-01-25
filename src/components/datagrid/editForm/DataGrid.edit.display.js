@@ -5,7 +5,10 @@ export default [
     key: 'disableAddingRemovingRows',
     tooltip: 'Check if you want to hide Add Another button and Remove Row button',
     weight: 405,
-    input: true
+    input: true,
+    clearOnHide: false,
+    customConditional: 'show = !data.enableRowGroups',
+    calculateValue: 'value = data.enableRowGroups ? true : data.disableAddingRemovingRows;',
   },
   {
     type: 'textfield',
@@ -32,7 +35,23 @@ export default [
         { label: 'Both', value: 'both' }
       ]
     },
-    weight: 420,
+    weight: 411,
+    customConditional: 'show = !data.disableAddingRemovingRows'
+  },
+  {
+    type: 'select',
+    label: 'Remove Button Placement',
+    key: 'removePlacement',
+    defaultValue: 'col',
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Right Most Column', value: 'col' },
+        { label: 'Row Top-Right corner', value: 'corner' },
+      ]
+    },
+    weight: 412,
+    input: true,
     customConditional: 'show = !data.disableAddingRemovingRows'
   },
   {
@@ -40,7 +59,70 @@ export default [
     label: 'Default Open Rows',
     key: 'defaultOpen',
     tooltip: 'Check this if you would like for the rows of the edit grid to be defaulted to opened if values exist.',
-    weight: 405,
+    weight: 420,
     input: true
-  }
-];
+  },
+  {
+    type: 'checkbox',
+    label: 'Equal column width',
+    key: 'layoutFixed',
+    weight: 430,
+    input: true,
+  },
+  {
+    key: 'enableRowGroups',
+    type: 'checkbox',
+    label: 'Enable Row Groups',
+    weight: 440,
+    input: true
+  },
+  {
+    label: 'Groups',
+    disableAddingRemovingRows: false,
+    defaultOpen: false,
+    addAnother: '',
+    addAnotherPosition: 'bottom',
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: 'datagrid',
+    input: true,
+    key: 'rowGroups',
+    components: [
+      {
+        label: 'Label',
+        allowMultipleMasks: false,
+        showWordCount: false,
+        showCharCount: false,
+        tableView: true,
+        alwaysEnabled: false,
+        type: 'textfield',
+        input: true,
+        key: 'label',
+        widget: {
+          type: ''
+        },
+        row: '0-0'
+      },
+      {
+        label: 'Number of Rows',
+        mask: false,
+        tableView: true,
+        alwaysEnabled: false,
+        type: 'number',
+        input: true,
+        key: 'numberOfRows',
+        row: '0-1'
+      }
+    ],
+    weight: 441,
+    conditional: { json: { var: 'data.enableRowGroups' } }
+  },
+  {
+    label: 'Hide Group on Header Click',
+    type: 'checkbox',
+    input: true,
+    key: 'groupToggle',
+    weight: 442,
+    conditional: { json: { var: 'data.enableRowGroups' } }
+  }];

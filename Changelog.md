@@ -8,6 +8,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - reCAPTCHA component
 
+## 3.12.3
+### Fixed
+ - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
+ - Issue with W``izard cancel.
+ - Issue where an error of dataValue.map is not a function would trigger in file components.
+ - Problem with Headers not being defined for non-brower implementations.
+
+### Added
+ - FOR-1736: Added test for Custom Component.
+ - Test to prove the language change occurs in nested forms.
+ 
+### Changed
+ - Upgraded i18next@13.1.5, eslint@5.12.1, sinon@7.2.3, moment@2.24.0, @babel/preset-env@7.3.1, webpack@4.29.0
+
+## 3.12.2
+### Fixed
+ - An error from getting thrown when you add a nested from without a form configured.
+
+## 3.12.1
+### Added
+ - Some merge utilities to assist with the form merge system.
+ - Improvements to Select component asString method.
+
+### Changed
+ - Upgrade i18next@13.1.4
+ 
+### Fixed
+ - Problem where nested form would show the submit buttons.
+ - Fixed bug with schema getter when it returns duplicates within components array.
+
+## 3.12.0
+### Added
+ - Added "Inline Edit" mode for the edit grid to commit the changed rows inline with the submission value.
+ - Hashing and caching for `interpolate` function.
+ - Ability to upload images to File Storage for Quill WYSIWYG
+ - Row groups feature to Data Grid.
+ - Static table configuration options to Data Grid component.
+
+### Changed
+ - Upgrade i18next@13.1.2
+
 ## 3.11.1
 ### Fixed
  - Issues with the choices icons not making their way into external librarys such as Angular, etc.
@@ -1512,7 +1553,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.19.0
 ### Fixed
  - Performance issues with large forms with conditionals.
- - Issue with select list not saving values accross pages.
+ - Issue with select list not saving values across pages.
  - Fixed issue with prepend not working if no firstChild is provided.
  - Loader from not showing up.
  - Issue with the form component not validating correctly.

@@ -219,9 +219,9 @@ export default class WebformBuilder extends Webform {
       remove = window.confirm(this.t(message));
     }
     if (remove) {
-      this.emit('deleteComponent', component);
       component.parent.removeComponentById(component.id);
       this.form = this.schema;
+      this.emit('deleteComponent', component);
     }
     return remove;
   }
@@ -453,6 +453,7 @@ export default class WebformBuilder extends Webform {
         return;
       }
       event.preventDefault();
+      const originalComponent = component.component;
       component.isNew = false;
       //for custom component use value in 'componentJson' field as JSON of component
       if (isCustom) {
@@ -464,8 +465,8 @@ export default class WebformBuilder extends Webform {
       if (component.dragEvents && component.dragEvents.onSave) {
         component.dragEvents.onSave(component);
       }
-      this.emit('saveComponent', component);
       this.form = this.schema;
+      this.emit('saveComponent', component, originalComponent);
       this.dialog.close();
     });
 
@@ -863,6 +864,24 @@ export default class WebformBuilder extends Webform {
       if (target.dragEvents) {
         component.dragEvents = target.dragEvents;
       }
+
+      // Get path to the component in the parent component.
+      let path = 'components';
+      switch (component.parent.type) {
+        case 'table':
+          path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+          break;
+        case 'columns':
+          path = `columns[${component.column}].components`;
+          break;
+        case 'tabs':
+          path = `components[${component.tab}].components`;
+          break;
+      }
+      // Index within container
+      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.key }) || 0;
+
+      this.emit('addComponent', component, path, index);
 
       // Edit the component.
       this.editComponent(component);

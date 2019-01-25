@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import set from 'lodash/set';
 import has from 'lodash/has';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
@@ -9,6 +10,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import round from 'lodash/round';
 import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
+import jsonpatch from 'fast-json-patch';
 
 /**
  * Determine if a component is a layout component or not.
@@ -163,7 +165,7 @@ export function getComponent(components, key, includeAll) {
  * @param query
  * @return {*}
  */
-export function findComponents(components, query) {
+export function searchComponents(components, query) {
   const results = [];
   eachComponent(components, (component, path) => {
     if (matchComponent(component, query)) {
@@ -172,6 +174,183 @@ export function findComponents(components, query) {
     }
   }, true);
   return results;
+}
+
+/**
+ * Deprecated version of findComponents. Renamed to searchComponents.
+ *
+ * @param components
+ * @param query
+ * @returns {*}
+ */
+export function findComponents(components, query) {
+  console.warn('formio.js/utils findComponents is deprecated. Use searchComponents instead.');
+  return searchComponents(components, query);
+}
+
+/**
+ * This function will find a component in a form and return the component AND THE PATH to the component in the form.
+ *
+ * @param components
+ * @param key
+ * @param fn
+ * @param path
+ * @returns {*}
+ */
+export function findComponent(components, key, path, fn) {
+  if (!components) return;
+  path = path || [];
+
+  if (!key) {
+    return fn(components);
+  }
+
+  components.forEach(function(component, index) {
+    var newPath = path.slice();
+    newPath.push(index);
+    if (!component) return;
+
+    if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
+      newPath.push('columns');
+      component.columns.forEach(function(column, index) {
+        var colPath = newPath.slice();
+        colPath.push(index);
+        colPath.push('components');
+        findComponent(column.components, key, colPath, fn);
+      });
+    }
+
+    if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
+      newPath.push('rows');
+      component.rows.forEach(function(row, index) {
+        var rowPath = newPath.slice();
+        rowPath.push(index);
+        row.forEach(function(column, index) {
+          var colPath = rowPath.slice();
+          colPath.push(index);
+          colPath.push('components');
+          findComponent(column.components, key, colPath, fn);
+        });
+      });
+    }
+
+    if (component.hasOwnProperty('components') && Array.isArray(component.components)) {
+      newPath.push('components');
+      findComponent(component.components, key, newPath, fn);
+    }
+
+    if (component.key === key) {
+      fn(component, newPath);
+    }
+  });
+}
+
+/**
+ * Remove a component by path.
+ *
+ * @param components
+ * @param path
+ */
+export function removeComponent(components, path) {
+  // Using _.unset() leave a null value. Use Array splice instead.
+  var index = path.pop();
+  if (path.length !== 0) {
+    components = get(components, path);
+  }
+  components.splice(index, 1);
+}
+
+export function generateFormChange(type, data) {
+  let change;
+  switch (type) {
+    case 'add':
+      change = {
+        op: 'add',
+        key: data.component.key,
+        container: data.parent.key, // Parent component
+        path: data.path, // Path to container within parent component.
+        index: data.index, // Index of component in parent container.
+        component: data.component
+      };
+      break;
+    case 'edit':
+      change = {
+        op: 'edit',
+        key: data.originalComponent.key,
+        patches: jsonpatch.compare(data.originalComponent, data.component)
+      };
+
+      // Don't save if nothing changed.
+      if (!change.patches.length) {
+        change = null;
+      }
+      break;
+    case 'remove':
+      change = {
+        op: 'remove',
+        key: data.component.key,
+      };
+      break;
+  }
+
+  return change;
+}
+
+export function applyFormChanges(form, changes) {
+  const failed = [];
+  changes.forEach(function(change) {
+    var found = false;
+    switch (change.op) {
+      case 'add':
+        var newComponent = change.component;
+
+        // Find the container to set the component in.
+        findComponent(form.components, change.container, null, function(parent) {
+          if (!change.container) {
+            parent = form;
+          }
+
+          // A move will first run an add so remove any existing components with matching key before inserting.
+          findComponent(form.components, change.key, null, function(component, path) {
+            // If found, use the existing component. (If someone else edited it, the changes would be here)
+            newComponent = component;
+            removeComponent(form.components, path);
+          });
+
+          found = true;
+          var container = get(parent, change.path);
+          container.splice(change.index, 0, newComponent);
+        });
+        break;
+      case 'remove':
+        findComponent(form.components, change.key, null, function(component, path) {
+          found = true;
+          removeComponent(form.components, path);
+        });
+        break;
+      case 'edit':
+        findComponent(form.components, change.key, null, function(component, path) {
+          found = true;
+          try {
+            set(form.components, path, jsonpatch.applyPatch(component, change.patches).newDocument);
+          }
+          catch (err) {
+            failed.push(change);
+          }
+        });
+        break;
+      case 'move':
+        break;
+    }
+    if (!found) {
+      failed.push(change);
+    }
+  });
+
+  return {
+    form,
+    failed
+  };
 }
 
 /**
