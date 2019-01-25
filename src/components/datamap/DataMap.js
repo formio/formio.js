@@ -131,10 +131,9 @@ export default class DataMapComponent extends DataGridComponent {
     const valueSchema = Object.assign({}, this.component.valueComponent);
     keySchema.hideLabel = false;
     valueSchema.hideLabel = false;
-    return [
-      keySchema,
-      valueSchema
-    ];
+    return this.component.keyBeforeValue ?
+      [keySchema, valueSchema] :
+      [valueSchema, keySchema];
   }
 
   createRowComponents(keyValue, value, rowIndex) {
