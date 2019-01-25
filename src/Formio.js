@@ -693,7 +693,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return _cloneDeep(Formio.cache[cacheKey]);
+      return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -817,7 +817,7 @@ export default class Formio {
 
         // Cache the response.
         if (method === 'GET') {
-          Formio.cache[cacheKey] = _cloneDeep(result);
+          Formio.cache[cacheKey] = result;
         }
 
         let resultCopy = {};
