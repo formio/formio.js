@@ -39,7 +39,15 @@ describe('Formio PDF Form Builder tests', () => {
           if (isPfdFormInitilized) { //ignore any change events fired before initialized event
             //remove builder elements from DOM
             builder.destroy();
-            document.body.removeChild(element);
+            try {
+              document.body.removeChild(element);
+            }
+            catch (err) {
+              console.warn(err);
+            }
+            done();
+          }
+          else {
             done();
           }
         });
