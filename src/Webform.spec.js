@@ -194,6 +194,75 @@ describe('Formio Form Renderer tests', () => {
     }
   });
 
+  it('Should fire languageChanged event when language is set', done => {
+    let isLanguageChangedEventFired = false;
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+
+    try {
+      form.setForm(schema)
+        .then(() => {
+          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);
+          form.on('languageChanged', () => {
+            isLanguageChangedEventFired = true;
+          });
+          return form.language = 'ru';
+        }, done)
+        .then(() => {
+          assert(isLanguageChangedEventFired);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (error) {
+      done(error);
+    }
+  });
+
+  it('Should fire initialized event after change event when language is set', done => {
+    let isChangeEventFired = false;
+    const formElement = document.createElement('div');
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+    Formio.createForm(formElement, schema)
+      .then(form => {
+        form.ready.then(() => {
+          form.language = 'en-GB';
+        });
+        form.on('change', () => {
+          isChangeEventFired = true;
+        });
+        form.on('initialized', () => {
+          assert(isChangeEventFired);
+          done();
+        });
+      });
+  });
+
   it('When submitted should strip fields with persistent: client-only from submission', done => {
     const formElement = document.createElement('div');
     simpleForm = new Webform(formElement);

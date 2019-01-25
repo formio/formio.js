@@ -22,11 +22,11 @@ function onNext(cmp, event, cb) {
 }
 
 const Harness = {
-  builderBefore(done) {
+  builderBefore(done, options = {}) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new WebformBuilder(formBuilderElement);
-    formBuilder.form = {components: []};
+    formBuilder = new WebformBuilder(formBuilderElement, options);
+    formBuilder.form = { components: [] };
     formBuilder.builderReady.then(done);
   },
 

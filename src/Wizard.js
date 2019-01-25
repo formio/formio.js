@@ -492,7 +492,12 @@ export default class Wizard extends Webform {
   }
 
   checkValidity(data, dirty) {
-    return this.checkPagesValidity(this.getPages(), data, dirty);
+    if (this.submitting) {
+      return this.checkPagesValidity(this.getPages(), data, dirty);
+    }
+    else {
+      return this.checkCurrentPageValidity(data, dirty);
+    }
   }
 
   get errors() {

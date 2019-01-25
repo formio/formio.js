@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
@@ -669,6 +669,7 @@ export default class Webform extends NestedComponent {
     this.initialized = false;
     return this.createForm(form).then(() => {
       this.emit('formLoad', form);
+      this.triggerRecaptcha();
       return form;
     });
   }
@@ -1067,6 +1068,7 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed) {
+    let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
       this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
@@ -1086,10 +1088,11 @@ export default class Webform extends NestedComponent {
 
     if (!flags || !flags.noEmit) {
       this.emit('change', value);
+      isChangeEventEmitted = true;
     }
 
     // The form is initialized after the first change event occurs.
-    if (!this.initialized) {
+    if (isChangeEventEmitted && !this.initialized) {
       this.emit('initialized');
       this.initialized = true;
     }
@@ -1271,13 +1274,13 @@ export default class Webform extends NestedComponent {
     if (headers && headers.length > 0) {
       headers.map((e) => {
         if (e.header !== '' && e.value !== '') {
-          settings.headers[e.header] = e.value;
+          settings.headers[e.header] = this.interpolate(e.value, submission);
         }
       });
     }
     if (API_URL && settings) {
       try {
-        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then(() => {
+        Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         });
@@ -1302,6 +1305,20 @@ export default class Webform extends NestedComponent {
 
   get nosubmit() {
     return this._nosubmit || false;
+  }
+
+  triggerRecaptcha() {
+    let recaptchaComponent;
+    this.root.everyComponent((component) => {
+      if (component.component.type === 'recaptcha' &&
+        component.component.eventType === 'formLoad') {
+        recaptchaComponent = component;
+        return false;
+      }
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.form.name ? this.form.name : 'form'}Load`);
+    }
   }
 }
 
