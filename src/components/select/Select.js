@@ -345,6 +345,19 @@ export default class SelectComponent extends Field {
     }, 'values') || []);
   }
 
+  refresh(value) {
+    if (this.component.lazyLoad) {
+      this.activated = false;
+      this.loading = true;
+      this.setItems([]);
+    }
+
+    if (this.component.clearOnRefresh) {
+      this.setValue(this.emptyValue);
+    }
+    this.updateItems(null, true);
+  }
+
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {

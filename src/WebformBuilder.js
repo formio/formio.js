@@ -417,7 +417,7 @@ export default class WebformBuilder extends Component {
       );
 
       // Set a unique key for this component.
-      BuilderUtils.uniquify(target.formioContainer, info);
+      BuilderUtils.uniquify([target.formioComponent.component], info);
 
       isNew = true;
     }
@@ -435,7 +435,7 @@ export default class WebformBuilder extends Component {
         source.formioComponent.rebuild();
 
         // Ensure the key remains unique in its new container.
-        BuilderUtils.uniquify(target.formioContainer, info);
+        BuilderUtils.uniquify([target.formioComponent.component], info);
       }
     }
 
@@ -582,7 +582,6 @@ export default class WebformBuilder extends Component {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
-              console.log(event.data.key);
               event.data.key = _.camelCase(
                 event.data.label ||
                 event.data.placeholder ||
@@ -650,7 +649,7 @@ export default class WebformBuilder extends Component {
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
-      return console.log('Session storage is not supported in this browser.');
+      return console.warn('Session storage is not supported in this browser.');
     }
     this.addClass(this.refs.form, 'builder-paste-mode');
     const copy = _.cloneDeep(component.schema);
@@ -664,7 +663,7 @@ export default class WebformBuilder extends Component {
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {
-      return console.log('Session storage is not supported in this browser.');
+      return console.warn('Session storage is not supported in this browser.');
     }
     this.removeClass(this.refs.form, 'builder-paste-mode');
     if (window.sessionStorage) {
