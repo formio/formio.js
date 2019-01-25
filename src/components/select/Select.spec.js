@@ -34,7 +34,7 @@ describe('Select Component', () => {
   describe('#setValue', () => {
     it('should set component value', (done) => {
       Harness.testCreate(SelectComponent, comp1).then((component) => {
-        assert.equal(component.dataValue, '');
+        assert.equal(component.dataValue, {});
         component.setValue('red');
         assert.equal(component.dataValue, 'red');
         done();
@@ -46,7 +46,7 @@ describe('Select Component', () => {
       delete comp.placeholder;
 
       Harness.testCreate(SelectComponent, comp).then((component) => {
-        assert.equal(component.dataValue, '');
+        assert.equal(component.dataValue, {});
         assert.equal(component.inputs[0].value, '');
         component.setValue('red');
         assert.equal(component.dataValue, 'red');
