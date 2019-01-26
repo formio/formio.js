@@ -322,6 +322,7 @@ export default class EditGridComponent extends NestedComponent {
       // Don't bubble sub changes since they won't apply until pressing save.
       comp.triggerChange = () => {
         // Should we recalculate or something here?
+        // TODO: Cause refreshOn to trigger.
       };
       components.push(comp);
     });

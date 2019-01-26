@@ -1,6 +1,7 @@
 import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
+import EventEmitter from 'eventemitter2';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -55,7 +56,7 @@ export default class DataMapComponent extends DataGridComponent {
     this.createRows();
     this.visibleColumns = {
       key: true,
-      [this.component.valueComponent.key]: true
+      [this.valueKey]: true
     };
     this.component.valueComponent.hideLabel = true;
   }
@@ -103,12 +104,20 @@ export default class DataMapComponent extends DataGridComponent {
     };
   }
 
+  get valueKey() {
+    return this.component.valueComponent.key;
+  }
+
   createRows() {
     const keys = Object.keys(this.dataValue);
 
     keys.forEach((key, index) => {
       if (!this.rows[index]) {
-        this.rows[index] = this.createRowComponents(key, this.dataValue[key], index);
+        const row = {
+          key,
+          [this.valueKey]: this.dataValue[key]
+        };
+        this.rows[index] = this.createRowComponents(row, index);
       }
     });
 
@@ -136,11 +145,37 @@ export default class DataMapComponent extends DataGridComponent {
       [valueSchema, keySchema];
   }
 
-  createRowComponents(keyValue, value, rowIndex) {
+  createRowComponents(row, rowIndex) {
+    // Store existing key name so we know what it is if it changes.
+    let key = row['key'];
+
+    // Create a new event emitter since fields are isolated.
+    const options = _.clone(this.options);
+    options.events = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    options.name += `[${rowIndex}]`;
+    options.row = `${rowIndex}`;
+
     const components = {};
 
-    components['key'] = this.createComponent(this.keySchema, this.options, { key: keyValue });
-    components[this.component.valueComponent.key] = this.createComponent(this.component.valueComponent, this.options, { [this.component.valueComponent.key]: value });
+    components['key'] = this.createComponent(this.keySchema, options, row);
+    components[this.valueKey] = this.createComponent(this.component.valueComponent, options, row);
+
+    // Handle change event
+    options.events.on('formio.componentChange', (event) => {
+      if (event.component.key === 'key') {
+        this.dataValue[event.value] = this.dataValue[key];
+        delete this.dataValue[key];
+        key = event.value;
+        this.triggerChange();
+      }
+      else if (event.component.key === this.valueKey) {
+        this.dataValue[key] = event.value;
+        this.triggerChange();
+      }
+    });
 
     return components;
   }
@@ -148,8 +183,9 @@ export default class DataMapComponent extends DataGridComponent {
   addRow() {
     this.dataValue['value'] = 'Value';
     const index = this.rows.length;
-    this.rows[index] = this.createRowComponents('value', this.dataValue['value'], index);
+    this.rows[index] = this.createRowComponents({ key: 'value', [this.valueKey]: this.dataValue['value'] }, index);
     this.redraw();
+    this.triggerChange();
   }
 
   removeRow(index) {
