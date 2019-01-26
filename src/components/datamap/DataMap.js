@@ -2,6 +2,7 @@ import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
+import { uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -53,6 +54,7 @@ export default class DataMapComponent extends DataGridComponent {
   init() {
     this.components = [];
     this.rows = [];
+    this.rowKeys = [];
     this.createRows();
     this.visibleColumns = {
       key: true,
@@ -148,6 +150,7 @@ export default class DataMapComponent extends DataGridComponent {
   createRowComponents(row, rowIndex) {
     // Store existing key name so we know what it is if it changes.
     let key = row['key'];
+    this.rowKeys[rowIndex] = key;
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
@@ -166,9 +169,11 @@ export default class DataMapComponent extends DataGridComponent {
     // Handle change event
     options.events.on('formio.componentChange', (event) => {
       if (event.component.key === 'key') {
-        this.dataValue[event.value] = this.dataValue[key];
+        const newKey = uniqueKey(this.dataValue, event.value);
+        this.dataValue[newKey] = this.dataValue[key];
         delete this.dataValue[key];
-        key = event.value;
+        key = newKey;
+        this.rowKeys[rowIndex] = newKey;
         this.triggerChange();
       }
       else if (event.component.key === this.valueKey) {
@@ -181,18 +186,21 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   addRow() {
-    this.dataValue['value'] = 'Value';
+    const newKey = uniqueKey(this.dataValue, 'key');
+    this.dataValue[newKey] = 'Value';
     const index = this.rows.length;
-    this.rows[index] = this.createRowComponents({ key: 'value', [this.valueKey]: this.dataValue['value'] }, index);
+    this.rows[index] = this.createRowComponents({ key: newKey, [this.valueKey]: this.dataValue[newKey] }, index);
+    this.rowKeys[index] = newKey;
     this.redraw();
     this.triggerChange();
   }
 
   removeRow(index) {
-    console.log('remove', index);
-    // this.splice(index);
-    // this.rows.splice(index, 1);
-    // this.redraw();
+    delete this.dataValue[this.rowKeys[index]];
+    this.rowKeys.splice(index, 1);
+    this.rows.splice(index, 1);
+    this.redraw();
+    this.triggerChange();
   }
 
   setValue(value) {

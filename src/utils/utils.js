@@ -897,7 +897,7 @@ export function delay(fn, delay = 0, ...args) {
  */
 export function iterateKey(key) {
   if (!key.match(/(\d+)$/)) {
-    return `${key}2`;
+    return `${key}1`;
   }
 
   return key.replace(/(\d+)$/, function(suffix) {
