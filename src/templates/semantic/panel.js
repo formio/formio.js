@@ -9,7 +9,7 @@ export default {
     <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
   {% } %}
 </h4>
-{% if (!collapsed) { %}
+{% if (!collapsed || (options.attachMode === 'builder')) { %}
 <div class="ui bottom attached segment" ref="{{nestedKey}}">
   {{children}}
 </div>

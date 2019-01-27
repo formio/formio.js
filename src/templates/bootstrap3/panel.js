@@ -12,7 +12,7 @@ export default {
       {% } %}
     </h4>
   </div>
-  {% if (!collapsed) { %}
+  {% if (!collapsed || (options.attachMode === 'builder')) { %}
   <div class="panel-body" ref="{{nestedKey}}">
     {{children}}
   </div>

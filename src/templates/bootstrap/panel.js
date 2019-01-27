@@ -12,7 +12,7 @@ export default {
       {% } %}
     </span>
   </div>
-  {% if (!collapsed) { %}
+  {% if (!collapsed || (options.attachMode === 'builder')) { %}
   <div class="card-body" ref="{{nestedKey}}">
     {{children}}
   </div>
