@@ -2,7 +2,7 @@ export default {
   form: `
 <h4 class="ui top attached block header {{component.className}}" ref="header">
   {% if (component.collapsible) { %}
-    <i class="formio-collapse-icon {{iconClass(collapsed ? 'triangle-right' : 'triangle-bottom')}} text-muted" data-title="Collapse Panel"></i>
+    <i class="formio-collapse-icon {{iconClass(collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted" data-title="Collapse Panel"></i>
   {% } %}
   {{t(component.title)}}
   {% if (component.tooltip) { %}

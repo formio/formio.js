@@ -4,7 +4,7 @@ export default {
   <div class="panel-heading">
     <h4 class="mb-0 panel-title" ref="header">
       {% if (component.collapsible) { %}
-        <i class="formio-collapse-icon {{iconClass(collapsed ? 'triangle-right' : 'triangle-bottom')}} text-muted" data-title="Collapse Panel"></i>
+        <i class="formio-collapse-icon {{iconClass(collapsed ? 'plus' : 'minus')}} text-muted" data-title="Collapse Panel"></i>
       {% } %}
       {{t(component.title)}}
       {% if (component.tooltip) { %}
