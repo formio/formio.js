@@ -143,7 +143,7 @@ export default class ButtonComponent extends Field {
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       });
-      onChange = function(value, isValid) {
+      onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
@@ -154,7 +154,7 @@ export default class ButtonComponent extends Field {
           this.removeClass(message, 'has-error');
         }
       };
-      onError = function() {
+      onError = () => {
         this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
