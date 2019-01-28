@@ -703,14 +703,12 @@ body.formio-dialog-open {
 }
 
 .form-control.formio-multiple-mask-select {
-  width: 70px;
+  width: 15%;
   z-index: 4;
 }
 
 .form-control.formio-multiple-mask-input {
-  width: 100%;
-  margin-left: -70px;
-  padding-left: 80px;
+  width: 85%;
 }
 
 .input-group.formio-multiple-mask-container {
@@ -732,4 +730,14 @@ body.formio-dialog-open {
 
 .is-disabled .choices__list--multiple .choices__item .choices__button {
   display: none;
+}
+
+.formio-collapse-icon {
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+.formio-component-datetime .form-control[type="datetime-local"] ~ .input-group-addon,
+.formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
+  width: auto;
 }
