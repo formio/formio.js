@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
+import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
@@ -96,6 +97,8 @@ export default class FormComponent extends BaseComponent {
       return;
     }
 
+    options.events = this.createEmitter();
+
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) => {
       if (
@@ -112,8 +115,11 @@ export default class FormComponent extends BaseComponent {
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange();
+        this.subForm.off('change');
+        this.subForm.on('change', () => {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange();
+        });
       });
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
@@ -371,5 +377,57 @@ export default class FormComponent extends BaseComponent {
   set parentVisible(value) {
     super.parentVisible = value;
     this.updateSubFormVisibility();
+  }
+
+  isInternalEvent(event) {
+    switch (event) {
+    case 'focus':
+    case 'blur':
+    case 'componentChange':
+    case 'componentError':
+    case 'error':
+    case 'formLoad':
+    case 'languageChanged':
+    case 'render':
+    case 'checkValidity':
+    case 'initialized':
+    case 'submit':
+    case 'submitButton':
+    case 'nosubmit':
+    case 'updateComponent':
+    case 'submitDone':
+    case 'submissionDeleted':
+    case 'requestDone':
+    case 'nextPage':
+    case 'prevPage':
+    case 'wizardNavigationClicked':
+    case 'updateWizardNav':
+    case 'restoreDraft':
+    case 'saveDraft':
+    case 'saveComponent':
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  createEmitter() {
+    const emiter = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    const nativeEmit = emiter.emit;
+    const that = this;
+
+    emiter.emit = function(event, ...args) {
+      const eventType = event.replace(`${that.options.namespace}.`, '');
+      nativeEmit.call(this, event, ...args);
+
+      if (!that.isInternalEvent(eventType)) {
+        that.emit(eventType, ...args);
+      }
+    };
+
+    return emiter;
   }
 }
