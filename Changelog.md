@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[Unreleased]
+### Added 
+ - FOR-1933: 'formEmbedded' event
+
+## 3.13.0
 ### Fixed
  - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
  - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
