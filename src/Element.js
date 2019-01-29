@@ -1,4 +1,5 @@
 import EventEmitter from './EventEmitter';
+import Formio from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
@@ -460,6 +461,7 @@ export default class Element {
       _,
       utils: FormioUtils,
       util: FormioUtils,
+      user: Formio.getUser(),
       moment,
       instance: this
     }, additional);
