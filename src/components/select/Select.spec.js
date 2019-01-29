@@ -32,20 +32,21 @@ describe('Select Component', () => {
   });
 
   describe('#setValue', () => {
-    it('should set component value', () => {
-      return Harness.testCreate(SelectComponent, comp1).then((component) => {
-        assert.deepEqual(component.dataValue, {});
+    it('should set component value', (done) => {
+      Harness.testCreate(SelectComponent, comp1).then((component) => {
+        assert.equal(component.dataValue, '');
         component.setValue('red');
         assert.equal(component.dataValue, 'red');
+        done();
       });
     });
 
-    it('should reset input value when called with empty value', () => {
+    it('should reset input value when called with empty value', (done) => {
       const comp = Object.assign({}, comp1);
       delete comp.placeholder;
 
-      return Harness.testCreate(SelectComponent, comp).then((component) => {
-        assert.deepEqual(component.dataValue, {});
+      Harness.testCreate(SelectComponent, comp).then((component) => {
+        assert.equal(component.dataValue, '');
         assert.equal(component.inputs[0].value, '');
         component.setValue('red');
         assert.equal(component.dataValue, 'red');
@@ -53,6 +54,7 @@ describe('Select Component', () => {
         component.setValue('');
         assert.equal(component.dataValue, '');
         assert.equal(component.inputs[0].value, '');
+        done();
       });
     });
   });
