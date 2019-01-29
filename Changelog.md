@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added 
+ - FOR-1933: 'formEmbedded' event
+
 ## 3.13.0
 ### Fixed
  - Issue where calling Formio.request by itself could return a non-Promise cached response.
