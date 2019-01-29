@@ -1690,7 +1690,7 @@ export default class BaseComponent extends Component {
 
   clearOnHide(show) {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false && !this.options.readOnly) {
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (!show) {
         this.deleteValue();
       }
