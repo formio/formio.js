@@ -345,7 +345,6 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
@@ -370,19 +369,13 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.editorReady.then((editor) => {
         switch (this.component.editor) {
           case 'ace':
-            if (shouldSetValue) {
-              editor.setValue(this.setConvertedValue(value));
-            }
+            editor.setValue(this.setConvertedValue(value));
             break;
           case 'quill':
-            if (shouldSetValue) {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
+            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
             break;
           case 'ckeditor':
-            if (shouldSetValue) {
-              editor.data.set(this.setConvertedValue(value));
-            }
+            editor.data.set(this.setConvertedValue(value));
             break;
         }
       });
