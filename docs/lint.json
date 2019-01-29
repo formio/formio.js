@@ -641,31 +641,78 @@
     ]
   },
   {
+    "name": "NestedComponent#checkData",
+    "filePath": "src/components/nested/NestedComponent.js",
+    "lines": [
+      {
+        "lineNumber": 355,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 356,
+        "line": "   * A more performant way to check the conditions, calculations, and validity of"
+      },
+      {
+        "lineNumber": 357,
+        "line": "   * a submission once it has been changed."
+      },
+      {
+        "lineNumber": 358,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 359,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 360,
+        "line": "   * @param flags"
+      },
+      {
+        "lineNumber": 361,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 362,
+        "line": "  checkData(data, flags, source) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags",
+      "source"
+    ],
+    "docParams": [
+      "data",
+      "flags"
+    ]
+  },
+  {
     "name": "NestedComponent#destroy",
     "filePath": "src/components/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 482,
+        "lineNumber": 492,
         "line": "  /**"
       },
       {
-        "lineNumber": 483,
+        "lineNumber": 493,
         "line": "   * Destroys this component."
       },
       {
-        "lineNumber": 484,
+        "lineNumber": 494,
         "line": "   *"
       },
       {
-        "lineNumber": 485,
+        "lineNumber": 495,
         "line": "   * @param state"
       },
       {
-        "lineNumber": 486,
+        "lineNumber": 496,
         "line": "   */"
       },
       {
-        "lineNumber": 487,
+        "lineNumber": 497,
         "line": "  destroy() {"
       }
     ],
@@ -679,31 +726,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 137,
+        "lineNumber": 140,
         "line": "  /**"
       },
       {
-        "lineNumber": 138,
+        "lineNumber": 141,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 139,
+        "lineNumber": 142,
         "line": "   *"
       },
       {
-        "lineNumber": 140,
+        "lineNumber": 143,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 141,
+        "lineNumber": 144,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 142,
+        "lineNumber": 145,
         "line": "   */"
       },
       {
-        "lineNumber": 143,
+        "lineNumber": 146,
         "line": "  addOption(value, label, attr) {"
       }
     ],

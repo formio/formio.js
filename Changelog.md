@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.13.1
 ### Added 
  - FOR-1933: 'formEmbedded' event
+ - Currently logged in user to the evaluation context.
+
+### Fixed
+ - The event propagation to not call updateValue on the component that initiated the change.
+ - Fix issue with select defaults not being objects if valueProperty not set.
 
 ## 3.13.0
 ### Fixed
