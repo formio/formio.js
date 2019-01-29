@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - The event propagation to not call updateValue on the component that initiated the change.
- - Fix issue with select defaults not being objects if valueProperty not set.
 
 ## 3.13.0
 ### Fixed

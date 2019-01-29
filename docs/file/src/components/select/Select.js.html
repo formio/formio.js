@@ -278,10 +278,7 @@ export default class SelectComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    if (this.component.valueProperty) {
-      return &apos;&apos;;
-    }
-    return {};
+    return &apos;&apos;;
   }
 
   elementInfo() {
@@ -879,7 +876,7 @@ export default class SelectComponent extends BaseComponent {
     if (this.viewOnly || this.loading || !this.selectOptions.length) {
       return this.dataValue;
     }
-    let value = this.emptyValue;
+    let value = &apos;&apos;;
     if (this.choices) {
       value = this.choices.getValue(true);
 
@@ -889,7 +886,7 @@ export default class SelectComponent extends BaseComponent {
         this.component.placeholder &amp;&amp;
         (value === this.t(this.component.placeholder))
       ) {
-        value = this.emptyValue;
+        value = &apos;&apos;;
       }
     }
     else {
@@ -903,7 +900,7 @@ export default class SelectComponent extends BaseComponent {
     }
     // Choices will return undefined if nothing is selected. We really want &apos;&apos; to be empty.
     if (value === undefined || value === null) {
-      value = this.emptyValue;
+      value = &apos;&apos;;
     }
     return value;
   }
@@ -920,7 +917,7 @@ export default class SelectComponent extends BaseComponent {
       value = value ? [value] : [];
     }
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : typeof value === &apos;object&apos; ? Object.keys(value).length : value;
+    const hasValue = Array.isArray(value) ? value.length : value;
     const changed = this.hasChanged(value, previousValue);
     this.dataValue = value;
 
