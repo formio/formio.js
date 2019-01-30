@@ -162,17 +162,6 @@ export default class NumberComponent extends Input {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
   }
 
-  build(state) {
-    super.build(state);
-    this.inputs.forEach((input, index) => {
-      this.addEventListener(input, 'blur', (event) => {
-        if (this.component.requireDecimal) {
-          this.setValueAt(index, event.target.value);
-        }
-      });
-    });
-  }
-
   getView(value) {
     if (!value && value !== 0) {
       return '';
