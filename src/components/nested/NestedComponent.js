@@ -32,7 +32,7 @@ export default class NestedComponent extends BaseComponent {
 
   get schema() {
     const schema = super.schema;
-    const components = _.uniqBy(this.getComponents(), 'key');
+    const components = _.uniqBy(this.getComponents(), 'component.key');
     schema.components = _.map(components, 'schema');
     return schema;
   }
