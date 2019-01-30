@@ -251,10 +251,11 @@ export { jsonLogic, moment };
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = args.component ? args.component : { key: &apos;unknown&apos; };
+  args.component = args.component ? _.cloneDeep(args.component) : { key: &apos;unknown&apos; };
   if (!args.form &amp;&amp; args.instance) {
     args.form = _.get(args.instance, &apos;root._form&apos;, {});
   }
+  args.form = _.cloneDeep(args.form);
   if (typeof func === &apos;string&apos;) {
     if (ret) {
       func += `;return ${ret}`;
@@ -281,7 +282,7 @@ export function evaluate(func, args, ret, tokenize) {
       args = _.values(args);
     }
     catch (err) {
-      console.warn(`An error occured within the custom function for ${component.key}`, err);
+      console.warn(`An error occured within the custom function for ${args.component.key}`, err);
       returnVal = null;
       func = false;
     }
@@ -292,7 +293,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${args.component.key}`, err);
     }
   }
   else if (typeof func === &apos;object&apos;) {
@@ -301,11 +302,11 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${args.component.key}`, err);
     }
   }
   else if (func) {
-    console.warn(`Unknown function type for ${component.key}`);
+    console.warn(`Unknown function type for ${args.component.key}`);
   }
   return returnVal;
 }

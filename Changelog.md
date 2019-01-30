@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.2
+### Fixed
+ - Isolate components and forms when running evaluate of custom code.
+ - Fixed problem where if component.customDefaultValue is set, it will override the component.defaultValue setting.
+ - Make it so that component.customDefaultValue is NOT evaluated in webform builder default preview so it will not automatically set.
+ - Fix issue where checkboxes set as radio couldn't exist together if they have the same key.
+ - PDF from not showing the console.warning of "postmessage message type required"
+
 ## 3.13.1
 ### Added 
  - FOR-1933: 'formEmbedded' event
