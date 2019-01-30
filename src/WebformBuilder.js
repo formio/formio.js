@@ -883,7 +883,7 @@ export default class WebformBuilder extends Webform {
           break;
       }
       // Index within container
-      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.key }) || 0;
+      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
 
       this.emit('addComponent', component, path, index);
 
