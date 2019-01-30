@@ -422,20 +422,23 @@ export default class WebformBuilder extends Component {
       isNew = true;
     }
     else {
-      // Grab and remove the component from the source container.
-      info = source.formioContainer.splice(
-        _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
-      );
+      const index = _.findIndex(source.formioContainer, { key: element.formioComponent.component.key });
+      if (index !== -1) {
+        // Grab and remove the component from the source container.
+        info = source.formioContainer.splice(
+          _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
+        );
 
-      // Since splice returns an array of one object, we need to destructure it.
-      info = info[0];
+        // Since splice returns an array of one object, we need to destructure it.
+        info = info[0];
 
-      if (target !== source) {
-        // If the target is different from the source, rebuild the source now that the item has been removed.
-        source.formioComponent.rebuild();
+        if (target !== source) {
+          // If the target is different from the source, rebuild the source now that the item has been removed.
+          source.formioComponent.rebuild();
 
-        // Ensure the key remains unique in its new container.
-        BuilderUtils.uniquify(target.formioContainer, info);
+          // Ensure the key remains unique in its new container.
+          BuilderUtils.uniquify(target.formioContainer, info);
+        }
       }
     }
 
@@ -443,7 +446,7 @@ export default class WebformBuilder extends Component {
     if (sibling) {
       let index = 0;
       if (!sibling.getAttribute('data-noattach')) {
-        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key });
+        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
       }
       else {
         index = sibling.getAttribute('data-position');
