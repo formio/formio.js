@@ -793,7 +793,7 @@ export default class BaseComponent extends Component {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    if (this.component.customDefaultValue) {
+    if (this.component.customDefaultValue && !this.options.preview) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
