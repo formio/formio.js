@@ -14,7 +14,7 @@ To test this example, click the 'Submit' button and you will see Submission JSON
 ### Code
 
 ```js
-Formio.setProjectUrl('https://examples.form.io');
+Formio.setProjectUrl('https://examples.test-form.io');
 const formJSON = {
   'components': [
     {
@@ -76,7 +76,7 @@ Formio.createForm(document.getElementById('formio'), formJSON).then(function(for
   <pre id='formio-submission-json'></pre>
 </div>
 <script type='text/javascript'>
-Formio.setProjectUrl('https://examples.form.io');
+Formio.setProjectUrl('https://examples.test-form.io');
 const formJSON = {
   'components': [
     {
