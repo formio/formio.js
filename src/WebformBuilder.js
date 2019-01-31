@@ -574,6 +574,7 @@ export default class WebformBuilder extends Webform {
     info = _.clone(info);
     const groupAnchor = this.ce('button', {
       class: 'btn btn-block builder-group-button',
+      'type': 'button',
       'data-toggle': 'collapse',
       'data-parent': `#${container.id}`,
       'data-target': `#group-${info.key}`
