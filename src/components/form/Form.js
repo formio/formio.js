@@ -104,6 +104,10 @@ export default class FormComponent extends Component {
     this.restoreValue();
   }
 
+  get dataReady() {
+    return this.subFormReady;
+  }
+
   get defaultSchema() {
     return FormComponent.schema();
   }
