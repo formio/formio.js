@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.5
+### Fixed
+ - Fix issue where redraws don't wait for nested forms to redraw.
+ - Fix issue where ckeditor causes infinite change events.
+ - Check for bad data coming in to a selectboxes component like if they set the default value to a string.
+
 ## 3.13.4
 ### Fixed
  - Bad build.
