@@ -245,6 +245,9 @@ export default class TextAreaComponent extends TextFieldComponent {
       return value;
     }
     const removeBlanks = function(input) {
+      if (typeof input !== 'string') {
+        return input;
+      }
       return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
     };
 
