@@ -83,6 +83,16 @@ export default class SelectBoxesComponent extends RadioComponent {
    */
   setValue(value, flags) {
     value = value || {};
+    if (typeof value !== 'object') {
+      if (typeof value === 'string') {
+        value = {
+          [value]: true
+        };
+      }
+      else {
+        value = {};
+      }
+    }
     flags = this.getFlags.apply(this, arguments);
     if (Array.isArray(value)) {
       _.each(value, (val) => {
