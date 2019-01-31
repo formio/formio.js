@@ -1,8 +1,6 @@
 import componentEditForm from '../_classes/component/Component.form';
-
 import UnknownEditDisplay from './editForm/Unknown.edit.display';
-
-export default function() {
+export default function(...extend) {
   return componentEditForm([
     {
       key: 'display',
@@ -28,5 +26,5 @@ export default function() {
       key: 'logic',
       ignore: true
     }
-  ]);
+  ], ...extend);
 }
