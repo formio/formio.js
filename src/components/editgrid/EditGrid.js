@@ -78,7 +78,8 @@ export default class EditGridComponent extends NestedComponent {
 
   init() {
     this.components = this.components || [];
-    this.editRows = this.dataValue.map((row) => ({
+    const dataValue = this.dataValue || [];
+    this.editRows = dataValue.map((row) => ({
       isOpen: false,
       data: row,
     }));
@@ -89,15 +90,16 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   render() {
+    const dataValue = this.dataValue || [];
     return super.render(this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
       header: this.renderString(_.get(this.component, 'templates.header'), {
         components: this.component.components,
-        value: this.dataValue
+        value: dataValue
       }),
       footer: this.renderString(_.get(this.component, 'templates.footer'), {
         components: this.component.components,
-        value: this.dataValue
+        value: dataValue
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map(row => row.isOpen),
@@ -160,13 +162,14 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   renderRow(row, rowIndex) {
+    const dataValue = this.dataValue || [];
     if (row.isOpen) {
       return this.renderComponents(row.components);
     }
     else {
       return this.renderString(_.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate),
         {
-          row: this.dataValue[rowIndex],
+          row: dataValue[rowIndex],
           rowIndex,
           components: this.component.components,
           getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
@@ -226,10 +229,11 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   editRow(rowIndex) {
+    const dataValue = this.dataValue || [];
     this.editRows[rowIndex].dirty = false;
     this.editRows[rowIndex].isOpen = true;
     this.editRows[rowIndex].editing = true;
-    this.editRows[rowIndex].data = _.cloneDeep(this.dataValue[rowIndex]);
+    this.editRows[rowIndex].data = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
     this.editRows[rowIndex].components = this.createRowComponents(this.editRows[rowIndex].data, rowIndex);
     this.redraw();
   }
@@ -251,9 +255,10 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     if (this.editRows[rowIndex].editing) {
+      const dataValue = this.dataValue || [];
       this.editRows[rowIndex].dirty = false;
       this.editRows[rowIndex].isOpen = false;
-      this.editRows[rowIndex].data = this.dataValue[rowIndex];
+      this.editRows[rowIndex].data = dataValue[rowIndex] || {};
       this.clearErrors(rowIndex);
     }
     else {
@@ -277,14 +282,15 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
 
+    const dataValue = this.dataValue || [];
     if (this.editRows[rowIndex].editing) {
-      this.dataValue[rowIndex] = this.editRows[rowIndex].data;
+      dataValue[rowIndex] = this.editRows[rowIndex].data;
     }
     else {
       // Insert this row into its proper place.
-      const newIndex = this.dataValue.length;
+      const newIndex = dataValue.length;
       const row = this.editRows[rowIndex];
-      this.dataValue.push(row.data);
+      dataValue.push(row.data);
       this.editRows.splice(rowIndex, 1);
       this.editRows.splice(newIndex, 0, row);
       rowIndex = newIndex;
