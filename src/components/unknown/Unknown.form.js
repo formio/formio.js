@@ -1,9 +1,9 @@
-import baseEditForm from '../base/Base.form';
+import componentEditForm from '../_classes/component/Component.form';
 
 import UnknownEditDisplay from './editForm/Unknown.edit.display';
 
 export default function() {
-  return baseEditForm([
+  return componentEditForm([
     {
       key: 'display',
       components: UnknownEditDisplay

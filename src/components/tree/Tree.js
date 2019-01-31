@@ -1,8 +1,7 @@
 import _ from 'lodash';
-
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 import Components from '../Components';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 class Node {
   constructor(
@@ -531,7 +530,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   setValue(value, flags) {
-    const changed = BaseComponent.prototype.setValue.call(this, value, flags);
+    const changed = Component.prototype.setValue.call(this, value, flags);
     this.dataValue = value;
     this.setRoot();
     this.buildTree();
@@ -548,7 +547,7 @@ export default class TreeComponent extends NestedComponent {
 
   updateValue(flags, value) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return BaseComponent.prototype.updateValue.call(this, flags, value);
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
   clearOnHide(show) {
