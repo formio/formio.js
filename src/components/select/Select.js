@@ -852,6 +852,6 @@ export default class SelectComponent extends BaseComponent {
   }
 
   focus() {
-    this.focusableElement.focus();
+    window.setTimeout(() => this.focusableElement.focus(), 700);
   }
 }

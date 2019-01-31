@@ -2602,10 +2602,10 @@ export default class BaseComponent extends Component {
     const input = this.performInputMapping(this.inputs[0]);
     if (input) {
       if (input.widget) {
-        input.widget.input.focus();
+        window.setTimeout(() => input.widget.input.focus(), 1000);
       }
       else {
-        input.focus();
+        window.setTimeout(() => input.focus(), 1000);
       }
     }
   }

@@ -225,6 +225,6 @@ export default class SignatureComponent extends BaseComponent {
   }
 
   focus() {
-    this.padBody.focus();
+    window.setTimeout(() => this.padBody.focus(), 1000);
   }
 }

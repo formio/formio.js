@@ -804,6 +804,6 @@ export default class FileComponent extends BaseComponent {
   }
 
   focus() {
-    this.browseLink.focus();
+    window.setTimeout(() =>  this.browseLink.focus(), 700);
   }
 }
