@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.3
+### Fixed
+ - Builder without a form set and button type
+
+### Reverted
+ - Limiting change events to non source components. This broke custom validation.
+
 ## 3.13.2
 ### Fixed
  - Isolate components and forms when running evaluate of custom code.
