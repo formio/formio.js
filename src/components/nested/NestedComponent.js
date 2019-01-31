@@ -342,9 +342,9 @@ export default class NestedComponent extends BaseComponent {
   updateValue(flags, source) {
     return this.components.reduce((changed, comp) => {
       // Skip over the source if it is provided.
-      if (source && source.id === comp.id) {
-        return changed;
-      }
+      // if (source && source.id === comp.id) {
+      //   return changed;
+      // }
       return comp.updateValue(flags) || changed;
     }, false);
   }
@@ -375,9 +375,9 @@ export default class NestedComponent extends BaseComponent {
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
       // If a source is provided and is the same as the source, then skip.
-      if (source && source.id === comp.id) {
-        return;
-      }
+      // if (source && source.id === comp.id) {
+      //   return;
+      // }
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
