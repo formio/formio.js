@@ -59,7 +59,7 @@ export default class Form {
    * @return {*}
    */
   create(display) {
-    if (this.options.flatten) {
+    if (this.options && this.options.flatten) {
       display = 'form';
     }
     switch (display) {
