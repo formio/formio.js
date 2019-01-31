@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.4
+### Fixed
+ - Bad build.
+ - Re-add the "source" check to ensure that it does not call updateValue on the component that triggered the change.
+
 ## 3.13.3
 ### Fixed
  - Builder without a form set and button type
