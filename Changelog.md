@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.6
+### Added
+ - instance.currentForm to reference the form a component is an instance of.
+ 
+### Fixed
+ - Required validation in textarea with wysiwyg.
+
 ## 3.13.5
 ### Fixed
  - Fix issue where redraws don't wait for nested forms to redraw.
