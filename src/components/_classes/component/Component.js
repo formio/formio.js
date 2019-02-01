@@ -441,6 +441,14 @@ export default class Component extends Element {
     return this._visible && this._parentVisible;
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *

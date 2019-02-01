@@ -886,6 +886,7 @@ export default class Webform extends NestedComponent {
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
     this.on('refreshData', () => this.updateValue());
+    this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise;
   }

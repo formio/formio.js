@@ -93,6 +93,7 @@ export default class FormComponent extends Component {
 
     this.subForm = new Form(this.component, srcOptions).instance;
     this.subForm.root = this.root;
+    this.subForm.currentForm = this;
     this.subForm.on('change', () => {
       this.dataValue = this.subForm.getValue();
       this.triggerChange();

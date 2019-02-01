@@ -76,6 +76,17 @@ export default class NestedComponent extends Component {
     return Promise.all(this.getComponents().map(component => component.ready));
   }
 
+  get currentForm() {
+    return super.currentForm;
+  }
+
+  set currentForm(instance) {
+    super.currentForm = instance;
+    this.getComponents().forEach(component => {
+      component.currentForm = instance;
+    });
+  }
+
   getComponents() {
     return this.components || [];
   }
