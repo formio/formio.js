@@ -113,6 +113,7 @@ export default class FormComponent extends BaseComponent {
     (new Form(this.element, form, options)).render().then((instance) => {
       this.subForm = instance;
       this.subForm.root = this.root;
+      this.subForm.currentForm = this;
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {

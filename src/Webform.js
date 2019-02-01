@@ -947,6 +947,7 @@ export default class Webform extends NestedComponent {
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
+    this.currentForm = this;
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() => {
       this.onChange({

@@ -375,6 +375,14 @@ export default class BaseComponent extends Component {
     return _.get(this.component, 'key', '');
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *

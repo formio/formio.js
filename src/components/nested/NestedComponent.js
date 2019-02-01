@@ -59,6 +59,17 @@ export default class NestedComponent extends BaseComponent {
     return super.parentVisible;
   }
 
+  get currentForm() {
+    return super.currentForm;
+  }
+
+  set currentForm(instance) {
+    super.currentForm = instance;
+    this.getComponents().forEach(component => {
+      component.currentForm = instance;
+    });
+  }
+
   getComponents() {
     return this.components;
   }
