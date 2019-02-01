@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.13.5
+### Fixed
+ - Fix issue where redraws don't wait for nested forms to redraw.
+ - Fix issue where ckeditor causes infinite change events.
+ - Check for bad data coming in to a selectboxes component like if they set the default value to a string.
+
+## 3.13.4
+### Fixed
+ - Bad build.
+ - Re-add the "source" check to ensure that it does not call updateValue on the component that triggered the change.
+
+## 3.13.3
+### Fixed
+ - Builder without a form set and button type
+
+### Reverted
+ - Limiting change events to non source components. This broke custom validation.
+
+## 3.13.2
+### Fixed
+ - Isolate components and forms when running evaluate of custom code.
+ - Fixed problem where if component.customDefaultValue is set, it will override the component.defaultValue setting.
+ - Make it so that component.customDefaultValue is NOT evaluated in webform builder default preview so it will not automatically set.
+ - Fix issue where checkboxes set as radio couldn't exist together if they have the same key.
+ - PDF from not showing the console.warning of "postmessage message type required"
+
 ## 3.13.1
 ### Added 
  - FOR-1933: 'formEmbedded' event

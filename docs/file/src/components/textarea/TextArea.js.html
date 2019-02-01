@@ -450,6 +450,32 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
+  removeBlanks(value) {
+    if (!value) {
+      return value;
+    }
+    const removeBlanks = function(input) {
+      if (typeof input !== &apos;string&apos;) {
+        return input;
+      }
+      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).replace(/&lt;p&gt;&lt;br&gt;&lt;\/p&gt;/g, &apos;&apos;);
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) =&gt; {
+        value[index] = removeBlanks(input);
+      });
+    }
+    else {
+      value = removeBlanks(value);
+    }
+    return value;
+  }
+
+  hasChanged(before, after) {
+    return super.hasChanged(this.removeBlanks(before), this.removeBlanks(after));
+  }
+
   isEmpty(value) {
     if (this.quill) {
       return (!value || (value === &apos;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&apos;));

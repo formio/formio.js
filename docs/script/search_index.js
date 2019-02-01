@@ -1428,6 +1428,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formbuilder.js~formbuilder#form",
+    "class/src/FormBuilder.js~FormBuilder.html#instance-member-form",
+    "src/FormBuilder.js~FormBuilder#form",
+    "member"
+  ],
+  [
     "src/formio.js",
     "file/src/Formio.js.html",
     "src/Formio.js",
@@ -2029,13 +2035,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2425,13 +2431,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2683,13 +2689,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -4015,13 +4021,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4069,13 +4075,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4729,13 +4735,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5785,13 +5791,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -7566,6 +7572,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#dataready",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-dataReady",
+    "src/components/form/Form.js~FormComponent#dataReady",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#datavalue",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-dataValue",
     "src/components/form/Form.js~FormComponent#dataValue",
@@ -7615,13 +7627,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
@@ -10422,6 +10434,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#haschanged",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-hasChanged",
+    "src/components/textarea/TextArea.js~TextAreaComponent#hasChanged",
+    "method"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#htmlview",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-htmlView",
     "src/components/textarea/TextArea.js~TextAreaComponent#htmlView",
@@ -10444,6 +10462,12 @@ window.esdocSearchIndex = [
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-get-isPlain",
     "src/components/textarea/TextArea.js~TextAreaComponent#isPlain",
     "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#removeblanks",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-removeBlanks",
+    "src/components/textarea/TextArea.js~TextAreaComponent#removeBlanks",
+    "method"
   ],
   [
     "src/components/textarea/textarea.js~textareacomponent#setconvertedvalue",

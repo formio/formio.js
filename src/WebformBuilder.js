@@ -574,6 +574,7 @@ export default class WebformBuilder extends Webform {
     info = _.clone(info);
     const groupAnchor = this.ce('button', {
       class: 'btn btn-block builder-group-button',
+      'type': 'button',
       'data-toggle': 'collapse',
       'data-parent': `#${container.id}`,
       'data-target': `#group-${info.key}`
@@ -883,7 +884,7 @@ export default class WebformBuilder extends Webform {
           break;
       }
       // Index within container
-      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.key }) || 0;
+      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
 
       this.emit('addComponent', component, path, index);
 

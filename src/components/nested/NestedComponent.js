@@ -32,7 +32,7 @@ export default class NestedComponent extends BaseComponent {
 
   get schema() {
     const schema = super.schema;
-    const components = _.uniqBy(this.getComponents(), 'key');
+    const components = _.uniqBy(this.getComponents(), 'component.key');
     schema.components = _.map(components, 'schema');
     return schema;
   }
@@ -374,10 +374,6 @@ export default class NestedComponent extends BaseComponent {
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
-      // If a source is provided and is the same as the source, then skip.
-      if (source && source.id === comp.id) {
-        return;
-      }
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
