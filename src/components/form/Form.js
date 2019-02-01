@@ -37,7 +37,6 @@ export default class FormComponent extends Component {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
-
     this.subFormLoaded = false;
     this.subscribe();
     const srcOptions = this.getSubOptions();
