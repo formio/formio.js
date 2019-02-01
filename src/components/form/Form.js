@@ -27,6 +27,7 @@ export default class FormComponent extends Component {
     };
   }
 
+  /* eslint-disable max-statements */
   init() {
     super.init();
     this.subForm = null;
@@ -37,6 +38,7 @@ export default class FormComponent extends Component {
       this.subFormReadyReject = reject;
     });
 
+    this.subFormLoaded = false;
     this.subscribe();
     const srcOptions = this.getSubOptions();
 
@@ -104,6 +106,7 @@ export default class FormComponent extends Component {
     this.subForm.nosubmit = false;
     this.restoreValue();
   }
+  /* eslint-enable max-statements */
 
   get dataReady() {
     return this.subFormReady;
@@ -261,6 +264,15 @@ export default class FormComponent extends Component {
     });
   }
 
+  show(...args) {
+    const state = super.show(...args);
+    if (state && !this.subFormLoaded) {
+      this.loadSubForm();
+    }
+
+    return state;
+  }
+
   /**
    * Load the subform.
    */
@@ -303,9 +315,19 @@ export default class FormComponent extends Component {
   }
 
   checkConditions(data) {
-    return (super.checkConditions(data) && this.subForm)
-      ? this.subForm.checkConditions(this.dataValue.data)
-      : false;
+    const visible = super.checkConditions(data);
+    const subForm = this.subForm;
+
+    // Return if already hidden
+    if (!visible) {
+      return visible;
+    }
+
+    if (subForm && subForm.hasCondition()) {
+      return this.subForm.checkConditions(this.dataValue.data);
+    }
+
+    return visible;
   }
 
   calculateValue(data, flags) {
@@ -379,11 +401,27 @@ export default class FormComponent extends Component {
     }
   }
 
+  isHidden() {
+    if (!this.visible) {
+      return true;
+    }
+
+    return !super.checkConditions(this.rootValue);
+  }
+
   setValue(submission, flags) {
     const changed = super.setValue(submission, flags);
+    const hidden = this.isHidden();
+    let subForm;
 
-    (this.subForm ? Promise.resolve(this.subForm) : this.loadSubForm())
-      .then((form) => {
+    if (hidden) {
+      subForm = this.subFormReady;
+    }
+    else {
+      subForm = this.loadSubForm();
+    }
+
+    subForm.then((form) => {
         if (submission && submission._id && form.formio && !flags.noload && _.isEmpty(submission.data)) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setUrl(submissionUrl, this.options);
@@ -434,5 +472,13 @@ export default class FormComponent extends Component {
   set parentVisible(value) {
     super.parentVisible = value;
     this.updateSubFormVisibility();
+  }
+
+  deleteValue() {
+    super.setValue(null, {
+      noUpdateEvent: true,
+      noDefault: true
+    });
+    _.unset(this.data, this.key);
   }
 }
