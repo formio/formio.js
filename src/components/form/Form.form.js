@@ -1,6 +1,6 @@
 import nestedComponentForm from '../nested/NestedComponent.form';
-
 import FormEditForm from './editForm/Form.edit.form';
+import FormEditData from './editForm/Form.edit.data';
 
 export default function(...extend) {
   return nestedComponentForm([
@@ -9,6 +9,12 @@ export default function(...extend) {
       key: 'form',
       weight: 10,
       components: FormEditForm
+    },
+    {
+      label: 'Data',
+      key: 'data',
+      weight: 10,
+      components: FormEditData
     }
   ], ...extend);
 }
