@@ -72,6 +72,15 @@ export default class FormComponent extends BaseComponent {
     return this._nosubmit || false;
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+    super.currentForm(this);
+  }
+
   subscribe() {
     this.on('nosubmit', value => {
       this.nosubmit = value;
