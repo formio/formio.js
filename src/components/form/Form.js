@@ -212,7 +212,10 @@ export default class FormComponent extends Component {
 
   set currentForm(instance) {
     this._currentForm = instance;
-    this.getComponents().forEach(component => {
+    if (!this.subForm) {
+      return;
+    }
+    this.subForm.getComponents().forEach(component => {
       component.currentForm = this;
     });
   }
