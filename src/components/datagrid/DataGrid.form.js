@@ -7,13 +7,6 @@ export default function(...extend) {
     {
       key: 'display',
       components: DataGridEditDisplay
-    },
-    {
-      key: 'data',
-      components: [{
-        key: 'defaultValue',
-        ignore: true
-      }]
     }
   ], ...extend);
 }
