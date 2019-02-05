@@ -1,11 +1,11 @@
 /*globals grecaptcha*/
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 import Formio from '../../Formio';
 import _get from 'lodash/get';
 
-export default class ReCaptchaComponent extends BaseComponent {
+export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'recaptcha',
       key: 'recaptcha',
       label: 'reCAPTCHA'

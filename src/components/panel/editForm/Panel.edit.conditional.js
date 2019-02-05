@@ -1,4 +1,4 @@
-import EditFormUtils from '../../base/editForm/utils';
+import EditFormUtils from '../../_classes/component/editForm/utils';
 /* eslint-disable quotes, max-len */
 const title = 'Advanced Next Page';
 const jsonProp = 'nextPage';

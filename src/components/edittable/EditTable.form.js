@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 import EditTableEditDisplay from './editForm/EditTable.edit.display';
 
 export default function(...extend) {
