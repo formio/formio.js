@@ -283,7 +283,7 @@ export default class SelectComponent extends Field {
         query[`${this.component.searchField}__in`] = search.join(',');
       }
       else {
-        query[this.component.searchField] = search;
+        query[`${this.component.searchField}__regex`] = search;
       }
     }
 
