@@ -947,6 +947,7 @@ export default class Webform extends NestedComponent {
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
+    this.currentForm = this;
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() => {
       this.onChange({
@@ -1077,7 +1078,7 @@ export default class Webform extends NestedComponent {
     super.onChange(flags, true);
     const value = _.clone(this._submission);
     value.changed = changed;
-    value.isValid = this.checkData(value.data, flags);
+    value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
     this.showElement(true);
     this.loading = false;
 
@@ -1098,8 +1099,8 @@ export default class Webform extends NestedComponent {
     }
   }
 
-  checkData(data, flags) {
-    const valid = super.checkData(data, flags);
+  checkData(data, flags, source) {
+    const valid = super.checkData(data, flags, source);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }

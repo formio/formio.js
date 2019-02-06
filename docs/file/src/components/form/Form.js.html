@@ -249,6 +249,10 @@ export default class FormComponent extends BaseComponent {
     this.subscribe();
   }
 
+  get dataReady() {
+    return this.subFormReady;
+  }
+
   get defaultSchema() {
     return FormComponent.schema();
   }

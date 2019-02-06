@@ -9,6 +9,8 @@ import NestedFormValidation from './nested-form-validation';
 import NestedFormTests from './nested-form-tests';
 import NestedFormNoSubmit from './nested-nosubmit.js';
 import NestedFormEventBubbling from './nested-event-bubbling';
+import NestedConditionallyHidden from './conditional-nested-form-load.js';
+
 import ChildMetadata from './childMetadata';
 
 export default [
@@ -22,6 +24,6 @@ export default [
   NestedFormValidation,
   NestedFormTests,
   NestedFormNoSubmit,
-  NestedFormEventBubbling,
+  NestedConditionallyHidden,
   ChildMetadata
 ];

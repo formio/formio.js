@@ -208,7 +208,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.embed.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const scripts = document.getElementsByTagName(&apos;script&apos;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*global Formio*/
+const scripts = document.getElementsByTagName(&apos;script&apos;);
 let thisScript = null;
 let i = scripts.length;
 while (i--) {
@@ -230,6 +231,7 @@ if (thisScript) {
   });
   query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
   Form.embed(query).then((instance) =&gt; {
+    Formio.events.emit(&apos;formEmbedded&apos;, instance);
     instance.on(&apos;submit&apos;, (submission) =&gt; {
       let returnUrl = query.return || query.redirect;
 

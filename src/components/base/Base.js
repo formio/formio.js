@@ -375,6 +375,14 @@ export default class BaseComponent extends Component {
     return _.get(this.component, 'key', '');
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -793,7 +801,7 @@ export default class BaseComponent extends Component {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    else if (this.component.customDefaultValue) {
+    if (this.component.customDefaultValue && !this.options.preview) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },

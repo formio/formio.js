@@ -243,6 +243,9 @@ export default class FormBuilder extends Form {
   }
 
   create() {
+    if (!this.form) {
+      this.form = {};
+    }
     if (!this.form.components) {
       this.form.components = [];
     }
