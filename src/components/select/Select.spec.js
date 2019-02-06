@@ -1,6 +1,8 @@
 import assert from 'power-assert';
+import cloneDeep from 'lodash/cloneDeep';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
+import { expect } from 'chai';
 
 import {
   comp1,
@@ -29,6 +31,30 @@ describe('Select Component', () => {
       Harness.testElementAttribute(element, 'tabindex', '0');
       done();
     });
+  });
+
+  it('Should allow to override threshold option of fuzzy search', () => {
+    try {
+      const c1 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.2 });
+      const c2 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.4 });
+      const c3 = Object.assign(cloneDeep(comp1), { searchThreshold: 0.8 });
+      const comps = [
+        Harness.testCreate(SelectComponent, c1),
+        Harness.testCreate(SelectComponent, c2),
+        Harness.testCreate(SelectComponent, c3),
+      ];
+
+      return Promise
+        .all(comps)
+        .then(([a, b, c]) => {
+          expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
+          expect(b.choices.config.fuseOptions.threshold).to.equal(0.4);
+          expect(c.choices.config.fuseOptions.threshold).to.equal(0.8);
+        });
+    }
+    catch (error) {
+      return Promise.reject(error);
+    }
   });
 
   describe('#setValue', () => {
