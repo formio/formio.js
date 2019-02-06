@@ -26,6 +26,7 @@ export default class SelectComponent extends Field {
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
+      searchThreshold: 0.3,
       customOptions: {}
     }, ...extend);
   }
@@ -548,7 +549,7 @@ export default class SelectComponent extends Field {
       searchFields: ['label'],
       fuseOptions: {
         include: 'score',
-        threshold: 0.3
+        threshold: _.get(this, 'component.searchThreshold', 0.3),
       },
       itemComparer: _.isEqual
     };
