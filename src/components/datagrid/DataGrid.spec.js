@@ -1,14 +1,16 @@
 import assert from 'power-assert';
-
+import { expect } from 'chai';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
 
 import {
   comp1,
-  comp2
+  comp2,
+  withDefValue,
+  withRowGroupsAndDefValue,
 } from './fixtures';
 
-describe('DataGrid Component', () => {
+describe('DataGrid Component', function() {
   it('Should build a data grid component', (done) => {
     Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
@@ -57,6 +59,44 @@ describe('DataGrid Component', () => {
       ]);
       done();
     });
+  });
+
+  it('Should allow provide default value', function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withDefValue)
+        .then((datagrid) => {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: 'Alex', age: 1 },
+            { name: 'Bob',  age: 2 },
+            { name: 'Conny', age: 3 }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
+  });
+
+  it('Should allow provide default value in row-groups model', function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
+        .then((datagrid) => {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: 'Alex', age: 1 },
+            { name: 'Bob',  age: 2 },
+            { name: 'Conny', age: 3 },
+            { name: '' },
+            { name: '' }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
   });
 });
 
