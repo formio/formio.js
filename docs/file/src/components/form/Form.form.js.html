@@ -209,8 +209,8 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
-
 import FormEditForm from &apos;./editForm/Form.edit.form&apos;;
+import FormEditData from &apos;./editForm/Form.edit.data&apos;;
 
 export default function(...extend) {
   return nestedComponentForm([
@@ -219,6 +219,12 @@ export default function(...extend) {
       key: &apos;form&apos;,
       weight: 10,
       components: FormEditForm
+    },
+    {
+      label: &apos;Data&apos;,
+      key: &apos;data&apos;,
+      weight: 10,
+      components: FormEditData
     }
   ], ...extend);
 }

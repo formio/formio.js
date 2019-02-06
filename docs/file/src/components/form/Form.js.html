@@ -210,6 +210,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
+import EventEmitter from &apos;eventemitter2&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import { isMongoId, eachComponent } from &apos;../../utils/utils&apos;;
 import Formio from &apos;../../Formio&apos;;
@@ -246,6 +247,7 @@ export default class FormComponent extends BaseComponent {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+    this.subFormLoaded = false;
     this.subscribe();
   }
 
@@ -282,6 +284,20 @@ export default class FormComponent extends BaseComponent {
     return this._nosubmit || false;
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+    if (!this.subForm) {
+      return;
+    }
+    this.subForm.getComponents().forEach(component =&gt; {
+      component.currentForm = this;
+    });
+  }
+
   subscribe() {
     this.on(&apos;nosubmit&apos;, value =&gt; {
       this.nosubmit = value;
@@ -310,6 +326,8 @@ export default class FormComponent extends BaseComponent {
       return;
     }
 
+    options.events = this.createEmitter();
+
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) =&gt; {
       if (
@@ -323,11 +341,15 @@ export default class FormComponent extends BaseComponent {
     (new Form(this.element, form, options)).render().then((instance) =&gt; {
       this.subForm = instance;
       this.subForm.root = this.root;
+      this.subForm.currentForm = this;
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on(&apos;change&apos;, () =&gt; {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange();
+        this.subForm.off(&apos;change&apos;);
+        this.subForm.on(&apos;change&apos;, () =&gt; {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange();
+        });
       });
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
@@ -335,6 +357,15 @@ export default class FormComponent extends BaseComponent {
       this.subFormReadyResolve(this.subForm);
       return this.subForm;
     });
+  }
+
+  show(...args) {
+    const state = super.show(...args);
+    if (state &amp;&amp; !this.subFormLoaded) {
+      this.loadSubForm();
+    }
+
+    return state;
   }
 
   /**
@@ -444,9 +475,19 @@ export default class FormComponent extends BaseComponent {
   }
 
   checkConditions(data) {
-    return (super.checkConditions(data) &amp;&amp; this.subForm)
-      ? this.subForm.checkConditions(this.dataValue.data)
-      : false;
+    const visible = super.checkConditions(data);
+    const subForm = this.subForm;
+
+    // Return if already hidden
+    if (!visible) {
+      return visible;
+    }
+
+    if (subForm &amp;&amp; subForm.hasCondition()) {
+      return this.subForm.checkConditions(this.dataValue.data);
+    }
+
+    return visible;
   }
 
   calculateValue(data, flags) {
@@ -530,11 +571,27 @@ export default class FormComponent extends BaseComponent {
     this.attachLogic();
   }
 
+  isHidden() {
+    if (!this.visible) {
+      return true;
+    }
+
+    return !super.checkConditions(this.rootValue);
+  }
+
   setValue(submission, flags) {
     const changed = super.setValue(submission, flags);
+    const hidden = this.isHidden();
+    let subForm;
 
-    (this.subForm ? Promise.resolve(this.subForm) : this.loadSubForm())
-      .then((form) =&gt; {
+    if (hidden) {
+      subForm = this.subFormReady;
+    }
+    else {
+      subForm = this.loadSubForm();
+    }
+
+    subForm.then((form) =&gt; {
         if (submission &amp;&amp; submission._id &amp;&amp; form.formio &amp;&amp; !flags.noload &amp;&amp; _.isEmpty(submission.data)) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setUrl(submissionUrl, this.options);
@@ -585,6 +642,66 @@ export default class FormComponent extends BaseComponent {
   set parentVisible(value) {
     super.parentVisible = value;
     this.updateSubFormVisibility();
+  }
+
+  isInternalEvent(event) {
+    switch (event) {
+    case &apos;focus&apos;:
+    case &apos;blur&apos;:
+    case &apos;componentChange&apos;:
+    case &apos;componentError&apos;:
+    case &apos;error&apos;:
+    case &apos;formLoad&apos;:
+    case &apos;languageChanged&apos;:
+    case &apos;render&apos;:
+    case &apos;checkValidity&apos;:
+    case &apos;initialized&apos;:
+    case &apos;submit&apos;:
+    case &apos;submitButton&apos;:
+    case &apos;nosubmit&apos;:
+    case &apos;updateComponent&apos;:
+    case &apos;submitDone&apos;:
+    case &apos;submissionDeleted&apos;:
+    case &apos;requestDone&apos;:
+    case &apos;nextPage&apos;:
+    case &apos;prevPage&apos;:
+    case &apos;wizardNavigationClicked&apos;:
+    case &apos;updateWizardNav&apos;:
+    case &apos;restoreDraft&apos;:
+    case &apos;saveDraft&apos;:
+    case &apos;saveComponent&apos;:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  createEmitter() {
+    const emiter = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    const nativeEmit = emiter.emit;
+    const that = this;
+
+    emiter.emit = function(event, ...args) {
+      const eventType = event.replace(`${that.options.namespace}.`, &apos;&apos;);
+      nativeEmit.call(this, event, ...args);
+
+      if (!that.isInternalEvent(eventType)) {
+        that.emit(eventType, ...args);
+      }
+    };
+
+    return emiter;
+  }
+
+  deleteValue() {
+    super.setValue(null, {
+      noUpdateEvent: true,
+      noDefault: true
+    });
+    _.unset(this.data, this.key);
   }
 }
 </code></pre>

@@ -2035,13 +2035,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2388,6 +2388,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#currentform",
+    "class/src/Webform.js~Webform.html#instance-member-currentForm",
+    "src/Webform.js~Webform#currentForm",
+    "member"
+  ],
+  [
     "src/webform.js~webform#customerrors",
     "class/src/Webform.js~Webform.html#instance-member-customErrors",
     "src/Webform.js~Webform#customErrors",
@@ -2431,13 +2437,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2509,13 +2515,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2539,13 +2545,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2689,13 +2695,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -2785,13 +2791,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3672,6 +3678,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/base/base.js~basecomponent#_currentform",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-_currentForm",
+    "src/components/base/Base.js~BaseComponent#_currentForm",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#_disabled",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-_disabled",
     "src/components/base/Base.js~BaseComponent#_disabled",
@@ -4002,6 +4014,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#currentform",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-currentForm",
+    "src/components/base/Base.js~BaseComponent#currentForm",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#currentform",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-currentForm",
+    "src/components/base/Base.js~BaseComponent#currentForm",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#customstyle",
     "class/src/components/base/Base.js~BaseComponent.html#instance-get-customStyle",
     "src/components/base/Base.js~BaseComponent#customStyle",
@@ -4021,13 +4045,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -5071,13 +5095,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -5791,13 +5815,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -7518,6 +7542,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/form.js~formcomponent#_currentform",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_currentForm",
+    "src/components/form/Form.js~FormComponent#_currentForm",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#_nosubmit",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-_nosubmit",
     "src/components/form/Form.js~FormComponent#_nosubmit",
@@ -7572,6 +7602,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#createemitter",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-createEmitter",
+    "src/components/form/Form.js~FormComponent#createEmitter",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#currentform",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-currentForm",
+    "src/components/form/Form.js~FormComponent#currentForm",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#currentform",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-currentForm",
+    "src/components/form/Form.js~FormComponent#currentForm",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#dataready",
     "class/src/components/form/Form.js~FormComponent.html#instance-get-dataReady",
     "src/components/form/Form.js~FormComponent#dataReady",
@@ -7588,6 +7636,12 @@ window.esdocSearchIndex = [
     "class/src/components/form/Form.js~FormComponent.html#instance-get-defaultSchema",
     "src/components/form/Form.js~FormComponent#defaultSchema",
     "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#deletevalue",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-deleteValue",
+    "src/components/form/Form.js~FormComponent#deleteValue",
+    "method"
   ],
   [
     "src/components/form/form.js~formcomponent#destroy",
@@ -7620,6 +7674,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#ishidden",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-isHidden",
+    "src/components/form/Form.js~FormComponent#isHidden",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#isinternalevent",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-isInternalEvent",
+    "src/components/form/Form.js~FormComponent#isInternalEvent",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#loadsubform",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-loadSubForm",
     "src/components/form/Form.js~FormComponent#loadSubForm",
@@ -7627,13 +7693,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
@@ -7657,13 +7723,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
@@ -7677,6 +7743,12 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#setvalue",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-setValue",
     "src/components/form/Form.js~FormComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#show",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-show",
+    "src/components/form/Form.js~FormComponent#show",
     "method"
   ],
   [
@@ -7749,6 +7821,12 @@ window.esdocSearchIndex = [
     "src/components/form/form.spec.js",
     "file/src/components/form/Form.spec.js.html",
     "src/components/form/Form.spec.js",
+    "file"
+  ],
+  [
+    "src/components/form/editform/form.edit.data.js",
+    "file/src/components/form/editForm/Form.edit.data.js.html",
+    "src/components/form/editForm/Form.edit.data.js",
     "file"
   ],
   [
@@ -8286,6 +8364,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
+    "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
+    "member"
+  ],
+  [
+    "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
+    "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
+    "member"
+  ],
+  [
     "src/components/nested/nestedcomponent.js~nestedcomponent#dataready",
     "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-dataReady",
     "src/components/nested/NestedComponent.js~NestedComponent#dataReady",
@@ -8509,13 +8599,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],

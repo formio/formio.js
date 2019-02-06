@@ -213,13 +213,19 @@ import * as utils from &apos;./utils/utils&apos;;
 
 export default class EventEmitter extends EventEmitter2 {
   constructor(conf = {}) {
-    const { loadLimit = 50, eventsSafeInterval = 300, pause = 500, ...ee2conf } = conf;
+    const {
+      loadLimit = 50,
+      eventsSafeInterval = 300,
+      pause = 500,
+      inspect = false,
+      ...ee2conf
+    } = conf;
     super(ee2conf);
 
     const [isPaused, togglePause] = utils.withSwitch(false, true);
 
     const overloadHandler = () =&gt; {
-      console.warn(&apos;Infinite loop detected&apos;, this.id, pause);
+      console.warn(&apos;Infinite loop detected&apos;);
       togglePause();
       setTimeout(togglePause, pause);
     };
@@ -230,6 +236,10 @@ export default class EventEmitter extends EventEmitter2 {
     });
 
     this.emit = (...args) =&gt; {
+      if (typeof inspect === &apos;function&apos;) {
+        inspect();
+      }
+
       if (isPaused()) {
         return;
       }

@@ -236,6 +236,7 @@ export default class SelectComponent extends BaseComponent {
       authenticate: false,
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;,
+      searchThreshold: 0.3,
       customOptions: {}
     }, ...extend);
   }
@@ -506,7 +507,7 @@ export default class SelectComponent extends BaseComponent {
         query[`${this.component.searchField}__in`] = search.join(&apos;,&apos;);
       }
       else {
-        query[this.component.searchField] = search;
+        query[`${this.component.searchField}__regex`] = search;
       }
     }
 
@@ -743,7 +744,7 @@ export default class SelectComponent extends BaseComponent {
       searchFields: [&apos;label&apos;],
       fuseOptions: {
         include: &apos;score&apos;,
-        threshold: 0.3
+        threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
       },
       itemComparer: _.isEqual
     };

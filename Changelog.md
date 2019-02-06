@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.14.0
+### Fixed
+ - Fix form select in nested form from not searching for forms.
+ - Pass args to event trigger actions instead of event name.
+ - Fix bug with default value for DataGrid
+ - Problems with nested form conditions
+
+### Added
+ - FOR-1804: Add option to override fuzzy search threshold in Select
+ - FOR-2044: Fix bug with form danger alert
+ - Added ability to set default value on nested forms.
+ 
+### Changed
+ - Upgraded  webpack@4.29.2, eslint@5.13.0, i18next@14.0.1, karma@4.0.0, written-number@0.9.1
+
 ## 3.13.10
 ### Fixed
  - Add ability to set default values on nested forms.

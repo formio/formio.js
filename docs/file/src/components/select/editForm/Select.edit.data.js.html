@@ -573,6 +573,27 @@ export default [
     label: &apos;Custom default options&apos;,
     tooltip: &apos;A raw JSON object to use as default options for the Select component (Choices JS).&apos;,
 	defaultValue: {}
+  },
+  {
+    label: &apos;Search Threshold&apos;,
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;selectThreshold&apos;,
+    validate: {
+      min: 0,
+      customMessage: &apos;&apos;,
+      json: &apos;&apos;,
+      max: 1
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.3,
+    weight: 30,
+    tooltip: &apos;At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.&apos;
   }
 ];
 </code></pre>

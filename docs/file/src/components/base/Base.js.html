@@ -585,6 +585,14 @@ export default class BaseComponent extends Component {
     return _.get(this.component, &apos;key&apos;, &apos;&apos;);
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -2851,9 +2859,9 @@ export default class BaseComponent extends Component {
     this.logic.forEach(logic =&gt; {
       if (logic.trigger.type === &apos;event&apos;) {
         const event = this.interpolate(logic.trigger.event);
-        this.on(event, () =&gt; {
+        this.on(event, (...args) =&gt; {
           const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+          if (this.applyActions(logic.actions, args, this.data, newComponent)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;

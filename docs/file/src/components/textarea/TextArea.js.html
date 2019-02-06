@@ -477,12 +477,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   isEmpty(value) {
-    if (this.quill) {
-      return (!value || (value === &apos;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&apos;));
-    }
-    else {
-      return super.isEmpty(value);
-    }
+    return super.isEmpty(this.removeBlanks(value));
   }
 
   get defaultValue() {
