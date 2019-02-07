@@ -51,6 +51,9 @@ export default class SelectComponent extends BaseComponent {
     // Keep track of the select options.
     this.selectOptions = [];
 
+    this.spinner = false;
+    this.isScrollLoading = false;
+
     // If this component has been activated.
     this.activated = false;
 
@@ -212,7 +215,12 @@ export default class SelectComponent extends BaseComponent {
       this.selectInput.innerHTML = '';
     }
 
-    this.selectOptions = [];
+    if (this.isScrollLoading) {
+      this.isScrollLoading = false;
+    }
+    else {
+      this.selectOptions = [];
+    }
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
@@ -283,7 +291,7 @@ export default class SelectComponent extends BaseComponent {
 
     const query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
-      skip: 0
+      skip: options.skipItems || 0
     };
 
     // Allow for url interpolation.
@@ -321,8 +329,13 @@ export default class SelectComponent extends BaseComponent {
     options.header = headers;
     this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
-      .then((response) => this.setItems(response, !!search))
+      .then((response) => {
+        this.setItems(response, !!search);
+        this.choices.choiceList.scrollTo(0, options.scroll || 0);
+        this.spinner = false;
+      })
       .catch((err) => {
+        this.spinner = false;
         this.loading = false;
         this.itemsLoadedResolve();
         this.emit('componentError', {
@@ -401,7 +414,10 @@ export default class SelectComponent extends BaseComponent {
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
         try {
-          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
+          this.loadItems(resourceUrl, searchInput, this.requestHeaders, this.isScrollLoading ? {
+            skipItems: this.choices.choiceList.childNodes.length,
+            scroll: this.choices.choiceList.scrollTop
+          } : {});
         }
         catch (err) {
           console.warn(`Unable to load resources for ${this.key}`);
@@ -554,6 +570,18 @@ export default class SelectComponent extends BaseComponent {
         this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
       }
     }
+    const scrollList = this.choices.choiceList;
+
+    scrollList.addEventListener('scroll', () => {
+      if (scrollList.scrollTop + scrollList.clientHeight
+         >= scrollList.scrollHeight &&
+         !this.spinner) {
+           this.isScrollLoading = true;
+           this.triggerUpdate(this.choices.input.value);
+           this.addSpinner(scrollList.scrollTop);
+         }
+    });
+
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
@@ -573,7 +601,12 @@ export default class SelectComponent extends BaseComponent {
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
 
-    this.addEventListener(input, 'showDropdown', () => this.update());
+    this.addEventListener(input, 'showDropdown', () => {
+      if (this.dataValue) {
+        this.updateItems('');
+      }
+      this.update();
+    });
     if (placeholderValue && this.choices.isSelectOneElement) {
       this.addEventListener(input, 'removeItem', () => {
         const items = this.choices.store.getItemsFilteredByActive();
@@ -587,6 +620,17 @@ export default class SelectComponent extends BaseComponent {
     this.disabled = this.disabled;
     this.triggerUpdate();
   }
+
+  addSpinner(scrollPosition) {
+      this.spinner = true;
+      this.choices.setChoices([...this.selectOptions, {
+        value: '',
+        label: 'Loading...',
+        disabled: true,
+      }], 'value', 'label', true);
+      this.choices.choiceList.scrollTo(0, scrollPosition || 0);
+  }
+
   /* eslint-enable max-statements */
 
   update() {
