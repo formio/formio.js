@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Added continuous scrolling to Select component.
+
 ## 3.14.0
 ### Fixed
  - Fix form select in nested form from not searching for forms.
