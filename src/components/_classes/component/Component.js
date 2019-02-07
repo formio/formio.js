@@ -765,7 +765,7 @@ export default class Component extends Element {
           this.refresh(this.data);
         }
         else if (
-          (changeKey && changeKey === this.component.refreshOn) &
+          (changeKey && changeKey === this.component.refreshOn) && event.changed && event.changed.instance &&
           // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
           // in fields inside EditGrids could alter their state from other rows (which is bad).
           this.inContext(event.changed.instance)

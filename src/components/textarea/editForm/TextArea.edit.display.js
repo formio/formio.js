@@ -73,7 +73,7 @@ export default [
     tooltip: 'Enter the WYSIWYG editor JSON configuration.',
     key: 'wysiwyg',
     customDefaultValue(value, component, row, data, instance) {
-      return instance.wysiwygDefault;
+      return instance ? instance.wysiwygDefault : '';
     },
     conditional: {
       json: {
