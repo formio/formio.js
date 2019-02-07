@@ -45,8 +45,12 @@ export default class CheckBoxComponent extends Component {
     return `${className} checkbox`;
   }
 
+  get hasSetValue() {
+    return this.hasValue();
+  }
+
   get inputInfo() {
-      const info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.type = this.component.inputType || 'checkbox';

@@ -11,10 +11,13 @@ export default {
         maxLength: '{{field}} must be shorter than {{length}} characters.',
         min: '{{field}} cannot be less than {{min}}.',
         max: '{{field}} cannot be greater than {{max}}.',
+        maxDate: '{{field}} should not contain date after {{- maxDate}}',
+        minDate: '{{field}} should not contain date before {{- minDate}}',
         invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
         invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
         invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
         invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
+        invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
         mask: '{{field}} does not match the mask.',
         stripe: '{{stripe}}',
         month: 'Month',

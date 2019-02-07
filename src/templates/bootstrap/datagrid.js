@@ -5,7 +5,7 @@ export default {
     {{ component.striped ? 'table-striped' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
     {{ component.condensed ? 'table-sm' : ''}} 
-    ">
+    " {% if (component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (hasHeader) { %}
   <thead>
     <tr>
@@ -29,9 +29,9 @@ export default {
     </tr>
   </thead>
   {% } %}
-  <tbody>
+  <tbody ref="{{datagridKey}}-tbody">
     {% rows.forEach(function(row) { %}
-    <tr>
+    <tr ref="{{datagridKey}}-row">
       {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <td ref="{{datagridKey}}">
@@ -39,7 +39,7 @@ export default {
       </td>
       {% } %}
       {% }) %}
-      {% if (hasExtraColumn) { %}
+      {% if (hasExtraColumn && (removePlacement === 'col')) { %}
         {% if (!builder && hasRemoveButtons) { %}
         <td>
           <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{datagridKey}}-removeRow">
@@ -52,6 +52,11 @@ export default {
           {{placeholder}}
         </td>
         {% } %}
+      {% } %}
+      {% else if (removePlacement === 'corner') { %}
+        <button type="button" tabindex="-1" class="btn btn-xxs btn-danger formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
+          <i class="{{ iconClass('remove') }}"></i>
+        </button>
       {% } %}
     </tr>
     {% }) %}

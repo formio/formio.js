@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from '.';
@@ -605,6 +605,132 @@ describe('delay', () => {
     delay();
     if (score === 1) {
       done();
+    }
+  });
+});
+
+describe('withSwitch', () => {
+  it('should return Array with two functions', () => {
+    const fns = utils.withSwitch();
+
+    expect(fns).to.be.an('array').and.have.lengthOf(2);
+    expect(fns[0]).to.be.a('function');
+    expect(fns[1]).to.be.a('function');
+  });
+
+  describe('#get', () => {
+    it('should return one of state', () => {
+      const [get] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+    });
+
+    it('should be pure', () => {
+      const [get] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+      expect(get()).to.be.equal(42);
+    });
+  });
+
+  describe('#toggle', () => {
+    it('should cycle between states', () => {
+      const [get, toggle] = utils.withSwitch(42, 24);
+      expect(get()).to.be.equal(42);
+      toggle();
+      expect(get()).to.be.equal(24);
+      toggle();
+      expect(get()).to.be.equal(42);
+    });
+  });
+});
+
+describe('unfold', () => {
+  it('should return provided argument', () => {
+    const parameters = [{}, 1, null, 'string'];
+
+    parameters.forEach(p => {
+      assert(p === utils.unfold(p));
+    });
+  });
+
+  it('should call parameter, if it is function and return result', () => {
+    const x = Symbol('__unfold__');
+    assert(utils.unfold(() => x) === x);
+  });
+});
+
+describe('firstNonNil', () => {
+  it('should return first non nil value', () => {
+    expect(utils.firstNonNil([1])).to.equal(1);
+    expect(utils.firstNonNil([1, 3])).to.equal(1);
+    expect(utils.firstNonNil([3, 2, 1])).to.equal(3);
+    expect(utils.firstNonNil([undefined, undefined, 3, 1])).to.equal(3);
+  });
+  it('should unfold all functions in array', () => {
+    expect(utils.firstNonNil([() => 1])).to.equal(1);
+    expect(utils.firstNonNil([() => 1, 3])).to.equal(1);
+    expect(utils.firstNonNil([undefined, undefined, () => 3, 1])).to.equal(3);
+  });
+});
+
+describe('observeOverload', () => {
+  it('should invoke the callback, if there too many dispatches in a short time', done => {
+    try {
+      const dispatch = utils.observeOverload(() => true);
+
+      for (let i = 0; i < 100; i += 1) {
+        if (dispatch()) {
+          return done();
+        }
+      }
+
+      throw new Error('Callback not called');
+    }
+    catch (error) {
+      done(error);
+    }
+  });
+
+  it('should allow configuring the events limit', done => {
+    try {
+      for (let i = 1; i < 10; i += 1) {
+        const dispatch = utils.observeOverload(() => done('Limit option is ignored'), { limit: 100 });
+        for (let j = 0; j < i * 10; j += 1) {
+          dispatch();
+        }
+      }
+
+      // exit if we done, otherwise throw
+      const dispatch = utils.observeOverload(done, { limit: 100 });
+
+      for (let i = 0; i < 110; i += 1) {
+        dispatch();
+      }
+
+      throw new Error('Limit option is ignored');
+    }
+    catch (error) {
+      done(error);
+    }
+  });
+
+  it('should not invoke callback, if time between calls longer then options.delay', done => {
+    try {
+      const dispatch = utils.observeOverload(() => done('Callback should not be called'), { delay: 100, limit: 2 });
+      let count = 0;
+
+      const id = setInterval(() => {
+        dispatch();
+        count += 1;
+        if (count >= 3) {
+          done();
+          clearInterval(id);
+        }
+      }, 110);
+    }
+    catch (error) {
+      done(error);
     }
   });
 });

@@ -117,7 +117,7 @@ export default [
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
     label: 'Resource',
-    key: 'resource',
+    key: 'data.resource',
     weight: 10,
     tooltip: 'The resource to be used with this field.',
     conditional: {
@@ -129,9 +129,10 @@ export default [
     input: true,
     label: 'Value Property',
     key: 'valueProperty',
+    skipMerge: true,
     tooltip: 'The field to use as the value.',
     weight: 11,
-    refreshOn: 'resource',
+    refreshOn: 'data.resource',
     template: '<span>{{ item.label }}</span>',
     valueProperty: 'key',
     dataSrc: 'url',
@@ -176,6 +177,7 @@ export default [
     input: true,
     label: 'Value Property',
     key: 'valueProperty',
+    skipMerge: true,
     weight: 13,
     description: "The selected item's property to save.",
     tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
@@ -341,5 +343,24 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 22,
+    key: 'readOnlyValue',
+    label: 'Read Only Value',
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 23,
+    input: true,
+    key: 'customOptions',
+    label: 'Custom default options',
+    tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
+	defaultValue: {}
   }
 ];

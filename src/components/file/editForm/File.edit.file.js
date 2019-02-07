@@ -34,6 +34,26 @@ export default [
     }
   },
   {
+    type: 'textarea',
+    key: 'options',
+    label: 'Custom request options',
+    tooltip: 'Pass your custom xhr options(optional)',
+    rows: 5,
+    editor: 'ace',
+    input: true,
+    weight: 15,
+    placeholder: `{
+      "withCredentials": true
+    }`,
+    conditional: {
+      json: {
+        '===': [{
+          var: 'data.storage'
+        }, 'url']
+      }
+    }
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'dir',
@@ -49,6 +69,17 @@ export default [
     label: 'Display as image(s)',
     tooltip: 'Instead of a list of linked files, images will be rendered in the view.',
     weight: 30
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    key: 'privateDownload',
+    label: 'Private Download',
+    tooltip: 'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
+    weight: 31,
+    conditional: {
+      json: { '===': [{ var: 'data.storage' }, 'url'] }
+    }
   },
   {
     type: 'textfield',
@@ -81,6 +112,28 @@ export default [
     conditional: {
       json: { '==': [{ var: 'data.webcam' }, true] }
     }
+  },
+  {
+    type: 'datagrid',
+    input: true,
+    label: 'File Types',
+    key: 'fileTypes',
+    tooltip: 'Specify file types to classify the uploads. This is useful if you allow multiple types of uploads but want to allow the user to specify which type of file each is.',
+    weight: 11,
+    components: [
+      {
+        label: 'Label',
+        key: 'label',
+        input: true,
+        type: 'textfield'
+      },
+      {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield'
+      }
+    ]
   },
   {
     type: 'textfield',

@@ -1,6 +1,6 @@
 export default {
   form: `
-<{{tag}} ref="html"
+<{{tag}} class="{{ component.className }}" ref="html"
   {% attrs.forEach(function(attr) { %}
     {{attr.attr}}="{{attr.value}}"
   {% }) %}

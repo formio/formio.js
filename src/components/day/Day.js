@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
@@ -140,7 +139,7 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      { value: undefined, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
       { value: 3, label: 'March' },
@@ -175,7 +174,7 @@ export default class DayComponent extends Field {
 
   init() {
     super.init();
-    this.validators.push('date');
+    this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);
     const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
@@ -220,8 +219,10 @@ export default class DayComponent extends Field {
     this.addEventListener(this.refs.month, 'change', () => this.updateValue());
     // Change day max input when month changes.
     this.addEventListener(this.refs.month, 'change', () => {
-      this.refs.day.max = new Date(this.refs.year.value, this.refs.month.value, 0).getDate();
-      if (this.refs.day.value > this.refs.day.max) {
+      const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+      const day = this.getFieldValue('day');
+      this.refs.day.max = maxDay;
+      if (day > maxDay) {
         this.refs.day.value = this.refs.day.max;
       }
     });
@@ -274,21 +275,28 @@ export default class DayComponent extends Field {
    * @param value
    */
   setValueAt(index, value) {
-    if (!value) {
+    // temporary solution to avoid input reset
+    // on invalid date.
+    if (!value || value === 'Invalid date') {
       return null;
     }
     const parts = value.split('/');
+    let day, month, year;
     if (this.refs.day && this.component.dayFirst && this.showDay) {
-      this.refs.day.value = parseInt(parts.shift(), 10);
+      day = parts.shift();
+      this.refs.day.value = day === '00' ? undefined : parseInt(day, 10);
     }
     if (this.refs.month && this.showMonth) {
-      this.refs.month.value = parseInt(parts.shift(), 10);
+      month = parts.shift();
+      this.refs.month.value = month === '00' ? undefined : parseInt(month, 10);
     }
     if (this.refs.day && !this.component.dayFirst && this.showDay) {
-      this.refs.day.value = parseInt(parts.shift(), 10);
+      day = parts.shift();
+      this.refs.day.value = day === '00' ? undefined : parseInt(day, 10);
     }
     if (this.refs.year && this.showYear) {
-      this.refs.year.value = parseInt(parts.shift(), 10);
+      year = parts.shift();
+      this.refs.year.value = year === '0000' ? undefined : parseInt(year, 10);
     }
   }
 
@@ -303,7 +311,9 @@ export default class DayComponent extends Field {
     else if (this.component.fields[name].type === 'select') {
       val = this.refs[name].options[this.refs[name].selectedIndex].value;
     }
-    return _.isNaN(val) ? 0 : parseInt(val, 10);
+
+    val = parseInt(val, 10);
+    return (!_.isNaN(val) && _.isNumber(val)) ? val : 0;
   }
 
   get parts() {
@@ -331,8 +341,67 @@ export default class DayComponent extends Field {
     }
     if (this.showYear) {
       format += 'YYYY';
+      return format;
     }
-    return format;
+    else {
+      // Trim off the "/" from the end of the format string.
+      return format.length ? format.substring(0, format.length - 1) : format;
+    }
+  }
+
+  /**
+   * Return the date for this component.
+   *
+   * @param value
+   * @return {*}
+   */
+  getDate(value) {
+    let defaults = [], day, month, year;
+    // Map positions to identifiers to get default values for each part of day
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const defaultValue = value || this.component.defaultValue;
+    if (defaultValue) {
+      defaults = defaultValue.split('/').map(x => parseInt(x, 10));
+    }
+
+    if (this.showDay && this.refs.day) {
+      day = parseInt(this.refs.month.value, 10);
+    }
+    if (day === undefined || _.isNaN(day)) {
+      day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+    }
+
+    if (this.showMonth && this.refs.month) {
+      // Months are 0 indexed.
+      month = parseInt(this.refs.month.value, 10);
+    }
+    if (month === undefined || _.isNaN(month)) {
+      month = defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+    }
+
+    if (this.showYear && this.refs.year) {
+      year = parseInt(this.refs.year.value);
+    }
+    if (year === undefined || _.isNaN(year)) {
+      year = defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+    }
+
+    let result;
+    if (!day && !month && !year) {
+      return null;
+    }
+
+    //add trailing zeros
+    day = day.toString().padStart(2, 0);
+    month = month.toString().padStart(2, 0);
+    year = year.toString().padStart(4, 0);
+    if (this.component.dayFirst) {
+      result = `${day}/${month}/${year}`;
+    }
+    else {
+      result = `${month}/${day}/${year}`;
+    }
+    return result;
   }
 
   /**
@@ -340,20 +409,7 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get date() {
-    const { day, month, year } = this.parts;
-    if (this.showDay && !day) {
-      // Invalid so return null
-      return null;
-    }
-    if (this.showMonth && (month < 0)) {
-      // Invalid so return null
-      return null;
-    }
-    if (this.showYear && !year) {
-      // Invalid so return null
-      return null;
-    }
-    return moment([year, month, day]);
+    return this.getDate();
   }
 
   /**
@@ -362,12 +418,7 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get validationValue() {
-    const date = this.date;
-    if (!date) {
-      return null;
-    }
-
-    return date.format();
+    return this.date;
   }
 
   /**
@@ -379,7 +430,7 @@ export default class DayComponent extends Field {
   getValueAt(index) {
     const date = this.date;
     if (date) {
-      this.refs.input[index].value = date.format(this.format);
+      this.refs.input[index].value = date;
       return this.refs.input[index].value;
     }
     else {
@@ -388,12 +439,14 @@ export default class DayComponent extends Field {
     }
   }
 
-  getView() {
-    const date = this.date;
-    if (!date) {
-      return null;
-    }
-    return date.isValid() ? date.format(this.format) : null;
+  /**
+   * Get the view of the date.
+   *
+   * @param value
+   * @return {null}
+   */
+  getView(value) {
+    return this.getDate(value);
   }
 
   focus() {
@@ -406,5 +459,14 @@ export default class DayComponent extends Field {
     else if (!this.showDay && !this.showDay && this.showYear) {
       this.refs.year.focus();
     }
+  }
+
+  isPartialDay(value) {
+    if (!value) {
+      return false;
+    }
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const values = value.split('/');
+    return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
   }
 }

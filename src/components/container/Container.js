@@ -5,6 +5,7 @@ import Component from '../_classes/component/Component';
 export default class ContainerComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
+      label: 'Container',
       type: 'container',
       key: 'container',
       clearOnHide: true,

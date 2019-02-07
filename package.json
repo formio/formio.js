@@ -26,8 +26,8 @@
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "mocha --compilers js:@babel/register src/**/*.unit.js -b --exit",
     "test:unit:watch": "mocha --compilers js:@babel/register src/**/*.unit.js d--watch",
-    "test:e2e": "karma start --verbose --single-run",
-    "test:e2e:watch": "karma start --no-single-run --auto-watch"
+    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
+    "test:e2e:watch": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
@@ -103,6 +103,7 @@
     "chai": "^4.1.2",
     "chance": "^1.0.16",
     "del": "^3.0.0",
+    "escape-string-regexp": "^1.0.5",
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
@@ -127,10 +128,12 @@
     "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-webpack": "^3.0.4",
     "marked": "^0.5.0",
     "mocha": "^5.2.0",
+    "natives": "^1.1.6",
     "power-assert": "^1.6.1",
     "pre-commit": "^1.2.2",
     "pretty": "^2.0.0",

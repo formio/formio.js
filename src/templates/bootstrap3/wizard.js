@@ -37,4 +37,5 @@ export default {
   </ul>
 </div>
 `,
+  builder: '<div class="text-muted text-center">{{ t(component.title) }}</div>',
 };

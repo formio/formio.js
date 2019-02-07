@@ -31,10 +31,10 @@ export default class CurrencyComponent extends NumberComponent {
       currency: this.component.currency,
       decimalLimit: this.decimalLimit,
       decimalSeparator: this.decimalSeparator,
-      lang: this.options.language,
+      lang: this.options.language
     });
-    this.prefix = affixes.prefix;
-    this.suffix = affixes.suffix;
+    this.prefix = this.options.prefix || affixes.prefix;
+    this.suffix = this.options.suffix || affixes.suffix;
   }
 
   get defaultSchema() {

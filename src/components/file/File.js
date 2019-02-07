@@ -32,6 +32,7 @@ export default class FileComponent extends Component {
       label: 'Upload',
       key: 'file',
       image: false,
+      privateDownload: false,
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
@@ -80,6 +81,13 @@ export default class FileComponent extends Component {
     return Array.isArray(value) ? value : [];
   }
 
+  get hasTypes() {
+    return this.component.fileTypes &&
+      Array.isArray(this.component.fileTypes) &&
+      this.component.fileTypes.length !== 0 &&
+      (this.component.fileTypes[0].label !== '' || this.component.fileTypes[0].value !== '');
+  }
+
   get fileService() {
     if (this.options.fileService) {
       return this.options.fileService;
@@ -111,8 +119,6 @@ export default class FileComponent extends Component {
       return;
     }
 
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = width * 3 / 4;
     navigator.getMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
@@ -120,7 +126,11 @@ export default class FileComponent extends Component {
 
     navigator.getMedia(
       {
-        video: true,
+        video: {
+          width: { min: 640, ideal: 1920 },
+          height: { min: 400, ideal: 1080 },
+          aspectRatio: { ideal: 1.7777777778 }
+        },
         audio: false
       },
       (stream) => {
@@ -129,13 +139,10 @@ export default class FileComponent extends Component {
         }
         else {
           this.refs.videoPlayer.srcObject = stream;
-          this.refs.videoPlayer.play();
         }
-        // height = this.video.videoHeight / (this.video.videoWidth / width);
+        const width = parseInt(this.component.webcamSize) || 320;
         this.refs.videoPlayer.setAttribute('width', width);
-        this.refs.videoPlayer.setAttribute('height', height);
-        this.refs.videoCanvas.setAttribute('width', width);
-        this.refs.videoCanvas.setAttribute('height', height);
+        this.refs.videoPlayer.play();
       },
       (err) => {
         console.log(err);
@@ -151,9 +158,9 @@ export default class FileComponent extends Component {
       return;
     }
 
-    const width = parseInt(this.component.webcamSize) || 320;
-    const height = this.refs.videoPlayer.videoHeight / (this.refs.videoPlayer.videoWidth / width);
-    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0, width, height);
+    this.refs.videoCanvas.setAttribute('width', this.refs.videoPlayer.videoWidth);
+    this.refs.videoCanvas.setAttribute('height', this.refs.videoPlayer.videoHeight);
+    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0);
     this.refs.videoCanvas.toBlob(blob => {
       blob.name = `photo-${Date.now()}.png`;
       this.upload([blob]);
@@ -457,12 +464,16 @@ export default class FileComponent extends Component {
         this.redraw();
 
         if (fileUpload.status !== 'error') {
-          fileService.uploadFile(this.component.storage, file, fileName, dir, evt => {
+          if (this.component.privateDownload) {
+            file.private = true;
+          }
+          const { storage, url, options } = this.component;
+          fileService.uploadFile(storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
-          }, this.component.url)
+          }, url, options)
             .then(fileInfo => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
@@ -488,6 +499,9 @@ export default class FileComponent extends Component {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
+    }
+    if (this.component.privateDownload) {
+      fileInfo.private = true;
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {

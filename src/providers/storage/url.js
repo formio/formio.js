@@ -1,24 +1,19 @@
-const url = (formio) => ({
-  title: 'Url',
-  name: 'url',
-  uploadFile(file, fileName, dir, progressCallback, url) {
-    return new Promise(((resolve, reject) => {
-      const data = {
-        dir: dir,
-        name: fileName,
-        file: file
-      };
+import Promise from 'native-promise-only';
 
-      // Send the file with data.
+const url = (formio) => {
+  const xhrRequest = (url, name, query, data, options, onprogress) => {
+    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-
-      if (typeof progressCallback === 'function') {
-        xhr.upload.onprogress = progressCallback;
+      const json = (typeof data === 'string');
+      const fd = new FormData();
+      if (typeof onprogress === 'function') {
+        xhr.upload.onprogress = onprogress;
       }
 
-      const fd = new FormData();
-      for (const key in data) {
-        fd.append(key, data[key]);
+      if (!json) {
+        for (const key in data) {
+          fd.append(key, data[key]);
+        }
       }
 
       xhr.onload = () => {
@@ -33,39 +28,100 @@ const url = (formio) => ({
             respData = {};
           }
 
-          const url = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${fileName}`;
-          resolve({
-            storage: 'url',
-            name: fileName,
-            url,
-            size: file.size,
-            type: file.type,
-            data: respData
-          });
+          // Get the url of the file.
+          let respUrl = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${name}`;
+
+          // If they provide relative url, then prepend the url.
+          if (respUrl && respUrl[0] === '/') {
+            respUrl = `${url}${respUrl}`;
+          }
+          resolve({ url: respUrl, data: respData });
         }
         else {
           reject(xhr.response || 'Unable to upload file');
         }
       };
 
-      // Fire on network error.
       xhr.onerror = () => reject(xhr);
-
       xhr.onabort = () => reject(xhr);
 
-      xhr.open('POST', url);
+      let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
+      for (const key in query) {
+        requestUrl += `${key}=${query[key]}&`;
+      }
+      if (requestUrl[requestUrl.length - 1] === '&') {
+        requestUrl = requestUrl.substr(0, requestUrl.length - 1);
+      }
+
+      xhr.open('POST', requestUrl);
+      if (json) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+      }
       const token = formio.getToken();
       if (token) {
         xhr.setRequestHeader('x-jwt-token', token);
       }
-      xhr.send(fd);
-    }));
-  },
-  downloadFile(file) {
-    // Return the original as there is nothing to do.
-    return Promise.resolve(file);
-  }
-});
+
+      //Overrides previous request props
+      if (options) {
+        const parsedOptions = JSON.parse(options);
+        for (const prop in parsedOptions) {
+          xhr[prop] = parsedOptions[prop];
+        }
+      }
+      xhr.send(json ? data : fd);
+    });
+  };
+
+  return {
+    title: 'Url',
+    name: 'url',
+    uploadFile(file, name, dir, progressCallback, url, options) {
+      const uploadRequest = function(form) {
+        return xhrRequest(url, name, {
+          baseUrl: encodeURIComponent(formio.projectUrl),
+          project: form ? form.project : '',
+          form: form ? form._id : ''
+        }, {
+          file,
+          name,
+          dir
+        }, options, progressCallback).then(response => {
+          // Store the project and form url along with the metadata.
+          response.data = response.data || {};
+          response.data.baseUrl = formio.projectUrl;
+          response.data.project = form ? form.project : '';
+          response.data.form = form ? form._id : '';
+          return {
+            storage: 'url',
+            name,
+            url: response.url,
+            size: file.size,
+            type: file.type,
+            data: response.data
+          };
+        });
+      };
+      if (file.private && formio.formId) {
+        return formio.loadForm().then((form) => uploadRequest(form));
+      }
+      else {
+        return uploadRequest();
+      }
+    },
+    downloadFile(file) {
+      if (file.private) {
+        if (formio.submissionId && file.data) {
+          file.data.submission = formio.submissionId;
+        }
+        return xhrRequest(file.url, file.name, {}, JSON.stringify(file)).then(response => response.data);
+      }
+
+      // Return the original as there is nothing to do.
+      return Promise.resolve(file);
+    }
+  };
+};
 
 url.title = 'Url';
 export default url;

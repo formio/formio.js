@@ -281,7 +281,29 @@ export default class Component extends Element {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _.debounce(this.onChange.bind(this), 100);
+    let lastChanged = null;
+    const _triggerChange = _.debounce((...args) => {
+      if (this.root) {
+        this.root.changing = false;
+      }
+      if (!args[1] && lastChanged) {
+        // Set the changed component if one isn't provided.
+        args[1] = lastChanged;
+      }
+      lastChanged = null;
+      return this.onChange(...args);
+    }, 100);
+    this.triggerChange = (...args) => {
+      if (args[1]) {
+        // Make sure that during the debounce that we always track lastChanged component, even if they
+        // don't provide one later.
+        lastChanged = args[1];
+      }
+      if (this.root) {
+        this.root.changing = true;
+      }
+      return _triggerChange(...args);
+    };
 
     /**
      * Used to trigger a redraw event within this component.
@@ -327,21 +349,6 @@ export default class Component extends Element {
 
     // Set the template
     this.template = this.options.template;
-
-    this.logic.forEach(logic => {
-      if (logic.trigger.type === 'event') {
-        this.root.on(logic.trigger.event, () => {
-          const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
-            // If component definition changed, replace it.
-            if (!_.isEqual(this.component, newComponent)) {
-              this.component = newComponent;
-            }
-            this.redraw();
-          }
-        });
-      }
-    });
 
     // Allow anyone to hook into the component creation.
     this.hook('component');
@@ -434,6 +441,14 @@ export default class Component extends Element {
     return this._visible && this._parentVisible;
   }
 
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -483,7 +498,7 @@ export default class Component extends Element {
    */
   t(text, params) {
     params = params || {};
-    params.data = this.root ? this.root.data : this.data;
+    params.data = this.rootValue;
     params.row = this.data;
     params.component = this.component;
     params.nsSeparator = '::';
@@ -540,6 +555,7 @@ export default class Component extends Element {
 
     data.component = this.component;
     data.self = this;
+    data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
@@ -634,6 +650,16 @@ export default class Component extends Element {
     return Promise.resolve(true);
   }
 
+  /**
+   * Return the submission timezone.
+   *
+   * @return {*}
+   */
+  get submissionTimezone() {
+    this.options.submissionTimezone = this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
+    return this.options.submissionTimezone;
+  }
+
   get shouldDisable() {
     return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
   }
@@ -715,17 +741,20 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip);
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title,
+        title: title.replace(/(?:\r\n|\r|\n)/g, '<br />'),
       });
     });
 
     // Attach the refresh on events.
     this.attachRefreshOn();
+
+    // Attach logic.
+    this.attachLogic();
 
     // this.restoreValue();
 
@@ -906,6 +935,9 @@ export default class Component extends Element {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.component.multiple) {
+      className += 'formio-component-multiple ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -945,10 +977,11 @@ export default class Component extends Element {
    */
   evalContext(additional) {
     return super.evalContext(Object.assign({
+      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
-      data: (this.root ? this.root.data : this.data),
+      data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {}
     }, additional));
@@ -1082,14 +1115,26 @@ export default class Component extends Element {
    * @return {boolean}
    */
   conditionallyVisible(data) {
-    if (!this.hasCondition()) {
+    data = data || this.rootValue;
+    if (this.options.attachMode === 'builder' || !this.hasCondition()) {
       return true;
     }
     data = data || (this.root ? this.root.data : {});
+    return this.checkCondition(null, data);
+  }
+
+  /**
+   * Checks the condition of this component.
+   *
+   * @param row - The row contextual data.
+   * @param data - The global data object.
+   * @return {boolean} - True if the condition applies to this component.
+   */
+  checkCondition(row, data) {
     return FormioUtils.checkCondition(
       this.component,
-      this.data,
-      data,
+      row || this.data,
+      data || this.rootValue,
       this.root ? this.root._form : {},
       this
     );
@@ -1099,11 +1144,11 @@ export default class Component extends Element {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    data = data || (this.root ? this.root.data : {});
+    data = data || this.rootValue;
 
     // Check advanced conditions
     const visible = this.conditionallyVisible(data);
-    if (this.fieldLogic(data)) {
+    if (this.options.attachMode !== 'builder' && this.fieldLogic(data)) {
       this.redraw();
     }
 
@@ -1124,6 +1169,7 @@ export default class Component extends Element {
    * @param data
    */
   fieldLogic(data) {
+    data = data || this.rootValue;
     const logics = this.logic;
 
     // If there aren't logic, don't go further.
@@ -1241,6 +1287,11 @@ export default class Component extends Element {
       this.pristine = false;
     }
 
+    if (flags.modified) {
+      // Add a modified class if this element was manually modified.
+      this.addClass(this.getElement(), 'formio-modified');
+    }
+
     // If we are supposed to validate on blur, then don't trigger validation yet.
     if (this.component.validateOn === 'blur' && !this.errors.length) {
       flags.noValidate = true;
@@ -1287,6 +1338,15 @@ export default class Component extends Element {
   }
 
   /**
+   * Get the data value at the root level.
+   *
+   * @return {*}
+   */
+  get rootValue() {
+    return this.root ? this.root.data : this.data;
+  }
+
+  /**
    * Get the static value of this component.
    * @return {*}
    */
@@ -1298,7 +1358,7 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      this.dataValue = this.emptyValue;
+      this.dataValue = this.component.multiple ? [] : this.emptyValue;
     }
     return _.get(this.data, this.key);
   }
@@ -1344,7 +1404,8 @@ export default class Component extends Element {
    */
   deleteValue() {
     this.setValue(null, {
-      noUpdateEvent: true
+      noUpdateEvent: true,
+      noDefault: true
     });
     _.unset(this.data, this.key);
   }
@@ -1354,7 +1415,7 @@ export default class Component extends Element {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    else if (this.component.customDefaultValue) {
+    if (this.component.customDefaultValue && !this.options.preview) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
@@ -1433,13 +1494,13 @@ export default class Component extends Element {
       return false;
     }
     if (this.component.multiple && !Array.isArray(value)) {
-      value = [value];
+      value = value ? [value] : [];
     }
     // this.buildRows(value);
     const isArray = Array.isArray(value);
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
     return this.updateValue(flags);
@@ -1451,8 +1512,9 @@ export default class Component extends Element {
    * @param index
    * @param value
    */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
@@ -1464,11 +1526,15 @@ export default class Component extends Element {
     }
   }
 
+  get hasSetValue() {
+    return this.hasValue() && !this.isEmpty(this.dataValue);
+  }
+
   /**
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
+    if (this.hasSetValue) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -1494,8 +1560,8 @@ export default class Component extends Element {
     }
 
     flags = flags || {};
-    const newValue = value || this.getValue();
-    const changed = this.hasChanged(newValue, this.dataValue);
+    const newValue = value === undefined || value === null ? this.getValue() : value;
+    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
     if (this.viewOnly) {
       this.updateViewOnlyValue(newValue);
@@ -1611,14 +1677,7 @@ export default class Component extends Element {
    * @return {*}
    */
   invalidMessage(data, dirty, ignoreCondition) {
-    // Force valid if component is conditionally hidden.
-    if (!ignoreCondition && !FormioUtils.checkCondition(
-        this.component,
-        data,
-        this.data,
-        this.root ? this.root._form : {},
-        this
-      )) {
+    if (!ignoreCondition && !this.checkCondition(null, data)) {
       return '';
     }
 
@@ -1646,9 +1705,8 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  checkValidity(data, dirty) {
-    // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+  checkValidity(data, dirty, rowData) {
+    if (this.shouldSkipValidation(data, dirty, rowData)) {
       this.setCustomValidity('');
       return true;
     }
@@ -1710,6 +1768,17 @@ export default class Component extends Element {
     });
   }
 
+  shouldSkipValidation(data, dirty, rowData) {
+    const rules = [
+      // Force valid if component is hidden.
+      () => !this.visible,
+      // Force valid if component is conditionally hidden.
+      () => !this.checkCondition(rowData, data)
+    ];
+
+    return rules.some(pred => pred());
+  }
+
   getFlags() {
     return (typeof arguments[1] === 'boolean') ? {
       noUpdateEvent: arguments[1],
@@ -1750,7 +1819,7 @@ export default class Component extends Element {
    */
   set disabled(disabled) {
     // Do not allow a component to be disabled if it should be always...
-    if (!disabled && this.shouldDisable) {
+    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
       return;
     }
 
@@ -1836,6 +1905,24 @@ export default class Component extends Element {
 
   removeChild(element) {
     this.removeChildFrom(element, this.element);
+  }
+
+  attachLogic() {
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.on(event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
   }
 
   /**

@@ -1,4 +1,5 @@
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
+import Formio from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
@@ -139,6 +140,8 @@ export default class Element {
     else if ('attachEvent' in obj) {
       obj.attachEvent(`on${type}`, func);
     }
+
+    return this;
   }
 
   /**
@@ -158,6 +161,8 @@ export default class Element {
     if (indexes.length) {
       _.pullAt(this.eventHandlers, indexes);
     }
+
+    return this;
   }
 
   removeEventListeners() {
@@ -192,9 +197,8 @@ export default class Element {
    * @param container
    */
   appendTo(element, container) {
-    if (container) {
-      container.appendChild(element);
-    }
+    container?.appendChild(element);
+    return this;
   }
 
   /**
@@ -218,6 +222,8 @@ export default class Element {
         container.appendChild(element);
       }
     }
+
+    return this;
   }
 
   /**
@@ -235,6 +241,8 @@ export default class Element {
         console.warn(err);
       }
     }
+
+    return this;
   }
 
   /**
@@ -268,9 +276,7 @@ export default class Element {
    */
   appendChild(element, child) {
     if (Array.isArray(child)) {
-      child.forEach(oneChild => {
-        this.appendChild(element, oneChild);
-      });
+      child.forEach((oneChild) => this.appendChild(element, oneChild));
     }
     else if (child instanceof HTMLElement || child instanceof Text) {
       element.appendChild(child);
@@ -278,6 +284,8 @@ export default class Element {
     else if (child) {
       element.appendChild(this.text(child.toString()));
     }
+
+    return this;
   }
 
   /**
@@ -300,17 +308,27 @@ export default class Element {
     if (input && inputMask) {
       const mask = FormioUtils.getInputMask(inputMask);
       this.defaultMask = mask;
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
+      try {
+        input.mask = maskInput({
+          inputElement: input,
+          mask
+        });
+      }
+      catch (e) {
+        // Don't pass error up, to prevent form rejection.
+        // Internal bug of vanilla-text-mask on iOS (`selectionEnd`);
+        console.warn(e);
+      }
       if (mask.numeric) {
         input.setAttribute('pattern', '\\d*');
       }
       if (placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
       }
-      this.inputMasks.push(input.mask);
+      // prevent pushing undefined value to array in case of vanilla-text-mask error catched above
+      if (input.mask) {
+        this.inputMasks.push(input.mask);
+      }
     }
   }
 
@@ -386,13 +404,15 @@ export default class Element {
    */
   addClass(element, className) {
     if (!element) {
-      return;
+      return this;
     }
     // Allow templates to intercept.
     const classes = element.getAttribute('class');
-    if (!classes || classes.indexOf(className) === -1) {
+    if (!classes?.includes(className)) {
       element.setAttribute('class', `${classes} ${className}`);
     }
+
+    return this;
   }
 
   /**
@@ -405,7 +425,7 @@ export default class Element {
    */
   removeClass(element, className) {
     if (!element) {
-      return;
+      return this;
     }
     // Allow templates to intercept.
     let cls = element.getAttribute('class');
@@ -413,6 +433,8 @@ export default class Element {
       cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
       element.setAttribute('class', cls);
     }
+
+    return this;
   }
 
   /**
@@ -439,6 +461,7 @@ export default class Element {
       _,
       utils: FormioUtils,
       util: FormioUtils,
+      user: Formio.getUser(),
       moment,
       instance: this
     }, additional);

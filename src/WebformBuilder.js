@@ -5,8 +5,8 @@ import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
+import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
-import { getComponent } from './utils/utils';
 import _ from 'lodash';
 require('./components/builder');
 
@@ -422,20 +422,23 @@ export default class WebformBuilder extends Component {
       isNew = true;
     }
     else {
-      // Grab and remove the component from the source container.
-      info = source.formioContainer.splice(
-        _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
-      );
+      const index = _.findIndex(source.formioContainer, { key: element.formioComponent.component.key });
+      if (index !== -1) {
+        // Grab and remove the component from the source container.
+        info = source.formioContainer.splice(
+          _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
+        );
 
-      // Since splice returns an array of one object, we need to destructure it.
-      info = info[0];
+        // Since splice returns an array of one object, we need to destructure it.
+        info = info[0];
 
-      if (target !== source) {
-        // If the target is different from the source, rebuild the source now that the item has been removed.
-        source.formioComponent.rebuild();
+        if (target !== source) {
+          // If the target is different from the source, rebuild the source now that the item has been removed.
+          source.formioComponent.rebuild();
 
-        // Ensure the key remains unique in its new container.
-        BuilderUtils.uniquify([target.formioComponent.component], info);
+          // Ensure the key remains unique in its new container.
+          BuilderUtils.uniquify(target.formioContainer, info);
+        }
       }
     }
 
@@ -443,7 +446,7 @@ export default class WebformBuilder extends Component {
     if (sibling) {
       let index = 0;
       if (!sibling.getAttribute('data-noattach')) {
-        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key });
+        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
       }
       else {
         index = sibling.getAttribute('data-position');
@@ -477,6 +480,25 @@ export default class WebformBuilder extends Component {
   }
 
   setForm(form) {
+    //populate isEnabled for recaptcha form settings
+    var isRecaptchaEnabled = false;
+    if (form.components) {
+      eachComponent(form.components, component => {
+        if (isRecaptchaEnabled) {
+          return;
+        }
+        if (component.type === 'recaptcha') {
+          isRecaptchaEnabled = true;
+          return false;
+        }
+      });
+      if (isRecaptchaEnabled) {
+        _.set(form, 'settings.recaptcha.isEnabled', true);
+      }
+      else if (_.get(form, 'settings.recaptcha.isEnabled')) {
+        _.set(form, 'settings.recaptcha.isEnabled', false);
+      }
+    }
     this.emit('change', form);
     return super.setForm(form).then(retVal => {
       setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
@@ -515,7 +537,8 @@ export default class WebformBuilder extends Component {
         'label',
         'placeholder',
         'tooltip',
-        'validate'
+        'validate',
+        'disabled'
       ]));
     }
 
@@ -529,29 +552,50 @@ export default class WebformBuilder extends Component {
     }
     let saved = false;
     const componentCopy = _.cloneDeep(component);
-    const componentClass = Components.components[componentCopy.type];
+    let componentClass = Components.components[componentCopy.type];
+    const isCustom = componentClass === undefined;
+    componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
     }
 
     // This is the render step.
-    this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
+    const editFormOptions = _.get(this, 'options.editForm', {});
+    this.editForm = new Webform(
+      _.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
+      {
+        language: this.options.language,
+        ...editFormOptions
+      }
+    );
 
     // Allow editForm overrides per component.
     const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
 
     // Get the editform for this component.
-    this.editForm.form = componentClass.editForm(overrides);
+    this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
     this.editForm.editComponent = component;
 
-    this.editForm.submission = {
-      data: componentCopy,
-    };
+    if (isCustom) {
+      this.editForm.submission = {
+        data: {
+          componentJson: componentCopy
+        },
+      };
+    }
+    else {
+      this.editForm.submission = {
+        data: componentCopy,
+      };
+    }
 
+    if (this.preview) {
+      this.preview.destroy();
+    }
     this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
     this.componentEdit = this.ce('div');
@@ -574,7 +618,7 @@ export default class WebformBuilder extends Component {
     this.editForm.on('change', (event) => {
       if (event.changed) {
         // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component && (event.changed.component.key === 'key'))) {
+        if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
           componentCopy.keyModified = true;
         }
 
@@ -590,6 +634,11 @@ export default class WebformBuilder extends Component {
               this.editForm.submission = {
                 data: event.data
               };
+            }
+
+            // Set the component to the componentJson if this is a custom component.
+            if (event.data.type === 'custom' && event.data.componentJson) {
+              event.data = event.data.componentJson;
             }
 
             // Set a unique key for this component.
@@ -633,6 +682,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.detach();
+      this.preview.destroy();
       if (isNew && !saved) {
         this.removeComponent(component, parent);
       }

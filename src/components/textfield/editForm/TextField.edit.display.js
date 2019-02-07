@@ -17,6 +17,9 @@ export default [
       values: [
         { label: 'Calendar', value: 'calendar' }
       ]
+    },
+    conditional: {
+      json: { '===': [{ var: 'data.type' }, 'textfield'] }
     }
   },
   {

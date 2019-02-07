@@ -15,7 +15,7 @@ export default {
       <td>{{t(question.label)}}</td>
       {% component.values.forEach(function(value) { %}
       <td style="text-align: center;">
-        <input type="radio" name="data[{{key}}][{{question.value}}]" value="{{value.value}}" id="{{key}}-{{question.value}}-{{value.value}}" ref="input">
+        <input type="radio" name="self.getInputName(question)" value="{{value.value}}" id="{{key}}-{{question.value}}-{{value.value}}" ref="input">
       </td>
       {% }) %}
     </tr>

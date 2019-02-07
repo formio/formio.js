@@ -42,16 +42,82 @@ export default [
   },
   {
     weight: 40,
-    type: 'select',
+    type: 'fieldset',
+    input: false,
+    components: [
+      {
+        type: 'select',
+        input: true,
+        label: 'Breadcrumb Type',
+        key: 'breadcrumb',
+        dataSrc: 'values',
+        data: {
+          values: [
+            { label: 'Default', value: 'default' },
+            { label: 'Condensed', value: 'condensed' },
+            { label: 'Hidden', value: 'none' },
+          ]
+        }
+      },
+      {
+        input: true,
+        type: 'checkbox',
+        label: 'Allow click on Breadcrumb',
+        key: 'breadcrumbClickable',
+        defaultValue: true,
+        conditional: {
+          json: { '!==': [{ var: 'data.breadcrumb' }, 'none'] }
+        }
+      },
+      {
+        weight: 50,
+        label: 'Panel Navigation Buttons',
+        optionsLabelPosition: 'right',
+        values: [
+          {
+            label: 'Previous',
+            value: 'previous',
+          },
+          {
+            label: 'Cancel',
+            value: 'cancel',
+          },
+          {
+            label: 'Next',
+            value: 'next',
+          }
+        ],
+        inline: true,
+        type: 'selectboxes',
+        key: 'buttonSettings',
+        input: true,
+        inputType: 'checkbox',
+        defaultValue: {
+          previous: true,
+          cancel: true,
+          next: true
+        },
+      }
+    ],
+    customConditional: 'show = instance.root.editForm.display === "wizard"',
+  },
+  {
+    weight: 650,
+    type: 'checkbox',
+    label: 'Collapsible',
+    tooltip: 'If checked, this will turn this Panel into a collapsible panel.',
+    key: 'collapsible',
+    input: true
+  },
+  {
+    weight: 651,
+    type: 'checkbox',
+    label: 'Initially Collapsed',
+    tooltip: 'Determines the initial collapsed state of this Panel.',
+    key: 'collapsed',
     input: true,
-    label: 'Show Breadcrumb',
-    key: 'breadcrumb',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Yes', value: 'default' },
-        { label: 'No', value: 'none' }
-      ]
+    conditional: {
+      json: { '===': [{ var: 'data.collapsible' }, true] }
     }
   }
 ];

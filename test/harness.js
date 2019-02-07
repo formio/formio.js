@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
+import { expect } from 'chai';
 
 import i18Defaults from '../src/i18n';
 import WebformBuilder from '../src/WebformBuilder';
@@ -12,11 +13,19 @@ Components.setComponents(AllComponents);
 
 let formBuilderElement = null;
 let formBuilder = null;
+
+function onNext(cmp, event, cb) {
+  expect(cmp.events).to.be.an('object');
+  expect(cmp.events.once).to.be.a('function');
+  const fullEvent = `${cmp.options.namespace}.${event}`;
+  cmp.events.once(fullEvent, cb);
+}
+
 const Harness = {
-  builderBefore(done) {
+  builderBefore(done, options = {}) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new WebformBuilder(formBuilderElement);
+    formBuilder = new WebformBuilder(formBuilderElement, options);
     formBuilder.form = {components: []};
     formBuilder.webform.ready.then(() => done());
   },
@@ -169,8 +178,9 @@ const Harness = {
     return element;
   },
   testSetGet(component, value) {
+    const originValue = _.cloneDeep(value);
     component.setValue(value);
-    assert.deepEqual(component.getValue(), value);
+    assert.deepEqual(component.getValue(), originValue);
     return component;
   },
   setInputValue(component, name, value) {
@@ -207,9 +217,13 @@ const Harness = {
       form.off('error');
       done();
     });
+
+    onNext(form, 'change', () => {
+      form.submit().catch(done);
+    });
+
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
-    form.submit();
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {
@@ -292,6 +306,14 @@ const Harness = {
       form.on('nextPage', onNextPage);
     }
     return form.nextPage();
-  }
+  },
+  testNumberBlur(cmp, inv, outv, display, index = 0) {
+    const input = _.get(cmp, ['inputs', index], {});
+    input.value = inv;
+    input.dispatchEvent(new Event('blur'));
+    assert.strictEqual(cmp.getValueAt(index), outv);
+    assert.strictEqual(input.value, display);
+  },
+  onNext
 };
 export default Harness;

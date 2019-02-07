@@ -3,6 +3,7 @@ import Component from '../_classes/component/Component';
 export default class ContentComponent extends Component {
   static schema(...extend) {
     return Component.schema({
+      label: 'Content',
       type: 'content',
       key: 'content',
       input: false,

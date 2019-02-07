@@ -46,10 +46,10 @@ export default class SurveyComponent extends Field {
     if (!value) {
       return;
     }
-    const key = `data[${this.key}]`;
+
     _.each(this.component.questions, (question) => {
       _.each(this.refs.input, (input) => {
-        if (input.name === (`${key}[${question.value}]`)) {
+        if (input.name === this.getInputName(question)) {
           input.checked = (input.value === value[question.value]);
         }
       });
@@ -69,10 +69,9 @@ export default class SurveyComponent extends Field {
       return this.dataValue;
     }
     const value = {};
-    const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
       _.each(this.refs.input, (input) => {
-        if (input.checked && (input.name === (`${key}[${question.value}]`))) {
+        if (input.checked && (input.name === this.getInputName(question))) {
           value[question.value] = input.value;
           return false;
         }
@@ -87,5 +86,9 @@ export default class SurveyComponent extends Field {
     }
     return this.component.questions.reduce((result, question) =>
       result && Boolean(value[question.value]), true);
+  }
+
+  getInputName(question) {
+    return `${this.options.name}[${question.value}]`;
   }
 }

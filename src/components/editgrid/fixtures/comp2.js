@@ -105,7 +105,7 @@ export default {
   'key': 'editgrid',
   'label': '',
   'tableView': true,
-  'multiple': true,
+  'multiple': false,
   'tree': true,
   'input': true,
   'removeRow': 'Cancel'

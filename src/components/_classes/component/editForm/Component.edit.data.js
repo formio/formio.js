@@ -26,9 +26,10 @@ export default [
     weight: 110,
     tooltip: 'Refresh data when another field changes.',
     dataSrc: 'custom',
+    valueProperty: 'value',
     data: {
       custom: `
-        values.push({label: 'Any Change', key: 'data'});
+        values.push({label: 'Any Change', value: 'data'});
         utils.eachComponent(instance.root.editForm.components, function(component, path) {
           if (component.key !== data.key) {
             values.push({
@@ -53,7 +54,7 @@ export default [
     type: 'checkbox',
     label: 'Encrypt',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not be suitable for passwords.',
-    key: 'encrypt',
+    key: 'encrypted',
     input: true
   },
   {

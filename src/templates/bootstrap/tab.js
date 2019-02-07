@@ -1,4 +1,16 @@
 export default {
+  flat: `
+{% component.components.forEach(function(tab, index) { %}
+  <div class="mb-2 card border">
+    <div class="card-header bg-default">
+      <h4 class="mb-0 card-title">{{ t(tab.label) }}</h4>
+    </div>
+    <div class="card-body">
+      {{ tabComponents[index] }}
+    </div>
+  </div>
+{% }) %}
+`,
   form: `
 <div class="card">
   <div class="card-header">

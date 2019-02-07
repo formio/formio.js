@@ -13,7 +13,6 @@ const base64 = () => ({
           url: url,
           size: file.size,
           type: file.type,
-          data: url.replace(`data:${file.type};base64,`, '')
         });
       };
 

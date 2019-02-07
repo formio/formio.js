@@ -195,7 +195,8 @@ export default {
           email: 'test@example.com',
           password: '123test',
           verifyPassword: '123test',
-          date: Harness.getDate()
+          date: Harness.getDate(),
+          submit: false
         }
       });
       done();
@@ -218,4 +219,3 @@ export default {
     }
   }
 };
-

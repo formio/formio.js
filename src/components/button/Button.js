@@ -122,7 +122,9 @@ export default class ButtonComponent extends Field {
     if (!this.refs.button) {
       return;
     }
-    // this.addShortcut(this.refs.button);
+
+    let onChange = null;
+    let onError = null;
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
@@ -141,10 +143,7 @@ export default class ButtonComponent extends Field {
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        const isValid = this.root.isValid(value.data, true);
-        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
@@ -154,9 +153,8 @@ export default class ButtonComponent extends Field {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      });
-      this.on('error', () => {
-        this.loading = false;
+      };
+      onError = () => {
         this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
@@ -165,8 +163,10 @@ export default class ButtonComponent extends Field {
         this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
-      });
+      };
     }
+
+    this.triggerReCaptcha();
 
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
@@ -177,14 +177,22 @@ export default class ButtonComponent extends Field {
         this.loading = false;
         this.disabled = false;
       });
-      this.on('change', (value) => {
-        this.loading = false;
-        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      });
-      this.on('error', () => {
-        this.loading = false;
-      });
     }
+
+    this.on('change', (value) => {
+      this.loading = false;
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
+      if (onChange) {
+        onChange(value, value.isValid);
+      }
+    });
+
+    this.on('error', () => {
+      this.loading = false;
+      if (onError) {
+        onError();
+      }
+    });
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
@@ -229,10 +237,10 @@ export default class ButtonComponent extends Field {
         });
         break;
       case 'event':
-        this.emit(this.component.event, this.data);
-        this.events.emit(this.component.event, this.data);
+        this.emit(this.interpolate(this.component.event), this.data);
+        this.events.emit(this.interpolate(this.component.event), this.data);
         this.emit('customEvent', {
-          type: this.component.event,
+          type: this.interpolate(this.component.event),
           component: this.component,
           data: this.data,
           event: event
@@ -262,7 +270,7 @@ export default class ButtonComponent extends Field {
       case 'url':
         this.emit('requestButton');
         this.emit('requestUrl', {
-          url: this.component.url,
+          url: this.interpolate(this.component.url),
           headers: this.component.headers
         });
         break;
@@ -374,5 +382,15 @@ export default class ButtonComponent extends Field {
   focus() {
     this.refs.button.focus();
   }
-}
 
+  triggerReCaptcha() {
+    const recaptchaComponent = this.root.components.find((component) => {
+      return component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key;
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.component.key}Click`);
+    }
+  }
+}

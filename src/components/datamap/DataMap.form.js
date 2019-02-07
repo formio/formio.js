@@ -6,6 +6,13 @@ export default function(...extend) {
     {
       key: 'display',
       components: DataMapEditDisplay
+    },
+    {
+      key: 'data',
+      components: [{
+        key: 'defaultValue',
+        ignore: true
+      }]
     }
   ], ...extend);
 }

@@ -41,10 +41,11 @@ export { jsonLogic, moment };
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = args.component ? args.component : { key: 'unknown' };
+  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
+  args.form = _.cloneDeep(args.form);
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
@@ -71,7 +72,7 @@ export function evaluate(func, args, ret, tokenize) {
       args = _.values(args);
     }
     catch (err) {
-      console.warn(`An error occured within the custom function for ${component.key}`, err);
+      console.warn(`An error occured within the custom function for ${args.component.key}`, err);
       returnVal = null;
       func = false;
     }
@@ -82,7 +83,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${args.component.key}`, err);
     }
   }
   else if (typeof func === 'object') {
@@ -91,11 +92,11 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${args.component.key}`, err);
     }
   }
   else if (func) {
-    console.warn(`Unknown function type for ${component.key}`);
+    console.warn(`Unknown function type for ${args.component.key}`);
   }
   return returnVal;
 }
@@ -980,4 +981,29 @@ export function withSwitch(a, b) {
   }
 
   return [get, toggle];
+}
+
+export function observeOverload(callback, options = {}) {
+  const { limit = 50, delay = 500 } = options;
+  let callCount = 0;
+  let timeoutID = 0;
+
+  const reset = () => callCount = 0;
+
+  return () => {
+    if (timeoutID !== 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+    }
+
+    timeoutID = setTimeout(reset, delay);
+
+    callCount += 1;
+
+    if (callCount >= limit) {
+      clearTimeout(timeoutID);
+      reset();
+      return callback();
+    }
+  };
 }

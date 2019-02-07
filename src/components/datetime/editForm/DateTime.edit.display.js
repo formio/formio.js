@@ -29,7 +29,7 @@ export default [
     valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.rawgit.com/travist/b8b3b3dd51c3ca01469ce18d8f00fd3e/raw/timezones.json'
+      url: 'https://formio.github.io/formio.js/resources/timezones.json'
     },
     template: '<span>{{ item.label }}</span>',
     conditional: {
@@ -58,7 +58,7 @@ export default [
     key: 'format',
     label: 'Format',
     placeholder: 'Format',
-    description: 'Use formats formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
+    description: 'Use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
     tooltip: 'The date format for saving the value of this field. You can use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
     weight: 52
   }

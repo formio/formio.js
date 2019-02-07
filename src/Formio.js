@@ -1,10 +1,11 @@
 /* globals OktaAuth */
 import 'whatwg-fetch';
-import { EventEmitter2 as EventEmitter } from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import providers from './providers';
 import _get from 'lodash/get';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -466,7 +467,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -481,7 +482,7 @@ export default class Formio {
             if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
               }
               else {
                 throw ('Storage provider not found');
@@ -692,7 +693,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -716,6 +717,9 @@ export default class Formio {
 
     // Allow plugins to alter the options.
     options = Formio.pluginAlter('requestOptions', options, url);
+    if (options.namespace || Formio.namespace) {
+      opts.namespace = options.namespace ||  Formio.namespace;
+    }
 
     const requestToken = options.headers.get('x-jwt-token');
     const result = fetch(url, options)
@@ -811,6 +815,11 @@ export default class Formio {
           return result;
         }
 
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = result;
+        }
+
         let resultCopy = {};
 
         // Shallow copy result so modifications don't end up in cache
@@ -843,11 +852,6 @@ export default class Formio {
         return Promise.reject(err);
       });
 
-    // Cache the response.
-    if (method === 'GET') {
-      Formio.cache[cacheKey] = result;
-    }
-
     return result;
   }
 
@@ -869,10 +873,10 @@ export default class Formio {
     return Formio.tokens.formioToken = token || '';
   }
 
-  static setToken(token, opts) {
+  static setToken(token = '', opts) {
     token = token || '';
-    opts = opts || {};
-    var tokenName = `${opts.namespace || 'formio'}Token`;
+    opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
+    var tokenName = `${opts.namespace || Formio.namespace || 'formio'}Token`;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
@@ -903,8 +907,8 @@ export default class Formio {
   }
 
   static getToken(options) {
-    options = options || {};
-    var tokenName = `${options.namespace || 'formio'}Token`;
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    var tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
     if (!Formio.tokens) {
       Formio.tokens = {};
     }
@@ -922,11 +926,14 @@ export default class Formio {
     }
   }
 
-  static setUser(user, opts) {
-    opts = opts || {};
-    var userName = `${opts.namespace || 'formio'}User`;
+  static setUser(user, opts = {}) {
+    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
-      this.setToken(null, opts);
+      Formio.setToken(null, opts);
+
+      // Emit an event on the cleared user.
+      Formio.events.emit('formio.user', null);
+
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -942,11 +949,14 @@ export default class Formio {
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: '/' });
     }
+
+    // Emit an event on the authenticated user.
+    Formio.events.emit('formio.user', user);
   }
 
   static getUser(options) {
     options = options || {};
-    var userName = `${options.namespace || 'formio'}User`;
+    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
       return JSON.parse(localStorage.getItem(userName) || null);
     }
@@ -1071,7 +1081,7 @@ export default class Formio {
   static currentUser(formio, options) {
     let projectUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     projectUrl += '/current';
-    const user = this.getUser(options);
+    const user = Formio.getUser(options);
     if (user) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
         url: projectUrl,
@@ -1251,7 +1261,12 @@ export default class Formio {
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = Promise;
-Formio.Headers = Headers;
+if (typeof Headers !== 'undefined') {
+  Formio.Headers = Headers;
+}
+else {
+  Formio.Headers = {};
+}
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

@@ -1,4 +1,6 @@
 module.exports = function(config) {
+  const { KARMA_FILE = 'src/**/*.spec.js' } = process.env;
+  const FILE = KARMA_FILE || 'src/**/*.spec.js';
   config.set({
     basePath: '',
     frameworks: ['mocha'],
@@ -44,15 +46,15 @@ module.exports = function(config) {
         served: true,
         nocache: false
       },
-      'src/**/*.spec.js'
+      FILE
     ],
     exclude: [
     ],
     preprocessors: {
-      'src/**/*.spec.js': ['webpack']
+      [FILE]: ['webpack']
     },
-    browserNoActivityTimeout: 2000,
-    reporters: ['progress'],
+    browserNoActivityTimeout: 30000,
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

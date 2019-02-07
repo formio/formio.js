@@ -1,3 +1,7 @@
+import Promise from 'native-promise-only';
+
+import _ from 'lodash';
+
 import Formio from './Formio';
 import Webform from './Webform';
 
@@ -10,6 +14,9 @@ export default class PDF extends Webform {
   }
 
   postMessage(message) {
+    if (!message.type) {
+      message.type = 'iframe-data';
+    }
     this.iframeReady.then(() => {
       if (this.iframe && this.iframe.contentWindow) {
         this.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
@@ -51,6 +58,7 @@ export default class PDF extends Webform {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;
         form.base = this.formio.base;
+        this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
       this.postMessage({ name: 'form', data: form });
     });
@@ -142,7 +150,10 @@ export default class PDF extends Webform {
       this.iframe
     ]);
 
-    if (!this.options.readOnly) {
+    if (
+      !this.options.readOnly &&
+      _.find(this.form.components, (component) => component.type === 'button' && component.action === 'submit')
+    ) {
       this.submitButton = this.ce('button', {
         type: 'button',
         class: 'btn btn-primary'

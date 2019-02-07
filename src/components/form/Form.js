@@ -37,6 +37,7 @@ export default class FormComponent extends Component {
       this.subFormReadyReject = reject;
     });
 
+    this.subscribe();
     const srcOptions = this.getSubOptions();
 
     // Make sure that if reference is provided, the form must submit.
@@ -53,13 +54,17 @@ export default class FormComponent extends Component {
       !this.options.formio &&
       (this.component.form || this.component.path)
     ) {
-      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
+        this.formSrc = Formio.getBaseUrl();
         // Check to see if it is a MongoID.
         if (isMongoId(this.component.project)) {
           this.formSrc += '/project';
         }
         this.formSrc += `/${this.component.project}`;
+        srcOptions.project = this.formSrc;
+      }
+      else {
+        this.formSrc = Formio.getProjectUrl();
         srcOptions.project = this.formSrc;
       }
       if (this.component.form) {
@@ -87,14 +92,21 @@ export default class FormComponent extends Component {
     this.component.components = this.component.components || [];
 
     this.subForm = new Form(this.component, srcOptions).instance;
+    this.subForm.root = this.root;
+    this.subForm.currentForm = this;
     this.subForm.on('change', () => {
       this.dataValue = this.subForm.getValue();
-      this.onChange();
+      this.triggerChange();
     });
     this.loadSubForm().then(this.redraw.bind(this));
     this.subForm.url = this.formSrc;
+    this.subForm.nosubmit = this.nosubmit;
     this.subForm.nosubmit = false;
     this.restoreValue();
+  }
+
+  get dataReady() {
+    return this.subFormReady;
   }
 
   get defaultSchema() {
@@ -110,31 +122,43 @@ export default class FormComponent extends Component {
   }
 
   getSubOptions(options = {}) {
-    if (this.options && this.options.base) {
+    if (!this.options) {
+      return options;
+    }
+    if (this.options.base) {
       options.base = this.options.base;
     }
-    if (this.options && this.options.project) {
+    if (this.options.project) {
       options.project = this.options.project;
     }
-    if (this.options && this.options.readOnly) {
+    if (this.options.readOnly) {
       options.readOnly = this.options.readOnly;
     }
-    if (this.options && this.options.viewAsHtml) {
+    if (this.options.breadcrumbSettings) {
+      options.breadcrumbSettings = this.options.breadcrumbSettings;
+    }
+    if (this.options.buttonSettings) {
+      options.buttonSettings = this.options.buttonSettings;
+    }
+    if (this.options.viewAsHtml) {
       options.viewAsHtml = this.options.viewAsHtml;
     }
-    if (this.options && this.options.template) {
+    if (this.options.language) {
+      options.language = this.options.language;
+    }
+    if (this.options.template) {
       options.template = this.options.template;
     }
-    if (this.options && this.options.templates) {
+    if (this.options.templates) {
       options.templates = this.options.templates;
     }
-    if (this.options && this.options.renderMode) {
+    if (this.options.renderMode) {
       options.renderMode = this.options.renderMode;
     }
-    if (this.options && this.options.attachMode) {
+    if (this.options.attachMode) {
       options.attachMode = this.options.attachMode;
     }
-    if (this.options && this.options.iconset) {
+    if (this.options.iconset) {
       options.iconset = this.options.iconset;
     }
     return options;
@@ -157,6 +181,43 @@ export default class FormComponent extends Component {
       this.subForm.detach();
     }
     super.detach();
+  }
+
+  set root(inst) {
+    this._root = inst;
+    this.nosubmit = inst.nosubmit;
+  }
+
+  get root() {
+    return this._root;
+  }
+
+  set nosubmit(value) {
+    this._nosubmit = !!value;
+    if (this.subForm) {
+      this.subForm.nosubmit = this._nosubmit;
+    }
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
+
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
+    this.getComponents().forEach(component => {
+      component.currentForm = this;
+    });
+  }
+
+  subscribe() {
+    this.on('nosubmit', value => {
+      this.nosubmit = value;
+    });
   }
 
   destroy() {
@@ -191,7 +252,10 @@ export default class FormComponent extends Component {
   filterSubForm() {
     // Iterate through every component and hide the submit button.
     eachComponent(this.component.components, (component) => {
-      if ((component.type === 'button') && (component.action === 'submit')) {
+      if (
+        (component.type === 'button') &&
+        ((component.action === 'submit') || !component.action)
+      ) {
         component.hidden = true;
       }
     });
@@ -207,8 +271,7 @@ export default class FormComponent extends Component {
       return this.subFormReady;
     }
 
-    // Only load the subform if the subform isn't loaded and the conditions apply.
-    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
+    if (this.subFormLoaded) {
       return this.subFormReady;
     }
 
@@ -218,14 +281,14 @@ export default class FormComponent extends Component {
       this.subFormReadyResolve(this.subForm);
       return this.subFormReady;
     }
-    else {
+    else if (this.formSrc) {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.component.components = formObj.components;
           this.filterSubForm();
           return this.subFormReadyResolve(this.subForm);
         })
-        .catch(err => this.subFormReadyReject(err));
+        .catch((err) => this.subFormReadyReject(err));
     }
     return this.subFormReady;
   }
@@ -240,11 +303,9 @@ export default class FormComponent extends Component {
   }
 
   checkConditions(data) {
-    if (this.subForm) {
-      return this.subForm.checkConditions(this.dataValue.data);
-    }
-
-    return super.checkConditions(data);
+    return (super.checkConditions(data) && this.subForm)
+      ? this.subForm.checkConditions(this.dataValue.data)
+      : false;
   }
 
   calculateValue(data, flags) {
@@ -349,5 +410,29 @@ export default class FormComponent extends Component {
       return [];
     }
     return this.subForm.getAllComponents();
+  }
+
+  updateSubFormVisibility() {
+    if (this.subForm) {
+      this.subForm.parentVisible = this.visible;
+    }
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  set visible(value) {
+    super.visible = value;
+    this.updateSubFormVisibility();
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.updateSubFormVisibility();
   }
 }

@@ -239,10 +239,9 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should not allow saving when errors exist', () => {
-    return Harness.testCreate(EditGridComponent, comp1).then((component) => {
-      document.body.appendChild(component.element);
-      Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
+  it('Should not allow saving when errors exist', done => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
+      Harness.clickElement(component, 'div.editgrid-add button');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
       Harness.getInputValue(component, 'data[editgrid][0][field2]', '');

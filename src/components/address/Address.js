@@ -56,8 +56,9 @@ export default class AddressComponent extends TextFieldComponent {
     return info;
   }
 
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
+  setValueAt(index, value, flags) {
+    flags = flags || {};
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     this.addresses[index] = value;

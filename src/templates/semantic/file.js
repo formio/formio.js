@@ -7,8 +7,11 @@ export default {
       {% if (!disabled) { %}
       <div class="one wide column"></div>
       {% } %}
-      <div class="twelve wide column"><strong>File Name</strong></div>
+      <div class="{% if (self.hasTypes) { %}nine{% } else { %}twelve{% } %} wide column"><strong>File Name</strong></div>
       <div class="three wide column"><strong>Size</strong></div>
+      {% if (self.hasTypes) { %}
+        <div class="three wide column"><strong>Type</strong></div>
+      {% } %}
     </div>
   </div>
   {% files.forEach(function(file) { %}
@@ -25,6 +28,15 @@ export default {
         {% } %}
       </div>
       <div class="three wide column">{{fileSize(file.size)}}</div>
+      {% if (self.hasTypes) { %}
+        <div class="three wide column">
+          <select class="file-type">
+            {% component.fileTypes.map(function(type) { %}
+              <option class="test" value="{{ type.value }}" {% if (type.value === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
+            {% }); %}
+          </select>
+        </div>
+      {% } %}
     </div>
   </li>
   {% }) %}

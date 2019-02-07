@@ -1,4 +1,16 @@
 export default {
+  flat: `
+{% component.components.forEach(function(tab, index) { %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">{{ t(tab.label) }}</h4>
+    </div>
+    <div class="panel-body">
+      {{ tabComponents[index] }}
+    </div>
+  </div>
+{% }) %}
+`,
   form: `
 <ul class="nav nav-tabs">
   {% component.components.forEach(function(tab, index) { %}
