@@ -279,7 +279,7 @@ export default class SelectComponent extends Field {
 
     const query = (this.component.dataSrc === 'url') ? {} : {
       limit: this.component.limit,
-      skip: 0
+      skip: options.skipItems || 0
     };
 
     // Allow for url interpolation.
@@ -623,7 +623,7 @@ export default class SelectComponent extends Field {
 
     this.addEventListener(input, 'showDropdown', () => {
       if (this.dataValue) {
-        this.updateItems('');
+        this.triggerUpdate();
       }
       this.update();
     });
