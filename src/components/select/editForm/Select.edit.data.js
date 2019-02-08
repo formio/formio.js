@@ -272,11 +272,29 @@ export default [
     }
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'sort',
+    label: 'Sort Query',
+    weight: 18,
+    description: 'The sort query for results',
+    tooltip: 'User this to provide additional sorting using query parameters',
+    conditional: {
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+        ]
+      }
+    }
+  },
+  {
     type: 'number',
     input: true,
     key: 'limit',
     label: 'Limit',
     weight: 18,
+    defaultValue: 100,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {

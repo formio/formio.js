@@ -16,6 +16,7 @@ export default class SelectComponent extends BaseComponent {
         resource: '',
         custom: ''
       },
+      limit: 100,
       dataSrc: 'values',
       valueProperty: '',
       filter: '',
@@ -290,8 +291,8 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const query = (this.component.dataSrc === 'url') ? {} : {
-      limit: 100,
-      skip: options.skipItems || 0
+      limit: this.component.limit,
+      skip: 0
     };
 
     // Allow for url interpolation.
@@ -313,6 +314,12 @@ export default class SelectComponent extends BaseComponent {
     if (this.component.filter) {
       const filter = this.interpolate(this.component.filter);
       url += (!url.includes('?') ? '?' : '&') + filter;
+    }
+
+    // Add sort capability
+    if (this.component.sort) {
+      const sort = this.interpolate(this.component.sort);
+      url += `${!url.includes('?') ? '?' : '&'  }sort=${sort}`;
     }
 
     // If they wish to return only some fields.
