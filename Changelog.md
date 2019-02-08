@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Added
- - Added continuous scrolling to Select component.
+ - Continuous scrolling to Select component.
+ - Limit and sort for Select component.
 
 ## 3.14.0
 ### Fixed
