@@ -482,11 +482,29 @@ export default [
     }
   },
   {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;sort&apos;,
+    label: &apos;Sort Query&apos;,
+    weight: 18,
+    description: &apos;The sort query for results&apos;,
+    tooltip: &apos;User this to provide additional sorting using query parameters&apos;,
+    conditional: {
+      json: {
+        or: [
+          { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
+          { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;resource&apos;] }
+        ]
+      }
+    }
+  },
+  {
     type: &apos;number&apos;,
     input: true,
     key: &apos;limit&apos;,
     label: &apos;Limit&apos;,
     weight: 18,
+    defaultValue: 100,
     description: &apos;Maximum number of items to view per page of results.&apos;,
     tooltip: &apos;Use this to limit the number of items to request or view.&apos;,
     conditional: {

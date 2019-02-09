@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.14.1
 ### Added
  - Continuous scrolling to Select component.
  - Limit and sort for Select component.
+ 
+### Fixed
+ - Initial validation for webform components to not trigger checkData.
+ 
+### Changed
+ - Upgraded webpack@4.29.3, i18next@14.1.1
 
 ## 3.14.0
 ### Fixed

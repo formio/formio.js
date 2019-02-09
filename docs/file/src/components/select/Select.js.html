@@ -226,6 +226,7 @@ export default class SelectComponent extends BaseComponent {
         resource: &apos;&apos;,
         custom: &apos;&apos;
       },
+      limit: 100,
       dataSrc: &apos;values&apos;,
       valueProperty: &apos;&apos;,
       filter: &apos;&apos;,
@@ -260,6 +261,9 @@ export default class SelectComponent extends BaseComponent {
 
     // Keep track of the select options.
     this.selectOptions = [];
+
+    this.spinner = false;
+    this.isScrollLoading = false;
 
     // If this component has been activated.
     this.activated = false;
@@ -422,7 +426,12 @@ export default class SelectComponent extends BaseComponent {
       this.selectInput.innerHTML = &apos;&apos;;
     }
 
-    this.selectOptions = [];
+    if (this.isScrollLoading) {
+      this.isScrollLoading = false;
+    }
+    else {
+      this.selectOptions = [];
+    }
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
@@ -492,8 +501,8 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const query = (this.component.dataSrc === &apos;url&apos;) ? {} : {
-      limit: 100,
-      skip: 0
+      limit: this.component.limit,
+      skip: options.skipItems || 0
     };
 
     // Allow for url interpolation.
@@ -517,6 +526,12 @@ export default class SelectComponent extends BaseComponent {
       url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + filter;
     }
 
+    // Add sort capability
+    if (this.component.sort) {
+      const sort = this.interpolate(this.component.sort);
+      url += `${!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;  }sort=${sort}`;
+    }
+
     // If they wish to return only some fields.
     if (this.component.selectFields) {
       query.select = this.component.selectFields;
@@ -531,8 +546,13 @@ export default class SelectComponent extends BaseComponent {
     options.header = headers;
     this.loading = true;
     Formio.makeRequest(this.options.formio, &apos;select&apos;, url, method, body, options)
-      .then((response) =&gt; this.setItems(response, !!search))
+      .then((response) =&gt; {
+        this.setItems(response, !!search);
+        this.choices.choiceList.scrollTo(0, options.scroll || 0);
+        this.spinner = false;
+      })
       .catch((err) =&gt; {
+        this.spinner = false;
         this.loading = false;
         this.itemsLoadedResolve();
         this.emit(&apos;componentError&apos;, {
@@ -611,7 +631,10 @@ export default class SelectComponent extends BaseComponent {
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
         try {
-          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
+          this.loadItems(resourceUrl, searchInput, this.requestHeaders, this.isScrollLoading ? {
+            skipItems: this.choices.choiceList.childNodes.length,
+            scroll: this.choices.choiceList.scrollTop
+          } : {});
         }
         catch (err) {
           console.warn(`Unable to load resources for ${this.key}`);
@@ -764,6 +787,18 @@ export default class SelectComponent extends BaseComponent {
         this.addEventListener(this.choices.containerOuter, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
       }
     }
+    const scrollList = this.choices.choiceList;
+
+    scrollList.addEventListener(&apos;scroll&apos;, () =&gt; {
+      if (scrollList.scrollTop + scrollList.clientHeight
+         &gt;= scrollList.scrollHeight &amp;&amp;
+         !this.spinner) {
+           this.isScrollLoading = true;
+           this.triggerUpdate(this.choices.input.value);
+           this.addSpinner(scrollList.scrollTop);
+         }
+    });
+
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
 
@@ -783,7 +818,12 @@ export default class SelectComponent extends BaseComponent {
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
     }
 
-    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; {
+      if (this.dataValue) {
+        this.triggerUpdate();
+      }
+      this.update();
+    });
     if (placeholderValue &amp;&amp; this.choices.isSelectOneElement) {
       this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
         const items = this.choices.store.getItemsFilteredByActive();
@@ -797,6 +837,17 @@ export default class SelectComponent extends BaseComponent {
     this.disabled = this.disabled;
     this.triggerUpdate();
   }
+
+  addSpinner(scrollPosition) {
+      this.spinner = true;
+      this.choices.setChoices([...this.selectOptions, {
+        value: &apos;&apos;,
+        label: &apos;Loading...&apos;,
+        disabled: true,
+      }], &apos;value&apos;, &apos;label&apos;, true);
+      this.choices.choiceList.scrollTo(0, scrollPosition || 0);
+  }
+
   /* eslint-enable max-statements */
 
   update() {
