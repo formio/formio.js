@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 732,
+  "end": 758,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 732,
+    "end": 758,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 731,
+        "end": 757,
         "loc": {
           "start": {
             "line": 1,
@@ -45,7 +45,7 @@
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 730,
+          "end": 756,
           "loc": {
             "start": {
               "line": 1,
@@ -60,7 +60,7 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 644,
+              "end": 670,
               "loc": {
                 "start": {
                   "line": 2,
@@ -94,7 +94,7 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 644,
+                "end": 670,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -110,7 +110,7 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 643,
+                    "end": 669,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -122,8 +122,8 @@
                       }
                     },
                     "value": {
-                      "raw": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\">{{component.suffix}}</div>\n{% } %}\n</div>\n",
-                      "cooked": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\">{{component.suffix}}</div>\n{% } %}\n</div>\n"
+                      "raw": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\" ref=\"prefix\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\" ref=\"suffix\">{{component.suffix}}</div>\n{% } %}\n</div>\n",
+                      "cooked": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\" ref=\"prefix\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\" ref=\"suffix\">{{component.suffix}}</div>\n{% } %}\n</div>\n"
                     },
                     "tail": true
                   }
@@ -132,8 +132,8 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 648,
-              "end": 728,
+              "start": 674,
+              "end": 754,
               "loc": {
                 "start": {
                   "line": 21,
@@ -149,8 +149,8 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 648,
-                "end": 652,
+                "start": 674,
+                "end": 678,
                 "loc": {
                   "start": {
                     "line": 21,
@@ -166,8 +166,8 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 654,
-                "end": 728,
+                "start": 680,
+                "end": 754,
                 "loc": {
                   "start": {
                     "line": 21,
@@ -366,9 +366,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\">{{component.suffix}}</div>\n{% } %}\n</div>\n",
+      "value": "\n<div class=\"ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}\">\n{% if (component.prefix) { %}\n<label class=\"ui label\" ref=\"prefix\">{{component.prefix}}</label>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"ui right floated\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"ui label\" ref=\"suffix\">{{component.suffix}}</div>\n{% } %}\n</div>\n",
       "start": 26,
-      "end": 643,
+      "end": 669,
       "loc": {
         "start": {
           "line": 2,
@@ -392,8 +392,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 643,
-      "end": 644,
+      "start": 669,
+      "end": 670,
       "loc": {
         "start": {
           "line": 20,
@@ -418,8 +418,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 644,
-      "end": 645,
+      "start": 670,
+      "end": 671,
       "loc": {
         "start": {
           "line": 20,
@@ -444,8 +444,8 @@
         "binop": null
       },
       "value": "html",
-      "start": 648,
-      "end": 652,
+      "start": 674,
+      "end": 678,
       "loc": {
         "start": {
           "line": 21,
@@ -470,8 +470,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 652,
-      "end": 653,
+      "start": 678,
+      "end": 679,
       "loc": {
         "start": {
           "line": 21,
@@ -497,8 +497,8 @@
         "updateContext": null
       },
       "value": "<div ref=\"value\">{% if (value) { %}{{value}}{% } else { %}-{% } %}</div>",
-      "start": 654,
-      "end": 728,
+      "start": 680,
+      "end": 754,
       "loc": {
         "start": {
           "line": 21,
@@ -522,8 +522,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 729,
-      "end": 730,
+      "start": 755,
+      "end": 756,
       "loc": {
         "start": {
           "line": 22,
@@ -548,8 +548,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 730,
-      "end": 731,
+      "start": 756,
+      "end": 757,
       "loc": {
         "start": {
           "line": 22,
@@ -574,8 +574,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 732,
-      "end": 732,
+      "start": 758,
+      "end": 758,
       "loc": {
         "start": {
           "line": 23,

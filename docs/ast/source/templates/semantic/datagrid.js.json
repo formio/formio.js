@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 3129,
+  "end": 3522,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 104,
+      "line": 109,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 3129,
+    "end": 3522,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 104,
+        "line": 109,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 3128,
+        "end": 3521,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 103,
+            "line": 108,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 3127,
+          "end": 3520,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 103,
+              "line": 108,
               "column": 1
             }
           },
@@ -60,14 +60,14 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 2008,
+              "end": 2427,
               "loc": {
                 "start": {
                   "line": 2,
                   "column": 2
                 },
                 "end": {
-                  "line": 65,
+                  "line": 70,
                   "column": 1
                 }
               },
@@ -94,14 +94,14 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 2008,
+                "end": 2427,
                 "loc": {
                   "start": {
                     "line": 2,
                     "column": 8
                   },
                   "end": {
-                    "line": 65,
+                    "line": 70,
                     "column": 1
                   }
                 },
@@ -110,20 +110,20 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 2007,
+                    "end": 2426,
                     "loc": {
                       "start": {
                         "line": 2,
                         "column": 9
                       },
                       "end": {
-                        "line": 65,
+                        "line": 70,
                         "column": 0
                       }
                     },
                     "value": {
-                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
-                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n"
+                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons && (removePlacement === 'col')) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn-xss ui icon button secondary formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
+                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons && (removePlacement === 'col')) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn-xss ui icon button secondary formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n"
                     },
                     "tail": true
                   }
@@ -132,15 +132,15 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 2012,
-              "end": 3124,
+              "start": 2431,
+              "end": 3517,
               "loc": {
                 "start": {
-                  "line": 66,
+                  "line": 71,
                   "column": 2
                 },
                 "end": {
-                  "line": 102,
+                  "line": 107,
                   "column": 1
                 }
               },
@@ -149,15 +149,15 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 2012,
-                "end": 2016,
+                "start": 2431,
+                "end": 2435,
                 "loc": {
                   "start": {
-                    "line": 66,
+                    "line": 71,
                     "column": 2
                   },
                   "end": {
-                    "line": 66,
+                    "line": 71,
                     "column": 6
                   },
                   "identifierName": "html"
@@ -166,15 +166,15 @@
               },
               "value": {
                 "type": "TemplateLiteral",
-                "start": 2018,
-                "end": 3124,
+                "start": 2437,
+                "end": 3517,
                 "loc": {
                   "start": {
-                    "line": 66,
+                    "line": 71,
                     "column": 8
                   },
                   "end": {
-                    "line": 102,
+                    "line": 107,
                     "column": 1
                   }
                 },
@@ -182,21 +182,21 @@
                 "quasis": [
                   {
                     "type": "TemplateElement",
-                    "start": 2019,
-                    "end": 3123,
+                    "start": 2438,
+                    "end": 3516,
                     "loc": {
                       "start": {
-                        "line": 66,
+                        "line": 71,
                         "column": 9
                       },
                       "end": {
-                        "line": 102,
+                        "line": 107,
                         "column": 0
                       }
                     },
                     "value": {
-                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n",
-                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n"
+                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n",
+                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n"
                     },
                     "tail": true
                   }
@@ -384,16 +384,16 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
+      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (hasAddButton && hasTopSubmit) { %}\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && hasRemoveButtons && (removePlacement === 'col')) { %}\n      <td>\n        <button type=\"button\" class=\"ui icon button secondary\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{iconClass('remove-circle')}}\"></i>\n        </button>\n      </td>\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn-xss ui icon button secondary formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"ui button primary\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
       "start": 26,
-      "end": 2007,
+      "end": 2426,
       "loc": {
         "start": {
           "line": 2,
           "column": 9
         },
         "end": {
-          "line": 65,
+          "line": 70,
           "column": 0
         }
       }
@@ -410,15 +410,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2007,
-      "end": 2008,
+      "start": 2426,
+      "end": 2427,
       "loc": {
         "start": {
-          "line": 65,
+          "line": 70,
           "column": 0
         },
         "end": {
-          "line": 65,
+          "line": 70,
           "column": 1
         }
       }
@@ -436,15 +436,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2008,
-      "end": 2009,
+      "start": 2427,
+      "end": 2428,
       "loc": {
         "start": {
-          "line": 65,
+          "line": 70,
           "column": 1
         },
         "end": {
-          "line": 65,
+          "line": 70,
           "column": 2
         }
       }
@@ -462,15 +462,15 @@
         "binop": null
       },
       "value": "html",
-      "start": 2012,
-      "end": 2016,
+      "start": 2431,
+      "end": 2435,
       "loc": {
         "start": {
-          "line": 66,
+          "line": 71,
           "column": 2
         },
         "end": {
-          "line": 66,
+          "line": 71,
           "column": 6
         }
       }
@@ -488,15 +488,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2016,
-      "end": 2017,
+      "start": 2435,
+      "end": 2436,
       "loc": {
         "start": {
-          "line": 66,
+          "line": 71,
           "column": 6
         },
         "end": {
-          "line": 66,
+          "line": 71,
           "column": 7
         }
       }
@@ -513,15 +513,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2018,
-      "end": 2019,
+      "start": 2437,
+      "end": 2438,
       "loc": {
         "start": {
-          "line": 66,
+          "line": 71,
           "column": 8
         },
         "end": {
-          "line": 66,
+          "line": 71,
           "column": 9
         }
       }
@@ -539,16 +539,16 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% component.components.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n",
-      "start": 2019,
-      "end": 3123,
+      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"ui table datagrid-table \n    {{ component.striped ? 'striped' : ''}}\n    {{ component.bordered ? 'celled' : ''}}\n    {{ component.hover ? 'selectable' : ''}}\n    {{ component.condensed ? 'compact' : 'padded'}}\n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n",
+      "start": 2438,
+      "end": 3516,
       "loc": {
         "start": {
-          "line": 66,
+          "line": 71,
           "column": 9
         },
         "end": {
-          "line": 102,
+          "line": 107,
           "column": 0
         }
       }
@@ -565,15 +565,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 3123,
-      "end": 3124,
+      "start": 3516,
+      "end": 3517,
       "loc": {
         "start": {
-          "line": 102,
+          "line": 107,
           "column": 0
         },
         "end": {
-          "line": 102,
+          "line": 107,
           "column": 1
         }
       }
@@ -591,15 +591,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3124,
-      "end": 3125,
+      "start": 3517,
+      "end": 3518,
       "loc": {
         "start": {
-          "line": 102,
+          "line": 107,
           "column": 1
         },
         "end": {
-          "line": 102,
+          "line": 107,
           "column": 2
         }
       }
@@ -616,15 +616,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 3126,
-      "end": 3127,
+      "start": 3519,
+      "end": 3520,
       "loc": {
         "start": {
-          "line": 103,
+          "line": 108,
           "column": 0
         },
         "end": {
-          "line": 103,
+          "line": 108,
           "column": 1
         }
       }
@@ -642,15 +642,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3127,
-      "end": 3128,
+      "start": 3520,
+      "end": 3521,
       "loc": {
         "start": {
-          "line": 103,
+          "line": 108,
           "column": 1
         },
         "end": {
-          "line": 103,
+          "line": 108,
           "column": 2
         }
       }
@@ -668,15 +668,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3129,
-      "end": 3129,
+      "start": 3522,
+      "end": 3522,
       "loc": {
         "start": {
-          "line": 104,
+          "line": 109,
           "column": 0
         },
         "end": {
-          "line": 104,
+          "line": 109,
           "column": 0
         }
       }

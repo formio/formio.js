@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 836,
+  "end": 862,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 836,
+    "end": 862,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 835,
+        "end": 861,
         "loc": {
           "start": {
             "line": 1,
@@ -45,7 +45,7 @@
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 834,
+          "end": 860,
           "loc": {
             "start": {
               "line": 1,
@@ -60,7 +60,7 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 748,
+              "end": 774,
               "loc": {
                 "start": {
                   "line": 2,
@@ -94,7 +94,7 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 748,
+                "end": 774,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -110,7 +110,7 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 747,
+                    "end": 773,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -122,8 +122,8 @@
                       }
                     },
                     "value": {
-                      "raw": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n",
-                      "cooked": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n"
+                      "raw": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\" ref=\"prefix\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\" ref=\"suffix\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n",
+                      "cooked": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\" ref=\"prefix\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\" ref=\"suffix\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n"
                     },
                     "tail": true
                   }
@@ -132,8 +132,8 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 752,
-              "end": 832,
+              "start": 778,
+              "end": 858,
               "loc": {
                 "start": {
                   "line": 33,
@@ -149,8 +149,8 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 752,
-                "end": 756,
+                "start": 778,
+                "end": 782,
                 "loc": {
                   "start": {
                     "line": 33,
@@ -166,8 +166,8 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 758,
-                "end": 832,
+                "start": 784,
+                "end": 858,
                 "loc": {
                   "start": {
                     "line": 33,
@@ -366,9 +366,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n",
+      "value": "\n{% if (component.prefix || component.suffix) { %}\n<div class=\"input-group\">\n{% } %}\n{% if (component.prefix) { %}\n<div class=\"input-group-prepend\" ref=\"prefix\">\n  <span class=\"input-group-text\">\n    {{component.prefix}}\n  </span>\n</div>\n{% } %}\n<{{input.type}} \n  ref=\"{{input.ref ? input.ref : 'input'}}\" \n  {% for (var attr in input.attr) { %}\n  {{attr}}=\"{{input.attr[attr]}}\"\n  {% } %}\n>{{input.content}}</{{input.type}}>\n{% if (self.hasCounter) { %}\n<span class=\"text-muted pull-right\" ref=\"counter\"></span>\n{% } %}\n{% if (component.suffix) { %}\n<div class=\"input-group-append\" ref=\"suffix\">\n  <span class=\"input-group-text\">\n    {{component.suffix}}\n  </span>\n</div>\n{% } %}\n{% if (component.prefix || component.suffix) { %}\n</div>\n{% } %}\n",
       "start": 26,
-      "end": 747,
+      "end": 773,
       "loc": {
         "start": {
           "line": 2,
@@ -392,8 +392,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 747,
-      "end": 748,
+      "start": 773,
+      "end": 774,
       "loc": {
         "start": {
           "line": 32,
@@ -418,8 +418,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 748,
-      "end": 749,
+      "start": 774,
+      "end": 775,
       "loc": {
         "start": {
           "line": 32,
@@ -444,8 +444,8 @@
         "binop": null
       },
       "value": "html",
-      "start": 752,
-      "end": 756,
+      "start": 778,
+      "end": 782,
       "loc": {
         "start": {
           "line": 33,
@@ -470,8 +470,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 756,
-      "end": 757,
+      "start": 782,
+      "end": 783,
       "loc": {
         "start": {
           "line": 33,
@@ -497,8 +497,8 @@
         "updateContext": null
       },
       "value": "<div ref=\"value\">{% if (value) { %}{{value}}{% } else { %}-{% } %}</div>",
-      "start": 758,
-      "end": 832,
+      "start": 784,
+      "end": 858,
       "loc": {
         "start": {
           "line": 33,
@@ -522,8 +522,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 833,
-      "end": 834,
+      "start": 859,
+      "end": 860,
       "loc": {
         "start": {
           "line": 34,
@@ -548,8 +548,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 834,
-      "end": 835,
+      "start": 860,
+      "end": 861,
       "loc": {
         "start": {
           "line": 34,
@@ -574,8 +574,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 836,
-      "end": 836,
+      "start": 862,
+      "end": 862,
       "loc": {
         "start": {
           "line": 35,

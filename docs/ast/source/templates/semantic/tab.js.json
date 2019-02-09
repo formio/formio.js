@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 494,
+  "end": 724,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 13,
+      "line": 21,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 494,
+    "end": 724,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 13,
+        "line": 21,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 493,
+        "end": 723,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 12,
+            "line": 20,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 492,
+          "end": 722,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 12,
+              "line": 20,
               "column": 1
             }
           },
@@ -60,14 +60,14 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 489,
+              "end": 245,
               "loc": {
                 "start": {
                   "line": 2,
                   "column": 2
                 },
                 "end": {
-                  "line": 11,
+                  "line": 9,
                   "column": 1
                 }
               },
@@ -87,21 +87,21 @@
                     "line": 2,
                     "column": 6
                   },
-                  "identifierName": "form"
+                  "identifierName": "flat"
                 },
-                "name": "form"
+                "name": "flat"
               },
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 489,
+                "end": 245,
                 "loc": {
                   "start": {
                     "line": 2,
                     "column": 8
                   },
                   "end": {
-                    "line": 11,
+                    "line": 9,
                     "column": 1
                   }
                 },
@@ -110,14 +110,87 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 488,
+                    "end": 244,
                     "loc": {
                       "start": {
                         "line": 2,
                         "column": 9
                       },
                       "end": {
-                        "line": 11,
+                        "line": 9,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n{% component.components.forEach(function(tab, index) { %}\n  <h4 class=\"ui top attached block header\">{{ t(tab.label) }}</h4>\n  <div class=\"ui bottom attached segment\">\n    {{ tabComponents[index] }}\n  </div>\n{% }) %}\n",
+                      "cooked": "\n{% component.components.forEach(function(tab, index) { %}\n  <h4 class=\"ui top attached block header\">{{ t(tab.label) }}</h4>\n  <div class=\"ui bottom attached segment\">\n    {{ tabComponents[index] }}\n  </div>\n{% }) %}\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 249,
+              "end": 719,
+              "loc": {
+                "start": {
+                  "line": 10,
+                  "column": 2
+                },
+                "end": {
+                  "line": 19,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 249,
+                "end": 253,
+                "loc": {
+                  "start": {
+                    "line": 10,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 10,
+                    "column": 6
+                  },
+                  "identifierName": "form"
+                },
+                "name": "form"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 255,
+                "end": 719,
+                "loc": {
+                  "start": {
+                    "line": 10,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 256,
+                    "end": 718,
+                    "loc": {
+                      "start": {
+                        "line": 10,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 19,
                         "column": 0
                       }
                     },
@@ -233,7 +306,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "form",
+      "value": "flat",
       "start": 19,
       "end": 23,
       "loc": {
@@ -311,16 +384,16 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<div class=\"ui top attached tabular menu\">\n  {% component.components.forEach(function(tab, index) { %}\n  <a class=\"item{{ currentTab === index ? ' active' : ''}}\" role=\"presentation\" ref=\"{{tabLinkKey}}\">{{t(tab.label)}}</a>\n  {% }) %}\n</div>\n{% component.components.forEach(function(tab, index) { %}\n<div role=\"tabpanel\" class=\"ui bottom attached tab segment{{ currentTab === index ? ' active' : ''}}\" ref=\"{{tabKey}}\"\">{{tabComponents[index]}}</div>\n{% }) %}\n",
+      "value": "\n{% component.components.forEach(function(tab, index) { %}\n  <h4 class=\"ui top attached block header\">{{ t(tab.label) }}</h4>\n  <div class=\"ui bottom attached segment\">\n    {{ tabComponents[index] }}\n  </div>\n{% }) %}\n",
       "start": 26,
-      "end": 488,
+      "end": 244,
       "loc": {
         "start": {
           "line": 2,
           "column": 9
         },
         "end": {
-          "line": 11,
+          "line": 9,
           "column": 0
         }
       }
@@ -337,15 +410,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 488,
-      "end": 489,
+      "start": 244,
+      "end": 245,
       "loc": {
         "start": {
-          "line": 11,
+          "line": 9,
           "column": 0
         },
         "end": {
-          "line": 11,
+          "line": 9,
           "column": 1
         }
       }
@@ -363,15 +436,170 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 489,
-      "end": 490,
+      "start": 245,
+      "end": 246,
       "loc": {
         "start": {
-          "line": 11,
+          "line": 9,
           "column": 1
         },
         "end": {
-          "line": 11,
+          "line": 9,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "form",
+      "start": 249,
+      "end": 253,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 2
+        },
+        "end": {
+          "line": 10,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 253,
+      "end": 254,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 6
+        },
+        "end": {
+          "line": 10,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 255,
+      "end": 256,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 8
+        },
+        "end": {
+          "line": 10,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<div class=\"ui top attached tabular menu\">\n  {% component.components.forEach(function(tab, index) { %}\n  <a class=\"item{{ currentTab === index ? ' active' : ''}}\" role=\"presentation\" ref=\"{{tabLinkKey}}\">{{t(tab.label)}}</a>\n  {% }) %}\n</div>\n{% component.components.forEach(function(tab, index) { %}\n<div role=\"tabpanel\" class=\"ui bottom attached tab segment{{ currentTab === index ? ' active' : ''}}\" ref=\"{{tabKey}}\"\">{{tabComponents[index]}}</div>\n{% }) %}\n",
+      "start": 256,
+      "end": 718,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 9
+        },
+        "end": {
+          "line": 19,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 718,
+      "end": 719,
+      "loc": {
+        "start": {
+          "line": 19,
+          "column": 0
+        },
+        "end": {
+          "line": 19,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 719,
+      "end": 720,
+      "loc": {
+        "start": {
+          "line": 19,
+          "column": 1
+        },
+        "end": {
+          "line": 19,
           "column": 2
         }
       }
@@ -388,15 +616,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 491,
-      "end": 492,
+      "start": 721,
+      "end": 722,
       "loc": {
         "start": {
-          "line": 12,
+          "line": 20,
           "column": 0
         },
         "end": {
-          "line": 12,
+          "line": 20,
           "column": 1
         }
       }
@@ -414,15 +642,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 492,
-      "end": 493,
+      "start": 722,
+      "end": 723,
       "loc": {
         "start": {
-          "line": 12,
+          "line": 20,
           "column": 1
         },
         "end": {
-          "line": 12,
+          "line": 20,
           "column": 2
         }
       }
@@ -440,15 +668,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 494,
-      "end": 494,
+      "start": 724,
+      "end": 724,
       "loc": {
         "start": {
-          "line": 13,
+          "line": 21,
           "column": 0
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 0
         }
       }

@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 308,
+  "end": 672,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 15,
+      "line": 23,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 308,
+    "end": 672,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 15,
+        "line": 23,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 307,
+        "end": 671,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 14,
+            "line": 22,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 306,
+          "end": 670,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 14,
+              "line": 22,
               "column": 1
             }
           },
@@ -60,14 +60,14 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 303,
+              "end": 667,
               "loc": {
                 "start": {
                   "line": 2,
                   "column": 2
                 },
                 "end": {
-                  "line": 13,
+                  "line": 21,
                   "column": 1
                 }
               },
@@ -94,14 +94,14 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 303,
+                "end": 667,
                 "loc": {
                   "start": {
                     "line": 2,
                     "column": 8
                   },
                   "end": {
-                    "line": 13,
+                    "line": 21,
                     "column": 1
                   }
                 },
@@ -110,20 +110,20 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 302,
+                    "end": 666,
                     "loc": {
                       "start": {
                         "line": 2,
                         "column": 9
                       },
                       "end": {
-                        "line": 13,
+                        "line": 21,
                         "column": 0
                       }
                     },
                     "value": {
-                      "raw": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">{{t(component.title)}}</h4>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
-                      "cooked": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">{{t(component.title)}}</h4>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n"
+                      "raw": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus' : 'minus')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </h4>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
+                      "cooked": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus' : 'minus')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </h4>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n"
                     },
                     "tail": true
                   }
@@ -311,16 +311,16 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">{{t(component.title)}}</h4>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
+      "value": "\n<div class=\"panel panel-{{component.theme}}\">\n  <div class=\"panel-heading\">\n    <h4 class=\"mb-0 panel-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus' : 'minus')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </h4>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"panel-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
       "start": 26,
-      "end": 302,
+      "end": 666,
       "loc": {
         "start": {
           "line": 2,
           "column": 9
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 0
         }
       }
@@ -337,15 +337,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 302,
-      "end": 303,
+      "start": 666,
+      "end": 667,
       "loc": {
         "start": {
-          "line": 13,
+          "line": 21,
           "column": 0
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 1
         }
       }
@@ -363,15 +363,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 303,
-      "end": 304,
+      "start": 667,
+      "end": 668,
       "loc": {
         "start": {
-          "line": 13,
+          "line": 21,
           "column": 1
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 2
         }
       }
@@ -388,15 +388,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 305,
-      "end": 306,
+      "start": 669,
+      "end": 670,
       "loc": {
         "start": {
-          "line": 14,
+          "line": 22,
           "column": 0
         },
         "end": {
-          "line": 14,
+          "line": 22,
           "column": 1
         }
       }
@@ -414,15 +414,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 306,
-      "end": 307,
+      "start": 670,
+      "end": 671,
       "loc": {
         "start": {
-          "line": 14,
+          "line": 22,
           "column": 1
         },
         "end": {
-          "line": 14,
+          "line": 22,
           "column": 2
         }
       }
@@ -440,15 +440,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 308,
-      "end": 308,
+      "start": 672,
+      "end": 672,
       "loc": {
         "start": {
-          "line": 15,
+          "line": 23,
           "column": 0
         },
         "end": {
-          "line": 15,
+          "line": 23,
           "column": 0
         }
       }

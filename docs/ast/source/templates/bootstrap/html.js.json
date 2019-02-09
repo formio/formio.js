@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 161,
+  "end": 195,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 161,
+    "end": 195,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 160,
+        "end": 194,
         "loc": {
           "start": {
             "line": 1,
@@ -45,7 +45,7 @@
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 159,
+          "end": 193,
           "loc": {
             "start": {
               "line": 1,
@@ -60,7 +60,7 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 156,
+              "end": 190,
               "loc": {
                 "start": {
                   "line": 2,
@@ -94,7 +94,7 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 156,
+                "end": 190,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -110,7 +110,7 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 155,
+                    "end": 189,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -122,8 +122,8 @@
                       }
                     },
                     "value": {
-                      "raw": "\n<{{tag}} ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n",
-                      "cooked": "\n<{{tag}} ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n"
+                      "raw": "\n<{{tag}} class=\"{{ component.className }}\" ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n",
+                      "cooked": "\n<{{tag}} class=\"{{ component.className }}\" ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n"
                     },
                     "tail": true
                   }
@@ -311,9 +311,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<{{tag}} ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n",
+      "value": "\n<{{tag}} class=\"{{ component.className }}\" ref=\"html\"\n  {% attrs.forEach(function(attr) { %}\n    {{attr.attr}}=\"{{attr.value}}\"\n  {% }) %}\n>{{content}}</{{tag}}>\n",
       "start": 26,
-      "end": 155,
+      "end": 189,
       "loc": {
         "start": {
           "line": 2,
@@ -337,8 +337,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 155,
-      "end": 156,
+      "start": 189,
+      "end": 190,
       "loc": {
         "start": {
           "line": 8,
@@ -363,8 +363,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 156,
-      "end": 157,
+      "start": 190,
+      "end": 191,
       "loc": {
         "start": {
           "line": 8,
@@ -388,8 +388,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 158,
-      "end": 159,
+      "start": 192,
+      "end": 193,
       "loc": {
         "start": {
           "line": 9,
@@ -414,8 +414,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 159,
-      "end": 160,
+      "start": 193,
+      "end": 194,
       "loc": {
         "start": {
           "line": 9,
@@ -440,8 +440,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 161,
-      "end": 161,
+      "start": 195,
+      "end": 195,
       "loc": {
         "start": {
           "line": 10,

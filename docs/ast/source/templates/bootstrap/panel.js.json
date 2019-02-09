@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 341,
+  "end": 723,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 15,
+      "line": 23,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 341,
+    "end": 723,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 15,
+        "line": 23,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 340,
+        "end": 722,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 14,
+            "line": 22,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 339,
+          "end": 721,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 14,
+              "line": 22,
               "column": 1
             }
           },
@@ -60,14 +60,14 @@
             {
               "type": "ObjectProperty",
               "start": 19,
-              "end": 336,
+              "end": 718,
               "loc": {
                 "start": {
                   "line": 2,
                   "column": 2
                 },
                 "end": {
-                  "line": 13,
+                  "line": 21,
                   "column": 1
                 }
               },
@@ -94,14 +94,14 @@
               "value": {
                 "type": "TemplateLiteral",
                 "start": 25,
-                "end": 336,
+                "end": 718,
                 "loc": {
                   "start": {
                     "line": 2,
                     "column": 8
                   },
                   "end": {
-                    "line": 13,
+                    "line": 21,
                     "column": 1
                   }
                 },
@@ -110,20 +110,20 @@
                   {
                     "type": "TemplateElement",
                     "start": 26,
-                    "end": 335,
+                    "end": 717,
                     "loc": {
                       "start": {
                         "line": 2,
                         "column": 9
                       },
                       "end": {
-                        "line": 13,
+                        "line": 21,
                         "column": 0
                       }
                     },
                     "value": {
-                      "raw": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">{{t(component.title)}}</span>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
-                      "cooked": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">{{t(component.title)}}</span>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n"
+                      "raw": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
+                      "cooked": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n"
                     },
                     "tail": true
                   }
@@ -311,16 +311,16 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">{{t(component.title)}}</span>\n  </div>\n  {% if (!collapsed) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
+      "value": "\n<div class=\"mb-2 card border\">\n  <div class=\"card-header {{transform('class', 'bg-' + component.theme)}}\">\n    <span class=\"mb-0 card-title\" ref=\"header\">\n      {% if (component.collapsible) { %}\n        <i class=\"formio-collapse-icon {{iconClass(collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted\" data-title=\"Collapse Panel\"></i>\n      {% } %}\n      {{t(component.title)}}\n      {% if (component.tooltip) { %}\n        <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% if (!collapsed || (options.attachMode === 'builder')) { %}\n  <div class=\"card-body\" ref=\"{{nestedKey}}\">\n    {{children}}\n  </div>\n  {% } %}\n</div>\n",
       "start": 26,
-      "end": 335,
+      "end": 717,
       "loc": {
         "start": {
           "line": 2,
           "column": 9
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 0
         }
       }
@@ -337,15 +337,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 335,
-      "end": 336,
+      "start": 717,
+      "end": 718,
       "loc": {
         "start": {
-          "line": 13,
+          "line": 21,
           "column": 0
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 1
         }
       }
@@ -363,15 +363,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 336,
-      "end": 337,
+      "start": 718,
+      "end": 719,
       "loc": {
         "start": {
-          "line": 13,
+          "line": 21,
           "column": 1
         },
         "end": {
-          "line": 13,
+          "line": 21,
           "column": 2
         }
       }
@@ -388,15 +388,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 338,
-      "end": 339,
+      "start": 720,
+      "end": 721,
       "loc": {
         "start": {
-          "line": 14,
+          "line": 22,
           "column": 0
         },
         "end": {
-          "line": 14,
+          "line": 22,
           "column": 1
         }
       }
@@ -414,15 +414,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 339,
-      "end": 340,
+      "start": 721,
+      "end": 722,
       "loc": {
         "start": {
-          "line": 14,
+          "line": 22,
           "column": 1
         },
         "end": {
-          "line": 14,
+          "line": 22,
           "column": 2
         }
       }
@@ -440,15 +440,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 341,
-      "end": 341,
+      "start": 723,
+      "end": 723,
       "loc": {
         "start": {
-          "line": 15,
+          "line": 23,
           "column": 0
         },
         "end": {
-          "line": 15,
+          "line": 23,
           "column": 0
         }
       }
