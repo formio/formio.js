@@ -40,14 +40,6 @@ export default [
     ]
   },
   {
-    weight: 160,
-    type: 'checkbox',
-    label: 'Auto adjust columns',
-    tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
-    key: 'autoAdjust',
-    input: true
-  },
-  {
     weight: 161,
     type: 'checkbox',
     label: 'Hide Column when Children Hidden',
