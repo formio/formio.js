@@ -380,8 +380,12 @@ export default class Component extends Element {
     // Can be overridden
   }
 
+  get isInputComponent() {
+    return !this.component.hasOwnProperty('input') || this.component.input;
+  }
+
   get hasInput() {
-    return this.component.input || (this.refs.input && this.refs.input.length);
+    return this.isInputComponent || (this.refs.input && this.refs.input.length);
   }
 
   get defaultSchema() {
@@ -1374,7 +1378,8 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
-      !this.key||
+      !this.key ||
+      !this.isInputComponent ||
       (!this.visible && this.component.clearOnHide)
     ) {
       return value;

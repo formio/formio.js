@@ -36,7 +36,7 @@ export default class CheckBoxComponent extends Component {
 
   get className() {
     let className = super.className;
-    if (this.component.input
+    if (this.isInputComponent
       && !this.options.inputsOnly
       && this.component.validate
       && this.component.validate.required) {

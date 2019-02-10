@@ -89,13 +89,6 @@ export default class ButtonComponent extends Field {
     return false;
   }
 
-  set dataValue(value) {
-    if (!this.component.input) {
-      return;
-    }
-    super.dataValue = value;
-  }
-
   get className() {
     let className = super.className;
     className += ' form-group';
