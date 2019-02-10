@@ -10,6 +10,9 @@ export default {
 {{input.content}}
 {% if (component.rightIcon) { %}&nbsp;<span class="{{component.rightIcon}}"></span>{% } %}
 </{{input.type}}>
+<div ref="buttonMessageContainer">
+  <span class="help-block" ref="buttonMessage"></span>
+</div>
 `,
   html: ' '
 };

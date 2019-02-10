@@ -102,10 +102,6 @@ export default class ButtonComponent extends Field {
     return className;
   }
 
-  buttonMessage(message) {
-    return this.ce('span', { class: 'help-block' }, this.text(message));
-  }
-
   render() {
     if (this.viewOnly || this.options.hideButtons) {
       this._visible = false;
@@ -117,7 +113,11 @@ export default class ButtonComponent extends Field {
   }
 
   attach(element) {
-    this.loadRefs(element, { button: 'single' });
+    this.loadRefs(element, {
+      button: 'single',
+      buttonMessageContainer: 'single',
+      buttonMessage: 'single'
+    });
     super.attach(element);
     if (!this.refs.button) {
       return;
@@ -126,7 +126,6 @@ export default class ButtonComponent extends Field {
     let onChange = null;
     let onError = null;
     if (this.component.action === 'submit') {
-      const message = this.ce('div');
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
@@ -135,34 +134,29 @@ export default class ButtonComponent extends Field {
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
-        this.empty(message);
         this.addClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
-        this.addClass(message, 'has-success');
-        this.removeClass(message, 'has-error');
-        message.appendChild(this.buttonMessage('complete'));
-        this.append(message);
+        this.addClass(this.refs.buttonMessageContainer, 'has-success');
+        this.removeClass(this.refs.buttonMessageContainer, 'has-error');
+        this.refs.buttonMessage.innerHTML = this.t('complete');
       });
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
           this.hasError = false;
-          this.empty(message);
-          this.removeChild(message);
-          this.removeClass(message, 'has-success');
-          this.removeClass(message, 'has-error');
+          this.refs.buttonMessage.innerHTML = '';
+          this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+          this.removeClass(this.refs.buttonMessageContainer, 'has-error');
         }
       };
       onError = () => {
         this.hasError = true;
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.addClass(this.refs.button, 'btn-danger submit-fail');
-        this.empty(message);
-        this.removeClass(message, 'has-success');
-        this.addClass(message, 'has-error');
-        message.appendChild(this.buttonMessage(this.errorMessage('error')));
-        this.append(message);
+        this.removeClass(this.refs.buttonMessageContainer, 'has-success');
+        this.addClass(this.refs.buttonMessageContainer, 'has-error');
+        this.refs.buttonMessage.innerHTML = this.t(this.errorMessage('error'));
       };
     }
 
