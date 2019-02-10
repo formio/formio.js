@@ -123,87 +123,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1240,
+        "lineNumber": 1235,
         "line": "  /**"
       },
       {
-        "lineNumber": 1241,
+        "lineNumber": 1236,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1242,
+        "lineNumber": 1237,
         "line": "   *"
       },
       {
-        "lineNumber": 1243,
+        "lineNumber": 1238,
         "line": "   * @example"
       },
       {
-        "lineNumber": 1244,
+        "lineNumber": 1239,
         "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
-        "lineNumber": 1245,
+        "lineNumber": 1240,
         "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
-        "lineNumber": 1246,
+        "lineNumber": 1241,
         "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
-        "lineNumber": 1247,
+        "lineNumber": 1242,
         "line": "   * form.submission = {data: {"
       },
       {
-        "lineNumber": 1248,
+        "lineNumber": 1243,
         "line": "   *   firstName: 'Joe',"
       },
       {
-        "lineNumber": 1249,
+        "lineNumber": 1244,
         "line": "   *   lastName: 'Smith',"
       },
       {
-        "lineNumber": 1250,
+        "lineNumber": 1245,
         "line": "   *   email: 'joe@example.com'"
       },
       {
-        "lineNumber": 1251,
+        "lineNumber": 1246,
         "line": "   * }};"
       },
       {
-        "lineNumber": 1252,
+        "lineNumber": 1247,
         "line": "   * form.submit().then((submission) => {"
       },
       {
-        "lineNumber": 1253,
+        "lineNumber": 1248,
         "line": "   *   console.log(submission);"
       },
       {
-        "lineNumber": 1254,
+        "lineNumber": 1249,
         "line": "   * });"
       },
       {
-        "lineNumber": 1255,
+        "lineNumber": 1250,
         "line": "   *"
       },
       {
-        "lineNumber": 1256,
+        "lineNumber": 1251,
         "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
-        "lineNumber": 1257,
+        "lineNumber": 1252,
         "line": "   *"
       },
       {
-        "lineNumber": 1258,
+        "lineNumber": 1253,
         "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
-        "lineNumber": 1259,
+        "lineNumber": 1254,
         "line": "   */"
       },
       {
-        "lineNumber": 1260,
+        "lineNumber": 1255,
         "line": "  submit(before, options) {"
       }
     ],
@@ -1431,35 +1431,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 864,
+        "lineNumber": 866,
         "line": "/**"
       },
       {
-        "lineNumber": 865,
+        "lineNumber": 867,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 866,
+        "lineNumber": 868,
         "line": " *"
       },
       {
-        "lineNumber": 867,
+        "lineNumber": 869,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 868,
+        "lineNumber": 870,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 869,
+        "lineNumber": 871,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 870,
+        "lineNumber": 872,
         "line": " */"
       },
       {
-        "lineNumber": 871,
+        "lineNumber": 873,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1478,35 +1478,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 935,
+        "lineNumber": 937,
         "line": "/**"
       },
       {
-        "lineNumber": 936,
+        "lineNumber": 938,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 937,
+        "lineNumber": 939,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 938,
+        "lineNumber": 940,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 939,
+        "lineNumber": 941,
         "line": " *"
       },
       {
-        "lineNumber": 940,
+        "lineNumber": 942,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 941,
+        "lineNumber": 943,
         "line": " */"
       },
       {
-        "lineNumber": 942,
+        "lineNumber": 944,
         "line": "export function unfold(e) {"
       }
     ],

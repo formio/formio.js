@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - Initial validation for webform components to not trigger checkData.
+ - Fixing issue with the template cache not being a function.
  
 ### Changed
  - Upgraded webpack@4.29.3, i18next@15.0.0
