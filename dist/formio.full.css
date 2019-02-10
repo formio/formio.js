@@ -2418,8 +2418,9 @@ dialog.fixed {
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }
 
-.formio-component.has-error .invalid-feedback {
-  display: block; }
+.formio-component.has-error .invalid-feedback, .formio-component.alert-danger .invalid-feedback {
+  display: block;
+  color: inherit; }
 
 .formio-wysiwyg-editor {
   min-height: 200px;
@@ -3093,6 +3094,9 @@ body.formio-dialog-open {
 
 .datagrid-group-header.clickable.collapsed .datagrid-group-label:before {
   content: '▸'; }
+
+.formio-component.alert-danger .help-block {
+  color: inherit; }
 
 .formbuilder {
   position: relative; }
