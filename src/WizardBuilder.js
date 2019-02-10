@@ -17,14 +17,6 @@ export default class WizardBuilder extends WebformBuilder {
     };
   }
 
-  get currentPage() {
-    return this._currentPage || 0;
-  }
-
-  set currentPage(currentPage) {
-    this._currentPage = currentPage;
-  }
-
   get pages() {
     return _.filter(this._form.components, { type: 'panel' });
   }
@@ -77,25 +69,20 @@ export default class WizardBuilder extends WebformBuilder {
     this.refs.gotoPage.forEach((link, index) => {
       this.addEventListener(link, 'click', (event) => {
         event.preventDefault();
-        this.gotoPage(index);
+        this.setPage(index);
       });
     });
   }
 
   rebuild() {
+    const page = this.currentPage;
     this.webform.form = {
       display: 'form',
       type: 'form',
-      components: [this.pages[this.currentPage]],
+      components: page ? [page] : [],
     };
     this.redraw();
   }
-
-  // deleteComponent(component) {
-  //   if (super.deleteComponent(component)) {
-  //     this.gotoPage(0);
-  //   }
-  // }
 
   addPage() {
     const pageNum = (this.pages.length + 1);
@@ -107,11 +94,6 @@ export default class WizardBuilder extends WebformBuilder {
     };
     this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
-    this.rebuild();
-  }
-
-  gotoPage(page) {
-    this.currentPage = page;
     this.rebuild();
   }
 }

@@ -202,6 +202,10 @@ export default class Wizard extends Webform {
     return Promise.reject('Page not found');
   }
 
+  get currentPage() {
+    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
+  }
+
   getNextPage(data, currentPage) {
     const form = this.pages[currentPage];
     // Check conditional nextPage
@@ -325,7 +329,7 @@ export default class Wizard extends Webform {
   }
 
   hasButton(name, nextPage) {
-    const currentPage = this.currentPage();
+    const currentPage = this.currentPage;
     if (name === 'previous') {
       const show = firstNonNil([
         _.get(currentPage, 'buttonSettings.previous'),
