@@ -1259,10 +1259,14 @@ export default class Component extends Element {
     }
 
     // Add error classes
-    this.addClass(this.element, 'has-error');
     this.refs.input.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    this.removeClass(this.element, 'alert alert-danger');
+    this.removeClass(this.element, 'has-error');
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
+    }
+    else {
+      this.addClass(this.element, 'has-error');
     }
   }
 
@@ -1754,9 +1758,7 @@ export default class Component extends Element {
     }
     else {
       this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
-      if (this.options.highlightErrors) {
-        this.removeClass(this.element, 'alert alert-danger');
-      }
+      this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
