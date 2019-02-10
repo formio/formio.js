@@ -368,13 +368,15 @@ export function interpolate(rawTemplate, data) {
   const template = _.isNumber(rawTemplate)
     ? templateHashCache[rawTemplate]
     : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
-
-  try {
-    return template(data);
+  if (typeof template === 'function') {
+    try {
+      return template(data);
+    }
+    catch (err) {
+      console.warn('Error interpolating template', err, rawTemplate, data);
+    }
   }
-  catch (err) {
-    console.warn('Error interpolating template', err, rawTemplate, data);
-  }
+  return template;
 }
 
 /**
