@@ -120,6 +120,7 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     this.numColumns = this.hasExtraColumn() ? 1 : 0;
+    this.numColumns += this.hasDraggableRows ? 1 : 0;
     this.numRows = this.dataValue.length;
 
     if (this.visibleColumns === true) {
@@ -146,7 +147,12 @@ export default class DataGridComponent extends NestedComponent {
     if (header) {
       this.tableElement.appendChild(header);
     }
-    this.tableElement.appendChild(this.ce('tbody', null, tableRows));
+    this.tableBody = this.ce('tbody', null, tableRows);
+    this.tableElement.appendChild(this.tableBody);
+
+    if (this.hasDraggableRows) {
+      this.addDraggable([this.tableBody]);
+    }
 
     if (this.hasRowGroups() && !this.options.builder) {
       this.buildGroups();
@@ -164,6 +170,15 @@ export default class DataGridComponent extends NestedComponent {
     }
   }
 
+  get hasDraggableRows() {
+    return super.hasDraggableRows && !this.options.builder;
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
+    this.triggerChange();
+  }
+
   // Build the header.
   createHeader() {
     const hasTopButton = this.hasTopSubmit();
@@ -171,6 +186,9 @@ export default class DataGridComponent extends NestedComponent {
     let needsHeader = false;
     const thead = this.ce('thead', null, this.ce('tr', null,
       [
+        this.hasDraggableRows ? this.ce('th', {
+          class: 'formio-drag-column-header'
+        }) : null,
         this.visibleComponents.map(comp => {
           const th = this.ce('th');
           if (comp.validate && comp.validate.required) {
@@ -224,6 +242,13 @@ export default class DataGridComponent extends NestedComponent {
     let useCorner = false;
     let lastColumn = null;
     this.rows[index] = {};
+    let firstColumn = null;
+
+    if (this.hasDraggableRows) {
+      firstColumn = this.ce('td', {
+        class: 'formio-drag-column'
+      }, this.dragButton());
+    }
 
     if (hasRmButton) {
       if (rmPlacement === 'col') {
@@ -246,8 +271,9 @@ export default class DataGridComponent extends NestedComponent {
       this.root.addDragContainer(lastColumn, this);
     }
 
-    return this.ce('tr', null,
+    const rowElement =  this.ce('tr', null,
       [
+        firstColumn,
         components.map(
           (cmp, colIndex) => {
             const cell = this.buildComponent(
@@ -273,6 +299,15 @@ export default class DataGridComponent extends NestedComponent {
         lastColumn
       ]
     );
+
+    //add element info for drag'n'drop handlers
+    if (this.hasDraggableRows) {
+      rowElement.dragInfo = {
+        index: index
+      };
+    }
+
+    return rowElement;
   }
 
   destroyRows() {
