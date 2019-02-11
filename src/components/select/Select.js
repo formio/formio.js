@@ -571,7 +571,7 @@ export default class SelectComponent extends Field {
   }
 
   get active() {
-    return !this.component.lazyLoad || this.activated;
+    return !this.component.lazyLoad || this.activated || this.options.readOnly;
   }
 
   render() {
