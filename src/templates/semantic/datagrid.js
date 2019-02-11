@@ -46,8 +46,7 @@ export default {
           <i class="{{iconClass('remove-circle')}}"></i>
         </button>
       </td>
-      {% } %}
-      {% else if (removePlacement === 'corner') { %}
+      {% } else if (removePlacement === 'corner') { %}
         <button type="button" tabindex="-1" class="btn-xss ui icon button secondary formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
           <i class="{{ iconClass('remove') }}"></i>
         </button>
