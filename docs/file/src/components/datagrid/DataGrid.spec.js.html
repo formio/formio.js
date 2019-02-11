@@ -209,16 +209,18 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
-
+import { expect } from &apos;chai&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import DataGridComponent from &apos;./DataGrid&apos;;
 
 import {
   comp1,
-  comp2
+  comp2,
+  withDefValue,
+  withRowGroupsAndDefValue,
 } from &apos;./fixtures&apos;;
 
-describe(&apos;DataGrid Component&apos;, () =&gt; {
+describe(&apos;DataGrid Component&apos;, function() {
   it(&apos;Should build a data grid component&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 3);
@@ -267,6 +269,44 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
       ]);
       done();
     });
+  });
+
+  it(&apos;Should allow provide default value&apos;, function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withDefValue)
+        .then((datagrid) =&gt; {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: &apos;Alex&apos;, age: 1 },
+            { name: &apos;Bob&apos;,  age: 2 },
+            { name: &apos;Conny&apos;, age: 3 }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
+  });
+
+  it(&apos;Should allow provide default value in row-groups model&apos;, function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
+        .then((datagrid) =&gt; {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: &apos;Alex&apos;, age: 1 },
+            { name: &apos;Bob&apos;,  age: 2 },
+            { name: &apos;Conny&apos;, age: 3 },
+            { name: &apos;&apos; },
+            { name: &apos;&apos; }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
   });
 });
 

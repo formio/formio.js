@@ -1157,6 +1157,7 @@ export default class Webform extends NestedComponent {
     this.on(&apos;submitButton&apos;, (options) =&gt; this.submit(false, options), true);
     this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
+    this.currentForm = this;
     this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)), true);
     return setTimeout(() =&gt; {
       this.onChange({
@@ -1290,7 +1291,9 @@ export default class Webform extends NestedComponent {
     value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
     this.showElement(true);
     this.loading = false;
-
+    if (this.submitted) {
+      this.showErrors();
+    }
     // See if we need to save the draft of the form.
     if (flags &amp;&amp; flags.modified &amp;&amp; this.options.saveDraft) {
       this.triggerSaveDraft();

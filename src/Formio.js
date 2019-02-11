@@ -611,11 +611,14 @@ export default class Formio {
     return url.match(new RegExp(regex));
   }
 
-  static serialize(obj) {
+  static serialize(obj, _interpolate) {
     const str = [];
+    const interpolate = (item) => {
+      return _interpolate ? _interpolate(item) : item;
+    };
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`);
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
       }
     }
     return str.join('&');

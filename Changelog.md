@@ -8,7 +8,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
 
-## 3.13.19
+## 3.14.1
+### Added
+ - Continuous scrolling to Select component.
+ - Limit and sort for Select component.
+ 
+### Fixed
+ - Initial validation for webform components to not trigger checkData.
+ - Fixing issue with the template cache not being a function.
+ 
+### Changed
+ - Upgraded webpack@4.29.3, i18next@15.0.0
+
+## 3.14.0
+### Fixed
+ - Fix form select in nested form from not searching for forms.
+ - Pass args to event trigger actions instead of event name.
+ - Fix bug with default value for DataGrid
+ - Problems with nested form conditions
+
+### Added
+ - FOR-1804: Add option to override fuzzy search threshold in Select
+ - FOR-2044: Fix bug with form danger alert
+ - Added ability to set default value on nested forms.
+ 
+### Changed
+ - Upgraded  webpack@4.29.2, eslint@5.13.0, i18next@14.0.1, karma@4.0.0, written-number@0.9.1
+
+## 3.13.10
 ### Fixed
  - Add ability to set default values on nested forms.
 

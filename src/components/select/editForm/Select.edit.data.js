@@ -273,11 +273,29 @@ export default [
     }
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'sort',
+    label: 'Sort Query',
+    weight: 18,
+    description: 'The sort query for results',
+    tooltip: 'User this to provide additional sorting using query parameters',
+    conditional: {
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+        ]
+      }
+    }
+  },
+  {
     type: 'number',
     input: true,
     key: 'limit',
     label: 'Limit',
     weight: 18,
+    defaultValue: 100,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
@@ -364,5 +382,26 @@ export default [
     label: 'Custom default options',
     tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
 	defaultValue: {}
+  },
+  {
+    label: 'Search Threshold',
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: 'number',
+    input: true,
+    key: 'selectThreshold',
+    validate: {
+      min: 0,
+      customMessage: '',
+      json: '',
+      max: 1
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.3,
+    weight: 30,
+    tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.'
   }
 ];

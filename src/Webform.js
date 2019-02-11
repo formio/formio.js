@@ -1081,7 +1081,9 @@ export default class Webform extends NestedComponent {
     value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
     this.showElement(true);
     this.loading = false;
-
+    if (this.submitted) {
+      this.showErrors();
+    }
     // See if we need to save the draft of the form.
     if (flags && flags.modified && this.options.saveDraft) {
       this.triggerSaveDraft();

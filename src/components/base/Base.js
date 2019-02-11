@@ -2709,9 +2709,9 @@ export default class BaseComponent extends Component {
     this.logic.forEach(logic => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
-        this.on(event, () => {
+        this.on(event, (...args) => {
           const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+          if (this.applyActions(logic.actions, args, this.data, newComponent)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
