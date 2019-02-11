@@ -9,5 +9,5 @@ export default {
   {% } %}
 >{{options}}</select>
 `,
-  html: '<div ref="value">{% if (options) { %}{{options}}{% } else { %}-{% } %}</div>'
+  html: '<div ref="value">{% if (value) { %}{{ self.itemValue(value) }}{% } else { %}-{% } %}</div>'
 };

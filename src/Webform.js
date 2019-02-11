@@ -706,6 +706,9 @@ export default class Webform extends NestedComponent {
             noValidate: true
           });
         }
+        else {
+          this.redraw();
+        }
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)

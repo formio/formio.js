@@ -25,4 +25,5 @@ export default {
   </div>
 {% } %}
 `,
+  html: '<img style="width: 100%;" ref="signatureImage">'
 };

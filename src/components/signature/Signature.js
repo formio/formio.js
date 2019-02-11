@@ -63,7 +63,10 @@ export default class SignatureComponent extends Input {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     super.setValue(value, flags);
-    if (this.signaturePad) {
+    if (this.options.readOnly && this.refs.signatureImage) {
+      this.refs.signatureImage.setAttribute('src', value);
+    }
+    else if (this.signaturePad) {
       if (value && !flags.noSign) {
         this.refs.signatureImage.setAttribute('src', value);
         this.showCanvas(false);
@@ -76,11 +79,15 @@ export default class SignatureComponent extends Input {
 
   showCanvas(show) {
     if (show) {
-      this.refs.canvas.style.display = 'inherit';
+      if (this.refs.canvas) {
+        this.refs.canvas.style.display = 'inherit';
+      }
       this.refs.signatureImage.style.display = 'none';
     }
     else {
-      this.refs.canvas.style.display = 'none';
+      if (this.refs.canvas) {
+        this.refs.canvas.style.display = 'none';
+      }
       this.refs.signatureImage.style.display = 'inherit';
     }
   }
