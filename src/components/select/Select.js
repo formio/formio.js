@@ -194,7 +194,7 @@ export default class SelectComponent extends Field {
    */
   set scrollLoading(isScrolling) {
     // Only continue if they are different.
-    if (this.isScrollLoading === isScrolling) {
+    if (!this.scrollList || (this.isScrollLoading === isScrolling)) {
       return;
     }
     if (isScrolling) {
@@ -219,7 +219,9 @@ export default class SelectComponent extends Field {
   stopInfiniteScroll() {
     // Remove the infinite scroll listener.
     this.scrollLoading = false;
-    this.scrollList.removeEventListener('scroll', this.onScroll);
+    if (this.scrollList) {
+      this.scrollList.removeEventListener('scroll', this.onScroll);
+    }
   }
 
   /* eslint-disable max-statements */
