@@ -7,8 +7,16 @@ import BaseComponent from './Base';
 
 import {
   comp1,
-  comp2
+  comp2,
+  multipleWithDraggableRows
 } from './fixtures';
+
+let draggableRowsComponent;
+const draggableRowsComponentData = [
+  'one',
+  'two',
+  'three'
+];
 
 describe('Base Component', () => {
   it('Should build a base component', (done) => {
@@ -118,6 +126,41 @@ describe('Base Component', () => {
       Harness.testElements(component, 'table tr:first-child td', 2);
       Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
       Harness.testElements(component, 'table tr:first-child td:last-child .glyphicon-remove-circle', 1);
+      done();
+    });
+  });
+
+  describe('Draggable Rows Functionality', () => {
+    it('Should populate Drag Info for each row', (done) => {
+      Harness.testCreate(BaseComponent, multipleWithDraggableRows)
+        .then((component) => {
+          component.setValue(draggableRowsComponentData);
+          draggableRowsComponent = component;
+          draggableRowsComponentData.forEach((value, index) => {
+            assert(!!component.tbody.children[index].dragInfo, 'Drag Info is not populated for a draggable row');
+            assert.equal(component.tbody.children[index].dragInfo.index, index, 'Drag Info index is not calculated correctly for a draggable row');
+          });
+          done();
+        });
+    });
+
+    it('Should switch data values according to how rows are dragged', (done) => {
+      draggableRowsComponent.setValue(draggableRowsComponentData);
+      //fake dropping last element at first position
+      draggableRowsComponent.onRowDrop(draggableRowsComponent.tbody.children[2], draggableRowsComponent.tbody, draggableRowsComponent.tbody, draggableRowsComponent.tbody.children[0]);
+      assert.equal(draggableRowsComponent.dataValue[0], draggableRowsComponentData[2]);
+      assert.equal(draggableRowsComponent.dataValue[1], draggableRowsComponentData[0]);
+      assert.equal(draggableRowsComponent.dataValue[2], draggableRowsComponentData[1]);
+      done();
+    });
+
+    it('Should allow dragging row to last position', (done) => {
+      draggableRowsComponent.setValue(draggableRowsComponentData);
+      //fake dropping first element at last position
+      draggableRowsComponent.onRowDrop(draggableRowsComponent.tbody.children[0], draggableRowsComponent.tbody, draggableRowsComponent.tbody, undefined);
+      assert.equal(draggableRowsComponent.dataValue[0], draggableRowsComponentData[1]);
+      assert.equal(draggableRowsComponent.dataValue[1], draggableRowsComponentData[2]);
+      assert.equal(draggableRowsComponent.dataValue[2], draggableRowsComponentData[0]);
       done();
     });
   });
