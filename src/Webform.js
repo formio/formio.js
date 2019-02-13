@@ -733,9 +733,11 @@ export default class Webform extends NestedComponent {
         // If nothing changed, still trigger an update.
         this.submissionSet = true;
         if (!this.setValue(submission, flags)) {
-          this.triggerChange({
-            noValidate: true
-          });
+          if (this.hasChanged(submission, this.getValue())) {
+            this.triggerChange({
+              noValidate: true
+            });
+          }
         }
         return this.dataReady.then(() => this.submissionReadyResolve(submission));
       },
