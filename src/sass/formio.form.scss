@@ -871,9 +871,8 @@ body.formio-dialog-open {
   }
 }
 
-.datagrid-group-label {
-}
-
-.formio-drag-column {
+.formio-drag-column, .formio-remove-column {
+  width:50px;
+  white-space:nowrap;
   text-align: center;
 }

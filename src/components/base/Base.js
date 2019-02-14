@@ -908,7 +908,9 @@ export default class BaseComponent extends Component {
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
-        const tdAdd = this.ce('td');
+        const tdAdd = this.ce('td', {
+          class: 'formio-remove-column'
+        });
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
       }
