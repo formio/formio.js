@@ -241,7 +241,8 @@ Here is a large form which includes all fields with many different configuration
                   inputMask: '',
                   inputType: 'text',
                   tableView: true,
-                  input: true
+                  input: true,
+                  reorder: true
               }
           ],
           tableView: true,
