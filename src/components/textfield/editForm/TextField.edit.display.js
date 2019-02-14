@@ -68,6 +68,7 @@ export default [
     key: 'inputMasks',
     label: 'Input Masks',
     customConditional: 'show = data.allowMultipleMasks === true;',
+    hasDraggableRows: true,
     components: [
       {
         type: 'textfield',

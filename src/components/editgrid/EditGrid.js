@@ -140,6 +140,23 @@ export default class EditGridComponent extends NestedComponent {
       this.removeClass(this.element, `formio-component-${this.component.type}-row-open`);
     }
     this.tableElement = tableElement;
+    if (this.hasDraggableRows) {
+      this.addDraggable([this.tableElement]);
+    }
+  }
+
+  getRowDragulaOptions() {
+    const superOptions = super.getRowDragulaOptions();
+    superOptions.accepts = function(draggedElement, newParent, oldParent, nextSibling) {
+      //disallow dragging above Edit Grid header
+      return !nextSibling || !nextSibling.classList.contains('formio-edit-grid-header');
+    };
+    return superOptions;
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
+    this.triggerChange();
   }
 
   createHeader() {
@@ -147,12 +164,29 @@ export default class EditGridComponent extends NestedComponent {
     if (!templateHeader) {
       return this.text('');
     }
-    return this.ce('li', {
-      class: 'list-group-item list-group-header'
-    }, this.renderTemplate(templateHeader, {
+    const headerMarkup = this.renderTemplate(templateHeader, {
       components: this.component.components,
       value: this.dataValue
-    }));
+    });
+    let headerElement;
+    if (this.hasDraggableRows) {
+      headerElement = this.ce('div', {
+        class: 'row'
+      }, [
+        this.ce('div', {
+          class: 'col-xs-1'
+        }),
+        this.ce('div', {
+          class: 'col-xs-11'
+        }, headerMarkup)
+      ]);
+    }
+    else {
+      headerElement = headerMarkup;
+    }
+    return this.ce('li', {
+      class: 'list-group-item list-group-header formio-edit-grid-header'
+    }, headerElement);
   }
 
   createRow(row, rowIndex) {
@@ -200,32 +234,52 @@ export default class EditGridComponent extends NestedComponent {
       );
     }
     else {
-      wrapper.appendChild(
-        this.renderTemplate(rowTemplate,
+      const rowMarkup = this.renderTemplate(rowTemplate,
+        {
+          row: row.data,
+          data: this.data,
+          rowIndex,
+          components: this.component.components,
+          getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
+        },
+        [
           {
-            row: row.data,
-            data: this.data,
-            rowIndex,
-            components: this.component.components,
-            getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
+            class: 'removeRow',
+            event: 'click',
+            action: this.removeRow.bind(this, rowIndex)
           },
-          [
-            {
-              class: 'removeRow',
-              event: 'click',
-              action: this.removeRow.bind(this, rowIndex)
-            },
-            {
-              class: 'editRow',
-              event: 'click',
-              action: this.editRow.bind(this, rowIndex)
-            }
-          ]
-        )
+          {
+            class: 'editRow',
+            event: 'click',
+            action: this.editRow.bind(this, rowIndex)
+          }
+        ]
       );
+      let rowElement;
+      if (this.hasDraggableRows) {
+        rowElement = this.ce('div', {
+          class: 'row'
+        }, [
+          this.ce('div', {
+            class: 'col-xs-1 formio-drag-column'
+          }, this.dragButton()),
+          this.ce('div', {
+            class: 'col-xs-11'
+          }, rowMarkup)
+        ]);
+      }
+      else {
+        rowElement = rowMarkup;
+      }
+      wrapper.appendChild(rowElement);
     }
     wrapper.appendChild(row.errorContainer = this.ce('div', { class: 'has-error' }));
     this.checkData(this.data, { noValidate: true }, rowIndex);
+    if (this.hasDraggableRows) {
+      wrapper.dragInfo = {
+        index: rowIndex
+      };
+    }
     return wrapper;
   }
 
