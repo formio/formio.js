@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.15.1
+### Changed
+ - The icon for reordering to the more standard bars icon.
+
 ## 3.15.0
 ### Fixed
  - FOR-2075: Excess triggerChange calls for setting submission of Webform
