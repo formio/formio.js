@@ -373,6 +373,15 @@ export default [
     input: true
   },
   {
+    weight: 805,
+    type: &apos;checkbox&apos;,
+    label: &apos;Allow Reordering&apos;,
+    tooltip: &apos;Allows changing order of multiple values using drag and drop&apos;,
+    key: &apos;reorder&apos;,
+    customConditional: &apos;show = !!data.multiple || data.type === &quot;datagrid&quot; || data.type === &quot;editgrid&quot;&apos;,
+    input: true
+  },
+  {
     weight: 900,
     type: &apos;checkbox&apos;,
     label: &apos;Clear Value When Hidden&apos;,

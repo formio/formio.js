@@ -1950,6 +1950,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.js~formio.pagequery",
+    "class/src/Formio.js~Formio.html#static-method-pageQuery",
+    "src/Formio.js~Formio.pageQuery",
+    "method"
+  ],
+  [
     "src/formio.js~formio.pluginalter",
     "class/src/Formio.js~Formio.html#static-method-pluginAlter",
     "src/Formio.js~Formio.pluginAlter",
@@ -1983,6 +1989,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio.requirelibrary",
     "class/src/Formio.js~Formio.html#static-method-requireLibrary",
     "src/Formio.js~Formio.requireLibrary",
+    "method"
+  ],
+  [
+    "src/formio.js~formio.samlinit",
+    "class/src/Formio.js~Formio.html#static-method-samlInit",
+    "src/Formio.js~Formio.samlInit",
     "method"
   ],
   [
@@ -2035,13 +2047,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2515,13 +2527,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2545,13 +2557,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2707,13 +2719,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3726,6 +3738,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#adddraggable",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addDraggable",
+    "src/components/base/Base.js~BaseComponent#addDraggable",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#addfocusblurevents",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-addFocusBlurEvents",
     "src/components/base/Base.js~BaseComponent#addFocusBlurEvents",
@@ -3802,6 +3820,12 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-addValue",
     "src/components/base/Base.js~BaseComponent#addValue",
     "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#allowreorder",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-allowReorder",
+    "src/components/base/Base.js~BaseComponent#allowReorder",
+    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#append",
@@ -4110,6 +4134,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#dragbutton",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-dragButton",
+    "src/components/base/Base.js~BaseComponent#dragButton",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#dragula",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-dragula",
+    "src/components/base/Base.js~BaseComponent#dragula",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#element",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-element",
     "src/components/base/Base.js~BaseComponent#element",
@@ -4230,6 +4266,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#getrowdragulaoptions",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-getRowDragulaOptions",
+    "src/components/base/Base.js~BaseComponent#getRowDragulaOptions",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#getvalue",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-getValue",
     "src/components/base/Base.js~BaseComponent#getValue",
@@ -4339,13 +4381,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -4398,6 +4440,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#onrowdrop",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-onRowDrop",
+    "src/components/base/Base.js~BaseComponent#onRowDrop",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#originalcomponent",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-originalComponent",
     "src/components/base/Base.js~BaseComponent#originalComponent",
@@ -4411,13 +4459,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -4875,6 +4923,12 @@ window.esdocSearchIndex = [
     "src/components/base/fixtures/index.js",
     "file/src/components/base/fixtures/index.js.html",
     "src/components/base/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/base/fixtures/multiplewithdraggablerows.js",
+    "file/src/components/base/fixtures/multipleWithDraggableRows.js.html",
+    "src/components/base/fixtures/multipleWithDraggableRows.js",
     "file"
   ],
   [
@@ -5760,6 +5814,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#allowreorder",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-allowReorder",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#allowReorder",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#build",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-build",
     "src/components/datagrid/DataGrid.js~DataGridComponent#build",
@@ -5934,6 +5994,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#onrowdrop",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-onRowDrop",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#onRowDrop",
+    "method"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#removebutton",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-removeButton",
     "src/components/datagrid/DataGrid.js~DataGridComponent#removeButton",
@@ -5974,6 +6040,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-setVisibleComponents",
     "src/components/datagrid/DataGrid.js~DataGridComponent#setVisibleComponents",
     "method"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#tablebody",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-tableBody",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#tableBody",
+    "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#tableelement",
@@ -6756,9 +6828,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#getrowdragulaoptions",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getRowDragulaOptions",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#getRowDragulaOptions",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#getvalue",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getValue",
     "src/components/editgrid/EditGrid.js~EditGridComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#onrowdrop",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-onRowDrop",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#onRowDrop",
     "method"
   ],
   [
@@ -7723,13 +7807,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],

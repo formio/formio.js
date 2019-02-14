@@ -299,21 +299,20 @@ describe(&apos;Currency Component&apos;, () =&gt; {
 
   it(&apos;Should format currency for French locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comp1, { language: &apos;fr&apos; }).then((component) =&gt; {
-      // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1.00, 1, &apos;1,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1.00, -1, &apos;-1,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1&#xA0;000,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1&#xA0;000,00&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1&#xA0;000,01&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1&#xA0;000,01&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
-      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, &apos;1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
-      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, &apos;-1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
+      Harness.testSetInput(component, 0, 0, Harness.assertStringEqual(&apos;0,00 $US&apos;));
+      Harness.testSetInput(component, 1.00, 1, Harness.assertStringEqual(&apos;1,00 $US&apos;));
+      Harness.testSetInput(component, -1.00, -1, Harness.assertStringEqual(&apos;-1,00 $US&apos;));
+      Harness.testSetInput(component, 1, 1, Harness.assertStringEqual(&apos;1,00 $US&apos;));
+      Harness.testSetInput(component, -1, -1, Harness.assertStringEqual(&apos;-1,00 $US&apos;));
+      Harness.testSetInput(component, 1000, 1000, Harness.assertStringEqual(&apos;1&#x202F;000,00 $US&apos;));
+      Harness.testSetInput(component, -1000, -1000, Harness.assertStringEqual(&apos;-1&#x202F;000,00 $US&apos;));
+      Harness.testSetInput(component, 1000.01, 1000.01, Harness.assertStringEqual(&apos;1&#x202F;000,01 $US&apos;));
+      Harness.testSetInput(component, -1000.01, -1000.01, Harness.assertStringEqual(&apos;-1&#x202F;000,01 $US&apos;));
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, Harness.assertStringEqual(&apos;1&#x202F;234&#x202F;567&#x202F;890,12 $US&apos;));
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, Harness.assertStringEqual(&apos;-1&#x202F;234&#x202F;567&#x202F;890,12 $US&apos;));
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, Harness.assertStringEqual(&apos;1&#x202F;234&#x202F;567&#x202F;890,12 $US&apos;));
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, Harness.assertStringEqual(&apos;-1&#x202F;234&#x202F;567&#x202F;890,12 $US&apos;));
       done();
     });
   });
@@ -321,19 +320,19 @@ describe(&apos;Currency Component&apos;, () =&gt; {
   it(&apos;Should format currency for German locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comp1, { language: &apos;de&apos; }).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, 0, 0, &apos;0,00&#xA0;$&apos;);
-      Harness.testSetInput(component, 1.00, 1.00, &apos;1,00&#xA0;$&apos;);
-      Harness.testSetInput(component, -1.00, -1.00, &apos;-1,00&#xA0;$&apos;);
-      Harness.testSetInput(component, 1, 1, &apos;1,00&#xA0;$&apos;);
-      Harness.testSetInput(component, -1, -1, &apos;-1,00&#xA0;$&apos;);
-      Harness.testSetInput(component, 1000, 1000, &apos;1.000,00&#xA0;$&apos;);
-      Harness.testSetInput(component, -1000, -1000, &apos;-1.000,00&#xA0;$&apos;);
-      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1.000,01&#xA0;$&apos;);
-      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1.000,01&#xA0;$&apos;);
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1.234.567.890,12&#xA0;$&apos;);
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1.234.567.890,12&#xA0;$&apos;);
-      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, &apos;1.234.567.890,12&#xA0;$&apos;);
-      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, &apos;-1.234.567.890,12&#xA0;$&apos;);
+      Harness.testSetInput(component, 0, 0, Harness.assertStringEqual(&apos;0,00 $&apos;));
+      Harness.testSetInput(component, 1.00, 1.00, Harness.assertStringEqual(&apos;1,00 $&apos;));
+      Harness.testSetInput(component, -1.00, -1.00, Harness.assertStringEqual(&apos;-1,00 $&apos;));
+      Harness.testSetInput(component, 1, 1, Harness.assertStringEqual(&apos;1,00 $&apos;));
+      Harness.testSetInput(component, -1, -1, Harness.assertStringEqual(&apos;-1,00 $&apos;));
+      Harness.testSetInput(component, 1000, 1000, Harness.assertStringEqual(&apos;1.000,00 $&apos;));
+      Harness.testSetInput(component, -1000, -1000, Harness.assertStringEqual(&apos;-1.000,00 $&apos;));
+      Harness.testSetInput(component, 1000.01, 1000.01, Harness.assertStringEqual(&apos;1.000,01 $&apos;));
+      Harness.testSetInput(component, -1000.01, -1000.01, Harness.assertStringEqual(&apos;-1.000,01 $&apos;));
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, Harness.assertStringEqual(&apos;1.234.567.890,12 $&apos;));
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, Harness.assertStringEqual(&apos;-1.234.567.890,12 $&apos;));
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, Harness.assertStringEqual(&apos;1.234.567.890,12 $&apos;));
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, Harness.assertStringEqual(&apos;-1.234.567.890,12 $&apos;));
       done();
     });
   });

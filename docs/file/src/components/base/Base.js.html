@@ -218,6 +218,7 @@ import Formio from &apos;../../Formio&apos;;
 import Validator from &apos;../Validator&apos;;
 import Widgets from &apos;../../widgets&apos;;
 import Component from &apos;../../Component&apos;;
+import dragula from &apos;dragula&apos;;
 const CKEDITOR = &apos;https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/master/build/ckeditor.js&apos;;
 
 /**
@@ -1101,11 +1102,17 @@ export default class BaseComponent extends Component {
     if (!this.tbody) {
       return;
     }
+    const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
     values = values || this.dataValue;
     _.each(values, (value, index) =&gt; {
       const tr = this.ce(&apos;tr&apos;);
+      if (allowReorder) {
+        tr.appendChild(this.ce(&apos;td&apos;, {
+          class: &apos;formio-drag-column&apos;
+        }, this.dragButton()));
+      }
       const td = this.ce(&apos;td&apos;);
       this.buildInput(td, value, index);
       tr.appendChild(td);
@@ -1116,13 +1123,18 @@ export default class BaseComponent extends Component {
         tr.appendChild(tdAdd);
       }
 
+      if (allowReorder) {
+        tr.dragInfo = {
+          index: index
+        };
+      }
       this.tbody.appendChild(tr);
     });
 
     if (!this.shouldDisable) {
       const tr = this.ce(&apos;tr&apos;);
       const td = this.ce(&apos;td&apos;, {
-        colspan: &apos;2&apos;
+        colspan: allowReorder ? &apos;3&apos; : &apos;2&apos;
       });
       td.appendChild(this.addButton());
       tr.appendChild(td);
@@ -1132,6 +1144,48 @@ export default class BaseComponent extends Component {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    if (allowReorder) {
+      this.addDraggable([this.tbody]);
+    }
+  }
+
+  get allowReorder() {
+    return this.component.reorder &amp;&amp; !this.options.readOnly;
+  }
+
+  addDraggable(containers) {
+    this.dragula = dragula(containers, this.getRowDragulaOptions()).on(&apos;drop&apos;, this.onRowDrop.bind(this));
+  }
+
+  getRowDragulaOptions() {
+    return {
+      moves: function(draggedElement, oldParent, clickedElement) {
+        //allow dragging only on drag button (not the whole row)
+        return clickedElement.classList.contains(&apos;formio-drag-button&apos;);
+      }
+    };
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    //move them in data value as well
+    if (!droppedElement.dragInfo || (nextSibling &amp;&amp; !nextSibling.dragInfo)) {
+      console.warn(&apos;There is no Drag Info available for either dragged or sibling element&apos;);
+      return;
+    }
+    const oldPosition = droppedElement.dragInfo.index;
+    //should drop at next sibling position; no next sibling means drop to last position
+    const newPosition = nextSibling ? nextSibling.dragInfo.index : this.dataValue.length;
+    const movedBelow = newPosition &gt; oldPosition;
+    const dataValue = _.cloneDeep(this.dataValue);
+    const draggedRowData = dataValue[oldPosition];
+
+    //insert element at new position
+    dataValue.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it&apos;s at +1 index)
+    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
+    this.setValue(dataValue);
   }
 
   buildInput(container, value) {
@@ -1217,6 +1271,12 @@ export default class BaseComponent extends Component {
     });
     removeButton.appendChild(removeIcon);
     return removeButton;
+  }
+
+  dragButton() {
+    return this.ce(&apos;button&apos;, {
+      class: `formio-drag-button btn btn-default btn-small ${this.iconClass(&apos;resize-vertical&apos;)}`
+    });
   }
 
   labelOnTheLeft(position) {

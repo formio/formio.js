@@ -350,6 +350,23 @@ export default class EditGridComponent extends NestedComponent {
       this.removeClass(this.element, `formio-component-${this.component.type}-row-open`);
     }
     this.tableElement = tableElement;
+    if (this.allowReorder) {
+      this.addDraggable([this.tableElement]);
+    }
+  }
+
+  getRowDragulaOptions() {
+    const superOptions = super.getRowDragulaOptions();
+    superOptions.accepts = function(draggedElement, newParent, oldParent, nextSibling) {
+      //disallow dragging above Edit Grid header
+      return !nextSibling || !nextSibling.classList.contains(&apos;formio-edit-grid-header&apos;);
+    };
+    return superOptions;
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
+    this.triggerChange();
   }
 
   createHeader() {
@@ -357,12 +374,29 @@ export default class EditGridComponent extends NestedComponent {
     if (!templateHeader) {
       return this.text(&apos;&apos;);
     }
-    return this.ce(&apos;li&apos;, {
-      class: &apos;list-group-item list-group-header&apos;
-    }, this.renderTemplate(templateHeader, {
+    const headerMarkup = this.renderTemplate(templateHeader, {
       components: this.component.components,
       value: this.dataValue
-    }));
+    });
+    let headerElement;
+    if (this.allowReorder) {
+      headerElement = this.ce(&apos;div&apos;, {
+        class: &apos;row&apos;
+      }, [
+        this.ce(&apos;div&apos;, {
+          class: &apos;col-xs-1&apos;
+        }),
+        this.ce(&apos;div&apos;, {
+          class: &apos;col-xs-11&apos;
+        }, headerMarkup)
+      ]);
+    }
+    else {
+      headerElement = headerMarkup;
+    }
+    return this.ce(&apos;li&apos;, {
+      class: &apos;list-group-item list-group-header formio-edit-grid-header&apos;
+    }, headerElement);
   }
 
   createRow(row, rowIndex) {
@@ -410,32 +444,52 @@ export default class EditGridComponent extends NestedComponent {
       );
     }
     else {
-      wrapper.appendChild(
-        this.renderTemplate(rowTemplate,
+      const rowMarkup = this.renderTemplate(rowTemplate,
+        {
+          row: row.data,
+          data: this.data,
+          rowIndex,
+          components: this.component.components,
+          getView: (component, data) =&gt; Components.create(component, this.options, data, true).getView(data)
+        },
+        [
           {
-            row: row.data,
-            data: this.data,
-            rowIndex,
-            components: this.component.components,
-            getView: (component, data) =&gt; Components.create(component, this.options, data, true).getView(data)
+            class: &apos;removeRow&apos;,
+            event: &apos;click&apos;,
+            action: this.removeRow.bind(this, rowIndex)
           },
-          [
-            {
-              class: &apos;removeRow&apos;,
-              event: &apos;click&apos;,
-              action: this.removeRow.bind(this, rowIndex)
-            },
-            {
-              class: &apos;editRow&apos;,
-              event: &apos;click&apos;,
-              action: this.editRow.bind(this, rowIndex)
-            }
-          ]
-        )
+          {
+            class: &apos;editRow&apos;,
+            event: &apos;click&apos;,
+            action: this.editRow.bind(this, rowIndex)
+          }
+        ]
       );
+      let rowElement;
+      if (this.allowReorder) {
+        rowElement = this.ce(&apos;div&apos;, {
+          class: &apos;row&apos;
+        }, [
+          this.ce(&apos;div&apos;, {
+            class: &apos;col-xs-1 formio-drag-column&apos;
+          }, this.dragButton()),
+          this.ce(&apos;div&apos;, {
+            class: &apos;col-xs-11&apos;
+          }, rowMarkup)
+        ]);
+      }
+      else {
+        rowElement = rowMarkup;
+      }
+      wrapper.appendChild(rowElement);
     }
     wrapper.appendChild(row.errorContainer = this.ce(&apos;div&apos;, { class: &apos;has-error&apos; }));
     this.checkData(this.data, { noValidate: true }, rowIndex);
+    if (this.allowReorder) {
+      wrapper.dragInfo = {
+        index: rowIndex
+      };
+    }
     return wrapper;
   }
 

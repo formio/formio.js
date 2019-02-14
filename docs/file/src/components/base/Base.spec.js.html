@@ -217,8 +217,16 @@ import BaseComponent from &apos;./Base&apos;;
 
 import {
   comp1,
-  comp2
+  comp2,
+  multipleWithDraggableRows
 } from &apos;./fixtures&apos;;
+
+let draggableRowsComponent;
+const draggableRowsComponentData = [
+  &apos;one&apos;,
+  &apos;two&apos;,
+  &apos;three&apos;
+];
 
 describe(&apos;Base Component&apos;, () =&gt; {
   it(&apos;Should build a base component&apos;, (done) =&gt; {
@@ -328,6 +336,41 @@ describe(&apos;Base Component&apos;, () =&gt; {
       Harness.testElements(component, &apos;table tr:first-child td&apos;, 2);
       Harness.testElements(component, &apos;table tr:first-child td:first-child input[name=&quot;data[names]&quot;]&apos;, 1);
       Harness.testElements(component, &apos;table tr:first-child td:last-child .glyphicon-remove-circle&apos;, 1);
+      done();
+    });
+  });
+
+  describe(&apos;Draggable Rows Functionality&apos;, () =&gt; {
+    it(&apos;Should populate Drag Info for each row&apos;, (done) =&gt; {
+      Harness.testCreate(BaseComponent, multipleWithDraggableRows)
+        .then((component) =&gt; {
+          component.setValue(draggableRowsComponentData);
+          draggableRowsComponent = component;
+          draggableRowsComponentData.forEach((value, index) =&gt; {
+            assert(!!component.tbody.children[index].dragInfo, &apos;Drag Info is not populated for a draggable row&apos;);
+            assert.equal(component.tbody.children[index].dragInfo.index, index, &apos;Drag Info index is not calculated correctly for a draggable row&apos;);
+          });
+          done();
+        });
+    });
+
+    it(&apos;Should switch data values according to how rows are dragged&apos;, (done) =&gt; {
+      draggableRowsComponent.setValue(draggableRowsComponentData);
+      //fake dropping last element at first position
+      draggableRowsComponent.onRowDrop(draggableRowsComponent.tbody.children[2], draggableRowsComponent.tbody, draggableRowsComponent.tbody, draggableRowsComponent.tbody.children[0]);
+      assert.equal(draggableRowsComponent.dataValue[0], draggableRowsComponentData[2]);
+      assert.equal(draggableRowsComponent.dataValue[1], draggableRowsComponentData[0]);
+      assert.equal(draggableRowsComponent.dataValue[2], draggableRowsComponentData[1]);
+      done();
+    });
+
+    it(&apos;Should allow dragging row to last position&apos;, (done) =&gt; {
+      draggableRowsComponent.setValue(draggableRowsComponentData);
+      //fake dropping first element at last position
+      draggableRowsComponent.onRowDrop(draggableRowsComponent.tbody.children[0], draggableRowsComponent.tbody, draggableRowsComponent.tbody, undefined);
+      assert.equal(draggableRowsComponent.dataValue[0], draggableRowsComponentData[1]);
+      assert.equal(draggableRowsComponent.dataValue[1], draggableRowsComponentData[2]);
+      assert.equal(draggableRowsComponent.dataValue[2], draggableRowsComponentData[0]);
       done();
     });
   });
