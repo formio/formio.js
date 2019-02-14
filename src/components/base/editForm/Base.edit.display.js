@@ -163,6 +163,15 @@ export default [
     input: true
   },
   {
+    weight: 805,
+    type: 'checkbox',
+    label: 'Has Draggable Rows',
+    tooltip: 'Allows changing order of multiple values using drag and drop',
+    key: 'hasDraggableRows',
+    customConditional: 'show = !!data.multiple || data.type === "datagrid" || data.type === "editgrid"',
+    input: true
+  },
+  {
     weight: 900,
     type: 'checkbox',
     label: 'Clear Value When Hidden',

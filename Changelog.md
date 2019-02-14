@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-2075: Excess triggerChange calls for setting submission of Webform
 
+### Added
+ - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
+
 ## 3.14.1
 ### Added
  - Continuous scrolling to Select component.

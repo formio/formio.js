@@ -89,21 +89,21 @@ describe('Currency Component', () => {
 
   it('Should format currency for French locale', (done) => {
     Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
-      // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
+      // The spaces in these tests are a weird unicode space (https://unicode-table.com/ru/202F/) so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0,00 $US');
       Harness.testSetInput(component, 1.00, 1, '1,00 $US');
       Harness.testSetInput(component, -1.00, -1, '-1,00 $US');
       Harness.testSetInput(component, 1, 1, '1,00 $US');
       Harness.testSetInput(component, -1, -1, '-1,00 $US');
-      Harness.testSetInput(component, 1000, 1000, '1 000,00 $US');
-      Harness.testSetInput(component, -1000, -1000, '-1 000,00 $US');
-      Harness.testSetInput(component, 1000.01, 1000.01, '1 000,01 $US');
-      Harness.testSetInput(component, -1000.01, -1000.01, '-1 000,01 $US');
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, '1 234 567 890,12 $US');
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1 234 567 890,12 $US');
-      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, '1 234 567 890,12 $US');
-      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, '-1 234 567 890,12 $US');
+      Harness.testSetInput(component, 1000, 1000, '1 000,00 $US');
+      Harness.testSetInput(component, -1000, -1000, '-1 000,00 $US');
+      Harness.testSetInput(component, 1000.01, 1000.01, '1 000,01 $US');
+      Harness.testSetInput(component, -1000.01, -1000.01, '-1 000,01 $US');
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, '1 234 567 890,12 $US');
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1 234 567 890,12 $US');
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, '1 234 567 890,12 $US');
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, '-1 234 567 890,12 $US');
       done();
     });
   });
