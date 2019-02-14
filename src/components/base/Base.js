@@ -1067,7 +1067,7 @@ export default class BaseComponent extends Component {
 
   dragButton() {
     return this.ce('button', {
-      class: `formio-drag-button btn btn-default btn-small ${this.iconClass('resize-vertical')}`
+      class: `formio-drag-button btn btn-default btn-small ${this.iconClass('menu-hamburger')}`
     });
   }
 

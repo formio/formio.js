@@ -472,8 +472,8 @@ export default class Component {
         return 'fa fa-times-circle-o';
       case 'new-window':
         return 'fa fa-window-restore';
-      case 'resize-vertical':
-        return 'fa fa-arrows-v';
+      case 'menu-hamburger':
+        return 'fa fa-bars';
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
