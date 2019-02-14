@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - FOR-2075: Excess triggerChange calls for setting submission of Webform
+
 ### Added
  - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
 
