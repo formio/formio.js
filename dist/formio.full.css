@@ -3099,7 +3099,9 @@ body.formio-dialog-open {
 .datagrid-group-header.clickable.collapsed .datagrid-group-label:before {
   content: '▸'; }
 
-.formio-drag-column {
+.formio-drag-column, .formio-remove-column {
+  width: 50px;
+  white-space: nowrap;
   text-align: center; }
 
 .formbuilder {

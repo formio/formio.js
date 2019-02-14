@@ -465,7 +465,9 @@ export default class DataGridComponent extends NestedComponent {
 
     if (hasRmButton) {
       if (rmPlacement === &apos;col&apos;) {
-        lastColumn = this.ce(&apos;td&apos;, null, this.removeButton(index));
+        lastColumn = this.ce(&apos;td&apos;, {
+          class: &apos;formio-remove-column&apos;
+        }, this.removeButton(index));
       }
       else {
         useCorner = true;
@@ -499,8 +501,8 @@ export default class DataGridComponent extends NestedComponent {
 
             if (hasRmButton &amp;&amp; useCorner &amp;&amp; lastColIndex === colIndex) {
               cell.style.position = &apos;relative&apos;;
+              cell.style.width = &apos;50px&apos;;
               cell.append(this.removeButton(index, &apos;small&apos;));
-
               if (hasTopButton ) {
                 cell.setAttribute(&apos;colspan&apos;, 2);
               }
