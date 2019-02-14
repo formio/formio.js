@@ -825,7 +825,7 @@ export default class Formio {
 
         // Cache the response.
         if (method === 'GET') {
-          Formio.cache[cacheKey] = result;
+          Formio.cache[cacheKey] = _cloneDeep(result);
         }
 
         let resultCopy = {};
