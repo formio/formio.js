@@ -5,7 +5,7 @@ export default [
     input: true,
     label: 'Tabs',
     weight: 50,
-    hasDraggableRows: true,
+    reorder: true,
     components: [
       {
         type: 'textfield',

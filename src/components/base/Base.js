@@ -892,13 +892,13 @@ export default class BaseComponent extends Component {
     if (!this.tbody) {
       return;
     }
-    const hasDraggableRows = this.hasDraggableRows;
+    const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = '';
     values = values || this.dataValue;
     _.each(values, (value, index) => {
       const tr = this.ce('tr');
-      if (hasDraggableRows) {
+      if (allowReorder) {
         tr.appendChild(this.ce('td', {
           class: 'formio-drag-column'
         }, this.dragButton()));
@@ -913,7 +913,7 @@ export default class BaseComponent extends Component {
         tr.appendChild(tdAdd);
       }
 
-      if (hasDraggableRows) {
+      if (allowReorder) {
         tr.dragInfo = {
           index: index
         };
@@ -924,7 +924,7 @@ export default class BaseComponent extends Component {
     if (!this.shouldDisable) {
       const tr = this.ce('tr');
       const td = this.ce('td', {
-        colspan: hasDraggableRows ? '3' : '2'
+        colspan: allowReorder ? '3' : '2'
       });
       td.appendChild(this.addButton());
       tr.appendChild(td);
@@ -935,13 +935,13 @@ export default class BaseComponent extends Component {
       this.disabled = true;
     }
 
-    if (hasDraggableRows) {
+    if (allowReorder) {
       this.addDraggable([this.tbody]);
     }
   }
 
-  get hasDraggableRows() {
-    return this.component.hasDraggableRows && !this.options.readOnly;
+  get allowReorder() {
+    return this.component.reorder && !this.options.readOnly;
   }
 
   addDraggable(containers) {

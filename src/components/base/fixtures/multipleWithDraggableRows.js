@@ -3,6 +3,6 @@ export default {
   'label': 'Text',
   'key': 'text',
   'multiple': true,
-  'hasDraggableRows': true,
+  'reorder': true,
   'type': 'textfield'
 };

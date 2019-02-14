@@ -123,7 +123,7 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     this.numColumns = this.hasExtraColumn() ? 1 : 0;
-    this.numColumns += this.hasDraggableRows ? 1 : 0;
+    this.numColumns += this.allowReorder ? 1 : 0;
     this.numRows = this.dataValue.length;
 
     if (this.visibleColumns === true) {
@@ -153,7 +153,7 @@ export default class DataGridComponent extends NestedComponent {
     this.tableBody = this.ce('tbody', null, tableRows);
     this.tableElement.appendChild(this.tableBody);
 
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       this.addDraggable([this.tableBody]);
     }
 
@@ -173,8 +173,8 @@ export default class DataGridComponent extends NestedComponent {
     }
   }
 
-  get hasDraggableRows() {
-    return super.hasDraggableRows && !this.options.builder;
+  get allowReorder() {
+    return super.allowReorder && !this.options.builder;
   }
 
   onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
@@ -189,7 +189,7 @@ export default class DataGridComponent extends NestedComponent {
     let needsHeader = false;
     const thead = this.ce('thead', null, this.ce('tr', null,
       [
-        this.hasDraggableRows ? this.ce('th', {
+        this.allowReorder ? this.ce('th', {
           class: 'formio-drag-column-header'
         }) : null,
         this.visibleComponents.map(comp => {
@@ -247,7 +247,7 @@ export default class DataGridComponent extends NestedComponent {
     this.rows[index] = {};
     let firstColumn = null;
 
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       firstColumn = this.ce('td', {
         class: 'formio-drag-column'
       }, this.dragButton());
@@ -304,7 +304,7 @@ export default class DataGridComponent extends NestedComponent {
     );
 
     //add element info for drag'n'drop handlers
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       rowElement.dragInfo = {
         index: index
       };

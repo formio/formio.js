@@ -165,9 +165,9 @@ export default [
   {
     weight: 805,
     type: 'checkbox',
-    label: 'Has Draggable Rows',
+    label: 'Allow Reordering',
     tooltip: 'Allows changing order of multiple values using drag and drop',
-    key: 'hasDraggableRows',
+    key: 'reorder',
     customConditional: 'show = !!data.multiple || data.type === "datagrid" || data.type === "editgrid"',
     input: true
   },

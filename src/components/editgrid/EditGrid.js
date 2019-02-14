@@ -140,7 +140,7 @@ export default class EditGridComponent extends NestedComponent {
       this.removeClass(this.element, `formio-component-${this.component.type}-row-open`);
     }
     this.tableElement = tableElement;
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       this.addDraggable([this.tableElement]);
     }
   }
@@ -169,7 +169,7 @@ export default class EditGridComponent extends NestedComponent {
       value: this.dataValue
     });
     let headerElement;
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       headerElement = this.ce('div', {
         class: 'row'
       }, [
@@ -256,7 +256,7 @@ export default class EditGridComponent extends NestedComponent {
         ]
       );
       let rowElement;
-      if (this.hasDraggableRows) {
+      if (this.allowReorder) {
         rowElement = this.ce('div', {
           class: 'row'
         }, [
@@ -275,7 +275,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     wrapper.appendChild(row.errorContainer = this.ce('div', { class: 'has-error' }));
     this.checkData(this.data, { noValidate: true }, rowIndex);
-    if (this.hasDraggableRows) {
+    if (this.allowReorder) {
       wrapper.dragInfo = {
         index: rowIndex
       };

@@ -7,7 +7,7 @@ export default [
     tooltip: 'The questions you would like to ask in this survey question.',
     weight: 50,
     defaultValue: [{ label: '', value: '' }],
-    hasDraggableRows: true,
+    reorder: true,
     components: [
       {
         label: 'Label',
@@ -32,7 +32,7 @@ export default [
     key: 'values',
     tooltip: 'The values that can be selected per question. Example: \'Satisfied\', \'Very Satisfied\', etc.',
     weight: 50,
-    hasDraggableRows: true,
+    reorder: true,
     defaultValue: [{ label: '', value: '' }],
     components: [
       {

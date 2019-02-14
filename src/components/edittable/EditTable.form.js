@@ -37,7 +37,7 @@ export default function(...extend) {
         tableView: true,
         alwaysEnabled: false,
         type: 'datagrid',
-        hasDraggableRows: true,
+        reorder: true,
         input: true,
         key: 'rowGroups',
         components: [

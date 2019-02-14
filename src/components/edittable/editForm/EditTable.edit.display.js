@@ -5,7 +5,7 @@ export default [
     input: true,
     label: 'Columns',
     weight: 100,
-    hasDraggableRows: true,
+    reorder: true,
     components: [
       {
         key: 'label',
