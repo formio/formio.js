@@ -651,7 +651,7 @@ export default class SelectComponent extends Field {
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: ['label'],
+      searchFields: _.get(this, 'component.searchFields', ['label']),
       fuseOptions: {
         ...{
           include: 'score',
