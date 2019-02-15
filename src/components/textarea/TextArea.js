@@ -333,17 +333,20 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
     }
 
     if (!this.editorReady) {
-      return value;
+      return false;
     }
 
     // Set the value when the editor is ready.
-    this.dataValue = value;
+    const newValue = (value === undefined || value === null) ? this.getValue() : value;
+    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    this.dataValue = newValue;
 
     if (this.htmlView) {
       // For HTML view, just view the contents.
@@ -355,18 +358,29 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.editorReady.then((editor) => {
         switch (this.component.editor) {
           case 'ace':
-            editor.setValue(this.setConvertedValue(value));
+            if (shouldSetValue) {
+              editor.setValue(this.setConvertedValue(value));
+            }
             break;
           case 'quill':
-            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            if (shouldSetValue) {
+              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            }
             break;
           case 'ckeditor':
-            super.setValue(this.setConvertedValue(value), flags);
+            if (shouldSetValue) {
+              editor.data.set(this.setConvertedValue(value));
+            }
             break;
-          default:
         }
       });
     }
+
+    // Update on change.
+    this.updateOnChange(flags, changed);
+
+    // Return if the value has changed.
+    return changed;
   }
 
   getConvertedValue(value) {

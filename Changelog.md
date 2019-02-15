@@ -4,7 +4,28 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+##[Unreleased]
+### Fixed
+ - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio
+
+## 3.15.1
+### Changed
+ - The icon for reordering to the more standard bars icon.
+
+## 3.15.0
+### Fixed
+ - FOR-2075: Excess triggerChange calls for setting submission of Webform
+ - Made the Formio.cache values immutable.
+ - Issues with Number tests with locales.
+
+### Added
+ - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
+ - SAML authentication support
+ 
+### Changed
+ - Upgrade i18next@15.0.4, bootstrap@4.3.1, bootswatch@4.3.1
+
+## 3.14.1
 ### Added
  - Continuous scrolling to Select component.
  - Limit and sort for Select component.
