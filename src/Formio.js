@@ -1160,11 +1160,11 @@ export default class Formio {
     const query = Formio.pageQuery();
     if (query.saml) {
       Formio.setUser(null);
-      Formio.setToken(query.saml);
+      const retVal = Formio.setToken(query.saml);
       let uri = window.location.toString();
       uri = uri.substring(0, uri.indexOf('?'));
       window.history.replaceState({}, document.title, uri);
-      return true;
+      return retVal;
     }
 
     // Only continue if we are not authenticated.
