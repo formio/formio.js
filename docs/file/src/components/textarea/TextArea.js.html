@@ -489,6 +489,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || &apos;&apos;;
     if (this.isPlain) {
       if (this.options.readOnly) {
@@ -516,14 +517,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     else if (this.editorReady) {
       this.editorReady.then((editor) =&gt; {
         if (this.component.editor === &apos;ace&apos;) {
-          editor.setValue(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.setValue(this.setConvertedValue(value));
+          }
         }
         else if (this.component.editor === &apos;ckeditor&apos;) {
-          editor.data.set(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.data.set(this.setConvertedValue(value));
+          }
           this.updateValue(flags);
         }
         else {
-          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          if (shouldSetValue) {
+            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          }
           this.updateValue(flags);
         }
       });

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[Unreleased]
+## 3.15.2
 ### Fixed
  - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio
 
