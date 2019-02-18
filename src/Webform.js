@@ -1303,9 +1303,9 @@ export default class Webform extends NestedComponent {
     }
   }
 
-  set nosubmit(value = false) {
-    this._nosubmit = value;
-    this.emit('nosubmit', value);
+  set nosubmit(value) {
+    this._nosubmit = !!value;
+    this.emit('nosubmit', this._nosubmit);
   }
 
   get nosubmit() {

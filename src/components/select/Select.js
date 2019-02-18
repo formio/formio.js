@@ -632,13 +632,10 @@ export default class SelectComponent extends BaseComponent {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: {
-        ...{
-          include: 'score',
-          threshold: _.get(this, 'component.searchThreshold', 0.3),
-        },
-        _.get(this, 'component.fuseOptions', {})
-      },
+      fuseOptions: Object.assign({
+        include: 'score',
+        threshold: _.get(this, 'component.searchThreshold', 0.3),
+      }, _.get(this, 'component.fuseOptions', {})),
       itemComparer: _.isEqual
     };
 
