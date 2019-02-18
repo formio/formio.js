@@ -28,10 +28,7 @@ export default class SelectComponent extends BaseComponent {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
-      fuseOptions: {
-        include: 'score',
-        threshold: 0.3,
-      },
+      fuseOptions: {},
       customOptions: {}
     }, ...extend);
   }
