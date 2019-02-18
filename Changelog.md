@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.15.4
+### Fixed
+ - Issue with the valueProperty field configurations not saving for Select components.
+
+### Added
+ - The ability to configure the fuseOptions for the Select components.
+ 
+### Changed
+ - Upgraded sinon@7.2.4, webpack@4.29.5, @babel/core@7.3.3, eslint@5.14.1
+
 ## 3.15.3
 ### Fixed
  - Make the samlInit method return the setToken promise to know when the user is done loading.

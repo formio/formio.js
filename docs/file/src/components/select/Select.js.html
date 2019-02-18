@@ -238,6 +238,10 @@ export default class SelectComponent extends BaseComponent {
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;,
       searchThreshold: 0.3,
+      fuseOptions: {
+        include: &apos;score&apos;,
+        threshold: 0.3,
+      },
       customOptions: {}
     }, ...extend);
   }
@@ -837,11 +841,11 @@ export default class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || &apos;auto&apos;),
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: [&apos;label&apos;],
-      fuseOptions: {
+      searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
+      fuseOptions: Object.assign({
         include: &apos;score&apos;,
         threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
-      },
+      }, _.get(this, &apos;component.fuseOptions&apos;, {})),
       itemComparer: _.isEqual
     };
 
