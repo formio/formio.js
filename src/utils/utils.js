@@ -46,6 +46,7 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
   args.form = _.cloneDeep(args.form);
+  const componentKey = args.component.key;
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
@@ -72,7 +73,7 @@ export function evaluate(func, args, ret, tokenize) {
       args = _.values(args);
     }
     catch (err) {
-      console.warn(`An error occured within the custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within the custom function for ${componentKey}`, err);
       returnVal = null;
       func = false;
     }
@@ -83,7 +84,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (typeof func === 'object') {
@@ -92,11 +93,11 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (func) {
-    console.warn(`Unknown function type for ${args.component.key}`);
+    console.warn(`Unknown function type for ${componentKey}`);
   }
   return returnVal;
 }
