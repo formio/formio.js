@@ -40382,7 +40382,7 @@
     "__docId__": 2121,
     "kind": "file",
     "name": "src/utils/utils.js",
-    "content": "/* global $ */\n\nimport _ from 'lodash';\nimport 'whatwg-fetch';\nimport jsonLogic from 'json-logic-js';\nimport moment from 'moment-timezone/moment-timezone';\nimport jtz from 'jstimezonedetect';\nimport { lodashOperators } from './jsonlogic/operators';\nimport Promise from 'native-promise-only';\nimport { getValue } from './formUtils';\nimport stringHash from 'string-hash';\n\nexport * from './formUtils';\n\n// Configure JsonLogic\nlodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));\n\n// Retrieve Any Date\njsonLogic.add_operation('getDate', (date) => {\n  return moment(date).toISOString();\n});\n\n// Set Relative Minimum Date\njsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {\n  return moment().subtract(relativeMinDate, 'days').toISOString();\n});\n\n// Set Relative Maximum Date\njsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {\n  return moment().add(relativeMaxDate, 'days').toISOString();\n});\n\nexport { jsonLogic, moment };\n\n/**\n * Evaluate a method.\n *\n * @param func\n * @param args\n * @return {*}\n */\nexport function evaluate(func, args, ret, tokenize) {\n  let returnVal = null;\n  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };\n  if (!args.form && args.instance) {\n    args.form = _.get(args.instance, 'root._form', {});\n  }\n  args.form = _.cloneDeep(args.form);\n  if (typeof func === 'string') {\n    if (ret) {\n      func += `;return ${ret}`;\n    }\n    const params = _.keys(args);\n\n    if (tokenize) {\n      // Replace all {{ }} references with actual data.\n      func = func.replace(/({{\\s+(.*)\\s+}})/, (match, $1, $2) => {\n        if ($2.indexOf('data.') === 0) {\n          return _.get(args.data, $2.replace('data.', ''));\n        }\n        else if ($2.indexOf('row.') === 0) {\n          return _.get(args.row, $2.replace('row.', ''));\n        }\n\n        // Support legacy...\n        return _.get(args.data, $2);\n      });\n    }\n\n    try {\n      func = new Function(...params, func);\n      args = _.values(args);\n    }\n    catch (err) {\n      console.warn(`An error occured within the custom function for ${args.component.key}`, err);\n      returnVal = null;\n      func = false;\n    }\n  }\n  if (typeof func === 'function') {\n    try {\n      returnVal = Array.isArray(args) ? func(...args) : func(args);\n    }\n    catch (err) {\n      returnVal = null;\n      console.warn(`An error occured within custom function for ${args.component.key}`, err);\n    }\n  }\n  else if (typeof func === 'object') {\n    try {\n      returnVal = jsonLogic.apply(func, args);\n    }\n    catch (err) {\n      returnVal = null;\n      console.warn(`An error occured within custom function for ${args.component.key}`, err);\n    }\n  }\n  else if (func) {\n    console.warn(`Unknown function type for ${args.component.key}`);\n  }\n  return returnVal;\n}\n\nexport function getRandomComponentId() {\n  return `e${Math.random().toString(36).substring(7)}`;\n}\n\n/**\n * Get a property value of an element.\n *\n * @param style\n * @param prop\n * @return {number}\n */\nexport function getPropertyValue(style, prop) {\n  let value = style.getPropertyValue(prop);\n  value = value ? value.replace(/[^0-9.]/g, '') : '0';\n  return parseFloat(value);\n}\n\n/**\n * Get an elements bounding rectagle.\n *\n * @param element\n * @return {{x: string, y: string, width: string, height: string}}\n */\nexport function getElementRect(element) {\n  const style = window.getComputedStyle(element, null);\n  return {\n    x: getPropertyValue(style, 'left'),\n    y: getPropertyValue(style, 'top'),\n    width: getPropertyValue(style, 'width'),\n    height: getPropertyValue(style, 'height')\n  };\n}\n\n/**\n * Determines the boolean value of a setting.\n *\n * @param value\n * @return {boolean}\n */\nexport function boolValue(value) {\n  if (_.isBoolean(value)) {\n    return value;\n  }\n  else if (_.isString(value)) {\n    return (value.toLowerCase() === 'true');\n  }\n  else {\n    return !!value;\n  }\n}\n\n/**\n * Check to see if an ID is a mongoID.\n * @param text\n * @return {Array|{index: number, input: string}|Boolean|*}\n */\nexport function isMongoId(text) {\n  return text.toString().match(/^[0-9a-fA-F]{24}$/);\n}\n\n/**\n * Checks the calculated value for a provided component and data.\n *\n * @param {Object} component\n *   The component to check for the calculated value.\n * @param {Object} submission\n *   A submission object.\n * @param data\n *   The full submission data.\n */\nexport function checkCalculated(component, submission, rowData) {\n  // Process calculated value stuff if present.\n  if (component.calculateValue) {\n    _.set(rowData, component.key, evaluate(component.calculateValue, {\n      value: undefined,\n      data: submission ? submission.data : rowData,\n      row: rowData,\n      util: this,\n      component\n    }, 'value'));\n  }\n}\n\n/**\n * Check if a simple conditional evaluates to true.\n *\n * @param condition\n * @param condition\n * @param row\n * @param data\n * @returns {boolean}\n */\nexport function checkSimpleConditional(component, condition, row, data) {\n  let value = null;\n  if (row) {\n    value = getValue({ data: row }, condition.when);\n  }\n  if (data && _.isNil(value)) {\n    value = getValue({ data }, condition.when);\n  }\n  // FOR-400 - Fix issue where falsey values were being evaluated as show=true\n  if (_.isNil(value)) {\n    value = '';\n  }\n\n  const eq = String(condition.eq);\n  const show = String(condition.show);\n\n  // Special check for selectboxes component.\n  if (_.isObject(value) && _.has(value, condition.eq)) {\n    return String(value[condition.eq]) === show;\n  }\n  // FOR-179 - Check for multiple values.\n  if (Array.isArray(value) && value.map(String).includes(eq)) {\n    return show === 'true';\n  }\n\n  return (String(value) === eq) === (show === 'true');\n}\n\n/**\n * Check custom javascript conditional.\n *\n * @param component\n * @param custom\n * @param row\n * @param data\n * @returns {*}\n */\nexport function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {\n  if (typeof custom === 'string') {\n    custom = `var ${variable} = true; ${custom}; return ${variable};`;\n  }\n  const value = (instance && instance.evaluate) ?\n    instance.evaluate(custom) :\n    evaluate(custom, { row, data, form });\n  if (value === null) {\n    return onError;\n  }\n  return value;\n}\n\nexport function checkJsonConditional(component, json, row, data, form, onError) {\n  try {\n    return jsonLogic.apply(json, {\n      data,\n      row,\n      form,\n      _\n    });\n  }\n  catch (err) {\n    console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);\n    return onError;\n  }\n}\n\n/**\n * Checks the conditions for a provided component and data.\n *\n * @param component\n *   The component to check for the condition.\n * @param row\n *   The data within a row\n * @param data\n *   The full submission data.\n *\n * @returns {boolean}\n */\nexport function checkCondition(component, row, data, form, instance) {\n  if (component.customConditional) {\n    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);\n  }\n  else if (component.conditional && component.conditional.when) {\n    return checkSimpleConditional(component, component.conditional, row, data, true);\n  }\n  else if (component.conditional && component.conditional.json) {\n    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);\n  }\n\n  // Default to show.\n  return true;\n}\n\n/**\n * Test a trigger on a component.\n *\n * @param component\n * @param action\n * @param data\n * @param row\n * @returns {mixed}\n */\nexport function checkTrigger(component, trigger, row, data, form, instance) {\n  switch (trigger.type) {\n    case 'simple':\n      return checkSimpleConditional(component, trigger.simple, row, data);\n    case 'javascript':\n      return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);\n    case 'json':\n      return checkJsonConditional(component, trigger.json, row, data, form, false);\n  }\n  // If none of the types matched, don't fire the trigger.\n  return false;\n}\n\nexport function setActionProperty(component, action, row, data, result, instance) {\n  switch (action.property.type) {\n    case 'boolean':\n      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {\n        _.set(component, action.property.value, action.state.toString() === 'true');\n      }\n      break;\n    case 'string': {\n      const evalData = {\n        data,\n        row,\n        component,\n        result\n      };\n      const textValue = action.property.component ? action[action.property.component] : action.text;\n      const newValue = (instance && instance.interpolate) ?\n        instance.interpolate(textValue, evalData) :\n        interpolate(textValue, evalData);\n      if (newValue !== _.get(component, action.property.value, '')) {\n        _.set(component, action.property.value, newValue);\n      }\n      break;\n    }\n  }\n  return component;\n}\n\nconst templateCache = {};\nconst templateHashCache = {};\n\nfunction interpolateTemplate(template) {\n  const templateSettings = {\n    evaluate: /\\{%([\\s\\S]+?)%\\}/g,\n    interpolate: /\\{\\{([\\s\\S]+?)\\}\\}/g,\n    escape: /\\{\\{\\{([\\s\\S]+?)\\}\\}\\}/g\n  };\n  try {\n    return _.template(template, templateSettings);\n  }\n  catch (err) {\n    console.warn('Error while processing template', err, template);\n  }\n}\n\nexport function addTemplateHash(template) {\n  const hash = stringHash(template);\n  templateHashCache[hash] = interpolateTemplate(template);\n  return hash;\n}\n\n/**\n * Interpolate a string and add data replacements.\n *\n * @param string\n * @param data\n * @returns {XML|string|*|void}\n */\nexport function interpolate(rawTemplate, data) {\n  const template = _.isNumber(rawTemplate)\n    ? templateHashCache[rawTemplate]\n    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);\n  if (typeof template === 'function') {\n    try {\n      return template(data);\n    }\n    catch (err) {\n      console.warn('Error interpolating template', err, rawTemplate, data);\n    }\n  }\n  return template;\n}\n\n/**\n * Make a filename guaranteed to be unique.\n * @param name\n * @returns {string}\n */\nexport function uniqueName(name) {\n  const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');\n  const fileName = parts[0];\n  const ext = parts.length > 1\n    ? `.${_.last(parts)}`\n    : '';\n  return `${fileName.substr(0, 10)}-${guid()}${ext}`;\n}\n\nexport function guid() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {\n    const r = Math.random()*16|0;\n    const v = c === 'x'\n      ? r\n      : (r&0x3|0x8);\n    return v.toString(16);\n  });\n}\n\n/**\n * Return a translated date setting.\n *\n * @param date\n * @return {(null|Date)}\n */\nexport function getDateSetting(date) {\n  if (_.isNil(date) || _.isNaN(date) || date === '') {\n    return null;\n  }\n\n  if (date instanceof Date) {\n    return date;\n  }\n  else if (typeof date.toDate === 'function') {\n    return date.isValid() ? date.toDate() : null;\n  }\n\n  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;\n  if (dateSetting && dateSetting.isValid()) {\n    return dateSetting.toDate();\n  }\n\n  dateSetting = null;\n  try {\n    const value = (new Function('moment', `return ${date};`))(moment);\n    if (typeof value === 'string') {\n      dateSetting = moment(value);\n    }\n    else if (typeof value.toDate === 'function') {\n      dateSetting = moment(value.toDate().toUTCString());\n    }\n    else if (value instanceof Date) {\n      dateSetting = moment(value);\n    }\n  }\n  catch (e) {\n    return null;\n  }\n\n  if (!dateSetting) {\n    return null;\n  }\n\n  // Ensure this is a date.\n  if (!dateSetting.isValid()) {\n    return null;\n  }\n\n  return dateSetting.toDate();\n}\n\nexport function isValidDate(date) {\n  return _.isDate(date) && !_.isNaN(date.getDate());\n}\n\n/**\n * Get the current timezone string.\n *\n * @return {string}\n */\nexport function currentTimezone() {\n  if (moment.currentTimezone) {\n    return moment.currentTimezone;\n  }\n  moment.currentTimezone = jtz.determine().name();\n  return moment.currentTimezone;\n}\n\n/**\n * Get an offset date provided a date object and timezone object.\n *\n * @param date\n * @param timezone\n * @return {Date}\n */\nexport function offsetDate(date, timezone) {\n  if (timezone === 'UTC') {\n    return {\n      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),\n      abbr: 'UTC'\n    };\n  }\n  const dateMoment = moment(date).tz(timezone);\n  return {\n    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),\n    abbr: dateMoment.format('z')\n  };\n}\n\n/**\n * Returns if the zones are loaded.\n *\n * @return {boolean}\n */\nexport function zonesLoaded() {\n  return moment.zonesLoaded;\n}\n\n/**\n * Returns if we should load the zones.\n *\n * @param timezone\n * @return {boolean}\n */\nexport function shouldLoadZones(timezone) {\n  if (timezone === currentTimezone() || timezone === 'UTC') {\n    return false;\n  }\n  return true;\n}\n\n/**\n * Externally load the timezone data.\n *\n * @return {Promise<any> | *}\n */\nexport function loadZones(timezone) {\n  if (timezone && !shouldLoadZones(timezone)) {\n    // Return non-resolving promise.\n    return new Promise(_.noop);\n  }\n\n  if (moment.zonesPromise) {\n    return moment.zonesPromise;\n  }\n  return moment.zonesPromise = fetch(\n    'https://formio.github.io/formio.js/resources/latest.json',\n  ).then(resp => resp.json().then(zones => {\n    moment.tz.load(zones);\n    moment.zonesLoaded = true;\n\n    // Trigger a global event that the timezones have finished loading.\n    if (document && document.createEvent && document.body && document.body.dispatchEvent) {\n      var event = document.createEvent('Event');\n      event.initEvent('zonesLoaded', true, true);\n      document.body.dispatchEvent(event);\n    }\n  }));\n}\n\n/**\n * Get the moment date object for translating dates with timezones.\n *\n * @param value\n * @param format\n * @param timezone\n * @return {*}\n */\nexport function momentDate(value, format, timezone) {\n  const momentDate = moment(value);\n  if (timezone === 'UTC') {\n    timezone = 'Etc/UTC';\n  }\n  if ((timezone !== currentTimezone() || (format && format.match(/\\s(z$|z\\s)/))) && moment.zonesLoaded) {\n    return momentDate.tz(timezone);\n  }\n  return momentDate;\n}\n\n/**\n * Format a date provided a value, format, and timezone object.\n *\n * @param value\n * @param format\n * @param timezone\n * @return {string}\n */\nexport function formatDate(value, format, timezone) {\n  const momentDate = moment(value);\n  if (timezone === currentTimezone()) {\n    // See if our format contains a \"z\" timezone character.\n    if (format.match(/\\s(z$|z\\s)/)) {\n      loadZones();\n      if (moment.zonesLoaded) {\n        return momentDate.tz(timezone).format(convertFormatToMoment(format));\n      }\n      else {\n        return momentDate.format(convertFormatToMoment(format.replace(/\\s(z$|z\\s)/, '')));\n      }\n    }\n\n    // Return the standard format.\n    return momentDate.format(convertFormatToMoment(format));\n  }\n  if (timezone === 'UTC') {\n    const offset = offsetDate(momentDate.toDate(), 'UTC');\n    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;\n  }\n\n  // Load the zones since we need timezone information.\n  loadZones();\n  if (moment.zonesLoaded) {\n    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);\n  }\n  else {\n    return momentDate.format(convertFormatToMoment(format));\n  }\n}\n\n/**\n * Pass a format function to format within a timezone.\n *\n * @param formatFn\n * @param date\n * @param format\n * @param timezone\n * @return {string}\n */\nexport function formatOffset(formatFn, date, format, timezone) {\n  if (timezone === currentTimezone()) {\n    return formatFn(date, format);\n  }\n  if (timezone === 'UTC') {\n    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;\n  }\n\n  // Load the zones since we need timezone information.\n  loadZones();\n  if (moment.zonesLoaded) {\n    const offset = offsetDate(date, timezone);\n    return `${formatFn(offset.date, format)} ${offset.abbr}`;\n  }\n  else {\n    return formatFn(date, format);\n  }\n}\n\nexport function getLocaleDateFormatInfo(locale) {\n  const formatInfo = {};\n\n  const day = 21;\n  const exampleDate = new Date(2017, 11, day);\n  const localDateString = exampleDate.toLocaleDateString(locale);\n\n  formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();\n\n  return formatInfo;\n}\n\n/**\n * Convert the format from the angular-datepicker module to flatpickr format.\n * @param format\n * @return {string}\n */\nexport function convertFormatToFlatpickr(format) {\n  return format\n  // Remove the Z timezone offset, not supported by flatpickr.\n    .replace(/Z/g, '')\n\n    // Year conversion.\n    .replace(/y/g, 'Y')\n    .replace('YYYY', 'Y')\n    .replace('YY', 'y')\n\n    // Month conversion.\n    .replace('MMMM', 'F')\n    .replace(/M/g, 'n')\n    .replace('nnn', 'M')\n    .replace('nn', 'm')\n\n    // Day in month.\n    .replace(/d/g, 'j')\n    .replace(/jj/g, 'd')\n\n    // Day in week.\n    .replace('EEEE', 'l')\n    .replace('EEE', 'D')\n\n    // Hours, minutes, seconds\n    .replace('HH', 'H')\n    .replace('hh', 'h')\n    .replace('mm', 'i')\n    .replace('ss', 'S')\n    .replace(/a/g, 'K');\n}\n\n/**\n * Convert the format from the angular-datepicker module to moment format.\n * @param format\n * @return {string}\n */\nexport function convertFormatToMoment(format) {\n  return format\n    // Year conversion.\n    .replace(/y/g, 'Y')\n    // Day in month.\n    .replace(/d/g, 'D')\n    // Day in week.\n    .replace(/E/g, 'd')\n    // AM/PM marker\n    .replace(/a/g, 'A');\n}\n\nexport function convertFormatToMask(format) {\n  return format\n    // Short and long month replacement.\n    .replace(/(MMM|MMMM)/g, 'MM')\n    // Year conversion\n    .replace(/[ydhmsHM]/g, '9')\n    // AM/PM conversion\n    .replace(/a/g, 'AA');\n}\n\n/**\n * Returns an input mask that is compatible with the input mask library.\n * @param {string} mask - The Form.io input mask.\n * @returns {Array} - The input mask for the mask library.\n */\nexport function getInputMask(mask) {\n  if (mask instanceof Array) {\n    return mask;\n  }\n  const maskArray = [];\n  maskArray.numeric = true;\n  for (let i = 0; i < mask.length; i++) {\n    switch (mask[i]) {\n      case '9':\n        maskArray.push(/\\d/);\n        break;\n      case 'A':\n        maskArray.numeric = false;\n        maskArray.push(/[a-zA-Z]/);\n        break;\n      case 'a':\n        maskArray.numeric = false;\n        maskArray.push(/[a-z]/);\n        break;\n      case '*':\n        maskArray.numeric = false;\n        maskArray.push(/[a-zA-Z0-9]/);\n        break;\n      default:\n        maskArray.push(mask[i]);\n        break;\n    }\n  }\n  return maskArray;\n}\n\nexport function matchInputMask(value, inputMask) {\n  if (!inputMask) {\n    return true;\n  }\n  for (let i = 0; i < inputMask.length; i++) {\n    const char = value[i];\n    const charPart = inputMask[i];\n\n    if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {\n      return false;\n    }\n  }\n\n  return true;\n}\n\nexport function getNumberSeparators(lang = 'en') {\n  const formattedNumberString = (12345.6789).toLocaleString(lang);\n  const delimeters = formattedNumberString.match(/..(.)...(.)../);\n  if (!delimeters) {\n    return {\n      delimiter: ',',\n      decimalSeparator: '.'\n    };\n  }\n  return {\n    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',\n    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',\n  };\n}\n\nexport function getNumberDecimalLimit(component) {\n  // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.\n  let decimalLimit = 20;\n  const step = _.get(component, 'validate.step', 'any');\n\n  if (step !== 'any') {\n    const parts = step.toString().split('.');\n    if (parts.length > 1) {\n      decimalLimit = parts[1].length;\n    }\n  }\n\n  return decimalLimit;\n}\n\nexport function getCurrencyAffixes({\n  currency = 'USD',\n  decimalLimit,\n  decimalSeparator,\n  lang,\n}) {\n  // Get the prefix and suffix from the localized string.\n  let regex = '(.*)?100';\n  if (decimalLimit) {\n    regex += `${decimalSeparator === '.' ? '\\\\.' : decimalSeparator}0{${decimalLimit}}`;\n  }\n  regex += '(.*)?';\n  const parts = (100).toLocaleString(lang, {\n    style: 'currency',\n    currency,\n    useGrouping: true,\n    maximumFractionDigits: decimalLimit,\n    minimumFractionDigits: decimalLimit\n  }).replace('.', decimalSeparator).match(new RegExp(regex));\n  return {\n    prefix: parts[1] || '',\n    suffix: parts[2] || ''\n  };\n}\n\n/**\n * Fetch the field data provided a component.\n *\n * @param data\n * @param component\n * @return {*}\n */\nexport function fieldData(data, component) {\n  if (!data) {\n    return '';\n  }\n  if (!component || !component.key) {\n    return data;\n  }\n  if (component.key.includes('.')) {\n    let value = data;\n    const parts = component.key.split('.');\n    let key = '';\n    for (let i = 0; i < parts.length; i++) {\n      key = parts[i];\n\n      // Handle nested resources\n      if (value.hasOwnProperty('_id')) {\n        value = value.data;\n      }\n\n      // Return if the key is not found on the value.\n      if (!value.hasOwnProperty(key)) {\n        return;\n      }\n\n      // Convert old single field data in submissions to multiple\n      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {\n        value[key] = [value[key]];\n      }\n\n      // Set the value of this key.\n      value = value[key];\n    }\n    return value;\n  }\n  else {\n    // Convert old single field data in submissions to multiple\n    if (component.multiple && !Array.isArray(data[component.key])) {\n      data[component.key] = [data[component.key]];\n    }\n    return data[component.key];\n  }\n}\n\n/**\n * Delays function execution with possibility to execute function synchronously or cancel it.\n *\n * @param fn Function to delay\n * @param delay Delay time\n * @return {*}\n */\nexport function delay(fn, delay = 0, ...args) {\n  const timer = setTimeout(fn, delay, ...args);\n\n  function cancel() {\n    clearTimeout(timer);\n  }\n\n  function earlyCall() {\n    cancel();\n    return fn(...args);\n  }\n\n  earlyCall.timer = timer;\n  earlyCall.cancel = cancel;\n\n  return earlyCall;\n}\n\n/**\n * Iterate the given key to make it unique.\n *\n * @param {String} key\n *   Modify the component key to be unique.\n *\n * @returns {String}\n *   The new component key.\n */\nexport function iterateKey(key) {\n  if (!key.match(/(\\d+)$/)) {\n    return `${key}2`;\n  }\n\n  return key.replace(/(\\d+)$/, function(suffix) {\n    return Number(suffix) + 1;\n  });\n}\n\n/**\n * Determines a unique key within a map provided the base key.\n *\n * @param map\n * @param base\n * @return {*}\n */\nexport function uniqueKey(map, base) {\n  let newKey = base;\n  while (map.hasOwnProperty(newKey)) {\n    newKey = iterateKey(newKey);\n  }\n  return newKey;\n}\n\n/**\n * Determines the major version number of bootstrap.\n *\n * @return {number}\n */\nexport function bootstrapVersion() {\n  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {\n    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);\n  }\n  return 0;\n}\n\n/**\n * Retrun provided argument.\n * If argument is a function, returns the result of a function call.\n * @param {*} e;\n *\n * @return {*}\n */\nexport function unfold(e) {\n  if (typeof e === 'function') {\n    return e();\n  }\n\n  return e;\n}\n\n/**\n * Map values through unfold and return first non-nil value.\n * @param {Array<T>} collection;\n *\n * @return {T}\n */\nexport const firstNonNil = _.flow([\n  _.partialRight(_.map, unfold),\n  _.partialRight(_.find, v => !_.isUndefined(v))\n]);\n\n/*\n * Create enclosed state.\n * Returns functions to getting and cycling between states.\n * @param {*} a - initial state.\n * @param {*} b - next state.\n * @return {Functions[]} -- [get, toggle];\n */\nexport function withSwitch(a, b) {\n  let state = a;\n  let next = b;\n\n  function get() {\n    return state;\n  }\n\n  function toggle() {\n    const prev = state;\n    state = next;\n    next = prev;\n  }\n\n  return [get, toggle];\n}\n\nexport function observeOverload(callback, options = {}) {\n  const { limit = 50, delay = 500 } = options;\n  let callCount = 0;\n  let timeoutID = 0;\n\n  const reset = () => callCount = 0;\n\n  return () => {\n    if (timeoutID !== 0) {\n      clearTimeout(timeoutID);\n      timeoutID = 0;\n    }\n\n    timeoutID = setTimeout(reset, delay);\n\n    callCount += 1;\n\n    if (callCount >= limit) {\n      clearTimeout(timeoutID);\n      reset();\n      return callback();\n    }\n  };\n}\n",
+    "content": "/* global $ */\n\nimport _ from 'lodash';\nimport 'whatwg-fetch';\nimport jsonLogic from 'json-logic-js';\nimport moment from 'moment-timezone/moment-timezone';\nimport jtz from 'jstimezonedetect';\nimport { lodashOperators } from './jsonlogic/operators';\nimport Promise from 'native-promise-only';\nimport { getValue } from './formUtils';\nimport stringHash from 'string-hash';\n\nexport * from './formUtils';\n\n// Configure JsonLogic\nlodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));\n\n// Retrieve Any Date\njsonLogic.add_operation('getDate', (date) => {\n  return moment(date).toISOString();\n});\n\n// Set Relative Minimum Date\njsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {\n  return moment().subtract(relativeMinDate, 'days').toISOString();\n});\n\n// Set Relative Maximum Date\njsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {\n  return moment().add(relativeMaxDate, 'days').toISOString();\n});\n\nexport { jsonLogic, moment };\n\n/**\n * Evaluate a method.\n *\n * @param func\n * @param args\n * @return {*}\n */\nexport function evaluate(func, args, ret, tokenize) {\n  let returnVal = null;\n  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };\n  if (!args.form && args.instance) {\n    args.form = _.get(args.instance, 'root._form', {});\n  }\n  args.form = _.cloneDeep(args.form);\n  const componentKey = args.component.key;\n  if (typeof func === 'string') {\n    if (ret) {\n      func += `;return ${ret}`;\n    }\n    const params = _.keys(args);\n\n    if (tokenize) {\n      // Replace all {{ }} references with actual data.\n      func = func.replace(/({{\\s+(.*)\\s+}})/, (match, $1, $2) => {\n        if ($2.indexOf('data.') === 0) {\n          return _.get(args.data, $2.replace('data.', ''));\n        }\n        else if ($2.indexOf('row.') === 0) {\n          return _.get(args.row, $2.replace('row.', ''));\n        }\n\n        // Support legacy...\n        return _.get(args.data, $2);\n      });\n    }\n\n    try {\n      func = new Function(...params, func);\n      args = _.values(args);\n    }\n    catch (err) {\n      console.warn(`An error occured within the custom function for ${componentKey}`, err);\n      returnVal = null;\n      func = false;\n    }\n  }\n  if (typeof func === 'function') {\n    try {\n      returnVal = Array.isArray(args) ? func(...args) : func(args);\n    }\n    catch (err) {\n      returnVal = null;\n      console.warn(`An error occured within custom function for ${componentKey}`, err);\n    }\n  }\n  else if (typeof func === 'object') {\n    try {\n      returnVal = jsonLogic.apply(func, args);\n    }\n    catch (err) {\n      returnVal = null;\n      console.warn(`An error occured within custom function for ${componentKey}`, err);\n    }\n  }\n  else if (func) {\n    console.warn(`Unknown function type for ${componentKey}`);\n  }\n  return returnVal;\n}\n\nexport function getRandomComponentId() {\n  return `e${Math.random().toString(36).substring(7)}`;\n}\n\n/**\n * Get a property value of an element.\n *\n * @param style\n * @param prop\n * @return {number}\n */\nexport function getPropertyValue(style, prop) {\n  let value = style.getPropertyValue(prop);\n  value = value ? value.replace(/[^0-9.]/g, '') : '0';\n  return parseFloat(value);\n}\n\n/**\n * Get an elements bounding rectagle.\n *\n * @param element\n * @return {{x: string, y: string, width: string, height: string}}\n */\nexport function getElementRect(element) {\n  const style = window.getComputedStyle(element, null);\n  return {\n    x: getPropertyValue(style, 'left'),\n    y: getPropertyValue(style, 'top'),\n    width: getPropertyValue(style, 'width'),\n    height: getPropertyValue(style, 'height')\n  };\n}\n\n/**\n * Determines the boolean value of a setting.\n *\n * @param value\n * @return {boolean}\n */\nexport function boolValue(value) {\n  if (_.isBoolean(value)) {\n    return value;\n  }\n  else if (_.isString(value)) {\n    return (value.toLowerCase() === 'true');\n  }\n  else {\n    return !!value;\n  }\n}\n\n/**\n * Check to see if an ID is a mongoID.\n * @param text\n * @return {Array|{index: number, input: string}|Boolean|*}\n */\nexport function isMongoId(text) {\n  return text.toString().match(/^[0-9a-fA-F]{24}$/);\n}\n\n/**\n * Checks the calculated value for a provided component and data.\n *\n * @param {Object} component\n *   The component to check for the calculated value.\n * @param {Object} submission\n *   A submission object.\n * @param data\n *   The full submission data.\n */\nexport function checkCalculated(component, submission, rowData) {\n  // Process calculated value stuff if present.\n  if (component.calculateValue) {\n    _.set(rowData, component.key, evaluate(component.calculateValue, {\n      value: undefined,\n      data: submission ? submission.data : rowData,\n      row: rowData,\n      util: this,\n      component\n    }, 'value'));\n  }\n}\n\n/**\n * Check if a simple conditional evaluates to true.\n *\n * @param condition\n * @param condition\n * @param row\n * @param data\n * @returns {boolean}\n */\nexport function checkSimpleConditional(component, condition, row, data) {\n  let value = null;\n  if (row) {\n    value = getValue({ data: row }, condition.when);\n  }\n  if (data && _.isNil(value)) {\n    value = getValue({ data }, condition.when);\n  }\n  // FOR-400 - Fix issue where falsey values were being evaluated as show=true\n  if (_.isNil(value)) {\n    value = '';\n  }\n\n  const eq = String(condition.eq);\n  const show = String(condition.show);\n\n  // Special check for selectboxes component.\n  if (_.isObject(value) && _.has(value, condition.eq)) {\n    return String(value[condition.eq]) === show;\n  }\n  // FOR-179 - Check for multiple values.\n  if (Array.isArray(value) && value.map(String).includes(eq)) {\n    return show === 'true';\n  }\n\n  return (String(value) === eq) === (show === 'true');\n}\n\n/**\n * Check custom javascript conditional.\n *\n * @param component\n * @param custom\n * @param row\n * @param data\n * @returns {*}\n */\nexport function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {\n  if (typeof custom === 'string') {\n    custom = `var ${variable} = true; ${custom}; return ${variable};`;\n  }\n  const value = (instance && instance.evaluate) ?\n    instance.evaluate(custom) :\n    evaluate(custom, { row, data, form });\n  if (value === null) {\n    return onError;\n  }\n  return value;\n}\n\nexport function checkJsonConditional(component, json, row, data, form, onError) {\n  try {\n    return jsonLogic.apply(json, {\n      data,\n      row,\n      form,\n      _\n    });\n  }\n  catch (err) {\n    console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);\n    return onError;\n  }\n}\n\n/**\n * Checks the conditions for a provided component and data.\n *\n * @param component\n *   The component to check for the condition.\n * @param row\n *   The data within a row\n * @param data\n *   The full submission data.\n *\n * @returns {boolean}\n */\nexport function checkCondition(component, row, data, form, instance) {\n  if (component.customConditional) {\n    return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);\n  }\n  else if (component.conditional && component.conditional.when) {\n    return checkSimpleConditional(component, component.conditional, row, data, true);\n  }\n  else if (component.conditional && component.conditional.json) {\n    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);\n  }\n\n  // Default to show.\n  return true;\n}\n\n/**\n * Test a trigger on a component.\n *\n * @param component\n * @param action\n * @param data\n * @param row\n * @returns {mixed}\n */\nexport function checkTrigger(component, trigger, row, data, form, instance) {\n  switch (trigger.type) {\n    case 'simple':\n      return checkSimpleConditional(component, trigger.simple, row, data);\n    case 'javascript':\n      return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);\n    case 'json':\n      return checkJsonConditional(component, trigger.json, row, data, form, false);\n  }\n  // If none of the types matched, don't fire the trigger.\n  return false;\n}\n\nexport function setActionProperty(component, action, row, data, result, instance) {\n  switch (action.property.type) {\n    case 'boolean':\n      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {\n        _.set(component, action.property.value, action.state.toString() === 'true');\n      }\n      break;\n    case 'string': {\n      const evalData = {\n        data,\n        row,\n        component,\n        result\n      };\n      const textValue = action.property.component ? action[action.property.component] : action.text;\n      const newValue = (instance && instance.interpolate) ?\n        instance.interpolate(textValue, evalData) :\n        interpolate(textValue, evalData);\n      if (newValue !== _.get(component, action.property.value, '')) {\n        _.set(component, action.property.value, newValue);\n      }\n      break;\n    }\n  }\n  return component;\n}\n\nconst templateCache = {};\nconst templateHashCache = {};\n\nfunction interpolateTemplate(template) {\n  const templateSettings = {\n    evaluate: /\\{%([\\s\\S]+?)%\\}/g,\n    interpolate: /\\{\\{([\\s\\S]+?)\\}\\}/g,\n    escape: /\\{\\{\\{([\\s\\S]+?)\\}\\}\\}/g\n  };\n  try {\n    return _.template(template, templateSettings);\n  }\n  catch (err) {\n    console.warn('Error while processing template', err, template);\n  }\n}\n\nexport function addTemplateHash(template) {\n  const hash = stringHash(template);\n  templateHashCache[hash] = interpolateTemplate(template);\n  return hash;\n}\n\n/**\n * Interpolate a string and add data replacements.\n *\n * @param string\n * @param data\n * @returns {XML|string|*|void}\n */\nexport function interpolate(rawTemplate, data) {\n  const template = _.isNumber(rawTemplate)\n    ? templateHashCache[rawTemplate]\n    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);\n  if (typeof template === 'function') {\n    try {\n      return template(data);\n    }\n    catch (err) {\n      console.warn('Error interpolating template', err, rawTemplate, data);\n    }\n  }\n  return template;\n}\n\n/**\n * Make a filename guaranteed to be unique.\n * @param name\n * @returns {string}\n */\nexport function uniqueName(name) {\n  const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');\n  const fileName = parts[0];\n  const ext = parts.length > 1\n    ? `.${_.last(parts)}`\n    : '';\n  return `${fileName.substr(0, 10)}-${guid()}${ext}`;\n}\n\nexport function guid() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {\n    const r = Math.random()*16|0;\n    const v = c === 'x'\n      ? r\n      : (r&0x3|0x8);\n    return v.toString(16);\n  });\n}\n\n/**\n * Return a translated date setting.\n *\n * @param date\n * @return {(null|Date)}\n */\nexport function getDateSetting(date) {\n  if (_.isNil(date) || _.isNaN(date) || date === '') {\n    return null;\n  }\n\n  if (date instanceof Date) {\n    return date;\n  }\n  else if (typeof date.toDate === 'function') {\n    return date.isValid() ? date.toDate() : null;\n  }\n\n  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;\n  if (dateSetting && dateSetting.isValid()) {\n    return dateSetting.toDate();\n  }\n\n  dateSetting = null;\n  try {\n    const value = (new Function('moment', `return ${date};`))(moment);\n    if (typeof value === 'string') {\n      dateSetting = moment(value);\n    }\n    else if (typeof value.toDate === 'function') {\n      dateSetting = moment(value.toDate().toUTCString());\n    }\n    else if (value instanceof Date) {\n      dateSetting = moment(value);\n    }\n  }\n  catch (e) {\n    return null;\n  }\n\n  if (!dateSetting) {\n    return null;\n  }\n\n  // Ensure this is a date.\n  if (!dateSetting.isValid()) {\n    return null;\n  }\n\n  return dateSetting.toDate();\n}\n\nexport function isValidDate(date) {\n  return _.isDate(date) && !_.isNaN(date.getDate());\n}\n\n/**\n * Get the current timezone string.\n *\n * @return {string}\n */\nexport function currentTimezone() {\n  if (moment.currentTimezone) {\n    return moment.currentTimezone;\n  }\n  moment.currentTimezone = jtz.determine().name();\n  return moment.currentTimezone;\n}\n\n/**\n * Get an offset date provided a date object and timezone object.\n *\n * @param date\n * @param timezone\n * @return {Date}\n */\nexport function offsetDate(date, timezone) {\n  if (timezone === 'UTC') {\n    return {\n      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),\n      abbr: 'UTC'\n    };\n  }\n  const dateMoment = moment(date).tz(timezone);\n  return {\n    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),\n    abbr: dateMoment.format('z')\n  };\n}\n\n/**\n * Returns if the zones are loaded.\n *\n * @return {boolean}\n */\nexport function zonesLoaded() {\n  return moment.zonesLoaded;\n}\n\n/**\n * Returns if we should load the zones.\n *\n * @param timezone\n * @return {boolean}\n */\nexport function shouldLoadZones(timezone) {\n  if (timezone === currentTimezone() || timezone === 'UTC') {\n    return false;\n  }\n  return true;\n}\n\n/**\n * Externally load the timezone data.\n *\n * @return {Promise<any> | *}\n */\nexport function loadZones(timezone) {\n  if (timezone && !shouldLoadZones(timezone)) {\n    // Return non-resolving promise.\n    return new Promise(_.noop);\n  }\n\n  if (moment.zonesPromise) {\n    return moment.zonesPromise;\n  }\n  return moment.zonesPromise = fetch(\n    'https://formio.github.io/formio.js/resources/latest.json',\n  ).then(resp => resp.json().then(zones => {\n    moment.tz.load(zones);\n    moment.zonesLoaded = true;\n\n    // Trigger a global event that the timezones have finished loading.\n    if (document && document.createEvent && document.body && document.body.dispatchEvent) {\n      var event = document.createEvent('Event');\n      event.initEvent('zonesLoaded', true, true);\n      document.body.dispatchEvent(event);\n    }\n  }));\n}\n\n/**\n * Get the moment date object for translating dates with timezones.\n *\n * @param value\n * @param format\n * @param timezone\n * @return {*}\n */\nexport function momentDate(value, format, timezone) {\n  const momentDate = moment(value);\n  if (timezone === 'UTC') {\n    timezone = 'Etc/UTC';\n  }\n  if ((timezone !== currentTimezone() || (format && format.match(/\\s(z$|z\\s)/))) && moment.zonesLoaded) {\n    return momentDate.tz(timezone);\n  }\n  return momentDate;\n}\n\n/**\n * Format a date provided a value, format, and timezone object.\n *\n * @param value\n * @param format\n * @param timezone\n * @return {string}\n */\nexport function formatDate(value, format, timezone) {\n  const momentDate = moment(value);\n  if (timezone === currentTimezone()) {\n    // See if our format contains a \"z\" timezone character.\n    if (format.match(/\\s(z$|z\\s)/)) {\n      loadZones();\n      if (moment.zonesLoaded) {\n        return momentDate.tz(timezone).format(convertFormatToMoment(format));\n      }\n      else {\n        return momentDate.format(convertFormatToMoment(format.replace(/\\s(z$|z\\s)/, '')));\n      }\n    }\n\n    // Return the standard format.\n    return momentDate.format(convertFormatToMoment(format));\n  }\n  if (timezone === 'UTC') {\n    const offset = offsetDate(momentDate.toDate(), 'UTC');\n    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;\n  }\n\n  // Load the zones since we need timezone information.\n  loadZones();\n  if (moment.zonesLoaded) {\n    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);\n  }\n  else {\n    return momentDate.format(convertFormatToMoment(format));\n  }\n}\n\n/**\n * Pass a format function to format within a timezone.\n *\n * @param formatFn\n * @param date\n * @param format\n * @param timezone\n * @return {string}\n */\nexport function formatOffset(formatFn, date, format, timezone) {\n  if (timezone === currentTimezone()) {\n    return formatFn(date, format);\n  }\n  if (timezone === 'UTC') {\n    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;\n  }\n\n  // Load the zones since we need timezone information.\n  loadZones();\n  if (moment.zonesLoaded) {\n    const offset = offsetDate(date, timezone);\n    return `${formatFn(offset.date, format)} ${offset.abbr}`;\n  }\n  else {\n    return formatFn(date, format);\n  }\n}\n\nexport function getLocaleDateFormatInfo(locale) {\n  const formatInfo = {};\n\n  const day = 21;\n  const exampleDate = new Date(2017, 11, day);\n  const localDateString = exampleDate.toLocaleDateString(locale);\n\n  formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();\n\n  return formatInfo;\n}\n\n/**\n * Convert the format from the angular-datepicker module to flatpickr format.\n * @param format\n * @return {string}\n */\nexport function convertFormatToFlatpickr(format) {\n  return format\n  // Remove the Z timezone offset, not supported by flatpickr.\n    .replace(/Z/g, '')\n\n    // Year conversion.\n    .replace(/y/g, 'Y')\n    .replace('YYYY', 'Y')\n    .replace('YY', 'y')\n\n    // Month conversion.\n    .replace('MMMM', 'F')\n    .replace(/M/g, 'n')\n    .replace('nnn', 'M')\n    .replace('nn', 'm')\n\n    // Day in month.\n    .replace(/d/g, 'j')\n    .replace(/jj/g, 'd')\n\n    // Day in week.\n    .replace('EEEE', 'l')\n    .replace('EEE', 'D')\n\n    // Hours, minutes, seconds\n    .replace('HH', 'H')\n    .replace('hh', 'h')\n    .replace('mm', 'i')\n    .replace('ss', 'S')\n    .replace(/a/g, 'K');\n}\n\n/**\n * Convert the format from the angular-datepicker module to moment format.\n * @param format\n * @return {string}\n */\nexport function convertFormatToMoment(format) {\n  return format\n    // Year conversion.\n    .replace(/y/g, 'Y')\n    // Day in month.\n    .replace(/d/g, 'D')\n    // Day in week.\n    .replace(/E/g, 'd')\n    // AM/PM marker\n    .replace(/a/g, 'A');\n}\n\nexport function convertFormatToMask(format) {\n  return format\n    // Short and long month replacement.\n    .replace(/(MMM|MMMM)/g, 'MM')\n    // Year conversion\n    .replace(/[ydhmsHM]/g, '9')\n    // AM/PM conversion\n    .replace(/a/g, 'AA');\n}\n\n/**\n * Returns an input mask that is compatible with the input mask library.\n * @param {string} mask - The Form.io input mask.\n * @returns {Array} - The input mask for the mask library.\n */\nexport function getInputMask(mask) {\n  if (mask instanceof Array) {\n    return mask;\n  }\n  const maskArray = [];\n  maskArray.numeric = true;\n  for (let i = 0; i < mask.length; i++) {\n    switch (mask[i]) {\n      case '9':\n        maskArray.push(/\\d/);\n        break;\n      case 'A':\n        maskArray.numeric = false;\n        maskArray.push(/[a-zA-Z]/);\n        break;\n      case 'a':\n        maskArray.numeric = false;\n        maskArray.push(/[a-z]/);\n        break;\n      case '*':\n        maskArray.numeric = false;\n        maskArray.push(/[a-zA-Z0-9]/);\n        break;\n      default:\n        maskArray.push(mask[i]);\n        break;\n    }\n  }\n  return maskArray;\n}\n\nexport function matchInputMask(value, inputMask) {\n  if (!inputMask) {\n    return true;\n  }\n  for (let i = 0; i < inputMask.length; i++) {\n    const char = value[i];\n    const charPart = inputMask[i];\n\n    if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {\n      return false;\n    }\n  }\n\n  return true;\n}\n\nexport function getNumberSeparators(lang = 'en') {\n  const formattedNumberString = (12345.6789).toLocaleString(lang);\n  const delimeters = formattedNumberString.match(/..(.)...(.)../);\n  if (!delimeters) {\n    return {\n      delimiter: ',',\n      decimalSeparator: '.'\n    };\n  }\n  return {\n    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',\n    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',\n  };\n}\n\nexport function getNumberDecimalLimit(component) {\n  // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.\n  let decimalLimit = 20;\n  const step = _.get(component, 'validate.step', 'any');\n\n  if (step !== 'any') {\n    const parts = step.toString().split('.');\n    if (parts.length > 1) {\n      decimalLimit = parts[1].length;\n    }\n  }\n\n  return decimalLimit;\n}\n\nexport function getCurrencyAffixes({\n  currency = 'USD',\n  decimalLimit,\n  decimalSeparator,\n  lang,\n}) {\n  // Get the prefix and suffix from the localized string.\n  let regex = '(.*)?100';\n  if (decimalLimit) {\n    regex += `${decimalSeparator === '.' ? '\\\\.' : decimalSeparator}0{${decimalLimit}}`;\n  }\n  regex += '(.*)?';\n  const parts = (100).toLocaleString(lang, {\n    style: 'currency',\n    currency,\n    useGrouping: true,\n    maximumFractionDigits: decimalLimit,\n    minimumFractionDigits: decimalLimit\n  }).replace('.', decimalSeparator).match(new RegExp(regex));\n  return {\n    prefix: parts[1] || '',\n    suffix: parts[2] || ''\n  };\n}\n\n/**\n * Fetch the field data provided a component.\n *\n * @param data\n * @param component\n * @return {*}\n */\nexport function fieldData(data, component) {\n  if (!data) {\n    return '';\n  }\n  if (!component || !component.key) {\n    return data;\n  }\n  if (component.key.includes('.')) {\n    let value = data;\n    const parts = component.key.split('.');\n    let key = '';\n    for (let i = 0; i < parts.length; i++) {\n      key = parts[i];\n\n      // Handle nested resources\n      if (value.hasOwnProperty('_id')) {\n        value = value.data;\n      }\n\n      // Return if the key is not found on the value.\n      if (!value.hasOwnProperty(key)) {\n        return;\n      }\n\n      // Convert old single field data in submissions to multiple\n      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {\n        value[key] = [value[key]];\n      }\n\n      // Set the value of this key.\n      value = value[key];\n    }\n    return value;\n  }\n  else {\n    // Convert old single field data in submissions to multiple\n    if (component.multiple && !Array.isArray(data[component.key])) {\n      data[component.key] = [data[component.key]];\n    }\n    return data[component.key];\n  }\n}\n\n/**\n * Delays function execution with possibility to execute function synchronously or cancel it.\n *\n * @param fn Function to delay\n * @param delay Delay time\n * @return {*}\n */\nexport function delay(fn, delay = 0, ...args) {\n  const timer = setTimeout(fn, delay, ...args);\n\n  function cancel() {\n    clearTimeout(timer);\n  }\n\n  function earlyCall() {\n    cancel();\n    return fn(...args);\n  }\n\n  earlyCall.timer = timer;\n  earlyCall.cancel = cancel;\n\n  return earlyCall;\n}\n\n/**\n * Iterate the given key to make it unique.\n *\n * @param {String} key\n *   Modify the component key to be unique.\n *\n * @returns {String}\n *   The new component key.\n */\nexport function iterateKey(key) {\n  if (!key.match(/(\\d+)$/)) {\n    return `${key}2`;\n  }\n\n  return key.replace(/(\\d+)$/, function(suffix) {\n    return Number(suffix) + 1;\n  });\n}\n\n/**\n * Determines a unique key within a map provided the base key.\n *\n * @param map\n * @param base\n * @return {*}\n */\nexport function uniqueKey(map, base) {\n  let newKey = base;\n  while (map.hasOwnProperty(newKey)) {\n    newKey = iterateKey(newKey);\n  }\n  return newKey;\n}\n\n/**\n * Determines the major version number of bootstrap.\n *\n * @return {number}\n */\nexport function bootstrapVersion() {\n  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {\n    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);\n  }\n  return 0;\n}\n\n/**\n * Retrun provided argument.\n * If argument is a function, returns the result of a function call.\n * @param {*} e;\n *\n * @return {*}\n */\nexport function unfold(e) {\n  if (typeof e === 'function') {\n    return e();\n  }\n\n  return e;\n}\n\n/**\n * Map values through unfold and return first non-nil value.\n * @param {Array<T>} collection;\n *\n * @return {T}\n */\nexport const firstNonNil = _.flow([\n  _.partialRight(_.map, unfold),\n  _.partialRight(_.find, v => !_.isUndefined(v))\n]);\n\n/*\n * Create enclosed state.\n * Returns functions to getting and cycling between states.\n * @param {*} a - initial state.\n * @param {*} b - next state.\n * @return {Functions[]} -- [get, toggle];\n */\nexport function withSwitch(a, b) {\n  let state = a;\n  let next = b;\n\n  function get() {\n    return state;\n  }\n\n  function toggle() {\n    const prev = state;\n    state = next;\n    next = prev;\n  }\n\n  return [get, toggle];\n}\n\nexport function observeOverload(callback, options = {}) {\n  const { limit = 50, delay = 500 } = options;\n  let callCount = 0;\n  let timeoutID = 0;\n\n  const reset = () => callCount = 0;\n\n  return () => {\n    if (timeoutID !== 0) {\n      clearTimeout(timeoutID);\n      timeoutID = 0;\n    }\n\n    timeoutID = setTimeout(reset, delay);\n\n    callCount += 1;\n\n    if (callCount >= limit) {\n      clearTimeout(timeoutID);\n      reset();\n      return callback();\n    }\n  };\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Desktop/formio.js/src/utils/utils.js",
     "access": "public",
@@ -40449,7 +40449,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getRandomComponentId}",
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 105,
     "undocument": true,
     "params": [],
     "return": {
@@ -40472,7 +40472,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getPropertyValue}",
     "description": "Get a property value of an element.",
-    "lineNumber": 115,
+    "lineNumber": 116,
     "params": [
       {
         "nullable": null,
@@ -40518,7 +40518,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getElementRect}",
     "description": "Get an elements bounding rectagle.",
-    "lineNumber": 127,
+    "lineNumber": 128,
     "params": [
       {
         "nullable": null,
@@ -40554,7 +40554,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{boolValue}",
     "description": "Determines the boolean value of a setting.",
-    "lineNumber": 143,
+    "lineNumber": 144,
     "params": [
       {
         "nullable": null,
@@ -40590,7 +40590,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{isMongoId}",
     "description": "Check to see if an ID is a mongoID.",
-    "lineNumber": 160,
+    "lineNumber": 161,
     "params": [
       {
         "nullable": null,
@@ -40629,7 +40629,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkCalculated}",
     "description": "Checks the calculated value for a provided component and data.",
-    "lineNumber": 174,
+    "lineNumber": 175,
     "params": [
       {
         "nullable": null,
@@ -40678,7 +40678,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkSimpleConditional}",
     "description": "Check if a simple conditional evaluates to true.",
-    "lineNumber": 196,
+    "lineNumber": 197,
     "unknown": [
       {
         "tagName": "@returns",
@@ -40750,7 +40750,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkCustomConditional}",
     "description": "Check custom javascript conditional.",
-    "lineNumber": 233,
+    "lineNumber": 234,
     "unknown": [
       {
         "tagName": "@returns",
@@ -40822,7 +40822,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkJsonConditional}",
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 247,
     "undocument": true,
     "params": [
       {
@@ -40882,7 +40882,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkCondition}",
     "description": "Checks the conditions for a provided component and data.",
-    "lineNumber": 273,
+    "lineNumber": 274,
     "unknown": [
       {
         "tagName": "@returns",
@@ -40944,7 +40944,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{checkTrigger}",
     "description": "Test a trigger on a component.",
-    "lineNumber": 297,
+    "lineNumber": 298,
     "unknown": [
       {
         "tagName": "@returns",
@@ -41016,7 +41016,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{setActionProperty}",
     "description": null,
-    "lineNumber": 310,
+    "lineNumber": 311,
     "undocument": true,
     "params": [
       {
@@ -41074,7 +41074,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 337,
+    "lineNumber": 338,
     "undocument": true,
     "type": {
       "types": [
@@ -41095,7 +41095,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 338,
+    "lineNumber": 339,
     "undocument": true,
     "type": {
       "types": [
@@ -41118,7 +41118,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 340,
+    "lineNumber": 341,
     "undocument": true,
     "params": [
       {
@@ -41149,7 +41149,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{addTemplateHash}",
     "description": null,
-    "lineNumber": 354,
+    "lineNumber": 355,
     "undocument": true,
     "params": [
       {
@@ -41179,7 +41179,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{interpolate}",
     "description": "Interpolate a string and add data replacements.",
-    "lineNumber": 367,
+    "lineNumber": 368,
     "unknown": [
       {
         "tagName": "@returns",
@@ -41234,7 +41234,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{uniqueName}",
     "description": "Make a filename guaranteed to be unique.",
-    "lineNumber": 387,
+    "lineNumber": 388,
     "unknown": [
       {
         "tagName": "@returns",
@@ -41276,7 +41276,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{guid}",
     "description": null,
-    "lineNumber": 396,
+    "lineNumber": 397,
     "undocument": true,
     "params": [],
     "return": {
@@ -41299,7 +41299,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getDateSetting}",
     "description": "Return a translated date setting.",
-    "lineNumber": 412,
+    "lineNumber": 413,
     "params": [
       {
         "nullable": null,
@@ -41336,7 +41336,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{isValidDate}",
     "description": null,
-    "lineNumber": 458,
+    "lineNumber": 459,
     "undocument": true,
     "params": [
       {
@@ -41366,7 +41366,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{currentTimezone}",
     "description": "Get the current timezone string.",
-    "lineNumber": 467,
+    "lineNumber": 468,
     "return": {
       "nullable": null,
       "types": [
@@ -41391,7 +41391,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{offsetDate}",
     "description": "Get an offset date provided a date object and timezone object.",
-    "lineNumber": 482,
+    "lineNumber": 483,
     "params": [
       {
         "nullable": null,
@@ -41437,7 +41437,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{zonesLoaded}",
     "description": "Returns if the zones are loaded.",
-    "lineNumber": 501,
+    "lineNumber": 502,
     "return": {
       "nullable": null,
       "types": [
@@ -41462,7 +41462,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{shouldLoadZones}",
     "description": "Returns if we should load the zones.",
-    "lineNumber": 511,
+    "lineNumber": 512,
     "params": [
       {
         "nullable": null,
@@ -41498,7 +41498,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{loadZones}",
     "description": "Externally load the timezone data.",
-    "lineNumber": 523,
+    "lineNumber": 524,
     "return": {
       "nullable": null,
       "types": [
@@ -41531,7 +41531,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{momentDate}",
     "description": "Get the moment date object for translating dates with timezones.",
-    "lineNumber": 555,
+    "lineNumber": 556,
     "params": [
       {
         "nullable": null,
@@ -41587,7 +41587,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{formatDate}",
     "description": "Format a date provided a value, format, and timezone object.",
-    "lineNumber": 574,
+    "lineNumber": 575,
     "params": [
       {
         "nullable": null,
@@ -41643,7 +41643,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{formatOffset}",
     "description": "Pass a format function to format within a timezone.",
-    "lineNumber": 615,
+    "lineNumber": 616,
     "params": [
       {
         "nullable": null,
@@ -41709,7 +41709,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getLocaleDateFormatInfo}",
     "description": null,
-    "lineNumber": 634,
+    "lineNumber": 635,
     "undocument": true,
     "params": [
       {
@@ -41739,7 +41739,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{convertFormatToFlatpickr}",
     "description": "Convert the format from the angular-datepicker module to flatpickr format.",
-    "lineNumber": 651,
+    "lineNumber": 652,
     "params": [
       {
         "nullable": null,
@@ -41775,7 +41775,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{convertFormatToMoment}",
     "description": "Convert the format from the angular-datepicker module to moment format.",
-    "lineNumber": 688,
+    "lineNumber": 689,
     "params": [
       {
         "nullable": null,
@@ -41811,7 +41811,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{convertFormatToMask}",
     "description": null,
-    "lineNumber": 700,
+    "lineNumber": 701,
     "undocument": true,
     "params": [
       {
@@ -41841,7 +41841,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getInputMask}",
     "description": "Returns an input mask that is compatible with the input mask library.",
-    "lineNumber": 715,
+    "lineNumber": 716,
     "unknown": [
       {
         "tagName": "@returns",
@@ -41883,7 +41883,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{matchInputMask}",
     "description": null,
-    "lineNumber": 746,
+    "lineNumber": 747,
     "undocument": true,
     "params": [
       {
@@ -41919,7 +41919,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getNumberSeparators}",
     "description": null,
-    "lineNumber": 762,
+    "lineNumber": 763,
     "undocument": true,
     "params": [
       {
@@ -41952,7 +41952,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getNumberDecimalLimit}",
     "description": null,
-    "lineNumber": 777,
+    "lineNumber": 778,
     "undocument": true,
     "params": [
       {
@@ -41982,7 +41982,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{getCurrencyAffixes}",
     "description": null,
-    "lineNumber": 792,
+    "lineNumber": 793,
     "undocument": true,
     "params": [
       {
@@ -42019,7 +42019,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{fieldData}",
     "description": "Fetch the field data provided a component.",
-    "lineNumber": 824,
+    "lineNumber": 825,
     "params": [
       {
         "nullable": null,
@@ -42065,7 +42065,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{delay}",
     "description": "Delays function execution with possibility to execute function synchronously or cancel it.",
-    "lineNumber": 874,
+    "lineNumber": 875,
     "params": [
       {
         "nullable": null,
@@ -42111,7 +42111,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{iterateKey}",
     "description": "Iterate the given key to make it unique.",
-    "lineNumber": 901,
+    "lineNumber": 902,
     "unknown": [
       {
         "tagName": "@returns",
@@ -42153,7 +42153,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{uniqueKey}",
     "description": "Determines a unique key within a map provided the base key.",
-    "lineNumber": 918,
+    "lineNumber": 919,
     "params": [
       {
         "nullable": null,
@@ -42199,7 +42199,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{bootstrapVersion}",
     "description": "Determines the major version number of bootstrap.",
-    "lineNumber": 931,
+    "lineNumber": 932,
     "return": {
       "nullable": null,
       "types": [
@@ -42224,7 +42224,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{unfold}",
     "description": "Retrun provided argument.\nIf argument is a function, returns the result of a function call.",
-    "lineNumber": 945,
+    "lineNumber": 946,
     "params": [
       {
         "nullable": null,
@@ -42258,7 +42258,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{firstNonNil}",
     "description": "Map values through unfold and return first non-nil value.",
-    "lineNumber": 959,
+    "lineNumber": 960,
     "params": [
       {
         "nullable": null,
@@ -42299,7 +42299,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{withSwitch}",
     "description": null,
-    "lineNumber": 971,
+    "lineNumber": 972,
     "undocument": true,
     "params": [
       {
@@ -42335,7 +42335,7 @@
     "importPath": "formiojs/src/utils/utils.js",
     "importStyle": "{observeOverload}",
     "description": null,
-    "lineNumber": 988,
+    "lineNumber": 989,
     "undocument": true,
     "params": [
       {
@@ -43341,7 +43341,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.15.4\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^3.0.4\",\n    \"dialog-polyfill\": \"^0.4.10\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.0.7\",\n    \"flatpickr\": \"^4.5.2\",\n    \"i18next\": \"^15.0.4\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.1\",\n    \"vanilla-text-mask\": \"^5.1.1\",\n    \"whatwg-fetch\": \"2.0.4\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.2.3\",\n    \"@babel/core\": \"^7.3.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.2.5\",\n    \"@babel/preset-env\": \"^7.3.1\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"del\": \"^3.0.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.14.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^6.5.2\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.2\",\n    \"jquery\": \"^3.3.1\",\n    \"karma\": \"^4.0.0\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.0\",\n    \"mocha\": \"^5.2.0\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.2.4\",\n    \"webpack\": \"^4.29.5\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.15.5\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^3.0.4\",\n    \"dialog-polyfill\": \"^0.4.10\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.0.7\",\n    \"flatpickr\": \"^4.5.2\",\n    \"i18next\": \"^15.0.4\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.1\",\n    \"vanilla-text-mask\": \"^5.1.1\",\n    \"whatwg-fetch\": \"2.0.4\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.2.3\",\n    \"@babel/core\": \"^7.3.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.2.5\",\n    \"@babel/preset-env\": \"^7.3.1\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"del\": \"^3.0.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.14.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^6.5.2\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.2\",\n    \"jquery\": \"^3.3.1\",\n    \"karma\": \"^4.0.0\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.0\",\n    \"mocha\": \"^5.2.0\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.2.4\",\n    \"webpack\": \"^4.29.5\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Desktop/formio.js/package.json",
     "name": "package.json",
     "static": true,

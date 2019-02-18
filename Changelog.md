@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.15.5
+### Fixed
+ - Problem where the renderer would crash within the evaluate method.
+
 ## 3.15.4
 ### Fixed
  - Issue with the valueProperty field configurations not saving for Select components.
