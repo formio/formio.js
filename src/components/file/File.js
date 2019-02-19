@@ -59,13 +59,32 @@ export default class FileComponent extends Component {
       formdata: !!window.FormData,
       progress: 'upload' in new XMLHttpRequest
     };
+    // Called when our files are ready.
+    this.filesReady = new Promise((resolve, reject) => {
+      this.filesReadyResolve = resolve;
+      this.filesReadyReject = reject;
+    });
     this.support.hasWarning = !this.support.filereader || !this.support.formdata || !this.support.progress;
     this.cameraMode = false;
     this.statuses = [];
   }
 
+  get dataReady() {
+    return this.filesReady;
+  }
+
   get defaultSchema() {
     return FileComponent.schema();
+  }
+
+  loadImage(fileInfo) {
+    const fileService = this.fileService;
+    if (fileInfo && Object.keys(fileInfo).length && fileService) {
+      return fileService.downloadFile(fileInfo).then(result => {
+        return result.url;
+      });
+    }
+    return Promise.resolve(fileInfo.url);
   }
 
   get emptyValue() {
@@ -98,7 +117,12 @@ export default class FileComponent extends Component {
     if (this.root && this.root.formio) {
       return this.root.formio;
     }
-    return new Formio();
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root && this.root._form && this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 
   render() {
@@ -308,12 +332,16 @@ export default class FileComponent extends Component {
 
     const fileService = this.fileService;
     if (fileService) {
+      const loadingImages = [];
       this.refs.fileImage.forEach((image, index) => {
-        fileService.downloadFile(this.dataValue[index])
-          .then(result => {
-            image.src = result.url;
-          });
+        loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
+      if (loadingImages.length) {
+        Promise.all(loadingImages).then(() => {
+          this.redraw();
+          this.filesReadyResolve();
+        }).catch(() => this.filesReadyReject());
+      }
     }
   }
 
