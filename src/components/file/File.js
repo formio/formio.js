@@ -85,13 +85,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   loadImage(fileInfo) {
-    const fileService = this.fileService;
-    if (fileInfo && Object.keys(fileInfo).length && fileService) {
-      return fileService.downloadFile(fileInfo).then(result => {
-        return result.url;
-      });
-    }
-    return Promise.resolve(fileInfo.url);
+    return this.fileService.downloadFile(fileInfo).then(result => {
+      return result.url;
+    });
   }
 
   setValue(value) {
