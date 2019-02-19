@@ -1,7 +1,0 @@
-export default {
-  form: `
-<div class="formio-errors invalid-feedback">
-  <p class="form-text">{{message}}</p>
-</div>
-`,
-};

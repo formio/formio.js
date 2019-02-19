@@ -1,9 +1,0 @@
-export default {
-  form: `
-<div class="card card-body bg-light">
-  <div ref="{{nestedKey}}">
-    {{children}}
-  </div>
-</div>
-`,
-};
