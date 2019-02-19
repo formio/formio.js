@@ -275,7 +275,7 @@ export default class Formio {
     if (!path) {
       // Allow user to create new projects if this was instantiated without
       // a url
-      this.projectUrl = `${this.base}/project`;
+      this.projectUrl = Formio.projectUrl || `${this.base}/project`;
       this.projectsUrl = `${this.base}/project`;
       this.projectId = false;
       this.query = &apos;&apos;;

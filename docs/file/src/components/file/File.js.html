@@ -262,12 +262,24 @@ export default class FileComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
+
+    // Called when our files are ready.
+    this.filesReady = new Promise((resolve, reject) =&gt; {
+      this.filesReadyResolve = resolve;
+      this.filesReadyReject = reject;
+    });
+
+    this.loadingImages = [];
     this.support = {
       filereader: typeof FileReader != &apos;undefined&apos;,
       dnd: &apos;draggable&apos; in document.createElement(&apos;span&apos;),
       formdata: !!window.FormData,
       progress: &apos;upload&apos; in new XMLHttpRequest
     };
+  }
+
+  get dataReady() {
+    return this.filesReady;
   }
 
   get defaultSchema() {
@@ -282,9 +294,36 @@ export default class FileComponent extends BaseComponent {
     return this.dataValue;
   }
 
+  loadImage(fileInfo) {
+    return this.fileService.downloadFile(fileInfo).then(result =&gt; {
+      return result.url;
+    });
+  }
+
   setValue(value) {
-    this.dataValue = value || [];
-    this.refreshDOM();
+    const newValue = value || [];
+    this.dataValue = newValue;
+    if (this.component.image) {
+      this.loadingImages = [];
+      const images = Array.isArray(newValue) ? newValue : [newValue];
+      images.map((fileInfo) =&gt; {
+        if (fileInfo &amp;&amp; Object.keys(fileInfo).length) {
+          this.loadingImages.push(this.loadImage(fileInfo));
+        }
+      });
+      if (this.loadingImages.length) {
+        Promise.all(this.loadingImages)
+          .then(() =&gt; {
+            this.refreshDOM();
+            setTimeout(() =&gt; this.filesReadyResolve(), 100);
+          })
+          .catch(() =&gt; this.filesReadyReject());
+      }
+    }
+    else {
+      this.refreshDOM();
+      this.filesReadyResolve();
+    }
   }
 
   get defaultValue() {
@@ -474,34 +513,35 @@ export default class FileComponent extends BaseComponent {
     if (this.root &amp;&amp; this.root.formio) {
       return this.root.formio;
     }
-    return new Formio();
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root &amp;&amp; this.root._form &amp;&amp; this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 
   createImageListItem(fileInfo, index) {
-    let image;
-
-    const fileService = this.fileService;
-    if (fileService) {
-      fileService.downloadFile(fileInfo)
-        .then(result =&gt; {
-          image.src = result.url;
-        });
+    const image = this.ce(&apos;img&apos;, {
+      alt: fileInfo.originalName || fileInfo.name,
+      style: `width:${this.component.imageSize}px`
+    });
+    if (this.loadingImages[index]) {
+      this.loadingImages[index].then((url) =&gt; {
+        image.src = url;
+      });
     }
     return this.ce(&apos;div&apos;, {},
       this.ce(&apos;span&apos;, {},
         [
-          image = this.ce(&apos;img&apos;, {
-            src: &apos;&apos;,
-            alt: fileInfo.originalName || fileInfo.name,
-            style: `width:${this.component.imageSize}px`
-          }),
+          image,
           (
             !this.disabled ?
               this.ce(&apos;i&apos;, {
                 class: this.iconClass(&apos;remove&apos;),
                 onClick: event =&gt; {
                   if (fileInfo &amp;&amp; (this.component.storage === &apos;url&apos;)) {
-                    fileService.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
+                    this.fileService.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
                   }
                   event.preventDefault();
                   this.splice(index);

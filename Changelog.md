@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.15.6
+### Fixed
+ - Problems with the private images not showing up when printing to PDF.
+
 ## 3.15.5
 ### Fixed
  - Problem where the renderer would crash within the evaluate method.
