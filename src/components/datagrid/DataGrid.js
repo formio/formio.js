@@ -36,19 +36,7 @@ export default class DataGridComponent extends NestedComponent {
     this.numColumns = 0;
 
     // Add new values based on minLength.
-    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {
-      this.dataValue.push({});
-    }
-
     this.rows = [];
-    if (this.hasRowGroups()) {
-      const groups = _.get(this.component, 'rowGroups', []);
-      const rowsNum = this.totalRowsNumber(groups);
-      this.setStaticValue(rowsNum);
-      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {
-        return _.merge(a, b);
-      });
-    }
     this.createRows();
     this.visibleColumns = {};
     this.checkColumns(this.dataValue);
@@ -78,15 +66,34 @@ export default class DataGridComponent extends NestedComponent {
     return _.get(this.component, 'addAnotherPosition', 'bottom');
   }
 
+  get minLength() {
+    if (this.hasRowGroups()) {
+      return _.sum(this.getGroupSizes());
+    }
+    else {
+      return _.get(this.component, 'validate.minLength', 0);
+    }
+  }
+
   get defaultValue() {
     const value = super.defaultValue;
+    let defaultValue;
+
     if (Array.isArray(value)) {
-      return value;
+      defaultValue = value;
     }
-    if (value && (typeof value === 'object')) {
-      return [value];
+    else if (value && (typeof value === 'object')) {
+      defaultValue = [value];
     }
-    return this.emptyValue;
+    else {
+      defaultValue = this.emptyValue;
+    }
+
+    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
+      defaultValue.push({});
+    }
+
+    return defaultValue;
   }
 
   get datagridKey() {
@@ -94,7 +101,8 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   /**
-   * @param {Numbers[]} groups
+   * Split rows into chunks.
+   * @param {Number[]} groups - array of numbers where each item is size of group
    * @param {Array<T>} rows - rows collection
    * @return {Array<T[]>}
    */
@@ -103,45 +111,41 @@ export default class DataGridComponent extends NestedComponent {
       ([startIndex, acc], size) => {
         const endIndex = startIndex +  size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
-      },
-      [0, []]
+      }, [0, []]
     );
     return chunks.map(range => _.slice(rows, ...range));
   }
 
-  buildGroups() {
+  /**
+   * Create groups object.
+   * Each key in object represents index of first row in group.
+   * @return {Object}
+   */
+  getGroups() {
     const groups = _.get(this.component, 'rowGroups', []);
-    const ranges = _.map(groups, 'numberOfRows');
-    const chunks = this.getRowChunks(ranges, this.refs[`${this.datagridKey}-row`]);
-    const firstElements = chunks.map(_.head);
-    const groupElements = groups.map((g, index) => this.buildGroup(g, index, chunks[index]));
-    groupElements.forEach((elt, index) => {
-      const row = firstElements[index];
-      if (row) {
-        this.refs[`${this.datagridKey}-tbody`].insertBefore(elt, row);
-      }
-    });
+    const sizes = _.map(groups, 'numberOfRows').slice(0, -1);
+    const indexes = sizes.reduce((groupIndexes, size) => {
+      const last = groupIndexes[groupIndexes.length - 1];
+      return groupIndexes.concat(last + size);
+    }, [0]);
+
+    return groups.reduce(
+      (gidxs, group, idx) => {
+        return {
+          ...gidxs,
+          [indexes[idx]]: group
+        };
+      },
+      {}
+    );
   }
 
-  buildGroup({ label }, index, groupRows) {
-    const hasToggle = _.get(this, 'component.groupToggle', false);
-    const colsNumber = _.get(this, 'component.components', []).length;
-    const cell = this.ce('td', {
-      colspan: colsNumber,
-      class: 'datagrid-group-label',
-    }, [label]);
-    const header = this.ce('tr', {
-      class: `datagrid-group-header ${hasToggle ? 'clickable' : ''}`,
-    }, cell);
-    if (hasToggle) {
-      this.addEventListener(header, 'click', () => {
-        header.classList.toggle('collapsed');
-        _.each(groupRows, row => {
-          row.classList.toggle('hidden');
-        });
-      });
-    }
-    return header;
+  /**
+   * Retrun group sizes.
+   * @return {Number[]}
+   */
+  getGroupSizes() {
+    return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');
   }
 
   hasRowGroups() {
@@ -194,13 +198,16 @@ export default class DataGridComponent extends NestedComponent {
       removePlacement: _.get(this, 'component.removePlacement', 'col'),
       rows: this.getRows(),
       columns: this.getColumns(),
+      groups: this.hasRowGroups() ? this.getGroups() : [],
       visibleColumns: this.visibleColumns,
+      hasToggle: _.get(this, 'component.groupToggle', false),
       hasHeader: this.hasHeader(),
       hasExtraColumn: this.hasExtraColumn(),
       hasAddButton: this.hasAddButton(),
       hasRemoveButtons: this.hasRemoveButtons,
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
+      hasGroups: this.hasRowGroups(),
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
       builder: this.options.attachMode === 'builder',
@@ -237,12 +244,9 @@ export default class DataGridComponent extends NestedComponent {
       [`${this.datagridKey}-tbody`]: 'single',
       [`${this.datagridKey}-addRow`]: 'multiple',
       [`${this.datagridKey}-removeRow`]: 'multiple',
+      [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
     });
-
-    if (this.hasRowGroups()) {
-      this.buildGroups();
-    }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
@@ -251,6 +255,13 @@ export default class DataGridComponent extends NestedComponent {
     this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {
       this.addEventListener(removeButton, 'click', this.removeRow.bind(this, index));
     });
+
+    if (this.hasRowGroups()) {
+      this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);
+      this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
+        this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
+      });
+     }
 
     const rowLength = _.filter(this.visibleColumns).length;
     this.rows.forEach((row, rowIndex) => {
@@ -432,5 +443,12 @@ export default class DataGridComponent extends NestedComponent {
       }
     });
     return result.length > 0 ? result : null;
+  }
+
+  toggleGroup(element, index) {
+    element.classList.toggle('collapsed');
+    _.each(this.refs.chunks[index], row => {
+      row.classList.toggle('hidden');
+    });
   }
 }
