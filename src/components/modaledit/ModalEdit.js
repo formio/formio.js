@@ -1,12 +1,5 @@
-/* globals InlineEditor */
 import _ from 'lodash';
-import Formio from '../../Formio';
 import TextAreaComponent from '../textarea/TextArea';
-import { withSwitch } from '../../utils/utils.js';
-
-const EDIT = Symbol('edit');
-const VIEW = Symbol('view');
-const CKEDITOR = 'https://cdn.ckeditor.com/ckeditor5/11.2.0/inline/ckeditor.js';
 
 export default class ModalEditComponent extends TextAreaComponent {
   static schema(...extend) {
@@ -14,6 +7,7 @@ export default class ModalEditComponent extends TextAreaComponent {
       type: 'modaledit',
       label: 'Modal Edit',
       key: 'modalEdit',
+      modalLayout: 'fixed',
     }, ...extend);
   }
 
@@ -21,220 +15,175 @@ export default class ModalEditComponent extends TextAreaComponent {
     return {
       title: 'Modal Edit',
       group: 'advanced',
-      icon: 'fa fa-font',
+      icon: 'font',
       weight: 50,
       schema: ModalEditComponent.schema()
     };
   }
 
-  constructor(...args) {
-    super(...args);
-    const [get, toggle] = withSwitch(VIEW, EDIT);
-    this.getMode = get;
-    this.toggleMode = () => {
-      toggle();
-      this.emit('modechange');
-    };
+  /** @override **/
+  renderElement(content = '') {
+    return this.renderTemplate('modaledit', { content });
   }
 
-  build() {
-    this.createElement();
+  /** @override **/
+  attach(element) {
+    this.loadRefs(element, {
+      container: 'single',
+      edit: 'single'
+    });
+    super.attach(element);
+  }
 
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
-
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-
-    this.editElement = this.buildEditMode({
-      onCloseRequest: () => {
-        this.removeChildFrom(this.editElement, document.body);
-        this.toggleMode();
+  /** @override **/
+  attachElement(element) {
+    // Allow work with div as if it would be plain input
+    Object.defineProperty(element, 'value', {
+      get: function() {
+        return this.innerHTML;
+      },
+      set: function(value) {
+        this.innerHTML = value;
       }
     });
-    this.preview = this.ce('div', { class: 'edittable-preview' });
-    this.element.appendChild(this.preview);
-    this.updateView(this.preview);
 
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
+    const show = this.showModal.bind(this);
 
-    this.restoreValue();
+    this.addEventListener(this.refs.container, 'dblclick', show);
 
-    this.on('modechange', this.updateView.bind(this, this.preview));
+    this.addEventListener(this.refs.edit, 'click', show);
   }
 
-  buildViewMode({ content = '', onEdit: onClick }) {
-    const icon = this.ce('i', { class: this.iconClass('edit') });
-    const button = this.ce(
-      'button',
-      {
-        type: 'button',
-        role: 'button',
-        onClick,
-        class: 'btn btn-xxs btn-warning formio-modaledit-edit'
-      },
-      icon
-    );
-    const child = this.ce('div', { class: 'modaledit-view-inner reset-margins' });
-
-    child.innerHTML = this.interpolate(content);
-
-    return this.ce('div', {
-      class: 'formio-modaledit-view-container',
-      onDblClick: onClick,
-    }, [
-      button,
-      child
-    ]);
-  }
-
-  buildEditMode({ onCloseRequest, onCloseClick, onOverlayClick }) {
-    const overlay = this.ce('div', { class: 'formio-dialog-overlay' });
-    const inner = this.ce('div', { class: 'reset-margins' });
-    const close = this.ce(
-      'button',
-      {
-        type: 'button',
-        class: 'btn btn-primary btn-xs formio-modaledit-close',
-      },
-      'Close'
-    );
-    const container = this.ce(
-      'div',
-      {
-        class: 'formio-modaledit-content'
-      },
-      [
-        close,
-        inner
-      ]
-    );
-    const dialog = this.ce('div', {
-      class: 'formio-dialog formio-dialog-theme-default formio-modaledit-dialog',
-    }, [
-      overlay,
-      container
-    ]);
-    const [dw, dh] = this.defaultEditorSize;
-    const layout = _.get(this.component, 'editorLayout', this.defaultLayout);
-    const widthPath = _.get(this.layoutOptions, [layout, 'width']);
-    const heightPath = _.get(this.layoutOptions, [layout, 'height']);
-    const width = _.get(this.component, widthPath, dw);
-    const height = _.get(this.component, heightPath, dh);
-
-    this.createInput(inner);
-
-    if (this.isPlain) {
-      const textarea = container.querySelector('textarea');
-      textarea.style.minHeight = `${height}px`;
-      textarea.style.borderRadius = 0;
-      textarea.style.resize = 'vertical';
-    }
-
-    container.style.position = 'absolute';
-    container.style.backgroundColor = '#fff';
-    container.style.width = `${width}px`;
-    container.style.minHeight = `${height}px`;
-
-    this.addEventListener(overlay, 'click', event => {
+  /** @override **/
+  createModal(element) {
+    const self = this;
+    const dialog = this.ce('div');
+    dialog.innerHTML = this.renderTemplate('modaldialog');
+    dialog.refs = {};
+    this.loadRefs.call(dialog, dialog, {
+      overlay: 'single',
+      content: 'single',
+      inner: 'single',
+      close: 'single'
+    });
+    const rect = this.getElementRect(this.refs.container);
+    const layout = this.getModalLayout(rect);
+    const styles = this.getModalStyle(layout);
+    Object.assign(dialog.refs.content.style, styles);
+    dialog.refs.inner.appendChild(element);
+    this.addEventListener(dialog.refs.overlay, 'click', (event) => {
       event.preventDefault();
-
-      if (_.isFunction(onOverlayClick)) {
-        onOverlayClick();
-      }
-
-      if (_.isFunction(onCloseRequest)) {
-        onCloseRequest();
-      }
+      dialog.close();
     });
-
-    this.addEventListener(close, 'click', event => {
+    this.addEventListener(dialog.refs.close, 'click', (event) => {
       event.preventDefault();
-
-      if (_.isFunction(onCloseClick)) {
-        onCloseClick();
-      }
-
-      if (_.isFunction(onCloseRequest)) {
-        onCloseRequest();
-      }
+      dialog.close();
+    });
+    this.addEventListener(dialog, 'close', () => {
+      this.removeChildFrom(dialog, document.body);
     });
 
-    dialog.updateLayout = () => {
-      const rect = this.preview.getBoundingClientRect();
-      container.style.top = `${rect.top}px`;
-      container.style.left = `${rect.left}px`;
-      container.style.width = `${Math.max(width, rect.width)}px`;
+    dialog.close = function() {
+      dialog.dispatchEvent(new CustomEvent('close'));
+      self.removeChildFrom(dialog, document.body);
     };
 
+    document.body.appendChild(dialog);
     return dialog;
   }
 
-  updateView(container) {
-    const mode = this.getMode();
-
-    if (this.options.builder || mode === VIEW) {
-      const view = this.buildViewMode({
-        onEdit: this.toggleMode,
-        content: _.isString(this.dataValue) ? this.dataValue : '',
-      });
-
-      if (container.firstChild) {
-        container.replaceChild(
-          view,
-          container.firstChild
-        );
-      }
-      else {
-        container.appendChild(view);
-      }
-    }
-
-    if (mode === EDIT) {
-      this.editElement.updateLayout();
-      document.body.appendChild(this.editElement);
+  /** @override **/
+  updateOnChange(flags, changed) {
+    if (super.updateOnChange(flags, changed)) {
+      this.updateContentView(this.dataValue);
     }
   }
 
-  // get defaultValue() {
-  //   const value = super.defaultValue;
-  //   return '';
-  // }
-
-  get defaultEditorSize() {
-    return [300, 200];
+  showModal() {
+    const elt = this.ce('div');
+    elt.innerHTML = super.renderElement(this.dataValue);
+    const editor = elt.children[0];
+    if (this.isPlain) {
+      editor.style.resize = 'vertical';
+    }
+    super.attachElement(editor);
+    this.createModal(editor);
   }
 
-  get defaultLayout() {
-    return 'grow';
+  updateContentView(content = '') {
+    const view = _.get(this, 'refs.input[0]', null);
+
+    if (view instanceof HTMLElement) {
+      view.innerHTML = content;
+      return true;
+    }
+
+    return false;
   }
 
-  get layoutOptions() {
+  getElementRect(elt) {
+    return elt.getBoundingClientRect();
+  }
+
+  getModalStyle(args, overrides = {}) {
+    const defaultStyles = {
+      position: 'absolute',
+      height: 'auto',
+    };
+
+    const layout = _.mapValues(
+      _.pick(args, ['top', 'left', 'width']),
+      p => `${p}px`
+    );
+
     return {
-      grow: {
-        width: 'minEditorWidth',
-        height: 'minEditorHeight',
-      },
-      fixed: {
-        width: 'width',
-        height: 'height'
-      }
+      ...defaultStyles,
+      ...overrides,
+      ...layout
     };
   }
 
-  addCKE(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? null : settings;
-    return Formio.requireLibrary('ckeditor', 'InlineEditor', CKEDITOR, true)
-      .then(() => {
-        if (!element.parentNode) {
-          return Promise.reject();
-        }
-        return InlineEditor.create(element, settings).then(editor => {
-          editor.model.document.on('change', () => onChange(editor.data.get()));
-          return editor;
-        });
-      });
+  getModalLayout(rect) {
+    const { width, height: minHeight } = this.getModalSize(rect.width, rect.height);
+    return {
+      left: rect.left,
+      minHeight,
+      top: rect.top,
+      width,
+    };
+  }
+
+  getModalSize(currentWidth, currentHeight) {
+    const [dw, dh] = this.defaultModalSize;
+    const type = _.get(this.component, 'modalLayout', 'fixed');
+    const { widthProp, heightProp } = this.layoutProps[type];
+    const width = _.get(this.component, widthProp, dw);
+    const height = _.get(this.component, heightProp, dh);
+
+    if (type === 'fluid') {
+      return {
+        width: Math.max(currentWidth, width),
+        height: Math.max(currentHeight, height)
+      };
+    }
+
+    return { width, height };
+  }
+
+  get defaultModalSize() {
+    return [475, 300];
+  }
+
+  get layoutProps() {
+    return {
+      fixed: {
+        widthProp: 'width',
+        heightProp: 'height'
+      },
+      fluid: {
+        widthProp: 'minWidth',
+        heightProp: 'minHeight'
+      }
+    };
   }
 }

@@ -15,6 +15,8 @@ import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
 import message from './message';
+import modaldialog from './modaldialog';
+import modaledit from './modaledit';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
@@ -29,7 +31,7 @@ import wizard from './wizard';
 
 export default {
   transform: (type, text) => text,
-  defaultIconset: 'glyphicons',
+  defaultIconset: 'glyphicon',
   iconClass,
   builder,
   builderComponent,
@@ -47,6 +49,8 @@ export default {
   icon,
   input,
   message,
+  modaldialog,
+  modaledit,
   multiValueRow,
   multiValueTable,
   panel,
