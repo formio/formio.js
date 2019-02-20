@@ -544,24 +544,33 @@ export default class BaseComponent extends Component {
     this.attachLogic();
   }
 
+  attachRefreshEvent(refreshData) {
+    this.on('change', (event) => {
+      if (refreshData === 'data') {
+        this.refresh(this.data);
+      } else if (
+        event.changed &&
+        event.changed.component &&
+        (event.changed.component.key === refreshData) &
+        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+        // in fields inside EditGrids could alter their state from other rows (which is bad).
+        this.inContext(event.changed.instance)
+      ) {
+        this.refresh(event.changed.value);
+      }
+    }, true);
+  }
+
   attachRefreshOn() {
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        if (this.component.refreshOn === 'data') {
-          this.refresh(this.data);
-        }
-        else if (
-          event.changed &&
-          event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn) &
-          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-          // in fields inside EditGrids could alter their state from other rows (which is bad).
-          this.inContext(event.changed.instance)
-        ) {
-          this.refresh(event.changed.value);
-        }
-      }, true);
+      if (Array.isArray(this.component.refreshOn)) {
+        this.component.refreshOn.forEach(refreshData => {
+          this.attachRefreshEvent(refreshData);
+        });
+      } else {
+        this.attachRefreshEvent(this.component.refreshOn);
+      }
     }
   }
 
