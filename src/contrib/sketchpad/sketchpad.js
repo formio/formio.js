@@ -127,8 +127,8 @@ export default class Sketchpad extends Base {
         property: 'stroke',
         attach: (element) => {
           const picker = new Picker(element);
+          picker.setColor(this.state.stroke, true);
           picker.onChange = (color) => {
-            console.log(color);
             this.state.stroke = color.rgbaString;
             element.style.color = color.rgbaString;
           };
@@ -141,8 +141,8 @@ export default class Sketchpad extends Base {
         property: 'fill',
         attach: (element) => {
           const picker = new Picker(element);
+          picker.setColor(this.state.fill, true);
           picker.onChange = (color) => {
-            console.log(color);
             this.state.fill = color.rgbaString;
             element.style.color = color.rgbaString;
           };
