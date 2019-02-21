@@ -29,8 +29,7 @@ export default class Sketchpad extends Base {
       line: {
         icon: 'pencil',
         state: {
-          mode: 'line',
-          linewidth: 1
+          mode: 'line'
         },
         eventStart: (coordinate) => {
           this.points = [coordinate];
@@ -69,8 +68,7 @@ export default class Sketchpad extends Base {
       circle: {
         icon: 'circle',
         state: {
-          mode: 'circle',
-          linewidth: 5
+          mode: 'circle'
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
@@ -154,7 +152,19 @@ export default class Sketchpad extends Base {
       {
         icon: 'minus',
         type: 'number',
-        property: 'linewidth'
+        property: 'linewidth',
+        attach: (element) => {
+          const widthInput = this.ce('input', {
+            type: 'number',
+            class: 'formio-sketchpad-linewidth-input',
+            onChange: (e) => {
+              this.state.linewidth = e.target.value;
+            }
+          });
+          widthInput.value = this.state.linewidth;
+          element.appendChild(widthInput);
+          return element;
+        }
       }
     ];
   }
@@ -210,7 +220,7 @@ export default class Sketchpad extends Base {
               class: `fa fa-${button.icon}`,
             });
             const toolbarButton  = this.ce('div', {
-              class: 'btn btn-secondary'
+              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`
             }, toolbarButtonIcon);
             if (button.attach) {
               return button.attach(toolbarButton);
