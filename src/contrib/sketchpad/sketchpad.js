@@ -72,7 +72,7 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          const layer = this.two.makeCircle(coordinate.x, coordinate.y, 20);
+          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.radius);
           layer.fill = this.state.fill;
           layer.stroke = this.state.stroke;
           layer.linewidth = this.state.linewidth;
@@ -96,6 +96,18 @@ export default class Sketchpad extends Base {
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
           return layer;
+        },
+        attach: (element) => {
+          const radiusInput = this.ce('input', {
+            type: 'number',
+            class: 'formio-sketchpad-toolbar-input formio-sketchpad-radius-input',
+            onChange: (e) => {
+              this.state.radius = e.target.value;
+            }
+          });
+          radiusInput.value = this.state.radius;
+          element.appendChild(radiusInput);
+          return element;
         }
       },
       select: {
@@ -156,7 +168,7 @@ export default class Sketchpad extends Base {
         attach: (element) => {
           const widthInput = this.ce('input', {
             type: 'number',
-            class: 'formio-sketchpad-linewidth-input',
+            class: 'formio-sketchpad-toolbar-input formio-sketchpad-linewidth-input',
             onChange: (e) => {
               this.state.linewidth = e.target.value;
             }
@@ -204,12 +216,19 @@ export default class Sketchpad extends Base {
             class: 'btn-group',
             role: 'group'
           },
-          this.modeButtons = Object.keys(this.modes).map(key => this.ce('div', {
-            class: `btn btn-secondary ${this.state.mode === this.modes[key].state.mode ? ' active' : ''}`,
-            onClick: () => this.setState(this.modes[key].state)
-          }, this.ce('i', {
-            class: `fa fa-${this.modes[key].icon}`,
-          }))),
+          this.modeButtons = Object.keys(this.modes).map(key => {
+            const mode = this.modes[key];
+            const toolbarButton = this.ce('div', {
+              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${key} ${this.state.mode === mode.state.mode ? ' active' : ''}`,
+              onClick: () => this.setState(mode.state)
+            }, this.ce('i', {
+              class: `fa fa-${mode.icon}`,
+            }));
+            if (mode.attach) {
+              return mode.attach(toolbarButton);
+            }
+            return toolbarButton;
+          }),
         ),
         this.ce('div', {
             class: 'btn-group',
@@ -233,7 +252,7 @@ export default class Sketchpad extends Base {
             role: 'group'
           },
           this.actions.map(button => this.ce('div', {
-            class: 'btn btn-secondary',
+            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.action}`,
             onClick: () => this[button.action]()
           }, this.ce('i', {
             class: `fa fa-${button.icon}`,

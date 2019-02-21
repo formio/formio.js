@@ -876,3 +876,22 @@ body.formio-dialog-open {
   white-space:nowrap;
   text-align: center;
 }
+
+.formio-sketchpad-toolbar-input  {
+  height: 24px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  width: 40px;
+  margin-left: 5px;
+  display: none;
+}
+
+.formio-sketchpad-toolbar-button {
+  &:hover {
+    background: #e6e6e6;
+
+    .formio-sketchpad-toolbar-input {
+      display: inline-block;
+    }
+  }
+}
