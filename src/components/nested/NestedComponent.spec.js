@@ -1,26 +1,16 @@
 import assert from 'power-assert';
 import each from 'lodash/each';
+import { expect } from 'chai';
 
 import Harness from '../../../test/harness';
 import NestedComponent from './NestedComponent';
+import { comp1 } from './fixtures';
+import _map from 'lodash/map';
 
 describe('NestedComponent class', () => {
   let component = null;
   it('Should create a new NestedComponent class', (done) => {
-    Harness.testCreate(NestedComponent, {
-      components: [
-        {
-          type: 'textfield',
-          key: 'firstName',
-          input: true
-        },
-        {
-          type: 'textfield',
-          key: 'lastName',
-          input: true
-        }
-      ]
-    }).then((_component) => {
+    Harness.testCreate(NestedComponent, comp1).then((_component) => {
       component = _component;
       Harness.testElements(component, 'input[name="data[firstName]"]', 1);
       Harness.testElements(component, 'input[name="data[lastName]"]', 1);
@@ -126,6 +116,82 @@ describe('NestedComponent class', () => {
       assert.equal(comp.components[1].components[0]._visible, true);
       assert.equal(comp.components[1].components[1]._visible, true);
       done();
+    });
+  });
+
+  describe('set/get visible', () => {
+    it('should set/get visible flag on instance and child components', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          expect(nested.visible).to.be.true;
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.visible = false;
+
+          expect(nested.visible).to.be.false;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.visible = true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
+
+  describe('set/get parentVisible', () => {
+    it('should set/get parentVisible flag on instance and child components', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          nested.parentVisible = false;
+
+          expect(nested.parentVisible).to.be.false;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.false;
+          });
+
+          nested.parentVisible = true;
+
+          expect(nested.parentVisible).to.be.true;
+
+          nested.components.forEach(cmp => {
+            expect(cmp.parentVisible).to.be.true;
+          });
+
+          done();
+        }, done)
+        .catch(done);
+    });
+  });
+
+  describe('get schema', () => {
+    it('components array shouldn\'t have duplicates', done => {
+      Harness.testCreate(NestedComponent, comp1)
+        .then(nested => {
+          const child = nested.components[0];
+          nested.components = [...nested.components, child, child, child];
+          expect(nested.components).to.have.lengthOf(5);
+          expect(nested.schema.components).to.be.lengthOf(2);
+          expect(_map(nested.schema.components, 'key')).to.deep.equal(['firstName', 'lastName']);
+          done();
+        }, done)
+        .catch(done);
     });
   });
 });

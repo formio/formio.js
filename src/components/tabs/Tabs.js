@@ -52,6 +52,44 @@ export default class TabsComponent extends NestedComponent {
     return schema;
   }
 
+  build(state, showLabel) {
+    if (this.options.flatten) {
+      this.element = super.createElement();
+      this.component.components.forEach((tab) => {
+        let body;
+        const panel = this.ce('div', {
+          id: this.id,
+          class: 'mb-2 card border panel panel-default'
+        },
+          [
+            this.ce('div', {
+              class: 'card-header bg-default panel-heading'
+            },
+              this.ce('h4', {
+                class: 'mb-0 card-title panel-title'
+              }, tab.label)
+            ),
+            body = this.ce('div', {
+              class: 'card-body panel-body'
+            })
+          ]
+        );
+        tab.components.forEach(component => this.addComponent(
+          component,
+          body,
+          this.data,
+          null,
+          null,
+          this.getComponentState(component, state)
+        ));
+        this.element.appendChild(panel);
+      });
+    }
+    else {
+      return super.build(state, showLabel);
+    }
+  }
+
   createElement() {
     this.tabsBar = this.ce('ul', {
       class: 'nav nav-tabs',

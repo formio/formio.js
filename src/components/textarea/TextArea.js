@@ -1,7 +1,8 @@
-/* global ace */
+/* global ace, Quill */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';
+import { uniqueName } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -74,6 +75,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   createInput(container) {
+    const _this = this;
     if (this.isPlain) {
       if (this.options.readOnly) {
         this.input = this.ce('div', {
@@ -160,6 +162,9 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
       }
     ).then((quill) => {
+      if (this.component.isUploadEnabled) {
+        quill.getModule('toolbar').addHandler('image', imageHandler);
+      }
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
         quill.disable();
@@ -169,6 +174,58 @@ export default class TextAreaComponent extends TextFieldComponent {
     }).catch(err => console.warn(err));
 
     return this.input;
+
+    function imageHandler() {
+      let fileInput = this.container.querySelector('input.ql-image[type=file]');
+
+      if (fileInput == null) {
+        fileInput = document.createElement('input');
+        fileInput.setAttribute('type', 'file');
+        fileInput.setAttribute('accept', 'image/*');
+        fileInput.classList.add('ql-image');
+        fileInput.addEventListener('change', () => {
+          const files = fileInput.files;
+          const range = this.quill.getSelection(true);
+
+          if (!files || !files.length) {
+            console.warn('No files selected');
+            return;
+          }
+
+          this.quill.enable(false);
+          const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = _this.component;
+          _this.root.formio
+            .uploadFile(
+              uploadStorage,
+              files[0],
+              uniqueName(files[0].name),
+              uploadDir || '', //should pass empty string if undefined
+              null,
+              uploadUrl,
+              uploadOptions
+            )
+            .then(result => {
+              return _this.root.formio.downloadFile(result);
+            })
+            .then(result => {
+              this.quill.enable(true);
+              const Delta = Quill.import('delta');
+              this.quill.updateContents(new Delta()
+                  .retain(range.index)
+                  .delete(range.length)
+                  .insert({ image: result.url })
+                , Quill.sources.USER);
+              fileInput.value = '';
+            }).catch(error => {
+            console.warn('Quill image upload failed');
+            console.warn(error);
+            this.quill.enable(true);
+          });
+        });
+        this.container.appendChild(fileInput);
+      }
+      fileInput.click();
+    }
   }
 
   setConvertedValue(value) {
@@ -183,13 +240,34 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  isEmpty(value) {
-    if (this.quill) {
-      return (!value || (value === '<p><br></p>'));
+  removeBlanks(value) {
+    if (!value) {
+      return value;
+    }
+    const removeBlanks = function(input) {
+      if (typeof input !== 'string') {
+        return input;
+      }
+      return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) => {
+        value[index] = removeBlanks(input);
+      });
     }
     else {
-      return super.isEmpty(value);
+      value = removeBlanks(value);
     }
+    return value;
+  }
+
+  hasChanged(before, after) {
+    return super.hasChanged(this.removeBlanks(before), this.removeBlanks(after));
+  }
+
+  isEmpty(value) {
+    return super.isEmpty(this.removeBlanks(value));
   }
 
   get defaultValue() {
@@ -201,13 +279,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    //should set value if new value is not equal to current
-    let shouldSetValue = !_.isEqual(value, this.getValue());
-    //should set value if is in read only mode
-    shouldSetValue = shouldSetValue || this.options.readOnly;
-    if (!shouldSetValue) {
-      return;
-    }
+    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
       if (this.options.readOnly) {
@@ -235,14 +307,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     else if (this.editorReady) {
       this.editorReady.then((editor) => {
         if (this.component.editor === 'ace') {
-          editor.setValue(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.setValue(this.setConvertedValue(value));
+          }
         }
         else if (this.component.editor === 'ckeditor') {
-          editor.data.set(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.data.set(this.setConvertedValue(value));
+          }
           this.updateValue(flags);
         }
         else {
-          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          if (shouldSetValue) {
+            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          }
           this.updateValue(flags);
         }
       });

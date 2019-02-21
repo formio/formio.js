@@ -146,7 +146,7 @@ export default class ButtonComponent extends BaseComponent {
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
-        this.loading  = false;
+        this.loading = false;
         this.disabled = false;
         this.empty(message);
         this.addClass(this.buttonElement, 'btn-success submit-success');
@@ -190,10 +190,9 @@ export default class ButtonComponent extends BaseComponent {
 
     this.on('change', (value) => {
       this.loading = false;
-      const isValid = this.root ? this.root.isValid(value.data, true) : value.isValid;
-      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
       if (onChange) {
-        onChange(value, isValid);
+        onChange(value, value.isValid);
       }
     }, true);
 
@@ -205,6 +204,7 @@ export default class ButtonComponent extends BaseComponent {
     }, true);
 
     this.addEventListener(this.buttonElement, 'click', (event) => {
+      this.triggerReCaptcha();
       this.dataValue = true;
       if (this.component.action !== 'submit' && this.component.showValidations) {
         this.emit('checkValidity', this.data);
@@ -252,7 +252,7 @@ export default class ButtonComponent extends BaseComponent {
         case 'url':
           this.emit('requestButton');
           this.emit('requestUrl', {
-            url: this.component.url,
+            url: this.interpolate(this.component.url),
             headers: this.component.headers
           });
           break;
@@ -395,5 +395,20 @@ export default class ButtonComponent extends BaseComponent {
 
   focus() {
     this.buttonElement.focus();
+  }
+
+  triggerReCaptcha() {
+    let recaptchaComponent;
+    this.root.everyComponent((component) => {
+      if (component.component.type === 'recaptcha' &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === this.component.key) {
+        recaptchaComponent = component;
+        return false;
+      }
+    });
+    if (recaptchaComponent) {
+      recaptchaComponent.verify(`${this.component.key}Click`);
+    }
   }
 }

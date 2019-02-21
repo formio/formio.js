@@ -110,8 +110,10 @@ export default class DayComponent extends BaseComponent {
 
   getInputValue(input, defaultValue) {
     if (_.isObject(input)) {
-      if (!_.isNaN(input.value)) {
-        return parseInt(input.value, 10);
+      const value = parseInt(input.value, 10);
+
+      if (!_.isNaN(value) && _.isNumber(value)) {
+        return value;
       }
     }
 
@@ -223,8 +225,10 @@ export default class DayComponent extends BaseComponent {
 
     // Ensure the day limits match up with the months selected.
     this.monthInput.onchange = function() {
-      self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
-      if (self.dayInput.value > self.dayInput.max) {
+      const maxDay = parseInt(new Date(self.yearInput.value, this.value, 0).getDate(), 0);
+      const day = self.getInputValue(self.dayInput, 0);
+      self.dayInput.max = maxDay;
+      if (day > maxDay) {
         self.dayInput.value = self.dayInput.max;
       }
       self.updateValue();

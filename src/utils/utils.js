@@ -8,6 +8,7 @@ import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import Promise from 'native-promise-only';
 import { getValue } from './formUtils';
+import stringHash from 'string-hash';
 
 export * from './formUtils';
 
@@ -40,10 +41,12 @@ export { jsonLogic, moment };
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = args.component ? args.component : { key: 'unknown' };
+  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
+  args.form = _.cloneDeep(args.form);
+  const componentKey = args.component.key;
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
@@ -70,7 +73,7 @@ export function evaluate(func, args, ret, tokenize) {
       args = _.values(args);
     }
     catch (err) {
-      console.warn(`An error occured within the custom function for ${component.key}`, err);
+      console.warn(`An error occured within the custom function for ${componentKey}`, err);
       returnVal = null;
       func = false;
     }
@@ -81,7 +84,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (typeof func === 'object') {
@@ -90,11 +93,11 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (func) {
-    console.warn(`Unknown function type for ${component.key}`);
+    console.warn(`Unknown function type for ${componentKey}`);
   }
   return returnVal;
 }
@@ -332,6 +335,29 @@ export function setActionProperty(component, action, row, data, result, instance
   return component;
 }
 
+const templateCache = {};
+const templateHashCache = {};
+
+function interpolateTemplate(template) {
+  const templateSettings = {
+    evaluate: /\{%([\s\S]+?)%\}/g,
+    interpolate: /\{\{([\s\S]+?)\}\}/g,
+    escape: /\{\{\{([\s\S]+?)\}\}\}/g
+  };
+  try {
+    return _.template(template, templateSettings);
+  }
+  catch (err) {
+    console.warn('Error while processing template', err, template);
+  }
+}
+
+export function addTemplateHash(template) {
+  const hash = stringHash(template);
+  templateHashCache[hash] = interpolateTemplate(template);
+  return hash;
+}
+
 /**
  * Interpolate a string and add data replacements.
  *
@@ -339,18 +365,19 @@ export function setActionProperty(component, action, row, data, result, instance
  * @param data
  * @returns {XML|string|*|void}
  */
-export function interpolate(string, data) {
-  const templateSettings = {
-    evaluate: /\{%(.+?)%\}/g,
-    interpolate: /\{\{(.+?)\}\}/g,
-    escape: /\{\{\{(.+?)\}\}\}/g
-  };
-  try {
-    return _.template(string, templateSettings)(data);
+export function interpolate(rawTemplate, data) {
+  const template = _.isNumber(rawTemplate)
+    ? templateHashCache[rawTemplate]
+    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
+  if (typeof template === 'function') {
+    try {
+      return template(data);
+    }
+    catch (err) {
+      console.warn('Error interpolating template', err, rawTemplate, data);
+    }
   }
-  catch (err) {
-    console.warn('Error interpolating template', err, string, data);
-  }
+  return template;
 }
 
 /**
@@ -907,4 +934,79 @@ export function bootstrapVersion() {
     return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }
   return 0;
+}
+
+/**
+ * Retrun provided argument.
+ * If argument is a function, returns the result of a function call.
+ * @param {*} e;
+ *
+ * @return {*}
+ */
+export function unfold(e) {
+  if (typeof e === 'function') {
+    return e();
+  }
+
+  return e;
+}
+
+/**
+ * Map values through unfold and return first non-nil value.
+ * @param {Array<T>} collection;
+ *
+ * @return {T}
+ */
+export const firstNonNil = _.flow([
+  _.partialRight(_.map, unfold),
+  _.partialRight(_.find, v => !_.isUndefined(v))
+]);
+
+/*
+ * Create enclosed state.
+ * Returns functions to getting and cycling between states.
+ * @param {*} a - initial state.
+ * @param {*} b - next state.
+ * @return {Functions[]} -- [get, toggle];
+ */
+export function withSwitch(a, b) {
+  let state = a;
+  let next = b;
+
+  function get() {
+    return state;
+  }
+
+  function toggle() {
+    const prev = state;
+    state = next;
+    next = prev;
+  }
+
+  return [get, toggle];
+}
+
+export function observeOverload(callback, options = {}) {
+  const { limit = 50, delay = 500 } = options;
+  let callCount = 0;
+  let timeoutID = 0;
+
+  const reset = () => callCount = 0;
+
+  return () => {
+    if (timeoutID !== 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+    }
+
+    timeoutID = setTimeout(reset, delay);
+
+    callCount += 1;
+
+    if (callCount >= limit) {
+      clearTimeout(timeoutID);
+      reset();
+      return callback();
+    }
+  };
 }

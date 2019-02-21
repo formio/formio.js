@@ -4,7 +4,11 @@ import _ from 'lodash';
 import Webform from './Webform';
 import Base from './components/base/Base';
 import Formio from './Formio';
-import { checkCondition, hasCondition } from './utils/utils';
+import {
+  checkCondition,
+  hasCondition,
+  firstNonNil
+} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -20,7 +24,6 @@ export default class Wizard extends Webform {
     this.pages = [];
     this.globalComponents = [];
     this.page = 0;
-    this.history = [];
     this._nextPage = 0;
     this._seenPages = [0];
   }
@@ -58,7 +61,7 @@ export default class Wizard extends Webform {
   }
 
   resetValue() {
-    this.getPages().forEach((page) => page.resetValue());
+    this.getPages({ all: true }).forEach((page) => page.resetValue());
     this.setPristine(true);
   }
 
@@ -107,12 +110,7 @@ export default class Wizard extends Webform {
   }
 
   getPreviousPage() {
-    const prev = this.history.pop();
-    if (typeof prev !== 'undefined') {
-      return prev;
-    }
-
-    return this.page - 1;
+    return Math.max(this.page - 1, 0);
   }
 
   beforeSubmit() {
@@ -125,7 +123,6 @@ export default class Wizard extends Webform {
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
-      this.history.push(this.page);
       return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
         this._nextPage = this.getNextPage(this.submission.data, this.page);
         this.emit('nextPage', { page: this.page, submission: this.submission });
@@ -138,7 +135,6 @@ export default class Wizard extends Webform {
         noValidate: true
       });
       return this.beforeNext().then(() => {
-        this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
           this._nextPage = this.getNextPage(this.submission.data, this.page);
           this.emit('nextPage', { page: this.page, submission: this.submission });
@@ -159,7 +155,6 @@ export default class Wizard extends Webform {
 
   cancel(noconfirm) {
     if (super.cancel(noconfirm)) {
-      this.history = [];
       return this.setPage(0);
     }
     else {
@@ -264,6 +259,8 @@ export default class Wizard extends Webform {
 
   hasButton(name, nextPage) {
     // Check for and initlize button settings object
+    const currentPage = this.currentPage();
+
     this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
@@ -271,14 +268,25 @@ export default class Wizard extends Webform {
     });
 
     if (name === 'previous') {
-      return (this.page > 0) && this.options.buttonSettings.showPrevious;
+      const show = firstNonNil([
+        _.get(currentPage, 'buttonSettings.previous'),
+        this.options.buttonSettings.showPrevious
+      ]);
+      return (this.page > 0) && show;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
-      return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.showNext;
+      const show = firstNonNil([
+        _.get(currentPage, 'buttonSettings.next'),
+        this.options.buttonSettings.showNext
+      ]);
+      return (nextPage !== null) && (nextPage < this.pages.length) && show;
     }
     if (name === 'cancel') {
-      return this.options.buttonSettings.showCancel;
+      return firstNonNil([
+        _.get(currentPage, 'buttonSettings.cancel'),
+        this.options.buttonSettings.showCancel
+      ]);
     }
     if (name === 'submit') {
       return !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
@@ -321,13 +329,15 @@ export default class Wizard extends Webform {
 
     const showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     this.pages.forEach((page, i) => {
-      // See if this page is in our history.
-      if (showHistory && ((this.page !== i) && !this.history.includes(i))) {
-        return;
-      }
+      // Iterate over predicates and returns first non-undefined value
+      const clickableFlag = firstNonNil([
+        // Now page (Panel) can override `breadcrumbSettings.clickable` option
+        _.get(page, 'breadcrumbClickable'),
+        // Set clickable based on breadcrumb settings
+        this.options.breadcrumbSettings.clickable
+      ]);
 
-      // Set clickable based on breadcrumb settings
-      const clickable = this.page !== i && this.options.breadcrumbSettings.clickable;
+      const clickable = this.page !== i && clickableFlag;
       let pageClass = 'page-item ';
       pageClass += (i === this.page) ? 'active' : (clickable ? '' : 'disabled');
 
@@ -365,7 +375,8 @@ export default class Wizard extends Webform {
 
   pageId(page) {
     if (page.key) {
-      return page.key;
+      // Some panels have the same key....
+      return `${page.key}-${page.title}`;
     }
     else if (
       page.components &&
@@ -481,7 +492,12 @@ export default class Wizard extends Webform {
   }
 
   checkValidity(data, dirty) {
-    return this.checkPagesValidity(this.getPages(), data, dirty);
+    if (this.submitting) {
+      return this.checkPagesValidity(this.getPages(), data, dirty);
+    }
+    else {
+      return this.checkCurrentPageValidity(data, dirty);
+    }
   }
 
   get errors() {

@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
+import { expect } from 'chai';
 
 import i18Defaults from '../src/i18n';
 import WebformBuilder from '../src/WebformBuilder';
@@ -12,12 +13,20 @@ Components.setComponents(AllComponents);
 
 let formBuilderElement = null;
 let formBuilder = null;
+
+function onNext(cmp, event, cb) {
+  expect(cmp.events).to.be.an('object');
+  expect(cmp.events.once).to.be.a('function');
+  const fullEvent = `${cmp.options.namespace}.${event}`;
+  cmp.events.once(fullEvent, cb);
+}
+
 const Harness = {
-  builderBefore(done) {
+  builderBefore(done, options = {}) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new WebformBuilder(formBuilderElement);
-    formBuilder.form = {components: []};
+    formBuilder = new WebformBuilder(formBuilderElement, options);
+    formBuilder.form = { components: [] };
     formBuilder.builderReady.then(done);
   },
 
@@ -179,10 +188,23 @@ const Harness = {
     assert(element, `${name} input not found`);
     assert.equal(value, element.value);
   },
+  assertStringEqual(test) {
+    return function(value) {
+      /* eslint-disable no-irregular-whitespace */
+      return value.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ') ===
+        test.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ');
+      /* eslint-enable  no-irregular-whitespace */
+    };
+  },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
-    assert.deepEqual(component.inputs[index].value, visible);
+    if (typeof visible === 'function') {
+      assert(visible(component.inputs[index].value), 'Failed');
+    }
+    else {
+      assert.deepEqual(component.inputs[index].value, visible);
+    }
     return component;
   },
   testSubmission(form, submission, onChange) {
@@ -201,9 +223,13 @@ const Harness = {
       form.off('error');
       done();
     });
+
+    onNext(form, 'change', () => {
+      form.submit().catch(done);
+    });
+
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
-    form.submit();
   },
   testComponent(component, test, done) {
     let testBad = true;
@@ -254,6 +280,14 @@ const Harness = {
       form.on('nextPage', onNextPage);
     }
     return form.nextPage();
-  }
+  },
+  testNumberBlur(cmp, inv, outv, display, index = 0) {
+    const input = _.get(cmp, ['inputs', index], {});
+    input.value = inv;
+    input.dispatchEvent(new Event('blur'));
+    assert.strictEqual(cmp.getValueAt(index), outv);
+    assert.strictEqual(input.value, display);
+  },
+  onNext
 };
 export default Harness;

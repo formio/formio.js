@@ -1,9 +1,12 @@
 import assert from 'power-assert';
+import { expect } from 'chai';
+import sinon from 'sinon';
 import each from 'lodash/each';
-
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
+import Formio from './Formio';
 import Webform from './Webform';
+import { APIMock } from '../test/APIMock';
 
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
@@ -153,6 +156,113 @@ describe('Formio Form Renderer tests', () => {
     });
   });
 
+  it('Should keep translation after redraw', done => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+
+    try {
+      form.setForm(schema)
+        .then(() => {
+          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);
+          return form.language = 'ru';
+        }, done)
+        .then(() => {
+          expect(form.options.language).to.equal('ru');
+          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          form.redraw();
+          expect(form.options.language).to.equal('ru');
+          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (error) {
+      done(error);
+    }
+  });
+
+  it('Should fire languageChanged event when language is set', done => {
+    let isLanguageChangedEventFired = false;
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+
+    try {
+      form.setForm(schema)
+        .then(() => {
+          form.addLanguage('ru', { 'Default Label': 'Russian Label' }, true);
+          form.on('languageChanged', () => {
+            isLanguageChangedEventFired = true;
+          });
+          return form.language = 'ru';
+        }, done)
+        .then(() => {
+          assert(isLanguageChangedEventFired);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (error) {
+      done(error);
+    }
+  });
+
+  it('Should fire initialized event after change event when language is set', done => {
+    let isChangeEventFired = false;
+    const formElement = document.createElement('div');
+    const schema = {
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    };
+    Formio.createForm(formElement, schema)
+      .then(form => {
+        form.ready.then(() => {
+          form.language = 'en-GB';
+        });
+        form.on('change', () => {
+          isChangeEventFired = true;
+        });
+        form.on('initialized', () => {
+          assert(isChangeEventFired);
+          done();
+        });
+      });
+  });
+
   it('When submitted should strip fields with persistent: client-only from submission', done => {
     const formElement = document.createElement('div');
     simpleForm = new Webform(formElement);
@@ -196,6 +306,22 @@ describe('Formio Form Renderer tests', () => {
     });
   });
 
+  describe('set/get nosubmit', () => {
+    it('should set/get nosubmit flag and emit nosubmit event', () => {
+      const form = new Webform(null, {});
+      const emit = sinon.spy(form, 'emit');
+      expect(form.nosubmit).to.be.false;
+      form.nosubmit = true;
+      expect(form.nosubmit).to.be.true;
+      expect(emit.callCount).to.equal(1);
+      expect(emit.args[0]).to.deep.equal(['nosubmit', true]);
+      form.nosubmit = false;
+      expect(form.nosubmit).to.be.false;
+      expect(emit.callCount).to.equal(2);
+      expect(emit.args[1]).to.deep.equal(['nosubmit', false]);
+    });
+  });
+
   each(FormTests, (formTest) => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
@@ -209,4 +335,84 @@ describe('Formio Form Renderer tests', () => {
       });
     });
   });
+});
+
+describe('Test the saveDraft and restoreDraft feature', () => {
+  APIMock.submission('https://savedraft.form.io/myform', {
+    components: [
+      {
+        type: 'textfield',
+        key: 'a',
+        label: 'A'
+      },
+      {
+        type: 'textfield',
+        key: 'b',
+        label: 'B'
+      }
+    ]
+  });
+
+  const saveDraft = function(user, draft, newData, done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      saveDraft: true,
+      saveDraftThrottle: false
+    });
+    form.src = 'https://savedraft.form.io/myform';
+    Formio.setUser(user);
+    form.on('restoreDraft', (existing) => {
+      assert.deepEqual(existing ? existing.data : null, draft);
+      form.setSubmission({ data: newData }, { modified: true });
+    });
+    form.on('saveDraft', (saved) => {
+      // Make sure the modified class was added to the components.
+      const a = form.getComponent('a');
+      const b = form.getComponent('b');
+      assert.equal(a.hasClass(a.getElement(), 'formio-modified'), true);
+      assert.equal(b.hasClass(b.getElement(), 'formio-modified'), true);
+      assert.deepEqual(saved.data, newData);
+      form.draftEnabled = false;
+      done();
+    });
+    form.formReady.then(() => {
+      assert.equal(form.savingDraft, true);
+    });
+  };
+
+  it('Should allow a user to start a save draft session.', (done) => saveDraft({
+    _id: '1234',
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  }, null, {
+    a: 'one',
+    b: 'two'
+  }, done));
+
+  it('Should allow a different user to start a new draft session', (done) => saveDraft({
+    _id: '2468',
+    data: {
+      firstName: 'Sally',
+      lastName: 'Thompson'
+    }
+  }, null, {
+    a: 'three',
+    b: 'four'
+  }, done));
+
+  it('Should restore a users existing draft', (done) => saveDraft({
+    _id: '1234',
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  }, {
+    a: 'one',
+    b: 'two'
+  }, {
+    a: 'five',
+    b: 'six'
+  }, done));
 });

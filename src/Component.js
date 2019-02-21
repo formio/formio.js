@@ -1,4 +1,5 @@
-import EventEmitter from 'eventemitter2';
+import EventEmitter from './EventEmitter';
+import Formio from './Formio';
 import * as FormioUtils from './utils/utils';
 import i18next from 'i18next';
 import _ from 'lodash';
@@ -115,9 +116,9 @@ export default class Component {
    * @param {string} event - The event to emit.
    * @param {Object} data - The data to emit with the handler.
    */
-  emit(event, data) {
+  emit(event, ...data) {
     if (this.events) {
-      this.events.emit(`${this.options.namespace}.${event}`, data);
+      this.events.emit(`${this.options.namespace}.${event}`, ...data);
     }
   }
 
@@ -471,6 +472,8 @@ export default class Component {
         return 'fa fa-times-circle-o';
       case 'new-window':
         return 'fa fa-window-restore';
+      case 'menu-hamburger':
+        return 'fa fa-bars';
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
@@ -499,6 +502,7 @@ export default class Component {
       _,
       utils: FormioUtils,
       util: FormioUtils,
+      user: Formio.getUser(),
       moment,
       instance: this
     }, additional);

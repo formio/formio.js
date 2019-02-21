@@ -5,11 +5,12 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from 'native-promise-only';
 import 'whatwg-fetch';
-import { EventEmitter2 as EventEmitter } from 'eventemitter2';
+import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
 import _get from 'lodash/get';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -64,7 +65,7 @@ export default class Formio {
     if (!path) {
       // Allow user to create new projects if this was instantiated without
       // a url
-      this.projectUrl = `${this.base}/project`;
+      this.projectUrl = Formio.projectUrl || `${this.base}/project`;
       this.projectsUrl = `${this.base}/project`;
       this.projectId = false;
       this.query = '';
@@ -471,7 +472,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -486,7 +487,7 @@ export default class Formio {
             if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
               }
               else {
                 throw ('Storage provider not found');
@@ -610,11 +611,14 @@ export default class Formio {
     return url.match(new RegExp(regex));
   }
 
-  static serialize(obj) {
+  static serialize(obj, _interpolate) {
     const str = [];
+    const interpolate = (item) => {
+      return _interpolate ? _interpolate(item) : item;
+    };
     for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`);
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
       }
     }
     return str.join('&');
@@ -697,7 +701,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -819,6 +823,11 @@ export default class Formio {
           return result;
         }
 
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = _cloneDeep(result);
+        }
+
         let resultCopy = {};
 
         // Shallow copy result so modifications don't end up in cache
@@ -850,11 +859,6 @@ export default class Formio {
 
         return Promise.reject(err);
       });
-
-    // Cache the response.
-    if (method === 'GET') {
-      Formio.cache[cacheKey] = result;
-    }
 
     return result;
   }
@@ -933,6 +937,10 @@ export default class Formio {
     var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
       Formio.setToken(null, opts);
+
+      // Emit an event on the cleared user.
+      Formio.events.emit('formio.user', null);
+
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(userName);
@@ -948,6 +956,9 @@ export default class Formio {
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: '/' });
     }
+
+    // Emit an event on the authenticated user.
+    Formio.events.emit('formio.user', user);
   }
 
   static getUser(options) {
@@ -1110,6 +1121,34 @@ export default class Formio {
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
   }
 
+  static pageQuery() {
+    if (Formio._pageQuery) {
+      return Formio._pageQuery;
+    }
+
+    Formio._pageQuery = {};
+    Formio._pageQuery.paths = [];
+    const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
+    let parts = [];
+    location.search.substr(1).split('&').forEach(function(item) {
+      parts = item.split('=');
+      if (parts.length > 1) {
+        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+      }
+    });
+
+    hashes.forEach(function(item) {
+      parts = item.split('=');
+      if (parts.length > 1) {
+        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+      }
+      else if (item.indexOf('/') === 0) {
+        Formio._pageQuery.paths = item.substr(1).split('/');
+      }
+    });
+    return Formio._pageQuery;
+  }
+
   static oAuthCurrentUser(formio, token) {
     return Formio.currentUser(formio, {
       external: true,
@@ -1117,6 +1156,33 @@ export default class Formio {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  static samlInit(options) {
+    options = options || {};
+    const query = Formio.pageQuery();
+    if (query.saml) {
+      Formio.setUser(null);
+      const retVal = Formio.setToken(query.saml);
+      let uri = window.location.toString();
+      uri = uri.substring(0, uri.indexOf('?'));
+      window.history.replaceState({}, document.title, uri);
+      return retVal;
+    }
+
+    // Only continue if we are not authenticated.
+    if (Formio.getToken()) {
+      return false;
+    }
+
+    // Set the relay if not provided.
+    if (!options.relay) {
+      options.relay = window.location.href;
+    }
+
+    // go to the saml sso endpoint for this project.
+    window.location.href = `${Formio.projectUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    return false;
   }
 
   static oktaInit(options) {
@@ -1161,6 +1227,8 @@ export default class Formio {
 
   static ssoInit(type, options) {
     switch (type) {
+      case 'saml':
+        return Formio.samlInit(options);
       case 'okta':
         return Formio.oktaInit(options);
       default:
@@ -1256,7 +1324,12 @@ export default class Formio {
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = Promise;
-Formio.Headers = Headers;
+if (typeof Headers !== 'undefined') {
+  Formio.Headers = Headers;
+}
+else {
+  Formio.Headers = {};
+}
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

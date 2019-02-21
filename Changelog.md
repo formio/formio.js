@@ -4,6 +4,283 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.15.6
+### Fixed
+ - Problems with the private images not showing up when printing to PDF.
+
+## 3.15.5
+### Fixed
+ - Problem where the renderer would crash within the evaluate method.
+
+## 3.15.4
+### Fixed
+ - Issue with the valueProperty field configurations not saving for Select components.
+
+### Added
+ - The ability to configure the fuseOptions for the Select components.
+ 
+### Changed
+ - Upgraded sinon@7.2.4, webpack@4.29.5, @babel/core@7.3.3, eslint@5.14.1
+
+## 3.15.3
+### Fixed
+ - Make the samlInit method return the setToken promise to know when the user is done loading.
+
+## 3.15.2
+### Fixed
+ - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio
+
+## 3.15.1
+### Changed
+ - The icon for reordering to the more standard bars icon.
+
+## 3.15.0
+### Fixed
+ - FOR-2075: Excess triggerChange calls for setting submission of Webform
+ - Made the Formio.cache values immutable.
+ - Issues with Number tests with locales.
+
+### Added
+ - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
+ - SAML authentication support
+ 
+### Changed
+ - Upgrade i18next@15.0.4, bootstrap@4.3.1, bootswatch@4.3.1
+
+## 3.14.1
+### Added
+ - Continuous scrolling to Select component.
+ - Limit and sort for Select component.
+ 
+### Fixed
+ - Initial validation for webform components to not trigger checkData.
+ - Fixing issue with the template cache not being a function.
+ 
+### Changed
+ - Upgraded webpack@4.29.3, i18next@15.0.0
+
+## 3.14.0
+### Fixed
+ - Fix form select in nested form from not searching for forms.
+ - Pass args to event trigger actions instead of event name.
+ - Fix bug with default value for DataGrid
+ - Problems with nested form conditions
+
+### Added
+ - FOR-1804: Add option to override fuzzy search threshold in Select
+ - FOR-2044: Fix bug with form danger alert
+ - Added ability to set default value on nested forms.
+ 
+### Changed
+ - Upgraded  webpack@4.29.2, eslint@5.13.0, i18next@14.0.1, karma@4.0.0, written-number@0.9.1
+
+## 3.13.10
+### Fixed
+ - Add ability to set default values on nested forms.
+
+## 3.13.9
+### Fixed
+ - Crash on nested form due to currentForm setting.
+
+## 3.13.8
+### Redo bad publish.
+
+## 3.13.7
+### Fixed
+ - instance.currentForm for nested forms should switch form.
+
+## 3.13.6
+### Added
+ - instance.currentForm to reference the form a component is an instance of.
+ 
+### Fixed
+ - Required validation in textarea with wysiwyg.
+
+## 3.13.5
+### Fixed
+ - Fix issue where redraws don't wait for nested forms to redraw.
+ - Fix issue where ckeditor causes infinite change events.
+ - Check for bad data coming in to a selectboxes component like if they set the default value to a string.
+
+## 3.13.4
+### Fixed
+ - Bad build.
+ - Re-add the "source" check to ensure that it does not call updateValue on the component that triggered the change.
+
+## 3.13.3
+### Fixed
+ - Builder without a form set and button type
+
+### Reverted
+ - Limiting change events to non source components. This broke custom validation.
+
+## 3.13.2
+### Fixed
+ - Isolate components and forms when running evaluate of custom code.
+ - Fixed problem where if component.customDefaultValue is set, it will override the component.defaultValue setting.
+ - Make it so that component.customDefaultValue is NOT evaluated in webform builder default preview so it will not automatically set.
+ - Fix issue where checkboxes set as radio couldn't exist together if they have the same key.
+ - PDF from not showing the console.warning of "postmessage message type required"
+
+## 3.13.1
+### Added 
+ - FOR-1933: 'formEmbedded' event
+ - Currently logged in user to the evaluation context.
+
+### Fixed
+ - The event propagation to not call updateValue on the component that initiated the change.
+
+## 3.13.0
+### Fixed
+ - Issue where calling Formio.request by itself could return a non-Promise cached response.
+ - FOR-2020: Fixed issue with the nosubmit flag not getting passed to nested forms.
+ - FOR-2000: POST to URL button not passing headers, added interpolation to header value
+ - FOR-1806: ```initialized``` event firing before first ```change``` event when setting language
+ - FOR-1901: Fixed infinite loop performance issues with nested forms.
+
+### Added
+ - reCAPTCHA component
+ - Azure Blob Storage support
+ - FOR-1802: Added tests to ensure the change event is fired within PDF's
+
+## 3.12.3
+### Fixed
+ - FOR-1802: ```change```  event not firing when component position is changed in PDF Form in builder
+ - Issue with Wizard cancel.
+ - Issue where an error of dataValue.map is not a function would trigger in file components.
+ - Problem with Headers not being defined for non-brower implementations.
+
+### Added
+ - FOR-1736: Added test for Custom Component.
+ - Test to prove the language change occurs in nested forms.
+ 
+### Changed
+ - Upgraded i18next@13.1.5, eslint@5.12.1, sinon@7.2.3, moment@2.24.0, @babel/preset-env@7.3.1, webpack@4.29.0
+
+## 3.12.2
+### Fixed
+ - An error from getting thrown when you add a nested from without a form configured.
+
+## 3.12.1
+### Added
+ - Some merge utilities to assist with the form merge system.
+ - Improvements to Select component asString method.
+
+### Changed
+ - Upgrade i18next@13.1.4
+ 
+### Fixed
+ - Problem where nested form would show the submit buttons.
+ - Fixed bug with schema getter when it returns duplicates within components array.
+
+## 3.12.0
+### Added
+ - Added "Inline Edit" mode for the edit grid to commit the changed rows inline with the submission value.
+ - Hashing and caching for `interpolate` function.
+ - Ability to upload images to File Storage for Quill WYSIWYG
+ - Row groups feature to Data Grid.
+ - Static table configuration options to Data Grid component.
+
+### Changed
+ - Upgrade i18next@13.1.2
+
+## 3.11.1
+### Fixed
+ - Issues with the choices icons not making their way into external librarys such as Angular, etc.
+ - Added "HTML" property type to extract html content from the HTML5 component
+ 
+## 3.11.0
+### Added
+ - The ModalEdit component which allows for inline editing of content with modal overlay.
+ - Add html content and component type to strings.
+
+### Fixed
+ - FOR-1970: Fixed metadata missing in nested child form
+
+## 3.10.4
+### Added
+ - FOR-1939: Added the saveDraft feature to automatically save submission drafts as the user is filling out the form.
+ - Added a class "formio-modified" to any field that is manually modified.
+
+## 3.10.3
+### Added
+ - The ability to configure a select dropdown to show only the value in readOnly mode.
+ 
+### Fixed
+ - FOR-1934: Problem where the language configurations was not getting passed into nested forms.
+ 
+### Changed
+ - Upgraded babel-loader@8.0.5, i18next@13.1.0, eslint@5.12.0, marked@0.6.0
+
+## 3.10.2
+### Fixed
+ - Issues with file uploads where ? can exist in urls twice.
+ - Cut reference for values stored in cache
+ - Fix bug with compilation skipping for scss files
+ - WebformBuilder default editform options mutation.
+ - FOR-1962: Removing CSS white color by default
+
+### Added
+ - Added option in Data tab to specify custom options that will be used in the Choices JS library
+
+## 3.10.1
+### Fixed
+ - FOR-1964: Fix bug with delimiter setting in Number
+ - Problems where the valueProperty would not show in the Select component settings.
+ 
+### Changed
+ - Switch to Karma mocha reporter.
+ - Upgraded i18next@13.0.1, @babel/cli@7.2.3, @babel/preset-env@7.2.3, webpack@4.28.2, @babel/polyfill@7.2.5, bootstrap@4.2.1, eslint@5.11.0
+
+## 3.10.0
+### Fixed
+ - Signature field has invalid height attribute of "150" instead of "150px"
+ - Fixed some potential crashes within the EditGrid component.
+ - The form component in builder mode.
+ - The form component "form" selection configuration to work within the form manager application.
+ - The "authenticate" parameter to work with Select components, where it will pass Form.io authentication to the URL.
+ - Fixed view for select multiple
+ - A crash in the isEmpty method for DateTime component.
+ - Fix bug with editForm Data tab for container components
+ - Fix issue where if radio value is true it won't have radio-selected class set on it.
+
+### Added
+ - Tree Component for building nested tree-based controls.
+ - FOR-1948: editorReady promise for Content component
+ - Interpolate to the Button urls so that {{ }} can be used.
+ - FOR-1912: Added tests to the Select component to demonstrate no-reproducibility of this issue.
+ - Ability to flatten wizard and tab components for better printing capability.
+ - Currency Component: Support other currencies - Add suffix / prefix options
+ - Allow translating other Choice.js labels.
+
+## 3.9.4
+### Fixed
+ - Problem where a component can get in an infinite loop if its parent is not visible but it is visible and cleanOnHide is set.
+ - FOR-1759: Default Values doesn't include required decimals
+ - FOR-1911: Problem where some configurations would not get passed to the wizard components.
+ - FOR-1336: Fix bug with double validation
+ - Typos
+ 
+### Added
+ - Add ability to get all translatable strings from a form definition.
+ - RTL support for select dropdowns.
+ - Added component tooltip interpolation
+ 
+
+## 3.9.3
+### Fixed
+ - Problem where wizards with panels with the same key would end up getting caught in infinite refresh loop.
+ - Fix single file types still staying hidden.
+ - Typos
+ - Fix bug with number#getView when value equals to 0
+
+### Changed
+ - Upgraded chance@1.0.18, hoek@6.1.2, karma@3.1.3, @babel/cli@7.2.0, @babel/core@7.2.0, @babel/plugin-proposal-export-default-from@7.2.0, @babel/plugin-proposal-optional-chaining@7.2.0, @babel/preset-env@7.2.0, webpack@4.27.1, webpack-stream@5.2.1
+
+## 3.9.2
+### Fixed
+ - File type settings
+
 ## 3.9.1
 ### Fixed
  - More issues with infinite onChange events getting called.
@@ -22,7 +299,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-1787: Ability to save Day component with empty day / month / year, added trailing zeros to saved value
  - Added File types
- 
+
 ### Fixed
  - FOR-1850: Wrong key for Encrypted setting in builder
  - FOR-1847: Renderer crashing when TextArea is rendered in readOnly and viewAsHtml mode
@@ -45,11 +322,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.7.0
 ### Changed
  - Added the 'hideOnChildrenHidden' parameter for Columns to hide when their children are hidden.
- 
+
 ### Added
  - FOR-1806: languageChanged event
  - FOR-1844: Support for private file downloads with the URL file configuration. Also added a File Upload server @ https://github.com/formio/formio-upload that supports this feature.
- 
+
 ### Fixed
  - FOR-1595: Placement of description for Edit Grid
  - FOR-1657: Select component Values template.
@@ -87,7 +364,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.6.10
 ### Fixed
- - FOR-1491: Fix bug with Day when form rendered as HTML 
+ - FOR-1491: Fix bug with Day when form rendered as HTML
  - FOR-1812: Fixed issues where timezones were not converting properly.
 
 ## 3.6.9
@@ -113,7 +390,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-1733: Fixed issue with preview destroy on change.
  - FOR-1728: Problems with running the renderer within iOS applications.
- 
+
 ## 3.6.5
 ### Fixed
  - Broken build.
@@ -1411,7 +1688,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.19.0
 ### Fixed
  - Performance issues with large forms with conditionals.
- - Issue with select list not saving values accross pages.
+ - Issue with select list not saving values across pages.
  - Fixed issue with prepend not working if no firstChild is provided.
  - Loader from not showing up.
  - Issue with the form component not validating correctly.

@@ -8,6 +8,7 @@ import Formio from '../../Formio';
 import Validator from '../Validator';
 import Widgets from '../../widgets';
 import Component from '../../Component';
+import dragula from 'dragula';
 const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/master/build/ckeditor.js';
 
 /**
@@ -273,6 +274,7 @@ export default class BaseComponent extends Component {
      * Determines if this component is visible, or not.
      */
     this._visible = true;
+    this._parentVisible = true;
 
     /**
      * If this input has been input and provided value.
@@ -372,6 +374,14 @@ export default class BaseComponent extends Component {
 
   get key() {
     return _.get(this.component, 'key', '');
+  }
+
+  get currentForm() {
+    return this._currentForm;
+  }
+
+  set currentForm(instance) {
+    this._currentForm = instance;
   }
 
   /**
@@ -777,6 +787,7 @@ export default class BaseComponent extends Component {
 
   evalContext(additional) {
     return super.evalContext(Object.assign({
+      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
@@ -791,7 +802,7 @@ export default class BaseComponent extends Component {
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
-    else if (this.component.customDefaultValue) {
+    if (this.component.customDefaultValue && !this.options.preview) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
@@ -881,28 +892,41 @@ export default class BaseComponent extends Component {
     if (!this.tbody) {
       return;
     }
+    const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = '';
     values = values || this.dataValue;
     _.each(values, (value, index) => {
       const tr = this.ce('tr');
+      if (allowReorder) {
+        tr.appendChild(this.ce('td', {
+          class: 'formio-drag-column'
+        }, this.dragButton()));
+      }
       const td = this.ce('td');
       this.buildInput(td, value, index);
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
-        const tdAdd = this.ce('td');
+        const tdAdd = this.ce('td', {
+          class: 'formio-remove-column'
+        });
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
       }
 
+      if (allowReorder) {
+        tr.dragInfo = {
+          index: index
+        };
+      }
       this.tbody.appendChild(tr);
     });
 
     if (!this.shouldDisable) {
       const tr = this.ce('tr');
       const td = this.ce('td', {
-        colspan: '2'
+        colspan: allowReorder ? '3' : '2'
       });
       td.appendChild(this.addButton());
       tr.appendChild(td);
@@ -912,6 +936,48 @@ export default class BaseComponent extends Component {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    if (allowReorder) {
+      this.addDraggable([this.tbody]);
+    }
+  }
+
+  get allowReorder() {
+    return this.component.reorder && !this.options.readOnly;
+  }
+
+  addDraggable(containers) {
+    this.dragula = dragula(containers, this.getRowDragulaOptions()).on('drop', this.onRowDrop.bind(this));
+  }
+
+  getRowDragulaOptions() {
+    return {
+      moves: function(draggedElement, oldParent, clickedElement) {
+        //allow dragging only on drag button (not the whole row)
+        return clickedElement.classList.contains('formio-drag-button');
+      }
+    };
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    //move them in data value as well
+    if (!droppedElement.dragInfo || (nextSibling && !nextSibling.dragInfo)) {
+      console.warn('There is no Drag Info available for either dragged or sibling element');
+      return;
+    }
+    const oldPosition = droppedElement.dragInfo.index;
+    //should drop at next sibling position; no next sibling means drop to last position
+    const newPosition = nextSibling ? nextSibling.dragInfo.index : this.dataValue.length;
+    const movedBelow = newPosition > oldPosition;
+    const dataValue = _.cloneDeep(this.dataValue);
+    const draggedRowData = dataValue[oldPosition];
+
+    //insert element at new position
+    dataValue.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
+    this.setValue(dataValue);
   }
 
   buildInput(container, value) {
@@ -997,6 +1063,12 @@ export default class BaseComponent extends Component {
     });
     removeButton.appendChild(removeIcon);
     return removeButton;
+  }
+
+  dragButton() {
+    return this.ce('button', {
+      class: `formio-drag-button btn btn-default btn-small ${this.iconClass('menu-hamburger')}`
+    });
   }
 
   labelOnTheLeft(position) {
@@ -1201,7 +1273,7 @@ export default class BaseComponent extends Component {
       trigger: 'hover click',
       placement: 'right',
       html: true,
-      title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
+      title: this.interpolate(component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />')
     });
   }
 
@@ -1412,21 +1484,26 @@ export default class BaseComponent extends Component {
    * @return {HTMLElement} - The created element.
    */
   renderTemplate(template, data, actions = []) {
-    // Create a container div.
-    const div = this.ce('div');
+    return this.renderTemplateToElement(this.ce('div'), template, data, actions);
+  }
 
-    // Interpolate the template and populate
-    div.innerHTML = this.interpolate(template, data);
+  renderElement(template, data, actions = []) {
+    return this.renderTemplate(template, data, actions).firstChild;
+  }
 
-    // Add actions to matching elements.
-    actions.forEach(action => {
-      const elements = div.getElementsByClassName(action.class);
-      Array.prototype.forEach.call(elements, element => {
+  renderTemplateToElement(element, template, data, actions = []) {
+    element.innerHTML = this.interpolate(template, data).trim();
+    this.attachActions(element, actions);
+    return element;
+  }
+
+  attachActions(element, actions) {
+    actions.forEach((action) => {
+      const elements = element.getElementsByClassName(action.class);
+      Array.prototype.forEach.call(elements, (element) => {
         element.addEventListener(action.event, action.action);
       });
     });
-
-    return div;
   }
 
   /**
@@ -1646,7 +1723,7 @@ export default class BaseComponent extends Component {
       return show;
     }
 
-    this._visible = show;
+    this.visible = show;
     this.showElement(show && !this.component.hidden);
     if (!noClear) {
       this.clearOnHide(show);
@@ -1697,17 +1774,32 @@ export default class BaseComponent extends Component {
   }
 
   set visible(visible) {
-    this.show(visible);
+    this._visible = visible;
   }
 
   get visible() {
-    return this._visible;
+    return this._visible && this._parentVisible;
+  }
+
+  set parentVisible(value) {
+    if (this._parentVisible !== value) {
+      this._parentVisible = value;
+    }
+  }
+
+  get parentVisible() {
+    return this._parentVisible;
   }
 
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (!flags.noValidate) {
       this.pristine = false;
+    }
+
+    if (flags.modified) {
+      // Add a modified class if this element was manually modified.
+      this.addClass(this.getElement(), 'formio-modified');
     }
 
     // If we are supposed to validate on blur, then don't trigger validation yet.
@@ -1756,7 +1848,9 @@ export default class BaseComponent extends Component {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({
+      modified: true
+    }));
   }
 
   /**
@@ -2242,8 +2336,7 @@ export default class BaseComponent extends Component {
   }
 
   checkValidity(data, dirty, rowData) {
-    // Force valid if component is conditionally hidden.
-    if (!this.checkCondition(rowData, data)) {
+    if (this.shouldSkipValidation(data, dirty, rowData)) {
       this.setCustomValidity('');
       return true;
     }
@@ -2314,6 +2407,17 @@ export default class BaseComponent extends Component {
         input.setCustomValidity(message, dirty);
       }
     });
+  }
+
+  shouldSkipValidation(data, dirty, rowData) {
+    const rules = [
+      // Force valid if component is hidden.
+      () => !this.visible,
+      // Force valid if component is conditionally hidden.
+      () => !this.checkCondition(rowData, data)
+    ];
+
+    return rules.some(pred => pred());
   }
 
   /**
@@ -2607,9 +2711,9 @@ export default class BaseComponent extends Component {
     this.logic.forEach(logic => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
-        this.on(event, () => {
+        this.on(event, (...args) => {
           const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, event, this.data, newComponent)) {
+          if (this.applyActions(logic.actions, args, this.data, newComponent)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;

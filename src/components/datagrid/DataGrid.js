@@ -32,6 +32,15 @@ export default class DataGridComponent extends NestedComponent {
     this.numRows = 0;
     this.numColumns = 0;
     this.rows = [];
+
+    if (this.hasRowGroups() && !this.options.builder) {
+      const groups = _.get(this.component, 'rowGroups', []);
+      const rowsNum = this.totalRowsNumber(groups);
+      this.setStaticValue(rowsNum);
+      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {
+        return _.merge(a, b);
+      });
+    }
   }
 
   get defaultSchema() {
@@ -46,6 +55,10 @@ export default class DataGridComponent extends NestedComponent {
     return _.get(this.component, 'addAnotherPosition', 'bottom');
   }
 
+  setStaticValue(n) {
+    this.dataValue = _.range(n).map(() => ({}));
+  }
+
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
@@ -56,7 +69,8 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasExtraColumn() {
-    return this.hasRemoveButtons() || this.options.builder;
+    const rmPlacement = _.get(this, 'component.removePlacement', 'col');
+    return (this.hasRemoveButtons() && rmPlacement === 'col') || this.options.builder;
   }
 
   hasRemoveButtons() {
@@ -88,7 +102,8 @@ export default class DataGridComponent extends NestedComponent {
       }
     });
     this.tableElement = this.ce('table', {
-      class: tableClass
+      class: tableClass,
+      style: this.component.layoutFixed ? 'table-layout: fixed;' : '',
     });
     this.element.appendChild(this.tableElement);
     if (!this.dataValue.length) {
@@ -108,6 +123,7 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     this.numColumns = this.hasExtraColumn() ? 1 : 0;
+    this.numColumns += this.allowReorder ? 1 : 0;
     this.numRows = this.dataValue.length;
 
     if (this.visibleColumns === true) {
@@ -134,7 +150,16 @@ export default class DataGridComponent extends NestedComponent {
     if (header) {
       this.tableElement.appendChild(header);
     }
-    this.tableElement.appendChild(this.ce('tbody', null, tableRows));
+    this.tableBody = this.ce('tbody', null, tableRows);
+    this.tableElement.appendChild(this.tableBody);
+
+    if (this.allowReorder) {
+      this.addDraggable([this.tableBody]);
+    }
+
+    if (this.hasRowGroups() && !this.options.builder) {
+      this.buildGroups();
+    }
 
     // Create the add row button footer element.
     if (this.hasBottomSubmit()) {
@@ -148,6 +173,15 @@ export default class DataGridComponent extends NestedComponent {
     }
   }
 
+  get allowReorder() {
+    return super.allowReorder && !this.options.builder;
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
+    this.triggerChange();
+  }
+
   // Build the header.
   createHeader() {
     const hasTopButton = this.hasTopSubmit();
@@ -155,6 +189,9 @@ export default class DataGridComponent extends NestedComponent {
     let needsHeader = false;
     const thead = this.ce('thead', null, this.ce('tr', null,
       [
+        this.allowReorder ? this.ce('th', {
+          class: 'formio-drag-column-header'
+        }) : null,
         this.visibleComponents.map(comp => {
           const th = this.ce('th');
           if (comp.validate && comp.validate.required) {
@@ -197,12 +234,34 @@ export default class DataGridComponent extends NestedComponent {
     return this.emptyValue;
   }
 
-  buildRow(row, index, state) {
+  buildRow(rowData, index, state) {
     state = state || {};
-    this.rows[index] = {};
+    const components = _.get(this, 'component.components', []);
+    const colsNum = components.length;
+    const lastColIndex = colsNum - 1;
+    const hasRmButton = this.hasRemoveButtons();
+    const hasTopButton = this.hasTopSubmit();
+    const rmPlacement = _.get(this, 'component.removePlacement', 'col');
+    let useCorner = false;
     let lastColumn = null;
-    if (this.hasRemoveButtons()) {
-      lastColumn = this.ce('td', null, this.removeButton(index));
+    this.rows[index] = {};
+    let firstColumn = null;
+
+    if (this.allowReorder) {
+      firstColumn = this.ce('td', {
+        class: 'formio-drag-column'
+      }, this.dragButton());
+    }
+
+    if (hasRmButton) {
+      if (rmPlacement === 'col') {
+        lastColumn = this.ce('td', {
+          class: 'formio-remove-column'
+        }, this.removeButton(index));
+      }
+      else {
+        useCorner = true;
+      }
     }
     else if (this.options.builder) {
       lastColumn = this.ce('td', {
@@ -216,14 +275,44 @@ export default class DataGridComponent extends NestedComponent {
       }, this.text('Drag and Drop a form component')));
       this.root.addDragContainer(lastColumn, this);
     }
-    return this.ce('tr', null,
+
+    const rowElement =  this.ce('tr', null,
       [
-        this.component.components.map((col, colIndex) =>
-          this.buildComponent(col, colIndex, row, index, state[col.key])
+        firstColumn,
+        components.map(
+          (cmp, colIndex) => {
+            const cell = this.buildComponent(
+              cmp,
+              colIndex,
+              rowData,
+              index,
+              this.getComponentState(cmp, state)
+            );
+
+            if (hasRmButton && useCorner && lastColIndex === colIndex) {
+              cell.style.position = 'relative';
+              cell.style.width = '50px';
+              cell.append(this.removeButton(index, 'small'));
+              if (hasTopButton ) {
+                cell.setAttribute('colspan', 2);
+              }
+            }
+
+            return cell;
+          }
         ),
         lastColumn
       ]
     );
+
+    //add element info for drag'n'drop handlers
+    if (this.allowReorder) {
+      rowElement.dragInfo = {
+        index: index
+      };
+    }
+
+    return rowElement;
   }
 
   destroyRows() {
@@ -393,4 +482,130 @@ export default class DataGridComponent extends NestedComponent {
   restoreComponentsContext() {
     this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
   }
+
+  getComponent(path, fn) {
+    path = Array.isArray(path) ? path : [path];
+    const [key, ...remainingPath] = path;
+    let result = [];
+
+    if (!_.isString(key)) {
+      return result;
+    }
+
+    this.everyComponent((component, components) => {
+      if (component.component.key === key) {
+        let comp = component;
+        if (remainingPath.length > 0 && 'getComponent' in component) {
+          comp = component.getComponent(remainingPath, fn);
+        }
+        else if (fn) {
+          fn(component, components);
+        }
+
+        result = result.concat(comp);
+      }
+    });
+    return result.length > 0 ? result : null;
+  }
+
+  /** @override **/
+  removeButton(index, mode = 'basic') {
+    if (mode === 'small') {
+      return this.removeButtonSmall(index);
+    }
+
+    return super.removeButton(index);
+  }
+
+  removeButtonSmall(index) {
+    const cmpType = _.get(this, 'component.type', 'datagrid');
+    const className = `btn btn-xxs btn-danger formio-${cmpType}-remove`;
+    const button = this.ce(
+      'button',
+      {
+        type: 'button',
+        tabindex: '-1',
+        class: className,
+      },
+      this.ce('i', { class: this.iconClass('remove') })
+    );
+
+    this.addEventListener(button, 'click', (event) => {
+      event.preventDefault();
+      this.removeValue(index);
+    });
+
+    return button;
+  }
+
+  /*** Row Groups ***/
+
+  /**
+   * @param {Numbers[]} groups
+   * @param {Array<T>} coll - collection
+   *
+   * @return {Array<T[]>}
+   */
+  getRowChunks(groups, coll) {
+    const [, chunks] = groups.reduce(
+      ([startIndex, acc], size) => {
+        const endIndex = startIndex +  size;
+        return [endIndex, [...acc, [startIndex, endIndex]]];
+      },
+      [0, []]
+    );
+
+    return chunks.map(range => _.slice(coll, ...range));
+  }
+
+  hasRowGroups() {
+    return _.get(this, 'component.enableRowGroups', false);
+  }
+
+  buildGroups() {
+    const groups = _.get(this.component, 'rowGroups', []);
+    const ranges = _.map(groups, 'numberOfRows');
+    const rows = this.tableElement.querySelectorAll('tbody>tr');
+    const tbody = this.tableElement.querySelector('tbody');
+    const chunks = this.getRowChunks(ranges, rows);
+    const firstElements = chunks.map(_.head);
+    const groupElements = groups.map((g, index) => this.buildGroup(g, index, chunks[index]));
+
+    groupElements.forEach((elt, index) => {
+      const row = firstElements[index];
+
+      if (row) {
+        tbody.insertBefore(elt, row);
+      }
+    });
+  }
+
+  buildGroup({ label }, index, groupRows) {
+    const hasToggle = _.get(this, 'component.groupToggle', false);
+    const colsNumber = _.get(this, 'component.components', []).length;
+    const cell = this.ce('td', {
+      colspan: colsNumber,
+      class: 'datagrid-group-label',
+    }, [label]);
+    const header = this.ce('tr', {
+      class: `datagrid-group-header ${hasToggle ? 'clickable' : ''}`,
+    }, cell);
+
+    if (hasToggle) {
+      this.addEventListener(header, 'click', () => {
+        header.classList.toggle('collapsed');
+        _.each(groupRows, row => {
+          row.classList.toggle('hidden');
+        });
+      });
+    }
+
+    return header;
+  }
+
+  totalRowsNumber(groups) {
+    return _.sum(_.map(groups, 'numberOfRows'));
+  }
 }
+// const BaseGetSchema = Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'schema');
+// Object.defineProperty(DataGridComponent.prototype, 'schema', BaseGetSchema);

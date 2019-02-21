@@ -32,9 +32,42 @@ export default class NestedComponent extends BaseComponent {
 
   get schema() {
     const schema = super.schema;
-    schema.components = [];
-    this.eachComponent((component) => schema.components.push(component.schema));
+    const components = _.uniqBy(this.getComponents(), 'component.key');
+    schema.components = _.map(components, 'schema');
     return schema;
+  }
+
+  set visible(value) {
+    super.visible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.components.forEach(component => {
+      component.parentVisible = this.visible;
+    });
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
+  get currentForm() {
+    return super.currentForm;
+  }
+
+  set currentForm(instance) {
+    super.currentForm = instance;
+    this.getComponents().forEach(component => {
+      component.currentForm = instance;
+    });
   }
 
   getComponents() {
@@ -95,17 +128,28 @@ export default class NestedComponent extends BaseComponent {
    * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(key, fn) {
+  getComponent(path, fn) {
+    path = Array.isArray(path) ? path : [path];
+    const [key, ...remainingPath] = path;
     let comp = null;
+
+    if (!_.isString(key)) {
+      return comp;
+    }
+
     this.everyComponent((component, components) => {
       if (component.component.key === key) {
         comp = component;
-        if (fn) {
+        if (remainingPath.length > 0 && 'getComponent' in component) {
+          comp = component.getComponent(remainingPath, fn);
+        }
+        else if (fn) {
           fn(component, components);
         }
         return false;
       }
     });
+
     return comp;
   }
 
@@ -306,8 +350,14 @@ export default class NestedComponent extends BaseComponent {
     return substate;
   }
 
-  updateValue(flags) {
-    return this.components.reduce((changed, comp) => comp.updateValue(flags) || changed, false);
+  updateValue(flags, source) {
+    return this.components.reduce((changed, comp) => {
+      // Skip over the source if it is provided.
+      if (source && source.id === comp.id) {
+        return changed;
+      }
+      return comp.updateValue(flags) || changed;
+    }, false);
   }
 
   hasChanged() {
@@ -321,7 +371,7 @@ export default class NestedComponent extends BaseComponent {
    * @param data
    * @param flags
    */
-  checkData(data, flags) {
+  checkData(data, flags, source) {
     flags = flags || {};
     let valid = true;
     if (flags.noCheck) {
@@ -331,7 +381,7 @@ export default class NestedComponent extends BaseComponent {
     // Update the value.
     let changed = this.updateValue({
       noUpdateEvent: true
-    });
+    }, source);
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {

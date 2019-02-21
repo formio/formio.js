@@ -219,6 +219,12 @@ td > .form-group {
   padding: 2px;
 }
 
+/* fix for choices.js .choices__input container in rtl */
+.choices[dir="rtl"] > * {
+  text-align: right;
+}
+/* end fix for choices.js .choices__input container in rtl */
+
 /* fix for choices.js deletable items in rtl */
 .choices[dir="rtl"] .choices__list--multiple .choices__item[data-deletable] {
   padding-left: 5px;
@@ -303,6 +309,10 @@ td > .form-group {
   box-sizing: border-box;
   font-size: 0.8em;
   color: #666;
+
+  &.formio-modaledit-dialog {
+    font-size: inherit;
+  }
 }
 
 .formio-dialog *,
@@ -656,6 +666,10 @@ body.formio-dialog-open {
   margin-bottom: 10px;
 }
 
+.tree-listgroup {
+  flex-direction: row;
+}
+
 .formio-component-submit .has-error {
   display: none;
 }
@@ -702,19 +716,6 @@ body.formio-dialog-open {
   display: none;
 }
 
-.has-error.alert-danger .help-block,
-.has-error.alert-danger .control-label,
-.has-error.alert-danger .radio,
-.has-error.alert-danger .checkbox,
-.has-error.alert-danger .radio-inline,
-.has-error.alert-danger .checkbox-inline,
-.has-error.alert-danger.radio label,
-.has-error.alert-danger.checkbox label,
-.has-error.alert-danger.radio-inline label,
-.has-error.alert-danger.checkbox-inline label {
-  color: white;
-}
-
 .has-error.alert-danger .form-group {
   color: #333;
 }
@@ -739,4 +740,139 @@ body.formio-dialog-open {
 .formio-component-datetime .form-control[type="datetime-local"] ~ .input-group-addon,
 .formio-component-dateTime .form-control[type="datetime-local"] ~ .input-group-addon {
   width: auto;
+}
+
+.formio-component-datagrid .formio-datagrid-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms linear, visibility 0ms 200ms;
+}
+
+.formio-component-datagrid {
+  .datagrid-table {
+    &>tbody>tr>td:last-child {
+      position: relative;
+    }
+
+    &>tbody>tr:hover>td:last-child .formio-datagrid-remove {
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0ms, opacity 200ms linear;
+    }
+  }
+
+  // .edittable-group-label {
+  //   background-color: #ddd;
+  // }
+}
+
+.formio-component-modaledit {
+  .formio-modaledit-view-container {
+    position: relative;
+    border: 1px solid #ddd;
+    min-height: 34px;
+    padding: 6px 12px;
+    cursor: text;
+
+    td & {
+      padding: 0;
+      border-style: none;
+    }
+  }
+
+  .formio-modaledit-edit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 200ms linear, visibility 0ms 200ms;
+  }
+
+  .formio-modaledit-view-container:hover .formio-modaledit-edit {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0ms, opacity 200ms linear;
+  }
+}
+
+.formio-modaledit-dialog {
+  .formio-modaledit-close {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    border-radius: 0;
+  }
+}
+
+.reset-margins {
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed,
+  figure, figcaption, footer, header, hgroup,
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+	  margin: 0;
+  }
+}
+
+.ck-body {
+  .ck.ck-balloon-panel {
+    z-index: 101000;
+  }
+}
+
+.formio-component-select select[disabled="disabled"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+.formio-component-select div[disabled="disabled"] button,
+.formio-component-select .choices.is-disabled[data-type*=select-one]:after {
+  display: none;
+}
+
+.datagrid-group-label.collapsed > td {
+  display: none;
+}
+
+.datagrid-group-header {
+  &.clickable {
+    cursor: pointer;
+
+    .datagrid-group-label {
+      &:before {
+        display: inline-block;
+        vertical-align: middle;
+        content: '▾';
+        margin: 0 5px;
+      }
+    }
+  }
+
+  &.clickable.collapsed {
+    .datagrid-group-label {
+      &:before {
+        content: '▸';
+      }
+    }
+  }
+}
+
+.formio-drag-column, .formio-remove-column {
+  width:50px;
+  white-space:nowrap;
+  text-align: center;
 }

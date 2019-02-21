@@ -6,8 +6,10 @@ export default [
     data: {
       url: '/form?limit=4294967295&select=_id,title'
     },
+    searchField: 'title',
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
+    authenticate: true,
     label: 'Form',
     key: 'form',
     weight: 10,

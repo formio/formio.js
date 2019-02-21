@@ -88,6 +88,7 @@ export default [
     key: 'data.values',
     tooltip: 'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
     weight: 10,
+    reorder: true,
     components: [
       {
         label: 'Label',
@@ -117,6 +118,7 @@ export default [
     },
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
+    clearOnHide: false,
     label: 'Resource',
     key: 'data.resource',
     weight: 10,
@@ -130,6 +132,8 @@ export default [
     input: true,
     label: 'Value Property',
     key: 'valueProperty',
+    skipMerge: true,
+    clearOnHide: false,
     tooltip: 'The field to use as the value.',
     weight: 11,
     refreshOn: 'data.resource',
@@ -177,6 +181,8 @@ export default [
     input: true,
     label: 'Value Property',
     key: 'valueProperty',
+    skipMerge: true,
+    clearOnHide: false,
     weight: 13,
     description: "The selected item's property to save.",
     tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
@@ -270,11 +276,29 @@ export default [
     }
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'sort',
+    label: 'Sort Query',
+    weight: 18,
+    description: 'The sort query for results',
+    tooltip: 'User this to provide additional sorting using query parameters',
+    conditional: {
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+        ]
+      }
+    }
+  },
+  {
     type: 'number',
     input: true,
     key: 'limit',
     label: 'Limit',
     weight: 18,
+    defaultValue: 100,
     description: 'Maximum number of items to view per page of results.',
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
@@ -342,5 +366,45 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 22,
+    key: 'readOnlyValue',
+    label: 'Read Only Value',
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 23,
+    input: true,
+    key: 'customOptions',
+    label: 'Custom default options',
+    tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
+	defaultValue: {}
+  },
+  {
+    label: 'Search Threshold',
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: 'number',
+    input: true,
+    key: 'selectThreshold',
+    validate: {
+      min: 0,
+      customMessage: '',
+      json: '',
+      max: 1
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.3,
+    weight: 30,
+    tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.'
   }
 ];
