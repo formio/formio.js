@@ -534,7 +534,7 @@ export default class EditGridComponent extends NestedComponent {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
-    else if (!rowsClosed) {
+    else if (!rowsClosed && !this.component.inlineEdit) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
