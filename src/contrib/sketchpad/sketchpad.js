@@ -12,7 +12,11 @@ export default class Sketchpad extends Base {
       stroke: '#333',
       fill: '#ccc',
       linewidth: 1,
-      radius: 10
+      circleSize: 10,
+      rectangleSize: {
+        width: 10,
+        height: 10
+      }
     };
   }
 
@@ -72,7 +76,7 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.radius);
+          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
           layer.fill = this.state.fill;
           layer.stroke = this.state.stroke;
           layer.linewidth = this.state.linewidth;
@@ -91,7 +95,7 @@ export default class Sketchpad extends Base {
           this.triggerChange();
         },
         draw: (state) => {
-          const layer = this.two.makeCircle(state.center.x, state.center.y, 20);
+          const layer = this.two.makeCircle(state.center.x, state.center.y, state.circleSize);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -102,11 +106,65 @@ export default class Sketchpad extends Base {
             type: 'number',
             class: 'formio-sketchpad-toolbar-input formio-sketchpad-radius-input',
             onChange: (e) => {
-              this.state.radius = e.target.value;
+              this.state.circleSize = e.target.value;
             }
           });
-          radiusInput.value = this.state.radius;
+          radiusInput.value = this.state.circleSize;
           element.appendChild(radiusInput);
+          return element;
+        }
+      },
+      rectangle: {
+        icon: 'square-o',
+        state: {
+          mode: 'rectangle'
+        },
+        eventStart: (coordinate) => {
+          this.center = coordinate;
+          const layer = this.two.makeRectangle(coordinate.x, coordinate.y, this.state.rectangleSize.width, this.state.rectangleSize.height);
+          layer.fill = this.state.fill;
+          layer.stroke = this.state.stroke;
+          layer.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(layer);
+          const index = this.layers.length - 1;
+          layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
+        },
+        drag: (coordinate) => {
+
+        },
+        eventEnd: (coordinate) => {
+          const value = this.dataValue.slice();
+          value.push(Object.assign({}, this.state, { center: this.center }));
+          this.dataValue = value;
+          this.triggerChange();
+        },
+        draw: (state) => {
+          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.rectangleSize.width, state.rectangleSize.height);
+          layer.fill = state.fill;
+          layer.stroke = state.stroke;
+          layer.linewidth = state.linewidth;
+          return layer;
+        },
+        attach: (element) => {
+          const widthInput = this.ce('input', {
+            type: 'number',
+            class: 'formio-sketchpad-toolbar-input formio-sketchpad-width-input',
+            onChange: (e) => {
+              this.state.rectangleSize.width = e.target.value;
+            }
+          });
+          widthInput.value = this.state.rectangleSize.width;
+          const heightInput = this.ce('input', {
+            type: 'number',
+            class: 'formio-sketchpad-toolbar-input formio-sketchpad-height-input',
+            onChange: (e) => {
+              this.state.rectangleSize.height = e.target.value;
+            }
+          });
+          heightInput.value = this.state.rectangleSize.height;
+          element.appendChild(widthInput);
+          element.appendChild(heightInput);
           return element;
         }
       },
@@ -238,7 +296,7 @@ export default class Sketchpad extends Base {
             const toolbarButtonIcon = this.ce('i', {
               class: `fa fa-${button.icon}`,
             });
-            const toolbarButton  = this.ce('div', {
+            const toolbarButton = this.ce('div', {
               class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`
             }, toolbarButtonIcon);
             if (button.attach) {
