@@ -209,6 +209,8 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tabs/Tabs.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedComponent from &apos;../nested/NestedComponent&apos;;
+import Base from &apos;../base/Base&apos;;
+import _ from &apos;lodash&apos;;
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
@@ -242,6 +244,7 @@ export default class TabsComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.currentTab = 0;
+    this.validityTabs = [];
   }
 
   get defaultSchema() {
@@ -390,6 +393,48 @@ export default class TabsComponent extends NestedComponent {
       .addClass(this.tabs[index], &apos;active&apos;);
 
     this.triggerChange();
+  }
+
+  /**
+   * Return all the components within all the tabs.
+   */
+  getAllComponents() {
+    // If the validity tabs are set, then this usually means we are getting the components that have
+    // triggered errors and need to iterate through these to display them.
+    if (this.validityTabs &amp;&amp; this.validityTabs.length) {
+      const comps = this.validityTabs.reduce((components, component) =&gt; {
+        if (component &amp;&amp; component.getAllComponents) {
+          component = component.getAllComponents();
+        }
+        return components.concat(component);
+      }, []);
+      this.validityTabs = [];
+      return comps;
+    }
+    return super.getAllComponents();
+  }
+
+  /**
+   * Checks the validity by checking all tabs validity.
+   *
+   * @param data
+   * @param dirty
+   */
+  checkValidity(data, dirty) {
+    if (!this.checkCondition(null, data)) {
+      this.setCustomValidity(&apos;&apos;);
+      return true;
+    }
+    const isValid = Base.prototype.checkValidity.call(this, data, dirty);
+    this.validityTabs = [];
+    return this.component.components.reduce((check, comp) =&gt; {
+      const tabComp = _.clone(comp);
+      tabComp.type = &apos;panel&apos;;
+      tabComp.internal = true;
+      const component = this.createComponent(tabComp);
+      this.validityTabs.push(component);
+      return component.checkValidity(data, dirty) &amp;&amp; check;
+    }, isValid);
   }
 
   destroy() {
