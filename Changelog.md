@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.16.0
 ### Changed
  - Improved validation for EditGrid with inline edit.
+ - Upgraded flatpickr@4.5.4, mocha@6.0.1, marked@0.6.1
+ - Upgraded choices.js library to 6.x branch.
+ - Upgraded whatwg-fetch to latest version.
+ 
+### Fixed
+ - Fixed the gulp watch routine.
 
 ## 3.15.6
 ### Fixed

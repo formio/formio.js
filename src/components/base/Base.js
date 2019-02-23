@@ -548,7 +548,8 @@ export default class BaseComponent extends Component {
     this.on('change', (event) => {
       if (refreshData === 'data') {
         this.refresh(this.data);
-      } else if (
+      }
+      else if (
         event.changed &&
         event.changed.component &&
         (event.changed.component.key === refreshData) &
@@ -568,7 +569,8 @@ export default class BaseComponent extends Component {
         this.component.refreshOn.forEach(refreshData => {
           this.attachRefreshEvent(refreshData);
         });
-      } else {
+      }
+      else {
         this.attachRefreshEvent(this.component.refreshOn);
       }
     }
