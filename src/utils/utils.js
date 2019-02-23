@@ -1,7 +1,7 @@
 /* global $ */
 
 import _ from 'lodash';
-import { fetch } from 'whatwg-fetch';
+import 'whatwg-fetch';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
