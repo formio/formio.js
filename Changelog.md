@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - Fixed the gulp watch routine.
+ - Issue with validations not running on tabs other than the current tab being shown.
 
 ## 3.15.6
 ### Fixed
