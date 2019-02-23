@@ -1,5 +1,5 @@
 /* globals OktaAuth */
-import 'whatwg-fetch';
+import { fetch, Headers } from 'whatwg-fetch';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
