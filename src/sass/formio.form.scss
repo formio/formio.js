@@ -219,6 +219,66 @@ td > .form-group {
   padding: 2px;
 }
 
+/* fix for new feature in choices: using "Add Button" to add choices */
+.using-add-another {
+  .form-control {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .choices__list--multiple {
+    display: block;
+
+    .choices__item {
+      @extend .form-control;
+      display: block;
+    }
+  }
+
+  .choices[data-type*=select-multiple] {
+    > .form-control {
+      border-width: 0;
+      padding: 0;
+      margin: 0;
+
+      &:after {
+        content: "";
+        height: 0;
+        width: 0;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+        border-width: 5px;
+        position: absolute;
+        right: 11.5px;
+        top: 50%;
+        margin-top: -2.5px;
+        pointer-events: none;
+      }
+    }
+
+    .choices__input {
+      background-color: inherit;
+    }
+
+    &.is-open {
+      > .form-control {
+        &:after {
+          border-color: transparent transparent #333 transparent;
+          margin-top: -7.5px;
+        }
+      }
+    }
+  }
+
+  &.has-value .choices[data-type*=select-multiple] > .form-control:after {
+    display: none;
+  }
+}
+/* end for fix for new feature in choices: using "Add Button" to add choices */
+
 /* fix for choices.js .choices__input container in rtl */
 .choices[dir="rtl"] > * {
   text-align: right;

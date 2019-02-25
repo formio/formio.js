@@ -25,6 +25,7 @@ export default class SelectComponent extends BaseComponent {
       minSearch: 0,
       readOnlyValue: false,
       authenticate: false,
+      multipleViaButton: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
@@ -579,6 +580,15 @@ export default class SelectComponent extends BaseComponent {
     return !this.component.lazyLoad || this.activated;
   }
 
+  addValue() {
+    if (!this.component.multipleViaButton) {
+      super.addValue();
+    }
+    else {
+      this.choices.showDropdown();
+    }
+  }
+
   /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
@@ -641,6 +651,13 @@ export default class SelectComponent extends BaseComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
+
+    // Allow adding individual options by using the (+) button.
+    if (this.component.multipleViaButton) {
+      this.addPlaceholder(this.addButton());
+      this.addClass(this.selectContainer, 'using-add-another');
+    }
+
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
 
@@ -693,6 +710,9 @@ export default class SelectComponent extends BaseComponent {
       }
       this.update();
     });
+    if (this.component.multipleViaButton) {
+      this.attachMultipleViaButtonListeners(input);
+    }
     if (placeholderValue && this.choices._isSelectOneElement) {
       this.addEventListener(input, 'removeItem', () => {
         const items = this.choices._store.activeItems;
@@ -710,6 +730,34 @@ export default class SelectComponent extends BaseComponent {
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
+  }
+
+  attachMultipleViaButtonListeners(input) {
+    const multipleViaButtonFunc = () => {
+      const hasValue = this.getValue().length > 0;
+      this.focusableElement.style.display = hasValue ? 'none' : 'block';
+      if (hasValue) {
+        this.addClass(this.selectContainer, 'has-value');
+      }
+      else {
+        this.removeClass(this.selectContainer, 'has-value');
+      }
+    };
+    this.addEventListener(input, 'hideDropdown', multipleViaButtonFunc);
+    this.addEventListener(input, 'change', multipleViaButtonFunc);
+    this.addEventListener(input, 'addItem', multipleViaButtonFunc);
+    this.addEventListener(input, 'removeItem', multipleViaButtonFunc);
+  }
+
+  setInputStyles(input) {
+    super.setInputStyles(input);
+    if (this.component.multipleViaButton) {
+      // Add regular styling as other Bootstrap controls.
+      this.addClass(this.focusableElement, 'form-control');
+
+      // Drop our own styling for the choices input, thus keeping Bootstrap's.
+      this.removeClass(this.focusableElement, 'choices__input');
+    }
   }
 
   /* eslint-enable max-statements */
