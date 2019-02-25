@@ -30,27 +30,27 @@ export default class Sketchpad extends Base {
 
   get modes() {
     return {
-      line: {
+      pencil: {
         icon: 'pencil',
         state: {
-          mode: 'line'
+          mode: 'pencil'
         },
         eventStart: (coordinate) => {
           this.points = [coordinate];
           this.prev = coordinate;
-          this.line = this.two.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
-          this.line.noFill().stroke = this.state.stroke;
-          this.line.linewidth = this.state.linewidth;
-          this.line.vertices.forEach((v) => v.addSelf(this.line.translation));
-          this.line.translation.clear();
+          this.curve = this.two.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
+          this.curve.noFill().stroke = this.state.stroke;
+          this.curve.linewidth = this.state.linewidth;
+          this.curve.vertices.forEach((v) => v.addSelf(this.curve.translation));
+          this.curve.translation.clear();
           this.two.update();
-          this.layers.push(this.line);
+          this.layers.push(this.curve);
           const index = this.layers.length - 1;
-          this.line._renderer.elem.addEventListener('click', (e) => this.click(e, this.layers.length));
+          this.curve._renderer.elem.addEventListener('click', (e) => this.click(e, this.layers.length));
         },
         drag: (coordinate) => {
           this.points.push(coordinate);
-          this.line.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
+          this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
           this.two.update();
           this.prev = coordinate;
         },
@@ -66,6 +66,47 @@ export default class Sketchpad extends Base {
           layer.linewidth = state.linewidth;
           layer.vertices.forEach((v) => v.addSelf(layer.translation));
           layer.translation.clear();
+          return layer;
+        }
+      },
+      line: {
+        icon: 'minus',
+        state: {
+          mode: 'line'
+        },
+        eventStart: (coordinate) => {
+          this.center = coordinate;
+          this.line = this.two.makeLine(coordinate.x, coordinate.y, coordinate.x, coordinate.y);
+          this.line.fill = this.state.fill;
+          this.line.stroke = this.state.stroke;
+          this.line.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(this.line);
+          const index = this.layers.length - 1;
+          this.line._renderer.elem.addEventListener('click', (e) => this.click(e, index));
+        },
+        drag: (coordinate) => {
+          this.line.vertices[1].x = coordinate.x;
+          this.line.vertices[1].y = coordinate.y;
+          this.two.update();
+        },
+        eventEnd: () => {
+          const value = this.dataValue.slice();
+          const vertices = this.line.vertices.map(vertice => {
+            return {
+              x: vertice.x,
+              y: vertice.y
+            };
+          });
+          value.push(Object.assign({}, this.state, { vertices: vertices }));
+          this.dataValue = value;
+          this.triggerChange();
+        },
+        draw: (state) => {
+          const layer = this.two.makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
+          layer.fill = state.fill;
+          layer.stroke = state.stroke;
+          layer.linewidth = state.linewidth;
           return layer;
         }
       },
@@ -85,10 +126,10 @@ export default class Sketchpad extends Base {
           const index = this.layers.length - 1;
           layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
         },
-        drag: (coordinate) => {
+        drag: () => {
 
         },
-        eventEnd: (coordinate) => {
+        eventEnd: () => {
           const value = this.dataValue.slice();
           value.push(Object.assign({}, this.state, { center: this.center }));
           this.dataValue = value;
@@ -133,7 +174,7 @@ export default class Sketchpad extends Base {
         drag: (coordinate) => {
 
         },
-        eventEnd: (coordinate) => {
+        eventEnd: () => {
           const value = this.dataValue.slice();
           value.push(Object.assign({}, this.state, { center: this.center }));
           this.dataValue = value;
