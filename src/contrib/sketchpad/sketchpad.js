@@ -32,6 +32,7 @@ export default class Sketchpad extends Base {
     return {
       pencil: {
         icon: 'pencil',
+        title: 'Pencil',
         state: {
           mode: 'pencil'
         },
@@ -71,6 +72,7 @@ export default class Sketchpad extends Base {
       },
       line: {
         icon: 'minus',
+        title: 'Line',
         state: {
           mode: 'line'
         },
@@ -112,6 +114,7 @@ export default class Sketchpad extends Base {
       },
       circle: {
         icon: 'circle',
+        title: 'Circle',
         state: {
           mode: 'circle'
         },
@@ -157,6 +160,7 @@ export default class Sketchpad extends Base {
       },
       rectangle: {
         icon: 'square-o',
+        title: 'Rectangle',
         state: {
           mode: 'rectangle'
         },
@@ -208,24 +212,6 @@ export default class Sketchpad extends Base {
           element.appendChild(heightInput);
           return element;
         }
-      },
-      select: {
-        icon: 'mouse-pointer',
-        state: {
-          mode: 'select'
-        },
-        eventStart: (coordinate) => {
-
-        },
-        drag: (coordinate) => {
-
-        },
-        eventEnd: (coordinate) => {
-
-        },
-        draw: (state) => {
-
-        }
       }
     };
   }
@@ -234,6 +220,7 @@ export default class Sketchpad extends Base {
     return [
       {
         icon: 'square-o',
+        title: 'Stroke Color',
         type: 'colorpicker',
         property: 'stroke',
         attach: (element) => {
@@ -248,6 +235,7 @@ export default class Sketchpad extends Base {
       },
       {
         icon: 'square',
+        title: 'Fill Color',
         type: 'colorpicker',
         property: 'fill',
         attach: (element) => {
@@ -262,6 +250,7 @@ export default class Sketchpad extends Base {
       },
       {
         icon: 'minus',
+        title: 'Line Width',
         type: 'number',
         property: 'linewidth',
         attach: (element) => {
@@ -284,16 +273,14 @@ export default class Sketchpad extends Base {
     return [
       {
         icon: 'undo',
-        action: 'undo'
+        action: 'undo',
+        title: 'Undo'
       },
       {
         icon: 'repeat',
-        action: 'redo'
-      },
-      {
-        icon: 'eraser',
-        action: 'remove'
-      },
+        action: 'redo',
+        title: 'Redo'
+      }
     ];
   }
 
@@ -312,14 +299,15 @@ export default class Sketchpad extends Base {
         role: 'toolbar'
       }, [
         this.ce('div', {
-            class: 'btn-group',
+            class: 'btn-group formio-sketchpad-toolbar-group',
             role: 'group'
           },
           this.modeButtons = Object.keys(this.modes).map(key => {
             const mode = this.modes[key];
             const toolbarButton = this.ce('div', {
               class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${key} ${this.state.mode === mode.state.mode ? ' active' : ''}`,
-              onClick: () => this.setState(mode.state)
+              onClick: () => this.setState(mode.state),
+              title: mode.title
             }, this.ce('i', {
               class: `fa fa-${mode.icon}`,
             }));
@@ -330,7 +318,7 @@ export default class Sketchpad extends Base {
           }),
         ),
         this.ce('div', {
-            class: 'btn-group',
+            class: 'btn-group formio-sketchpad-toolbar-group',
             role: 'group'
           },
           this.styles.map(button => {
@@ -338,7 +326,8 @@ export default class Sketchpad extends Base {
               class: `fa fa-${button.icon}`,
             });
             const toolbarButton = this.ce('div', {
-              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`
+              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`,
+              title: button.title
             }, toolbarButtonIcon);
             if (button.attach) {
               return button.attach(toolbarButton);
@@ -347,12 +336,13 @@ export default class Sketchpad extends Base {
           }),
         ),
         this.ce('div', {
-            class: 'btn-group float-right',
+            class: 'btn-group float-right formio-sketchpad-toolbar-group',
             role: 'group'
           },
           this.actions.map(button => this.ce('div', {
             class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.action}`,
-            onClick: () => this[button.action]()
+            onClick: () => this[button.action](),
+            title: button.title
           }, this.ce('i', {
             class: `fa fa-${button.icon}`,
           }))),
