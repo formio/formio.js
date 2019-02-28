@@ -1,11 +1,13 @@
 /* globals OktaAuth */
-import { fetch, Headers } from 'whatwg-fetch';
+import Promise from 'native-promise-only';
+import fetchPonyfill from 'fetch-ponyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import providers from './providers';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
+const { fetch, Headers } = fetchPonyfill({ Promise });
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -725,7 +727,7 @@ export default class Formio {
     }
 
     const requestToken = options.headers.get('x-jwt-token');
-    const result = fetch(url, options)
+    const result = Formio.fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
@@ -1321,12 +1323,8 @@ export default class Formio {
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = Promise;
-if (typeof Headers !== 'undefined') {
-  Formio.Headers = Headers;
-}
-else {
-  Formio.Headers = {};
-}
+Formio.fetch = fetch;
+Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

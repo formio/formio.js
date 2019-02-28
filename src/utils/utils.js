@@ -1,7 +1,7 @@
 /* global $ */
 
 import _ from 'lodash';
-import { fetch } from 'whatwg-fetch';
+import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
@@ -9,6 +9,7 @@ import { lodashOperators } from './jsonlogic/operators';
 import Promise from 'native-promise-only';
 import { getValue } from './formUtils';
 import stringHash from 'string-hash';
+const { fetch } = fetchPonyfill({ Promise });
 
 export * from './formUtils';
 

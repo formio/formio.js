@@ -65,12 +65,13 @@
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "choices.js": "^6.0.2",
+    "choices.js": "^6.0.3",
     "dialog-polyfill": "^0.4.10",
     "downloadjs": "^1.4.7",
     "dragula": "^3.7.2",
     "eventemitter2": "^5.0.1",
     "fast-json-patch": "^2.0.7",
+    "fetch-ponyfill": "^6.0.2",
     "flatpickr": "^4.5.4",
     "i18next": "^15.0.4",
     "json-logic-js": "^1.2.2",
@@ -84,12 +85,11 @@
     "string-hash": "^1.1.3",
     "text-mask-addons": "^3.8.0",
     "tooltip.js": "^1.3.1",
-    "vanilla-text-mask": "^5.1.1",
-    "whatwg-fetch": "^3.0.0"
+    "vanilla-text-mask": "^5.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
+    "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/polyfill": "^7.2.5",
