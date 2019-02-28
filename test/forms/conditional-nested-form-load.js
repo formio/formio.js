@@ -1,5 +1,7 @@
 import { expect } from 'chai';
+import Formio from '../../src/Formio';
 import fetchMock from 'fetch-mock';
+Formio.fetch = fetchMock.fetchHandler;
 import {
   exampleForm,
   conditionallyHiddenNestedForm
