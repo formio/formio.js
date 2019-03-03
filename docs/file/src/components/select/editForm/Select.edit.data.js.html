@@ -29,12 +29,14 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -103,7 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -329,6 +332,7 @@ export default [
     },
     template: &apos;&lt;span&gt;{{ item.title }}&lt;/span&gt;&apos;,
     valueProperty: &apos;_id&apos;,
+    clearOnHide: false,
     label: &apos;Resource&apos;,
     key: &apos;data.resource&apos;,
     weight: 10,
@@ -343,6 +347,7 @@ export default [
     label: &apos;Value Property&apos;,
     key: &apos;valueProperty&apos;,
     skipMerge: true,
+    clearOnHide: false,
     tooltip: &apos;The field to use as the value.&apos;,
     weight: 11,
     refreshOn: &apos;data.resource&apos;,
@@ -391,6 +396,7 @@ export default [
     label: &apos;Value Property&apos;,
     key: &apos;valueProperty&apos;,
     skipMerge: true,
+    clearOnHide: false,
     weight: 13,
     description: &quot;The selected item&apos;s property to save.&quot;,
     tooltip: &apos;The property of each item in the data source to use as the select value. If not specified, the item itself will be used.&apos;,
