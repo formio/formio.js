@@ -810,10 +810,7 @@ export default class BaseComponent extends Component {
 
   get defaultValue() {
     let defaultValue = this.emptyValue;
-    if (
-      this.component.hasOwnProperty('defaultValue') &&
-      (defaultValue !== this.component.defaultValue)
-    ) {
+    if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
     if (this.component.customDefaultValue && !this.options.preview) {

@@ -75,6 +75,14 @@ export default class NumberComponent extends BaseComponent {
     return NumberComponent.schema();
   }
 
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === 0) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
+  }
+
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
