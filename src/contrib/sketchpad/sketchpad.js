@@ -12,11 +12,7 @@ export default class Sketchpad extends Base {
       stroke: '#333',
       fill: '#ccc',
       linewidth: 1,
-      circleSize: 10,
-      rectangleSize: {
-        width: 10,
-        height: 10
-      }
+      circleSize: 10
     };
   }
 
@@ -165,53 +161,47 @@ export default class Sketchpad extends Base {
           mode: 'rectangle'
         },
         eventStart: (coordinate) => {
-          this.center = coordinate;
-          const layer = this.two.makeRectangle(coordinate.x, coordinate.y, this.state.rectangleSize.width, this.state.rectangleSize.height);
-          layer.fill = this.state.fill;
-          layer.stroke = this.state.stroke;
-          layer.linewidth = this.state.linewidth;
-          this.two.update();
-          this.layers.push(layer);
-          const index = this.layers.length - 1;
-          layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
+          this.dragStartPoint = coordinate;
         },
         drag: (coordinate) => {
-
+          this.dragEndPoint = coordinate;
+          if (this.rectangle) {
+            this.rectangle.remove();
+          }
+          this.width = Math.abs(this.dragEndPoint.x - this.dragStartPoint.x);
+          this.height = Math.abs(this.dragEndPoint.y - this.dragStartPoint.y);
+          this.center = {
+            x: Math.min(this.dragStartPoint.x, this.dragEndPoint.x) + this.width / 2,
+            y: Math.min(this.dragStartPoint.y, this.dragEndPoint.y) + this.height / 2
+          };
+          this.rectangle = this.two.makeRectangle(this.center.x, this.center.y, this.width, this.height);
+          this.rectangle.fill = this.state.fill;
+          this.rectangle.stroke = this.state.stroke;
+          this.rectangle.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(this.rectangle);
+          const index = this.layers.length - 1;
+          this.rectangle._renderer.elem.addEventListener('click', (e) => this.click(e, index));
         },
         eventEnd: () => {
           const value = this.dataValue.slice();
-          value.push(Object.assign({}, this.state, { center: this.center }));
+          delete this.rectangle;
+          const rectangleState = {
+            center: this.center,
+            width: this.width,
+            height: this.height
+          };
+          value.push(Object.assign({}, this.state, rectangleState));
           this.dataValue = value;
           this.triggerChange();
         },
         draw: (state) => {
-          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.rectangleSize.width, state.rectangleSize.height);
+          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.width, state.height);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
           return layer;
         },
-        attach: (element) => {
-          const widthInput = this.ce('input', {
-            type: 'number',
-            class: 'formio-sketchpad-toolbar-input formio-sketchpad-width-input',
-            onChange: (e) => {
-              this.state.rectangleSize.width = e.target.value;
-            }
-          });
-          widthInput.value = this.state.rectangleSize.width;
-          const heightInput = this.ce('input', {
-            type: 'number',
-            class: 'formio-sketchpad-toolbar-input formio-sketchpad-height-input',
-            onChange: (e) => {
-              this.state.rectangleSize.height = e.target.value;
-            }
-          });
-          heightInput.value = this.state.rectangleSize.height;
-          element.appendChild(widthInput);
-          element.appendChild(heightInput);
-          return element;
-        }
       }
     };
   }
