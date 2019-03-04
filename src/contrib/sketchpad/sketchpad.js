@@ -270,6 +270,11 @@ export default class Sketchpad extends Base {
         icon: 'repeat',
         action: 'redo',
         title: 'Redo'
+      },
+      {
+        icon: 'ban',
+        action: 'clearAll',
+        title: 'Clear All'
       }
     ];
   }
@@ -457,6 +462,13 @@ export default class Sketchpad extends Base {
   clear() {
     this.two.clear();
     this.addBackground();
+  }
+
+  clearAll() {
+    this.layers = [];
+    this.dataValue = [];
+    this.clear();
+    this.two.update();
   }
 
   draw(value) {
