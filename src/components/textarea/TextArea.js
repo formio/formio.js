@@ -131,6 +131,10 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.wysiwyg = this.wysiwygDefault;
     }
 
+    if (this.component.wysiwyg && !this.component.editor) {
+      this.component.editor = 'quill';
+    }
+
     const settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
     const mode = this.component.as || 'javascript';
 
@@ -168,7 +172,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor = new Editor(element, settings);
             this.editor.root.spellcheck = this.component.spellcheck;
             if (this.component.isUploadEnabled) {
-              this.editor .getModule('toolbar').addHandler('image', () => this.imageHandler());
+              this.editor.getModule('toolbar').addHandler('image', () => this.imageHandler());
             }
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
