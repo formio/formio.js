@@ -1,6 +1,7 @@
 import Base from '../../components/base/Base';
 import Two from 'two.js';
 import Picker from 'vanilla-picker';
+import _ from 'lodash';
 
 export default class Sketchpad extends Base {
   constructor(...args) {
@@ -13,6 +14,11 @@ export default class Sketchpad extends Base {
       fill: '#ccc',
       linewidth: 1,
       circleSize: 10
+    };
+
+    this.SOURCES = {
+      EDIT: 'edit',
+      VIEW: 'view'
     };
   }
 
@@ -35,30 +41,29 @@ export default class Sketchpad extends Base {
         eventStart: (coordinate) => {
           this.points = [coordinate];
           this.prev = coordinate;
-          this.curve = this.two.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
+          this.curve = this.editTwo.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
           this.curve.noFill().stroke = this.state.stroke;
           this.curve.linewidth = this.state.linewidth;
           this.curve.vertices.forEach((v) => v.addSelf(this.curve.translation));
           this.curve.translation.clear();
-          this.two.update();
+          this.editTwo.update();
           this.layers.push(this.curve);
-          const index = this.layers.length - 1;
           this.curve._renderer.elem.addEventListener('click', (e) => this.click(e, this.layers.length));
         },
         drag: (coordinate) => {
           this.points.push(coordinate);
           this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
-          this.two.update();
+          this.editTwo.update();
           this.prev = coordinate;
         },
-        eventEnd: (coordinate) => {
-          const value = this.dataValue.slice();
+        eventEnd: () => {
+          const value = this.editValue.slice();
           value.push(Object.assign({}, this.state, { points: this.points }));
-          this.dataValue = value;
+          this.editValue = value;
           this.triggerChange();
         },
-        draw: (state) => {
-          const layer = this.two.makeCurve(state.points.map(point => new Two.Vector(point.x, point.y)), true);
+        draw: (state, source) => {
+          const layer = this.getTwo(source).makeCurve(state.points.map(point => new Two.Vector(point.x, point.y)), true);
           layer.noFill().stroke = state.stroke;
           layer.linewidth = state.linewidth;
           layer.vertices.forEach((v) => v.addSelf(layer.translation));
@@ -74,11 +79,11 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          this.line = this.two.makeLine(coordinate.x, coordinate.y, coordinate.x, coordinate.y);
+          this.line = this.editTwo.makeLine(coordinate.x, coordinate.y, coordinate.x, coordinate.y);
           this.line.fill = this.state.fill;
           this.line.stroke = this.state.stroke;
           this.line.linewidth = this.state.linewidth;
-          this.two.update();
+          this.editTwo.update();
           this.layers.push(this.line);
           const index = this.layers.length - 1;
           this.line._renderer.elem.addEventListener('click', (e) => this.click(e, index));
@@ -86,10 +91,10 @@ export default class Sketchpad extends Base {
         drag: (coordinate) => {
           this.line.vertices[1].x = coordinate.x;
           this.line.vertices[1].y = coordinate.y;
-          this.two.update();
+          this.editTwo.update();
         },
         eventEnd: () => {
-          const value = this.dataValue.slice();
+          const value = this.editValue.slice();
           const vertices = this.line.vertices.map(vertice => {
             return {
               x: vertice.x,
@@ -97,11 +102,11 @@ export default class Sketchpad extends Base {
             };
           });
           value.push(Object.assign({}, this.state, { vertices: vertices }));
-          this.dataValue = value;
+          this.editValue = value;
           this.triggerChange();
         },
-        draw: (state) => {
-          const layer = this.two.makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
+        draw: (state, source) => {
+          const layer = this.getTwo(source).makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -116,11 +121,11 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
+          const layer = this.editTwo.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
           layer.fill = this.state.fill;
           layer.stroke = this.state.stroke;
           layer.linewidth = this.state.linewidth;
-          this.two.update();
+          this.editTwo.update();
           this.layers.push(layer);
           const index = this.layers.length - 1;
           layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
@@ -129,13 +134,13 @@ export default class Sketchpad extends Base {
 
         },
         eventEnd: () => {
-          const value = this.dataValue.slice();
+          const value = this.editValue.slice();
           value.push(Object.assign({}, this.state, { center: this.center }));
-          this.dataValue = value;
+          this.editValue = value;
           this.triggerChange();
         },
-        draw: (state) => {
-          const layer = this.two.makeCircle(state.center.x, state.center.y, state.circleSize);
+        draw: (state, source) => {
+          const layer = this.getTwo(source).makeCircle(state.center.x, state.center.y, state.circleSize);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -174,17 +179,17 @@ export default class Sketchpad extends Base {
             x: Math.min(this.dragStartPoint.x, this.dragEndPoint.x) + this.width / 2,
             y: Math.min(this.dragStartPoint.y, this.dragEndPoint.y) + this.height / 2
           };
-          this.rectangle = this.two.makeRectangle(this.center.x, this.center.y, this.width, this.height);
+          this.rectangle = this.editTwo.makeRectangle(this.center.x, this.center.y, this.width, this.height);
           this.rectangle.fill = this.state.fill;
           this.rectangle.stroke = this.state.stroke;
           this.rectangle.linewidth = this.state.linewidth;
-          this.two.update();
+          this.editTwo.update();
           this.layers.push(this.rectangle);
           const index = this.layers.length - 1;
           this.rectangle._renderer.elem.addEventListener('click', (e) => this.click(e, index));
         },
         eventEnd: () => {
-          const value = this.dataValue.slice();
+          const value = this.editValue.slice();
           delete this.rectangle;
           const rectangleState = {
             center: this.center,
@@ -192,11 +197,11 @@ export default class Sketchpad extends Base {
             height: this.height
           };
           value.push(Object.assign({}, this.state, rectangleState));
-          this.dataValue = value;
+          this.editValue = value;
           this.triggerChange();
         },
-        draw: (state) => {
-          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.width, state.height);
+        draw: (state, source) => {
+          const layer = this.getTwo(source).makeRectangle(state.center.x, state.center.y, state.width, state.height);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -288,67 +293,18 @@ export default class Sketchpad extends Base {
 
     this.createElement();
 
-    this.element.append(
-      this.ce('div', {
-        class: 'btn-toolbar',
-        role: 'toolbar'
-      }, [
-        this.ce('div', {
-            class: 'btn-group formio-sketchpad-toolbar-group',
-            role: 'group'
-          },
-          this.modeButtons = Object.keys(this.modes).map(key => {
-            const mode = this.modes[key];
-            const toolbarButton = this.ce('div', {
-              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${key} ${this.state.mode === mode.state.mode ? ' active' : ''}`,
-              onClick: () => this.setState(mode.state),
-              title: mode.title
-            }, this.ce('i', {
-              class: `fa fa-${mode.icon}`,
-            }));
-            if (mode.attach) {
-              return mode.attach(toolbarButton);
-            }
-            return toolbarButton;
-          }),
-        ),
-        this.ce('div', {
-            class: 'btn-group formio-sketchpad-toolbar-group',
-            role: 'group'
-          },
-          this.styles.map(button => {
-            const toolbarButtonIcon = this.ce('i', {
-              class: `fa fa-${button.icon}`,
-            });
-            const toolbarButton = this.ce('div', {
-              class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`,
-              title: button.title
-            }, toolbarButtonIcon);
-            if (button.attach) {
-              return button.attach(toolbarButton);
-            }
-            return toolbarButton;
-          }),
-        ),
-        this.ce('div', {
-            class: 'btn-group float-right formio-sketchpad-toolbar-group',
-            role: 'group'
-          },
-          this.actions.map(button => this.ce('div', {
-            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.action}`,
-            onClick: () => this[button.action](),
-            title: button.title
-          }, this.ce('i', {
-            class: `fa fa-${button.icon}`,
-          }))),
-        ),
-      ])
-    );
+    this.createLabel(this.element);
 
-    this.sketchpad = this.ce('div', { class: 'sketchpad' });
-    this.element.appendChild(this.sketchpad);
-
-    this.attach(this.element);
+    this.viewSketchpad = this.ce('div', { class: 'formio-view-sketchpad' });
+    this.addEventListener(this.viewSketchpad, 'click', this.editSvg.bind(this));
+    this.element.appendChild(this.viewSketchpad);
+    this.viewTwo = new Two({
+      type: Two.Types.svg,
+      width: this.component.width,
+      height: this.component.height
+    }).appendTo(this.viewSketchpad);
+    this.addBackground(this.SOURCES.VIEW);
+    this.viewTwo.update();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -363,16 +319,105 @@ export default class Sketchpad extends Base {
     this.attachLogic();
   }
 
+  editSvg() {
+    //open editor in modal
+    this.editorModal = this.createModal();
+    const toolbar = this.createToolbar();
+    this.editSketchpad = this.ce('div', { class: 'formio-edit-sketchpad' });
+    this.editorModal.body.appendChild(toolbar);
+    this.attach();
+    this.editorModal.body.appendChild(this.editSketchpad);
+    this.saveSvgButton = this.ce('button', {
+      class: 'btn btn-success'
+    }, this.t('Save'));
+    this.addEventListener(this.saveSvgButton, 'click', this.saveSvg.bind(this));
+    this.editorModal.body.appendChild(this.saveSvgButton);
+    this.editValue = _.cloneDeep(this.dataValue);
+    this.draw(this.editValue, this.SOURCES.EDIT);
+  }
+
+  saveSvg() {
+    this.dataValue = this.editValue;
+    this.setValue(this.dataValue);
+    this.editorModal.close();
+  }
+
+  createToolbar() {
+    return this.ce('div', {
+      class: 'btn-toolbar formio-sketchpad-toolbar',
+      role: 'toolbar'
+    }, [
+      this.ce('div', {
+          class: 'btn-group formio-sketchpad-toolbar-group',
+          role: 'group'
+        },
+        this.modeButtons = Object.keys(this.modes).map(key => {
+          const mode = this.modes[key];
+          const toolbarButton = this.ce('div', {
+            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${key} ${this.state.mode === mode.state.mode ? ' active' : ''}`,
+            onClick: () => this.setState(mode.state),
+            title: mode.title
+          }, this.ce('i', {
+            class: `fa fa-${mode.icon}`,
+          }));
+          if (mode.attach) {
+            return mode.attach(toolbarButton);
+          }
+          return toolbarButton;
+        }),
+      ),
+      this.ce('div', {
+          class: 'btn-group formio-sketchpad-toolbar-group',
+          role: 'group'
+        },
+        this.styles.map(button => {
+          const toolbarButtonIcon = this.ce('i', {
+            class: `fa fa-${button.icon}`,
+          });
+          const toolbarButton = this.ce('div', {
+            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`,
+            title: button.title
+          }, toolbarButtonIcon);
+          if (button.attach) {
+            return button.attach(toolbarButton);
+          }
+          return toolbarButton;
+        }),
+      ),
+      this.ce('div', {
+          class: 'btn-group float-right formio-sketchpad-toolbar-group',
+          role: 'group'
+        },
+        this.actions.map(button => this.ce('div', {
+          class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.action}`,
+          onClick: () => this[button.action](),
+          title: button.title
+        }, this.ce('i', {
+          class: `fa fa-${button.icon}`,
+        }))),
+      ),
+    ]);
+  }
+
+  getTwo(source) {
+    switch (source) {
+      case this.SOURCES.VIEW:
+        return this.viewTwo;
+      case this.SOURCES.EDIT:
+        return this.editTwo;
+    }
+  }
+
   attach() {
-    this.two = new Two({
+    this.editTwo = new Two({
       type: Two.Types.svg,
       width: this.component.width,
       height: this.component.height
-    }).appendTo(this.sketchpad);
+    }).appendTo(this.editSketchpad);
 
-    this.addBackground();
+    this.addBackground(this.SOURCES.EDIT);
 
-    const sketchElement = this.two.renderer.domElement;
+    const sketchElement = this.editTwo.renderer.domElement;
 
     // Set up mouse events.
     sketchElement
@@ -448,37 +493,38 @@ export default class Sketchpad extends Base {
         return false;
       });
 
-    this.two.update();
+    this.editTwo.update();
   }
 
-  addBackground() {
+  addBackground(source) {
     let svg = this.ce('svg');
     svg.innerHTML = this.component.image;
-    svg = this.two.interpret(svg);
+    const two = this.getTwo(source);
+    svg = two.interpret(svg);
     svg.center();
-    svg.translation.set(this.two.width / (2 * window.devicePixelRatio), this.two.height / (2 * window.devicePixelRatio));
+    svg.translation.set(two.width / (2 * window.devicePixelRatio), two.height / (2 * window.devicePixelRatio));
   }
 
-  clear() {
-    this.two.clear();
-    this.addBackground();
+  clear(source) {
+    this.getTwo(source).clear();
+    this.addBackground(source);
   }
 
   clearAll() {
     this.layers = [];
-    this.dataValue = [];
-    this.clear();
-    this.two.update();
+    this.editValue = [];
+    this.clear(this.SOURCES.EDIT);
+    this.editTwo.update();
   }
 
-  draw(value) {
-    this.layers = value.map(item => this.modes[item.mode].draw(item));
-    this.two.update();
-    if (this.layers.length) {
-      this.layers.forEach((layer, index) => {
+  draw(value, source) {
+    const layers = value.map(item => this.modes[item.mode].draw(item, source));
+    this.getTwo(source).update();
+    if (source === this.SOURCES.EDIT && layers.length) {
+      this.layers = layers;
+      layers.forEach((layer, index) => {
         layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
       });
-      console.log(this.layers[0]);
     }
   }
 
@@ -487,31 +533,27 @@ export default class Sketchpad extends Base {
   }
 
   undo() {
-    const value = this.dataValue.slice();
+    const value = this.editValue.slice();
     if (value.length === 0) {
       return;
     }
     this.deleted.push(value.pop());
-    this.dataValue = value;
+    this.editValue = value;
     this.triggerChange();
-    this.clear();
-    this.draw(value);
+    this.clear(this.SOURCES.EDIT);
+    this.draw(value, this.SOURCES.EDIT);
   }
 
   redo() {
     if (this.deleted.length === 0) {
       return;
     }
-    const value = this.dataValue.slice();
+    const value = this.editValue.slice();
     value.push(this.deleted.pop());
-    this.dataValue = value;
+    this.editValue = value;
     this.triggerChange();
-    this.clear();
-    this.draw(value);
-  }
-
-  remove() {
-
+    this.clear(this.SOURCES.EDIT);
+    this.draw(value, this.SOURCES.EDIT);
   }
 
   setState(state) {
@@ -529,10 +571,10 @@ export default class Sketchpad extends Base {
   }
 
   setValue(value) {
-    if (!this.two) {
+    if (!this.viewTwo) {
       return;
     }
-    this.clear();
-    this.draw(value);
+    this.clear(this.SOURCES.VIEW);
+    this.draw(value, this.SOURCES.VIEW);
   }
 }
