@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.16.3
+### Fixed
+ - Issue where custom Headers within Select component were not getting included anymore.
+ - Memory leaks within the Tabs and TextArea components with wysiwyg editors.
+
 ## 3.16.2
 ### Fixed
  - Issue with the image upload via webcam where the image would not get set in the image list.
