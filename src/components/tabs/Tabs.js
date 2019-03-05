@@ -158,6 +158,7 @@ export default class TabsComponent extends NestedComponent {
     // Get the current tab.
     const tab = this.component.components[index];
     this.empty(this.tabs[index]);
+    this.components.map((comp) => comp.destroy());
     this.components = [];
     const components = this.hook('addComponents', tab.components, this);
     components.forEach((component) => this.addComponent(
@@ -211,6 +212,10 @@ export default class TabsComponent extends NestedComponent {
    * @param dirty
    */
   checkValidity(data, dirty) {
+    if (!dirty) {
+      return super.checkValidity(data, dirty);
+    }
+
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
@@ -223,7 +228,9 @@ export default class TabsComponent extends NestedComponent {
       tabComp.internal = true;
       const component = this.createComponent(tabComp);
       this.validityTabs.push(component);
-      return component.checkValidity(data, dirty) && check;
+      const valid = component.checkValidity(data, dirty) && check;
+      component.destroy();
+      return valid;
     }, isValid);
   }
 
