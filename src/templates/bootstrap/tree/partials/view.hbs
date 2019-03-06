@@ -1,0 +1,19 @@
+<div class="row">
+  {% views.forEach(function(children) { %}
+  <div class="col-sm-2">
+    {{ children }}
+  </div>
+  {% }) %}
+  <div class="col-sm-3 pull-right">
+    <div class="btn-group pull-right">
+      <button ref="toggle" class="btn btn-default btn-sm toggleNode">{{ t(node.collapsed ? 'Expand' : 'Collapse') }}</button>
+      {% if (!readOnly) { %}
+      <button ref="edit" class="btn btn-default btn-sm editNode">{{ t('Edit') }}</button>
+      <button ref="remove" class="btn btn-default btn-sm removeNode">{{ t('Delete') }}</button>
+      {% } %}
+      {% if (revertAvailable) { %}
+      <button ref="revert" class="btn btn-danger btn-sm revertNode">{{ t('Revert') }}</button>
+      {% } %}
+    </div>
+  </div>
+</div>

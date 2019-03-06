@@ -1,0 +1,13 @@
+<div ref="{{ isRoot ? 'root' : 'node' }}" data-level="{{ level }}" >
+  {% if (form) { %}{{form}}{% } %}
+  {% if (children) { %}
+  <ul ref="nodeChildren" class="list-group">{{children}}</ul>
+  {% } %}
+  <div ref="nodeActions" class="container-fluid nodeActions">
+    <div class="row">
+      {% if (!node.changing) { %}
+      <button ref="add" class="btn btn-default btn-sm pull-right addChild">{{ t('Add') }}</button>
+      {% } %}
+    </div>
+  </div>
+</div>

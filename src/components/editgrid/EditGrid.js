@@ -302,7 +302,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     editRow.dirty = true;
-    if (this.validateRow(rowIndex) !== true) {
+    if (!!this.validateRow(rowIndex) !== true) {
       return;
     }
 
