@@ -1,4 +1,4 @@
-import Choices from 'choices.js/assets/scripts/dist/choices.js';
+import Choices from 'choices.js/public/assets/scripts/choices.js';
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
@@ -16,6 +16,7 @@ export default class SelectComponent extends BaseComponent {
         resource: '',
         custom: ''
       },
+      limit: 100,
       dataSrc: 'values',
       valueProperty: '',
       filter: '',
@@ -26,6 +27,8 @@ export default class SelectComponent extends BaseComponent {
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
+      searchThreshold: 0.3,
+      fuseOptions: {},
       customOptions: {}
     }, ...extend);
   }
@@ -49,6 +52,12 @@ export default class SelectComponent extends BaseComponent {
 
     // Keep track of the select options.
     this.selectOptions = [];
+
+    // Keep track of the last batch of items loaded.
+    this.currentItems = [];
+    this.loadedItems = 0;
+    this.isScrollLoading = false;
+    this.scrollTop = 0;
 
     // If this component has been activated.
     this.activated = false;
@@ -147,7 +156,9 @@ export default class SelectComponent extends BaseComponent {
       label: label
     };
 
-    this.selectOptions.push(option);
+    if (value) {
+      this.selectOptions.push(option);
+    }
     if (this.choices) {
       return;
     }
@@ -172,14 +183,60 @@ export default class SelectComponent extends BaseComponent {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        _.each(currentChoices, (choice) => {
-          this.addCurrentChoices(choice, items);
-        });
+        return currentChoices.reduce((defaultAdded, choice) => {
+          return (this.addCurrentChoices(choice, items) || defaultAdded);
+        }, false);
       }
       else if (!this.component.multiple) {
         this.addPlaceholder(this.selectInput);
       }
     }
+    return false;
+  }
+
+  /**
+   * Return if the list is loading from scroll. or not.
+   *
+   * @return {boolean|*}
+   */
+  get scrollLoading() {
+    return this.isScrollLoading;
+  }
+
+  /**
+   * Sets the scroll loading state.
+   *
+   * @param isScrolling
+   * @return {*}
+   */
+  set scrollLoading(isScrolling) {
+    // Only continue if they are different.
+    if (this.isScrollLoading === isScrolling) {
+      return;
+    }
+    if (isScrolling) {
+      this.choices.setChoices([...this.selectOptions, {
+        value: '',
+        label: 'Loading...',
+        disabled: true,
+      }], 'value', 'label', true);
+    }
+    else {
+      const loadingItem = this.scrollList.querySelector('.choices__item--disabled');
+      if (loadingItem) {
+        // Remove the loading text.
+        this.scrollList.removeChild(loadingItem);
+      }
+    }
+    this.scrollList.scrollTo(0, this.scrollTop);
+    this.isScrollLoading = isScrolling;
+    return isScrolling;
+  }
+
+  stopInfiniteScroll() {
+    // Remove the infinite scroll listener.
+    this.scrollLoading = false;
+    this.scrollList.removeEventListener('scroll', this.onScroll);
   }
 
   /* eslint-disable max-statements */
@@ -211,12 +268,38 @@ export default class SelectComponent extends BaseComponent {
       this.selectInput.innerHTML = '';
     }
 
-    this.selectOptions = [];
-
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
       items = _.get(items, this.component.selectValues);
     }
+
+    if (this.scrollLoading) {
+      // Check if the first two items are equal, and if so, then we can assume that this is the same list
+      // and we should skip over the loading.
+      if (
+        this.currentItems.length &&
+        items.length &&
+        _.isEqual(this.currentItems[0], items[0]) &&
+        _.isEqual(this.currentItems[1], items[1])
+      ) {
+        this.stopInfiniteScroll();
+        return;
+      }
+
+      // If we have gone beyond our limit, then stop.
+      if (items.limit && (items.length < items.limit)) {
+        this.stopInfiniteScroll();
+      }
+
+      // Increment the loadedItems.
+      this.loadedItems += items.length;
+    }
+    else {
+      this.selectOptions = [];
+      this.loadedItems = items.length;
+    }
+
+    this.currentItems = items;
 
     // Add the value options.
     if (!fromSearch) {
@@ -241,6 +324,7 @@ export default class SelectComponent extends BaseComponent {
     }
 
     // We are no longer loading.
+    this.scrollLoading = false;
     this.loading = false;
 
     // If a value is provided, then select it.
@@ -280,14 +364,20 @@ export default class SelectComponent extends BaseComponent {
       body = null;
     }
 
+    const limit = this.component.limit || 100;
+    const skip = this.loadedItems || 0;
     const query = (this.component.dataSrc === 'url') ? {} : {
-      limit: 100,
-      skip: 0
+      limit: limit,
+      skip: skip
     };
 
     // Allow for url interpolation.
     url = this.interpolate(url, {
-      formioBase: Formio.getBaseUrl()
+      formioBase: Formio.getBaseUrl(),
+      search,
+      limit,
+      skip,
+      page: Math.abs(Math.floor(skip / limit))
     });
 
     // Add search capability.
@@ -296,14 +386,8 @@ export default class SelectComponent extends BaseComponent {
         query[`${this.component.searchField}__in`] = search.join(',');
       }
       else {
-        query[this.component.searchField] = search;
+        query[`${this.component.searchField}__regex`] = search;
       }
-    }
-
-    // Add filter capability
-    if (this.component.filter) {
-      const filter = this.interpolate(this.component.filter);
-      url += (!url.includes('?') ? '?' : '&') + filter;
     }
 
     // If they wish to return only some fields.
@@ -311,17 +395,34 @@ export default class SelectComponent extends BaseComponent {
       query.select = this.component.selectFields;
     }
 
+    // Add sort capability
+    if (this.component.sort) {
+      query.sort = this.component.sort;
+    }
+
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!(url.indexOf('?') !== -1) ? '?' : '&') + Formio.serialize(query);
+      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));
+    }
+
+    // Add filter capability
+    if (this.component.filter) {
+      url += `&${this.interpolate(this.component.filter)}`;
     }
 
     // Make the request.
     options.header = headers;
     this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
-      .then((response) => this.setItems(response, !!search))
+      .then((response) => {
+        const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
+        this.setItems(response, !!search);
+        if (scrollTop) {
+          this.choices.choiceList.scrollToTop();
+        }
+      })
       .catch((err) => {
+        this.stopInfiniteScroll();
         this.loading = false;
         this.itemsLoadedResolve();
         this.emit('componentError', {
@@ -337,7 +438,7 @@ export default class SelectComponent extends BaseComponent {
    */
   get requestHeaders() {
     // Create the headers object.
-    const headers = new Headers();
+    const headers = new Formio.Headers();
 
     // Add custom headers to the url.
     if (this.component.data && this.component.data.headers) {
@@ -436,8 +537,8 @@ export default class SelectComponent extends BaseComponent {
             body = null;
           }
         }
-        const query = this.component.authenticate ? {} : { noToken: true };
-        this.loadItems(url, searchInput, this.requestHeaders, query, method, body);
+        const options = this.component.authenticate ? {} : { noToken: true };
+        this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
     }
@@ -530,11 +631,11 @@ export default class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: ['label'],
-      fuseOptions: {
+      searchFields: _.get(this, 'component.searchFields', ['label']),
+      fuseOptions: Object.assign({
         include: 'score',
-        threshold: 0.3
-      },
+        threshold: _.get(this, 'component.searchThreshold', 0.3),
+      }, _.get(this, 'component.fuseOptions', {})),
       itemComparer: _.isEqual
     };
 
@@ -544,25 +645,39 @@ export default class SelectComponent extends BaseComponent {
     this.choices = new Choices(input, choicesOptions);
 
     if (this.component.multiple) {
-      this.focusableElement = this.choices.input;
+      this.focusableElement = this.choices.input.element;
     }
     else {
-      this.focusableElement = this.choices.containerInner;
-      this.choices.containerOuter.setAttribute('tabIndex', '-1');
+      this.focusableElement = this.choices.containerInner.element;
+      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
       if (useSearch) {
-        this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
     }
+
+    this.scrollList = this.choices.choiceList.element;
+    this.onScroll = () => {
+      if (
+        !this.scrollLoading &&
+        ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)
+      ) {
+        this.scrollTop = this.scrollList.scrollTop;
+        this.scrollLoading = true;
+        this.triggerUpdate(this.choices.input.element.value);
+      }
+    };
+    this.scrollList.addEventListener('scroll', this.onScroll);
+
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
-    this.setInputStyles(this.choices.containerOuter);
+    this.setInputStyles(this.choices.containerOuter.element);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
       // Make sure to clear the search when no value is provided.
-      if (this.choices && this.choices.input) {
-        this.addEventListener(this.choices.input, 'input', (event) => {
+      if (this.choices && this.choices.input && this.choices.input.element) {
+        this.addEventListener(this.choices.input.element, 'input', (event) => {
           if (!event.target.value) {
             this.triggerUpdate();
           }
@@ -572,20 +687,31 @@ export default class SelectComponent extends BaseComponent {
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
 
-    this.addEventListener(input, 'showDropdown', () => this.update());
-    if (placeholderValue && this.choices.isSelectOneElement) {
+    this.addEventListener(input, 'showDropdown', () => {
+      if (this.dataValue) {
+        this.triggerUpdate();
+      }
+      this.update();
+    });
+    if (placeholderValue && this.choices._isSelectOneElement) {
       this.addEventListener(input, 'removeItem', () => {
-        const items = this.choices.store.getItemsFilteredByActive();
+        const items = this.choices._store.activeItems;
         if (!items.length) {
           this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
         }
       });
     }
 
+    // Add value options.
+    if (this.addValueOptions()) {
+      this.restoreValue();
+    }
+
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
   }
+
   /* eslint-enable max-statements */
 
   update() {
@@ -603,12 +729,12 @@ export default class SelectComponent extends BaseComponent {
       return;
     }
     if (disabled) {
-      this.setDisabled(this.choices.containerInner, true);
+      this.setDisabled(this.choices.containerInner.element, true);
       this.focusableElement.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
-      this.setDisabled(this.choices.containerInner, false);
+      this.setDisabled(this.choices.containerInner.element, false);
       this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
@@ -651,9 +777,19 @@ export default class SelectComponent extends BaseComponent {
 
       // Add the default option if no item is found.
       if (!found) {
-        this.addOption(this.itemValue(value), this.itemTemplate(value));
+        if (this.choices) {
+          this.choices.setChoices([{
+            value: this.itemValue(value),
+            label: this.itemTemplate(value)
+          }], 'value', 'label', true);
+        }
+        else {
+          this.addOption(this.itemValue(value), this.itemTemplate(value));
+        }
+        return true;
       }
     }
+    return false;
   }
 
   getView(data) {
@@ -743,8 +879,7 @@ export default class SelectComponent extends BaseComponent {
         _.each(currentChoices, (choice) => {
           this.addCurrentChoices(choice, this.selectOptions);
         });
-        this.choices.setChoices(this.selectOptions, 'value', 'label', true)
-          .setValueByChoice(value);
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true).setChoiceByValue(value);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();

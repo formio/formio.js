@@ -26,6 +26,7 @@ export default [
     key: 'values',
     tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
     weight: 33,
+    reorder: true,
     defaultValue: [{ label: '', value: '' }],
     components: [
       {

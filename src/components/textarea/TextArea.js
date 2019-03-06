@@ -240,13 +240,34 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  isEmpty(value) {
-    if (this.quill) {
-      return (!value || (value === '<p><br></p>'));
+  removeBlanks(value) {
+    if (!value) {
+      return value;
+    }
+    const removeBlanks = function(input) {
+      if (typeof input !== 'string') {
+        return input;
+      }
+      return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) => {
+        value[index] = removeBlanks(input);
+      });
     }
     else {
-      return super.isEmpty(value);
+      value = removeBlanks(value);
     }
+    return value;
+  }
+
+  hasChanged(before, after) {
+    return super.hasChanged(this.removeBlanks(before), this.removeBlanks(after));
+  }
+
+  isEmpty(value) {
+    return super.isEmpty(this.removeBlanks(value));
   }
 
   get defaultValue() {
@@ -258,13 +279,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    //should set value if new value is not equal to current
-    let shouldSetValue = !_.isEqual(value, this.getValue());
-    //should set value if is in read only mode
-    shouldSetValue = shouldSetValue || this.options.readOnly;
-    if (!shouldSetValue) {
-      return;
-    }
+    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
       if (this.options.readOnly) {
@@ -292,14 +307,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     else if (this.editorReady) {
       this.editorReady.then((editor) => {
         if (this.component.editor === 'ace') {
-          editor.setValue(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.setValue(this.setConvertedValue(value));
+          }
         }
         else if (this.component.editor === 'ckeditor') {
-          editor.data.set(this.setConvertedValue(value));
+          if (shouldSetValue) {
+            editor.data.set(this.setConvertedValue(value));
+          }
           this.updateValue(flags);
         }
         else {
-          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          if (shouldSetValue) {
+            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          }
           this.updateValue(flags);
         }
       });
@@ -316,6 +337,13 @@ export default class TextAreaComponent extends TextFieldComponent {
       }
     }
     return value;
+  }
+
+  destroy() {
+    if (this.editorReady) {
+      this.editorReady.then((editor) => editor.destroy());
+    }
+    return super.destroy();
   }
 
   getValue() {

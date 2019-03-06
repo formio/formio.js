@@ -14,6 +14,7 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'children',
         type: 'datagrid',
         input: true,
+        reorder: true,
         validate: {
           minLength: 3,
           maxLength: 6
@@ -135,6 +136,7 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'children',
         type: 'datagrid',
         input: true,
+        reorder: true,
         validate: {
           minLength: 3,
           maxLength: 6

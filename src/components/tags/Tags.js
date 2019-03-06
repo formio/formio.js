@@ -1,5 +1,5 @@
 import BaseComponent from '../base/Base';
-import Choices from 'choices.js/assets/scripts/dist/choices.js';
+import Choices from 'choices.js/public/assets/scripts/choices.js';
 import _ from 'lodash';
 
 export default class TagsComponent extends BaseComponent {
@@ -54,7 +54,7 @@ export default class TagsComponent extends BaseComponent {
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
     });
-    this.choices.itemList.tabIndex = input.tabIndex;
+    this.choices.itemList.element.tabIndex = input.tabIndex;
   }
 
   setValue(value) {

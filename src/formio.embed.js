@@ -1,3 +1,4 @@
+/*global Formio*/
 const scripts = document.getElementsByTagName('script');
 let thisScript = null;
 let i = scripts.length;
@@ -20,6 +21,7 @@ if (thisScript) {
   });
   query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
   Form.embed(query).then((instance) => {
+    Formio.events.emit('formEmbedded', instance);
     instance.on('submit', (submission) => {
       let returnUrl = query.return || query.redirect;
 

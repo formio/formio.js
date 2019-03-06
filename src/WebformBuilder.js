@@ -3,8 +3,8 @@ import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import { getComponent, bootstrapVersion } from './utils/utils';
-import EventEmitter from 'eventemitter2';
+import { getComponent, bootstrapVersion, eachComponent } from './utils/utils';
+import EventEmitter from './EventEmitter';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
@@ -183,6 +183,25 @@ export default class WebformBuilder extends Webform {
   }
 
   setForm(form) {
+    //populate isEnabled for recaptcha form settings
+    var isRecaptchaEnabled = false;
+    if (form.components) {
+      eachComponent(form.components, component => {
+        if (isRecaptchaEnabled) {
+          return;
+        }
+        if (component.type === 'recaptcha') {
+          isRecaptchaEnabled = true;
+          return false;
+        }
+      });
+      if (isRecaptchaEnabled) {
+        _.set(form, 'settings.recaptcha.isEnabled', true);
+      }
+      else if (_.get(form, 'settings.recaptcha.isEnabled')) {
+        _.set(form, 'settings.recaptcha.isEnabled', false);
+      }
+    }
     this.emit('change', form);
     return super.setForm(form).then(retVal => {
       setTimeout(() => (this.builderHeight = this.element.offsetHeight), 200);
@@ -367,7 +386,11 @@ export default class WebformBuilder extends Webform {
     ]));
 
     // Create the form instance.
-    this.editForm = new Webform(formioForm, { language: this.options.language });
+    const editFormOptions = _.get(this, 'options.editForm', {});
+    this.editForm = new Webform(formioForm, {
+      language: this.options.language,
+      ...editFormOptions
+    });
 
     // Set the form to the edit form.
     this.editForm.form = editForm;
@@ -551,6 +574,7 @@ export default class WebformBuilder extends Webform {
     info = _.clone(info);
     const groupAnchor = this.ce('button', {
       class: 'btn btn-block builder-group-button',
+      'type': 'button',
       'data-toggle': 'collapse',
       'data-parent': `#${container.id}`,
       'data-target': `#group-${info.key}`
@@ -860,7 +884,7 @@ export default class WebformBuilder extends Webform {
           break;
       }
       // Index within container
-      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.key }) || 0;
+      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
 
       this.emit('addComponent', component, path, index);
 

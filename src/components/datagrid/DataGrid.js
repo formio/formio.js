@@ -37,6 +37,9 @@ export default class DataGridComponent extends NestedComponent {
       const groups = _.get(this.component, 'rowGroups', []);
       const rowsNum = this.totalRowsNumber(groups);
       this.setStaticValue(rowsNum);
+      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {
+        return _.merge(a, b);
+      });
     }
   }
 
@@ -120,6 +123,7 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     this.numColumns = this.hasExtraColumn() ? 1 : 0;
+    this.numColumns += this.allowReorder ? 1 : 0;
     this.numRows = this.dataValue.length;
 
     if (this.visibleColumns === true) {
@@ -146,7 +150,12 @@ export default class DataGridComponent extends NestedComponent {
     if (header) {
       this.tableElement.appendChild(header);
     }
-    this.tableElement.appendChild(this.ce('tbody', null, tableRows));
+    this.tableBody = this.ce('tbody', null, tableRows);
+    this.tableElement.appendChild(this.tableBody);
+
+    if (this.allowReorder) {
+      this.addDraggable([this.tableBody]);
+    }
 
     if (this.hasRowGroups() && !this.options.builder) {
       this.buildGroups();
@@ -164,6 +173,15 @@ export default class DataGridComponent extends NestedComponent {
     }
   }
 
+  get allowReorder() {
+    return super.allowReorder && !this.options.builder;
+  }
+
+  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
+    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
+    this.triggerChange();
+  }
+
   // Build the header.
   createHeader() {
     const hasTopButton = this.hasTopSubmit();
@@ -171,6 +189,9 @@ export default class DataGridComponent extends NestedComponent {
     let needsHeader = false;
     const thead = this.ce('thead', null, this.ce('tr', null,
       [
+        this.allowReorder ? this.ce('th', {
+          class: 'formio-drag-column-header'
+        }) : null,
         this.visibleComponents.map(comp => {
           const th = this.ce('th');
           if (comp.validate && comp.validate.required) {
@@ -224,10 +245,19 @@ export default class DataGridComponent extends NestedComponent {
     let useCorner = false;
     let lastColumn = null;
     this.rows[index] = {};
+    let firstColumn = null;
+
+    if (this.allowReorder) {
+      firstColumn = this.ce('td', {
+        class: 'formio-drag-column'
+      }, this.dragButton());
+    }
 
     if (hasRmButton) {
       if (rmPlacement === 'col') {
-        lastColumn = this.ce('td', null, this.removeButton(index));
+        lastColumn = this.ce('td', {
+          class: 'formio-remove-column'
+        }, this.removeButton(index));
       }
       else {
         useCorner = true;
@@ -246,8 +276,9 @@ export default class DataGridComponent extends NestedComponent {
       this.root.addDragContainer(lastColumn, this);
     }
 
-    return this.ce('tr', null,
+    const rowElement =  this.ce('tr', null,
       [
+        firstColumn,
         components.map(
           (cmp, colIndex) => {
             const cell = this.buildComponent(
@@ -260,8 +291,8 @@ export default class DataGridComponent extends NestedComponent {
 
             if (hasRmButton && useCorner && lastColIndex === colIndex) {
               cell.style.position = 'relative';
+              cell.style.width = '50px';
               cell.append(this.removeButton(index, 'small'));
-
               if (hasTopButton ) {
                 cell.setAttribute('colspan', 2);
               }
@@ -273,6 +304,15 @@ export default class DataGridComponent extends NestedComponent {
         lastColumn
       ]
     );
+
+    //add element info for drag'n'drop handlers
+    if (this.allowReorder) {
+      rowElement.dragInfo = {
+        index: index
+      };
+    }
+
+    return rowElement;
   }
 
   destroyRows() {

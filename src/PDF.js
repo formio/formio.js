@@ -14,6 +14,9 @@ export default class PDF extends Webform {
   }
 
   postMessage(message) {
+    if (!message.type) {
+      message.type = 'iframe-data';
+    }
     this.iframeReady.then(() => {
       if (this.iframe && this.iframe.contentWindow) {
         this.iframe.contentWindow.postMessage(JSON.stringify(message), '*');

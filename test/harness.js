@@ -22,11 +22,11 @@ function onNext(cmp, event, cb) {
 }
 
 const Harness = {
-  builderBefore(done) {
+  builderBefore(done, options = {}) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new WebformBuilder(formBuilderElement);
-    formBuilder.form = {components: []};
+    formBuilder = new WebformBuilder(formBuilderElement, options);
+    formBuilder.form = { components: [] };
     formBuilder.builderReady.then(done);
   },
 
@@ -188,10 +188,23 @@ const Harness = {
     assert(element, `${name} input not found`);
     assert.equal(value, element.value);
   },
+  assertStringEqual(test) {
+    return function(value) {
+      /* eslint-disable no-irregular-whitespace */
+      return value.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ') ===
+        test.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ');
+      /* eslint-enable  no-irregular-whitespace */
+    };
+  },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
-    assert.deepEqual(component.inputs[index].value, visible);
+    if (typeof visible === 'function') {
+      assert(visible(component.inputs[index].value), 'Failed');
+    }
+    else {
+      assert.deepEqual(component.inputs[index].value, visible);
+    }
     return component;
   },
   testSubmission(form, submission, onChange) {

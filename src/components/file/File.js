@@ -52,12 +52,24 @@ export default class FileComponent extends BaseComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
+
+    // Called when our files are ready.
+    this.filesReady = new Promise((resolve, reject) => {
+      this.filesReadyResolve = resolve;
+      this.filesReadyReject = reject;
+    });
+
+    this.loadingImages = [];
     this.support = {
       filereader: typeof FileReader != 'undefined',
       dnd: 'draggable' in document.createElement('span'),
       formdata: !!window.FormData,
       progress: 'upload' in new XMLHttpRequest
     };
+  }
+
+  get dataReady() {
+    return this.filesReady;
   }
 
   get defaultSchema() {
@@ -72,9 +84,36 @@ export default class FileComponent extends BaseComponent {
     return this.dataValue;
   }
 
+  loadImage(fileInfo) {
+    return this.fileService.downloadFile(fileInfo).then(result => {
+      return result.url;
+    });
+  }
+
   setValue(value) {
-    this.dataValue = value || [];
-    this.refreshDOM();
+    const newValue = value || [];
+    this.dataValue = newValue;
+    if (this.component.image) {
+      this.loadingImages = [];
+      const images = Array.isArray(newValue) ? newValue : [newValue];
+      images.map((fileInfo) => {
+        if (fileInfo && Object.keys(fileInfo).length) {
+          this.loadingImages.push(this.loadImage(fileInfo));
+        }
+      });
+      if (this.loadingImages.length) {
+        Promise.all(this.loadingImages)
+          .then(() => {
+            this.refreshDOM();
+            setTimeout(() => this.filesReadyResolve(), 100);
+          })
+          .catch(() => this.filesReadyReject());
+      }
+    }
+    else {
+      this.refreshDOM();
+      this.filesReadyResolve();
+    }
   }
 
   get defaultValue() {
@@ -156,6 +195,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
+    const value = this.dataValue;
     return this.ce('ul', { class: 'list-group list-group-striped' }, [
       this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' },
         this.ce('div', { class: 'row' },
@@ -172,7 +212,7 @@ export default class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.dataValue.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+      Array.isArray(value) ? value.map((fileInfo, index) => this.createFileListItem(fileInfo, index)) : null
     ]);
   }
 
@@ -247,8 +287,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildImageList() {
+    const value = this.dataValue;
     return this.ce('div', {},
-      this.dataValue.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+      Array.isArray(value) ? value.map((fileInfo, index) => this.createImageListItem(fileInfo, index)) : null
     );
   }
 
@@ -262,34 +303,35 @@ export default class FileComponent extends BaseComponent {
     if (this.root && this.root.formio) {
       return this.root.formio;
     }
-    return new Formio();
+    const formio = new Formio();
+    // If a form is loaded, then make sure to set the correct formUrl.
+    if (this.root && this.root._form && this.root._form._id) {
+      formio.formUrl = `${formio.projectUrl}/form/${this.root._form._id}`;
+    }
+    return formio;
   }
 
   createImageListItem(fileInfo, index) {
-    let image;
-
-    const fileService = this.fileService;
-    if (fileService) {
-      fileService.downloadFile(fileInfo)
-        .then(result => {
-          image.src = result.url;
-        });
+    const image = this.ce('img', {
+      alt: fileInfo.originalName || fileInfo.name,
+      style: `width:${this.component.imageSize}px`
+    });
+    if (this.loadingImages[index]) {
+      this.loadingImages[index].then((url) => {
+        image.src = url;
+      });
     }
     return this.ce('div', {},
       this.ce('span', {},
         [
-          image = this.ce('img', {
-            src: '',
-            alt: fileInfo.originalName || fileInfo.name,
-            style: `width:${this.component.imageSize}px`
-          }),
+          image,
           (
             !this.disabled ?
               this.ce('i', {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (fileInfo && (this.component.storage === 'url')) {
-                    fileService.makeRequest('', fileInfo.url, 'delete');
+                    this.fileService.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
                   this.splice(index);
@@ -760,8 +802,12 @@ export default class FileComponent extends BaseComponent {
                 fileInfo.fileType = this.component.fileTypes[0].value;
               }
               fileInfo.originalName = file.name;
-              this.dataValue.push(fileInfo);
-              this.refreshDOM();
+              let files = this.dataValue;
+              if (!files || !Array.isArray(files)) {
+                files = [];
+              }
+              files.push(fileInfo);
+              this.setValue(this.dataValue);
               this.triggerChange();
             })
             .catch(response => {

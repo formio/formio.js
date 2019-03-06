@@ -200,6 +200,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit('updateComponent', component);
+        this.emit('change', this.form);
       }
       return component;
     }, true);
