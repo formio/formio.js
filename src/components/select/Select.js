@@ -407,7 +407,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Add filter capability
     if (this.component.filter) {
-      url += `&${this.interpolate(this.component.filter)}`;
+      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);
     }
 
     // Make the request.
