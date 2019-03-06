@@ -315,6 +315,9 @@ export default class Sketchpad extends Base {
       height: this.component.height
     }).appendTo(this.editSketchpad);
 
+    this.editSvgElement = this.two.renderer.domElement;
+    this.addClass(this.editSvgElement, 'formio-sketchpad-svg');
+
     this.addBackground();
 
     // Disable if needed.
@@ -333,6 +336,8 @@ export default class Sketchpad extends Base {
   editSvg() {
     //open editor in modal
     this.editorModal = this.createModal();
+    this.addClass(this.editorModal, 'formio-sketchpad-edit-dialog');
+    this.addClass(this.editorModal.body, 'formio-sketchpad-edit-dialog-body');
     const toolbar = this.createToolbar();
     this.editorModal.body.appendChild(toolbar);
     this.attach();
@@ -411,56 +416,54 @@ export default class Sketchpad extends Base {
   }
 
   attach() {
-    const sketchElement = this.two.renderer.domElement;
-
     // Set up mouse events.
-    sketchElement
+    this.editSvgElement
       .addEventListener('mousedown', (e) => {
         e.preventDefault();
-        const offset = sketchElement.getBoundingClientRect();
+        const offset = this.editSvgElement.getBoundingClientRect();
         this.modes[this.state.mode].eventStart({ x: e.clientX - offset.left, y: e.clientY - offset.top });
 
         const mouseDrag = (e) => {
           e.preventDefault();
 
-          const offset = sketchElement.getBoundingClientRect();
+          const offset = this.editSvgElement.getBoundingClientRect();
           this.modes[this.state.mode].drag({ x: e.clientX - offset.left, y: e.clientY - offset.top });
         };
 
         const mouseEnd = (e) => {
           e.preventDefault();
 
-          sketchElement
+          this.editSvgElement
             .removeEventListener('mousemove', mouseDrag);
-          sketchElement
+          this.editSvgElement
             .removeEventListener('mouseup', mouseEnd);
 
-          const offset = sketchElement.getBoundingClientRect();
+          const offset = this.editSvgElement.getBoundingClientRect();
           this.modes[this.state.mode].eventEnd({ x: e.clientX - offset.left, y: e.clientY - offset.top });
         };
 
-        sketchElement
+        this.editSvgElement
           .addEventListener('mousemove', mouseDrag);
 
-        sketchElement
+        this.editSvgElement
           .addEventListener('mouseup', mouseEnd);
 
         return false;
       });
 
     // Set up touch events.
-    sketchElement
+    this.editSvgElement
       .addEventListener('touchstart', (e) => {
         e.preventDefault();
 
-        const offset = sketchElement.getBoundingClientRect();
+        const offset = this.editSvgElement.getBoundingClientRect();
         const touch = e.originalEvent.changedTouches[0];
         this.modes[this.state.mode].eventStart({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
 
         const touchDrag = (e) => {
           e.preventDefault();
 
-          const offset = sketchElement.getBoundingClientRect();
+          const offset = this.editSvgElement.getBoundingClientRect();
           const touch = e.originalEvent.changedTouches[0];
           this.modes[this.state.mode].drag({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
         };
@@ -468,20 +471,20 @@ export default class Sketchpad extends Base {
         const touchEnd = (e) => {
           e.preventDefault();
 
-          sketchElement
+          this.editSvgElement
             .removeEventListener('touchmove', touchDrag);
-          sketchElement
+          this.editSvgElement
             .removeEventListener('touchend', touchEnd);
 
-          const offset = sketchElement.getBoundingClientRect();
+          const offset = this.editSvgElement.getBoundingClientRect();
           const touch = e.originalEvent.changedTouches[0];
           this.modes[this.state.mode].eventEnd({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
         };
 
-        sketchElement
+        this.editSvgElement
           .addEventListener('touchmove', touchDrag);
 
-        sketchElement
+        this.editSvgElement
           .addEventListener('touchend', touchEnd);
 
         return false;
@@ -576,7 +579,7 @@ export default class Sketchpad extends Base {
 
   copySvgToView() {
     //clone view SVG element from editor
-    const svgElement = this.editSketchpad.firstChild.cloneNode(true);
+    const svgElement = this.editSvgElement.cloneNode(true);
     //make view SVG responsive: remove height and width attribute, add viewBox attribute
     svgElement.removeAttribute('height');
     svgElement.removeAttribute('width');
