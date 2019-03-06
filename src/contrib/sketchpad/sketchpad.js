@@ -4,6 +4,16 @@ import Picker from 'vanilla-picker';
 import _ from 'lodash';
 
 export default class Sketchpad extends Base {
+  static schema(...extend) {
+    return Base.schema({
+      type: 'sketchpad',
+      label: 'Sketchpad',
+      key: 'sketchpad',
+      width: 640,
+      height: 480
+    }, ...extend);
+  }
+
   constructor(...args) {
     super(...args);
     this.deleted = [];
@@ -16,10 +26,10 @@ export default class Sketchpad extends Base {
       circleSize: 10
     };
 
-    this.SOURCES = {
-      EDIT: 'edit',
-      VIEW: 'view'
-    };
+    _.defaults(this.component, {
+      width: 640,
+      height: 480
+    });
   }
 
   getValue() {
@@ -41,19 +51,19 @@ export default class Sketchpad extends Base {
         eventStart: (coordinate) => {
           this.points = [coordinate];
           this.prev = coordinate;
-          this.curve = this.editTwo.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
+          this.curve = this.two.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
           this.curve.noFill().stroke = this.state.stroke;
           this.curve.linewidth = this.state.linewidth;
           this.curve.vertices.forEach((v) => v.addSelf(this.curve.translation));
           this.curve.translation.clear();
-          this.editTwo.update();
+          this.two.update();
           this.layers.push(this.curve);
           this.curve._renderer.elem.addEventListener('click', (e) => this.click(e, this.layers.length));
         },
         drag: (coordinate) => {
           this.points.push(coordinate);
           this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
-          this.editTwo.update();
+          this.two.update();
           this.prev = coordinate;
         },
         eventEnd: () => {
@@ -62,8 +72,8 @@ export default class Sketchpad extends Base {
           this.editValue = value;
           this.triggerChange();
         },
-        draw: (state, source) => {
-          const layer = this.getTwo(source).makeCurve(state.points.map(point => new Two.Vector(point.x, point.y)), true);
+        draw: (state) => {
+          const layer = this.two.makeCurve(state.points.map(point => new Two.Vector(point.x, point.y)), true);
           layer.noFill().stroke = state.stroke;
           layer.linewidth = state.linewidth;
           layer.vertices.forEach((v) => v.addSelf(layer.translation));
@@ -79,11 +89,11 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          this.line = this.editTwo.makeLine(coordinate.x, coordinate.y, coordinate.x, coordinate.y);
+          this.line = this.two.makeLine(coordinate.x, coordinate.y, coordinate.x, coordinate.y);
           this.line.fill = this.state.fill;
           this.line.stroke = this.state.stroke;
           this.line.linewidth = this.state.linewidth;
-          this.editTwo.update();
+          this.two.update();
           this.layers.push(this.line);
           const index = this.layers.length - 1;
           this.line._renderer.elem.addEventListener('click', (e) => this.click(e, index));
@@ -91,7 +101,7 @@ export default class Sketchpad extends Base {
         drag: (coordinate) => {
           this.line.vertices[1].x = coordinate.x;
           this.line.vertices[1].y = coordinate.y;
-          this.editTwo.update();
+          this.two.update();
         },
         eventEnd: () => {
           const value = this.editValue.slice();
@@ -105,8 +115,8 @@ export default class Sketchpad extends Base {
           this.editValue = value;
           this.triggerChange();
         },
-        draw: (state, source) => {
-          const layer = this.getTwo(source).makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
+        draw: (state) => {
+          const layer = this.two.makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -121,11 +131,11 @@ export default class Sketchpad extends Base {
         },
         eventStart: (coordinate) => {
           this.center = coordinate;
-          const layer = this.editTwo.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
+          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
           layer.fill = this.state.fill;
           layer.stroke = this.state.stroke;
           layer.linewidth = this.state.linewidth;
-          this.editTwo.update();
+          this.two.update();
           this.layers.push(layer);
           const index = this.layers.length - 1;
           layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
@@ -139,8 +149,8 @@ export default class Sketchpad extends Base {
           this.editValue = value;
           this.triggerChange();
         },
-        draw: (state, source) => {
-          const layer = this.getTwo(source).makeCircle(state.center.x, state.center.y, state.circleSize);
+        draw: (state) => {
+          const layer = this.two.makeCircle(state.center.x, state.center.y, state.circleSize);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -179,11 +189,11 @@ export default class Sketchpad extends Base {
             x: Math.min(this.dragStartPoint.x, this.dragEndPoint.x) + this.width / 2,
             y: Math.min(this.dragStartPoint.y, this.dragEndPoint.y) + this.height / 2
           };
-          this.rectangle = this.editTwo.makeRectangle(this.center.x, this.center.y, this.width, this.height);
+          this.rectangle = this.two.makeRectangle(this.center.x, this.center.y, this.width, this.height);
           this.rectangle.fill = this.state.fill;
           this.rectangle.stroke = this.state.stroke;
           this.rectangle.linewidth = this.state.linewidth;
-          this.editTwo.update();
+          this.two.update();
           this.layers.push(this.rectangle);
           const index = this.layers.length - 1;
           this.rectangle._renderer.elem.addEventListener('click', (e) => this.click(e, index));
@@ -200,8 +210,8 @@ export default class Sketchpad extends Base {
           this.editValue = value;
           this.triggerChange();
         },
-        draw: (state, source) => {
-          const layer = this.getTwo(source).makeRectangle(state.center.x, state.center.y, state.width, state.height);
+        draw: (state) => {
+          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.width, state.height);
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -298,13 +308,14 @@ export default class Sketchpad extends Base {
     this.viewSketchpad = this.ce('div', { class: 'formio-view-sketchpad' });
     this.addEventListener(this.viewSketchpad, 'click', this.editSvg.bind(this));
     this.element.appendChild(this.viewSketchpad);
-    this.viewTwo = new Two({
+    this.editSketchpad = this.ce('div', { class: 'formio-edit-sketchpad' });
+    this.two = new Two({
       type: Two.Types.svg,
       width: this.component.width,
       height: this.component.height
-    }).appendTo(this.viewSketchpad);
-    this.addBackground(this.SOURCES.VIEW);
-    this.viewTwo.update();
+    }).appendTo(this.editSketchpad);
+
+    this.addBackground();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -323,23 +334,23 @@ export default class Sketchpad extends Base {
     //open editor in modal
     this.editorModal = this.createModal();
     const toolbar = this.createToolbar();
-    this.editSketchpad = this.ce('div', { class: 'formio-edit-sketchpad' });
     this.editorModal.body.appendChild(toolbar);
     this.attach();
     this.editorModal.body.appendChild(this.editSketchpad);
     this.saveSvgButton = this.ce('button', {
       class: 'btn btn-success'
     }, this.t('Save'));
-    this.addEventListener(this.saveSvgButton, 'click', this.saveSvg.bind(this));
+    this.addEventListener(this.saveSvgButton, 'click', () => {
+      this.saveSvg();
+      this.editorModal.close();
+    });
     this.editorModal.body.appendChild(this.saveSvgButton);
     this.editValue = _.cloneDeep(this.dataValue);
-    this.draw(this.editValue, this.SOURCES.EDIT);
   }
 
   saveSvg() {
     this.dataValue = this.editValue;
-    this.setValue(this.dataValue);
-    this.editorModal.close();
+    this.copySvgToView();
   }
 
   createToolbar() {
@@ -399,25 +410,8 @@ export default class Sketchpad extends Base {
     ]);
   }
 
-  getTwo(source) {
-    switch (source) {
-      case this.SOURCES.VIEW:
-        return this.viewTwo;
-      case this.SOURCES.EDIT:
-        return this.editTwo;
-    }
-  }
-
   attach() {
-    this.editTwo = new Two({
-      type: Two.Types.svg,
-      width: this.component.width,
-      height: this.component.height
-    }).appendTo(this.editSketchpad);
-
-    this.addBackground(this.SOURCES.EDIT);
-
-    const sketchElement = this.editTwo.renderer.domElement;
+    const sketchElement = this.two.renderer.domElement;
 
     // Set up mouse events.
     sketchElement
@@ -493,35 +487,36 @@ export default class Sketchpad extends Base {
         return false;
       });
 
-    this.editTwo.update();
+    this.two.update();
   }
 
-  addBackground(source) {
-    let svg = this.ce('svg');
-    svg.innerHTML = this.component.image;
-    const two = this.getTwo(source);
-    svg = two.interpret(svg);
-    svg.center();
-    svg.translation.set(two.width / (2 * window.devicePixelRatio), two.height / (2 * window.devicePixelRatio));
+  addBackground() {
+    if (this.component.image) {
+      let svg = this.ce('svg');
+      svg.innerHTML = this.component.image;
+      svg = this.two.interpret(svg);
+      svg.center();
+      svg.translation.set(this.two.width / 2, this.two.height / 2);
+    }
   }
 
-  clear(source) {
-    this.getTwo(source).clear();
-    this.addBackground(source);
+  clear() {
+    this.two.clear();
+    this.addBackground();
   }
 
   clearAll() {
     this.layers = [];
     this.editValue = [];
-    this.clear(this.SOURCES.EDIT);
-    this.editTwo.update();
+    this.clear();
+    this.two.update();
   }
 
-  draw(value, source) {
-    const layers = value.map(item => this.modes[item.mode].draw(item, source));
-    this.getTwo(source).update();
-    if (source === this.SOURCES.EDIT && layers.length) {
-      this.layers = layers;
+  draw(value) {
+    const layers = value.map(item => this.modes[item.mode].draw(item));
+    this.two.update();
+    this.layers = layers;
+    if (layers.length) {
       layers.forEach((layer, index) => {
         layer._renderer.elem.addEventListener('click', (e) => this.click(e, index));
       });
@@ -540,8 +535,8 @@ export default class Sketchpad extends Base {
     this.deleted.push(value.pop());
     this.editValue = value;
     this.triggerChange();
-    this.clear(this.SOURCES.EDIT);
-    this.draw(value, this.SOURCES.EDIT);
+    this.clear();
+    this.draw(value);
   }
 
   redo() {
@@ -552,8 +547,8 @@ export default class Sketchpad extends Base {
     value.push(this.deleted.pop());
     this.editValue = value;
     this.triggerChange();
-    this.clear(this.SOURCES.EDIT);
-    this.draw(value, this.SOURCES.EDIT);
+    this.clear();
+    this.draw(value);
   }
 
   setState(state) {
@@ -571,10 +566,22 @@ export default class Sketchpad extends Base {
   }
 
   setValue(value) {
-    if (!this.viewTwo) {
+    if (!this.two) {
       return;
     }
-    this.clear(this.SOURCES.VIEW);
-    this.draw(value, this.SOURCES.VIEW);
+    this.clear();
+    this.draw(value);
+    this.copySvgToView();
+  }
+
+  copySvgToView() {
+    //clone view SVG element from editor
+    const svgElement = this.editSketchpad.firstChild.cloneNode(true);
+    //make view SVG responsive: remove height and width attribute, add viewBox attribute
+    svgElement.removeAttribute('height');
+    svgElement.removeAttribute('width');
+    svgElement.setAttribute('viewBox', `0 0 ${this.component.width} ${this.component.height}`);
+    this.viewSketchpad.innerHTML = '';
+    this.viewSketchpad.appendChild(svgElement);
   }
 }
