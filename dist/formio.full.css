@@ -2724,7 +2724,7 @@ td > .form-group {
 
 .formio-dialog-close:before {
   font-family: 'Helvetica', Arial, sans-serif;
-  content: '×';
+  content: '\D7';
   cursor: pointer; }
 
 html.formio-dialog-open,
@@ -2812,7 +2812,7 @@ body.formio-dialog-open {
   padding: 3px;
   background: transparent;
   color: #bbb;
-  content: '×';
+  content: '\D7';
   font-size: 26px;
   font-weight: 400;
   line-height: 26px;
@@ -3123,6 +3123,31 @@ body.formio-dialog-open {
   -moz-border-radius: 3px;
   border-radius: 3px;
   margin-right: 3px; }
+
+.formio-sketchpad-toolbar {
+  color: #000000;
+  display: inline-block;
+  margin-left: 0;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+  border-top: 1px solid #999;
+  border-radius: 3px 3px 0 0; }
+
+.formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
+  width: 90%;
+  text-align: center; }
+
+.formio-edit-sketchpad {
+  overflow: auto;
+  margin-bottom: 10px; }
+
+.formio-sketchpad-svg {
+  border: 1px dashed #999; }
+
+.formio-sketchpad-edit-dialog-body {
+  display: inline-block;
+  text-align: left;
+  max-width: 100%; }
 
 .formbuilder {
   position: relative; }
