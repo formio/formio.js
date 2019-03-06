@@ -1,0 +1,41 @@
+<label class="control-label" style="">{{t(component.label)}}</label>
+<ul class="editgrid-listgroup list-group 
+    {{ component.striped ? 'table-striped' : ''}}
+    {{ component.bordered ? 'table-bordered' : ''}}
+    {{ component.hover ? 'table-hover' : ''}}
+    {{ component.condensed ? 'table-condensed' : ''}} 
+    ">
+  {% if (header) { %}
+  <li class="list-group-item list-group-header">
+    {{header}}
+  </li>
+  {% } %}
+  {% rows.forEach(function(row, rowIndex) { %}
+  <li class="list-group-item" ref="{{editgridKey}}">
+    {{row}}
+    {% if (openRows[rowIndex] && !readOnly) { %}
+    <div class="editgrid-actions">
+      <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
+      {% if (component.removeRow) { %}
+      <button class="btn btn-danger" ref="{{editgridKey}}-cancelRow">{{t(component.removeRow || 'Cancel')}}</button>
+      {% } %}
+    </div>
+    {% } %}
+    <div class="has-error">
+      <div class="editgrid-row-error help-block">
+        {{errors[rowIndex]}}
+      </div>
+    </div>
+  </li>
+  {% }) %}
+  {% if (footer) { %}
+  <li class="list-group-item list-group-footer">
+    {{footer}}
+  </li>
+  {% } %}
+</ul>
+{% if (!readOnly) { %}
+<button class="btn btn-primary formio-button-add-another" ref="{{editgridKey}}-addRow">
+  <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
+</button>
+{% } %}

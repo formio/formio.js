@@ -1,11 +1,13 @@
 /* globals OktaAuth */
-import 'whatwg-fetch';
+import Promise from 'native-promise-only';
+import fetchPonyfill from 'fetch-ponyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import providers from './providers';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
+const { fetch, Headers } = fetchPonyfill({ Promise });
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -60,7 +62,7 @@ export default class Formio {
     if (!path) {
       // Allow user to create new projects if this was instantiated without
       // a url
-      this.projectUrl = `${this.base}/project`;
+      this.projectUrl = Formio.projectUrl || `${this.base}/project`;
       this.projectsUrl = `${this.base}/project`;
       this.projectId = false;
       this.query = '';
@@ -725,7 +727,7 @@ export default class Formio {
     }
 
     const requestToken = options.headers.get('x-jwt-token');
-    const result = fetch(url, options)
+    const result = Formio.fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
@@ -1118,6 +1120,34 @@ export default class Formio {
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
   }
 
+  static pageQuery() {
+    if (Formio._pageQuery) {
+      return Formio._pageQuery;
+    }
+
+    Formio._pageQuery = {};
+    Formio._pageQuery.paths = [];
+    const hashes = location.hash.substr(1).replace(/\?/g, '&').split('&');
+    let parts = [];
+    location.search.substr(1).split('&').forEach(function(item) {
+      parts = item.split('=');
+      if (parts.length > 1) {
+        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+      }
+    });
+
+    hashes.forEach(function(item) {
+      parts = item.split('=');
+      if (parts.length > 1) {
+        Formio._pageQuery[parts[0]] = parts[1] && decodeURIComponent(parts[1]);
+      }
+      else if (item.indexOf('/') === 0) {
+        Formio._pageQuery.paths = item.substr(1).split('/');
+      }
+    });
+    return Formio._pageQuery;
+  }
+
   static oAuthCurrentUser(formio, token) {
     return Formio.currentUser(formio, {
       external: true,
@@ -1125,6 +1155,33 @@ export default class Formio {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  static samlInit(options) {
+    options = options || {};
+    const query = Formio.pageQuery();
+    if (query.saml) {
+      Formio.setUser(null);
+      const retVal = Formio.setToken(query.saml);
+      let uri = window.location.toString();
+      uri = uri.substring(0, uri.indexOf('?'));
+      window.history.replaceState({}, document.title, uri);
+      return retVal;
+    }
+
+    // Only continue if we are not authenticated.
+    if (Formio.getToken()) {
+      return false;
+    }
+
+    // Set the relay if not provided.
+    if (!options.relay) {
+      options.relay = window.location.href;
+    }
+
+    // go to the saml sso endpoint for this project.
+    window.location.href = `${Formio.projectUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    return false;
   }
 
   static oktaInit(options) {
@@ -1169,6 +1226,8 @@ export default class Formio {
 
   static ssoInit(type, options) {
     switch (type) {
+      case 'saml':
+        return Formio.samlInit(options);
       case 'okta':
         return Formio.oktaInit(options);
       default:
@@ -1264,12 +1323,8 @@ export default class Formio {
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = Promise;
-if (typeof Headers !== 'undefined') {
-  Formio.Headers = Headers;
-}
-else {
-  Formio.Headers = {};
-}
+Formio.fetch = fetch;
+Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

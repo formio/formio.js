@@ -29,12 +29,14 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -103,7 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -302,21 +305,10 @@ export default class ButtonComponent extends Field {
     return false;
   }
 
-  set dataValue(value) {
-    if (!this.component.input) {
-      return;
-    }
-    super.dataValue = value;
-  }
-
   get className() {
     let className = super.className;
     className += &apos; form-group&apos;;
     return className;
-  }
-
-  buttonMessage(message) {
-    return this.ce(&apos;span&apos;, { class: &apos;help-block&apos; }, this.text(message));
   }
 
   render() {
@@ -330,7 +322,11 @@ export default class ButtonComponent extends Field {
   }
 
   attach(element) {
-    this.loadRefs(element, { button: &apos;single&apos; });
+    this.loadRefs(element, {
+      button: &apos;single&apos;,
+      buttonMessageContainer: &apos;single&apos;,
+      buttonMessage: &apos;single&apos;
+    });
     super.attach(element);
     if (!this.refs.button) {
       return;
@@ -339,7 +335,6 @@ export default class ButtonComponent extends Field {
     let onChange = null;
     let onError = null;
     if (this.component.action === &apos;submit&apos;) {
-      const message = this.ce(&apos;div&apos;);
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;
@@ -348,34 +343,29 @@ export default class ButtonComponent extends Field {
       this.on(&apos;submitDone&apos;, () =&gt; {
         this.loading = false;
         this.disabled = false;
-        this.empty(message);
         this.addClass(this.refs.button, &apos;btn-success submit-success&apos;);
         this.removeClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
-        this.addClass(message, &apos;has-success&apos;);
-        this.removeClass(message, &apos;has-error&apos;);
-        message.appendChild(this.buttonMessage(&apos;complete&apos;));
-        this.append(message);
+        this.addClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
+        this.removeClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
+        this.refs.buttonMessage.innerHTML = this.t(&apos;complete&apos;);
       });
       onChange = (value, isValid) =&gt; {
         this.removeClass(this.refs.button, &apos;btn-success submit-success&apos;);
         this.removeClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
         if (isValid &amp;&amp; this.hasError) {
           this.hasError = false;
-          this.empty(message);
-          this.removeChild(message);
-          this.removeClass(message, &apos;has-success&apos;);
-          this.removeClass(message, &apos;has-error&apos;);
+          this.refs.buttonMessage.innerHTML = &apos;&apos;;
+          this.removeClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
+          this.removeClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
         }
       };
       onError = () =&gt; {
         this.hasError = true;
         this.removeClass(this.refs.button, &apos;btn-success submit-success&apos;);
         this.addClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
-        this.empty(message);
-        this.removeClass(message, &apos;has-success&apos;);
-        this.addClass(message, &apos;has-error&apos;);
-        message.appendChild(this.buttonMessage(this.errorMessage(&apos;error&apos;)));
-        this.append(message);
+        this.removeClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
+        this.addClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
+        this.refs.buttonMessage.innerHTML = this.t(this.errorMessage(&apos;error&apos;));
       };
     }
 

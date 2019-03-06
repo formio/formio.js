@@ -1,5 +1,5 @@
 import Input from '../_classes/input/Input';
-import Choices from 'choices.js';
+import Choices from 'choices.js/public/assets/scripts/choices.js';
 import _ from 'lodash';
 
 export default class TagsComponent extends Input {
@@ -62,7 +62,7 @@ export default class TagsComponent extends Input {
       removeItemButton: true,
       duplicateItems: false,
     });
-    this.choices.itemList.tabIndex = element.tabIndex;
+    this.choices.itemList.element.tabIndex = element.tabIndex;
   }
 
   detach() {

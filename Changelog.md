@@ -4,7 +4,69 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.16.1
+### Changed
+ - Upgraded choices.js@6.0.3, @babel/core@7.3.4, @babel/preset-env@7.3.4, fetch-mock@7.3.1, karma@4.0.1, mocha@6.0.2, sinon@7.2.5, webpack@4.29.6
+ - Now using a fetch ponyfill instead of the pervious whatwg-fetch polyfill for isomorphic behavior and encapsulation.
+
+### Fixed
+ - Issue with importing library with node.js and it would throw an error of "self" not defined.
+
+## 3.16.0
+### Changed
+ - Improved validation for EditGrid with inline edit.
+ - Upgraded flatpickr@4.5.4, mocha@6.0.1, marked@0.6.1
+ - Upgraded choices.js library to 6.x branch.
+ - Upgraded whatwg-fetch to latest version.
+ 
+### Fixed
+ - Fixed the gulp watch routine.
+ - Issue with validations not running on tabs other than the current tab being shown.
+
+## 3.15.6
+### Fixed
+ - Problems with the private images not showing up when printing to PDF.
+
+## 3.15.5
+### Fixed
+ - Problem where the renderer would crash within the evaluate method.
+
+## 3.15.4
+### Fixed
+ - Issue with the valueProperty field configurations not saving for Select components.
+
+### Added
+ - The ability to configure the fuseOptions for the Select components.
+ 
+### Changed
+ - Upgraded sinon@7.2.4, webpack@4.29.5, @babel/core@7.3.3, eslint@5.14.1
+
+## 3.15.3
+### Fixed
+ - Make the samlInit method return the setToken promise to know when the user is done loading.
+
+## 3.15.2
+### Fixed
+ - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio
+
+## 3.15.1
+### Changed
+ - The icon for reordering to the more standard bars icon.
+
+## 3.15.0
+### Fixed
+ - FOR-2075: Excess triggerChange calls for setting submission of Webform
+ - Made the Formio.cache values immutable.
+ - Issues with Number tests with locales.
+
+### Added
+ - FOR-1782: Ability to reorder rows for Data Grid, Edit Grid and Multiple Values components
+ - SAML authentication support
+ 
+### Changed
+ - Upgrade i18next@15.0.4, bootstrap@4.3.1, bootswatch@4.3.1
+
+## 3.14.1
 ### Added
  - Continuous scrolling to Select component.
  - Limit and sort for Select component.

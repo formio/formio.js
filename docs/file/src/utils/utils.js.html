@@ -29,12 +29,14 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -103,7 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -214,7 +217,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global $ */
 
 import _ from &apos;lodash&apos;;
-import &apos;whatwg-fetch&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
 import moment from &apos;moment-timezone/moment-timezone&apos;;
 import jtz from &apos;jstimezonedetect&apos;;
@@ -222,6 +225,7 @@ import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import { getValue } from &apos;./formUtils&apos;;
 import stringHash from &apos;string-hash&apos;;
+const { fetch } = fetchPonyfill({ Promise });
 
 export * from &apos;./formUtils&apos;;
 
@@ -259,6 +263,7 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, &apos;root._form&apos;, {});
   }
   args.form = _.cloneDeep(args.form);
+  const componentKey = args.component.key;
   if (typeof func === &apos;string&apos;) {
     if (ret) {
       func += `;return ${ret}`;
@@ -285,7 +290,7 @@ export function evaluate(func, args, ret, tokenize) {
       args = _.values(args);
     }
     catch (err) {
-      console.warn(`An error occured within the custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within the custom function for ${componentKey}`, err);
       returnVal = null;
       func = false;
     }
@@ -296,7 +301,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (typeof func === &apos;object&apos;) {
@@ -305,11 +310,11 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${args.component.key}`, err);
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
     }
   }
   else if (func) {
-    console.warn(`Unknown function type for ${args.component.key}`);
+    console.warn(`Unknown function type for ${componentKey}`);
   }
   return returnVal;
 }
@@ -581,13 +586,15 @@ export function interpolate(rawTemplate, data) {
   const template = _.isNumber(rawTemplate)
     ? templateHashCache[rawTemplate]
     : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
-
-  try {
-    return template(data);
+  if (typeof template === &apos;function&apos;) {
+    try {
+      return template(data);
+    }
+    catch (err) {
+      console.warn(&apos;Error interpolating template&apos;, err, rawTemplate, data);
+    }
   }
-  catch (err) {
-    console.warn(&apos;Error interpolating template&apos;, err, rawTemplate, data);
-  }
+  return template;
 }
 
 /**

@@ -785,27 +785,38 @@ export default class Component extends Element {
     this.removeEventListeners();
   }
 
+  attachRefreshEvent(refreshData) {
+    this.on('change', (event) => {
+      const changeKey = _.get(event, 'changed.component.key', false);
+      // Don't let components change themselves.
+      if (changeKey && this.key === changeKey) {
+        return;
+      }
+      if (refreshData === 'data') {
+        this.refresh(this.data);
+      }
+      else if (
+        (changeKey && changeKey === refreshData) && event.changed && event.changed.instance &&
+        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+        // in fields inside EditGrids could alter their state from other rows (which is bad).
+        this.inContext(event.changed.instance)
+      ) {
+        this.refresh(event.changed.value);
+      }
+    });
+  }
+
   attachRefreshOn() {
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        const changeKey = _.get(event, 'changed.component.key', false);
-        // Don't let components change themselves.
-        if (changeKey && this.key === changeKey) {
-          return;
-        }
-        if (this.component.refreshOn === 'data') {
-          this.refresh(this.data);
-        }
-        else if (
-          (changeKey && changeKey === this.component.refreshOn) && event.changed && event.changed.instance &&
-          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-          // in fields inside EditGrids could alter their state from other rows (which is bad).
-          this.inContext(event.changed.instance)
-        ) {
-          this.refresh(event.changed.value);
-        }
-      });
+      if (Array.isArray(this.component.refreshOn)) {
+        this.component.refreshOn.forEach(refreshData => {
+          this.attachRefreshEvent(refreshData);
+        });
+      }
+      else {
+        this.attachRefreshEvent(this.component.refreshOn);
+      }
     }
   }
 
