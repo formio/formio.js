@@ -566,7 +566,7 @@ export default class Sketchpad extends Base {
       svg.innerHTML = this.component.image;
       svg = this.two.interpret(svg);
       svg.center();
-      svg.translation.set(this.two.width / 2, this.two.height / 2);
+      svg.translation.set(this.component.width / 2, this.component.height / 2);
     }
   }
 
