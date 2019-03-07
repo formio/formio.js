@@ -355,6 +355,8 @@ export default class Sketchpad extends Base {
 
     this.addBackground();
 
+    this.attach();
+
     // Disable if needed.
     if (this.shouldDisable) {
       this.disabled = true;
@@ -378,7 +380,6 @@ export default class Sketchpad extends Base {
     this.addClass(this.editorModal.body, 'formio-sketchpad-edit-dialog-body');
     const toolbar = this.createToolbar();
     this.editorModal.body.appendChild(toolbar);
-    this.attach();
     this.editorModal.body.appendChild(this.editSketchpad);
     this.saveSvgButton = this.ce('button', {
       class: 'btn btn-success'
@@ -389,6 +390,12 @@ export default class Sketchpad extends Base {
     });
     this.editorModal.body.appendChild(this.saveSvgButton);
     this.editValue = _.cloneDeep(this.dataValue);
+    this.draw(this.editValue);
+    const initialDialogClose = this.editorModal.close;
+    this.editorModal.close = () => {
+      this.resetZoom();
+      initialDialogClose();
+    };
   }
 
   saveSvg() {
@@ -583,6 +590,7 @@ export default class Sketchpad extends Base {
   }
 
   draw(value) {
+    this.clear();
     const layers = value.map(item => this.modes[item.mode].draw(item));
     this.two.update();
     this.layers = layers;
@@ -605,7 +613,6 @@ export default class Sketchpad extends Base {
     this.deleted.push(value.pop());
     this.editValue = value;
     this.triggerChange();
-    this.clear();
     this.draw(value);
   }
 
@@ -617,7 +624,6 @@ export default class Sketchpad extends Base {
     value.push(this.deleted.pop());
     this.editValue = value;
     this.triggerChange();
-    this.clear();
     this.draw(value);
   }
 
@@ -639,7 +645,6 @@ export default class Sketchpad extends Base {
     if (!this.two) {
       return;
     }
-    this.clear();
     this.draw(value);
     this.copySvgToView();
   }
