@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Edit forms for Base, Nested and Url components. 
+
 ## 3.16.3
 ### Fixed
  - Issue where custom Headers within Select component were not getting included anymore.
