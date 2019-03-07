@@ -3128,10 +3128,9 @@ body.formio-dialog-open {
   color: #000000;
   display: inline-block;
   margin-left: 0;
-  border-left: 1px solid #999;
-  border-right: 1px solid #999;
-  border-top: 1px solid #999;
-  border-radius: 3px 3px 0 0; }
+  border: 1px solid #999;
+  border-radius: 3px;
+  margin-bottom: -1px; }
 
 .formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
   width: 90%;
