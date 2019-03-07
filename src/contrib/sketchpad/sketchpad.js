@@ -16,6 +16,10 @@ export default class Sketchpad extends Base {
 
   constructor(...args) {
     super(...args);
+    _.defaults(this.component, {
+      width: 640,
+      height: 480
+    });
     this.deleted = [];
 
     this.state = {
@@ -26,10 +30,16 @@ export default class Sketchpad extends Base {
       circleSize: 10
     };
 
-    _.defaults(this.component, {
-      width: 640,
-      height: 480
-    });
+    this.zoomInfo = {
+      viewBox: {
+        width: this.component.width,
+        height: this.component.height,
+        minX: 0,
+        minY: 0
+      },
+      multiplier: 1.5,
+      totalMultiplier: 1
+    };
   }
 
   getValue() {
@@ -217,6 +227,26 @@ export default class Sketchpad extends Base {
           layer.linewidth = state.linewidth;
           return layer;
         },
+      },
+      zoomIn: {
+        icon: 'search-plus',
+        title: 'Zoom In',
+        state: {
+          mode: 'zoomIn'
+        },
+        eventStart: (coordinate) => {
+          this.zoom(coordinate, this.zoomInfo.multiplier);
+        }
+      },
+      zoomOut: {
+        icon: 'search-minus',
+        title: 'Zoom Out',
+        state: {
+          mode: 'zoomOut'
+        },
+        eventStart: (coordinate) => {
+          this.zoom(coordinate, 1 / this.zoomInfo.multiplier);
+        }
       }
     };
   }
@@ -285,6 +315,11 @@ export default class Sketchpad extends Base {
         icon: 'repeat',
         action: 'redo',
         title: 'Redo'
+      },
+      {
+        icon: 'search',
+        action: 'resetZoom',
+        title: 'Reset Zoom'
       },
       {
         icon: 'ban',
@@ -424,13 +459,22 @@ export default class Sketchpad extends Base {
       .addEventListener('mousedown', (e) => {
         e.preventDefault();
         const offset = this.editSvgElement.getBoundingClientRect();
-        this.modes[this.state.mode].eventStart({ x: e.clientX - offset.left, y: e.clientY - offset.top });
+        if (this.modes[this.state.mode].eventStart) {
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
+            x: e.clientX - offset.left,
+            y: e.clientY - offset.top
+          }));
+        }
 
         const mouseDrag = (e) => {
           e.preventDefault();
-
           const offset = this.editSvgElement.getBoundingClientRect();
-          this.modes[this.state.mode].drag({ x: e.clientX - offset.left, y: e.clientY - offset.top });
+          if (this.modes[this.state.mode].drag) {
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
+              x: e.clientX - offset.left,
+              y: e.clientY - offset.top
+            }));
+          }
         };
 
         const mouseEnd = (e) => {
@@ -442,7 +486,12 @@ export default class Sketchpad extends Base {
             .removeEventListener('mouseup', mouseEnd);
 
           const offset = this.editSvgElement.getBoundingClientRect();
-          this.modes[this.state.mode].eventEnd({ x: e.clientX - offset.left, y: e.clientY - offset.top });
+          if (this.modes[this.state.mode].eventEnd) {
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
+              x: e.clientX - offset.left,
+              y: e.clientY - offset.top
+            }));
+          }
         };
 
         this.editSvgElement
@@ -461,14 +510,24 @@ export default class Sketchpad extends Base {
 
         const offset = this.editSvgElement.getBoundingClientRect();
         const touch = e.originalEvent.changedTouches[0];
-        this.modes[this.state.mode].eventStart({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
+        if (this.modes[this.state.mode].eventStart) {
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
+            x: touch.pageX - offset.left,
+            y: touch.pageY - offset.top
+          }));
+        }
 
         const touchDrag = (e) => {
           e.preventDefault();
 
           const offset = this.editSvgElement.getBoundingClientRect();
           const touch = e.originalEvent.changedTouches[0];
-          this.modes[this.state.mode].drag({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
+          if (this.modes[this.state.mode].drag) {
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
+              x: touch.pageX - offset.left,
+              y: touch.pageY - offset.top
+            }));
+          }
         };
 
         const touchEnd = (e) => {
@@ -481,7 +540,12 @@ export default class Sketchpad extends Base {
 
           const offset = this.editSvgElement.getBoundingClientRect();
           const touch = e.originalEvent.changedTouches[0];
-          this.modes[this.state.mode].eventEnd({ x: touch.pageX - offset.left, y: touch.pageY - offset.top });
+          if (this.modes[this.state.mode].eventEnd) {
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
+              x: touch.pageX - offset.left,
+              y: touch.pageY - offset.top
+            }));
+          }
         };
 
         this.editSvgElement
@@ -589,5 +653,54 @@ export default class Sketchpad extends Base {
     svgElement.setAttribute('viewBox', `0 0 ${this.component.width} ${this.component.height}`);
     this.viewSketchpad.innerHTML = '';
     this.viewSketchpad.appendChild(svgElement);
+  }
+
+  zoom(coordinate, multiplier) {
+    this.zoomInfo.totalMultiplier *= multiplier;
+    this.zoomInfo.viewBox.width = Math.round(this.component.width / this.zoomInfo.totalMultiplier);
+    this.zoomInfo.viewBox.height = Math.round(this.component.height / this.zoomInfo.totalMultiplier);
+    if (this.zoomInfo.viewBox.width > this.component.width && this.zoomInfo.viewBox.height > this.component.height) {
+      //if should get less than initial size, change editor size instead of viewBox size
+      this.two.width = this.component.width * this.zoomInfo.totalMultiplier;
+      this.two.height = this.component.height * this.zoomInfo.totalMultiplier;
+      this.two.update();
+      this.zoomInfo.viewBox.minX = 0;
+      this.zoomInfo.viewBox.minY = 0;
+      //reset viewBox value
+      this.editSvgElement.setAttribute('viewBox', `0 0 ${this.component.width} ${this.component.height}`);
+    }
+    else {
+      //if should get more than initial size, change viewBox size
+      //restore editor size if needed
+      if (this.two.width !== this.component.width || this.two.height !== this.component.height) {
+        this.two.width = this.component.width;
+        this.two.height = this.component.height;
+        this.two.update();
+      }
+      //calculate SVG offset so that coordinate would be center of zoomed image
+      this.zoomInfo.viewBox.minX = coordinate.x - this.zoomInfo.viewBox.width / 2;
+      this.zoomInfo.viewBox.minY = coordinate.y - this.zoomInfo.viewBox.height / 2;
+      //don't let zoom go out of SVG on the left and on the top
+      this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX < 0 ? 0 : this.zoomInfo.viewBox.minX;
+      this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY < 0 ? 0 : this.zoomInfo.viewBox.minY;
+      //don't let zoom go out of SVG on the right and on the bottom
+      const maxOffsetX = this.component.width - this.zoomInfo.viewBox.width,
+        maxOffsetY = this.component.height - this.zoomInfo.viewBox.height;
+      this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX > (maxOffsetX) ? maxOffsetX : this.zoomInfo.viewBox.minX;
+      this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY > (maxOffsetY) ? maxOffsetY : this.zoomInfo.viewBox.minY;
+      //set viewBox so that SVG gets zoomed
+      this.editSvgElement.setAttribute('viewBox', `${this.zoomInfo.viewBox.minX} ${this.zoomInfo.viewBox.minY} ${this.zoomInfo.viewBox.width} ${this.zoomInfo.viewBox.height}`);
+    }
+  }
+
+  resetZoom() {
+    this.zoom({ x: 0, y: 0 }, 1 / this.zoomInfo.totalMultiplier);
+  }
+
+  getActualCoordinate(coordinate) {
+    //recalculate coordinate taking into account current zoom
+    coordinate.x = (coordinate.x / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.minX;
+    coordinate.y = (coordinate.y / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.minY;
+    return coordinate;
   }
 }
