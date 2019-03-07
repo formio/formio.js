@@ -334,6 +334,9 @@ export default class Sketchpad extends Base {
   }
 
   editSvg() {
+    if (this.options.readOnly) {
+      return;
+    }
     //open editor in modal
     this.editorModal = this.createModal();
     this.addClass(this.editorModal, 'formio-sketchpad-edit-dialog');
