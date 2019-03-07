@@ -44,8 +44,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.type = this.component.wysiwyg && !this.component.editor ?
-      'div' : 'textarea';
+    info.type = this.component.wysiwyg ? 'div' : 'textarea';
     if (this.component.hasOwnProperty('spellcheck')) {
       info.attr.rows = this.component.rows;
     }
