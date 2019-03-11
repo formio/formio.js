@@ -44,7 +44,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.type = 'textarea';
+    info.type = this.component.wysiwyg ? 'div' : 'textarea';
     if (this.component.hasOwnProperty('spellcheck')) {
       info.attr.rows = this.component.rows;
     }
@@ -165,7 +165,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       case 'quill':
         Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
           { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
-         ], true);
+        ], true);
 
         this.editorReady = Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
           .then((Editor) => {
@@ -191,7 +191,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
             /** END CODEBLOCK **/
 
-              // Allows users to skip toolbar items when tabbing though form
+            // Allows users to skip toolbar items when tabbing though form
             const elm = document.querySelectorAll('.ql-formats > button');
             for (let i = 0; i < elm.length; i++) {
               elm[i].setAttribute('tabindex', '-1');
@@ -262,16 +262,16 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor.enable(true);
             const Delta = Quill.import('delta');
             this.editor.updateContents(new Delta()
-                .retain(range.index)
-                .delete(range.length)
-                .insert({ image: result.url })
+              .retain(range.index)
+              .delete(range.length)
+              .insert({ image: result.url })
               , Quill.sources.USER);
             fileInput.value = '';
           }).catch(error => {
-          console.warn('Quill image upload failed');
-          console.warn(error);
-          this.editor.enable(true);
-        });
+            console.warn('Quill image upload failed');
+            console.warn(error);
+            this.editor.enable(true);
+          });
       });
       this.container.appendChild(fileInput);
     }
