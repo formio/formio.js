@@ -168,7 +168,7 @@ export default class Input extends Multivalue {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
       // Delay update slightly to give input mask a chance to run.
       setTimeout(() => {
-        return this.updateValue(null, element.value, index);
+        return this.updateValue(null, null, index);
       }, 1);
     });
 
