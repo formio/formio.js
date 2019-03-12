@@ -386,15 +386,17 @@ export default class Sketchpad extends Base {
     }, this.t('Save'));
     this.addEventListener(this.saveSvgButton, 'click', () => {
       this.saveSvg();
-      this.editorModal.close();
+      this.editorModal.close(true);
     });
     this.editorModal.body.appendChild(this.saveSvgButton);
     this.editValue = _.cloneDeep(this.dataValue);
     this.draw(this.editValue);
     const initialDialogClose = this.editorModal.close;
-    this.editorModal.close = () => {
-      this.resetZoom();
-      initialDialogClose();
+    this.editorModal.close = (ignoreWarning) => {
+      if (ignoreWarning || confirm('Are you sure you want to close? Your unsaved progress will be lost')) {
+        this.resetZoom();
+        initialDialogClose();
+      }
     };
   }
 
