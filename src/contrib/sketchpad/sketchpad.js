@@ -181,6 +181,9 @@ export default class Sketchpad extends Base {
       },
       rectangle: {
         icon: 'square-o',
+        cursor: {
+          hover: 'crosshair'
+        },
         title: 'Rectangle',
         state: {
           mode: 'rectangle'
@@ -230,6 +233,9 @@ export default class Sketchpad extends Base {
       },
       zoomIn: {
         icon: 'search-plus',
+        cursor: {
+          hover: 'zoom-in'
+        },
         title: 'Zoom In',
         state: {
           mode: 'zoomIn'
@@ -240,6 +246,9 @@ export default class Sketchpad extends Base {
       },
       zoomOut: {
         icon: 'search-minus',
+        cursor: {
+          hover: 'zoom-out'
+        },
         title: 'Zoom Out',
         state: {
           mode: 'zoomOut'
