@@ -634,7 +634,6 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = {
-      ...customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
@@ -656,7 +655,8 @@ export default class SelectComponent extends Field {
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
       }, _.get(this, 'component.fuseOptions', {})),
-      itemComparer: _.isEqual
+      itemComparer: _.isEqual,
+      ...customOptions,
     };
 
     const tabIndex = input.tabIndex;

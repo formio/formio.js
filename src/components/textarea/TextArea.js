@@ -132,7 +132,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.wysiwyg && !this.component.editor) {
-      this.component.editor = 'quill';
+      this.component.editor = 'ckeditor';
     }
 
     const settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
@@ -176,19 +176,19 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
 
             /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-            const txtArea = document.createElement('textarea');
-            txtArea.setAttribute('class', 'quill-source-code');
-            this.editor.addContainer('ql-custom').appendChild(txtArea);
-            const qlSource = element.parentNode.querySelector('.ql-source');
-            if (qlSource) {
-              this.addEventListener(qlSource, 'click', (event) => {
-                event.preventDefault();
-                if (txtArea.style.display === 'inherit') {
-                  this.editor.setContents(this.editor.clipboard.convert(txtArea.value));
-                }
-                txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-              });
-            }
+            // const txtArea = document.createElement('textarea');
+            // txtArea.setAttribute('class', 'quill-source-code');
+            // this.editor.addContainer('ql-custom').appendChild(txtArea);
+            // const qlSource = element.parentNode.querySelector('.ql-source');
+            // if (qlSource) {
+            //   this.addEventListener(qlSource, 'click', (event) => {
+            //     event.preventDefault();
+            //     if (txtArea.style.display === 'inherit') {
+            //       this.editor.setContents(this.editor.clipboard.convert(txtArea.value));
+            //     }
+            //     txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+            //   });
+            // }
             /** END CODEBLOCK **/
 
             // Allows users to skip toolbar items when tabbing though form
@@ -393,7 +393,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         value = JSON.parse(value);
       }
       catch (err) {
-        console.warn(err);
+        // console.warn(err);
       }
     }
     return value;

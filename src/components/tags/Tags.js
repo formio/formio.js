@@ -60,7 +60,7 @@ export default class TagsComponent extends Input {
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
-      duplicateItems: false,
+      duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
   }

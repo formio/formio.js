@@ -98,7 +98,8 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form' && !self.key) {
-        return html;
+        // The main webform shouldn't have this class as it adds extra styles.
+        return html.replace('formio-component-form', '');
       }
 
       if (this.options.disabled && this.options.disabled.includes(self.key)) {
@@ -538,7 +539,8 @@ export default class WebformBuilder extends Component {
         'placeholder',
         'tooltip',
         'validate',
-        'disabled'
+        'disabled',
+        'calculatedValue'
       ]));
     }
 
@@ -596,7 +598,13 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
+    this.preview = new Webform(_.omit(this.options, [
+      'hooks',
+      'builder',
+      'events',
+      'attachMode',
+      'calculatedValue'
+    ]));
 
     this.componentEdit = this.ce('div');
     this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
