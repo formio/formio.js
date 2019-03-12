@@ -251,6 +251,10 @@ export default class Sketchpad extends Base {
       drag: {
         icon: 'hand-paper-o',
         title: 'Drag Zoomed Image',
+        cursor: {
+          hover: 'grab',
+          clicked: 'grabbing'
+        },
         state: {
           mode: 'drag'
         },
@@ -491,6 +495,12 @@ export default class Sketchpad extends Base {
       .addEventListener('mousedown', (e) => {
         e.preventDefault();
         const offset = this.editSvgElement.getBoundingClientRect();
+        //change cursor
+        let cursor = 'default';
+        if (this.modes[this.state.mode].cursor) {
+          cursor = this.modes[this.state.mode].cursor.clicked || this.modes[this.state.mode].cursor.hover;
+        }
+        this.editSvgElement.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
           this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: e.clientX - offset.left,
@@ -516,7 +526,12 @@ export default class Sketchpad extends Base {
             .removeEventListener('mousemove', mouseDrag);
           this.editSvgElement
             .removeEventListener('mouseup', mouseEnd);
-
+          //change cursor
+          let cursor = 'default';
+          if (this.modes[this.state.mode].cursor) {
+            cursor = this.modes[this.state.mode].cursor.hover || cursor;
+          }
+          this.editSvgElement.style.cursor = cursor;
           const offset = this.editSvgElement.getBoundingClientRect();
           if (this.modes[this.state.mode].eventEnd) {
             this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
@@ -542,6 +557,12 @@ export default class Sketchpad extends Base {
 
         const offset = this.editSvgElement.getBoundingClientRect();
         const touch = e.originalEvent.changedTouches[0];
+        //change cursor
+        let cursor = 'default';
+        if (this.modes[this.state.mode].cursor) {
+          cursor = this.modes[this.state.mode].cursor.clicked || this.modes[this.state.mode].cursor.hover;
+        }
+        this.editSvgElement.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
           this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: touch.pageX - offset.left,
@@ -572,6 +593,12 @@ export default class Sketchpad extends Base {
 
           const offset = this.editSvgElement.getBoundingClientRect();
           const touch = e.originalEvent.changedTouches[0];
+          //change cursor
+          let cursor = 'default';
+          if (this.modes[this.state.mode].cursor) {
+            cursor = this.modes[this.state.mode].cursor.hover || cursor;
+          }
+          this.editSvgElement.style.cursor = cursor;
           if (this.modes[this.state.mode].eventEnd) {
             this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
               x: touch.pageX - offset.left,
@@ -655,6 +682,8 @@ export default class Sketchpad extends Base {
   setState(state) {
     Object.assign(this.state, state);
     this.setActiveButton(this.state.mode);
+    //change cursor
+    this.editSvgElement.style.cursor = _.get(this.modes[this.state.mode], 'cursor.hover', 'default');
   }
 
   setActiveButton(mode) {
