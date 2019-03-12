@@ -13,6 +13,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       rows: 3,
       wysiwyg: false,
       editor: '',
+      inputFormat: 'html',
       validate: {
         minWords: '',
         maxWords: ''
@@ -125,9 +126,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Normalize the configurations.
     if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
       console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-      this.component.wysiwyg = this.wysiwygDefault;
-    }
-    if (!this.component.wysiwyg || (typeof this.component.wysiwyg === 'boolean')) {
       this.component.wysiwyg = this.wysiwygDefault;
     }
 

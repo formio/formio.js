@@ -29,9 +29,9 @@ export default [
     data: {
       values: [
         { label: 'None', value: '' },
-        { label: 'Quill', value: 'quill' },
         { label: 'CKEditor', value: 'ckeditor' },
-        { label: 'ACE', value: 'ace' }
+        { label: 'ACE', value: 'ace' },
+        { label: 'Quill', value: 'quill' },
       ]
     },
     weight: 415
@@ -51,12 +51,6 @@ export default [
               'quill'
             ]
           },
-          {
-            '==': [
-              { var: 'data.editor' },
-              ''
-            ]
-          }
         ]
       }
     }

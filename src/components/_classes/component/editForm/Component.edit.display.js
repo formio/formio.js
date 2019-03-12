@@ -32,58 +32,8 @@ export default [
     data: {
       values: [
         { label: 'Top', value: 'top' },
-        { label: 'Left (Left-aligned)', value: 'left-left' },
-        { label: 'Left (Right-aligned)', value: 'left-right' },
-        { label: 'Right (Left-aligned)', value: 'right-left' },
-        { label: 'Right (Right-aligned)', value: 'right-right' },
         { label: 'Bottom', value: 'bottom' }
       ]
-    }
-  },
-  {
-    type: 'number',
-    input: true,
-    key: 'labelWidth',
-    label: 'Label Width',
-    tooltip: 'The width of label on line in percentages.',
-    clearOnHide: false,
-    weight: 30,
-    placeholder: '30',
-    suffix: '%',
-    validate: {
-      min: 0,
-      max: 100
-    },
-    conditional: {
-      json: {
-        and: [
-          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
-          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
-    }
-  },
-  {
-    type: 'number',
-    input: true,
-    key: 'labelMargin',
-    label: 'Label Margin',
-    tooltip: 'The width of label margin on line in percentages.',
-    clearOnHide: false,
-    weight: 30,
-    placeholder: '3',
-    suffix: '%',
-    validate: {
-      min: 0,
-      max: 100
-    },
-    conditional: {
-      json: {
-        and: [
-          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
-          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
     }
   },
   {
@@ -141,44 +91,6 @@ export default [
     tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\\\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\\\'>MDN documentation</a> on tabindex for more information.'
   },
   {
-    weight: 700,
-    type: 'radio',
-    label: 'Persistent',
-    tooltip: 'A persistent field will be stored in database when the form is submitted.',
-    key: 'persistent',
-    input: true,
-    inline: true,
-    values: [
-      { label: 'None', value: false },
-      { label: 'Server', value: true },
-      { label: 'Client', value: 'client-only' },
-    ]
-  },
-  {
-    weight: 800,
-    type: 'checkbox',
-    label: 'Multiple Values',
-    tooltip: 'Allows multiple values to be entered for this field.',
-    key: 'multiple',
-    input: true
-  },
-  {
-    weight: 900,
-    type: 'checkbox',
-    label: 'Clear Value When Hidden',
-    key: 'clearOnHide',
-    tooltip: 'When a field is hidden, clear the value.',
-    input: true
-  },
-  {
-    weight: 1000,
-    type: 'checkbox',
-    label: 'Protected',
-    tooltip: 'A protected field will not be returned when queried via API.',
-    key: 'protected',
-    input: true
-  },
-  {
     weight: 1100,
     type: 'checkbox',
     label: 'Hidden',
@@ -195,7 +107,15 @@ export default [
     input: true
   },
   {
-    weight: 1310,
+    weight: 1350,
+    type: 'checkbox',
+    label: 'Initial Focus',
+    tooltip: 'Make this field the initially focused element on this form.',
+    key: 'autofocus',
+    input: true
+  },
+  {
+    weight: 1370,
     type: 'checkbox',
     label: 'Show Label in DataGrid',
     tooltip: 'Show the label when in a Datagrid.',
@@ -214,9 +134,9 @@ export default [
   {
     weight: 1450,
     type: 'checkbox',
-    label: 'Initial Focus',
-    tooltip: 'Make this field the initially focused element on this form.',
-    key: 'autofocus',
+    label: 'Always enabled',
+    tooltip: 'Make this field always enabled, even if the form is disabled',
+    key: 'alwaysEnabled',
     input: true
   },
   {
@@ -228,12 +148,56 @@ export default [
     input: true
   },
   {
-    weight: 1550,
-    type: 'checkbox',
-    label: 'Always enabled',
-    tooltip: 'Make this field always enabled, even if the form is disabled',
-    key: 'alwaysEnabled',
-    input: true
+    type: 'panel',
+    legend: 'PDF Overlay',
+    title: 'PDF Overlay',
+    key: 'overlay',
+    weight: 2000,
+    collapsible: true,
+    collapsed: true,
+    components: [
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.style',
+        label: 'Style',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.left',
+        label: 'Left',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.top',
+        label: 'Top',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.width',
+        label: 'Width',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.height',
+        label: 'Height',
+        placeholder: '',
+        tooltip: ''
+      },
+
+    ]
   }
 ];
 /* eslint-enable max-len */

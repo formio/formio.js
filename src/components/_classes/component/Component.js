@@ -92,15 +92,13 @@ export default class Component extends Element {
       /**
        * If this component should be included as a column within a submission table.
        */
-      tableView: true,
+      tableView: false,
 
       /**
        * The input label provided to this component.
        */
       label: '',
       labelPosition: 'top',
-      labelWidth: 30,
-      labelMargin: 3,
       description: '',
       errorLabel: '',
       tooltip: '',

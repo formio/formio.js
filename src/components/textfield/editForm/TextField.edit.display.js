@@ -2,20 +2,22 @@ import Widgets from '../../../widgets';
 import _ from 'lodash';
 export default [
   {
-    weight: 50,
+    weight: 400,
     type: 'select',
     input: true,
     key: 'widget.type',
     label: 'Widget',
     placeholder: 'Select a widget',
     tooltip: 'The widget is the display UI used to input the value of the field.',
+    defaultValue: 'input',
     onChange: (context) => {
       context.data.widget = _.pick(context.data.widget, 'type');
     },
     dataSrc: 'values',
     data: {
       values: [
-        { label: 'Calendar', value: 'calendar' }
+        { label: 'Input Field', value: 'input' },
+        { label: 'Calendar Picker', value: 'calendar' },
       ]
     },
     conditional: {
@@ -85,14 +87,14 @@ export default [
     ]
   },
   {
-    weight: 420,
+    weight: 320,
     type: 'textfield',
     input: true,
     key: 'prefix',
     label: 'Prefix'
   },
   {
-    weight: 430,
+    weight: 330,
     type: 'textfield',
     input: true,
     key: 'suffix',

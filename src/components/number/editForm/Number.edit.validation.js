@@ -4,6 +4,18 @@ export default [
     ignore: true
   },
   {
+    key: 'validate.minLength',
+    ignore: true
+  },
+  {
+    key: 'validate.maxLength',
+    ignore: true
+  },
+  {
+    key: 'validate.pattern',
+    ignore: true
+  },
+  {
     type: 'number',
     label: 'Minimum Value',
     key: 'validate.min',

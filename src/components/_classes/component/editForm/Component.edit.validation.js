@@ -2,7 +2,7 @@ import EditFormUtils from './utils';
 /* eslint-disable quotes, max-len */
 export default [
   {
-    weight: 0,
+    weight: 10,
     type: 'checkbox',
     label: 'Required',
     tooltip: 'A required field must be filled in before the form can be submitted.',
@@ -18,7 +18,7 @@ export default [
     input: true
   },
   {
-    weight: 150,
+    weight: 0,
     type: 'select',
     key: 'validateOn',
     defaultValue: 'change',

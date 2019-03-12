@@ -1,10 +1,10 @@
-import baseEditForm from '../_classes/component/Component.form';
+import textEditForm from '../textfield/TextField.form';
 
 import NumberEditData from './editForm/Number.edit.data';
 import NumberEditValidation from './editForm/Number.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return textEditForm([
     {
       key: 'data',
       components: NumberEditData

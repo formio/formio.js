@@ -28,6 +28,7 @@ export default class SelectComponent extends Field {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      tableView: true,
       fuseOptions: {
         include: 'score',
         threshold: 0.3,
