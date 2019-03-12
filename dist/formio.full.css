@@ -3137,8 +3137,7 @@ body.formio-dialog-open {
   text-align: center; }
 
 .formio-edit-sketchpad {
-  overflow: auto;
-  margin-bottom: 10px; }
+  overflow: auto; }
 
 .formio-sketchpad-svg {
   border: 1px dashed #999; }
@@ -3147,6 +3146,12 @@ body.formio-dialog-open {
   display: inline-block;
   text-align: left;
   max-width: 100%; }
+
+.formio-sketchpad-meta-info {
+  text-align: right; }
+
+.formio-sketchpad-save-button {
+  margin-bottom: 10px; }
 
 .formbuilder {
   position: relative; }
