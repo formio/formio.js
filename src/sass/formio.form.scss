@@ -920,7 +920,6 @@ body.formio-dialog-open {
 
 .formio-edit-sketchpad {
   overflow: auto;
-  margin-bottom: 10px;
 }
 
 .formio-sketchpad-svg {
@@ -931,4 +930,12 @@ body.formio-dialog-open {
   display: inline-block;
   text-align: left;
   max-width: 100%;
+}
+
+.formio-sketchpad-meta-info {
+  text-align: right;
+}
+
+.formio-sketchpad-save-button {
+  margin-bottom: 10px;
 }

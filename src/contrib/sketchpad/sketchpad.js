@@ -415,10 +415,25 @@ export default class Sketchpad extends Base {
     this.addClass(this.editorModal, 'formio-sketchpad-edit-dialog');
     this.addClass(this.editorModal.body, 'formio-sketchpad-edit-dialog-body');
     const toolbar = this.createToolbar();
+    const metaInfoContainer = this.ce('div',
+      {
+        class: 'formio-sketchpad-meta-info'
+      },
+      this.ce('span',
+        {},
+        [
+          this.totalMultiplierElement = this.ce('span', {},
+            this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100
+          ),
+          this.t('x')
+        ]
+      )
+    );
     this.editorModal.body.appendChild(toolbar);
     this.editorModal.body.appendChild(this.editSketchpad);
+    this.editorModal.body.appendChild(metaInfoContainer);
     this.saveSvgButton = this.ce('button', {
-      class: 'btn btn-success'
+      class: 'btn btn-success formio-sketchpad-save-button'
     }, this.t('Save'));
     this.addEventListener(this.saveSvgButton, 'click', () => {
       this.saveSvg();
@@ -724,7 +739,7 @@ export default class Sketchpad extends Base {
   }
 
   zoom(coordinate, multiplier) {
-    this.zoomInfo.totalMultiplier *= multiplier;
+    this.setTotalMultiplier(this.zoomInfo.totalMultiplier * multiplier);
     this.zoomInfo.viewBox.width = Math.round(this.component.width / this.zoomInfo.totalMultiplier);
     this.zoomInfo.viewBox.height = Math.round(this.component.height / this.zoomInfo.totalMultiplier);
     if (this.zoomInfo.viewBox.width > this.component.width && this.zoomInfo.viewBox.height > this.component.height) {
@@ -786,5 +801,10 @@ export default class Sketchpad extends Base {
   updateSvgViewBox() {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
     this.editSvgElement.setAttribute('viewBox', `${this.zoomInfo.viewBox.minX} ${this.zoomInfo.viewBox.minY} ${this.zoomInfo.viewBox.width} ${this.zoomInfo.viewBox.height}`);
+  }
+
+  setTotalMultiplier(multiplier) {
+    this.zoomInfo.totalMultiplier = multiplier;
+    this.totalMultiplierElement.innerHTML = this.t(Math.round(multiplier * 100) / 100);
   }
 }
