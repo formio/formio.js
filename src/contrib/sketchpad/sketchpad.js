@@ -247,6 +247,29 @@ export default class Sketchpad extends Base {
         eventStart: (coordinate) => {
           this.zoom(coordinate, 1 / this.zoomInfo.multiplier);
         }
+      },
+      drag: {
+        icon: 'hand-paper-o',
+        title: 'Drag Zoomed Image',
+        state: {
+          mode: 'drag'
+        },
+        eventStart: (coordinate) => {
+          this.dragStartPoint = coordinate;
+        },
+        drag: (coordinate) => {
+          if (!this.dragLastPoint) {
+            this.dragLastPoint = this.dragStartPoint;
+          }
+          const offset = {
+            x: Math.round(coordinate.x - this.dragStartPoint.x),
+            y: Math.round(coordinate.y - this.dragStartPoint.y)
+          };
+          if (offset.x !== 0 || offset.y !== 0) {
+            this.dragImage(offset);
+            this.dragLastPoint = coordinate;
+          }
+        }
       }
     };
   }
@@ -687,16 +710,8 @@ export default class Sketchpad extends Base {
       //calculate SVG offset so that coordinate would be center of zoomed image
       this.zoomInfo.viewBox.minX = coordinate.x - this.zoomInfo.viewBox.width / 2;
       this.zoomInfo.viewBox.minY = coordinate.y - this.zoomInfo.viewBox.height / 2;
-      //don't let zoom go out of SVG on the left and on the top
-      this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX < 0 ? 0 : this.zoomInfo.viewBox.minX;
-      this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY < 0 ? 0 : this.zoomInfo.viewBox.minY;
-      //don't let zoom go out of SVG on the right and on the bottom
-      const maxOffsetX = this.component.width - this.zoomInfo.viewBox.width,
-        maxOffsetY = this.component.height - this.zoomInfo.viewBox.height;
-      this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX > (maxOffsetX) ? maxOffsetX : this.zoomInfo.viewBox.minX;
-      this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY > (maxOffsetY) ? maxOffsetY : this.zoomInfo.viewBox.minY;
-      //set viewBox so that SVG gets zoomed
-      this.editSvgElement.setAttribute('viewBox', `${this.zoomInfo.viewBox.minX} ${this.zoomInfo.viewBox.minY} ${this.zoomInfo.viewBox.width} ${this.zoomInfo.viewBox.height}`);
+      this.normalizeSvgOffset();
+      this.updateSvgViewBox();
     }
   }
 
@@ -709,5 +724,29 @@ export default class Sketchpad extends Base {
     coordinate.x = (coordinate.x / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.minX;
     coordinate.y = (coordinate.y / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.minY;
     return coordinate;
+  }
+
+  dragImage(offset) {
+    //calculate new offsets for SVG
+    this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX - offset.x;
+    this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY - offset.y;
+    this.normalizeSvgOffset();
+    this.updateSvgViewBox();
+  }
+
+  normalizeSvgOffset() {
+    //don't let offset go out of SVG on the left and on the top
+    this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX < 0 ? 0 : this.zoomInfo.viewBox.minX;
+    this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY < 0 ? 0 : this.zoomInfo.viewBox.minY;
+    //don't let offset go out of SVG on the right and on the bottom
+    const maxOffsetX = this.component.width - this.zoomInfo.viewBox.width,
+      maxOffsetY = this.component.height - this.zoomInfo.viewBox.height;
+    this.zoomInfo.viewBox.minX = this.zoomInfo.viewBox.minX > (maxOffsetX) ? maxOffsetX : this.zoomInfo.viewBox.minX;
+    this.zoomInfo.viewBox.minY = this.zoomInfo.viewBox.minY > (maxOffsetY) ? maxOffsetY : this.zoomInfo.viewBox.minY;
+  }
+
+  updateSvgViewBox() {
+    //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
+    this.editSvgElement.setAttribute('viewBox', `${this.zoomInfo.viewBox.minX} ${this.zoomInfo.viewBox.minY} ${this.zoomInfo.viewBox.width} ${this.zoomInfo.viewBox.height}`);
   }
 }
