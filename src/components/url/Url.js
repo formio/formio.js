@@ -16,7 +16,7 @@ export default class UrlComponent extends TextFieldComponent {
       group: 'common',
       icon: 'link',
       documentation: 'http://help.form.io/userguide/#url',
-      weight: 30,
+      weight: 20,
       schema: UrlComponent.schema()
     };
   }

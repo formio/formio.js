@@ -1,5 +1,13 @@
 export default [
   {
+    key: 'inputMask',
+    ignore: true
+  },
+  {
+    key: 'allowMultipleMasks',
+    ignore: true
+  },
+  {
     type: 'textfield',
     input: true,
     weight: 310,

@@ -35,7 +35,7 @@ export default class CalendarWidget extends InputWidget {
       dateFormat: ISO_8601_FORMAT,
       useLocaleSettings: false,
       language: 'us-en',
-      defaultDate: null,
+      defaultValue: null,
       hourIncrement: 1,
       minuteIncrement: 5,
       time_24hr: false,
@@ -97,7 +97,7 @@ export default class CalendarWidget extends InputWidget {
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
-    this.settings.defaultDate = getDateSetting(this.settings.defaultDate);
+    this.settings.defaultValue = getDateSetting(this.settings.defaultValue);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
@@ -197,16 +197,8 @@ export default class CalendarWidget extends InputWidget {
     return _.get(this.settings, 'format', DEFAULT_FORMAT);
   }
 
-  /**
-   * Get the default date for the calendar.
-   * @return {*}
-   */
-  get defaultDate() {
-    return getDateSetting(this.settings.defaultDate);
-  }
-
   get defaultValue() {
-    const defaultDate = this.defaultDate;
+    const defaultDate = getDateSetting(this.settings.defaultValue);
     return defaultDate ? defaultDate.toISOString() : '';
   }
 
