@@ -25,7 +25,7 @@ export default class NumberComponent extends Input {
       icon: 'hashtag',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#number',
-      weight: 10,
+      weight: 30,
       schema: NumberComponent.schema()
     };
   }

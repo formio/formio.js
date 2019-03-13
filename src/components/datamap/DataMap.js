@@ -35,7 +35,7 @@ export default class DataMapComponent extends DataGridComponent {
       icon: 'th-list',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datamap',
-      weight: 25,
+      weight: 20,
       schema: DataMapComponent.schema()
     };
   }

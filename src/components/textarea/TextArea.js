@@ -27,7 +27,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       group: 'basic',
       icon: 'font',
       documentation: 'http://help.form.io/userguide/#textarea',
-      weight: 40,
+      weight: 20,
       schema: TextAreaComponent.schema()
     };
   }
@@ -277,7 +277,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get isPlain() {
-    return (!this.component.wysiwyg || !this.component.editor);
+    return (!this.component.wysiwyg && !this.component.editor);
   }
 
   get htmlView() {
@@ -391,7 +391,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         value = JSON.parse(value);
       }
       catch (err) {
-        // console.warn(err);
+        console.warn(err);
       }
     }
     return value;

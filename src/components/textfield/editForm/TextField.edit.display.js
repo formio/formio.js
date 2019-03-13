@@ -99,5 +99,13 @@ export default [
     input: true,
     key: 'suffix',
     label: 'Suffix'
-  }
+  },
+  {
+    weight: 1300,
+    type: 'checkbox',
+    label: 'Hide Input',
+    tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
+    key: 'mask',
+    input: true
+  },
 ];

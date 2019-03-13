@@ -19,6 +19,7 @@ export default class SelectComponent extends Field {
       limit: 100,
       dataSrc: 'values',
       valueProperty: '',
+      lazyLoad: true,
       filter: '',
       searchEnabled: true,
       searchField: '',

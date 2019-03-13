@@ -13,14 +13,6 @@ export default [
     }
   },
   {
-    weight: 10,
-    type: 'checkbox',
-    label: 'Hide Label',
-    tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
-    key: 'hideLabel',
-    input: true
-  },
-  {
     type: 'select',
     input: true,
     key: 'labelPosition',
@@ -99,11 +91,11 @@ export default [
     input: true
   },
   {
-    weight: 1300,
+    weight: 1200,
     type: 'checkbox',
-    label: 'Hide Input',
-    tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
-    key: 'mask',
+    label: 'Hide Label',
+    tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
+    key: 'hideLabel',
     input: true
   },
   {

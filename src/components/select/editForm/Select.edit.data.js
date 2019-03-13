@@ -48,12 +48,17 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    label: 'Lazy Load URL',
+    label: 'Lazy Load Data',
     key: 'lazyLoad',
     tooltip: 'When set, this will not fire off the request to the URL until this control is within focus. This can improve performance if you have many Select dropdowns on your form where the API\'s will only fire when the control is activated.',
     weight: 11,
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+        ]
+      }
     }
   },
   {
@@ -344,47 +349,6 @@ export default [
     tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.'
   },
   {
-    type: 'checkbox',
-    input: true,
-    weight: 21,
-    key: 'reference',
-    label: 'Save as reference',
-    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
-    conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-    }
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 21,
-    key: 'authenticate',
-    label: 'Formio Authenticate',
-    tooltip: 'Check this if you would like to use Formio Authentication with the request.',
-    conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
-  },
-  {
-    type: 'checkbox',
-    input: true,
-    weight: 22,
-    key: 'readOnlyValue',
-    label: 'Read Only Value',
-    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
-  },
-  {
-    type: 'textarea',
-    as: 'json',
-    editor: 'ace',
-    weight: 23,
-    input: true,
-    key: 'customOptions',
-    label: 'Custom default options',
-    tooltip: 'A raw JSON object to use as default options for the Select component (Choices JS).',
-	defaultValue: {}
-  },
-  {
     label: 'Search Threshold',
     mask: false,
     tableView: true,
@@ -402,7 +366,95 @@ export default [
     requireDecimal: false,
     encrypted: false,
     defaultValue: 0.3,
-    weight: 30,
+    weight: 21,
     tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.'
-  }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 22,
+    key: 'reference',
+    label: 'Save as reference',
+    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 23,
+    key: 'authenticate',
+    label: 'Formio Authenticate',
+    tooltip: 'Check this if you would like to use Formio Authentication with the request.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 24,
+    key: 'readOnlyValue',
+    label: 'Read Only Value',
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 25,
+    input: true,
+    key: 'customOptions',
+    label: 'Choices.js options',
+    tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
+    defaultValue: {}
+  },
+  {
+    type: 'select',
+    input: true,
+    key: 'refreshOn',
+    label: 'Refresh Options On',
+    weight: 19,
+    tooltip: 'Refresh data when another field changes.',
+    dataSrc: 'custom',
+    valueProperty: 'value',
+    data: {
+      custom: `
+        values.push({label: 'Any Change', value: 'data'});
+        utils.eachComponent(instance.root.editForm.components, function(component, path) {
+          if (component.key !== data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+      `
+    },
+    conditional: {
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+        ]
+      }
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 20,
+    key: 'clearOnRefresh',
+    label: 'Clear Value On Refresh Options',
+    tooltip: 'When the Refresh On field is changed, clear this components value.',
+    conditional: {
+      json: {
+        or: [
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+        ]
+      }
+    }
+  },
 ];

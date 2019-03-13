@@ -7,6 +7,14 @@ export default function(...extend) {
     {
       key: 'display',
       components: ButtonEditDisplay
-    }
+    },
+    {
+      key: 'data',
+      ignore: true,
+    },
+    {
+      key: 'validation',
+      ignore: true,
+    },
   ], ...extend);
 }

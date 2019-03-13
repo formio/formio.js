@@ -20,7 +20,7 @@ export default class EditTableComponent extends DataGridComponent {
       title: 'Edit Table',
       icon: 'th',
       group: 'data',
-      weight: 20,
+      weight: 50,
       schema: EditTableComponent.schema()
     };
   }

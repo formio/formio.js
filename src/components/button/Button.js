@@ -16,7 +16,7 @@ export default class ButtonComponent extends Field {
       action: 'submit',
       persistent: false,
       disableOnInvalid: false,
-      theme: 'default',
+      theme: 'primary',
       dataGridLabel: true
     }, ...extend);
   }

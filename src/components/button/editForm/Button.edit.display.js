@@ -2,6 +2,18 @@ import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
+    key: 'labelPosition',
+    ignore: true
+  },
+  {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
+  {
     type: 'select',
     key: 'action',
     label: 'Action',
@@ -12,7 +24,7 @@ export default [
     data: {
       values: [
         { label: 'Submit', value: 'submit' },
-        { label: 'Save State', value: 'saveState' },
+        { label: 'Save in state', value: 'saveState' },
         { label: 'Event', value: 'event' },
         { label: 'Custom', value: 'custom' },
         { label: 'Reset', value: 'reset' },
@@ -23,13 +35,14 @@ export default [
   },
   {
     type: 'textfield',
-    label: 'Save State',
+    label: 'Save in state',
     key: 'state',
     weight: 112,
     tooltip: 'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
+    placeholder: 'submitted',
     input: true,
     conditional: {
-      json: { '!==': [{ var: 'data.action' }, 'saveState'] }
+      json: { '===': [{ var: 'data.action' }, 'saveState'] }
     }
   },
   {
@@ -118,8 +131,8 @@ export default [
     weight: 140,
     data: {
       values: [
-        { label: 'Default', value: 'default' },
         { label: 'Primary', value: 'primary' },
+        { label: 'Secondary', value: 'secondary' },
         { label: 'Info', value: 'info' },
         { label: 'Success', value: 'success' },
         { label: 'Danger', value: 'danger' },
@@ -179,9 +192,9 @@ export default [
   {
     type: 'checkbox',
     key: 'block',
-    label: 'Block',
+    label: 'Block Button',
     input: true,
-    weight: 610,
+    weight: 155,
     tooltip: 'This control should span the full width of the bounding container.'
   },
   {
