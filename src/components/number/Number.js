@@ -102,7 +102,7 @@ export default class NumberComponent extends Input {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.attr.type = 'text';
+    info.attr.type = this.component.mask ? 'password' : 'text';
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';
     return info;
