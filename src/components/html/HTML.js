@@ -16,9 +16,9 @@ export default class HTMLComponent extends Component {
   static get builderInfo() {
     return {
       title: 'HTML Element',
-      group: 'advanced',
+      group: 'layout',
       icon: 'code',
-      weight: 90,
+      weight: 0,
       documentation: 'http://help.form.io/userguide/#html-element-component',
       schema: HTMLComponent.schema()
     };

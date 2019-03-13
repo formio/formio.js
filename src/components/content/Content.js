@@ -14,10 +14,10 @@ export default class ContentComponent extends Component {
   static get builderInfo() {
     return {
       title: 'Content',
-      group: 'basic',
+      group: 'layout',
       icon: 'html5',
       documentation: 'http://help.form.io/userguide/#content-component',
-      weight: 100,
+      weight: 5,
       schema: ContentComponent.schema()
     };
   }

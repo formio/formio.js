@@ -32,7 +32,7 @@ export default class DayComponent extends Field {
   static get builderInfo() {
     return {
       title: 'Day',
-      group: 'advanced',
+      group: 'common',
       icon: 'calendar',
       documentation: 'http://help.form.io/userguide/#day',
       weight: 50,

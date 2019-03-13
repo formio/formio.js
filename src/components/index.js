@@ -36,7 +36,6 @@ import RadioComponent from './radio/Radio';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SurveyComponent from './survey/Survey';
 import WellComponent from './well/Well';
-import LocationComponent from './location/Location';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
 import TreeComponent from './tree/Tree';
@@ -84,7 +83,6 @@ export default {
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,
   well: WellComponent,
-  location: LocationComponent,
   file: FileComponent,
   tree: TreeComponent,
   unknown: UnknownComponent,

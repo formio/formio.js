@@ -20,7 +20,7 @@ export default class AddressComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Address Field',
-      group: 'advanced',
+      group: 'common',
       icon: 'home',
       documentation: 'http://help.form.io/userguide/#address',
       weight: 30,

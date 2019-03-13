@@ -40,8 +40,8 @@ export default class DateTimeComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Date / Time',
-      group: 'advanced',
-      icon: 'fa fa-calendar-plus-o',
+      group: 'common',
+      icon: 'calendar',
       documentation: 'http://help.form.io/userguide/#datetime',
       weight: 40,
       schema: DateTimeComponent.schema()

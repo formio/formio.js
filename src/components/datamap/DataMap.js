@@ -32,7 +32,7 @@ export default class DataMapComponent extends DataGridComponent {
   static get builderInfo() {
     return {
       title: 'Data Map',
-      icon: 'fa fa-th-list',
+      icon: 'th-list',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datamap',
       weight: 25,

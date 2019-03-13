@@ -1,4 +1,4 @@
-import baseEditForm from '../_classes/component/Component.form';
+import baseEditForm from '../../components/_classes/component/Component.form';
 
 import LocationEditMap from './editForm/Location.edit.map';
 

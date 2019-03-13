@@ -162,7 +162,7 @@ export default class TreeComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Tree',
-      icon: 'fa fa-indent',
+      icon: 'indent',
       group: 'data',
       weight: 30,
       schema: TreeComponent.schema(),

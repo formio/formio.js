@@ -103,5 +103,13 @@ export default [
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
     '<p><h4>Example:</h4><pre>{"sum": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
   ),
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 1200,
+    key: 'allowCalculateOverride',
+    label: 'Allow Manual Override of Calculated Value',
+    tooltip: 'When checked, this will allow the user to manually override the calculated value.'
+  },
 ];
 /* eslint-enable max-len */

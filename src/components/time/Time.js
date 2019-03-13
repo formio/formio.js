@@ -26,9 +26,9 @@ export default class TimeComponent extends TextFieldComponent {
     return {
       title: 'Time',
       icon: 'clock-o',
-      group: 'basic',
+      group: 'common',
       documentation: 'http://help.form.io/userguide/#time',
-      weight: 60,
+      weight: 55,
       schema: TimeComponent.schema()
     };
   }

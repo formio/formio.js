@@ -14,7 +14,7 @@ export default class ModalEditComponent extends TextAreaComponent {
   static get builderInfo() {
     return {
       title: 'Modal Edit',
-      group: 'advanced',
+      group: 'layout',
       icon: 'font',
       weight: 50,
       schema: ModalEditComponent.schema()
