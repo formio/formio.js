@@ -617,7 +617,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Add filter capability
     if (this.component.filter) {
-      url += `&amp;${this.interpolate(this.component.filter)}`;
+      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + this.interpolate(this.component.filter);
     }
 
     // Make the request.
@@ -824,7 +824,6 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const choicesOptions = {
-      ...customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, &apos;removeItemButton&apos;, true),
       itemSelectText: &apos;&apos;,
       classNames: {
@@ -846,7 +845,8 @@ export default class SelectComponent extends BaseComponent {
         include: &apos;score&apos;,
         threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
       }, _.get(this, &apos;component.fuseOptions&apos;, {})),
-      itemComparer: _.isEqual
+      itemComparer: _.isEqual,
+      ...customOptions,
     };
 
     const tabIndex = input.tabIndex;

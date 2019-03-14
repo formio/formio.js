@@ -2707,13 +2707,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -4129,13 +4129,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4465,13 +4465,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -4813,13 +4813,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5155,13 +5155,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
-    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
     "member"
   ],
@@ -8617,13 +8617,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -8958,9 +8958,21 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/panel/panel.js~panelcomponent#addcomponents",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-addComponents",
+    "src/components/panel/Panel.js~PanelComponent#addComponents",
+    "method"
+  ],
+  [
     "src/components/panel/panel.js~panelcomponent#build",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-build",
     "src/components/panel/Panel.js~PanelComponent#build",
+    "method"
+  ],
+  [
+    "src/components/panel/panel.js~panelcomponent#checkvalidity",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-checkValidity",
+    "src/components/panel/Panel.js~PanelComponent#checkValidity",
     "method"
   ],
   [
@@ -9006,6 +9018,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/panel/panel.js~panelcomponent#lazyloaded",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-lazyLoaded",
+    "src/components/panel/Panel.js~PanelComponent#lazyLoaded",
+    "member"
+  ],
+  [
     "src/components/panel/panel.js~panelcomponent#panelbody",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-member-panelBody",
     "src/components/panel/Panel.js~PanelComponent#panelBody",
@@ -9021,6 +9039,12 @@ window.esdocSearchIndex = [
     "src/components/panel/panel.js~panelcomponent#setcollapsed",
     "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-setCollapsed",
     "src/components/panel/Panel.js~PanelComponent#setCollapsed",
+    "method"
+  ],
+  [
+    "src/components/panel/panel.js~panelcomponent#togglecollapse",
+    "class/src/components/panel/Panel.js~PanelComponent.html#instance-method-toggleCollapse",
+    "src/components/panel/Panel.js~PanelComponent#toggleCollapse",
     "method"
   ],
   [
@@ -9745,13 +9769,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-scrollLoading",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-scrollLoading",
     "src/components/select/Select.js~SelectComponent#scrollLoading",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-scrollLoading",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-scrollLoading",
     "src/components/select/Select.js~SelectComponent#scrollLoading",
     "member"
   ],

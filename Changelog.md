@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.16.4
 ### Fixed
  - Edit forms for Base, Nested and Url components. 
+ - Allow custom select options to override any defined options.
+
+### Added
+ - The ability to configure a collapsed panel as a "lazyLoad" panel for performance improvements of long forms.
+
+### Changed
+ - Upgrade flatpickr@4.5.7, i18next@15.0.7, dialog-polyfill@0.5.0
 
 ## 3.16.3
 ### Fixed
