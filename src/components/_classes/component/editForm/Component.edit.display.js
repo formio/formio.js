@@ -56,15 +56,6 @@ export default [
     tooltip: 'Adds a tooltip to the side of this field.'
   },
   {
-    weight: 400,
-    type: 'textfield',
-    input: true,
-    key: 'errorLabel',
-    label: 'Error Label',
-    placeholder: 'Error Label',
-    tooltip: 'The label for this field when an error occurs.'
-  },
-  {
     weight: 500,
     type: 'textfield',
     input: true,
@@ -139,57 +130,5 @@ export default [
     key: 'tableView',
     input: true
   },
-  {
-    type: 'panel',
-    legend: 'PDF Overlay',
-    title: 'PDF Overlay',
-    key: 'overlay',
-    weight: 2000,
-    collapsible: true,
-    collapsed: true,
-    components: [
-      {
-        type: 'textfield',
-        input: true,
-        key: 'overlay.style',
-        label: 'Style',
-        placeholder: '',
-        tooltip: ''
-      },
-      {
-        type: 'textfield',
-        input: true,
-        key: 'overlay.left',
-        label: 'Left',
-        placeholder: '',
-        tooltip: ''
-      },
-      {
-        type: 'textfield',
-        input: true,
-        key: 'overlay.top',
-        label: 'Top',
-        placeholder: '',
-        tooltip: ''
-      },
-      {
-        type: 'textfield',
-        input: true,
-        key: 'overlay.width',
-        label: 'Width',
-        placeholder: '',
-        tooltip: ''
-      },
-      {
-        type: 'textfield',
-        input: true,
-        key: 'overlay.height',
-        label: 'Height',
-        placeholder: '',
-        tooltip: ''
-      },
-
-    ]
-  }
 ];
 /* eslint-enable max-len */

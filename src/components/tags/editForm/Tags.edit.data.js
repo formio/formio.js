@@ -1,6 +1,6 @@
 export default [
   {
-    weight: 410,
+    weight: 20,
     type: 'textfield',
     input: true,
     key: 'delimeter',
@@ -8,7 +8,7 @@ export default [
     tooltip: 'What is used to separate the tags.</a>'
   },
   {
-    weight: 420,
+    weight: 22,
     type: 'number',
     input: true,
     key: 'maxTags',
@@ -17,7 +17,7 @@ export default [
     tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
   },
   {
-    weight: 430,
+    weight: 24,
     type: 'select',
     input: true,
     key: 'storeas',

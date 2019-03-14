@@ -1,6 +1,6 @@
 export default [
   {
-    key: 'placeholder',
+    key: 'validateOn',
     ignore: true
   },
 ];

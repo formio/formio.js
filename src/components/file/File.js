@@ -1,4 +1,4 @@
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
@@ -25,9 +25,9 @@ if (!HTMLCanvasElement.prototype.toBlob) {
   });
 }
 
-export default class FileComponent extends Component {
+export default class FileComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'file',
       label: 'Upload',
       key: 'file',

@@ -33,5 +33,57 @@ export default [
       defaultValue: 'Value',
       input: true
     }
+  },
+  {
+    type: 'panel',
+    legend: 'PDF Overlay',
+    title: 'PDF Overlay',
+    key: 'overlay',
+    weight: 2000,
+    collapsible: true,
+    collapsed: true,
+    components: [
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.style',
+        label: 'Style',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.left',
+        label: 'Left',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.top',
+        label: 'Top',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.width',
+        label: 'Width',
+        placeholder: '',
+        tooltip: ''
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.height',
+        label: 'Height',
+        placeholder: '',
+        tooltip: ''
+      },
+
+    ]
   }
 ];

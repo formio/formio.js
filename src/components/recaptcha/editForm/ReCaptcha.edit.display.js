@@ -91,5 +91,9 @@ export default [
   {
     key: 'alwaysEnabled',
     ignore: true
-  }
+  },
+  {
+    key: 'tableView',
+    ignore: true
+  },
 ];
