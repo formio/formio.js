@@ -62,15 +62,21 @@ export default class PanelComponent extends NestedComponent {
     }
   }
 
-  checkValidity(data, dirty) {
-    // Make sure to toggle the collapsed state before checking validity.
-    if (
-      dirty &&
+  /**
+   * Return if this panel is lazy loadable.
+   * @return {boolean}
+   */
+  get lazyLoadable() {
+    return !this.options.builder &&
       this.component.lazyLoad &&
       this.component.collapsible &&
       this.collapsed &&
-      !this.lazyLoaded
-    ) {
+      !this.lazyLoaded;
+  }
+
+  checkValidity(data, dirty) {
+    // Make sure to toggle the collapsed state before checking validity.
+    if (dirty && this.lazyLoadable) {
       this.lazyLoaded = true;
       this.addComponents();
     }
@@ -80,28 +86,18 @@ export default class PanelComponent extends NestedComponent {
 
   addComponents(element, data, options, state) {
     // If they are lazy loading, then only add the components if they toggle the collapsed state.
-    if (
-      this.component.lazyLoad &&
-      this.component.collapsible &&
-      this.collapsed &&
-      !this.lazyLoaded
-    ) {
+    if (this.lazyLoadable) {
       return;
     }
     return super.addComponents(element, data, options, state);
   }
 
   toggleCollapse() {
-    super.toggleCollapse();
-    if (
-      this.component.lazyLoad &&
-      this.component.collapsible &&
-      !this.collapsed &&
-      !this.lazyLoaded
-    ) {
+    if (this.lazyLoadable) {
       this.lazyLoaded = true;
       this.addComponents();
     }
+    super.toggleCollapse();
   }
 
   build(state) {
