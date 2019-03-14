@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.16.5
+### Fixed
+ - Problem in build mode where the collapsed lazy load panels would reset the panel.
+
 ## 3.16.4
 ### Fixed
  - Edit forms for Base, Nested and Url components. 
