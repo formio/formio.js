@@ -10,6 +10,14 @@ export default function(...extend) {
       components: HTMLEditDisplay,
     },
     {
+      key: 'data',
+      ignore: true
+    },
+    {
+      key: 'validation',
+      ignore: true
+    },
+    {
       key: 'logic',
       components: HTMLEditLogic,
     },

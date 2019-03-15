@@ -165,7 +165,7 @@ export default class FileComponent extends Field {
         this.refs.videoPlayer.play();
       },
       (err) => {
-        console.log(err);
+        console.error(err);
       }
     );
   }

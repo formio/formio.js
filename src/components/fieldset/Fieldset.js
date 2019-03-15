@@ -35,4 +35,9 @@ export default class FieldsetComponent extends NestedComponent {
   get templateName() {
     return 'fieldset';
   }
+
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
+  }
 }

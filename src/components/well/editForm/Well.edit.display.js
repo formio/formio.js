@@ -1,9 +1,5 @@
 export default [
   {
-    key: 'hideLabel',
-    ignore: true
-  },
-  {
     key: 'labelPosition',
     ignore: true
   },
@@ -16,16 +12,19 @@ export default [
     ignore: true
   },
   {
-    key: 'tooltip',
-    ignore: true
-  },
-  {
-    key: 'tabIndex',
+    key: 'hideLabel',
     ignore: true
   },
   {
     key: 'autofocus',
     ignore: true
   },
+  {
+    key: 'tooltip',
+    ignore: true
+  },
+  {
+    key: 'tabindex',
+    ignore: true
+  },
 ];
-/* eslint-enable max-len */

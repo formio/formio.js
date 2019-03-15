@@ -76,6 +76,11 @@ export default class TableComponent extends NestedComponent {
     return `column-${this.key}`;
   }
 
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
+  }
+
   init() {
     super.init();
     this.table = [];

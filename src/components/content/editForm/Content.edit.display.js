@@ -1,5 +1,41 @@
 export default [
   {
+    key: 'labelPosition',
+    ignore: true
+  },
+  {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
+    key: 'description',
+    ignore: true
+  },
+  {
+    key: 'tooltip',
+    ignore: true
+  },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
+  {
+    key: 'autofocus',
+    ignore: true
+  },
+  {
+    key: 'disabled',
+    ignore: true
+  },
+  {
+    key: 'alwaysEnabled',
+    ignore: true
+  },
+  {
+    key: 'tabindex',
+    ignore: true
+  },
+  {
     weight: 10,
     type: 'textarea',
     editor: 'ckeditor',
@@ -9,15 +45,6 @@ export default [
     as: 'html',
     rows: 3,
     tooltip: 'The HTML template for the result data items.'
-  },
-  {
-    type: 'textfield',
-    input: true,
-    key: 'className',
-    weight: 60,
-    label: 'CSS Class',
-    placeholder: 'CSS Class',
-    tooltip: 'The CSS class for this HTML element.'
   },
   {
     weight: 700,

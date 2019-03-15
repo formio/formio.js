@@ -516,7 +516,11 @@ export default class WebformBuilder extends Component {
       return;
     }
     let remove = true;
-    if (Array.isArray(component.components) || Array.isArray(component.rows) || Array.isArray(component.columns)) {
+    if (
+      (Array.isArray(component.components) && component.components.length) ||
+      (Array.isArray(component.rows) && component.rows.length) ||
+      (Array.isArray(component.columns) && component.columns.length)
+    ) {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }

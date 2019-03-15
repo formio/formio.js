@@ -4,6 +4,7 @@ export default class HiddenComponent extends Input {
   static schema(...extend) {
     return Input.schema({
       type: 'hidden',
+      tableView: false,
       inputType: 'hidden'
     }, ...extend);
   }
