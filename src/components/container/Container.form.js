@@ -13,13 +13,5 @@ export default function(...extend) {
       key: 'data',
       components: ContainerEditData
     },
-    {
-      key: 'validation',
-      ignore: true
-    },
-    {
-      key: 'conditional',
-      ignore: true
-    },
   ], ...extend);
 }

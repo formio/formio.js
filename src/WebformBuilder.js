@@ -176,18 +176,18 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.attachDatagrid = (element, component) => {
       component.loadRefs(element, {
-        'container': 'single',
+        [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
 
       // Need to set up horizontal rearrangement of fields.
     };
 
     this.options.hooks.attachEditgrid = (element, component) => {
       component.loadRefs(element, {
-        'container': 'single',
+        [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
     };
 
     this.options.hooks.attachComponent = (element, component) => {

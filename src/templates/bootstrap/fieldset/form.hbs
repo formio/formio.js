@@ -1,6 +1,11 @@
 <fieldset>
   {% if (component.legend) { %}
-  <legend ref="header" class="{{component.collapsible ? 'formio-clickable' : ''}}">{{t(component.legend)}}</legend>
+  <legend ref="header" class="{{component.collapsible ? 'formio-clickable' : ''}}">
+    {{t(component.legend)}}
+    {% if (component.tooltip) { %}
+      <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{component.tooltip}}"></i>
+    {% } %}
+  </legend>
   {% } %}
   {% if (!collapsed) { %}
   <div class="fieldset-body" ref="{{nestedKey}}">

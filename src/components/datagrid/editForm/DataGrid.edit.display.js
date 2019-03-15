@@ -1,5 +1,9 @@
 export default [
   {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
     type: 'checkbox',
     label: 'Disable Adding / Removing Rows',
     key: 'disableAddingRemovingRows',
