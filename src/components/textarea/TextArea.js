@@ -112,6 +112,11 @@ export default class TextAreaComponent extends TextFieldComponent {
         value
       });
     }
+    // Editors work better on divs.
+    if (this.component.editor || this.component.wysiwyg) {
+      return '<div ref="input"></div>';
+    }
+
     return this.renderTemplate('input', {
       input: info,
       value,
@@ -391,7 +396,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         value = JSON.parse(value);
       }
       catch (err) {
-        console.warn(err);
+        // console.warn(err);
       }
     }
     return value;

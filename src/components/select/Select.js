@@ -589,7 +589,7 @@ export default class SelectComponent extends Field {
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
-      options: '',
+      selectOptions: '',
       index: null,
     })));
   }
