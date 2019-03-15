@@ -25,30 +25,6 @@ export default [
     }
   },
   {
-    weight: 55,
-    type: 'textarea',
-    key: 'widget',
-    label: 'Widget Settings',
-    calculateValue: (context) => {
-      context.data = context.data || { widget: {} };
-      if (context.data && _.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
-        if (context.data.widget && context.data.widget.type) {
-          settings = Widgets[context.data.widget.type].defaultSettings;
-        }
-        return settings;
-      }
-      return context.data.widget;
-    },
-    input: true,
-    rows: 5,
-    editor: 'ace',
-    as: 'json',
-    conditional: {
-      json: { '!!': { var: 'data.widget.type' } }
-    }
-  },
-  {
     weight: 410,
     type: 'textfield',
     input: true,
