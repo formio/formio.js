@@ -209,7 +209,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tags/Tags.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import BaseComponent from &apos;../base/Base&apos;;
-import Choices from &apos;choices.js/assets/scripts/dist/choices.js&apos;;
+import Choices from &apos;choices.js/public/assets/scripts/choices.js&apos;;
 import _ from &apos;lodash&apos;;
 
 export default class TagsComponent extends BaseComponent {
@@ -264,7 +264,7 @@ export default class TagsComponent extends BaseComponent {
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
     });
-    this.choices.itemList.tabIndex = input.tabIndex;
+    this.choices.itemList.element.tabIndex = input.tabIndex;
   }
 
   setValue(value) {

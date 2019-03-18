@@ -14,7 +14,8 @@ export default class PanelComponent extends NestedComponent {
       input: false,
       tableView: false,
       dataGridLabel: false,
-      persistent: false
+      persistent: false,
+      lazyLoad: false
     }, ...extend);
   }
 
@@ -31,6 +32,7 @@ export default class PanelComponent extends NestedComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
+    this.lazyLoaded = false;
   }
 
   get defaultSchema() {
@@ -58,6 +60,44 @@ export default class PanelComponent extends NestedComponent {
       this.panelTitle.replaceChild(newIcon, this.collapseIcon);
       this.collapseIcon = newIcon;
     }
+  }
+
+  /**
+   * Return if this panel is lazy loadable.
+   * @return {boolean}
+   */
+  get lazyLoadable() {
+    return !this.options.builder &&
+      this.component.lazyLoad &&
+      this.component.collapsible &&
+      this.collapsed &&
+      !this.lazyLoaded;
+  }
+
+  checkValidity(data, dirty) {
+    // Make sure to toggle the collapsed state before checking validity.
+    if (dirty && this.lazyLoadable) {
+      this.lazyLoaded = true;
+      this.addComponents();
+    }
+
+    return super.checkValidity(data, dirty);
+  }
+
+  addComponents(element, data, options, state) {
+    // If they are lazy loading, then only add the components if they toggle the collapsed state.
+    if (this.lazyLoadable) {
+      return;
+    }
+    return super.addComponents(element, data, options, state);
+  }
+
+  toggleCollapse() {
+    if (this.lazyLoadable) {
+      this.lazyLoaded = true;
+      this.addComponents();
+    }
+    super.toggleCollapse();
   }
 
   build(state) {

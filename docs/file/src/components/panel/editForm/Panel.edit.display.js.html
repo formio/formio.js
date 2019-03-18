@@ -329,6 +329,17 @@
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.collapsible&apos; }, true] }
     }
+  },
+  {
+    weight: 652,
+    type: &apos;checkbox&apos;,
+    label: &apos;Lazy Load Contents&apos;,
+    tooltip: &apos;Lazy loads the contents only when the panel is opened.&apos;,
+    key: &apos;lazyLoad&apos;,
+    input: true,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.collapsed&apos; }, true] }
+    }
   }
 ];
 </code></pre>

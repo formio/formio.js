@@ -214,13 +214,16 @@
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from &apos;native-promise-only&apos;;
-import &apos;whatwg-fetch&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
 import copy from &apos;shallow-copy&apos;;
 import * as providers from &apos;./providers&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
+const { fetch, Headers } = fetchPonyfill({
+  Promise: Promise
+});
 
 const isBoolean = (val) =&gt; typeof val === typeof true;
 const isNil = (val) =&gt; val === null || val === undefined;
@@ -940,7 +943,7 @@ export default class Formio {
     }
 
     const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
-    const result = fetch(url, options)
+    const result = Formio.fetch(url, options)
       .then((response) =&gt; {
         // Allow plugins to respond.
         response = Formio.pluginAlter(&apos;requestResponse&apos;, response, Formio);
@@ -1534,12 +1537,8 @@ export default class Formio {
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = Promise;
-if (typeof Headers !== &apos;undefined&apos;) {
-  Formio.Headers = Headers;
-}
-else {
-  Formio.Headers = {};
-}
+Formio.fetch = fetch;
+Formio.Headers = Headers;
 Formio.baseUrl = &apos;https://api.form.io&apos;;
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

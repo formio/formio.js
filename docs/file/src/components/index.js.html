@@ -208,98 +208,98 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedComponent from &apos;./nested/NestedComponent&apos;;
-import AddressComponent from &apos;./address/Address&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AddressComponent from &apos;./address/Address&apos;;
 import BaseComponent from &apos;./base/Base&apos;;
-import ContentComponent from &apos;./content/Content&apos;;
+import ButtonComponent from &apos;./button/Button&apos;;
+import CheckBoxComponent from &apos;./checkbox/Checkbox&apos;;
+import ColumnComponent from &apos;./columns/Column&apos;;
+import ColumnsComponent from &apos;./columns/Columns&apos;;
 import ContainerComponent from &apos;./container/Container&apos;;
+import ContentComponent from &apos;./content/Content&apos;;
+import CurrencyComponent from &apos;./currency/Currency&apos;;
 import DataGridComponent from &apos;./datagrid/DataGrid&apos;;
 import DataMapComponent from &apos;./datamap/DataMap&apos;;
 import DateTimeComponent from &apos;./datetime/DateTime&apos;;
 import DayComponent from &apos;./day/Day&apos;;
 import EditGridComponent from &apos;./editgrid/EditGrid&apos;;
 import EditTableComponent from &apos;./edittable/EditTable&apos;;
+import EmailComponent from &apos;./email/Email&apos;;
+import FieldsetComponent from &apos;./fieldset/Fieldset&apos;;
+import FileComponent from &apos;./file/File&apos;;
+import FormComponent from &apos;./form/Form&apos;;
 import HTMLComponent from &apos;./html/HTML&apos;;
 import HiddenComponent from &apos;./hidden/Hidden&apos;;
-import FormComponent from &apos;./form/Form&apos;;
-import TextFieldComponent from &apos;./textfield/TextField&apos;;
-import PhoneNumberComponent from &apos;./phonenumber/PhoneNumber&apos;;
-import EmailComponent from &apos;./email/Email&apos;;
-import UrlComponent from &apos;./url/Url&apos;;
-import TimeComponent from &apos;./time/Time&apos;;
-import CheckBoxComponent from &apos;./checkbox/Checkbox&apos;;
-import CurrencyComponent from &apos;./currency/Currency&apos;;
-import FieldsetComponent from &apos;./fieldset/Fieldset&apos;;
-import SignatureComponent from &apos;./signature/Signature&apos;;
-import SelectComponent from &apos;./select/Select&apos;;
-import ResourceComponent from &apos;./resource/Resource&apos;;
-import TextAreaComponent from &apos;./textarea/TextArea&apos;;
-import TagsComponent from &apos;./tags/Tags&apos;;
-import ButtonComponent from &apos;./button/Button&apos;;
-import NumberComponent from &apos;./number/Number&apos;;
-import PasswordComponent from &apos;./password/Password&apos;;
-import PanelComponent from &apos;./panel/Panel&apos;;
-import ColumnComponent from &apos;./columns/Column&apos;;
-import ColumnsComponent from &apos;./columns/Columns&apos;;
-import TableComponent from &apos;./table/Table&apos;;
-import UnknownComponent from &apos;./unknown/Unknown&apos;;
-import RadioComponent from &apos;./radio/Radio&apos;;
-import SelectBoxesComponent from &apos;./selectboxes/SelectBoxes&apos;;
-import SurveyComponent from &apos;./survey/Survey&apos;;
-import WellComponent from &apos;./well/Well&apos;;
 import LocationComponent from &apos;./location/Location&apos;;
-import FileComponent from &apos;./file/File&apos;;
-import TabsComponent from &apos;./tabs/Tabs&apos;;
-import TreeComponent from &apos;./tree/Tree&apos;;
-import ReCaptchaComponent from &apos;./recaptcha/ReCaptcha&apos;;
 import ModalEdit from &apos;./modaledit/ModalEdit&apos;;
+import NestedComponent from &apos;./nested/NestedComponent&apos;;
+import NumberComponent from &apos;./number/Number&apos;;
+import PanelComponent from &apos;./panel/Panel&apos;;
+import PasswordComponent from &apos;./password/Password&apos;;
+import PhoneNumberComponent from &apos;./phonenumber/PhoneNumber&apos;;
+import RadioComponent from &apos;./radio/Radio&apos;;
+import ReCaptchaComponent from &apos;./recaptcha/ReCaptcha&apos;;
+import ResourceComponent from &apos;./resource/Resource&apos;;
+import SelectComponent from &apos;./select/Select&apos;;
+import SelectBoxesComponent from &apos;./selectboxes/SelectBoxes&apos;;
+import SignatureComponent from &apos;./signature/Signature&apos;;
+import SurveyComponent from &apos;./survey/Survey&apos;;
+import TableComponent from &apos;./table/Table&apos;;
+import TabsComponent from &apos;./tabs/Tabs&apos;;
+import TagsComponent from &apos;./tags/Tags&apos;;
+import TextAreaComponent from &apos;./textarea/TextArea&apos;;
+import TextFieldComponent from &apos;./textfield/TextField&apos;;
+import TimeComponent from &apos;./time/Time&apos;;
+import TreeComponent from &apos;./tree/Tree&apos;;
+import UnknownComponent from &apos;./unknown/Unknown&apos;;
+import UrlComponent from &apos;./url/Url&apos;;
+import WellComponent from &apos;./well/Well&apos;;
 
 export default {
-  nested: NestedComponent,
   address: AddressComponent,
   base: BaseComponent,
-  content: ContentComponent,
+  button: ButtonComponent,
+  checkbox: CheckBoxComponent,
+  column: ColumnComponent,
+  columns: ColumnsComponent,
   container: ContainerComponent,
+  content: ContentComponent,
+  currency: CurrencyComponent,
   datagrid: DataGridComponent,
   datamap: DataMapComponent,
   datetime: DateTimeComponent,
   day: DayComponent,
-  htmlelement: HTMLComponent,
-  hidden: HiddenComponent,
   editgrid: EditGridComponent,
   edittable: EditTableComponent,
-  form: FormComponent,
-  textfield: TextFieldComponent,
-  phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
-  url: UrlComponent,
-  time: TimeComponent,
-  checkbox: CheckBoxComponent,
-  currency: CurrencyComponent,
   fieldset: FieldsetComponent,
-  signature: SignatureComponent,
-  select: SelectComponent,
-  resource: ResourceComponent,
-  textarea: TextAreaComponent,
-  tags: TagsComponent,
-  button: ButtonComponent,
-  number: NumberComponent,
-  password: PasswordComponent,
-  panel: PanelComponent,
-  tabs: TabsComponent,
-  column: ColumnComponent,
-  columns: ColumnsComponent,
-  table: TableComponent,
-  unknown: UnknownComponent,
-  radio: RadioComponent,
-  selectboxes: SelectBoxesComponent,
-  survey: SurveyComponent,
-  well: WellComponent,
-  location: LocationComponent,
   file: FileComponent,
-  tree: TreeComponent,
-  recaptcha: ReCaptchaComponent,
+  form: FormComponent,
+  hidden: HiddenComponent,
+  htmlelement: HTMLComponent,
+  location: LocationComponent,
   modaledit: ModalEdit,
+  nested: NestedComponent,
+  number: NumberComponent,
+  panel: PanelComponent,
+  password: PasswordComponent,
+  phoneNumber: PhoneNumberComponent,
+  radio: RadioComponent,
+  recaptcha: ReCaptchaComponent,
+  resource: ResourceComponent,
+  select: SelectComponent,
+  selectboxes: SelectBoxesComponent,
+  signature: SignatureComponent,
+  survey: SurveyComponent,
+  table: TableComponent,
+  tabs: TabsComponent,
+  tags: TagsComponent,
+  textarea: TextAreaComponent,
+  textfield: TextFieldComponent,
+  time: TimeComponent,
+  tree: TreeComponent,
+  unknown: UnknownComponent,
+  url: UrlComponent,
+  well: WellComponent,
 };
 </code></pre>
 
