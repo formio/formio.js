@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.17.1
+### Added
+ - Tagpad component to contrib.
+
 ## 3.17.0
 ### Added
  - Sketchpad component to contrib.

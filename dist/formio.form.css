@@ -791,3 +791,33 @@ body.formio-dialog-open {
 
 .formio-sketchpad-save-button {
   margin-bottom: 10px; }
+
+.formio-tagpad-canvas-container {
+  float: left;
+  z-index: 1;
+  position: relative;
+  border: 1px dashed #999;
+  border-radius: 3px; }
+
+.formio-tagpad-form-container {
+  width: 100%;
+  float: left; }
+
+.formio-tagpad-canvas {
+  cursor: crosshair; }
+
+.formio-tagpad-form {
+  padding-left: 5px;
+  padding-right: 5px; }
+
+.formio-tagpad-dot,
+.formio-tagpad-dot-index {
+  cursor: pointer; }
+
+.formio-tagpad-save-button,
+.formio-tagpad-remove-button {
+  margin-right: 5px;
+  margin-bottom: 5px; }
+
+.formio-tagpad-form-title {
+  font-size: 1.7em; }
