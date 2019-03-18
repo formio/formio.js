@@ -2515,7 +2515,7 @@ dialog.fixed {
 td > .form-group {
   margin-bottom: 0; }
 
-.signature-pad {
+.signature-pad .element {
   position: relative; }
 
 .signature-pad-body {
@@ -3144,7 +3144,9 @@ body.formio-dialog-open {
   -moz-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
   box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6); }
 
-.formbuilder .formio-component-hidden, .formbuilder .formio-component-form {
+.formbuilder .formio-component-hidden,
+.formbuilder .formio-component-content,
+.formbuilder .formio-component-form {
   border: 2px dashed #ddd; }
 
 .formbuilder .formio-component-hidden {
