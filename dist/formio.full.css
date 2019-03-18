@@ -3118,6 +3118,10 @@ body.formio-dialog-open {
 .formio-tagpad-canvas {
   cursor: crosshair; }
 
+.formio-disabled-input .formio-tagpad-canvas {
+  cursor: not-allowed;
+  background-color: #eee; }
+
 .formio-tagpad-form {
   padding-left: 5px;
   padding-right: 5px; }
