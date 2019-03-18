@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Case with TextArea, when value is not string or JSON object.
+
 ## 3.16.5
 ### Fixed
  - Problem in build mode where the collapsed lazy load panels would reset the panel.
