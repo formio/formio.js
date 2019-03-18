@@ -237,6 +237,11 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(err);
       }
     }
+
+    if (!_.isString(value)) {
+      value = '';
+    }
+
     return value;
   }
 
