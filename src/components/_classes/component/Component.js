@@ -1156,7 +1156,7 @@ export default class Component extends Element {
   conditionallyVisible(data) {
     data = data || this.rootValue;
     if (this.options.attachMode === 'builder' || !this.hasCondition()) {
-      return true;
+      return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
     return this.checkCondition(null, data);

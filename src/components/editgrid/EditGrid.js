@@ -388,7 +388,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
-    return valid;
+    return !!valid;
   }
 
   checkValidity(data, dirty) {

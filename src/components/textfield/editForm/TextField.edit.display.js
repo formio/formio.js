@@ -84,4 +84,20 @@ export default [
     key: 'mask',
     input: true
   },
+  {
+    weight: 1200,
+    type: 'checkbox',
+    label: 'Show Word Counter',
+    tooltip: 'Show a live count of the number of words.',
+    key: 'showWordCount',
+    input: true
+  },
+  {
+    weight: 1201,
+    type: 'checkbox',
+    label: 'Show Character Counter',
+    tooltip: 'Show a live count of the number of characters.',
+    key: 'showCharCount',
+    input: true
+  },
 ];

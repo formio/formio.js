@@ -409,6 +409,11 @@ export default class WebformBuilder extends Component {
       return;
     }
 
+    // If you try to drop within itself.
+    if (element.contains(target)) {
+      return;
+    }
+
     const type = element.getAttribute('data-type');
     let info, isNew;
 
@@ -535,7 +540,10 @@ export default class WebformBuilder extends Component {
   updateComponent(component) {
     // Update the preview.
     if (this.preview) {
-      this.preview.form = { components: [component] };
+      this.preview.form = { components: [_.omit(component, [
+        'hidden',
+        'calculatedValue'
+      ])] };
       this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
     }
 
