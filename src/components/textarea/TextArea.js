@@ -339,6 +339,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
+  destroy() {
+    if (this.editorReady) {
+      this.editorReady.then((editor) => editor.destroy());
+    }
+    return super.destroy();
+  }
+
   getValue() {
     if (this.viewOnly || this.htmlView || this.options.readOnly) {
       return this.dataValue;

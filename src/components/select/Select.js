@@ -1,4 +1,4 @@
-import Choices from 'choices.js/assets/scripts/dist/choices.js';
+import Choices from 'choices.js/public/assets/scripts/choices.js';
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
@@ -156,7 +156,9 @@ export default class SelectComponent extends BaseComponent {
       label: label
     };
 
-    this.selectOptions.push(option);
+    if (value) {
+      this.selectOptions.push(option);
+    }
     if (this.choices) {
       return;
     }
@@ -181,14 +183,15 @@ export default class SelectComponent extends BaseComponent {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        _.each(currentChoices, (choice) => {
-          this.addCurrentChoices(choice, items);
-        });
+        return currentChoices.reduce((defaultAdded, choice) => {
+          return (this.addCurrentChoices(choice, items) || defaultAdded);
+        }, false);
       }
       else if (!this.component.multiple) {
         this.addPlaceholder(this.selectInput);
       }
     }
+    return false;
   }
 
   /**
@@ -404,7 +407,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Add filter capability
     if (this.component.filter) {
-      url += `&${this.interpolate(this.component.filter)}`;
+      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);
     }
 
     // Make the request.
@@ -415,7 +418,7 @@ export default class SelectComponent extends BaseComponent {
         const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
         this.setItems(response, !!search);
         if (scrollTop) {
-          this.choices.choiceList.scrollTo(0, 0);
+          this.choices.choiceList.scrollToTop();
         }
       })
       .catch((err) => {
@@ -435,7 +438,7 @@ export default class SelectComponent extends BaseComponent {
    */
   get requestHeaders() {
     // Create the headers object.
-    const headers = new Headers();
+    const headers = new Formio.Headers();
 
     // Add custom headers to the url.
     if (this.component.data && this.component.data.headers) {
@@ -611,7 +614,6 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const choicesOptions = {
-      ...customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
@@ -633,7 +635,8 @@ export default class SelectComponent extends BaseComponent {
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
       }, _.get(this, 'component.fuseOptions', {})),
-      itemComparer: _.isEqual
+      itemComparer: _.isEqual,
+      ...customOptions,
     };
 
     const tabIndex = input.tabIndex;
@@ -642,16 +645,17 @@ export default class SelectComponent extends BaseComponent {
     this.choices = new Choices(input, choicesOptions);
 
     if (this.component.multiple) {
-      this.focusableElement = this.choices.input;
+      this.focusableElement = this.choices.input.element;
     }
     else {
-      this.focusableElement = this.choices.containerInner;
-      this.choices.containerOuter.setAttribute('tabIndex', '-1');
+      this.focusableElement = this.choices.containerInner.element;
+      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
       if (useSearch) {
-        this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
     }
-    this.scrollList = this.choices.choiceList;
+
+    this.scrollList = this.choices.choiceList.element;
     this.onScroll = () => {
       if (
         !this.scrollLoading &&
@@ -659,7 +663,7 @@ export default class SelectComponent extends BaseComponent {
       ) {
         this.scrollTop = this.scrollList.scrollTop;
         this.scrollLoading = true;
-        this.triggerUpdate(this.choices.input.value);
+        this.triggerUpdate(this.choices.input.element.value);
       }
     };
     this.scrollList.addEventListener('scroll', this.onScroll);
@@ -667,13 +671,13 @@ export default class SelectComponent extends BaseComponent {
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
-    this.setInputStyles(this.choices.containerOuter);
+    this.setInputStyles(this.choices.containerOuter.element);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
       // Make sure to clear the search when no value is provided.
-      if (this.choices && this.choices.input) {
-        this.addEventListener(this.choices.input, 'input', (event) => {
+      if (this.choices && this.choices.input && this.choices.input.element) {
+        this.addEventListener(this.choices.input.element, 'input', (event) => {
           if (!event.target.value) {
             this.triggerUpdate();
           }
@@ -689,13 +693,18 @@ export default class SelectComponent extends BaseComponent {
       }
       this.update();
     });
-    if (placeholderValue && this.choices.isSelectOneElement) {
+    if (placeholderValue && this.choices._isSelectOneElement) {
       this.addEventListener(input, 'removeItem', () => {
-        const items = this.choices.store.getItemsFilteredByActive();
+        const items = this.choices._store.activeItems;
         if (!items.length) {
           this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
         }
       });
+    }
+
+    // Add value options.
+    if (this.addValueOptions()) {
+      this.restoreValue();
     }
 
     // Force the disabled state with getters and setters.
@@ -720,12 +729,12 @@ export default class SelectComponent extends BaseComponent {
       return;
     }
     if (disabled) {
-      this.setDisabled(this.choices.containerInner, true);
+      this.setDisabled(this.choices.containerInner.element, true);
       this.focusableElement.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
-      this.setDisabled(this.choices.containerInner, false);
+      this.setDisabled(this.choices.containerInner.element, false);
       this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
@@ -768,9 +777,19 @@ export default class SelectComponent extends BaseComponent {
 
       // Add the default option if no item is found.
       if (!found) {
-        this.addOption(this.itemValue(value), this.itemTemplate(value));
+        if (this.choices) {
+          this.choices.setChoices([{
+            value: this.itemValue(value),
+            label: this.itemTemplate(value)
+          }], 'value', 'label', true);
+        }
+        else {
+          this.addOption(this.itemValue(value), this.itemTemplate(value));
+        }
+        return true;
       }
     }
+    return false;
   }
 
   getView(data) {
@@ -860,8 +879,7 @@ export default class SelectComponent extends BaseComponent {
         _.each(currentChoices, (choice) => {
           this.addCurrentChoices(choice, this.selectOptions);
         });
-        this.choices.setChoices(this.selectOptions, 'value', 'label', true)
-          .setValueByChoice(value);
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true).setChoiceByValue(value);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();

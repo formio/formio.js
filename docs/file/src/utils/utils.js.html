@@ -211,7 +211,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global $ */
 
 import _ from &apos;lodash&apos;;
-import &apos;whatwg-fetch&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
 import moment from &apos;moment-timezone/moment-timezone&apos;;
 import jtz from &apos;jstimezonedetect&apos;;
@@ -219,6 +219,9 @@ import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import { getValue } from &apos;./formUtils&apos;;
 import stringHash from &apos;string-hash&apos;;
+const { fetch } = fetchPonyfill({
+  Promise: Promise
+});
 
 export * from &apos;./formUtils&apos;;
 

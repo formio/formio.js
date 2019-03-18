@@ -802,8 +802,12 @@ export default class FileComponent extends BaseComponent {
                 fileInfo.fileType = this.component.fileTypes[0].value;
               }
               fileInfo.originalName = file.name;
-              this.dataValue.push(fileInfo);
-              this.refreshDOM();
+              let files = this.dataValue;
+              if (!files || !Array.isArray(files)) {
+                files = [];
+              }
+              files.push(fileInfo);
+              this.setValue(this.dataValue);
               this.triggerChange();
             })
             .catch(response => {

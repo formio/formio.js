@@ -119,5 +119,16 @@ export default [
     conditional: {
       json: { '===': [{ var: 'data.collapsible' }, true] }
     }
+  },
+  {
+    weight: 652,
+    type: 'checkbox',
+    label: 'Lazy Load Contents',
+    tooltip: 'Lazy loads the contents only when the panel is opened.',
+    key: 'lazyLoad',
+    input: true,
+    conditional: {
+      json: { '===': [{ var: 'data.collapsed' }, true] }
+    }
   }
 ];

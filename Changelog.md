@@ -4,6 +4,53 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.16.5
+### Fixed
+ - Problem in build mode where the collapsed lazy load panels would reset the panel.
+
+## 3.16.4
+### Fixed
+ - Edit forms for Base, Nested and Url components. 
+ - Allow custom select options to override any defined options.
+
+### Added
+ - The ability to configure a collapsed panel as a "lazyLoad" panel for performance improvements of long forms.
+
+### Changed
+ - Upgrade flatpickr@4.5.7, i18next@15.0.7, dialog-polyfill@0.5.0
+
+## 3.16.3
+### Fixed
+ - Issue where custom Headers within Select component were not getting included anymore.
+ - Memory leaks within the Tabs and TextArea components with wysiwyg editors.
+
+## 3.16.2
+### Fixed
+ - Issue with the image upload via webcam where the image would not get set in the image list.
+ - Problem where 0 could not be set as the default value for Number components.
+ 
+### Changed
+ - Upgraded flatpickr@4.5.6, i18next@15.0.5, sinon@7.2.7, eslint@5.15.0, del@4.0.0
+
+## 3.16.1
+### Changed
+ - Upgraded choices.js@6.0.3, @babel/core@7.3.4, @babel/preset-env@7.3.4, fetch-mock@7.3.1, karma@4.0.1, mocha@6.0.2, sinon@7.2.5, webpack@4.29.6
+ - Now using a fetch ponyfill instead of the pervious whatwg-fetch polyfill for isomorphic behavior and encapsulation.
+
+### Fixed
+ - Issue with importing library with node.js and it would throw an error of "self" not defined.
+
+## 3.16.0
+### Changed
+ - Improved validation for EditGrid with inline edit.
+ - Upgraded flatpickr@4.5.4, mocha@6.0.1, marked@0.6.1
+ - Upgraded choices.js library to 6.x branch.
+ - Upgraded whatwg-fetch to latest version.
+ 
+### Fixed
+ - Fixed the gulp watch routine.
+ - Issue with validations not running on tabs other than the current tab being shown.
+
 ## 3.15.6
 ### Fixed
  - Problems with the private images not showing up when printing to PDF.

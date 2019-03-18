@@ -222,6 +222,7 @@ const domain = &apos;localhost:3000&apos;;
 const baseUrl = `${protocol}://api.${domain}`;
 Formio.setBaseUrl(baseUrl);
 Formio.setToken(null);
+Formio.fetch = fetchMock.fetchHandler;
 
 const projectId = &apos;59bbe2ec8c246100079191aa&apos;;
 const formId = &apos;59bbe2ec8c246100079191ab&apos;;
