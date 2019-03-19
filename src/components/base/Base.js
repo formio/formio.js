@@ -2328,7 +2328,7 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.hasInput || (!dirty && this.pristine)) {
+    if (!this.component.validate.required && (!this.hasInput || (!dirty && this.pristine))) {
       return '';
     }
 
@@ -2353,7 +2353,9 @@ export default class BaseComponent extends Component {
     }
 
     const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
+    if (!this.pristine) {
+      this.setCustomValidity(message, dirty);
+    }
     return message ? false : true;
   }
 
