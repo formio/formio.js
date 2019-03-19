@@ -1,6 +1,7 @@
 import BaseComponent from '../base/Base';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
+import _ from 'lodash';
 import Formio from '../../Formio';
 
 // canvas.toBlob polyfill.
@@ -118,6 +119,20 @@ export default class FileComponent extends BaseComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
+    if (_.isEqual(value, []) && this.options.flatten) {
+      return [
+        {
+          storage: '',
+          name: '',
+          size: '',
+          type: '',
+          originalName: '',
+          fileType: '',
+          url: '',
+          data: {},
+        }
+      ];
+    }
     return Array.isArray(value) ? value : [];
   }
 
