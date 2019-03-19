@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Options to indicate bootstrap version manually.
 
+### Fixed
+ - Case with TextArea, when value is not string or JSON object.
+
+## 3.17.1
+### Added
+ - Tagpad component to contrib.
+
+## 3.17.0
+### Added
+ - Sketchpad component to contrib.
+
 ## 3.16.5
 ### Fixed
  - Problem in build mode where the collapsed lazy load panels would reset the panel.
