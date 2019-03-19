@@ -932,7 +932,10 @@ export function uniqueKey(map, base) {
  *
  * @return {number}
  */
-export function bootstrapVersion() {
+export function bootstrapVersion(options) {
+  if (options.bootstrap) {
+    return options.bootstrap;
+  }
   if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
     return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }

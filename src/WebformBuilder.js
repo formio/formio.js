@@ -581,7 +581,7 @@ export default class WebformBuilder extends Webform {
     }, this.text(info.title));
 
     // Add a listener when it is clicked.
-    if (!bootstrapVersion()) {
+    if (!bootstrapVersion(this.options)) {
       this.addEventListener(groupAnchor, 'click', (event) => {
         event.preventDefault();
         const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
@@ -632,7 +632,7 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
-      switch (bootstrapVersion()) {
+      switch (bootstrapVersion(this.options)) {
         case 4:
           groupBodyClass += ' show';
           break;
