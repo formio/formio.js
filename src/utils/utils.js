@@ -675,8 +675,8 @@ export function convertFormatToFlatpickr(format) {
     .replace('EEE', 'D')
 
     // Hours, minutes, seconds
-    .replace('HH', 'G')
-    .replace('hh', 'G')
+    .replace('HH', 'H')
+    .replace('hh', 'h')
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
