@@ -37,6 +37,14 @@ export default class TimeComponent extends TextFieldComponent {
     return TimeComponent.schema();
   }
 
+  get defaultValue() {
+    let value = super.defaultValue;
+    if (value) {
+      value = moment(value).format(this.component.format);
+    }
+    return value;
+  }
+
   get inputInfo() {
     const info = super.inputInfo;
     info.attr.type = 'time';
