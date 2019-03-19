@@ -1281,7 +1281,7 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty) {
+  addInputError(message, dirty, elements) {
     if (!message) {
       return;
     }
@@ -1298,7 +1298,7 @@ export default class Component extends Element {
     }
 
     // Add error classes
-    this.refs.input.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     if (dirty && this.options.highlightErrors) {
@@ -1794,7 +1794,7 @@ export default class Component extends Element {
         message: message
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty);
+      this.addInputError(message, dirty, this.refs.input);
     }
     else {
       this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));

@@ -1012,4 +1012,27 @@ export default class SelectComponent extends Field {
   focus() {
     this.focusableElement.focus();
   }
+
+  setCustomValidity(message, dirty) {
+    if (this.refs.messageContainer) {
+      this.empty(this.refs.messageContainer);
+    }
+    if (!this.refs.selectContainer) {
+      return;
+    }
+    if (message) {
+      this.error = {
+        component: this.component,
+        message: message
+      };
+      this.emit('componentError', this.error);
+      this.addInputError(message, dirty, [this.refs.selectContainer]);
+    }
+    else {
+      this.removeClass(this.refs.selectContainer, 'is-invalid');
+      this.removeClass(this.element, 'alert alert-danger');
+      this.removeClass(this.element, 'has-error');
+      this.error = null;
+    }
+  }
 }
