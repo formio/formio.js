@@ -300,6 +300,10 @@ export default class WebformBuilder extends Component {
     return this.webform.form;
   }
 
+  get schema() {
+    return this.webform.schema;
+  }
+
   set form(value) {
     if (!value.components) {
       value.components = [];

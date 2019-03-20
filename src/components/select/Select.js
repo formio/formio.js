@@ -16,6 +16,7 @@ export default class SelectComponent extends Field {
         resource: '',
         custom: ''
       },
+      clearOnRefresh: false,
       limit: 100,
       dataSrc: 'values',
       valueProperty: '',

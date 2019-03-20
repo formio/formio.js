@@ -2,11 +2,11 @@ import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import * as FormioUtils from '../../../utils/utils';
-import Formio from '../../../Formio';
 import Validator from '../../Validator';
 import templates from '../../../templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
+import Webform from '../../../Webform';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -83,11 +83,6 @@ export default class Component extends Element {
        * This will refresh this component when this field changes.
        */
       refreshOn: '',
-
-      /**
-       * Determines if we should clear our value when a refresh occurs.
-       */
-      clearOnRefresh: false,
 
       /**
        * If this component should be included as a column within a submission table.
@@ -489,15 +484,19 @@ export default class Component extends Element {
           modified[key] = subModified;
         }
       }
+      else if (_.isArray(val)) {
+        if (val.length !== 0) {
+          modified[key] = val;
+        }
+      }
       else if (
         (key === 'type') ||
         (key === 'key') ||
         (key === 'label') ||
         (key === 'input') ||
         (key === 'tableView') ||
-        !defaultSchema.hasOwnProperty(key) ||
-        _.isArray(val) ||
-        (val !== defaultSchema[key])
+        (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
+        (val !== '' && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }
@@ -509,7 +508,15 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
+    let defaultSchema = this.defaultSchema;
+    // Grab the default data for an component edit form.
+    if (this.constructor.editForm && typeof this.constructor.editForm === 'function') {
+      const tmpForm = new Webform();
+      tmpForm.form = this.constructor.editForm();
+      tmpForm.setValue({ data: this.defaultSchema });
+      defaultSchema = tmpForm.data;
+    }
+    return this.getModifiedSchema(_.omit(this.component, 'id'), defaultSchema);
   }
 
   /**

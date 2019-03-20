@@ -776,7 +776,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = this._form;
+    const schema = _.cloneDeep(_.omit(this._form, ['components']));
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;

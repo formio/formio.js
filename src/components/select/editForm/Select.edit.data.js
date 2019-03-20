@@ -447,6 +447,7 @@ export default [
     weight: 20,
     key: 'clearOnRefresh',
     label: 'Clear Value On Refresh Options',
+    defaultValue: false,
     tooltip: 'When the Refresh On field is changed, clear this components value.',
     conditional: {
       json: {

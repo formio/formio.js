@@ -26,6 +26,7 @@ export default [
     key: 'persistent',
     input: true,
     inline: true,
+    defaultValue: true,
     values: [
       { label: 'None', value: false },
       { label: 'Server', value: true },
@@ -61,6 +62,7 @@ export default [
     type: 'checkbox',
     label: 'Clear Value When Hidden',
     key: 'clearOnHide',
+    defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',
     input: true
   },
