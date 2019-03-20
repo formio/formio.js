@@ -1461,7 +1461,7 @@ export default class BaseComponent extends Component {
   destroyInputs() {
     _.each(this.inputs, (input) => {
       input = this.performInputMapping(input);
-      if (input.mask) {
+      if (input.mask && input.mask.destroy) {
         input.mask.destroy();
       }
       if (input.widget) {
