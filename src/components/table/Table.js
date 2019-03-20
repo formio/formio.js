@@ -83,7 +83,17 @@ export default class TableComponent extends NestedComponent {
 
   init() {
     super.init();
-    this.table = [];
+    // Ensure component.rows has the correct number of rows and columns.
+    for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {
+      this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];
+      for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {
+        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };
+      }
+      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);
+    }
+    this.component.rows = this.component.rows.slice(0, this.component.numRows);
+
+      this.table = [];
     _.each(this.component.rows, (row, rowIndex) => {
       this.table[rowIndex] = [];
       _.each(row, (column, colIndex) => {
@@ -116,6 +126,7 @@ export default class TableComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
       const columnIndex = index % rowLength;
+      console.log(rowIndex, columnIndex, this.table, this.component.rows);
       this.attachComponents(column, this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
     });
   }
