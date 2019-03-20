@@ -126,7 +126,6 @@ export default class TableComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
       const columnIndex = index % rowLength;
-      console.log(rowIndex, columnIndex, this.table, this.component.rows);
       this.attachComponents(column, this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
     });
   }
