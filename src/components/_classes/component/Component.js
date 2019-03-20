@@ -539,7 +539,7 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return this.options.templates ? this.options.templates.transform : (type, value) => value;
+    return this.options.templates ? this.options.templates.transform.bind(this.options.templates) : (type, value) => value;
   }
 
   getTemplate(names, modes) {
