@@ -42,7 +42,7 @@ export default class CheckBoxComponent extends Component {
       && this.component.validate.required) {
       className += ' field-required';
     }
-    return `${className} checkbox`;
+    return `${className}`;
   }
 
   get hasSetValue() {
