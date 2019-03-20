@@ -124,12 +124,9 @@ export default class FileComponent extends BaseComponent {
         {
           storage: '',
           name: '',
-          size: '',
+          size: 0,
           type: '',
           originalName: '',
-          fileType: '',
-          url: '',
-          data: {},
         }
       ];
     }
