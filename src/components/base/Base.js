@@ -2328,7 +2328,8 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.component.validate.required && (!this.hasInput || (!dirty && this.pristine))) {
+    if (!(this.component.validate && this.component.validate.required)
+      && (!this.hasInput || (!dirty && this.pristine))) {
       return '';
     }
 
