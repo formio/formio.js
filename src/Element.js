@@ -424,7 +424,7 @@ export default class Element {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    if (!element) {
+    if (!element || !className) {
       return this;
     }
     // Allow templates to intercept.

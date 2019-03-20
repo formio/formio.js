@@ -28,11 +28,22 @@ import tab from './tab';
 import table from './table';
 import well from './well';
 import wizard from './wizard';
+import cssClasses from './cssClasses';
 
 export default {
-  transform: (type, text) => text,
+  transform(type, text) {
+    if (!text) {
+      return text;
+    }
+    switch (type) {
+      case 'class':
+        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+    }
+    return text;
+  },
   defaultIconset: 'glyphicon',
   iconClass,
+  cssClasses,
   builder,
   builderComponent,
   builderComponents,

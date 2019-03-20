@@ -31,9 +31,13 @@ import tab from './tab';
 import table from './table';
 import webform from './webform';
 import well from './well';
+import cssClasses from './cssClasses';
 
 export default {
-  transform: (type, text) => {
+  transform(type, text) {
+    if (!text) {
+      return text;
+    }
     const columns = {
       '1': 'one',
       '2': 'two',
@@ -52,20 +56,17 @@ export default {
       '15': 'fifteen',
       '16': 'sixteen'
     };
-    const classes = {
-      'has-error': 'error',
-      'is-invalid': 'error',
-    };
     switch (type) {
       case 'columns':
         return columns.hasOwnProperty(text.toString()) ? columns[text.toString()] : text;
       case 'class':
-        return classes.hasOwnProperty(text.toString()) ? classes[text.toString()] : text;
+        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
     }
     return text;
   },
   defaultIconset: 'icon',
   iconClass,
+  cssClasses,
   builder,
   builderComponent,
   builderComponents,
