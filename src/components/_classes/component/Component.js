@@ -1969,7 +1969,7 @@ export default class Component extends Element {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.canDisable) {
+    if (this.disabled) {
       attributes.disabled = 'disabled';
     }
 

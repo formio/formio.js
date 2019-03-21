@@ -25,7 +25,7 @@ export default class Input extends Multivalue {
       attr.tabindex = this.component.tabindex;
     }
 
-    if (this.shouldDisable) {
+    if (this.disabled) {
       attr.disabled = 'disabled';
     }
 

@@ -126,7 +126,7 @@ export default class FileComponent extends Field {
       fileSize: this.fileSize,
       files: this.dataValue || [],
       statuses: this.statuses,
-      disabled: this.shouldDisable,
+      disabled: this.disabled,
       support: this.support,
     }));
   }

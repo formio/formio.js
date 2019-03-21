@@ -728,7 +728,7 @@ export default class SelectComponent extends Field {
     }
 
     // Force the disabled state with getters and setters.
-    this.disabled = this.shouldDisable;
+    this.disabled = this.disabled;
     this.triggerUpdate();
   }
 
