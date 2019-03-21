@@ -72,8 +72,8 @@ export default class TableComponent extends NestedComponent {
     return `table-responsive ${super.className}`;
   }
 
-  get columnKey() {
-    return `column-${this.key}`;
+  get tableKey() {
+    return `table-${this.key}`;
   }
 
   constructor(...args) {
@@ -110,7 +110,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('table', {
-      columnKey: this.columnKey,
+      tableKey: this.tableKey,
       tableComponents: this.table.map(row =>
         row.map(column =>
           this.renderComponents(column)
@@ -120,13 +120,16 @@ export default class TableComponent extends NestedComponent {
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.columnKey]: 'multiple' });
+    const keys = this.table.reduce((prev, row, rowIndex) => {
+      prev[`${this.tableKey}-${rowIndex}`] = 'multiple';
+      return prev;
+    }, {});
+    this.loadRefs(element, keys);
     super.attach(element);
-    const rowLength = this.table.length;
-    this.refs[this.columnKey].forEach((column, index) => {
-      const rowIndex = Math.floor(index / rowLength);
-      const columnIndex = index % rowLength;
-      this.attachComponents(column, this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+    this.table.forEach((row, rowIndex) => {
+      row.forEach((column, columnIndex) => {
+        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+      });
     });
   }
 
