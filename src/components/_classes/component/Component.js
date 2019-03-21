@@ -6,7 +6,6 @@ import Validator from '../../Validator';
 import templates from '../../../templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
-import Webform from '../../../Webform';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -508,15 +507,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    let defaultSchema = this.defaultSchema;
-    // Grab the default data for an component edit form.
-    if (this.constructor.editForm && typeof this.constructor.editForm === 'function') {
-      const tmpForm = new Webform();
-      tmpForm.form = this.constructor.editForm();
-      tmpForm.setValue({ data: this.defaultSchema });
-      defaultSchema = tmpForm.data;
-    }
-    return this.getModifiedSchema(_.omit(this.component, 'id'), defaultSchema);
+    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
   }
 
   /**
