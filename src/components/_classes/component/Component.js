@@ -137,7 +137,21 @@ export default class Component extends Element {
         show: null,
         when: null,
         eq: ''
-      }
+      },
+      overlay: {
+        style: '',
+        left: '',
+        top: '',
+        width: '',
+        height: '',
+      },
+      allowCalculateOverride: false,
+      encrypted: false,
+      alwaysEnabled: false,
+      showCharCount: false,
+      showWordCount: false,
+      properties: {},
+      allowMultipleMasks: false
     }, ...sources);
   }
 
