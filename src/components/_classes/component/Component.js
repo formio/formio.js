@@ -694,8 +694,8 @@ export default class Component extends Element {
     return this.options.submissionTimezone;
   }
 
-  get shouldDisable() {
-    return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
+  get canDisable() {
+    return !this.component.alwaysEnabled;
   }
 
   loadRefs(element, refs) {
@@ -761,8 +761,8 @@ export default class Component extends Element {
     this.autofocus();
 
     // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
+    if (this.canDisable) {
+      this.disabled = this.options.readOnly || this.component.disabled;
     }
 
     // Allow global attach.
@@ -1735,9 +1735,12 @@ export default class Component extends Element {
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    return !error;
   }
 
   get validationValue() {
@@ -1841,7 +1844,7 @@ export default class Component extends Element {
    */
   set disabled(disabled) {
     // Do not allow a component to be disabled if it should be always...
-    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
+    if (disabled && !this.canDisable) {
       return;
     }
 
@@ -1966,7 +1969,7 @@ export default class Component extends Element {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.shouldDisable) {
+    if (this.canDisable) {
       attributes.disabled = 'disabled';
     }
 

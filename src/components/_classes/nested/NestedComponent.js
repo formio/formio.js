@@ -446,7 +446,7 @@ export default class NestedComponent extends Field {
     }
 
     // Return if the value is valid.
-    return valid;
+    return !!valid;
   }
 
   checkConditions(data) {

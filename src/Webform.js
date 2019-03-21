@@ -702,9 +702,7 @@ export default class Webform extends NestedComponent {
         // If nothing changed, still trigger an update.
         this.submissionSet = true;
         if (!this.setValue(submission, flags)) {
-          this.triggerChange({
-            noValidate: true
-          });
+          this.triggerChange();
         }
         else {
           this.redraw();
