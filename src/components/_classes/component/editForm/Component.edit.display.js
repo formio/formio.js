@@ -70,7 +70,7 @@ export default [
     input: true,
     key: 'tabindex',
     label: 'Tab Index',
-    placeholder: 'Tab Index',
+    placeholder: '0',
     tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\\\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\\\'>MDN documentation</a> on tabindex for more information.'
   },
   {

@@ -74,16 +74,6 @@ export default class Input extends Multivalue {
     return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
-  get hasCounter() {
-    if (
-      _.get(this.component, 'showWordCount', false) ||
-      _.get(this.component, 'showCharCount', false)
-    ) {
-      return true;
-    }
-    return false;
-  }
-
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
     const wordCount = this.dataValue.trim().split(/\s+/).length;
@@ -131,18 +121,16 @@ export default class Input extends Multivalue {
   }
 
   updateValueAt(flags, value, index) {
-    if (this.refs.counter && this.refs.counter[index]) {
-      if (_.get(this.component, 'showWordCount', false)) {
+    if (_.get(this.component, 'showWordCount', false)) {
+      if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        if (maxWords) {
-          this.setCounter('words', this.refs.counter[index], value.trim().split(/\s+/).length, maxWords);
-        }
+        this.setCounter('words', this.refs.wordcount[index], value.trim().split(/\s+/).length, maxWords);
       }
-      if (_.get(this.component, 'showCharCount', false)) {
+    }
+    if (_.get(this.component, 'showCharCount', false)) {
+      if (this.refs.charcount && this.refs.charcount[index]) {
         const maxChars = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
-        if (maxChars) {
-          this.setCounter('characters', this.refs.counter[index], value.length, maxChars);
-        }
+        this.setCounter('characters', this.refs.charcount[index], value.length, maxChars);
       }
     }
   }
@@ -157,7 +145,8 @@ export default class Input extends Multivalue {
 
   attach(element) {
     this.loadRefs(element, {
-      counter: 'multiple',
+      charcount: 'multiple',
+      wordcount: 'multiple',
       prefix: 'multiple',
       suffix: 'multiple'
     });

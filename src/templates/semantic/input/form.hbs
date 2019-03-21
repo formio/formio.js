@@ -2,14 +2,17 @@
 {% if (component.prefix) { %}
 <label class="ui label" ref="prefix">{{component.prefix}}</label>
 {% } %}
-<{{input.type}} 
-  ref="{{input.ref ? input.ref : 'input'}}" 
+<{{input.type}}
+  ref="{{input.ref ? input.ref : 'input'}}"
   {% for (var attr in input.attr) { %}
   {{attr}}="{{input.attr[attr]}}"
   {% } %}
 >{{input.content}}</{{input.type}}>
-{% if (self.hasCounter) { %}
-<span class="ui right floated" ref="counter"></span>
+{% if (component.showCharCount) { %}
+<span class="ui right floated" ref="charcount"></span>
+{% } %}
+{% if (component.showWordCount) { %}
+<span class="ui right floated" ref="wordcount"></span>
 {% } %}
 {% if (component.suffix) { %}
 <div class="ui label" ref="suffix">{{component.suffix}}</div>
