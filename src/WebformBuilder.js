@@ -654,14 +654,13 @@ export default class WebformBuilder extends Component {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
-              event.data.key = _.camelCase(
-                event.data.label ||
-                event.data.placeholder ||
-                event.data.type
-              );
-              this.editForm.submission = {
-                data: event.data
-              };
+              this.editForm.getComponent('key', component => {
+                component.setValue(_.camelCase(
+                  event.data.label ||
+                  event.data.placeholder ||
+                  event.data.type
+                ));
+              });
             }
 
             // Set the component to the componentJson if this is a custom component.
