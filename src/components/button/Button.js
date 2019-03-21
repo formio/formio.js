@@ -112,6 +112,7 @@ export default class ButtonComponent extends Field {
       buttonMessage: 'single'
     });
     super.attach(element);
+
     if (!this.refs.button) {
       return;
     }
@@ -204,8 +205,6 @@ export default class ButtonComponent extends Field {
         this.openOauth();
       }
     }
-
-    this.autofocus();
   }
   /* eslint-enable max-statements */
 

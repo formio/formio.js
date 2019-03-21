@@ -698,40 +698,6 @@ export default class Component extends Element {
     return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
   }
 
-  /**
-   * Builds the component.
-   */
-  buildOld() {
-    if (this.viewOnly) {
-      this.viewOnlyBuild();
-    }
-    else {
-      // this.createElement();
-      //
-      // const labelAtTheBottom = this.component.labelPosition === 'bottom';
-      // if (!labelAtTheBottom) {
-      //   this.createLabel(this.element);
-      // }
-      // if (!this.createWrapper()) {
-      //   this.createInput(this.element);
-      // }
-      // if (labelAtTheBottom) {
-      //   this.createLabel(this.element);
-      // }
-      // this.createDescription(this.element);
-      //
-      // // Disable if needed.
-      // if (this.shouldDisable) {
-      //   this.disabled = true;
-      // }
-      //
-      // // Restore the value.
-      // this.restoreValue();
-      //
-      // this.autofocus();
-    }
-  }
-
   loadRefs(element, refs) {
     for (const ref in refs) {
       if (refs[ref] === 'single') {
@@ -791,6 +757,8 @@ export default class Component extends Element {
     this.attachLogic();
 
     // this.restoreValue();
+
+    this.autofocus();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -2017,9 +1985,8 @@ export default class Component extends Element {
   }
 
   focus() {
-    const input = this.performInputMapping(this.refs.input[0]);
-    if (input) {
-      input.focus();
+    if (this.refs.input && this.refs.input[0]) {
+      this.refs.input[0].focus();
     }
   }
 }
