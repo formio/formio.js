@@ -290,6 +290,11 @@ export default class FormComponent extends Component {
       return this.subFormReady;
     }
 
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
+    }
+
     // Determine if we already have a loaded form object.
     if (this.component && this.component.components && Array.isArray(this.component.components) && this.component.components.length) {
       this.filterSubForm();
