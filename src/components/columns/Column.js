@@ -4,6 +4,7 @@ export default class ColumnComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+    this.noField = true;
   }
 
   get className() {

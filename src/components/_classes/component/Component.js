@@ -2,7 +2,6 @@ import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import * as FormioUtils from '../../../utils/utils';
-import Formio from '../../../Formio';
 import Validator from '../../Validator';
 import templates from '../../../templates';
 import { boolValue } from '../../../utils/utils';
@@ -85,22 +84,15 @@ export default class Component extends Element {
       refreshOn: '',
 
       /**
-       * Determines if we should clear our value when a refresh occurs.
-       */
-      clearOnRefresh: false,
-
-      /**
        * If this component should be included as a column within a submission table.
        */
-      tableView: true,
+      tableView: false,
 
       /**
        * The input label provided to this component.
        */
       label: '',
       labelPosition: 'top',
-      labelWidth: 30,
-      labelMargin: 3,
       description: '',
       errorLabel: '',
       tooltip: '',
@@ -145,7 +137,21 @@ export default class Component extends Element {
         show: null,
         when: null,
         eq: ''
-      }
+      },
+      overlay: {
+        style: '',
+        left: '',
+        top: '',
+        width: '',
+        height: '',
+      },
+      allowCalculateOverride: false,
+      encrypted: false,
+      alwaysEnabled: false,
+      showCharCount: false,
+      showWordCount: false,
+      properties: {},
+      allowMultipleMasks: false
     }, ...sources);
   }
 
@@ -370,6 +376,26 @@ export default class Component extends Element {
     }
   }
 
+  get labelInfo() {
+    const label = {};
+    label.hidden = this.labelIsHidden();
+
+    label.className = '';
+    label.labelPosition = this.component.labelPosition;
+    label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
+
+    if (this.hasInput && this.component.validate && this.component.validate.required) {
+      label.className += ' field-required';
+    }
+    if (label.hidden) {
+      label.className += ' control-label--hidden';
+    }
+    if (this.info.attr.id) {
+      label.for = this.info.attr.id;
+    }
+    return label;
+  }
+
   init() {
     // Can be overridden
   }
@@ -471,15 +497,19 @@ export default class Component extends Element {
           modified[key] = subModified;
         }
       }
+      else if (_.isArray(val)) {
+        if (val.length !== 0) {
+          modified[key] = val;
+        }
+      }
       else if (
         (key === 'type') ||
         (key === 'key') ||
         (key === 'label') ||
         (key === 'input') ||
         (key === 'tableView') ||
-        !defaultSchema.hasOwnProperty(key) ||
-        _.isArray(val) ||
-        (val !== defaultSchema[key])
+        (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
+        (val !== '' && val !== defaultSchema[key])
       ) {
         modified[key] = val;
       }
@@ -521,7 +551,7 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return this.options.templates ? this.options.templates.transform : (type, value) => value;
+    return this.options.templates ? this.options.templates.transform.bind(this.options.templates) : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -664,42 +694,8 @@ export default class Component extends Element {
     return this.options.submissionTimezone;
   }
 
-  get shouldDisable() {
-    return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
-  }
-
-  /**
-   * Builds the component.
-   */
-  buildOld() {
-    if (this.viewOnly) {
-      this.viewOnlyBuild();
-    }
-    else {
-      // this.createElement();
-      //
-      // const labelAtTheBottom = this.component.labelPosition === 'bottom';
-      // if (!labelAtTheBottom) {
-      //   this.createLabel(this.element);
-      // }
-      // if (!this.createWrapper()) {
-      //   this.createInput(this.element);
-      // }
-      // if (labelAtTheBottom) {
-      //   this.createLabel(this.element);
-      // }
-      // this.createDescription(this.element);
-      //
-      // // Disable if needed.
-      // if (this.shouldDisable) {
-      //   this.disabled = true;
-      // }
-      //
-      // // Restore the value.
-      // this.restoreValue();
-      //
-      // this.autofocus();
-    }
+  get canDisable() {
+    return !this.component.alwaysEnabled;
   }
 
   loadRefs(element, refs) {
@@ -762,9 +758,11 @@ export default class Component extends Element {
 
     // this.restoreValue();
 
+    this.autofocus();
+
     // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
+    if (this.canDisable) {
+      this.disabled = this.options.readOnly || this.component.disabled;
     }
 
     // Allow global attach.
@@ -783,29 +781,43 @@ export default class Component extends Element {
    */
   detach() {
     this.removeEventListeners();
+    if (this.tooltip) {
+      this.tooltip.dispose();
+    }
+  }
+
+  attachRefreshEvent(refreshData) {
+    this.on('change', (event) => {
+      const changeKey = _.get(event, 'changed.component.key', false);
+      // Don't let components change themselves.
+      if (changeKey && this.key === changeKey) {
+        return;
+      }
+      if (refreshData === 'data') {
+        this.refresh(this.data);
+      }
+      else if (
+        (changeKey && changeKey === refreshData) && event.changed && event.changed.instance &&
+        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+        // in fields inside EditGrids could alter their state from other rows (which is bad).
+        this.inContext(event.changed.instance)
+      ) {
+        this.refresh(event.changed.value);
+      }
+    });
   }
 
   attachRefreshOn() {
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        const changeKey = _.get(event, 'changed.component.key', false);
-        // Don't let components change themselves.
-        if (changeKey && this.key === changeKey) {
-          return;
-        }
-        if (this.component.refreshOn === 'data') {
-          this.refresh(this.data);
-        }
-        else if (
-          (changeKey && changeKey === this.component.refreshOn) && event.changed && event.changed.instance &&
-          // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-          // in fields inside EditGrids could alter their state from other rows (which is bad).
-          this.inContext(event.changed.instance)
-        ) {
-          this.refresh(event.changed.value);
-        }
-      });
+      if (Array.isArray(this.component.refreshOn)) {
+        this.component.refreshOn.forEach(refreshData => {
+          this.attachRefreshEvent(refreshData);
+        });
+      }
+      else {
+        this.attachRefreshEvent(this.component.refreshOn);
+      }
     }
   }
 
@@ -947,6 +959,9 @@ export default class Component extends Element {
     }
     if (this.hasInput && this.component.validate && this.component.validate.required) {
       className += ' required';
+    }
+    if (this.labelIsHidden()) {
+      className += ' formio-component-label-hidden';
     }
     return className;
   }
@@ -1121,7 +1136,7 @@ export default class Component extends Element {
   conditionallyVisible(data) {
     data = data || this.rootValue;
     if (this.options.attachMode === 'builder' || !this.hasCondition()) {
-      return true;
+      return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
     return this.checkCondition(null, data);
@@ -1246,7 +1261,7 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty) {
+  addInputError(message, dirty, elements) {
     if (!message) {
       return;
     }
@@ -1263,7 +1278,7 @@ export default class Component extends Element {
     }
 
     // Add error classes
-    this.refs.input.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
     this.removeClass(this.element, 'alert alert-danger');
     this.removeClass(this.element, 'has-error');
     if (dirty && this.options.highlightErrors) {
@@ -1720,9 +1735,12 @@ export default class Component extends Element {
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    return !error;
   }
 
   get validationValue() {
@@ -1759,7 +1777,7 @@ export default class Component extends Element {
         message: message
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty);
+      this.addInputError(message, dirty, this.refs.input);
     }
     else {
       this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
@@ -1826,7 +1844,7 @@ export default class Component extends Element {
    */
   set disabled(disabled) {
     // Do not allow a component to be disabled if it should be always...
-    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
+    if (disabled && !this.canDisable) {
       return;
     }
 
@@ -1951,7 +1969,7 @@ export default class Component extends Element {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.shouldDisable) {
+    if (this.disabled) {
       attributes.disabled = 'disabled';
     }
 
@@ -1970,9 +1988,8 @@ export default class Component extends Element {
   }
 
   focus() {
-    const input = this.performInputMapping(this.refs.input[0]);
-    if (input) {
-      input.focus();
+    if (this.refs.input && this.refs.input[0]) {
+      this.refs.input[0].focus();
     }
   }
 }

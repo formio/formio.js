@@ -15,6 +15,8 @@ import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
 import message from './message';
+import modaldialog from './modaldialog';
+import modaledit from './modaledit';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
@@ -26,11 +28,22 @@ import tab from './tab';
 import table from './table';
 import well from './well';
 import wizard from './wizard';
+import cssClasses from './cssClasses';
 
 export default {
-  transform: (type, text) => text,
-  defaultIconset: 'glyphicons',
+  transform(type, text) {
+    if (!text) {
+      return text;
+    }
+    switch (type) {
+      case 'class':
+        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+    }
+    return text;
+  },
+  defaultIconset: 'glyphicon',
   iconClass,
+  cssClasses,
   builder,
   builderComponent,
   builderComponents,
@@ -47,6 +60,8 @@ export default {
   icon,
   input,
   message,
+  modaldialog,
+  modaledit,
   multiValueRow,
   multiValueTable,
   panel,

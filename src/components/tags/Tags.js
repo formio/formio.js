@@ -20,7 +20,7 @@ export default class TagsComponent extends Input {
       icon: 'tags',
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#tags',
-      weight: 50,
+      weight: 30,
       schema: TagsComponent.schema()
     };
   }
@@ -60,7 +60,7 @@ export default class TagsComponent extends Input {
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
-      duplicateItems: false,
+      duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
   }

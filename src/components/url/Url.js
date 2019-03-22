@@ -13,10 +13,10 @@ export default class UrlComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Url',
-      group: 'advanced',
-      icon: 'fa fa-link',
+      group: 'common',
+      icon: 'link',
       documentation: 'http://help.form.io/userguide/#url',
-      weight: 10,
+      weight: 20,
       schema: UrlComponent.schema()
     };
   }

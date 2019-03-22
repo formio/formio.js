@@ -38,7 +38,7 @@ export default class Multivalue extends Field {
     // If multiple value field.
     return super.render(this.renderTemplate('multiValueTable', {
       rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
-      disabled: this.shouldDisable,
+      disabled: this.disabled,
       addAnother: this.addAnother,
     }));
   }
@@ -46,7 +46,7 @@ export default class Multivalue extends Field {
   renderRow(value, index) {
     return this.renderTemplate('multiValueRow', {
       index,
-      disabled: this.shouldDisable,
+      disabled: this.disabled,
       element: `${this.renderElement(value, index)}`,
     });
   }

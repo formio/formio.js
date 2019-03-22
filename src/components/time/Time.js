@@ -26,15 +26,23 @@ export default class TimeComponent extends TextFieldComponent {
     return {
       title: 'Time',
       icon: 'clock-o',
-      group: 'basic',
+      group: 'common',
       documentation: 'http://help.form.io/userguide/#time',
-      weight: 60,
+      weight: 55,
       schema: TimeComponent.schema()
     };
   }
 
   get defaultSchema() {
     return TimeComponent.schema();
+  }
+
+  get defaultValue() {
+    let value = super.defaultValue;
+    if (value) {
+      value = moment(value).format(this.component.format);
+    }
+    return value;
   }
 
   get inputInfo() {

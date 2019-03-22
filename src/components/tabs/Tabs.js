@@ -61,6 +61,7 @@ export default class TabsComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.currentTab = 0;
+    this.noField = true;
   }
 
   init() {

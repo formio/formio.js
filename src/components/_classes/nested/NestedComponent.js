@@ -1,11 +1,11 @@
 'use strict';
 import _ from 'lodash';
-import Component from '../component/Component';
+import Field from '../field/Field';
 import Components from '../../Components';
 
-export default class NestedComponent extends Component {
+export default class NestedComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       tree: true
     }, ...extend);
   }
@@ -446,7 +446,7 @@ export default class NestedComponent extends Component {
     }
 
     // Return if the value is valid.
-    return valid;
+    return !!valid;
   }
 
   checkConditions(data) {

@@ -43,8 +43,8 @@ export default [
     input: true,
     weight: 15,
     placeholder: `{
-      "withCredentials": true
-    }`,
+  "withCredentials": true
+}`,
     conditional: {
       json: {
         '===': [{

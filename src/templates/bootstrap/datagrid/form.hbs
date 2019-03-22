@@ -1,8 +1,7 @@
-<label class="col-form-label" style="">{{t(component.label)}}</label>
 <table class="table datagrid-table table-bordered
     {{ component.striped ? 'table-striped' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-sm' : ''}} 
+    {{ component.condensed ? 'table-sm' : ''}}
     " {% if (component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
   {% if (hasHeader) { %}
   <thead>
@@ -29,6 +28,14 @@
   {% } %}
   <tbody ref="{{datagridKey}}-tbody">
     {% rows.forEach(function(row) { %}
+    {% if (hasGroups && groups[index]) { %}
+    <tr ref="{{datagridKey}}-group-header" class="datagrid-group-header{{hasToggle ? ' clickable' : ''}}">
+      <td
+        ref="{{datagridKey}}-group-label"
+        colspan="{{numColumns}}"
+        class="datagrid-group-label">{{groups[index].label}}</td>
+    </tr>
+    {% } %}
     <tr ref="{{datagridKey}}-row">
       {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}

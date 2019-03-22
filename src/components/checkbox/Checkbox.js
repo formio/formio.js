@@ -34,15 +34,15 @@ export default class CheckBoxComponent extends Component {
     return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
   }
 
-  get className() {
-    let className = super.className;
+  get labelClass() {
+    let className = '';
     if (this.isInputComponent
       && !this.options.inputsOnly
       && this.component.validate
       && this.component.validate.required) {
       className += ' field-required';
     }
-    return `${className} checkbox`;
+    return `${className}`;
   }
 
   get hasSetValue() {
@@ -60,7 +60,7 @@ export default class CheckBoxComponent extends Component {
     }
     info.attr.value = this.component.value ? this.component.value : 0;
     info.label = this.t(this.component.label);
-    info.labelClass = this.className;
+    info.labelClass = this.labelClass;
     return info;
   }
 

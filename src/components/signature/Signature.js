@@ -21,7 +21,7 @@ export default class SignatureComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Signature',
-      group: 'advanced',
+      group: 'common',
       icon: 'pencil',
       weight: 120,
       documentation: 'http://help.form.io/userguide/#signature',

@@ -1,9 +1,8 @@
-<label class="col-form-label" style="">{{t(component.label)}}</label>
-<ul class="editgrid-listgroup list-group 
+<ul class="editgrid-listgroup list-group
     {{ component.striped ? 'table-striped' : ''}}
     {{ component.bordered ? 'table-bordered' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-sm' : ''}} 
+    {{ component.condensed ? 'table-sm' : ''}}
     ">
   {% if (header) { %}
   <li class="list-group-item list-group-header">
@@ -15,7 +14,7 @@
     {{row}}
     {% if (openRows[rowIndex] && !readOnly) { %}
     <div class="editgrid-actions">
-      <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
+      <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button>
       {% if (component.removeRow) { %}
       <button class="btn btn-danger" ref="{{editgridKey}}-cancelRow">{{t(component.removeRow || 'Cancel')}}</button>
       {% } %}

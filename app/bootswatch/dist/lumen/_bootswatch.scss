@@ -1,4 +1,4 @@
-// Lumen 4.2.1
+// Lumen 4.3.1
 // Bootswatch
 
 
@@ -35,8 +35,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400
 
 .btn {
   @include shadow();
-  font-size: 12px;
-  font-weight: bold;
   text-transform: uppercase;
 
   &:not(.disabled):hover {
@@ -70,7 +68,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400
 
   &-info {
     border-color: darken($info, 5%);
-    color: $white;
   }
 
   &-danger {
@@ -79,7 +76,6 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400
 
   &-warning {
     border-color: darken($warning, 5%);
-    color: $white;
   }
 
   &-light {
@@ -244,6 +240,15 @@ $web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400
 
 .form-control {
   box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.075);
+}
+
+.input-group-sm {
+  > .input-group-prepend,
+  > .input-group-append {
+    .btn {
+      font-size: $btn-font-size-sm;
+    }
+  }
 }
 
 // Navs ========================================================================

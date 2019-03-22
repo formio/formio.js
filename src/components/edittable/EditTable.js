@@ -18,9 +18,9 @@ export default class EditTableComponent extends DataGridComponent {
   static get builderInfo() {
     return {
       title: 'Edit Table',
-      icon: 'fa fa-th',
+      icon: 'th',
       group: 'data',
-      weight: 20,
+      weight: 50,
       schema: EditTableComponent.schema()
     };
   }

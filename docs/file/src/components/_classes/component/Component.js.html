@@ -29,12 +29,14 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
@@ -103,7 +105,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
@@ -593,8 +596,12 @@ export default class Component extends Element {
     // Can be overridden
   }
 
+  get isInputComponent() {
+    return !this.component.hasOwnProperty(&apos;input&apos;) || this.component.input;
+  }
+
   get hasInput() {
-    return this.component.input || (this.refs.input &amp;&amp; this.refs.input.length);
+    return this.isInputComponent || (this.refs.input &amp;&amp; this.refs.input.length);
   }
 
   get defaultSchema() {
@@ -994,27 +1001,38 @@ export default class Component extends Element {
     this.removeEventListeners();
   }
 
+  attachRefreshEvent(refreshData) {
+    this.on(&apos;change&apos;, (event) =&gt; {
+      const changeKey = _.get(event, &apos;changed.component.key&apos;, false);
+      // Don&apos;t let components change themselves.
+      if (changeKey &amp;&amp; this.key === changeKey) {
+        return;
+      }
+      if (refreshData === &apos;data&apos;) {
+        this.refresh(this.data);
+      }
+      else if (
+        (changeKey &amp;&amp; changeKey === refreshData) &amp;&amp; event.changed &amp;&amp; event.changed.instance &amp;&amp;
+        // Make sure the changed component is not in a different &quot;context&quot;. Solves issues where refreshOn being set
+        // in fields inside EditGrids could alter their state from other rows (which is bad).
+        this.inContext(event.changed.instance)
+      ) {
+        this.refresh(event.changed.value);
+      }
+    });
+  }
+
   attachRefreshOn() {
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
-      this.on(&apos;change&apos;, (event) =&gt; {
-        const changeKey = _.get(event, &apos;changed.component.key&apos;, false);
-        // Don&apos;t let components change themselves.
-        if (changeKey &amp;&amp; this.key === changeKey) {
-          return;
-        }
-        if (this.component.refreshOn === &apos;data&apos;) {
-          this.refresh(this.data);
-        }
-        else if (
-          (changeKey &amp;&amp; changeKey === this.component.refreshOn) &amp;&amp; event.changed &amp;&amp; event.changed.instance &amp;&amp;
-          // Make sure the changed component is not in a different &quot;context&quot;. Solves issues where refreshOn being set
-          // in fields inside EditGrids could alter their state from other rows (which is bad).
-          this.inContext(event.changed.instance)
-        ) {
-          this.refresh(event.changed.value);
-        }
-      });
+      if (Array.isArray(this.component.refreshOn)) {
+        this.component.refreshOn.forEach(refreshData =&gt; {
+          this.attachRefreshEvent(refreshData);
+        });
+      }
+      else {
+        this.attachRefreshEvent(this.component.refreshOn);
+      }
     }
   }
 
@@ -1472,10 +1490,14 @@ export default class Component extends Element {
     }
 
     // Add error classes
-    this.addClass(this.element, &apos;has-error&apos;);
     this.refs.input.forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+    this.removeClass(this.element, &apos;alert alert-danger&apos;);
+    this.removeClass(this.element, &apos;has-error&apos;);
     if (dirty &amp;&amp; this.options.highlightErrors) {
       this.addClass(this.element, &apos;alert alert-danger&apos;);
+    }
+    else {
+      this.addClass(this.element, &apos;has-error&apos;);
     }
   }
 
@@ -1583,7 +1605,8 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
-      !this.key||
+      !this.key ||
+      !this.isInputComponent ||
       (!this.visible &amp;&amp; this.component.clearOnHide)
     ) {
       return value;
@@ -1967,9 +1990,7 @@ export default class Component extends Element {
     }
     else {
       this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
-      if (this.options.highlightErrors) {
-        this.removeClass(this.element, &apos;alert alert-danger&apos;);
-      }
+      this.removeClass(this.element, &apos;alert alert-danger&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
       this.error = null;
     }

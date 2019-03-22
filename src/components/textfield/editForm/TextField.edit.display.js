@@ -2,48 +2,26 @@ import Widgets from '../../../widgets';
 import _ from 'lodash';
 export default [
   {
-    weight: 50,
+    weight: 400,
     type: 'select',
     input: true,
     key: 'widget.type',
     label: 'Widget',
     placeholder: 'Select a widget',
     tooltip: 'The widget is the display UI used to input the value of the field.',
+    defaultValue: 'input',
     onChange: (context) => {
       context.data.widget = _.pick(context.data.widget, 'type');
     },
     dataSrc: 'values',
     data: {
       values: [
-        { label: 'Calendar', value: 'calendar' }
+        { label: 'Input Field', value: 'input' },
+        { label: 'Calendar Picker', value: 'calendar' },
       ]
     },
     conditional: {
       json: { '===': [{ var: 'data.type' }, 'textfield'] }
-    }
-  },
-  {
-    weight: 55,
-    type: 'textarea',
-    key: 'widget',
-    label: 'Widget Settings',
-    calculateValue: (context) => {
-      context.data = context.data || { widget: {} };
-      if (context.data && _.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
-        if (context.data.widget && context.data.widget.type) {
-          settings = Widgets[context.data.widget.type].defaultSettings;
-        }
-        return settings;
-      }
-      return context.data.widget;
-    },
-    input: true,
-    rows: 5,
-    editor: 'ace',
-    as: 'json',
-    conditional: {
-      json: { '!!': { var: 'data.widget.type' } }
     }
   },
   {
@@ -85,17 +63,41 @@ export default [
     ]
   },
   {
-    weight: 420,
+    weight: 320,
     type: 'textfield',
     input: true,
     key: 'prefix',
     label: 'Prefix'
   },
   {
-    weight: 430,
+    weight: 330,
     type: 'textfield',
     input: true,
     key: 'suffix',
     label: 'Suffix'
-  }
+  },
+  {
+    weight: 1300,
+    type: 'checkbox',
+    label: 'Hide Input',
+    tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
+    key: 'mask',
+    input: true
+  },
+  {
+    weight: 1200,
+    type: 'checkbox',
+    label: 'Show Word Counter',
+    tooltip: 'Show a live count of the number of words.',
+    key: 'showWordCount',
+    input: true
+  },
+  {
+    weight: 1201,
+    type: 'checkbox',
+    label: 'Show Character Counter',
+    tooltip: 'Show a live count of the number of characters.',
+    key: 'showCharCount',
+    input: true
+  },
 ];

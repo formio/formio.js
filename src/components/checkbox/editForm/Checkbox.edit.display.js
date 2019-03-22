@@ -2,22 +2,16 @@ import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
-    type: 'select',
-    input: true,
-    label: 'Label Position',
     key: 'labelPosition',
-    tooltip: 'Position for the label for this field.',
-    defaultValue: 'right',
-    dataSrc: 'values',
-    weight: 20,
-    data: {
-      values: [
-        { label: 'Top', value: 'top' },
-        { label: 'Left', value: 'left' },
-        { label: 'Right', value: 'right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+    ignore: true,
+  },
+  {
+    key: 'placeholder',
+    ignore: true,
+  },
+  {
+    key: 'description',
+    ignore: true,
   },
   {
     type: 'select',

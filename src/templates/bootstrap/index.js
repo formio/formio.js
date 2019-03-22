@@ -42,20 +42,22 @@ import treePartials from './tree/partials';
 import webform from './webform';
 import well from './well';
 import wizard from './wizard';
+import cssClasses from './cssClasses';
 
 export default {
-  transform: (type, text) => {
-    const classes = {
-      'border-default': '',
-    };
+  transform(type, text) {
+    if (!text) {
+      return text;
+    }
     switch (type) {
       case 'class':
-        return classes.hasOwnProperty(text.toString()) ? classes[text.toString()] : text;
+        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
     }
     return text;
   },
   defaultIconset: 'fa',
   iconClass,
+  cssClasses,
   builder,
   builderComponent,
   builderComponents,

@@ -702,9 +702,7 @@ export default class Webform extends NestedComponent {
         // If nothing changed, still trigger an update.
         this.submissionSet = true;
         if (!this.setValue(submission, flags)) {
-          this.triggerChange({
-            noValidate: true
-          });
+          this.triggerChange();
         }
         else {
           this.redraw();
@@ -776,7 +774,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = this._form;
+    const schema = _.cloneDeep(_.omit(this._form, ['components']));
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -1295,9 +1293,9 @@ export default class Webform extends NestedComponent {
     }
   }
 
-  set nosubmit(value = false) {
-    this._nosubmit = value;
-    this.emit('nosubmit', value);
+  set nosubmit(value) {
+    this._nosubmit = !!value;
+    this.emit('nosubmit', this._nosubmit);
   }
 
   get nosubmit() {

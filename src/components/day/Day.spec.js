@@ -136,7 +136,6 @@ describe('Day Component', () => {
 
       for (const v in tests) {
         component.setValue(v);
-        console.log(valid(), tests[v]);
         assert.equal(valid(), tests[v]);
       }
 

@@ -72,13 +72,28 @@ export default class TableComponent extends NestedComponent {
     return `table-responsive ${super.className}`;
   }
 
-  get columnKey() {
-    return `column-${this.key}`;
+  get tableKey() {
+    return `table-${this.key}`;
+  }
+
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
   }
 
   init() {
     super.init();
-    this.table = [];
+    // Ensure component.rows has the correct number of rows and columns.
+    for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {
+      this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];
+      for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {
+        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };
+      }
+      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);
+    }
+    this.component.rows = this.component.rows.slice(0, this.component.numRows);
+
+      this.table = [];
     _.each(this.component.rows, (row, rowIndex) => {
       this.table[rowIndex] = [];
       _.each(row, (column, colIndex) => {
@@ -95,7 +110,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('table', {
-      columnKey: this.columnKey,
+      tableKey: this.tableKey,
       tableComponents: this.table.map(row =>
         row.map(column =>
           this.renderComponents(column)
@@ -105,13 +120,16 @@ export default class TableComponent extends NestedComponent {
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.columnKey]: 'multiple' });
+    const keys = this.table.reduce((prev, row, rowIndex) => {
+      prev[`${this.tableKey}-${rowIndex}`] = 'multiple';
+      return prev;
+    }, {});
+    this.loadRefs(element, keys);
     super.attach(element);
-    const rowLength = this.table.length;
-    this.refs[this.columnKey].forEach((column, index) => {
-      const rowIndex = Math.floor(index / rowLength);
-      const columnIndex = index % rowLength;
-      this.attachComponents(column, this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+    this.table.forEach((row, rowIndex) => {
+      row.forEach((column, columnIndex) => {
+        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+      });
     });
   }
 

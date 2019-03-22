@@ -257,9 +257,7 @@ export default class Wizard extends Webform {
 
     // Validate the form builed, before go to the next page
     if (this.checkCurrentPageValidity(this.submission.data, true)) {
-      this.checkData(this.submission.data, {
-        noValidate: true
-      });
+      this.checkData(this.submission.data);
       return this.beforeNext().then(() => {
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
           this.emit('nextPage', { page: this.page, submission: this.submission });

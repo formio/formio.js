@@ -1,4 +1,3 @@
-<label class="control-label" style="">{{t(component.label)}}</label>
 <div class="editgrid-listgroup ui celled list">
   {% if (header) { %}
   <div class="item list-group-header">
@@ -10,7 +9,7 @@
     {{row}}
     {% if (openRows[rowIndex] && !readOnly) { %}
     <div class="editgrid-actions">
-      <button class="ui button primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button> 
+      <button class="ui button primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button>
       {% if (component.removeRow) { %}
       <button class="ui button secondary" ref="{{editgridKey}}-cancelRow">{{t(component.removeRow || 'Cancel')}}</button>
       {% } %}

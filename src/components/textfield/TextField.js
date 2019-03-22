@@ -10,11 +10,15 @@ export default class TextFieldComponent extends Input {
       mask: false,
       inputType: 'text',
       inputMask: '',
+      tableView: true,
       validate: {
         minLength: '',
         maxLength: '',
         pattern: ''
-      }
+      },
+      widget: {
+        type: 'input'
+      },
     }, ...extend);
   }
 

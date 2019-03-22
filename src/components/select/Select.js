@@ -16,9 +16,11 @@ export default class SelectComponent extends Field {
         resource: '',
         custom: ''
       },
+      clearOnRefresh: false,
       limit: 100,
       dataSrc: 'values',
       valueProperty: '',
+      lazyLoad: true,
       filter: '',
       searchEnabled: true,
       searchField: '',
@@ -28,6 +30,11 @@ export default class SelectComponent extends Field {
       template: '<span>{{ item.label }}</span>',
       selectFields: '',
       searchThreshold: 0.3,
+      tableView: true,
+      fuseOptions: {
+        include: 'score',
+        threshold: 0.3,
+      },
       customOptions: {}
     }, ...extend);
   }
@@ -583,7 +590,7 @@ export default class SelectComponent extends Field {
     info.multiple = this.component.multiple;
     return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
-      options: '',
+      selectOptions: '',
       index: null,
     })));
   }
@@ -630,12 +637,11 @@ export default class SelectComponent extends Field {
     }
 
     const choicesOptions = {
-      ...customOptions,
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
-        containerInner: 'form-control ui fluid selection dropdown'
+        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
       },
       addItemText: false,
       placeholder: !!this.component.placeholder,
@@ -647,12 +653,13 @@ export default class SelectComponent extends Field {
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: ['label'],
-      fuseOptions: {
+      searchFields: _.get(this, 'component.searchFields', ['label']),
+      fuseOptions: Object.assign({
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
-      },
-      itemComparer: _.isEqual
+      }, _.get(this, 'component.fuseOptions', {})),
+      itemComparer: _.isEqual,
+      ...customOptions,
     };
 
     const tabIndex = input.tabIndex;
@@ -721,7 +728,7 @@ export default class SelectComponent extends Field {
     }
 
     // Force the disabled state with getters and setters.
-    this.disabled = this.shouldDisable;
+    this.disabled = this.disabled;
     this.triggerUpdate();
   }
 
@@ -1005,5 +1012,28 @@ export default class SelectComponent extends Field {
 
   focus() {
     this.focusableElement.focus();
+  }
+
+  setCustomValidity(message, dirty) {
+    if (this.refs.messageContainer) {
+      this.empty(this.refs.messageContainer);
+    }
+    if (!this.refs.selectContainer) {
+      return;
+    }
+    if (message) {
+      this.error = {
+        component: this.component,
+        message: message
+      };
+      this.emit('componentError', this.error);
+      this.addInputError(message, dirty, [this.refs.selectContainer]);
+    }
+    else {
+      this.removeClass(this.refs.selectContainer, 'is-invalid');
+      this.removeClass(this.element, 'alert alert-danger');
+      this.removeClass(this.element, 'has-error');
+      this.error = null;
+    }
   }
 }

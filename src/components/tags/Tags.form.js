@@ -1,12 +1,12 @@
 import baseEditForm from '../_classes/component/Component.form';
 
-import TagsEditDisplay from './editForm/Tags.edit.display';
+import TagsEditData from './editForm/Tags.edit.data';
 
 export default function(...extend) {
   return baseEditForm([
     {
-      key: 'display',
-      components: TagsEditDisplay
+      key: 'data',
+      components: TagsEditData
     }
   ], ...extend);
 }

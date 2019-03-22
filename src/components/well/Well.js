@@ -33,4 +33,9 @@ export default class WellComponent extends NestedComponent {
   get templateName() {
     return 'well';
   }
+
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
+  }
 }

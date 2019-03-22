@@ -16,7 +16,7 @@ export default class ButtonComponent extends Field {
       action: 'submit',
       persistent: false,
       disableOnInvalid: false,
-      theme: 'default',
+      theme: 'primary',
       dataGridLabel: true
     }, ...extend);
   }
@@ -112,6 +112,7 @@ export default class ButtonComponent extends Field {
       buttonMessage: 'single'
     });
     super.attach(element);
+
     if (!this.refs.button) {
       return;
     }
@@ -169,6 +170,7 @@ export default class ButtonComponent extends Field {
     this.on('change', (value) => {
       this.loading = false;
       this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
+      this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
         onChange(value, value.isValid);
       }
@@ -183,8 +185,8 @@ export default class ButtonComponent extends Field {
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
-    if (this.shouldDisable) {
-      this.disabled = true;
+    if (this.canDisable) {
+      this.disabled = this.options.readOnly || this.component.disabled;
     }
 
     function getUrlParameter(name) {
@@ -204,12 +206,13 @@ export default class ButtonComponent extends Field {
         this.openOauth();
       }
     }
-
-    this.autofocus();
   }
   /* eslint-enable max-statements */
 
   onClick(event) {
+    if (this.disabled) {
+      return;
+    }
     this.dataValue = true;
     if (this.component.action !== 'submit' && this.component.showValidations) {
       this.emit('checkValidity', this.data);

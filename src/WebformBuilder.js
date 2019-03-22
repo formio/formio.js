@@ -98,7 +98,8 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form' && !self.key) {
-        return html;
+        // The main webform shouldn't have this class as it adds extra styles.
+        return html.replace('formio-component-form', '');
       }
 
       if (this.options.disabled && this.options.disabled.includes(self.key)) {
@@ -175,18 +176,18 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.attachDatagrid = (element, component) => {
       component.loadRefs(element, {
-        'container': 'single',
+        [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
 
       // Need to set up horizontal rearrangement of fields.
     };
 
     this.options.hooks.attachEditgrid = (element, component) => {
       component.loadRefs(element, {
-        'container': 'single',
+        [`${component.key}-container`]: 'single',
       });
-      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
     };
 
     this.options.hooks.attachComponent = (element, component) => {
@@ -272,27 +273,35 @@ export default class WebformBuilder extends Component {
   get defaultGroups() {
     return {
       basic: {
-        title: 'Basic',
+        title: 'Standard',
         weight: 0,
         default: true,
       },
-      advanced: {
-        title: 'Advanced',
+      common: {
+        title: 'Common',
         weight: 10
       },
       layout: {
         title: 'Layout',
         weight: 20
       },
+      advanced: {
+        title: 'Advanced',
+        weight: 30
+      },
       data: {
         title: 'Data',
-        weight: 30
+        weight: 40
       }
     };
   }
 
   get form() {
     return this.webform.form;
+  }
+
+  get schema() {
+    return this.webform.schema;
   }
 
   set form(value) {
@@ -384,7 +393,7 @@ export default class WebformBuilder extends Component {
         return el.classList.contains('drag-copy');
       },
       accepts(el, target) {
-        return !target.classList.contains('no-drop');
+        return !el.contains(target) && !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
 
@@ -401,6 +410,11 @@ export default class WebformBuilder extends Component {
 
   onDrop(element, target, source, sibling) {
     if (!target) {
+      return;
+    }
+
+    // If you try to drop within itself.
+    if (element.contains(target)) {
       return;
     }
 
@@ -511,7 +525,11 @@ export default class WebformBuilder extends Component {
       return;
     }
     let remove = true;
-    if (Array.isArray(component.components) || Array.isArray(component.rows) || Array.isArray(component.columns)) {
+    if (
+      (Array.isArray(component.components) && component.components.length) ||
+      (Array.isArray(component.rows) && component.rows.length) ||
+      (Array.isArray(component.columns) && component.columns.length)
+    ) {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
@@ -526,7 +544,10 @@ export default class WebformBuilder extends Component {
   updateComponent(component) {
     // Update the preview.
     if (this.preview) {
-      this.preview.form = { components: [component] };
+      this.preview.form = { components: [_.omit(component, [
+        'hidden',
+        'calculatedValue'
+      ])] };
       this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
     }
 
@@ -538,7 +559,8 @@ export default class WebformBuilder extends Component {
         'placeholder',
         'tooltip',
         'validate',
-        'disabled'
+        'disabled',
+        'calculatedValue'
       ]));
     }
 
@@ -596,7 +618,13 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
+    this.preview = new Webform(_.omit(this.options, [
+      'hooks',
+      'builder',
+      'events',
+      'attachMode',
+      'calculatedValue'
+    ]));
 
     this.componentEdit = this.ce('div');
     this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
@@ -626,14 +654,13 @@ export default class WebformBuilder extends Component {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
-              event.data.key = _.camelCase(
-                event.data.label ||
-                event.data.placeholder ||
-                event.data.type
-              );
-              this.editForm.submission = {
-                data: event.data
-              };
+              this.editForm.getComponent('key', component => {
+                component.setValue(_.camelCase(
+                  event.data.label ||
+                  event.data.placeholder ||
+                  event.data.type
+                ));
+              });
             }
 
             // Set the component to the componentJson if this is a custom component.

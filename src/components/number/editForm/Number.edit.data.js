@@ -4,7 +4,7 @@ export default [
     input: true,
     weight: 70,
     key: 'delimiter',
-    label: 'Use Delimiter',
+    label: 'Use Thousands Separator',
     tooltip: 'Separate thousands by local delimiter.'
   },
   {

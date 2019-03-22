@@ -35,4 +35,9 @@ export default class PanelComponent extends NestedComponent {
   get templateName() {
     return 'panel';
   }
+
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
+  }
 }

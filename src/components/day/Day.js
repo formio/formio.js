@@ -32,7 +32,7 @@ export default class DayComponent extends Field {
   static get builderInfo() {
     return {
       title: 'Day',
-      group: 'advanced',
+      group: 'common',
       icon: 'calendar',
       documentation: 'http://help.form.io/userguide/#day',
       weight: 50,
@@ -87,15 +87,15 @@ export default class DayComponent extends Field {
       max = 12;
     }
     if (name === 'year') {
-      min = 1;
-      max = undefined;
+      min = _.get(this.component, 'fields.year.minYear', 1900) || 1900;
+      max = _.get(this.component, 'fields.year.maxYear', 2030) || 1900;
     }
     return {
       type: 'input',
       ref: name,
       attr: {
         id: `${this.component.key}-${name}`,
-        class: 'form-control',
+        class: `form-control ${this.transform('class', `formio-day-component-${name}`)}`,
         type: this.component.fields[name].type === 'select' ? 'select' : 'number',
         placeholder: this.component.fields[name].placeholder,
         step: 1,
@@ -163,7 +163,9 @@ export default class DayComponent extends Field {
     this._years = [
       { value: 0, label: _.get(this.component, 'fields.year.placeholder', '') }
     ];
-    for (let x = 1900; x <= 2030; x++) {
+    const minYears = _.get(this.component, 'fields.year.minYear', 1900) || 1900;
+    const maxYears = _.get(this.component, 'fields.year.maxYear', 2030) || 2030;
+    for (let x = minYears; x <= maxYears; x++) {
       this._years.push({
         value: x,
         label: x.toString()
@@ -197,7 +199,7 @@ export default class DayComponent extends Field {
     if (this.component.fields[name].type === 'select') {
       return this.renderTemplate('select', {
         input: this.selectDefinition(name),
-        options: this[`${name}s`].reduce((html, option) =>
+        selectOptions: this[`${name}s`].reduce((html, option) =>
           html + this.renderTemplate('selectOption', {
             option,
             selected: false, attrs: {}
@@ -217,6 +219,7 @@ export default class DayComponent extends Field {
     super.attach(element);
     this.addEventListener(this.refs.day, 'change', () => this.updateValue());
     this.addEventListener(this.refs.month, 'change', () => this.updateValue());
+    // TODO: Need to rework this to work with day select as well.
     // Change day max input when month changes.
     this.addEventListener(this.refs.month, 'change', () => {
       const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
@@ -365,7 +368,7 @@ export default class DayComponent extends Field {
     }
 
     if (this.showDay && this.refs.day) {
-      day = parseInt(this.refs.month.value, 10);
+      day = parseInt(this.refs.day.value, 10);
     }
     if (day === undefined || _.isNaN(day)) {
       day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;

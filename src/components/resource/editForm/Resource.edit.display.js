@@ -1,5 +1,13 @@
 export default [
   {
+    key: 'resourceInfo',
+    weight: -10,
+    type: 'htmlelement',
+    tag: 'div',
+    className: 'alert alert-danger',
+    content: 'The Resource component is deprecated. Use the Select component with data source of "Resource" instead.'
+  },
+  {
     type: 'select',
     input: true,
     dataSrc: 'url',

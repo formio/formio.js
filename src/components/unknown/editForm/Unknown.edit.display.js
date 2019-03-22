@@ -35,14 +35,6 @@ export default [
     ignore: true
   },
   {
-    key: 'labelWidth',
-    ignore: true
-  },
-  {
-    key: 'labelMargin',
-    ignore: true
-  },
-  {
     key: 'placeholder',
     ignore: true
   },

@@ -89,7 +89,6 @@ describe('TextField Component', () => {
 
   it('Should allow for multiple values', () => {
     return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
-      console.log(component.element.innerHTML);
       Harness.testElements(component, 'table', 1);
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);
