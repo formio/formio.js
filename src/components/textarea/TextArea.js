@@ -162,6 +162,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on('input', () => this.acePlaceholder());
             setTimeout(() => this.acePlaceholder(), 100);
+            this.editor.setValue(this.setConvertedValue(this.dataValue));
             return this.editor;
           });
         break;
@@ -208,17 +209,19 @@ export default class TextAreaComponent extends TextFieldComponent {
               this.updateValue(null, this.getConvertedValue(this.editor.root.innerHTML));
             });
 
+            this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
             return this.editor;
           });
         break;
       case 'ckeditor':
         this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', true)
           .then((ClassicEditor) => {
-            ClassicEditor.create(element, settings).then(editor => {
+            return ClassicEditor.create(element, settings).then(editor => {
               editor.model.document.on('change', () => this.updateValue(null, editor.data.get()));
               this.editor = editor;
+              this.editor.data.set(this.setConvertedValue(this.dataValue));
+              return this.editor;
             });
-            return this.editor;
           });
         break;
       default:
