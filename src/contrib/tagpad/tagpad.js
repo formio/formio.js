@@ -41,8 +41,17 @@ export default class Tagpad extends NestedComponent {
     this.createLabel(this.element);
     this.renderTagpad();
     this.createDescription(this.element);
+    if (this.shouldDisable) {
+      this.disabled = true;
+    }
     this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
     this.attachLogic();
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    //call Base Component setter to run the logic for adding disabled class
+    Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'disabled').set.call(this, disabled);
   }
 
   renderTagpad() {
@@ -116,6 +125,9 @@ export default class Tagpad extends NestedComponent {
   }
 
   attachDrawEvents() {
+    if (this.options.readOnly) {
+      return;
+    }
     // Set up mouse event.
     const mouseEnd = (e) => {
       e.preventDefault();
