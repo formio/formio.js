@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import TextAreaComponent from '../textarea/TextArea';
+import TextAreaComponent from '../../components/textarea/TextArea';
+import ModalEditForm from './ModalEdit.form';
 
 export default class ModalEditComponent extends TextAreaComponent {
   static schema(...extend) {
@@ -187,3 +188,5 @@ export default class ModalEditComponent extends TextAreaComponent {
     };
   }
 }
+
+ModalEditComponent.editForm = ModalEditForm;

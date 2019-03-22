@@ -1,5 +1,5 @@
 import modalEditDisplayForm from './editForm/ModalEdit.edit.display';
-import textAreaEditForm from '../textarea/TextArea.form';
+import textAreaEditForm from '../../components/textarea/TextArea.form';
 
 export default function(...extend) {
   return textAreaEditForm([

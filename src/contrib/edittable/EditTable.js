@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import DataGridComponent from '../datagrid/DataGrid';
+import DataGridComponent from '../../components/datagrid/DataGrid';
 import ModalEdit from '../modaledit/ModalEdit';
+import EditTableForm from './EditTable.form';
 
 export default class EditTableComponent extends DataGridComponent {
   static schema(...extend) {
@@ -279,3 +280,5 @@ export default class EditTableComponent extends DataGridComponent {
     }
   }
 }
+
+EditTableComponent.editForm = EditTableForm;
