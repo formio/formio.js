@@ -62,11 +62,11 @@ export default class FormComponent extends BaseComponent {
     return this._root;
   }
 
-  set nosubmit(value = false) {
-    this._nosubmit = value;
+  set nosubmit(value) {
+    this._nosubmit = !!value;
 
     if (this.subForm) {
-      this.subForm.nosubmit = value;
+      this.subForm.nosubmit = !!value;
     }
   }
 
@@ -240,6 +240,11 @@ export default class FormComponent extends BaseComponent {
       if (this.component.form) {
         this.formSrc = `${rootSrc}/${this.component.form}`;
       }
+    }
+
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
     }
 
     // Determine if we already have a loaded form object.
