@@ -2328,7 +2328,8 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.hasInput || (!dirty && this.pristine)) {
+    if (!(this.component.validate && this.component.validate.required)
+      && (!this.hasInput || (!dirty && this.pristine))) {
       return '';
     }
 
@@ -2352,9 +2353,12 @@ export default class BaseComponent extends Component {
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    return !error;
   }
 
   /* eslint-disable max-len */
