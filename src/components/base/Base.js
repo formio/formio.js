@@ -2353,11 +2353,12 @@ export default class BaseComponent extends Component {
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
-    if (!this.pristine) {
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
       this.setCustomValidity(message, dirty);
     }
-    return message ? false : true;
+    return !error;
   }
 
   /* eslint-disable max-len */
