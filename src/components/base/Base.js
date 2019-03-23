@@ -2358,6 +2358,9 @@ export default class BaseComponent extends Component {
       const message = this.invalidMessage(data, dirty, true);
       this.setCustomValidity(message, dirty);
     }
+    else {
+      this.setCustomValidity('');
+    }
     return !error;
   }
 
