@@ -61,7 +61,10 @@ export default class Sketchpad extends Base {
         eventStart: (coordinate) => {
           this.points = [coordinate];
           this.prev = coordinate;
-          this.curve = this.two.makeCurve([new Two.Vector(this.prev.x, this.prev.y), new Two.Vector(coordinate.x, coordinate.y + 1)], true);
+          this.curve = this.two.makeCurve([
+            new Two.Vector(this.prev.x, this.prev.y),
+            new Two.Vector(coordinate.x, coordinate.y + 1)
+          ], true);
           this.curve.noFill().stroke = this.state.stroke;
           this.curve.linewidth = this.state.linewidth;
           this.curve.vertices.forEach((v) => v.addSelf(this.curve.translation));
@@ -126,7 +129,12 @@ export default class Sketchpad extends Base {
           this.triggerChange();
         },
         draw: (state) => {
-          const layer = this.two.makeLine(state.vertices[0].x, state.vertices[0].y, state.vertices[1].x, state.vertices[1].y);
+          const layer = this.two.makeLine(
+            state.vertices[0].x,
+            state.vertices[0].y,
+            state.vertices[1].x,
+            state.vertices[1].y
+          );
           layer.fill = state.fill;
           layer.stroke = state.stroke;
           layer.linewidth = state.linewidth;
@@ -457,6 +465,7 @@ export default class Sketchpad extends Base {
   }
 
   createToolbar() {
+    /* eslint-disable max-len */
     return this.ce('div', {
       class: 'btn-toolbar formio-sketchpad-toolbar',
       role: 'toolbar'
@@ -511,6 +520,7 @@ export default class Sketchpad extends Base {
         }))),
       ),
     ]);
+    /* eslint-enable max-len */
   }
 
   attach() {
@@ -800,7 +810,9 @@ export default class Sketchpad extends Base {
 
   updateSvgViewBox() {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
+    /* eslint-disable max-len */
     this.editSvgElement.setAttribute('viewBox', `${this.zoomInfo.viewBox.minX} ${this.zoomInfo.viewBox.minY} ${this.zoomInfo.viewBox.width} ${this.zoomInfo.viewBox.height}`);
+    /* eslint-enable max-len */
   }
 
   setTotalMultiplier(multiplier) {

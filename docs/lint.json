@@ -123,87 +123,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1237,
+        "lineNumber": 1238,
         "line": "  /**"
       },
       {
-        "lineNumber": 1238,
+        "lineNumber": 1239,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1239,
-        "line": "   *"
-      },
-      {
         "lineNumber": 1240,
-        "line": "   * @example"
+        "line": "   *"
       },
       {
         "lineNumber": 1241,
-        "line": "   * import Webform from 'formiojs/Webform';"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1242,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1243,
-        "line": "   * form.src = 'https://examples.form.io/example';"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1244,
-        "line": "   * form.submission = {data: {"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1245,
-        "line": "   *   firstName: 'Joe',"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1246,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1247,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1248,
-        "line": "   * }};"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1249,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   * }};"
       },
       {
         "lineNumber": 1250,
-        "line": "   *   console.log(submission);"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1251,
-        "line": "   * });"
+        "line": "   *   console.log(submission);"
       },
       {
         "lineNumber": 1252,
-        "line": "   *"
+        "line": "   * });"
       },
       {
         "lineNumber": 1253,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
-      },
-      {
-        "lineNumber": 1254,
         "line": "   *"
       },
       {
+        "lineNumber": 1254,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
         "lineNumber": 1255,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   *"
       },
       {
         "lineNumber": 1256,
-        "line": "   */"
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
         "lineNumber": 1257,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1258,
         "line": "  submit(before, options) {"
       }
     ],
@@ -467,31 +467,31 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2433,
+        "lineNumber": 2437,
         "line": "  /**"
       },
       {
-        "lineNumber": 2434,
+        "lineNumber": 2438,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2435,
+        "lineNumber": 2439,
         "line": "   *"
       },
       {
-        "lineNumber": 2436,
+        "lineNumber": 2440,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2437,
+        "lineNumber": 2441,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2438,
+        "lineNumber": 2442,
         "line": "   */"
       },
       {
-        "lineNumber": 2439,
+        "lineNumber": 2443,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
@@ -1478,35 +1478,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 941,
+        "lineNumber": 944,
         "line": "/**"
       },
       {
-        "lineNumber": 942,
+        "lineNumber": 945,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 943,
+        "lineNumber": 946,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 944,
+        "lineNumber": 947,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 945,
+        "lineNumber": 948,
         "line": " *"
       },
       {
-        "lineNumber": 946,
+        "lineNumber": 949,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 947,
+        "lineNumber": 950,
         "line": " */"
       },
       {
-        "lineNumber": 948,
+        "lineNumber": 951,
         "line": "export function unfold(e) {"
       }
     ],

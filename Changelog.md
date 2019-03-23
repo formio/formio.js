@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.18.0
+### Added
+ - Allow locking nested forms to specific revisions.
+ - Allowing for the auth url to be separated from the project url.
+ - FOR-2074: TagPad Component
+ - Bootstrap version option.
+ - FOR-2073: Sketchpad Component
+ 
+### Fixed
+ - FOR-2119: Fixed issues with multiple masks crashing during a form destroy.
+ - FOR-1956: Fix resetForm event on cancel button callback
+ - FOR-2105: Fix empty required select is valid onChange
+ - TextArea on non string value.
+ 
+### Changed
+ - Upgrade eslint@5.15.3, @babel/core@7.4.0, @babel/polyfill@7.4.0, @babel/preset-env@7.4.2, sinon@7.3.0
+
 ## 3.17.4
 ### Changed
  - Minor tweaks to functionality added in 3.17.3
