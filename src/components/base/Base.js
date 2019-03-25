@@ -2258,7 +2258,7 @@ export default class BaseComponent extends Component {
 
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: [],
+      value: this.defaultValue,
       data
     }, 'value');
 
