@@ -585,7 +585,7 @@ export default class Component extends Element {
     }
   }
 
-  renderTemplate(name, data = {}, modeOption, topLevel) {
+  renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
 
@@ -610,15 +610,12 @@ export default class Component extends Element {
 
     // Allow template alters.
     // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`);
-    const result = this.hook(
+    return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
       data,
       mode
     );
-
-    // We only want to sanitize once at the top level so only do it there.
-    return topLevel ? this.sanitize(result) : result;
   }
 
   /**
@@ -731,7 +728,7 @@ export default class Component extends Element {
 
   build(element) {
     this.empty(element);
-    element.innerHTML = this.render();
+    this.setContent(element, this.render());
     this.attach(element);
   }
 
@@ -927,7 +924,7 @@ export default class Component extends Element {
     const self = this;
 
     const dialog = this.ce('div');
-    dialog.innerHTML = this.renderTemplate('dialog');
+    this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
     dialog.refs = {};
@@ -1081,6 +1078,14 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
+  setContent(element, content) {
+    if (element instanceof HTMLElement) {
+      element.innerHTML = this.sanitize(content);
+      return true;
+    }
+    return false;
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
@@ -1090,7 +1095,7 @@ export default class Component extends Element {
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
-    this.element.outerHTML = this.render(null, true);
+    this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
 
     this.attach(this.element);
@@ -1287,9 +1292,9 @@ export default class Component extends Element {
     }
 
     if (this.refs.messageContainer) {
-      this.refs.messageContainer.innerHTML = this.renderTemplate('message', {
+      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
         message
-      });
+      }));
       // const errorMessage = this.ce('p', {
       //   class: 'help-block'
       // });

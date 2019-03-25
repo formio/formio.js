@@ -59,7 +59,7 @@ export default class ModalEditComponent extends TextAreaComponent {
   createModal(element) {
     const self = this;
     const dialog = this.ce('div');
-    dialog.innerHTML = this.renderTemplate('modaldialog');
+    this.setContent(dialog, this.renderTemplate('modaldialog'));
     dialog.refs = {};
     this.loadRefs.call(dialog, dialog, {
       overlay: 'single',
@@ -102,7 +102,7 @@ export default class ModalEditComponent extends TextAreaComponent {
 
   showModal() {
     const elt = this.ce('div');
-    elt.innerHTML = super.renderElement(this.dataValue);
+    this.setContent(elt, super.renderElement(this.dataValue));
     const editor = elt.children[0];
     if (this.isPlain) {
       editor.style.resize = 'vertical';
@@ -114,12 +114,7 @@ export default class ModalEditComponent extends TextAreaComponent {
   updateContentView(content = '') {
     const view = _.get(this, 'refs.input[0]', null);
 
-    if (view instanceof HTMLElement) {
-      view.innerHTML = content;
-      return true;
-    }
-
-    return false;
+    return this.setContent(view, content);
   }
 
   getElementRect(elt) {

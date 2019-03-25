@@ -873,7 +873,7 @@ export default class Webform extends NestedComponent {
       return;
     }
     this.clear();
-    this.element.innerHTML = this.render();
+    this.setContent(this.element, this.render());
     this.attach(this.element);
   }
 
@@ -932,7 +932,7 @@ export default class Webform extends NestedComponent {
         class: `alert alert-${type}`,
         role: 'alert'
       });
-      this.alert.innerHTML = message;
+      this.setContent(this.alert, message);
     }
     if (!this.alert) {
       return;

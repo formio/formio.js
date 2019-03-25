@@ -548,7 +548,7 @@ export default class WebformBuilder extends Component {
         'hidden',
         'calculatedValue'
       ])] };
-      this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
+      this.setContent(this.componentEdit.querySelector('[ref="preview"]'), this.preview.render());
     }
 
     // Change the "default value" field to be reflective of this component.
@@ -627,11 +627,11 @@ export default class WebformBuilder extends Component {
     ]));
 
     this.componentEdit = this.ce('div');
-    this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
+    this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: componentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview.render(),
-    });
+    }));
 
     this.dialog = this.createModal(this.componentEdit);
 

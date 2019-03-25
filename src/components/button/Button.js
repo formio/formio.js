@@ -132,14 +132,14 @@ export default class ButtonComponent extends Field {
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         this.addClass(this.refs.buttonMessageContainer, 'has-success');
         this.removeClass(this.refs.buttonMessageContainer, 'has-error');
-        this.refs.buttonMessage.innerHTML = this.t('complete');
+        this.setContent(this.refs.buttonMessage, this.t('complete'));
       });
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
           this.hasError = false;
-          this.refs.buttonMessage.innerHTML = '';
+          this.setContent(this.refs.buttonMessage, '');
           this.removeClass(this.refs.buttonMessageContainer, 'has-success');
           this.removeClass(this.refs.buttonMessageContainer, 'has-error');
         }
@@ -150,7 +150,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.button, 'btn-danger submit-fail');
         this.removeClass(this.refs.buttonMessageContainer, 'has-success');
         this.addClass(this.refs.buttonMessageContainer, 'has-error');
-        this.refs.buttonMessage.innerHTML = this.t(this.errorMessage('error'));
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage('error')));
       };
     }
 

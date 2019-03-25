@@ -3,6 +3,7 @@ import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
 import templates from './templates';
+import { sanitize } from 'dompurify';
 
 export default class Form {
   /**
@@ -156,6 +157,29 @@ export default class Form {
   }
 
   /**
+   * Sanitize an html string.
+   *
+   * @param string
+   * @returns {*}
+   */
+  sanitize(dirty) {
+    return sanitize(dirty, {
+      ADD_ATTR: ['ref'],
+      USE_PROFILES: {
+        html: true
+      }
+    });
+  }
+
+  setContent(element, content) {
+    if (element instanceof HTMLElement) {
+      element.innerHTML = this.sanitize(content);
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Build a new form.
    *
    * @return {Promise<T>}
@@ -172,10 +196,10 @@ export default class Form {
     // Add temporary loader.
     const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
     const loader = templates[template].loader || templates.bootstrap.loader;
-    this.element.innerHTML = loader.form;
+    this.setContent(this.element, loader.form);
 
     return this.render().then(html => {
-      this.element.innerHTML = html;
+      this.setContent(this.element, html);
       return this.attach(this.element).then(() => this.instance);
     });
   }

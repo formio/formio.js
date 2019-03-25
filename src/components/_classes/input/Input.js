@@ -109,14 +109,14 @@ export default class Input extends Multivalue {
       else {
         this.addClass(element, 'text-danger');
       }
-      element.innerHTML = this.t(`{{ remaining }} ${type} remaining.`, {
+      this.setContent(element, this.t(`{{ remaining }} ${type} remaining.`, {
         remaining: remaining
-      });
+      }));
     }
     else {
-      element.innerHTML = this.t(`{{ count }} ${type}`, {
+      this.setContent(element, this.t(`{{ count }} ${type}`, {
         count: count
-      });
+      }));
     }
   }
 

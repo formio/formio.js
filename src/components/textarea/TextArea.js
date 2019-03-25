@@ -78,7 +78,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = this.interpolate(value);
     }
     if (element) {
-      element.innerHTML = value;
+      this.setContent(element, value);
     }
   }
 
@@ -206,7 +206,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
 
             this.editor.on('text-change', () => {
-              this.updateValue(null, this.getConvertedValue(this.editor.root.innerHTML));
+              this.updateValue(null, this.getConvertedValue(this.sanitize(this.editor.root.innerHTML)));
             });
 
             this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
@@ -361,7 +361,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.htmlView) {
       // For HTML view, just view the contents.
       if (this.input) {
-        this.input.innerHTML = this.interpolate(value);
+        this.setContent(this.input, this.interpolate(value));
       }
     }
     else if (this.editorReady) {

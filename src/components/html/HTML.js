@@ -46,7 +46,7 @@ export default class HTMLComponent extends Component {
     if (this.component.refreshOnChange) {
       this.on('change', () => {
         if (this.refs.html) {
-          this.refs.html.innerHTML = this.content;
+          this.setContent(this.refs.html, this.content);
         }
       });
     }
