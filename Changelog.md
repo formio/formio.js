@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to edit JSON of component in builder
+
 ## 3.17.4
 ### Changed
  - Minor tweaks to functionality added in 3.17.3

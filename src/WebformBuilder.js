@@ -107,6 +107,16 @@ export default class WebformBuilder extends Webform {
           this.pasteComponent(comp);
         });
 
+        const editJsonButton = this.ce('div', {
+          class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit-json'
+        }, this.getIcon('wrench'));
+        this.addEventListener(editJsonButton, 'click', () => this.editComponent(comp, true));
+        new Tooltip(editJsonButton, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit JSON')
+        });
+
         // Set in paste mode if we have an item in our clipboard.
         if (window.sessionStorage) {
           const data = window.sessionStorage.getItem('formio.clipboard');
@@ -118,7 +128,7 @@ export default class WebformBuilder extends Webform {
         // Add the edit buttons to the component.
         comp.prepend(this.ce('div', {
           class: 'component-btn-group'
-        }, [removeButton, copyButton, pasteButton, editButton]));
+        }, [removeButton, copyButton, pasteButton, editJsonButton, editButton]));
       }
 
       if (!container.noDrop) {
@@ -280,10 +290,12 @@ export default class WebformBuilder extends Webform {
   }
 
   /* eslint-disable max-statements */
-  editComponent(component) {
+  editComponent(component, isJsonEdit) {
     const componentCopy = _.cloneDeep(component);
     let componentClass = Components.components[componentCopy.component.type];
     const isCustom = componentClass === undefined;
+    //custom component should be edited as JSON
+    isJsonEdit = isJsonEdit || isCustom;
     componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
@@ -372,7 +384,27 @@ export default class WebformBuilder extends Webform {
     const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
 
     // Get the editform for this component.
-    const editForm = componentClass.editForm(_.cloneDeep(overrides));
+    let editForm;
+    //custom component has its own Edit Form defined
+    if (isJsonEdit && !isCustom) {
+      editForm = {
+        'components': [
+          {
+            'type': 'textarea',
+            'as': 'json',
+            'editor': 'ace',
+            'weight': 10,
+            'input': true,
+            'key': 'componentJson',
+            'label': 'Component JSON',
+            'tooltip': 'Edit the JSON for this component.'
+          }
+        ]
+      };
+    }
+    else {
+      editForm = componentClass.editForm(_.cloneDeep(overrides));
+    }
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
@@ -405,15 +437,15 @@ export default class WebformBuilder extends Webform {
     // Register for when the edit form changes.
     this.editForm.on('change', (event) => {
       if (event.changed) {
-        // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
+        // See if this is a manually modified key. Treat JSON edited component keys as manually modified
+        if ((event.changed.component && (event.changed.component.key === 'key')) || isJsonEdit) {
           componentCopy.keyModified = true;
         }
 
         // Set the component JSON to the new data.
         var editFormData = this.editForm.getValue().data;
         //for custom component use value in 'componentJson' field as JSON of component
-        if (editFormData.type === 'custom' && editFormData.componentJson) {
+        if ((editFormData.type === 'custom' || isJsonEdit) && editFormData.componentJson) {
           componentCopy.component = editFormData.componentJson;
         }
         else {
@@ -428,7 +460,7 @@ export default class WebformBuilder extends Webform {
     // Modify the component information in the edit form.
     this.editForm.formReady.then(() => {
       //for custom component populate component setting with component JSON
-      if (isCustom) {
+      if (isJsonEdit) {
         this.editForm.setValue({
           data: {
             componentJson: _.cloneDeep(componentCopy.component)
@@ -459,8 +491,8 @@ export default class WebformBuilder extends Webform {
       event.preventDefault();
       const originalComponent = component.component;
       component.isNew = false;
-      //for custom component use value in 'componentJson' field as JSON of component
-      if (isCustom) {
+      //for JSON Edit use value in 'componentJson' field as JSON of component
+      if (isJsonEdit) {
         component.component = this.editForm.data.componentJson;
       }
       else {
