@@ -183,9 +183,7 @@ export default class SelectComponent extends BaseComponent {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return currentChoices.reduce((defaultAdded, choice) => {
-          return (this.addCurrentChoices(choice, items) || defaultAdded);
-        }, false);
+        return this.addCurrentChoices(currentChoices, items);
       }
       else if (!this.component.multiple) {
         this.addPlaceholder(this.selectInput);
@@ -754,9 +752,16 @@ export default class SelectComponent extends BaseComponent {
    * @param {*} value
    * @param {Array} items
    */
-  addCurrentChoices(value, items) {
-    if (value) {
+  addCurrentChoices(values, items) {
+    if (!values) {
+      return false;
+    }
+    return values.reduce((defaultAdded, value) => {
+      if (!value) {
+        return defaultAdded;
+      }
       let found = false;
+
       // Make sure that `items` and `this.selectOptions` points
       // to the same reference. Because `this.selectOptions` is
       // internal property and all items are populated by
@@ -788,8 +793,8 @@ export default class SelectComponent extends BaseComponent {
         }
         return true;
       }
-    }
-    return false;
+      return found || defaultAdded;
+    }, false);
   }
 
   getView(data) {
@@ -876,9 +881,7 @@ export default class SelectComponent extends BaseComponent {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        _.each(currentChoices, (choice) => {
-          this.addCurrentChoices(choice, this.selectOptions);
-        });
+        this.addCurrentChoices(currentChoices, this.selectOptions);
         this.choices.setChoices(this.selectOptions, 'value', 'label', true).setChoiceByValue(value);
       }
       else if (hasPreviousValue) {
