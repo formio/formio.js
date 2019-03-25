@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
+import { sanitize } from 'dompurify';
 import Formio from './Formio';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
@@ -863,7 +864,7 @@ export default class Webform extends NestedComponent {
     return super.render(this.renderTemplate('webform', {
       classes: 'formio-form',
       children: this.renderComponents(),
-    }), (this.options.attachMode === 'builder') ? 'builder' : 'form');
+    }), (this.options.attachMode === 'builder') ? 'builder' : 'form', true);
   }
 
   redraw() {

@@ -1,6 +1,8 @@
 import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import { sanitize } from 'dompurify';
+
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
 import templates from '../../../templates';
@@ -583,7 +585,7 @@ export default class Component extends Element {
     }
   }
 
-  renderTemplate(name, data = {}, modeOption) {
+  renderTemplate(name, data = {}, modeOption, topLevel) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
 
@@ -608,12 +610,30 @@ export default class Component extends Element {
 
     // Allow template alters.
     // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`);
-    return this.hook(
+    const result = this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),
       data,
       mode
     );
+
+    // We only want to sanitize once at the top level so only do it there.
+    return topLevel ? this.sanitize(result) : result;
+  }
+
+  /**
+   * Sanitize an html string.
+   *
+   * @param string
+   * @returns {*}
+   */
+  sanitize(dirty) {
+    return sanitize(dirty, {
+      ADD_ATTR: ['ref'],
+      USE_PROFILES: {
+        html: true
+      }
+    });
   }
 
   /**
@@ -715,7 +735,7 @@ export default class Component extends Element {
     this.attach(element);
   }
 
-  render(children = `Unknown component: ${this.component.type}`) {
+  render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     this.rendered = true;
     return this.renderTemplate('component', {
       visible: this.visible,
@@ -723,7 +743,7 @@ export default class Component extends Element {
       classes: this.className,
       styles: this.customStyle,
       children
-    });
+    }, topLevel);
   }
 
   attach(element) {
@@ -1070,7 +1090,7 @@ export default class Component extends Element {
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
-    this.element.outerHTML = this.render();
+    this.element.outerHTML = this.render(null, true);
     this.element = parent.children[index];
 
     this.attach(this.element);
