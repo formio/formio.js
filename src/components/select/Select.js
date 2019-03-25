@@ -756,7 +756,8 @@ export default class SelectComponent extends BaseComponent {
     if (!values) {
       return false;
     }
-    return values.reduce((defaultAdded, value) => {
+    const notFoundValuesToAdd = [];
+    const added = values.reduce((defaultAdded, value) => {
       if (!value) {
         return defaultAdded;
       }
@@ -782,19 +783,26 @@ export default class SelectComponent extends BaseComponent {
 
       // Add the default option if no item is found.
       if (!found) {
-        if (this.choices) {
-          this.choices.setChoices([{
-            value: this.itemValue(value),
-            label: this.itemTemplate(value)
-          }], 'value', 'label', true);
-        }
-        else {
-          this.addOption(this.itemValue(value), this.itemTemplate(value));
-        }
+        notFoundValuesToAdd.push({
+          value: this.itemValue(value),
+          label: this.itemTemplate(value)
+        });
         return true;
       }
       return found || defaultAdded;
     }, false);
+
+    if (notFoundValuesToAdd.length) {
+      if (this.choices) {
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+      }
+      else {
+        notFoundValuesToAdd.map(notFoundValue => {
+          this.addOption(notFoundValue.value, notFoundValue.label);
+        });
+      }
+    }
+    return added;
   }
 
   getView(data) {
