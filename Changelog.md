@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+##[Unreleased]
+### Fixed
+ - FOR-2158: Fixed lazyLoad issue with multiple select when viewing value
+
 ## 3.18.0
 ### Added
  - Allow locking nested forms to specific revisions.
