@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Tagpad error on submit when new dot is added and changed
+
 ## 3.18.1
 ### Fixed
  - FOR-2158: Fixed lazyLoad issue with multiple select when viewing value

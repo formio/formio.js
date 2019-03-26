@@ -257,7 +257,7 @@ export default class Tagpad extends NestedComponent {
     this.components.forEach(component => {
       selectedDot.dot.data[component.key] = component.getValue();
     });
-    this.dataValue[this.selectedDotIndex] = selectedDot.dot.data;
+    this.dataValue[this.selectedDotIndex] = selectedDot.dot;
   }
 
   removeSelectedDot() {
