@@ -162,11 +162,11 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer) {
-      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.renderTemplate('selectOption', {
+      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
         selected: this.dataValue === option.value,
         option,
         attrs,
-      }));
+      })));
     }
   }
 
