@@ -21,6 +21,8 @@ export default class Sketchpad extends Base {
       height: 480
     });
     this.deleted = [];
+    this.viewSketchpad = {};
+    this.editSketchpad = {};
 
     this.state = {
       mode: Object.keys(this.modes)[0],
@@ -384,15 +386,25 @@ export default class Sketchpad extends Base {
 
     this.createLabel(this.element);
 
-    this.viewSketchpad = this.ce('div', { class: 'formio-view-sketchpad' });
-    this.addEventListener(this.viewSketchpad, 'click', this.editSvg.bind(this));
-    this.element.appendChild(this.viewSketchpad);
-    this.editSketchpad = this.ce('div', { class: 'formio-edit-sketchpad' });
+    this.viewSketchpad.canvas = this.ce('div', { class: 'formio-view-sketchpad-canvas' });
+    this.viewSketchpad.background = this.ce('div', { class: 'formio-view-sketchpad-background' });
+    this.addEventListener(this.viewSketchpad.canvas, 'click', this.editSvg.bind(this));
+    this.element.appendChild(this.ce('div', {
+      class: 'formio-view-sketchpad-container'
+    }, [
+      this.viewSketchpad.canvas,
+      this.viewSketchpad.background
+    ]));
+    this.editSketchpad.canvas = this.ce('div', { class: 'formio-edit-sketchpad-canvas' });
+    this.editSketchpad.background = this.ce('div', {
+      class: 'formio-edit-sketchpad-background',
+      style: `min-width: ${this.component.width}px; min-height: ${this.component.height}px;`
+    });
     this.two = new Two({
       type: Two.Types.svg,
       width: this.component.width,
       height: this.component.height
-    }).appendTo(this.editSketchpad);
+    }).appendTo(this.editSketchpad.canvas);
 
     this.editSvgElement = this.two.renderer.domElement;
     this.addClass(this.editSvgElement, 'formio-sketchpad-svg');
@@ -438,7 +450,12 @@ export default class Sketchpad extends Base {
       )
     );
     this.editorModal.body.appendChild(toolbar);
-    this.editorModal.body.appendChild(this.editSketchpad);
+    this.editorModal.body.appendChild(this.ce('div', {
+      class: 'formio-edit-sketchpad-container'
+    }, [
+      this.editSketchpad.canvas,
+      this.editSketchpad.background
+    ]));
     this.editorModal.body.appendChild(metaInfoContainer);
     this.saveSvgButton = this.ce('button', {
       class: 'btn btn-success formio-sketchpad-save-button'
@@ -655,11 +672,8 @@ export default class Sketchpad extends Base {
 
   addBackground() {
     if (this.component.image) {
-      let svg = this.ce('svg');
-      svg.innerHTML = this.component.image;
-      svg = this.two.interpret(svg);
-      svg.center();
-      svg.translation.set(this.component.width / 2, this.component.height / 2);
+      this.viewSketchpad.background.innerHTML = this.component.image;
+      this.editSketchpad.background.innerHTML = this.component.image;
     }
   }
 
@@ -744,8 +758,8 @@ export default class Sketchpad extends Base {
     svgElement.removeAttribute('height');
     svgElement.removeAttribute('width');
     svgElement.setAttribute('viewBox', `0 0 ${this.component.width} ${this.component.height}`);
-    this.viewSketchpad.innerHTML = '';
-    this.viewSketchpad.appendChild(svgElement);
+    this.viewSketchpad.canvas.innerHTML = '';
+    this.viewSketchpad.canvas.appendChild(svgElement);
   }
 
   zoom(coordinate, multiplier) {
