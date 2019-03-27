@@ -1070,7 +1070,7 @@ export default class Webform extends NestedComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed) {
+  onChange(flags = {}, changed) {
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
@@ -1080,6 +1080,7 @@ export default class Webform extends NestedComponent {
     super.onChange(flags, true);
     const value = _.clone(this._submission);
     value.changed = changed;
+    flags.noValidate = !changed;
     value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
     this.showElement(true);
     this.loading = false;
