@@ -1129,6 +1129,7 @@ export default class Webform extends NestedComponent {
    */
   cancel(noconfirm) {
     if (noconfirm || confirm('Are you sure you want to cancel?')) {
+      this.emit('resetForm');
       this.resetValue();
       return true;
     }

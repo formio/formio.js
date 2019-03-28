@@ -363,7 +363,7 @@ td > .form-group {
 
 .formio-dialog-close:before {
   font-family: 'Helvetica', Arial, sans-serif;
-  content: '×';
+  content: '\D7';
   cursor: pointer; }
 
 html.formio-dialog-open,
@@ -451,7 +451,7 @@ body.formio-dialog-open {
   padding: 3px;
   background: transparent;
   color: #bbb;
-  content: '×';
+  content: '\D7';
   font-size: 26px;
   font-weight: 400;
   line-height: 26px;
@@ -742,3 +742,86 @@ body.formio-dialog-open {
   width: 50px;
   white-space: nowrap;
   text-align: center; }
+
+.formio-sketchpad-toolbar-input {
+  height: 24px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  width: 40px;
+  margin-left: 5px;
+  display: none; }
+
+.formio-sketchpad-toolbar-button:hover {
+  background: #e6e6e6; }
+  .formio-sketchpad-toolbar-button:hover .formio-sketchpad-toolbar-input {
+    display: inline-block; }
+
+.formio-sketchpad-toolbar-group {
+  background: #f2f2f2;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin-right: 3px; }
+
+.formio-sketchpad-toolbar {
+  color: #000000;
+  display: inline-block;
+  margin-left: 0;
+  border: 1px solid #999;
+  border-radius: 3px;
+  margin-bottom: -1px; }
+
+.formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
+  width: 90%;
+  text-align: center; }
+
+.formio-edit-sketchpad {
+  overflow: auto; }
+
+.formio-sketchpad-svg {
+  border: 1px dashed #999; }
+
+.formio-sketchpad-edit-dialog-body {
+  display: inline-block;
+  text-align: left;
+  max-width: 100%; }
+
+.formio-sketchpad-meta-info {
+  text-align: right; }
+
+.formio-sketchpad-save-button {
+  margin-bottom: 10px; }
+
+.formio-tagpad-canvas-container {
+  float: left;
+  z-index: 1;
+  position: relative;
+  border: 1px dashed #999;
+  border-radius: 3px; }
+
+.formio-tagpad-form-container {
+  width: 100%;
+  float: left; }
+
+.formio-tagpad-canvas {
+  cursor: crosshair; }
+
+.formio-disabled-input .formio-tagpad-canvas {
+  cursor: not-allowed;
+  background-color: #eee; }
+
+.formio-tagpad-form {
+  padding-left: 5px;
+  padding-right: 5px; }
+
+.formio-tagpad-dot,
+.formio-tagpad-dot-index {
+  cursor: pointer; }
+
+.formio-tagpad-save-button,
+.formio-tagpad-remove-button {
+  margin-right: 5px;
+  margin-bottom: 5px; }
+
+.formio-tagpad-form-title {
+  font-size: 1.7em; }

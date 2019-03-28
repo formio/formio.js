@@ -4,6 +4,66 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.18.1
+### Fixed
+ - FOR-2158: Fixed lazyLoad issue with multiple select when viewing value
+ - FOR-2165: Fixed infinite loop with calculated value for select.
+
+## 3.18.0
+### Added
+ - Allow locking nested forms to specific revisions.
+ - Allowing for the auth url to be separated from the project url.
+ - FOR-2074: TagPad Component
+ - Bootstrap version option.
+ - FOR-2073: Sketchpad Component
+ 
+### Fixed
+ - FOR-2119: Fixed issues with multiple masks crashing during a form destroy.
+ - FOR-1956: Fix resetForm event on cancel button callback
+ - FOR-2105: Fix empty required select is valid onChange
+ - TextArea on non string value.
+ 
+### Changed
+ - Upgrade eslint@5.15.3, @babel/core@7.4.0, @babel/polyfill@7.4.0, @babel/preset-env@7.4.2, sinon@7.3.0
+
+## 3.17.4
+### Changed
+ - Minor tweaks to functionality added in 3.17.3
+
+## 3.17.3
+### Added
+ - Ability to view empty file information with flatten
+
+## 3.17.2
+### Added
+ - Options to indicate bootstrap version manually.
+
+### Fixed
+ - Case with TextArea, when value is not string or JSON object.
+
+## 3.17.1
+### Added
+ - Tagpad component to contrib.
+
+## 3.17.0
+### Added
+ - Sketchpad component to contrib.
+
+## 3.16.5
+### Fixed
+ - Problem in build mode where the collapsed lazy load panels would reset the panel.
+
+## 3.16.4
+### Fixed
+ - Edit forms for Base, Nested and Url components. 
+ - Allow custom select options to override any defined options.
+
+### Added
+ - The ability to configure a collapsed panel as a "lazyLoad" panel for performance improvements of long forms.
+
+### Changed
+ - Upgrade flatpickr@4.5.7, i18next@15.0.7, dialog-polyfill@0.5.0
+
 ## 3.16.3
 ### Fixed
  - Issue where custom Headers within Select component were not getting included anymore.
