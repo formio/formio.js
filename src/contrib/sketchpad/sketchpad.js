@@ -766,6 +766,7 @@ export default class Sketchpad extends Base {
   }
 
   click(event, index) {
+    console.log(event, index);
   }
 
   undo() {
@@ -861,8 +862,10 @@ export default class Sketchpad extends Base {
       this.zoomInfo.canvasViewBox.current.minX = coordinates.canvas.x - this.zoomInfo.canvasViewBox.current.width / 2;
       this.zoomInfo.canvasViewBox.current.minY = coordinates.canvas.y - this.zoomInfo.canvasViewBox.current.height / 2;
       //do same for background SVG
+      /* eslint-disable max-len */
       this.zoomInfo.backgroundViewBox.current.minX = coordinates.background.x - this.zoomInfo.backgroundViewBox.current.width / 2;
       this.zoomInfo.backgroundViewBox.current.minY = coordinates.background.y - this.zoomInfo.backgroundViewBox.current.height / 2;
+      /* eslint-enable max-len */
       this.normalizeSvgOffset();
     }
     this.updateSvgViewBox();
@@ -882,12 +885,14 @@ export default class Sketchpad extends Base {
       background: {}
     };
     //TODO check if coordinates are different
+    /* eslint-disable max-len */
     //canvas
     actualCoordinates.canvas.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier) + this.zoomInfo.canvasViewBox.current.minX);
     actualCoordinates.canvas.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier) + this.zoomInfo.canvasViewBox.current.minY);
     //background
     actualCoordinates.background.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier) * (this.zoomInfo.backgroundViewBox.default.width / this.component.width) + this.zoomInfo.backgroundViewBox.current.minX);
     actualCoordinates.background.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier) * (this.zoomInfo.backgroundViewBox.default.height / this.component.height) + this.zoomInfo.backgroundViewBox.current.minY);
+    /* eslint-enable max-len */
     return actualCoordinates;
   }
 
@@ -904,6 +909,7 @@ export default class Sketchpad extends Base {
   }
 
   normalizeSvgOffset() {
+    /* eslint-disable max-len */
     //don't let offset go out of SVG on the left and on the top
     //canvas
     this.zoomInfo.canvasViewBox.current.minX = this.zoomInfo.canvasViewBox.current.minX < this.zoomInfo.canvasViewBox.default.minX ? this.zoomInfo.canvasViewBox.default.minX : this.zoomInfo.canvasViewBox.current.minX;
@@ -922,6 +928,7 @@ export default class Sketchpad extends Base {
       backgroundMaxOffsetY = this.zoomInfo.backgroundViewBox.default.height - this.zoomInfo.backgroundViewBox.current.height + this.zoomInfo.backgroundViewBox.default.minY;
     this.zoomInfo.backgroundViewBox.current.minX = this.zoomInfo.backgroundViewBox.current.minX > (backgroundMaxOffsetX) ? backgroundMaxOffsetX : this.zoomInfo.backgroundViewBox.current.minX;
     this.zoomInfo.backgroundViewBox.current.minY = this.zoomInfo.backgroundViewBox.current.minY > (backgroundMaxOffsetY) ? backgroundMaxOffsetY : this.zoomInfo.backgroundViewBox.current.minY;
+    /* eslint-enable max-len */
   }
 
   updateSvgViewBox() {
