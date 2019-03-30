@@ -940,7 +940,7 @@ body.formio-dialog-open {
   margin-bottom: 10px;
 }
 
-.formio-tagpad-canvas-container {
+.formio-tagpad-image-container {
   float: left;
   z-index: 1;
   position: relative;
@@ -955,11 +955,27 @@ body.formio-dialog-open {
 
 .formio-tagpad-canvas {
   cursor: crosshair;
+  position: relative;
+  z-index: 2;
 }
 
 .formio-disabled-input .formio-tagpad-canvas {
   cursor: not-allowed;
   background-color: #eee
+}
+
+.formio-tagpad-background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.formio-tagpad-background svg {
+  width: 100%;
+  height: 100%;
 }
 
 .formio-tagpad-form {
