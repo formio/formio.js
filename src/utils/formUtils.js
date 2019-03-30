@@ -69,7 +69,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
       noRecurse = fn(component, newPath);
     }
-    else if (hasColumns || hasComps || hasRows) {
+    else if (hasColumns) {
       fn(component, newPath);
     }
 
