@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FOR-2074: Tagpad error on submit when new dot is added and changed
  - FOR-2074: Tagpad issues with background
+ - FOR-2073: Sketchpad issues with background
 
 ## 3.18.1
 ### Fixed

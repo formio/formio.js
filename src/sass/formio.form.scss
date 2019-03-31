@@ -883,16 +883,11 @@ body.formio-dialog-open {
   margin-bottom: -5px;
   width: 40px;
   margin-left: 5px;
-  display: none;
 }
 
 .formio-sketchpad-toolbar-button {
   &:hover {
     background: #e6e6e6;
-
-    .formio-sketchpad-toolbar-input {
-      display: inline-block;
-    }
   }
 }
 
@@ -911,15 +906,13 @@ body.formio-dialog-open {
   border: 1px solid #999;
   border-radius: 3px;
   margin-bottom: -1px;
+  position: relative;
+  z-index: 3;
 }
 
 .formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
   width: 90%;
   text-align: center;
-}
-
-.formio-edit-sketchpad {
-  overflow: auto;
 }
 
 .formio-sketchpad-svg {
@@ -930,6 +923,10 @@ body.formio-dialog-open {
   display: inline-block;
   text-align: left;
   max-width: 100%;
+
+  .formio-dialog-close {
+    z-index: 4;
+  }
 }
 
 .formio-sketchpad-meta-info {
@@ -938,6 +935,37 @@ body.formio-dialog-open {
 
 .formio-sketchpad-save-button {
   margin-bottom: 10px;
+}
+
+.formio-view-sketchpad-container,
+.formio-edit-sketchpad-container {
+  position: relative;
+  overflow: auto;
+}
+
+.formio-view-sketchpad-background,
+.formio-edit-sketchpad-background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  background: #ffffff;
+
+
+}
+
+.formio-view-sketchpad-background svg {
+  width: 100%;
+  height: 100%;
+  //padding: 1%;
+}
+
+.formio-view-sketchpad-canvas,
+.formio-edit-sketchpad-canvas {
+  position: relative;
+  z-index: 2;
 }
 
 .formio-tagpad-image-container {
