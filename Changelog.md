@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.18.3
+### Fixed
+ - Github-issue-1045: Fixed resource component render with HTML5 widget
+
 ## 3.18.2
 ### Fixed
  - FOR-2074: Tagpad error on submit when new dot is added and changed
