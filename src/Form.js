@@ -87,13 +87,11 @@ export default class Form {
     formParam = formParam || this.form;
     let element;
     if (this.instance) {
-      element = this.instance.webform.element;
       this.instance.destroy();
     }
     if (typeof formParam === 'string') {
       return (new Formio(formParam)).loadForm().then((form) => {
         this.instance = this.create(form.display);
-        this.instance.webform.element = element;
         this.instance.url = formParam;
         this.instance.nosubmit = false;
         this._form = this.instance.form = form;
@@ -104,7 +102,6 @@ export default class Form {
     }
     else {
       this.instance = this.create(formParam.display);
-      this.instance.webform.element = element;
       this._form = this.instance.form = formParam;
       return this.instance.ready;
     }
