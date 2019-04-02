@@ -1,5 +1,4 @@
 import templates from './index';
-import _ from 'lodash';
 
 export default class Templates {
   static get templates() {
@@ -20,9 +19,16 @@ export default class Templates {
     return Templates.templates.bootstrap;
   }
 
-  static set templateName(template) {
-    if (Templates.templates.hasOwnProperty(template)) {
-      Templates._current = Templates.templates[template];
+  static set framework(framework) {
+    if (Templates.templates.hasOwnProperty(framework)) {
+      Templates._framework = framework;
+      Templates._current = Templates.templates[framework];
+      return true;
     }
+    return false;
+  }
+
+  static get framework() {
+    return Templates._framework;
   }
 }
