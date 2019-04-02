@@ -5,7 +5,7 @@ import { sanitize } from 'dompurify';
 
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
-import templates from '../../../templates';
+import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 
@@ -371,11 +371,7 @@ export default class Component extends Element {
   }
 
   set template(template) {
-    // Only import templates once.
-    if (!this.options.templateLoaded) {
-      this.options.templates = _.merge({}, templates[template], this.options.templates || {});
-      this.options.templateLoaded = true;
-    }
+    Templates.template = template;
   }
 
   get labelInfo() {
@@ -553,7 +549,7 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return this.options.templates ? this.options.templates.transform.bind(this.options.templates) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -564,24 +560,24 @@ export default class Component extends Element {
     }
 
     for (const name of names) {
-      if (this.options.templates[name]) {
+      if (Templates.current[name]) {
         for (const mode of modes) {
-          if (this.options.templates[name][mode]) {
-            return this.options.templates[name][mode];
+          if (Templates.current[name][mode]) {
+            return Templates.current[name][mode];
           }
         }
       }
     }
     // Default back to bootstrap if not defined.
     const name = names[names.length - 1];
-    if (!templates['bootstrap'][name]) {
+    if (!Templates.templates['bootstrap'][name]) {
       return `Unknown template: ${name}`;
     }
     for (const mode of modes) {
-      if (templates['bootstrap'][name][mode]) {
-        return templates['bootstrap'][name][mode];
+      if (Templates.templates['bootstrap'][name][mode]) {
+        return Templates.templates['bootstrap'][name][mode];
       }
-      return templates['bootstrap'][name]['form'];
+      return Templates.templates['bootstrap'][name]['form'];
     }
   }
 
@@ -1046,8 +1042,8 @@ export default class Component extends Element {
   }
 
   iconClass(name, spinning) {
-    const iconset = this.options.iconset || this.options.templates.defaultIconset;
-    return this.options.templates ? this.options.templates.iconClass(iconset, name, spinning) : name;
+    const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
+    return Templates.current.hasOwnProperty('iconClass') ? Templates.current.iconClass(iconset, name, spinning) : name;
   }
 
   /**
