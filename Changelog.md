@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.18.2
 ### Fixed
  - FOR-2074: Tagpad error on submit when new dot is added and changed
  - FOR-2074: Tagpad issues with background
  - FOR-2073: Sketchpad issues with background
+ - FOR-2105: Fix validation on initial render in editgrid
+ - @zdegner: Select does not return value after scrolling to end of list of options 
+ 
+### Changed
+ - Upgraded i18next@15.0.8, hoek@6.1.3, sinon@7.3.1, eslint@5.16.0
 
 ## 3.18.1
 ### Fixed

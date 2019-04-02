@@ -273,10 +273,13 @@ export default class Tagpad extends NestedComponent {
     this.canvas = this.ce(&apos;div&apos;, {
       class: &apos;formio-tagpad-canvas&apos;
     });
+    this.background = this.ce(&apos;div&apos;, {
+      class: &apos;formio-tagpad-background&apos;
+    });
     this.canvasContainer = this.ce(&apos;div&apos;, {
-      class: &apos;formio-tagpad-canvas-container&apos;,
+      class: &apos;formio-tagpad-image-container&apos;,
       style: `width: ${this.component.canvasWidth}px;`
-    }, [this.canvas]);
+    }, [this.canvas, this.background]);
     this.formContainer = this.ce(&apos;div&apos;, {
         class: &apos;formio-tagpad-form-container&apos;,
         style: `margin-left: -${this.component.canvasWidth}px; padding-left: ${this.component.canvasWidth}px;`
@@ -368,11 +371,8 @@ export default class Tagpad extends NestedComponent {
 
   addBackground() {
     if (this.component.image) {
-      let svg = this.ce(&apos;svg&apos;);
-      svg.innerHTML = this.component.image;
-      svg = this.two.interpret(svg);
-      svg.center();
-      svg.translation.set(this.component.canvasWidth / 2, this.component.canvasHeight / 2);
+      //TODO check that inserted html contains SVG tag on it
+      this.background.innerHTML = this.component.image;
     }
   }
 
@@ -469,7 +469,7 @@ export default class Tagpad extends NestedComponent {
     this.components.forEach(component =&gt; {
       selectedDot.dot.data[component.key] = component.getValue();
     });
-    this.dataValue[this.selectedDotIndex] = selectedDot.dot.data;
+    this.dataValue[this.selectedDotIndex] = selectedDot.dot;
   }
 
   removeSelectedDot() {
@@ -481,8 +481,6 @@ export default class Tagpad extends NestedComponent {
     this.dots = [];
     //clear canvas
     this.two.clear();
-    //restore background
-    this.addBackground();
     //draw dots
     this.setValue(this.dataValue);
   }

@@ -493,6 +493,7 @@ export default class SelectComponent extends BaseComponent {
         _.isEqual(this.currentItems[1], items[1])
       ) {
         this.stopInfiniteScroll();
+        this.loading = false;
         return;
       }
 
