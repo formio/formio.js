@@ -75,7 +75,6 @@ export default class Tagpad extends NestedComponent {
       this.form = this.ce('div', {
         class: 'formio-tagpad-form'
       }));
-    this.renderForm();
     this.tagpadContainer.appendChild(this.canvasContainer);
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
@@ -125,6 +124,7 @@ export default class Tagpad extends NestedComponent {
         })
       ]
     ));
+    this.formRendered = true;
   }
 
   attachDrawEvents() {
@@ -169,6 +169,7 @@ export default class Tagpad extends NestedComponent {
       coordinate,
       data: {}
     };
+    this.dataValue = this.dataValue || [];
     const newDotIndex = this.dataValue.length;
     const shape = this.drawDot(dot, newDotIndex);
     this.dots.push({
@@ -188,6 +189,9 @@ export default class Tagpad extends NestedComponent {
   }
 
   selectDot(index) {
+    if (!this.formRendered) {
+      this.renderForm();
+    }
     const dot = this.dots[index];
     if (!dot) {
       return;
