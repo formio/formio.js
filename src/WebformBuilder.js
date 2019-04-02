@@ -12,8 +12,19 @@ require('./components/builder');
 
 export default class WebformBuilder extends Component {
 // eslint-disable-next-line max-statements
-  constructor(options) {
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
     super(null, options);
+
+    this.element = element;
+
     this.builderHeight = 0;
     this.schemas = {};
 
@@ -168,7 +179,9 @@ export default class WebformBuilder extends Component {
       }
 
       // Add container to draggable list.
-      this.dragula.containers.push(containerElement);
+      if (this.dragula) {
+        this.dragula.containers.push(containerElement);
+      }
 
       // Since we added a wrapper, need to return the original element so that we can find the components inside it.
       return element.children[0];
@@ -258,7 +271,16 @@ export default class WebformBuilder extends Component {
   }
 
   createForm(options) {
-    return new Webform(options);
+    this.webform = new Webform(options);
+    if (this.element) {
+      this.loadRefs(this.element, {
+        form: 'single'
+      });
+      if (this.refs.form) {
+        this.webform.element = this.refs.form;
+      }
+    }
+    return this.webform;
   }
 
   /**
@@ -585,8 +607,8 @@ export default class WebformBuilder extends Component {
     // This is the render step.
     const editFormOptions = _.get(this, 'options.editForm', {});
     this.editForm = new Webform(
-      _.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
       {
+        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
         language: this.options.language,
         ...editFormOptions
       }

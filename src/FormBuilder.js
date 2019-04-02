@@ -11,13 +11,13 @@ export default class FormBuilder extends Form {
 
   create(display) {
     if (display === 'wizard') {
-      return new WizardBuilder(this.options);
+      return new WizardBuilder(this.element, this.options);
     }
     else if (display === 'pdf') {
-      return new PDFBuilder(this.options);
+      return new PDFBuilder(this.element, this.options);
     }
     else {
-      return new WebformBuilder(this.options);
+      return new WebformBuilder(this.element, this.options);
     }
   }
 }

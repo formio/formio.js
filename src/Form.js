@@ -65,11 +65,11 @@ export default class Form {
     }
     switch (display) {
       case 'wizard':
-        return new Wizard(this.options);
+        return new Wizard(this.element, this.options);
       case 'pdf':
-        return new PDF(this.options);
+        return new PDF(this.element, this.options);
       default:
-        return new Webform(this.options);
+        return new Webform(this.element, this.options);
     }
   }
 
@@ -85,19 +85,12 @@ export default class Form {
 
   setForm(formParam) {
     formParam = formParam || this.form;
-    let element;
-    if (this.instance && this.instance.webform) {
-      element = this.instance.webform.element;
-    }
     if (this.instance) {
       this.instance.destroy();
     }
     if (typeof formParam === 'string') {
       return (new Formio(formParam)).loadForm().then((form) => {
         this.instance = this.create(form.display);
-        if (this.instance.webform) {
-          this.instance.webform.element = element;
-        }
         this.instance.url = formParam;
         this.instance.nosubmit = false;
         this._form = this.instance.form = form;
@@ -108,9 +101,6 @@ export default class Form {
     }
     else {
       this.instance = this.create(formParam.display);
-      if (this.instance.webform) {
-        this.instance.webform.element = element;
-      }
       this._form = this.instance.form = formParam;
       return this.instance.ready;
     }
