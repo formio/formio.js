@@ -106,7 +106,7 @@
       },
       {
         "lineNumber": 1072,
-        "line": "  onChange(flags, changed) {"
+        "line": "  onChange(flags = {}, changed) {"
       }
     ],
     "codeParams": [
@@ -123,87 +123,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1238,
+        "lineNumber": 1239,
         "line": "  /**"
       },
       {
-        "lineNumber": 1239,
+        "lineNumber": 1240,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1240,
-        "line": "   *"
-      },
-      {
         "lineNumber": 1241,
-        "line": "   * @example"
+        "line": "   *"
       },
       {
         "lineNumber": 1242,
-        "line": "   * import Webform from 'formiojs/Webform';"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1243,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1244,
-        "line": "   * form.src = 'https://examples.form.io/example';"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1245,
-        "line": "   * form.submission = {data: {"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1246,
-        "line": "   *   firstName: 'Joe',"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1247,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1248,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1249,
-        "line": "   * }};"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1250,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   * }};"
       },
       {
         "lineNumber": 1251,
-        "line": "   *   console.log(submission);"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1252,
-        "line": "   * });"
+        "line": "   *   console.log(submission);"
       },
       {
         "lineNumber": 1253,
-        "line": "   *"
+        "line": "   * });"
       },
       {
         "lineNumber": 1254,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
-      },
-      {
-        "lineNumber": 1255,
         "line": "   *"
       },
       {
+        "lineNumber": 1255,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
         "lineNumber": 1256,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   *"
       },
       {
         "lineNumber": 1257,
-        "line": "   */"
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
         "lineNumber": 1258,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1259,
         "line": "  submit(before, options) {"
       }
     ],
@@ -769,23 +769,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 750,
+        "lineNumber": 751,
         "line": "  /**"
       },
       {
-        "lineNumber": 751,
+        "lineNumber": 752,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 752,
+        "lineNumber": 753,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 753,
+        "lineNumber": 754,
         "line": "   */"
       },
       {
-        "lineNumber": 754,
+        "lineNumber": 755,
         "line": "  addCurrentChoices(values, items) {"
       }
     ],

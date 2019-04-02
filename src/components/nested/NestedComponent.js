@@ -400,7 +400,7 @@ export default class NestedComponent extends BaseComponent {
     }
 
     // Return if the value is valid.
-    return valid;
+    return !!valid;
   }
 
   checkConditions(data) {
