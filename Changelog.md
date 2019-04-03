@@ -77,6 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.16.3
 ### Fixed
+ - Non-incremental keys for layout components.
  - Issue where custom Headers within Select component were not getting included anymore.
  - Memory leaks within the Tabs and TextArea components with wysiwyg editors.
 
