@@ -205,6 +205,7 @@ export default class Tagpad extends NestedComponent {
     this.two.update();
     this.selectedDotIndex = index;
     this.setFormValue(dot.dot.data);
+    this.checkDotValidity(this.data, false, dot);
   }
 
   setFormValue(value) {
@@ -249,6 +250,7 @@ export default class Tagpad extends NestedComponent {
     //draw index
     const text = new Two.Text(index + 1, dot.coordinate.x, dot.coordinate.y);
     text.className += ' formio-tagpad-dot-index';
+    text.styles = { color: this.component.dotStrokeColor };
     this.two.add(text);
     this.two.update();
     circle._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));
@@ -275,5 +277,70 @@ export default class Tagpad extends NestedComponent {
     this.two.clear();
     //draw dots
     this.setValue(this.dataValue);
+  }
+
+  checkValidity(data, dirty) {
+    if (!this.checkCondition(null, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+    let isTagpadValid = true;
+    //check validity of each dot
+    this.dots.forEach((dot) => {
+      const isDotValid = this.checkDotValidity(data, dirty, dot);
+      isTagpadValid = isTagpadValid && isDotValid;
+    });
+    //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
+    this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    if (isTagpadValid) {
+      this.setCustomValidity('');
+    }
+    else {
+      this.setCustomValidity(this.t('There are some invalid dots'), dirty);
+    }
+    return isTagpadValid;
+  }
+
+  checkDotValidity(data, dirty, dot) {
+    const isDotValid = this.components.reduce((valid, component) => {
+      component.dataValue = dot.dot.data[component.key];
+      return valid && component.checkValidity(data, dirty);
+    }, true);
+    this.setDotValidity(dot, isDotValid);
+    return isDotValid;
+  }
+
+  setDotValidity(dot, isValid) {
+    let color;
+    if (isValid) {
+      color = this.component.dotStrokeColor;
+    }
+    else {
+      color = '#ff0000';
+    }
+    //change style of dot based on its validity
+    dot.shape.circle.stroke = color;
+    dot.shape.text.styles.color = color;
+    this.two.update();
+  }
+
+  addInputError(message, dirty) {
+    //need to override this to not add has-error class (because has-error highlights all inner form-controls with red)
+    if (!message) {
+      return;
+    }
+
+    if (this.errorElement) {
+      const errorMessage = this.ce('p', {
+        class: 'help-block'
+      });
+      errorMessage.appendChild(this.text(message));
+      this.errorElement.appendChild(errorMessage);
+    }
+
+    this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    if (dirty && this.options.highlightErrors) {
+      this.addClass(this.element, 'alert alert-danger');
+    }
   }
 }
