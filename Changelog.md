@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.18.3
 ### Fixed
   - FOR-2168: Fixed add another button in textarea component.
+  - Github-issue-1045: Fixed resource component render with HTML5 widget
 
 ## 3.18.2
 ### Fixed
@@ -81,6 +82,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.16.3
 ### Fixed
+ - Non-incremental keys for layout components.
  - Issue where custom Headers within Select component were not getting included anymore.
  - Memory leaks within the Tabs and TextArea components with wysiwyg editors.
 
