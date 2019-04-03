@@ -414,9 +414,10 @@ export default class SelectComponent extends BaseComponent {
     this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
+        this.loading = false;
         const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
         this.setItems(response, !!search);
-        if (scrollTop) {
+        if (scrollTop && this.choices) {
           this.choices.choiceList.scrollToTop();
         }
       })
