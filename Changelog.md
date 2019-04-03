@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ##[Unreleased]
 ### Fixed
  - FOR-2074: Tagpad issues when no value is specified
+ - FOR-2074: Added validation for Tagpad
 
 ## 3.18.2
 ### Fixed
