@@ -190,6 +190,12 @@ export default class FormComponent extends BaseComponent {
     if (this.options && this.options.viewAsHtml) {
       srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
+    if (this.options && this.options.hide) {
+      srcOptions.hide = this.options.hide;
+    }
+    if (this.options && this.options.show) {
+      srcOptions.show = this.options.show;
+    }
     if (_.has(this.options, 'language')) {
       srcOptions.language = this.options.language;
     }
