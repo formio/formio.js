@@ -389,7 +389,7 @@ export default class Wizard extends Webform {
 
     // Only rebuild if there is a page visibility change.
     const panels = this.calculateVisiblePanels();
-    if (!_.isEqual(panels, this.panels)) {
+    if (!_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))) {
       // If visible panels changes we need to completely rebuild to add new pages.
       this.rebuild();
     }
