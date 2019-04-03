@@ -11,8 +11,34 @@ const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
 const eslint = require('gulp-eslint');
 
-// Clean lib folder.
-gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
+// Clean publish files.
+gulp.task('clean', require('del').bind(null, [
+  'dist',
+  'lib',
+  'components',
+  'contrib',
+  'providers',
+  'resources',
+  'templates',
+  'utils',
+  'widgets',
+  'Element.js',
+  'EventEmitter.js',
+  'Form.js',
+  'FormBuilder.js',
+  'formio.embed.js',
+  'formio.form.js',
+  'Formio.js',
+  'i18n.js',
+  'index.js',
+  'pdf.image.js',
+  'PDF.js',
+  'PDFBuilder.js',
+  'Webform.js',
+  'WebformBuilder.js',
+  'Wizard.js',
+  'WizardBuilder.js',
+]));
 
 // ESLint
 gulp.task('eslint', function eslintTask() {
@@ -26,7 +52,7 @@ gulp.task('eslint', function eslintTask() {
 gulp.task('babel', gulp.series('eslint', function babelTask() {
   return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
     .pipe(babel())
-    .pipe(gulp.dest('lib'));
+    .pipe(gulp.dest('.'));
 }));
 
 // Move font-awesome fonts into dist folder.
@@ -111,20 +137,6 @@ gulp.task('fontawesome', () => gulp.src('./node_modules/font-awesome/**/*.*').pi
 gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
 gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
 
-// Copy the version and dependencies into the distribution package.json file.
-gulp.task('package-version', function() {
-  const pkg = require('./package.json');
-  return gulp.src([
-    'src/package.json'
-  ])
-    .pipe(replace(/"version": ""/, `"version": "${pkg.version}"`))
-    .pipe(replace(/"dependencies": {}/, `"dependencies": ${JSON.stringify(pkg.dependencies)}`))
-    .pipe(gulp.dest('lib'));
-});
-
-// Copy over the dist folder into the lib folder.
-gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
-
 // Watch for changes.
 gulp.task('watch', () => gulp.watch(['./src/*.js', './src/**/*.js'], gulp.series('scripts-full')));
 
@@ -133,9 +145,7 @@ gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packe
 
 // Create a new build.
 gulp.task('build', gulp.series(
-  'clean',
   'babel',
-  'package-version',
   gulp.parallel(
     'jquery',
     'timezones',
@@ -154,7 +164,6 @@ gulp.task('build', gulp.series(
     'scripts-form',
     'scripts-full'
   ),
-  'dist'
 ));
 
 // Default task. Build and watch.

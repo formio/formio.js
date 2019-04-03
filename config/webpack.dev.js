@@ -6,7 +6,7 @@ const WebpackConfig = require('./webpack.config');
 module.exports = (entry, output) => {
   return _.merge({}, WebpackConfig, {
     mode: 'development',
-    entry: `./lib/${entry}`,
+    entry: `./${entry}`,
     output: {
       path: path.resolve(__dirname, '../dist'),
       filename: output
