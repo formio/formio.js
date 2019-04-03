@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+##[Unreleased]
+### Fixed
+ - FOR-2074: Tagpad issues when no value is specified
+ - FOR-2074: Added validation for Tagpad
+
 ## 3.18.3
 ### Fixed
   - FOR-2168: Fixed add another button in textarea component.
