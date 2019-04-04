@@ -29,4 +29,21 @@ describe('Radio Component', () => {
       done();
     });
   });
+
+  it('Should set the radio-selected class on wrapper of selected radio', done => {
+    Harness.testCreate(RadioComponent, comp1).then((component) => {
+      const selector = '.radio:nth-child(1)';
+      const firstRadioWrapper = component.element.querySelector(selector);
+      assert(
+        firstRadioWrapper.getAttribute('class').indexOf('radio-selected') === -1,
+        'Radio wrapper does not have radio-selected class.'
+      );
+      Harness.clickElement(component, `${selector} input`);
+      assert(
+        firstRadioWrapper.getAttribute('class').indexOf('radio-selected') !== -1,
+        'Radio wrapper has radio-selected class.'
+      );
+      done();
+    });
+  });
 });
