@@ -56,4 +56,24 @@ describe('Checkbox Component', () => {
       done();
     });
   });
+
+  it('Should unset the checkbox-checked class on wrapper of checked checkbox', done => {
+    Harness.testCreate(CheckBoxComponent, comp1).then((component) => {
+      assert(
+        component.element.getAttribute('class').indexOf('checkbox-checked') === -1,
+        'Checkbox wrapper does not have checkbox-checked class.'
+      );
+      Harness.clickElement(component, 'input[type="checkbox"]');
+      assert(
+        component.element.getAttribute('class').indexOf('checkbox-checked') !== -1,
+        'Checkbox wrapper has checkbox-checked class.'
+      );
+      Harness.clickElement(component, 'input[type="checkbox"]');
+      assert(
+        component.element.getAttribute('class').indexOf('checkbox-checked') === -1,
+        'Checkbox wrapper does not have checkbox-checked class.'
+      );
+      done();
+    });
+  });
 });
