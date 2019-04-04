@@ -211,10 +211,10 @@ export default class WebformBuilder extends Component {
         removeComponent: 'single',
         editComponent: 'single',
         copyComponent: 'single',
-        pasteComponnt: 'single'
+        pasteComponent: 'single'
       });
 
-      if (component.refs.copyButton) {
+      if (component.refs.copyComponent) {
         new Tooltip(component.refs.copyComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -225,7 +225,7 @@ export default class WebformBuilder extends Component {
           this.copyComponent(component));
       }
 
-      if (component.refs.pasteButton) {
+      if (component.refs.pasteComponent) {
         const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -770,9 +770,10 @@ export default class WebformBuilder extends Component {
       if (data) {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this._form.components, schema);
-        component.parent.addComponent(schema, false, false, component.element.nextSibling);
+        BuilderUtils.uniquify(this.webform.components, schema);
+        component.parent.addComponent(schema, false, component.element.nextElementSibling.lastElementChild);
         this.form = this.schema;
+        this.emit('saveComponent');
       }
     }
   }
