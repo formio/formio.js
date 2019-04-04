@@ -1585,7 +1585,7 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.defaultValue;
+      const defaultValue = this.component.multiple ? [] : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
