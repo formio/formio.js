@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.18.4
+### Fixed
+ - FOR-2074: Tagpad issues when no value is specified
+ - FOR-2074: Added validation for Tagpad
+ - FOR-2183: Pass along the hide/show options to nested forms.
+ - FOR-2168: Fixed add andother button in TextArea component
+ - Github-issue-1045: Fixed resource component render with HTML5 widget
+ - Fix layout components crashing when moving in builder.
+ 
+### Changed
+ - Upgraded i18next@15.0.9, @babel/core@7.4.3, @babel/polyfill@7.4.3, @babel/preset-env@7.4.3, fast-json-patch@2.1.0, @babel/cli@7.4.3, del@4.1.0
+
+## 3.18.3
+### Fixed
+  - FOR-2168: Fixed add another button in textarea component.
+  - Github-issue-1045: Fixed resource component render with HTML5 widget
+
 ## 3.18.2
 ### Fixed
  - FOR-2074: Tagpad error on submit when new dot is added and changed
@@ -77,6 +94,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.16.3
 ### Fixed
+ - Non-incremental keys for layout components.
  - Issue where custom Headers within Select component were not getting included anymore.
  - Memory leaks within the Tabs and TextArea components with wysiwyg editors.
 

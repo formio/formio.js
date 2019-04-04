@@ -1118,7 +1118,7 @@ export default class BaseComponent extends Component {
     const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
-    values = values || this.dataValue;
+    values = (values &amp;&amp; values.length &gt; 0) ? values : this.dataValue;
     _.each(values, (value, index) =&gt; {
       const tr = this.ce(&apos;tr&apos;);
       if (allowReorder) {

@@ -1166,7 +1166,7 @@ export default class WebformBuilder extends Webform {
         return el.classList.contains(&apos;drag-copy&apos;);
       },
       accepts(el, target) {
-        return !target.classList.contains(&apos;no-drop&apos;);
+        return !el.contains(target) &amp;&amp; !target.classList.contains(&apos;no-drop&apos;);
       }
     }).on(&apos;drop&apos;, (element, target, source, sibling) =&gt; this.onDrop(element, target, source, sibling));
 
