@@ -167,13 +167,6 @@ export default class Element {
   }
 
   removeEventListeners() {
-    _.each(this.events._events, (events, type) => {
-      _.each(events, (listener) => {
-        if (listener && (this.id === listener.id) && (listener.internal)) {
-          this.events.off(type, listener);
-        }
-      });
-    });
     this.eventHandlers.forEach(handler => {
       if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
         handler.obj.removeEventListener(handler.type, handler.func);
@@ -184,11 +177,22 @@ export default class Element {
     this.inputMasks = [];
   }
 
+  removeAllEvents() {
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
+      });
+    });
+  }
+
   /**
    * Removes all event listeners attached to this component.
    */
   destroy() {
     this.removeEventListeners();
+    this.removeAllEvents();
   }
 
   /**
