@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.19.0
 ### Fixed
- - Fixing the pristine flag to only set when a component has been directly modified.
  - Ensure that the wysiwyg triggers updates with modified flag.
  - Fixing the wysiwyg editor to not fire change events on initialize.
  - Fixing the default height for ckeditor for rows configuration.
