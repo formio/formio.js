@@ -74,6 +74,21 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && this.component.wysiwyg;
   }
 
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue({
+        modified: true
+      }, newValue);
+    }
+  }
+
+  /* eslint-disable max-statements */
   createInput(container) {
     const _this = this;
     if (this.isPlain) {
@@ -109,13 +124,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         .then(() => {
           const mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
-          this.editor.on('change', () => {
-            const newValue = this.getConvertedValue(this.editor.getValue());
-            // Do not bother to update if they are both empty.
-            if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-              this.updateValue(null, newValue);
-            }
-          });
+          this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on('input', () => this.acePlaceholder());
@@ -126,21 +135,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === 'ckeditor') {
-      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateValue(null, newValue)).then((editor) => {
-        this.editor = editor;
-        if (this.options.readOnly || this.component.disabled) {
-          this.editor.isReadOnly = true;
-        }
-
-        // Set the default rows.
-        let value = '';
-        const numRows = parseInt(this.component.rows, 10);
-        for (let i = 0; i < numRows; i++) {
-          value += '<p></p>';
-        }
-        editor.data.set(value);
-        return editor;
-      });
+      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateEditorValue(newValue))
+        .then((editor) => {
+          this.editor = editor;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.isReadOnly = true;
+          }
+          const numRows = parseInt(this.component.rows, 10);
+          if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+            // Default height is 21px with 10px margin + a 14px top margin.
+            const editorHeight = (numRows * 31) + 14;
+            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+          }
+          return editor;
+        });
       return this.input;
     }
 
@@ -158,9 +166,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Add the quill editor.
     this.editorReady = this.addQuill(
       this.input,
-      this.component.wysiwyg, () => {
-        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
-      }
+      this.component.wysiwyg, () => this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) => {
       if (this.component.isUploadEnabled) {
         quill.getModule('toolbar').addHandler('image', imageHandler);
@@ -227,6 +233,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.click();
     }
   }
+  /* eslint-enable max-statements */
 
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && value) {
@@ -253,7 +260,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
     };
 
     if (Array.isArray(value)) {
