@@ -124,6 +124,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
   }
 
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue({
+        modified: true
+      }, newValue);
+    }
+  }
+
   attachElement(element, index) {
     if (this.options.readOnly) {
       return element;
@@ -151,15 +165,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               maxLines: 12,
               minLines: 12
             });
-            this.editor.on('change', () => {
-              const newValue = this.getConvertedValue(this.editor.getValue());
-              // Do not bother to update if they are both empty.
-              if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-                this.updateValue({
-                  modified: true
-                }, newValue, index);
-              }
-            });
+            this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
             this.editor.getSession().setTabSize(2);
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on('input', () => this.acePlaceholder());
@@ -172,11 +178,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         // Add the quill editor.
         this.editorReady = this.addQuill(
           element,
-          settings, () => {
-            this.updateValue({
-              modified: true
-            }, this.getConvertedValue(this.quill.root.innerHTML));
-          }
+          settings, () => this.updateEditorValue(this.quill.root.innerHTML)
         ).then((quill) => {
           this.editor = quill;
           if (this.options.readOnly || this.component.disabled) {
@@ -190,16 +192,20 @@ export default class TextAreaComponent extends TextFieldComponent {
       case 'ckeditor':
         settings = settings || {};
         settings.base64Upload = true;
-        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateValue({
-          modified: true
-        }, newValue)).then((editor) => {
-          this.editor = editor;
-          if (this.options.readOnly || this.component.disabled) {
-            this.editor.isReadOnly = true;
-          }
-          editor.data.set(this.setConvertedValue(this.dataValue));
-          return editor;
-        });
+        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
+          .then((editor) => {
+            this.editor = editor;
+            if (this.options.readOnly || this.component.disabled) {
+              this.editor.isReadOnly = true;
+            }
+            const numRows = parseInt(this.component.rows, 10);
+            if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+              const rowHeight = numRows * 20;
+              editor.ui.view.editable.editableElement.style.height = `${rowHeight}px`;
+            }
+            editor.data.set(this.setConvertedValue(this.dataValue));
+            return editor;
+          });
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
@@ -268,6 +274,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   get htmlView() {
     return this.options.readOnly && this.component.wysiwyg;
   }
+  /* eslint-enable max-statements */
 
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
@@ -294,7 +301,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
     };
 
     if (Array.isArray(value)) {
