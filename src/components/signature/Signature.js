@@ -98,11 +98,15 @@ export default class SignatureComponent extends Input {
     if (this.signaturePad) {
       if (disabled) {
         this.signaturePad.off();
-        this.refresh.classList.add('disabled');
+        if (this.refs.refresh) {
+          this.refs.refresh.classList.add('disabled');
+        }
       }
       else {
         this.signaturePad.on();
-        this.refresh.classList.remove('disabled');
+        if (this.refs.refresh) {
+          this.refs.refresh.classList.remove('disabled');
+        }
       }
     }
   }
