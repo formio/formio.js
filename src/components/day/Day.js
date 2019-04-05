@@ -178,7 +178,7 @@ export default class DayComponent extends BaseComponent {
     });
     this.hook('input', this.dayInput, dayInputWrapper);
     this.addFocusBlurEvents(this.dayInput);
-    this.addEventListener(this.dayInput, 'change', () => this.updateValue());
+    this.addEventListener(this.dayInput, 'change', () => this.updateValue({ modified: true }));
     dayInputWrapper.appendChild(this.dayInput);
     this.setSubinputStyle(dayInputWrapper);
     dayColumn.appendChild(dayInputWrapper);
@@ -231,7 +231,7 @@ export default class DayComponent extends BaseComponent {
       if (day > maxDay) {
         self.dayInput.value = self.dayInput.max;
       }
-      self.updateValue();
+      self.updateValue({ modified: true });
     };
     monthInputWrapper.appendChild(this.monthInput);
     this.setSubinputStyle(monthInputWrapper);
@@ -279,7 +279,7 @@ export default class DayComponent extends BaseComponent {
 
     this.hook('input', this.yearInput, yearInputWrapper);
     this.addFocusBlurEvents(this.yearInput);
-    this.addEventListener(this.yearInput, 'change', () => this.updateValue());
+    this.addEventListener(this.yearInput, 'change', () => this.updateValue({ modified: true }));
     yearInputWrapper.appendChild(this.yearInput);
     this.setSubinputStyle(yearInputWrapper);
     yearColumn.appendChild(yearInputWrapper);
