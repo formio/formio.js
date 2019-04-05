@@ -233,14 +233,6 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
 
-    let url = '';
-    if (this[_url].indexOf(this.formId) !== this[_url].lastIndexOf(this.formId) && type === 'submission') {
-      url = this[_url].slice(0, this[_url].lastIndexOf('/') + 1) + this[_url].slice(this[_url].indexOf('-') + 1);
-    }
-    else {
-      url = this[_url];
-    }
-
     if (query && isObject(query)) {
       query = Formio.serialize(query.params);
     }
@@ -253,7 +245,7 @@ export default class Formio {
     if (!this[_id]) {
       return Promise.reject(`Missing ${_id}`);
     }
-    return this.makeRequest(type, url + query, 'get', null, opts);
+    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
   }
 
   makeRequest(...args) {

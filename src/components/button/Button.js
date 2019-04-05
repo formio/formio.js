@@ -211,11 +211,17 @@ export default class ButtonComponent extends BaseComponent {
       }
       switch (this.component.action) {
         case 'saveState':
+          event.preventDefault();
+          event.stopPropagation();
+          this.emit('submitButton', {
+            state: 'draft'
+          });
+          break;
         case 'submit':
           event.preventDefault();
           event.stopPropagation();
           this.emit('submitButton', {
-            state: this.component.action === 'submit' ? 'submitted' : 'draft'
+            state: this.component.state || 'submitted'
           });
           break;
         case 'event':
