@@ -143,8 +143,9 @@ export default class TextAreaComponent extends TextFieldComponent {
           }
           const numRows = parseInt(this.component.rows, 10);
           if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-            const rowHeight = numRows * 20;
-            editor.ui.view.editable.editableElement.style.height = `${rowHeight}px`;
+            // Default height is 21px with 10px margin + a 14px top margin.
+            const editorHeight = (numRows * 31) + 14;
+            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
           }
           return editor;
         });
