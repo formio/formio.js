@@ -113,7 +113,9 @@ export default class TextAreaComponent extends TextFieldComponent {
             const newValue = this.getConvertedValue(this.editor.getValue());
             // Do not bother to update if they are both empty.
             if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-              this.updateValue(null, newValue);
+              this.updateValue({
+                modified: true
+              }, newValue);
             }
           });
           this.editor.getSession().setTabSize(2);
@@ -126,7 +128,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === 'ckeditor') {
-      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateValue(null, newValue)).then((editor) => {
+      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateValue({
+        modified: true
+      }, newValue)).then((editor) => {
         this.editor = editor;
         if (this.options.readOnly || this.component.disabled) {
           this.editor.isReadOnly = true;
@@ -159,7 +163,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     this.editorReady = this.addQuill(
       this.input,
       this.component.wysiwyg, () => {
-        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
+        this.updateValue({
+          modified: true
+        }, this.getConvertedValue(this.quill.root.innerHTML));
       }
     ).then((quill) => {
       if (this.component.isUploadEnabled) {
