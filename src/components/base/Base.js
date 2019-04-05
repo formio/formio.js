@@ -1444,7 +1444,7 @@ export default class BaseComponent extends Component {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue({ modified: true }), true);
+    widget.on('update', () => this.updateValue(), true);
     widget.on('redraw', () => this.redraw(), true);
     this._widget = widget;
     return widget;
@@ -1804,11 +1804,11 @@ export default class BaseComponent extends Component {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (flags.modified) {
-      if (!flags.noValidate) {
-        this.pristine = false;
-      }
+    if (!flags.noValidate) {
+      this.pristine = false;
+    }
 
+    if (flags.modified) {
       // Add a modified class if this element was manually modified.
       this.addClass(this.getElement(), 'formio-modified');
     }
