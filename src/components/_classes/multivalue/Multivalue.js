@@ -81,7 +81,8 @@ export default class Multivalue extends Field {
    */
   addNewValue(value) {
     if (value === undefined) {
-      value = this.emptyValue;
+      value = this.component.defaultValue ?
+      this.component.defaultValue : this.emptyValue;
     }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
