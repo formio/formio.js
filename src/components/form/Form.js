@@ -223,7 +223,7 @@ export default class FormComponent extends Component {
   subscribe() {
     this.on('nosubmit', value => {
       this.nosubmit = value;
-    });
+    }, true);
   }
 
   destroy() {

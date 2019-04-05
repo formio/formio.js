@@ -91,18 +91,18 @@ export default class StripeCheckoutComponent extends ButtonComponent {
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
-      });
+      }, true);
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
-      });
+      }, true);
       this.on('change', (value) => {
         this.loading = false;
         this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      });
+      }, true);
       this.on('error', () => {
         this.loading = false;
-      });
+      }, true);
     }
 
     // When stripe checkout is ready, create the handler and add event listeners

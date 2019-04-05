@@ -58,8 +58,8 @@ export default class PDFBuilder extends WebformBuilder {
       this.clear();
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.resetValue());
-      this.on('refreshData', () => this.updateValue());
+      this.on('resetForm', () => this.resetValue(), true);
+      this.on('refreshData', () => this.updateValue(), true);
       setTimeout(() => {
         this.onChange();
         this.emit('render');

@@ -45,7 +45,7 @@ export default class ContentComponent extends Component {
         if (this.refs.html) {
           this.setContent(this.refs.html, this.content);
         }
-      });
+      }, true);
     }
     super.attach(element);
   }

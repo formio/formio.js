@@ -817,7 +817,7 @@ export default class Component extends Element {
       ) {
         this.refresh(event.changed.value);
       }
-    });
+    }, true);
   }
 
   attachRefreshOn() {
@@ -1969,7 +1969,7 @@ export default class Component extends Element {
             }
             this.redraw();
           }
-        });
+        }, true);
       }
     });
   }
@@ -2007,7 +2007,7 @@ export default class Component extends Element {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on('render', () => this.focus());
+      this.on('render', () => this.focus(), true);
     }
   }
 

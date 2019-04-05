@@ -124,7 +124,7 @@ export default class ButtonComponent extends Field {
         this.loading = true;
         this.disabled = true;
         this.redraw();
-      });
+      }, true);
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
@@ -133,7 +133,7 @@ export default class ButtonComponent extends Field {
         this.addClass(this.refs.buttonMessageContainer, 'has-success');
         this.removeClass(this.refs.buttonMessageContainer, 'has-error');
         this.setContent(this.refs.buttonMessage, this.t('complete'));
-      });
+      }, true);
       onChange = (value, isValid) => {
         this.removeClass(this.refs.button, 'btn-success submit-success');
         this.removeClass(this.refs.button, 'btn-danger submit-fail');
@@ -160,11 +160,11 @@ export default class ButtonComponent extends Field {
       this.on('requestButton', () => {
         this.loading = true;
         this.disabled = true;
-      });
+      }, true);
       this.on('requestDone', () => {
         this.loading = false;
         this.disabled = false;
-      });
+      }, true);
     }
 
     this.on('change', (value) => {
@@ -174,14 +174,14 @@ export default class ButtonComponent extends Field {
       if (onChange) {
         onChange(value, value.isValid);
       }
-    });
+    }, true);
 
     this.on('error', () => {
       this.loading = false;
       if (onError) {
         onError();
       }
-    });
+    }, true);
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 

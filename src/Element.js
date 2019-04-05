@@ -69,7 +69,7 @@ export default class Element {
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
    */
-  on(event, cb) {
+  on(event, cb, internal) {
     if (!this.events) {
       return;
     }
@@ -77,6 +77,7 @@ export default class Element {
 
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
+    cb.internal = internal;
 
     // Register for this event.
     return this.events.on(type, cb);
@@ -168,7 +169,7 @@ export default class Element {
   removeEventListeners() {
     _.each(this.events._events, (events, type) => {
       _.each(events, (listener) => {
-        if (listener && (this.id === listener.id)) {
+        if (listener && (this.id === listener.id) && (listener.internal)) {
           this.events.off(type, listener);
         }
       });

@@ -139,10 +139,10 @@ export default class PDF extends Webform {
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => {
       this.setSubmission(submission).then(() => this.submit());
-    });
+    }, true);
 
     // Trigger when this form is ready.
-    this.on('iframe-ready', () => this.iframeReadyResolve());
+    this.on('iframe-ready', () => this.iframeReadyResolve(), true);
 
     this.appendChild(this.element, [
       this.zoomIn,
