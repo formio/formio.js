@@ -155,7 +155,9 @@ export default class TextAreaComponent extends TextFieldComponent {
               const newValue = this.getConvertedValue(this.editor.getValue());
               // Do not bother to update if they are both empty.
               if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-                this.updateValue(null, newValue, index);
+                this.updateValue({
+                  modified: true
+                }, newValue, index);
               }
             });
             this.editor.getSession().setTabSize(2);
@@ -167,56 +169,30 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       case 'quill':
-        Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-          { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
-        ], true);
+        // Add the quill editor.
+        this.editorReady = this.addQuill(
+          element,
+          settings, () => {
+            this.updateValue({
+              modified: true
+            }, this.getConvertedValue(this.quill.root.innerHTML));
+          }
+        ).then((quill) => {
+          this.editor = quill;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.disable();
+          }
 
-        this.editorReady = Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
-          .then((Editor) => {
-            this.editor = new Editor(element, settings);
-            this.editor.root.spellcheck = this.component.spellcheck;
-            if (this.component.isUploadEnabled) {
-              this.editor.getModule('toolbar').addHandler('image', () => this.imageHandler());
-            }
-
-            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-            // const txtArea = document.createElement('textarea');
-            // txtArea.setAttribute('class', 'quill-source-code');
-            // this.editor.addContainer('ql-custom').appendChild(txtArea);
-            // const qlSource = element.parentNode.querySelector('.ql-source');
-            // if (qlSource) {
-            //   this.addEventListener(qlSource, 'click', (event) => {
-            //     event.preventDefault();
-            //     if (txtArea.style.display === 'inherit') {
-            //       this.editor.setContents(this.editor.clipboard.convert(txtArea.value));
-            //     }
-            //     txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-            //   });
-            // }
-            /** END CODEBLOCK **/
-
-            // Allows users to skip toolbar items when tabbing though form
-            const elm = document.querySelectorAll('.ql-formats > button');
-            for (let i = 0; i < elm.length; i++) {
-              elm[i].setAttribute('tabindex', '-1');
-            }
-
-            if (this.options.readOnly || this.disabled) {
-              this.editor.disable();
-            }
-
-            this.editor.on('text-change', () => {
-              this.updateValue(null, this.getConvertedValue(this.sanitize(this.editor.root.innerHTML)));
-            });
-
-            this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
-            return this.editor;
-          });
+          this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
+          return quill;
+        }).catch(err => console.warn(err));
         break;
       case 'ckeditor':
         settings = settings || {};
         settings.base64Upload = true;
-        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateValue(null, newValue)).then((editor) => {
+        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateValue({
+          modified: true
+        }, newValue)).then((editor) => {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.isReadOnly = true;
