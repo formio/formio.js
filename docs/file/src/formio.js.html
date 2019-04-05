@@ -916,7 +916,7 @@ export default class Formio {
     const cacheKey = btoa(url);
 
     // Get the cached promise to save multiple loads.
-    if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
+    if (!Formio.ignoreCache &amp;&amp; !opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
       return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
@@ -1040,7 +1040,7 @@ export default class Formio {
         }
 
         // Cache the response.
-        if (method === &apos;GET&apos;) {
+        if (!Formio.ignoreCache &amp;&amp; (method === &apos;GET&apos;)) {
           Formio.cache[cacheKey] = _cloneDeep(result);
         }
 
@@ -1546,6 +1546,7 @@ export default class Formio {
 }
 
 // Define all the static properties.
+Formio.ignoreCache = false;
 Formio.libraries = {};
 Formio.Promise = Promise;
 Formio.fetch = fetch;

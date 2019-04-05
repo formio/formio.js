@@ -286,6 +286,21 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly &amp;&amp; this.component.wysiwyg;
   }
 
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue({
+        modified: true
+      }, newValue);
+    }
+  }
+
+  /* eslint-disable max-statements */
   createInput(container) {
     const _this = this;
     if (this.isPlain) {
@@ -321,13 +336,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         .then(() =&gt; {
           const mode = this.component.as || &apos;javascript&apos;;
           this.editor = ace.edit(this.input);
-          this.editor.on(&apos;change&apos;, () =&gt; {
-            const newValue = this.getConvertedValue(this.editor.getValue());
-            // Do not bother to update if they are both empty.
-            if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-              this.updateValue(null, newValue);
-            }
-          });
+          this.editor.on(&apos;change&apos;, () =&gt; this.updateEditorValue(this.editor.getValue()));
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
@@ -338,21 +347,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === &apos;ckeditor&apos;) {
-      this.editorReady = this.addCKE(this.input, null, (newValue) =&gt; this.updateValue(null, newValue)).then((editor) =&gt; {
-        this.editor = editor;
-        if (this.options.readOnly || this.component.disabled) {
-          this.editor.isReadOnly = true;
-        }
-
-        // Set the default rows.
-        let value = &apos;&apos;;
-        const numRows = parseInt(this.component.rows, 10);
-        for (let i = 0; i &lt; numRows; i++) {
-          value += &apos;&lt;p&gt;&lt;/p&gt;&apos;;
-        }
-        editor.data.set(value);
-        return editor;
-      });
+      this.editorReady = this.addCKE(this.input, null, (newValue) =&gt; this.updateEditorValue(newValue))
+        .then((editor) =&gt; {
+          this.editor = editor;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.isReadOnly = true;
+          }
+          const numRows = parseInt(this.component.rows, 10);
+          if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
+            // Default height is 21px with 10px margin + a 14px top margin.
+            const editorHeight = (numRows * 31) + 14;
+            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+          }
+          return editor;
+        });
       return this.input;
     }
 
@@ -370,9 +378,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Add the quill editor.
     this.editorReady = this.addQuill(
       this.input,
-      this.component.wysiwyg, () =&gt; {
-        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
-      }
+      this.component.wysiwyg, () =&gt; this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) =&gt; {
       if (this.component.isUploadEnabled) {
         quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, imageHandler);
@@ -439,6 +445,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.click();
     }
   }
+  /* eslint-enable max-statements */
 
   setConvertedValue(value) {
     if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
@@ -465,7 +472,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== &apos;string&apos;) {
         return input;
       }
-      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).replace(/&lt;p&gt;&lt;br&gt;&lt;\/p&gt;/g, &apos;&apos;);
+      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;);
     };
 
     if (Array.isArray(value)) {

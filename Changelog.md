@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.19.0
+### Fixed
+ - Fixing the pristine flag to only set when a component has been directly modified.
+ - Ensure that the wysiwyg triggers updates with modified flag.
+ - Fixing the wysiwyg editor to not fire change events on initialize.
+ - Fixing the default height for ckeditor for rows configuration.
+ - Fixing the subform loading/saving to only use the 'reference' variable for consistency. Had to remove the "submit" component flag and replaced it with "reference"
+
+### Added
+ - Adding a way to disable the cache globally using "Formio.ignoreCache = true"
+
 ## 3.18.4
 ### Fixed
  - FOR-2074: Tagpad issues when no value is specified
