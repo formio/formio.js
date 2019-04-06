@@ -380,6 +380,10 @@ export default class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags) {
+    if (this.subForm) {
+      return this.subForm.setValue(submission, flags);
+    }
+
     const changed = super.setValue(submission, flags);
     const hidden = this.isHidden();
     let subForm;
