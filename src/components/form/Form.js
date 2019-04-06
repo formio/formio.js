@@ -380,7 +380,6 @@ export default class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags, norecurse) {
-    const changed = super.setValue(submission, flags);
     if (this.subForm || norecurse) {
       if (
         !norecurse &&
@@ -393,14 +392,15 @@ export default class FormComponent extends BaseComponent {
         const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
         this.subForm.setUrl(submissionUrl, this.options);
         this.subForm.nosubmit = false;
-        this.subForm.loadSubmission().then(() => this.setValue(submission, flags, true));
-        return changed;
+        this.subForm.loadSubmission().then((sub) => this.setValue(sub, flags, true));
+        return super.setValue(submission, flags);
       }
       else {
-        return this.subForm ? this.subForm.setValue(submission, flags) : changed;
+        return this.subForm ? this.subForm.setValue(submission, flags) : super.setValue(submission, flags);
       }
     }
 
+    const changed = super.setValue(submission, flags);
     const hidden = this.isHidden();
     let subForm;
     if (hidden) {
