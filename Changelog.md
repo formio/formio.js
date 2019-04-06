@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.19.2
+### Fixed
+ - Problems where subforms are not returning change events when they should be.
+
 ## 3.19.0, 3.19.1
 ### Fixed
  - Ensure that the wysiwyg triggers updates with modified flag.

@@ -591,36 +591,37 @@ export default class FormComponent extends BaseComponent {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags, norecurse) {
     const changed = super.setValue(submission, flags);
+    if (this.subForm || norecurse) {
+      if (
+        !norecurse &amp;&amp;
+        submission &amp;&amp;
+        submission._id &amp;&amp;
+        this.subForm.formio &amp;&amp;
+        !flags.noload &amp;&amp;
+        (_.isEmpty(submission.data) || this.shouldSubmit)
+      ) {
+        const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        this.subForm.setUrl(submissionUrl, this.options);
+        this.subForm.nosubmit = false;
+        this.subForm.loadSubmission().then(() =&gt; this.setValue(submission, flags, true));
+        return changed;
+      }
+      else {
+        return this.subForm ? this.subForm.setValue(submission, flags) : changed;
+      }
+    }
+
     const hidden = this.isHidden();
     let subForm;
-
     if (hidden) {
       subForm = this.subFormReady;
     }
     else {
       subForm = this.loadSubForm();
     }
-
-    subForm.then((form) =&gt; {
-      if (
-        submission &amp;&amp;
-        submission._id &amp;&amp;
-        form.formio &amp;&amp;
-        !flags.noload &amp;&amp;
-        (_.isEmpty(submission.data) || this.shouldSubmit)
-      ) {
-        const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-        form.setUrl(submissionUrl, this.options);
-        form.nosubmit = false;
-        form.loadSubmission();
-      }
-      else {
-        form.setValue(submission, flags);
-      }
-    });
-
+    subForm.then(() =&gt; this.setValue(submission, flags, true));
     return changed;
   }
 
