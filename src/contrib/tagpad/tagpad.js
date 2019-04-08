@@ -183,7 +183,7 @@ export default class Tagpad extends NestedComponent {
         })
         .catch(() => {
           //TODO check that component works in this case anyway
-          console.warn(`Sketchpad background didn't load for component: ${this.component.key}`);
+          console.warn(`Tagpad background didn't load for component: ${this.component.key}`);
           this.backgroundReady.resolve();
         });
     }
