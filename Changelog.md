@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
 
 ### Fixed
- - FOR-2074: Tagpad issues with layout components 
+ - FOR-2074: Tagpad issues with layout components
+ - FOR-2074: Tagpad issues with validation check when there is no selected dot 
 
 ## 3.19.3
 ### Fixed

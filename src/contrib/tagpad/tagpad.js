@@ -317,7 +317,9 @@ export default class Tagpad extends NestedComponent {
       isTagpadValid = isTagpadValid && isDotValid;
     });
     //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
-    this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    if (this.selectedDotIndex) {
+      this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    }
     if (isTagpadValid) {
       this.setCustomValidity('');
     }
