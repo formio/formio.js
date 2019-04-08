@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - FOR-2074: Tagpad issues with layout components
- - FOR-2074: Tagpad issues with validation check when there is no selected dot 
+ - FOR-2074: Tagpad issues with validation check when there is no selected dot
+ - FOR-2074: Tagpad issue with missing dots when component is re-created
 
 ## 3.19.3
 ### Fixed

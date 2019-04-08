@@ -88,6 +88,7 @@ export default class Tagpad extends NestedComponent {
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
     this.attachDrawEvents();
+    this.redrawDots();
   }
 
   renderForm() {
