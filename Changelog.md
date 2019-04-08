@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
  - FOR-2073: Ability to specify background image URL instead of SVG markup for Sketchpad
 
 ## 3.19.3
