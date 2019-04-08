@@ -700,7 +700,7 @@ export default class Sketchpad extends Base {
     this.two.update();
   }
 
-  dataReady() {
+  get dataReady() {
     return this.backgroundReady.promise;
   }
 
