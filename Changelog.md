@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - FOR-2073: Ability to specify background image URL instead of SVG markup for Sketchpad
+
 ## 3.19.3
 ### Fixed
  - Problem where the nested sub form was not sending the correct submission to load in subforms.
