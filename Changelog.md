@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.19.4
 ### Added
  - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
  - FOR-2073: Ability to specify background image URL instead of SVG markup for Sketchpad
