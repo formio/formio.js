@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
 
+### Fixed
+ - FOR-2074: Tagpad issues with layout components 
+
 ## 3.19.3
 ### Fixed
  - Problem where the nested sub form was not sending the correct submission to load in subforms.
