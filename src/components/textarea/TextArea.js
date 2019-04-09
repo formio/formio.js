@@ -303,7 +303,8 @@ export default class TextAreaComponent extends TextFieldComponent {
         return;
       }
       else {
-        return super.setValue(null, flags);
+        value = this.component.multiple ? this.getValue() : this.setConvertedValue(value);
+        return super.setValue(value, flags);
       }
     }
 
