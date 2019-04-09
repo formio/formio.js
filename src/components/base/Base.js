@@ -2502,6 +2502,7 @@ export default class BaseComponent extends Component {
    */
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    value = value || this.getValue();
     if (!this.hasInput) {
       return false;
     }
