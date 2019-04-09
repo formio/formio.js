@@ -214,6 +214,7 @@
 import Two from &apos;two.js&apos;;
 import Picker from &apos;vanilla-picker&apos;;
 import _ from &apos;lodash&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -911,47 +912,74 @@ export default class Sketchpad extends Base {
     this.two.update();
   }
 
-  addBackground() {
-    if (this.component.image) {
-      //TODO check that inserted html contains SVG tag on it
-      this.viewSketchpad.background.container.innerHTML = this.component.image;
-      this.editSketchpad.background.container.innerHTML = this.component.image;
-      this.viewSketchpad.background.svg = this.viewSketchpad.background.container.firstElementChild;
-      this.editSketchpad.background.svg = this.editSketchpad.background.container.firstElementChild;
-      //set width and height of SVG element to component.width and component.height
-      this.editSketchpad.background.svg.setAttribute(&apos;width&apos;, `${this.component.width}px`);
-      this.editSketchpad.background.svg.setAttribute(&apos;height&apos;, `${this.component.height}px`);
-      let viewBoxValue = this.editSketchpad.background.svg.getAttribute(&apos;viewBox&apos;);
+  get dataReady() {
+    return this.backgroundReady.promise;
+  }
 
-      if (!viewBoxValue) {
-        // since zooming works based on viewBox, we need to have explicitly defined value for it
-        // if viewBox is not defined on SVG element, browser behaves like it&apos;s equal to &quot;0 0 &lt;current_width&gt; &lt;current_height&gt;&quot;
-        // since background image should match dimensions of editor image, current width and height will always be equal to component.width and component.height
-        // as a result:
-        viewBoxValue = `0 0 ${this.component.width} ${this.component.height}`;
-        this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, viewBoxValue);
-      }
-      let [initialMinX, initialMinY, initialWidth, initialHeight] = viewBoxValue.split(&apos; &apos;).map(parseFloat);
-      initialMinX = initialMinX || 0;
-      initialMinY = initialMinY || 0;
-      initialWidth = initialWidth || this.component.width;
-      initialHeight = initialHeight || this.component.height;
-      const width = this.component.width,
-        height = this.component.height,
-        minX = Math.round(initialMinX - (this.component.width - initialWidth) / 2),
-        minY = Math.round(initialMinY - (this.component.height - initialHeight) / 2);
-      //set initial zoom info for background SVG
-      this.zoomInfo.backgroundViewBox.default = {
-        minX: minX,
-        minY: minY,
-        width: width,
-        height: height
+  addBackground() {
+    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
+      this.backgroundReady = {
+        resolve,
+        reject
       };
-      this.viewSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${minX} ${minY} ${width} ${height}`);
-      this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${minX} ${minY} ${width} ${height}`);
-      this.zoomInfo.backgroundViewBox.current = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
+    if (this.component.image) {
+      this.setBackgroundImage(this.component.image);
+      this.backgroundReady.resolve();
+    }
+    else if (this.component.imageUrl) {
+      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true })
+        .then(image =&gt; {
+          this.setBackgroundImage(image);
+          this.backgroundReady.resolve();
+        })
+        .catch(() =&gt; {
+          console.warn(`Sketchpad background didn&apos;t load for component: ${this.component.key}`);
+          this.backgroundReady.resolve();
+        });
     }
     //TODO make sure component works without background
+  }
+
+  setBackgroundImage(svgMarkup) {
+    //TODO check that inserted html contains SVG tag on it
+    this.viewSketchpad.background.container.innerHTML = svgMarkup;
+    this.editSketchpad.background.container.innerHTML = svgMarkup;
+    this.viewSketchpad.background.svg = this.viewSketchpad.background.container.firstElementChild;
+    this.editSketchpad.background.svg = this.editSketchpad.background.container.firstElementChild;
+    //set width and height of SVG element to component.width and component.height
+    this.editSketchpad.background.svg.setAttribute(&apos;width&apos;, `${this.component.width}px`);
+    this.editSketchpad.background.svg.setAttribute(&apos;height&apos;, `${this.component.height}px`);
+    let viewBoxValue = this.editSketchpad.background.svg.getAttribute(&apos;viewBox&apos;);
+
+    if (!viewBoxValue) {
+      // since zooming works based on viewBox, we need to have explicitly defined value for it
+      // if viewBox is not defined on SVG element, browser behaves like it&apos;s equal to &quot;0 0 &lt;current_width&gt; &lt;current_height&gt;&quot;
+      // since background image should match dimensions of editor image, current width and height will always be equal to component.width and component.height
+      // as a result:
+      viewBoxValue = `0 0 ${this.component.width} ${this.component.height}`;
+      this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, viewBoxValue);
+    }
+    let [initialMinX, initialMinY, initialWidth, initialHeight] = viewBoxValue.split(&apos; &apos;).map(parseFloat);
+    initialMinX = initialMinX || 0;
+    initialMinY = initialMinY || 0;
+    initialWidth = initialWidth || this.component.width;
+    initialHeight = initialHeight || this.component.height;
+    const width = this.component.width,
+      height = this.component.height,
+      minX = Math.round(initialMinX - (this.component.width - initialWidth) / 2),
+      minY = Math.round(initialMinY - (this.component.height - initialHeight) / 2);
+    //set initial zoom info for background SVG
+    this.zoomInfo.backgroundViewBox.default = {
+      minX: minX,
+      minY: minY,
+      width: width,
+      height: height
+    };
+    this.viewSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${minX} ${minY} ${width} ${height}`);
+    this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${minX} ${minY} ${width} ${height}`);
+    this.zoomInfo.backgroundViewBox.current = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
   }
 
   clear() {

@@ -215,6 +215,7 @@ import NestedComponent from &apos;../../components/nested/NestedComponent&apos;;
 import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../../components/base/Base&apos;;
 import { Components } from &apos;../../formio.form&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -369,10 +370,34 @@ export default class Tagpad extends NestedComponent {
     this.two.update();
   }
 
+  get dataReady() {
+    return this.backgroundReady.promise;
+  }
+
   addBackground() {
+    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
+      this.backgroundReady = {
+        resolve,
+        reject
+      };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
     if (this.component.image) {
       //TODO check that inserted html contains SVG tag on it
       this.background.innerHTML = this.component.image;
+      this.backgroundReady.resolve();
+    }
+    else if (this.component.imageUrl) {
+      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true })
+        .then(image =&gt; {
+          this.background.innerHTML = image;
+          this.backgroundReady.resolve();
+        })
+        .catch(() =&gt; {
+          //TODO check that component works in this case anyway
+          console.warn(`Tagpad background didn&apos;t load for component: ${this.component.key}`);
+          this.backgroundReady.resolve();
+        });
     }
   }
 
