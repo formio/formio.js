@@ -12,8 +12,16 @@ export default class Wizard extends Webform {
    *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    */
-  constructor(element, options) {
-    super(element, options);
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
+    super(null, options);
     this.panels = [];
     this.pages = [];
     this.globalComponents = [];
@@ -315,7 +323,20 @@ export default class Wizard extends Webform {
       return;
     }
     this.wizard = form;
-    this.component.components = form.components;
+    this.component.components = form.components || [];
+
+    // Check if there are no panel components.
+    if (this.component.components.filter(component => component.type === 'panel').length === 0) {
+      this.component.components = [
+        {
+          type: 'panel',
+          title: 'Page 1',
+          label: 'Page 1',
+          key: 'page1',
+          components: this.component.components
+        }
+      ];
+    }
     return super.setForm(form);
   }
 
