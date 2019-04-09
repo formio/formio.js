@@ -40764,7 +40764,7 @@
     "__docId__": 2178,
     "kind": "file",
     "name": "src/contrib/tagpad/tagpad.js",
-    "content": "import Two from 'two.js';\nimport NestedComponent from '../../components/nested/NestedComponent';\nimport _ from 'lodash';\nimport BaseComponent from '../../components/base/Base';\nimport { Components } from '../../formio.form';\nimport Formio from '../../Formio';\n\nexport default class Tagpad extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      type: 'tagpad',\n      label: 'Tagpad',\n      key: 'tagpad',\n      canvasWidth: 640,\n      canvasHeight: 480,\n      dotSize: 10,\n      dotStrokeSize: 2,\n      dotStrokeColor: '#333',\n      dotFillColor: '#ccc'\n    }, ...extend);\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'tagpad';\n    this.dots = [];\n    _.defaults(this.component, {\n      canvasWidth: 640,\n      canvasHeight: 480,\n      dotSize: 10,\n      dotStrokeSize: 2,\n      dotStrokeColor: '#333',\n      dotFillColor: '#ccc'\n    });\n  }\n\n  build(state) {\n    if (this.options.builder) {\n      return super.build(state, true);\n    }\n    this.createElement();\n    this.createLabel(this.element);\n    this.renderTagpad();\n    this.createDescription(this.element);\n    if (this.shouldDisable) {\n      this.disabled = true;\n    }\n    this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));\n    this.attachLogic();\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    //call Base Component setter to run the logic for adding disabled class\n    Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'disabled').set.call(this, disabled);\n  }\n\n  renderTagpad() {\n    this.tagpadContainer = this.ce('div', {\n      class: 'formio-tagpad-container clearfix'\n    });\n    this.canvas = this.ce('div', {\n      class: 'formio-tagpad-canvas'\n    });\n    this.background = this.ce('div', {\n      class: 'formio-tagpad-background'\n    });\n    this.canvasContainer = this.ce('div', {\n      class: 'formio-tagpad-image-container',\n      style: `width: ${this.component.canvasWidth}px;`\n    }, [this.canvas, this.background]);\n    this.formContainer = this.ce('div', {\n        class: 'formio-tagpad-form-container',\n        style: `margin-left: -${this.component.canvasWidth}px; padding-left: ${this.component.canvasWidth}px;`\n      },\n      this.form = this.ce('div', {\n        class: 'formio-tagpad-form'\n      }));\n    this.tagpadContainer.appendChild(this.canvasContainer);\n    this.tagpadContainer.appendChild(this.formContainer);\n    this.element.appendChild(this.tagpadContainer);\n    this.two = new Two({\n      type: Two.Types.svg,\n      width: this.component.canvasWidth,\n      height: this.component.canvasHeight\n    }).appendTo(this.canvas);\n    this.canvasSvg = this.two.renderer.domElement;\n    this.addBackground();\n    this.attachDrawEvents();\n  }\n\n  renderForm() {\n    this.form.appendChild(this.ce('p', {\n        class: 'formio-tagpad-form-title'\n      },\n      [\n        this.t('Dot: '),\n        this.selectedDotIndexElement = this.ce('span', {}, 'No dot selected')\n      ]\n      )\n    );\n    this.component.components.forEach((component) => {\n      //have to avoid using createComponent method as Components there will be empty\n      const componentInstance = Components.create(component, this.options, this.data);\n      componentInstance.parent = this;\n      componentInstance.root = this.root || this;\n      const oldOnChange = componentInstance.onChange;\n      componentInstance.onChange = (flags, fromRoot) => {\n        oldOnChange.call(componentInstance, flags, fromRoot);\n        this.saveSelectedDot();\n      };\n      this.components.push(componentInstance);\n      this.form.appendChild(componentInstance.getElement());\n    });\n    this.form.appendChild(this.ce(\n      'button',\n      {\n        class: 'btn btn-sm btn-danger formio-tagpad-remove-button',\n        onClick: this.removeSelectedDot.bind(this),\n        title: 'Remove Dot'\n      },\n      [\n        this.ce('i', {\n          class: this.iconClass('trash')\n        })\n      ]\n    ));\n    this.formRendered = true;\n  }\n\n  attachDrawEvents() {\n    if (this.options.readOnly) {\n      return;\n    }\n    // Set up mouse event.\n    const mouseEnd = (e) => {\n      e.preventDefault();\n      const offset = this.canvasSvg.getBoundingClientRect();\n      this.addDot({\n        x: e.clientX - offset.left,\n        y: e.clientY - offset.top\n      });\n    };\n    this.canvasSvg.addEventListener('mouseup', mouseEnd);\n\n    // Set up touch event.\n    const touchEnd = (e) => {\n      e.preventDefault();\n      const offset = this.canvasSvg.getBoundingClientRect();\n      const touch = e.originalEvent.changedTouches[0];\n      this.addDot({\n        x: touch.pageX - offset.left,\n        y: touch.pageY - offset.top\n      });\n    };\n    this.canvasSvg.addEventListener('touchend', touchEnd);\n\n    this.two.update();\n  }\n\n  get dataReady() {\n    return this.backgroundReady.promise;\n  }\n\n  addBackground() {\n    const backgroundReadyPromise = new Promise((resolve, reject) => {\n      this.backgroundReady = {\n        resolve,\n        reject\n      };\n    });\n    this.backgroundReady.promise = backgroundReadyPromise;\n    if (this.component.image) {\n      //TODO check that inserted html contains SVG tag on it\n      this.background.innerHTML = this.component.image;\n      this.backgroundReady.resolve();\n    }\n    else if (this.component.imageUrl) {\n      Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true })\n        .then(image => {\n          this.background.innerHTML = image;\n          this.backgroundReady.resolve();\n        })\n        .catch(() => {\n          //TODO check that component works in this case anyway\n          console.warn(`Tagpad background didn't load for component: ${this.component.key}`);\n          this.backgroundReady.resolve();\n        });\n    }\n  }\n\n  addDot(coordinate) {\n    const dot = {\n      coordinate,\n      data: {}\n    };\n    this.dataValue = this.dataValue || [];\n    const newDotIndex = this.dataValue.length;\n    const shape = this.drawDot(dot, newDotIndex);\n    this.dots.push({\n      index: newDotIndex,\n      dot,\n      shape\n    });\n    this.dataValue.push(dot);\n    this.selectDot(newDotIndex);\n    this.triggerChange();\n  }\n\n  dotClicked(e, dot, index) {\n    //prevent drawing another dot near clicked dot\n    e.stopPropagation();\n    this.selectDot(index);\n  }\n\n  selectDot(index) {\n    if (!this.formRendered) {\n      this.renderForm();\n    }\n    const dot = this.dots[index];\n    if (!dot) {\n      return;\n    }\n    //remove dashes for previous selected dot\n    if (this.dots[this.selectedDotIndex]) {\n      this.dots[this.selectedDotIndex].shape.circle.dashes = [0];\n    }\n    //add dashes to new selected dot\n    dot.shape.circle.dashes = [1];\n    this.two.update();\n    this.selectedDotIndex = index;\n    this.setFormValue(dot.dot.data);\n    this.checkDotValidity(this.data, false, dot);\n  }\n\n  setFormValue(value) {\n    this.selectedDotIndexElement.innerHTML = this.selectedDotIndex + 1;\n    this.components.forEach(component => {\n      component.setValue(_.get(value, component.key), { noUpdateEvent: true });\n    });\n  }\n\n  updateValue(flags, value) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return BaseComponent.prototype.updateValue.call(this, flags, value);\n  }\n\n  getValue() {\n    return this.dataValue;\n  }\n\n  setValue(dots) {\n    this.dataValue = dots;\n    if (!dots) {\n      return;\n    }\n    dots.forEach((dot, index) => {\n      const shape = this.drawDot(dot, index);\n      this.dots.push({\n        index,\n        dot,\n        shape\n      });\n    });\n    this.selectDot(0);\n  }\n\n  drawDot(dot, index) {\n    //draw circle\n    const circle = this.two.makeCircle(dot.coordinate.x, dot.coordinate.y, this.component.dotSize);\n    circle.fill = this.component.dotFillColor;\n    circle.stroke = this.component.dotStrokeColor;\n    circle.linewidth = this.component.dotStrokeSize;\n    circle.className += ' formio-tagpad-dot';\n    //draw index\n    const text = new Two.Text(index + 1, dot.coordinate.x, dot.coordinate.y);\n    text.className += ' formio-tagpad-dot-index';\n    text.styles = { color: this.component.dotStrokeColor };\n    this.two.add(text);\n    this.two.update();\n    circle._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));\n    text._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));\n    return { circle, text };\n  }\n\n  saveSelectedDot() {\n    const selectedDot = this.dots[this.selectedDotIndex];\n    this.components.forEach(component => {\n      selectedDot.dot.data[component.key] = component.getValue();\n    });\n    this.dataValue[this.selectedDotIndex] = selectedDot.dot;\n  }\n\n  removeSelectedDot() {\n    this.dataValue.splice(this.selectedDotIndex, 1);\n    this.redrawDots();\n  }\n\n  redrawDots() {\n    this.dots = [];\n    //clear canvas\n    this.two.clear();\n    //draw dots\n    this.setValue(this.dataValue);\n  }\n\n  checkValidity(data, dirty) {\n    if (!this.checkCondition(null, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n    let isTagpadValid = true;\n    //check validity of each dot\n    this.dots.forEach((dot) => {\n      const isDotValid = this.checkDotValidity(data, dirty, dot);\n      isTagpadValid = isTagpadValid && isDotValid;\n    });\n    //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation\n    this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);\n    if (isTagpadValid) {\n      this.setCustomValidity('');\n    }\n    else {\n      this.setCustomValidity(this.t('There are some invalid dots'), dirty);\n    }\n    return isTagpadValid;\n  }\n\n  checkDotValidity(data, dirty, dot) {\n    const isDotValid = this.components.reduce((valid, component) => {\n      component.dataValue = dot.dot.data[component.key];\n      return valid && component.checkValidity(data, dirty);\n    }, true);\n    this.setDotValidity(dot, isDotValid);\n    return isDotValid;\n  }\n\n  setDotValidity(dot, isValid) {\n    let color;\n    if (isValid) {\n      color = this.component.dotStrokeColor;\n    }\n    else {\n      color = '#ff0000';\n    }\n    //change style of dot based on its validity\n    dot.shape.circle.stroke = color;\n    dot.shape.text.styles.color = color;\n    this.two.update();\n  }\n\n  addInputError(message, dirty) {\n    //need to override this to not add has-error class (because has-error highlights all inner form-controls with red)\n    if (!message) {\n      return;\n    }\n\n    if (this.errorElement) {\n      const errorMessage = this.ce('p', {\n        class: 'help-block'\n      });\n      errorMessage.appendChild(this.text(message));\n      this.errorElement.appendChild(errorMessage);\n    }\n\n    this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));\n    if (dirty && this.options.highlightErrors) {\n      this.addClass(this.element, 'alert alert-danger');\n    }\n  }\n}\n",
+    "content": "import Two from 'two.js';\nimport NestedComponent from '../../components/nested/NestedComponent';\nimport _ from 'lodash';\nimport BaseComponent from '../../components/base/Base';\nimport { Components } from '../../formio.form';\nimport Formio from '../../Formio';\nimport { eachComponent } from '../../utils/utils';\n\nexport default class Tagpad extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      type: 'tagpad',\n      label: 'Tagpad',\n      key: 'tagpad',\n      canvasWidth: 640,\n      canvasHeight: 480,\n      dotSize: 10,\n      dotStrokeSize: 2,\n      dotStrokeColor: '#333',\n      dotFillColor: '#ccc'\n    }, ...extend);\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'tagpad';\n    this.dots = [];\n    _.defaults(this.component, {\n      canvasWidth: 640,\n      canvasHeight: 480,\n      dotSize: 10,\n      dotStrokeSize: 2,\n      dotStrokeColor: '#333',\n      dotFillColor: '#ccc'\n    });\n  }\n\n  build(state) {\n    if (this.options.builder) {\n      return super.build(state, true);\n    }\n    this.createElement();\n    this.createLabel(this.element);\n    this.renderTagpad();\n    this.createDescription(this.element);\n    if (this.shouldDisable) {\n      this.disabled = true;\n    }\n    this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));\n    this.attachLogic();\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    //call Base Component setter to run the logic for adding disabled class\n    Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'disabled').set.call(this, disabled);\n  }\n\n  renderTagpad() {\n    this.tagpadContainer = this.ce('div', {\n      class: 'formio-tagpad-container clearfix'\n    });\n    this.canvas = this.ce('div', {\n      class: 'formio-tagpad-canvas'\n    });\n    this.background = this.ce('div', {\n      class: 'formio-tagpad-background'\n    });\n    this.canvasContainer = this.ce('div', {\n      class: 'formio-tagpad-image-container',\n      style: `width: ${this.component.canvasWidth}px;`\n    }, [this.canvas, this.background]);\n    this.formContainer = this.ce('div', {\n        class: 'formio-tagpad-form-container',\n        style: `margin-left: -${this.component.canvasWidth}px; padding-left: ${this.component.canvasWidth}px;`\n      },\n      this.form = this.ce('div', {\n        class: 'formio-tagpad-form'\n      }));\n    this.tagpadContainer.appendChild(this.canvasContainer);\n    this.tagpadContainer.appendChild(this.formContainer);\n    this.element.appendChild(this.tagpadContainer);\n    this.two = new Two({\n      type: Two.Types.svg,\n      width: this.component.canvasWidth,\n      height: this.component.canvasHeight\n    }).appendTo(this.canvas);\n    this.canvasSvg = this.two.renderer.domElement;\n    this.addBackground();\n    this.attachDrawEvents();\n    this.redrawDots();\n  }\n\n  renderForm() {\n    this.form.appendChild(this.ce('p', {\n        class: 'formio-tagpad-form-title'\n      },\n      [\n        this.t('Dot: '),\n        this.selectedDotIndexElement = this.ce('span', {}, 'No dot selected')\n      ]\n      )\n    );\n    eachComponent(this.component.components, (component) => {\n      //have to avoid using createComponent method as Components there will be empty\n      const componentInstance = Components.create(component, this.options, this.data);\n      componentInstance.parent = this;\n      componentInstance.root = this.root || this;\n      const oldOnChange = componentInstance.onChange;\n      componentInstance.onChange = (flags, fromRoot) => {\n        oldOnChange.call(componentInstance, flags, fromRoot);\n        this.saveSelectedDot();\n      };\n      this.components.push(componentInstance);\n      this.form.appendChild(componentInstance.getElement());\n    });\n    this.form.appendChild(this.ce(\n      'button',\n      {\n        class: 'btn btn-sm btn-danger formio-tagpad-remove-button',\n        onClick: this.removeSelectedDot.bind(this),\n        title: 'Remove Dot'\n      },\n      [\n        this.ce('i', {\n          class: this.iconClass('trash')\n        })\n      ]\n    ));\n    this.formRendered = true;\n  }\n\n  attachDrawEvents() {\n    if (this.options.readOnly) {\n      return;\n    }\n    // Set up mouse event.\n    const mouseEnd = (e) => {\n      e.preventDefault();\n      const offset = this.canvasSvg.getBoundingClientRect();\n      this.addDot({\n        x: e.clientX - offset.left,\n        y: e.clientY - offset.top\n      });\n    };\n    this.canvasSvg.addEventListener('mouseup', mouseEnd);\n\n    // Set up touch event.\n    const touchEnd = (e) => {\n      e.preventDefault();\n      const offset = this.canvasSvg.getBoundingClientRect();\n      const touch = e.originalEvent.changedTouches[0];\n      this.addDot({\n        x: touch.pageX - offset.left,\n        y: touch.pageY - offset.top\n      });\n    };\n    this.canvasSvg.addEventListener('touchend', touchEnd);\n\n    this.two.update();\n  }\n\n  get dataReady() {\n    return this.backgroundReady.promise;\n  }\n\n  addBackground() {\n    const backgroundReadyPromise = new Promise((resolve, reject) => {\n      this.backgroundReady = {\n        resolve,\n        reject\n      };\n    });\n    this.backgroundReady.promise = backgroundReadyPromise;\n    if (this.component.image) {\n      //TODO check that inserted html contains SVG tag on it\n      this.background.innerHTML = this.component.image;\n      this.backgroundReady.resolve();\n    }\n    else if (this.component.imageUrl) {\n      Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true })\n        .then(image => {\n          this.background.innerHTML = image;\n          this.backgroundReady.resolve();\n        })\n        .catch(() => {\n          //TODO check that component works in this case anyway\n          console.warn(`Tagpad background didn't load for component: ${this.component.key}`);\n          this.backgroundReady.resolve();\n        });\n    }\n  }\n\n  addDot(coordinate) {\n    const dot = {\n      coordinate,\n      data: {}\n    };\n    this.dataValue = this.dataValue || [];\n    const newDotIndex = this.dataValue.length;\n    const shape = this.drawDot(dot, newDotIndex);\n    this.dots.push({\n      index: newDotIndex,\n      dot,\n      shape\n    });\n    this.dataValue.push(dot);\n    this.selectDot(newDotIndex);\n    this.triggerChange();\n  }\n\n  dotClicked(e, dot, index) {\n    //prevent drawing another dot near clicked dot\n    e.stopPropagation();\n    this.selectDot(index);\n  }\n\n  selectDot(index) {\n    if (!this.formRendered) {\n      this.renderForm();\n    }\n    const dot = this.dots[index];\n    if (!dot) {\n      return;\n    }\n    //remove dashes for previous selected dot\n    if (this.dots[this.selectedDotIndex]) {\n      this.dots[this.selectedDotIndex].shape.circle.dashes = [0];\n    }\n    //add dashes to new selected dot\n    dot.shape.circle.dashes = [1];\n    this.two.update();\n    this.selectedDotIndex = index;\n    this.setFormValue(dot.dot.data);\n    this.checkDotValidity(this.data, false, dot);\n  }\n\n  setFormValue(value) {\n    this.selectedDotIndexElement.innerHTML = this.selectedDotIndex + 1;\n    this.components.forEach(component => {\n      component.setValue(_.get(value, component.key), { noUpdateEvent: true });\n    });\n  }\n\n  updateValue(flags, value) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return BaseComponent.prototype.updateValue.call(this, flags, value);\n  }\n\n  getValue() {\n    return this.dataValue;\n  }\n\n  setValue(dots) {\n    this.dataValue = dots;\n    if (!dots) {\n      return;\n    }\n    dots.forEach((dot, index) => {\n      const shape = this.drawDot(dot, index);\n      this.dots.push({\n        index,\n        dot,\n        shape\n      });\n    });\n    this.selectDot(0);\n  }\n\n  drawDot(dot, index) {\n    //draw circle\n    const circle = this.two.makeCircle(dot.coordinate.x, dot.coordinate.y, this.component.dotSize);\n    circle.fill = this.component.dotFillColor;\n    circle.stroke = this.component.dotStrokeColor;\n    circle.linewidth = this.component.dotStrokeSize;\n    circle.className += ' formio-tagpad-dot';\n    //draw index\n    const text = new Two.Text(index + 1, dot.coordinate.x, dot.coordinate.y);\n    text.className += ' formio-tagpad-dot-index';\n    text.styles = { color: this.component.dotStrokeColor };\n    this.two.add(text);\n    this.two.update();\n    circle._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));\n    text._renderer.elem.addEventListener('mouseup', (e) => this.dotClicked(e, dot, index));\n    return { circle, text };\n  }\n\n  saveSelectedDot() {\n    const selectedDot = this.dots[this.selectedDotIndex];\n    this.components.forEach(component => {\n      selectedDot.dot.data[component.key] = component.getValue();\n    });\n    this.dataValue[this.selectedDotIndex] = selectedDot.dot;\n  }\n\n  removeSelectedDot() {\n    this.dataValue.splice(this.selectedDotIndex, 1);\n    this.redrawDots();\n  }\n\n  redrawDots() {\n    this.dots = [];\n    //clear canvas\n    this.two.clear();\n    //draw dots\n    this.setValue(this.dataValue);\n  }\n\n  checkValidity(data, dirty) {\n    if (!this.checkCondition(null, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n    let isTagpadValid = true;\n    //check validity of each dot\n    this.dots.forEach((dot) => {\n      const isDotValid = this.checkDotValidity(data, dirty, dot);\n      isTagpadValid = isTagpadValid && isDotValid;\n    });\n    //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation\n    if (this.selectedDotIndex) {\n      this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);\n    }\n    if (isTagpadValid) {\n      this.setCustomValidity('');\n    }\n    else {\n      this.setCustomValidity(this.t('There are some invalid dots'), dirty);\n    }\n    return isTagpadValid;\n  }\n\n  checkDotValidity(data, dirty, dot) {\n    const isDotValid = this.components.reduce((valid, component) => {\n      component.dataValue = dot.dot.data[component.key];\n      return valid && component.checkValidity(data, dirty);\n    }, true);\n    this.setDotValidity(dot, isDotValid);\n    return isDotValid;\n  }\n\n  setDotValidity(dot, isValid) {\n    let color;\n    if (isValid) {\n      color = this.component.dotStrokeColor;\n    }\n    else {\n      color = '#ff0000';\n    }\n    //change style of dot based on its validity\n    dot.shape.circle.stroke = color;\n    dot.shape.text.styles.color = color;\n    this.two.update();\n  }\n\n  addInputError(message, dirty) {\n    //need to override this to not add has-error class (because has-error highlights all inner form-controls with red)\n    if (!message) {\n      return;\n    }\n\n    if (this.errorElement) {\n      const errorMessage = this.ce('p', {\n        class: 'help-block'\n      });\n      errorMessage.appendChild(this.text(message));\n      this.errorElement.appendChild(errorMessage);\n    }\n\n    this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));\n    if (dirty && this.options.highlightErrors) {\n      this.addClass(this.element, 'alert alert-danger');\n    }\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/contrib/tagpad/tagpad.js",
     "access": "public",
@@ -40783,7 +40783,7 @@
     "importPath": "formiojs/src/contrib/tagpad/tagpad.js",
     "importStyle": "Tagpad",
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 9,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -40801,7 +40801,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad.schema",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 10,
     "undocument": true,
     "params": [
       {
@@ -40829,7 +40829,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true
   },
   {
@@ -40841,7 +40841,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#type",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -40858,7 +40858,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#dots",
     "access": "public",
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -40877,7 +40877,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#build",
     "access": "public",
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true,
     "params": [
       {
@@ -40904,7 +40904,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#disabled",
     "access": "public",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "undocument": true
   },
   {
@@ -40918,7 +40918,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#renderTagpad",
     "access": "public",
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 59,
     "undocument": true,
     "params": [],
     "return": null
@@ -40932,7 +40932,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#tagpadContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "undocument": true,
     "type": {
       "types": [
@@ -40949,7 +40949,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#canvas",
     "access": "public",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 63,
     "undocument": true,
     "type": {
       "types": [
@@ -40966,7 +40966,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#background",
     "access": "public",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
@@ -40983,7 +40983,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#canvasContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 69,
     "undocument": true,
     "type": {
       "types": [
@@ -41000,7 +41000,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#formContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 73,
     "undocument": true,
     "type": {
       "types": [
@@ -41017,7 +41017,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#two",
     "access": "public",
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 83,
     "undocument": true,
     "type": {
       "types": [
@@ -41034,7 +41034,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#canvasSvg",
     "access": "public",
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 88,
     "undocument": true,
     "type": {
       "types": [
@@ -41053,7 +41053,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#renderForm",
     "access": "public",
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 94,
     "undocument": true,
     "params": [],
     "return": null
@@ -41067,7 +41067,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#formRendered",
     "access": "public",
     "description": null,
-    "lineNumber": 128,
+    "lineNumber": 130,
     "undocument": true,
     "type": {
       "types": [
@@ -41086,7 +41086,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#attachDrawEvents",
     "access": "public",
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 133,
     "undocument": true,
     "params": [],
     "return": null
@@ -41102,7 +41102,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#dataReady",
     "access": "public",
     "description": null,
-    "lineNumber": 161,
+    "lineNumber": 163,
     "undocument": true,
     "type": {
       "types": [
@@ -41121,7 +41121,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#addBackground",
     "access": "public",
     "description": null,
-    "lineNumber": 165,
+    "lineNumber": 167,
     "undocument": true,
     "params": [],
     "return": null
@@ -41135,7 +41135,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#backgroundReady",
     "access": "public",
     "description": null,
-    "lineNumber": 167,
+    "lineNumber": 169,
     "undocument": true,
     "type": {
       "types": [
@@ -41154,7 +41154,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#addDot",
     "access": "public",
     "description": null,
-    "lineNumber": 192,
+    "lineNumber": 194,
     "undocument": true,
     "params": [
       {
@@ -41175,7 +41175,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#dataValue",
     "access": "public",
     "description": null,
-    "lineNumber": 197,
+    "lineNumber": 199,
     "undocument": true,
     "type": {
       "types": [
@@ -41194,7 +41194,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#dotClicked",
     "access": "public",
     "description": null,
-    "lineNumber": 210,
+    "lineNumber": 212,
     "undocument": true,
     "params": [
       {
@@ -41229,7 +41229,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#selectDot",
     "access": "public",
     "description": null,
-    "lineNumber": 216,
+    "lineNumber": 218,
     "undocument": true,
     "params": [
       {
@@ -41250,7 +41250,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#selectedDotIndex",
     "access": "public",
     "description": null,
-    "lineNumber": 231,
+    "lineNumber": 233,
     "undocument": true,
     "type": {
       "types": [
@@ -41269,7 +41269,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#setFormValue",
     "access": "public",
     "description": null,
-    "lineNumber": 236,
+    "lineNumber": 238,
     "undocument": true,
     "params": [
       {
@@ -41292,7 +41292,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#updateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 243,
+    "lineNumber": 245,
     "undocument": true,
     "params": [
       {
@@ -41325,7 +41325,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 248,
+    "lineNumber": 250,
     "undocument": true,
     "params": [],
     "return": {
@@ -41345,7 +41345,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 252,
+    "lineNumber": 254,
     "undocument": true,
     "params": [
       {
@@ -41368,7 +41368,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#drawDot",
     "access": "public",
     "description": null,
-    "lineNumber": 268,
+    "lineNumber": 270,
     "undocument": true,
     "params": [
       {
@@ -41401,7 +41401,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#saveSelectedDot",
     "access": "public",
     "description": null,
-    "lineNumber": 286,
+    "lineNumber": 288,
     "undocument": true,
     "params": [],
     "return": null
@@ -41417,7 +41417,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#removeSelectedDot",
     "access": "public",
     "description": null,
-    "lineNumber": 294,
+    "lineNumber": 296,
     "undocument": true,
     "params": [],
     "return": null
@@ -41433,7 +41433,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#redrawDots",
     "access": "public",
     "description": null,
-    "lineNumber": 299,
+    "lineNumber": 301,
     "undocument": true,
     "params": [],
     "return": null
@@ -41449,7 +41449,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#checkValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 307,
+    "lineNumber": 309,
     "undocument": true,
     "params": [
       {
@@ -41482,7 +41482,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#checkDotValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 329,
+    "lineNumber": 333,
     "undocument": true,
     "params": [
       {
@@ -41521,7 +41521,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#setDotValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 338,
+    "lineNumber": 342,
     "undocument": true,
     "params": [
       {
@@ -41550,7 +41550,7 @@
     "longname": "src/contrib/tagpad/tagpad.js~Tagpad#addInputError",
     "access": "public",
     "description": null,
-    "lineNumber": 352,
+    "lineNumber": 356,
     "undocument": true,
     "params": [
       {
@@ -45790,7 +45790,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.19.4\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^6.0.3\",\n    \"core-js\": \"^2.6.5\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.1.0\",\n    \"fetch-ponyfill\": \"^6.0.2\",\n    \"flatpickr\": \"^4.5.7\",\n    \"i18next\": \"^15.0.9\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.1\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.7.2\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.4.3\",\n    \"@babel/core\": \"^7.4.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.4.3\",\n    \"@babel/preset-env\": \"^7.4.3\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"del\": \"^4.1.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.16.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.3.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.3.1\",\n    \"karma\": \"^4.0.1\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.1\",\n    \"mocha\": \"^6.0.2\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.3.1\",\n    \"webpack\": \"^4.29.6\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.19.5\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^6.0.3\",\n    \"core-js\": \"^2.6.5\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.1.0\",\n    \"fetch-ponyfill\": \"^6.0.2\",\n    \"flatpickr\": \"^4.5.7\",\n    \"i18next\": \"^15.0.9\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.1\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.7.2\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.4.3\",\n    \"@babel/core\": \"^7.4.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.4.3\",\n    \"@babel/preset-env\": \"^7.4.3\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"del\": \"^4.1.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.16.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.3.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.3.1\",\n    \"karma\": \"^4.0.1\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.1\",\n    \"mocha\": \"^6.1.2\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.3.1\",\n    \"webpack\": \"^4.29.6\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
