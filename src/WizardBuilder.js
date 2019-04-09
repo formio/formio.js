@@ -1,6 +1,5 @@
 import WebformBuilder from './WebformBuilder';
 import _ from 'lodash';
-import Wizard from './Wizard';
 
 export default class WizardBuilder extends WebformBuilder {
   constructor() {
@@ -25,10 +24,16 @@ export default class WizardBuilder extends WebformBuilder {
         }
       ]
     };
+
+    this.page = 0;
   }
 
   get pages() {
     return _.filter(this._form.components, { type: 'panel' });
+  }
+
+  get currentPage() {
+    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
   }
 
   set form(value) {
@@ -109,6 +114,10 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   setPage(index) {
-    this.webform.form = this.pages[index];
+    if (index === this.page) {
+      return;
+    }
+    this.page = index;
+    this.rebuild();
   }
 }
