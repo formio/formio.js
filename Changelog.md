@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
  - FOR-2073: Ability to specify background image URL instead of SVG markup for Sketchpad
 
+### Fixed
+ - FOR-2074: Tagpad issues with layout components
+ - FOR-2074: Tagpad issues with validation check when there is no selected dot
+ - FOR-2074: Tagpad issue with missing dots when component is re-created
+
 ## 3.19.3
 ### Fixed
  - Problem where the nested sub form was not sending the correct submission to load in subforms.
