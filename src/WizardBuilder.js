@@ -56,6 +56,10 @@ export default class WizardBuilder extends WebformBuilder {
     return this._form;
   }
 
+  get schema() {
+    return this._form;
+  }
+
   render() {
     return this.renderTemplate('builderWizard', {
       sidebar: this.renderTemplate('builderSidebar', {

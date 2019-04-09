@@ -492,6 +492,7 @@ export default class WebformBuilder extends Component {
     else {
       target.formioContainer.push(info);
     }
+    this.emit('addComponent', info);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
