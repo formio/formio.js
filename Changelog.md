@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
  - Ability to edit JSON of component in builder
+ - Ability to show/hide specific buttons in builder
 
 ## 3.17.4
 ### Changed

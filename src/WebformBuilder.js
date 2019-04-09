@@ -19,6 +19,13 @@ export default class WebformBuilder extends Webform {
 
     // Setup the builder options.
     this.options.builder = _.defaultsDeep({}, this.options.builder, this.defaultComponents);
+    this.options.enableButtons = _.defaults({}, this.options.enableButtons, {
+      remove: true,
+      copy: true,
+      paste: true,
+      edit: true,
+      editJson: false,
+    });
 
     // Turn off if explicitely said to do so...
     _.each(this.defaultComponents, (config, key) => {
@@ -129,11 +136,11 @@ export default class WebformBuilder extends Webform {
         comp.prepend(this.ce('div', {
           class: 'component-btn-group'
         }, [
-          removeButton,
-          copyButton,
-          pasteButton,
-          this.options.enableEditJsonButton ? editJsonButton : null,
-          editButton
+          this.options.enableButtons.remove ? removeButton : null,
+          this.options.enableButtons.copy ? copyButton : null,
+          this.options.enableButtons.paste ? pasteButton : null,
+          this.options.enableButtons.editJson ? editJsonButton : null,
+          this.options.enableButtons.edit ? editButton : null
         ]));
       }
 
