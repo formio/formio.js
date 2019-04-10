@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.19.6
+### Fixed
+ - Problem where the wysiwyg editors would show up on a readOnly form and pdf.
+
+### Added
+ - Lazy load wysiwyg editors for text area components.
+
 ## 3.19.5
 ### Fixed
  - FOR-2074: Tagpad fixes: outer tabs, validation, inner layout components
