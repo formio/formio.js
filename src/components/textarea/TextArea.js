@@ -136,7 +136,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   /* eslint-enable max-statements */
 
   enableWysiwyg() {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
@@ -260,7 +260,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setWysiwygValue(value) {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
