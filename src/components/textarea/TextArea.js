@@ -40,16 +40,14 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   show(show, noClear) {
-    if (!!this.visible !== !!show) {
-      if (show && !this.wysiwygRendered) {
-        this.enableWysiwyg();
-        this.setWysiwygValue(this.dataValue);
-        this.wysiwygRendered = true;
-      }
-      else if (!show && this.wysiwygRendered) {
-        this.destroyWysiwyg();
-        this.wysiwygRendered = false;
-      }
+    if (show && !this.wysiwygRendered) {
+      this.enableWysiwyg();
+      this.setWysiwygValue(this.dataValue);
+      this.wysiwygRendered = true;
+    }
+    else if (!show && this.wysiwygRendered) {
+      this.destroyWysiwyg();
+      this.wysiwygRendered = false;
     }
 
     super.show(show, noClear);
