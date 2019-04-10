@@ -535,6 +535,9 @@ export default class NestedComponent extends BaseComponent {
     ) {
       component.show(false, true);
     }
+    else {
+      component.show(true, true);
+    }
   }
 
   hideComponents(hidden) {
