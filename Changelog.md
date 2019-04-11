@@ -4,10 +4,41 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to edit JSON of component in builder
+ - Ability to show/hide specific buttons in builder
+
+## 3.19.8
+### Fixed
+ - Textareas were sometimes unsetting themselves on data change.
+ - Sketchpad: sending excess headers on loading background image by URL 
+
+## 3.19.7
+### Fixed
+ - Added form id to radio names so they are unique with multiple of the same form on a page.
+ - Textarea without wysiwyg crashed on set value after lazy load changes.
+
+## 3.19.6
+### Fixed
+ - Problem where the wysiwyg editors would show up on a readOnly form and pdf.
+
+### Added
+ - Lazy load wysiwyg editors for text area components.
+
+## 3.19.5
+### Fixed
+ - FOR-2074: Tagpad fixes: outer tabs, validation, inner layout components
+
 ## 3.19.4
 ### Added
  - FOR-2074: Ability to specify background image URL instead of SVG markup for Tagpad
  - FOR-2073: Ability to specify background image URL instead of SVG markup for Sketchpad
+
+### Fixed
+ - FOR-2074: Tagpad issues with layout components
+ - FOR-2074: Tagpad issues with validation check when there is no selected dot
+ - FOR-2074: Tagpad issue with missing dots when component is re-created
 
 ## 3.19.3
 ### Fixed

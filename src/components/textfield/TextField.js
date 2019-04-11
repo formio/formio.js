@@ -129,13 +129,39 @@ export default class TextFieldComponent extends BaseComponent {
     }
   }
 
+  removeTags(value) {
+    if (!value) {
+      return;
+    }
+
+    const removeEditorBlank = function(input) {
+      if (typeof input !== 'string') {
+        return input;
+      }
+
+      return input.replace(/<(.*?)>/g, '');
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) => {
+        value[index] = removeEditorBlank(input);
+      });
+    }
+    else {
+      value = removeEditorBlank(value);
+    }
+
+    return value;
+  }
+
   onChange(flags, fromRoot) {
     super.onChange(flags, fromRoot);
     if (this.wordCount) {
       this.setCounter('words', this.wordCount, this.dataValue.trim().split(/\s+/).length, this.maxWordCount);
     }
     if (this.charCount) {
-      this.setCounter('characters', this.charCount, this.dataValue.length, this.maxCharCount);
+      const value = this.component.wysiwyg ? this.removeTags(this.dataValue) : this.dataValue;
+      this.setCounter('characters', this.charCount, value.length, this.maxCharCount);
     }
   }
 

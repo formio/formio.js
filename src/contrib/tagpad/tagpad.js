@@ -4,6 +4,7 @@ import _ from 'lodash';
 import BaseComponent from '../../components/base/Base';
 import { Components } from '../../formio.form';
 import Formio from '../../Formio';
+import { eachComponent } from '../../utils/utils';
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -87,6 +88,7 @@ export default class Tagpad extends NestedComponent {
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
     this.attachDrawEvents();
+    this.redrawDots();
   }
 
   renderForm() {
@@ -99,7 +101,7 @@ export default class Tagpad extends NestedComponent {
       ]
       )
     );
-    this.component.components.forEach((component) => {
+    eachComponent(this.component.components, (component) => {
       //have to avoid using createComponent method as Components there will be empty
       const componentInstance = Components.create(component, this.options, this.data);
       componentInstance.parent = this;
@@ -316,7 +318,9 @@ export default class Tagpad extends NestedComponent {
       isTagpadValid = isTagpadValid && isDotValid;
     });
     //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
-    this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    if (this.selectedDotIndex) {
+      this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    }
     if (isTagpadValid) {
       this.setCustomValidity('');
     }

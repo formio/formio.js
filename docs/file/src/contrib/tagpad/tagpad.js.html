@@ -215,6 +215,8 @@ import NestedComponent from &apos;../../components/nested/NestedComponent&apos;;
 import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../../components/base/Base&apos;;
 import { Components } from &apos;../../formio.form&apos;;
+import Formio from &apos;../../Formio&apos;;
+import { eachComponent } from &apos;../../utils/utils&apos;;
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -298,6 +300,7 @@ export default class Tagpad extends NestedComponent {
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
     this.attachDrawEvents();
+    this.redrawDots();
   }
 
   renderForm() {
@@ -310,7 +313,7 @@ export default class Tagpad extends NestedComponent {
       ]
       )
     );
-    this.component.components.forEach((component) =&gt; {
+    eachComponent(this.component.components, (component) =&gt; {
       //have to avoid using createComponent method as Components there will be empty
       const componentInstance = Components.create(component, this.options, this.data);
       componentInstance.parent = this;
@@ -369,10 +372,34 @@ export default class Tagpad extends NestedComponent {
     this.two.update();
   }
 
+  get dataReady() {
+    return this.backgroundReady.promise;
+  }
+
   addBackground() {
+    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
+      this.backgroundReady = {
+        resolve,
+        reject
+      };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
     if (this.component.image) {
       //TODO check that inserted html contains SVG tag on it
       this.background.innerHTML = this.component.image;
+      this.backgroundReady.resolve();
+    }
+    else if (this.component.imageUrl) {
+      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true })
+        .then(image =&gt; {
+          this.background.innerHTML = image;
+          this.backgroundReady.resolve();
+        })
+        .catch(() =&gt; {
+          //TODO check that component works in this case anyway
+          console.warn(`Tagpad background didn&apos;t load for component: ${this.component.key}`);
+          this.backgroundReady.resolve();
+        });
     }
   }
 
@@ -503,7 +530,9 @@ export default class Tagpad extends NestedComponent {
       isTagpadValid = isTagpadValid &amp;&amp; isDotValid;
     });
     //in the end check validity of selected dot to show its validation results on the form instead of showing last dot validation
-    this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    if (this.selectedDotIndex) {
+      this.checkDotValidity(data, dirty, this.dots[this.selectedDotIndex]);
+    }
     if (isTagpadValid) {
       this.setCustomValidity(&apos;&apos;);
     }
