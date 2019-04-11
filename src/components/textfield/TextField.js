@@ -43,7 +43,7 @@ export default class TextFieldComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
-    info.attr.id = "".concat(this.component.key);
+    info.attr.id = this.component.key;
     
     if (this.component.hasOwnProperty('spellcheck')) {
       info.attr.spellcheck = this.component.spellcheck;
