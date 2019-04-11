@@ -400,23 +400,8 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (this.viewOnly || this.htmlView || this.options.readOnly) {
-      return this.dataValue;
-    }
-
     if (this.isPlain) {
       return this.getConvertedValue(super.getValue());
-    }
-
-    if (this.editor) {
-      switch (this.component.editor) {
-        case 'ace':
-          return this.getConvertedValue(this.editor.getValue());
-        case 'ckeditor':
-          return this.getConvertedValue(this.editor.getData());
-        case 'quill':
-          return this.getConvertedValue(this.editor.root.innerHTML);
-      }
     }
 
     return this.dataValue;
