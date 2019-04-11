@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.19.8
 ### Fixed
  - Textareas were sometimes unsetting themselves on data change.
- - Sketchpad doesn't send headers with CORS requests.
+ - Sketchpad: sending excess headers on loading background image by URL 
 
 ## 3.19.7
 ### Fixed
