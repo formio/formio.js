@@ -336,7 +336,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
+      value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
