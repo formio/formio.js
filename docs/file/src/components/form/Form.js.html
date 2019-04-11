@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -272,11 +274,11 @@ export default class FormComponent extends BaseComponent {
     return this._root;
   }
 
-  set nosubmit(value = false) {
-    this._nosubmit = value;
+  set nosubmit(value) {
+    this._nosubmit = !!value;
 
     if (this.subForm) {
-      this.subForm.nosubmit = value;
+      this.subForm.nosubmit = !!value;
     }
   }
 
@@ -400,13 +402,14 @@ export default class FormComponent extends BaseComponent {
     if (this.options &amp;&amp; this.options.viewAsHtml) {
       srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
+    if (this.options &amp;&amp; this.options.hide) {
+      srcOptions.hide = this.options.hide;
+    }
+    if (this.options &amp;&amp; this.options.show) {
+      srcOptions.show = this.options.show;
+    }
     if (_.has(this.options, &apos;language&apos;)) {
       srcOptions.language = this.options.language;
-    }
-
-    // Make sure that if reference is provided, the form must submit.
-    if (this.component.reference) {
-      this.component.submit = true;
     }
 
     if (this.component.src) {
@@ -450,6 +453,11 @@ export default class FormComponent extends BaseComponent {
       if (this.component.form) {
         this.formSrc = `${rootSrc}/${this.component.form}`;
       }
+    }
+
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
     }
 
     // Determine if we already have a loaded form object.
@@ -505,12 +513,16 @@ export default class FormComponent extends BaseComponent {
     }
   }
 
+  get shouldSubmit() {
+    return !this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference;
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
-    if (this.component.submit) {
+    if (this.shouldSubmit) {
       return this.loadSubForm().then(() =&gt; {
         return this.subForm.submitForm().then(result =&gt; {
           this.dataValue = result.submission;
@@ -534,7 +546,7 @@ export default class FormComponent extends BaseComponent {
 
     // This submission has already been submitted, so just return the reference data.
     if (submission &amp;&amp; submission._id &amp;&amp; submission.form) {
-      this.dataValue = this.component.reference ? {
+      this.dataValue = this.shouldSubmit ? {
         _id: submission._id,
         form: submission.form
       } : submission;
@@ -542,15 +554,15 @@ export default class FormComponent extends BaseComponent {
     }
 
     // This submission has not been submitted yet.
-    if (this.component.submit) {
+    if (this.shouldSubmit) {
       return this.loadSubForm().then(() =&gt; {
         return this.subForm.submitForm()
           .then(result =&gt; {
             this.subForm.loading = false;
-            this.dataValue = this.component.reference ? {
+            this.dataValue = {
               _id: result.submission._id,
               form: result.submission.form
-            } : result.submission;
+            };
             return this.dataValue;
           })
           .catch(() =&gt; {});
@@ -579,30 +591,37 @@ export default class FormComponent extends BaseComponent {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags, norecurse) {
+    if (this.subForm || norecurse) {
+      if (
+        !norecurse &amp;&amp;
+        submission &amp;&amp;
+        submission._id &amp;&amp;
+        this.subForm.formio &amp;&amp;
+        !flags.noload &amp;&amp;
+        (_.isEmpty(submission.data) || this.shouldSubmit)
+      ) {
+        const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        this.subForm.setUrl(submissionUrl, this.options);
+        this.subForm.nosubmit = false;
+        this.subForm.loadSubmission().then((sub) =&gt; this.setValue(sub, flags, true));
+        return super.setValue(submission, flags);
+      }
+      else {
+        return this.subForm ? this.subForm.setValue(submission, flags) : super.setValue(submission, flags);
+      }
+    }
+
     const changed = super.setValue(submission, flags);
     const hidden = this.isHidden();
     let subForm;
-
     if (hidden) {
       subForm = this.subFormReady;
     }
     else {
       subForm = this.loadSubForm();
     }
-
-    subForm.then((form) =&gt; {
-        if (submission &amp;&amp; submission._id &amp;&amp; form.formio &amp;&amp; !flags.noload &amp;&amp; _.isEmpty(submission.data)) {
-          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-          form.setUrl(submissionUrl, this.options);
-          form.nosubmit = false;
-          form.loadSubmission();
-        }
-        else {
-          form.setValue(submission, flags);
-        }
-      });
-
+    subForm.then(() =&gt; this.setValue(submission, flags, true));
     return changed;
   }
 

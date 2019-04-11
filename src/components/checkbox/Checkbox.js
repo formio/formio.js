@@ -45,13 +45,16 @@ export default class CheckBoxComponent extends BaseComponent {
     info.attr.type = this.component.inputType || 'checkbox';
     info.attr.class = 'form-check-input';
     if (this.component.name) {
-      info.attr.name = `data[${this.component.name}]`;
+      info.attr.name = `data[${this.component.name}][${this.root.id}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
     return info;
   }
 
   build() {
+    // Refresh element info.
+    this.info = this.elementInfo();
+
     if (this.viewOnly) {
       return this.viewOnlyBuild();
     }

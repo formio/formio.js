@@ -400,7 +400,7 @@ export default class NestedComponent extends BaseComponent {
     }
 
     // Return if the value is valid.
-    return valid;
+    return !!valid;
   }
 
   checkConditions(data) {
@@ -534,6 +534,9 @@ export default class NestedComponent extends BaseComponent {
       (!component.conditionallyVisible())
     ) {
       component.show(false, true);
+    }
+    else {
+      component.show(true, true);
     }
   }
 

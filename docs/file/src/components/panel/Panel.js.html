@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -272,15 +274,21 @@ export default class PanelComponent extends NestedComponent {
     }
   }
 
-  checkValidity(data, dirty) {
-    // Make sure to toggle the collapsed state before checking validity.
-    if (
-      dirty &amp;&amp;
+  /**
+   * Return if this panel is lazy loadable.
+   * @return {boolean}
+   */
+  get lazyLoadable() {
+    return !this.options.builder &amp;&amp;
       this.component.lazyLoad &amp;&amp;
       this.component.collapsible &amp;&amp;
       this.collapsed &amp;&amp;
-      !this.lazyLoaded
-    ) {
+      !this.lazyLoaded;
+  }
+
+  checkValidity(data, dirty) {
+    // Make sure to toggle the collapsed state before checking validity.
+    if (dirty &amp;&amp; this.lazyLoadable) {
       this.lazyLoaded = true;
       this.addComponents();
     }
@@ -290,28 +298,18 @@ export default class PanelComponent extends NestedComponent {
 
   addComponents(element, data, options, state) {
     // If they are lazy loading, then only add the components if they toggle the collapsed state.
-    if (
-      this.component.lazyLoad &amp;&amp;
-      this.component.collapsible &amp;&amp;
-      this.collapsed &amp;&amp;
-      !this.lazyLoaded
-    ) {
+    if (this.lazyLoadable) {
       return;
     }
     return super.addComponents(element, data, options, state);
   }
 
   toggleCollapse() {
-    super.toggleCollapse();
-    if (
-      this.component.lazyLoad &amp;&amp;
-      this.component.collapsible &amp;&amp;
-      !this.collapsed &amp;&amp;
-      !this.lazyLoaded
-    ) {
+    if (this.lazyLoadable) {
       this.lazyLoaded = true;
       this.addComponents();
     }
+    super.toggleCollapse();
   }
 
   build(state) {

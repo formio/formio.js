@@ -190,13 +190,14 @@ export default class FormComponent extends BaseComponent {
     if (this.options && this.options.viewAsHtml) {
       srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
+    if (this.options && this.options.hide) {
+      srcOptions.hide = this.options.hide;
+    }
+    if (this.options && this.options.show) {
+      srcOptions.show = this.options.show;
+    }
     if (_.has(this.options, 'language')) {
       srcOptions.language = this.options.language;
-    }
-
-    // Make sure that if reference is provided, the form must submit.
-    if (this.component.reference) {
-      this.component.submit = true;
     }
 
     if (this.component.src) {
@@ -300,12 +301,16 @@ export default class FormComponent extends BaseComponent {
     }
   }
 
+  get shouldSubmit() {
+    return !this.component.hasOwnProperty('reference') || this.component.reference;
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
-    if (this.component.submit) {
+    if (this.shouldSubmit) {
       return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
           this.dataValue = result.submission;
@@ -329,7 +334,7 @@ export default class FormComponent extends BaseComponent {
 
     // This submission has already been submitted, so just return the reference data.
     if (submission && submission._id && submission.form) {
-      this.dataValue = this.component.reference ? {
+      this.dataValue = this.shouldSubmit ? {
         _id: submission._id,
         form: submission.form
       } : submission;
@@ -337,15 +342,15 @@ export default class FormComponent extends BaseComponent {
     }
 
     // This submission has not been submitted yet.
-    if (this.component.submit) {
+    if (this.shouldSubmit) {
       return this.loadSubForm().then(() => {
         return this.subForm.submitForm()
           .then(result => {
             this.subForm.loading = false;
-            this.dataValue = this.component.reference ? {
+            this.dataValue = {
               _id: result.submission._id,
               form: result.submission.form
-            } : result.submission;
+            };
             return this.dataValue;
           })
           .catch(() => {});
@@ -374,30 +379,37 @@ export default class FormComponent extends BaseComponent {
     return !super.checkConditions(this.rootValue);
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags, norecurse) {
+    if (this.subForm || norecurse) {
+      if (
+        !norecurse &&
+        submission &&
+        submission._id &&
+        this.subForm.formio &&
+        !flags.noload &&
+        (_.isEmpty(submission.data) || this.shouldSubmit)
+      ) {
+        const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        this.subForm.setUrl(submissionUrl, this.options);
+        this.subForm.nosubmit = false;
+        this.subForm.loadSubmission().then((sub) => this.setValue(sub, flags, true));
+        return super.setValue(submission, flags);
+      }
+      else {
+        return this.subForm ? this.subForm.setValue(submission, flags) : super.setValue(submission, flags);
+      }
+    }
+
     const changed = super.setValue(submission, flags);
     const hidden = this.isHidden();
     let subForm;
-
     if (hidden) {
       subForm = this.subFormReady;
     }
     else {
       subForm = this.loadSubForm();
     }
-
-    subForm.then((form) => {
-        if (submission && submission._id && form.formio && !flags.noload && _.isEmpty(submission.data)) {
-          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-          form.setUrl(submissionUrl, this.options);
-          form.nosubmit = false;
-          form.loadSubmission();
-        }
-        else {
-          form.setValue(submission, flags);
-        }
-      });
-
+    subForm.then(() => this.setValue(submission, flags, true));
     return changed;
   }
 

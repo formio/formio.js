@@ -906,7 +906,7 @@ export default class BaseComponent extends Component {
     const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = '';
-    values = values || this.dataValue;
+    values = (values && values.length > 0) ? values : this.dataValue;
     _.each(values, (value, index) => {
       const tr = this.ce('tr');
       if (allowReorder) {
@@ -2258,7 +2258,7 @@ export default class BaseComponent extends Component {
 
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: [],
+      value: this.defaultValue,
       data
     }, 'value');
 
@@ -2328,8 +2328,7 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!(this.component.validate && this.component.validate.required)
-      && (!this.hasInput || (!dirty && this.pristine))) {
+    if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
     }
 
@@ -2353,12 +2352,9 @@ export default class BaseComponent extends Component {
       return true;
     }
 
-    const error = Validator.check(this, data);
-    if (error && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true);
-      this.setCustomValidity(message, dirty);
-    }
-    return !error;
+    const message = this.invalidMessage(data, dirty, true);
+    this.setCustomValidity(message, dirty);
+    return message ? false : true;
   }
 
   /* eslint-disable max-len */
