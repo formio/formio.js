@@ -892,7 +892,10 @@ export default class Formio {
 
     Formio.tokens[tokenName] = token;
     if (!token) {
-      Formio.setUser(null, opts);
+      if (!opts.fromUser) {
+        opts.fromToken = true;
+        Formio.setUser(null, opts);
+      }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         return localStorage.removeItem(tokenName);
@@ -934,7 +937,10 @@ export default class Formio {
   static setUser(user, opts = {}) {
     var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
-      Formio.setToken(null, opts);
+      if (!opts.fromToken) {
+        opts.fromUser = true;
+        Formio.setToken(null, opts);
+      }
 
       // Emit an event on the cleared user.
       Formio.events.emit('formio.user', null);
