@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.19.8
+### Fixed
+ - Textareas were sometimes unsetting themselves on data change.
+ - Sketchpad doesn't send headers with CORS requests.
+
 ## 3.19.7
 ### Fixed
  - Added form id to radio names so they are unique with multiple of the same form on a page.
