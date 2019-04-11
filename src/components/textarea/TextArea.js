@@ -384,10 +384,17 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.editor || this.quill) {
-      return this.dataValue;
+      switch (this.component.editor) {
+        case 'ace':
+          return this.getConvertedValue(this.editor.getValue());
+        case 'ckeditor':
+          return this.getConvertedValue(this.editor.getData());
+        case 'quill':
+          return this.getConvertedValue(this.quill.root.innerHTML);
+      }
     }
 
-    return this.component.multiple ? [] : '';
+    return this.dataValue;
   }
 
   elementInfo() {
