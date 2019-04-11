@@ -339,14 +339,17 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.options.readOnly || this.htmlView) {
       // For readOnly, just view the contents.
       if (this.input) {
-        this.input.innerHTML = Array.isArray(value) ? value.map((val) => this.interpolate(val)).join('<br/><br/>') : this.interpolate(value);
+        if (Array.isArray(value)) {
+          value = value.join('<br/><br/>');
+        }
+        this.input.innerHTML = this.interpolate(value);
       }
       this.dataValue = value;
       return;
     }
     else if (this.isPlain) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
-      return super.setValue(this.setConvertedValue(value), flags);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
