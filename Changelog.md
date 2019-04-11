@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.19.9
+### Fixed
+ - Potential problems with infinite onchange events with TextAreas with wysiwyg editors.
+
 ## 3.19.8
 ### Fixed
  - Textareas were sometimes unsetting themselves on data change.

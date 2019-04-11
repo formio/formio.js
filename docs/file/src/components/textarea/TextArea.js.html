@@ -348,7 +348,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   /* eslint-enable max-statements */
 
   enableWysiwyg() {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
@@ -472,7 +472,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setWysiwygValue(value) {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
@@ -595,11 +595,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.editor || this.quill) {
-      return this.dataValue;
-    }
-
-    return this.component.multiple ? [] : &apos;&apos;;
+    return this.dataValue;
   }
 
   elementInfo() {
