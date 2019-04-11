@@ -241,6 +241,45 @@ describe(&apos;Radio Component&apos;, () =&gt; {
       done();
     });
   });
+
+  it(&apos;Should set the radio-selected class on wrapper of selected radio&apos;, done =&gt; {
+    Harness.testCreate(RadioComponent, comp1).then((component) =&gt; {
+      const selector = &apos;.radio:nth-child(1)&apos;;
+      const firstRadioWrapper = component.element.querySelector(selector);
+      assert(
+        firstRadioWrapper.getAttribute(&apos;class&apos;).indexOf(&apos;radio-selected&apos;) === -1,
+        &apos;Radio wrapper does not have radio-selected class.&apos;
+      );
+      Harness.clickElement(component, `${selector} input`);
+      assert(
+        firstRadioWrapper.getAttribute(&apos;class&apos;).indexOf(&apos;radio-selected&apos;) !== -1,
+        &apos;Radio wrapper has radio-selected class.&apos;
+      );
+      done();
+    });
+  });
+
+  it(&apos;Should unset the radio-selected class on wrapper of selected radio&apos;, done =&gt; {
+    Harness.testCreate(RadioComponent, comp1).then((component) =&gt; {
+      const selector = number =&gt; `.radio:nth-child(${number})`;
+      const radioWrapper = component.element.querySelector(selector(1));
+      assert(
+        radioWrapper.getAttribute(&apos;class&apos;).indexOf(&apos;radio-selected&apos;) === -1,
+        &apos;Radio wrapper does not have radio-selected class.&apos;
+      );
+      Harness.clickElement(component, `${selector(1)} input`);
+      assert(
+        radioWrapper.getAttribute(&apos;class&apos;).indexOf(&apos;radio-selected&apos;) !== -1,
+        &apos;Radio wrapper has radio-selected class.&apos;
+      );
+      Harness.clickElement(component, `${selector(2)} input`);
+      assert(
+        radioWrapper.getAttribute(&apos;class&apos;).indexOf(&apos;radio-selected&apos;) === -1,
+        &apos;Radio wrapper does not have radio-selected class.&apos;
+      );
+      done();
+    });
+  });
 });
 </code></pre>
 

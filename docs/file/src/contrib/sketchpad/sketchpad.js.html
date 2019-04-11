@@ -929,7 +929,7 @@ export default class Sketchpad extends Base {
       this.backgroundReady.resolve();
     }
     else if (this.component.imageUrl) {
-      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true })
+      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true, headers: {} })
         .then(image =&gt; {
           this.setBackgroundImage(image);
           this.backgroundReady.resolve();

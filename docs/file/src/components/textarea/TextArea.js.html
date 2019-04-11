@@ -348,7 +348,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   /* eslint-enable max-statements */
 
   enableWysiwyg() {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
@@ -472,7 +472,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setWysiwygValue(value) {
-    if (this.options.readOnly || this.options.htmlView) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
@@ -551,13 +551,17 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.options.readOnly || this.htmlView) {
       // For readOnly, just view the contents.
       if (this.input) {
+        if (Array.isArray(value)) {
+          value = value.join(&apos;&lt;br/&gt;&lt;br/&gt;&apos;);
+        }
         this.input.innerHTML = this.interpolate(value);
       }
       this.dataValue = value;
       return;
     }
     else if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
+      value = Array.isArray(value) ? value.map((val) =&gt; this.setConvertedValue(val)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
@@ -595,11 +599,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.editor || this.quill) {
-      return this.dataValue;
-    }
-
-    return this.component.multiple ? [] : &apos;&apos;;
+    return this.dataValue;
   }
 
   elementInfo() {

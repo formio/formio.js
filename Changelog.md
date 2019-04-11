@@ -4,10 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.20.0-beta.1
 ### Added
  - Ability to edit JSON of component in builder
  - Ability to show/hide specific buttons in builder
+ - Added a "beforeNext" hook that enables external controllers to hook into the wizard navigation.
+ - FOR-2168: Fixed problems with TextArea in multiple setting where value would not set when adding multiple values with Add Another button.
+ - Update Checkbox to add checkbox-checked class like Radio adds radio-selected class (https://github.com/formio/formio.js/pull/1136)
+
+### Fixed
+ - Issue in builder where if you have an HTML Elememnt and configure it with no content, you can no longer see that component in the builder.
+ - Problem with the TextArea character counter that would get off when in WYWIWYG mode.
+
+### Changed
+ - Upgraded jquery@3.4.0, choices.js@7.0.0, marked@0.6.2
 
 ## 3.19.8
 ### Fixed

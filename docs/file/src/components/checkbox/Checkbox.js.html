@@ -257,13 +257,16 @@ export default class CheckBoxComponent extends BaseComponent {
     info.attr.type = this.component.inputType || &apos;checkbox&apos;;
     info.attr.class = &apos;form-check-input&apos;;
     if (this.component.name) {
-      info.attr.name = `data[${this.component.name}]`;
+      info.attr.name = `data[${this.component.name}][${this.root.id}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
     return info;
   }
 
   build() {
+    // Refresh element info.
+    this.info = this.elementInfo();
+
     if (this.viewOnly) {
       return this.viewOnlyBuild();
     }
@@ -462,19 +465,21 @@ export default class CheckBoxComponent extends BaseComponent {
       this.input.value = 0;
       this.input.checked = 0;
     }
+
     if (this.input.checked) {
       this.input.setAttribute(&apos;checked&apos;, true);
     }
     else {
       this.input.removeAttribute(&apos;checked&apos;);
     }
+
     return value;
   }
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (this.setCheckedState(value) !== undefined) {
-      return this.updateValue(flags);
+      return this.updateValue(flags, value);
     }
   }
 
@@ -485,6 +490,20 @@ export default class CheckBoxComponent extends BaseComponent {
   destroy() {
     super.destroy();
     this.removeShortcut();
+  }
+
+  updateValue(flags, value) {
+    const changed = super.updateValue(flags, value);
+    if (changed) {
+      const checkedClass = &apos;checkbox-checked&apos;;
+      if (this.getValue()) {
+        this.addClass(this.element, checkedClass);
+      }
+      else {
+        this.removeClass(this.element, checkedClass);
+      }
+    }
+    return changed;
   }
 }
 </code></pre>

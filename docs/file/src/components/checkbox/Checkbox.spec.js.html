@@ -253,6 +253,41 @@ describe(&apos;Checkbox Component&apos;, () =&gt; {
       done();
     });
   });
+
+  it(&apos;Should set the checkbox-checked class on wrapper of checked checkbox&apos;, done =&gt; {
+    Harness.testCreate(CheckBoxComponent, comp1).then((component) =&gt; {
+      assert(
+        component.element.getAttribute(&apos;class&apos;).indexOf(&apos;checkbox-checked&apos;) === -1,
+        &apos;Checkbox wrapper does not have checkbox-checked class.&apos;
+      );
+      Harness.clickElement(component, &apos;input[type=&quot;checkbox&quot;]&apos;);
+      assert(
+        component.element.getAttribute(&apos;class&apos;).indexOf(&apos;checkbox-checked&apos;) !== -1,
+        &apos;Checkbox wrapper has checkbox-checked class.&apos;
+      );
+      done();
+    });
+  });
+
+  it(&apos;Should unset the checkbox-checked class on wrapper of checked checkbox&apos;, done =&gt; {
+    Harness.testCreate(CheckBoxComponent, comp1).then((component) =&gt; {
+      assert(
+        component.element.getAttribute(&apos;class&apos;).indexOf(&apos;checkbox-checked&apos;) === -1,
+        &apos;Checkbox wrapper does not have checkbox-checked class.&apos;
+      );
+      Harness.clickElement(component, &apos;input[type=&quot;checkbox&quot;]&apos;);
+      assert(
+        component.element.getAttribute(&apos;class&apos;).indexOf(&apos;checkbox-checked&apos;) !== -1,
+        &apos;Checkbox wrapper has checkbox-checked class.&apos;
+      );
+      Harness.clickElement(component, &apos;input[type=&quot;checkbox&quot;]&apos;);
+      assert(
+        component.element.getAttribute(&apos;class&apos;).indexOf(&apos;checkbox-checked&apos;) === -1,
+        &apos;Checkbox wrapper does not have checkbox-checked class.&apos;
+      );
+      done();
+    });
+  });
 });
 </code></pre>
 
