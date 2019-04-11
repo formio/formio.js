@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Sketchpad: sending excess headers on loading background image by URL 
+
 ## 3.19.7
 ### Fixed
  - Added form id to radio names so they are unique with multiple of the same form on a page.
