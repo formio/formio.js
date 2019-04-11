@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to edit JSON of component in builder
+ - Ability to show/hide specific buttons in builder
+
 ## 3.19.8
 ### Fixed
  - Textareas were sometimes unsetting themselves on data change.
