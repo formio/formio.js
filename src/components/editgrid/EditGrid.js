@@ -90,9 +90,9 @@ export default class EditGridComponent extends NestedComponent {
     }
   }
 
-  render() {
+  render(children) {
     const dataValue = this.dataValue || [];
-    return super.render(this.renderTemplate('editgrid', {
+    return super.render(children || this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
       header: this.renderString(_.get(this.component, 'templates.header'), {
         components: this.component.components,
