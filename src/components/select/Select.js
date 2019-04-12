@@ -754,7 +754,7 @@ export default class SelectComponent extends BaseComponent {
    * @param {*} value
    * @param {Array} items
    */
-  addCurrentChoices(values, items) {
+  addCurrentChoices(values, items, keyValue) {
     if (!values) {
       return false;
     }
@@ -778,7 +778,8 @@ export default class SelectComponent extends BaseComponent {
             found = true;
             return false;
           }
-          found |= _.isEqual(this.itemValue(choice, isSelectOptions), value);
+          const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
+          found |= _.isEqual(itemValue, value);
           return found ? false : true;
         });
       }
@@ -796,7 +797,7 @@ export default class SelectComponent extends BaseComponent {
 
     if (notFoundValuesToAdd.length) {
       if (this.choices) {
-        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label', true);
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
       }
       else {
         notFoundValuesToAdd.map(notFoundValue => {
@@ -891,7 +892,7 @@ export default class SelectComponent extends BaseComponent {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        if (!this.addCurrentChoices(currentChoices, this.selectOptions)) {
+        if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
         this.choices.setChoiceByValue(value);
