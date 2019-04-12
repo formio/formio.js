@@ -255,8 +255,8 @@ describe(&apos;TextField Builder&apos;, () =&gt; {
       // Make sure default preview is correct.
       const preview = builder.componentPreview.innerHTML;
       assert(preview.indexOf(&apos;formio-component formio-component-textfield formio-component-textField&apos;) !== -1, &apos;Must have correct classes&apos;);
-      assert(preview.indexOf(&apos;&lt;label class=&quot;control-label&quot; style=&quot;&quot;&gt;Text Field&lt;/label&gt;&apos;) !== -1, &apos;Must have a label&apos;);
-      assert(preview.indexOf(&apos;&lt;input name=&quot;data[textField]&quot; type=&quot;text&quot; class=&quot;form-control&quot;&apos;) !== -1, &apos;Must have an input&apos;);
+      assert(preview.indexOf(&apos;&lt;label class=&quot;control-label&quot; style=&quot;&quot; for=&quot;textField&quot;&gt;Text Field&lt;/label&gt;&apos;) !== -1, &apos;Must have a label&apos;);
+      assert(preview.indexOf(&apos;&lt;input name=&quot;data[textField]&quot; type=&quot;text&quot; class=&quot;form-control&quot; lang=&quot;en&quot; id=&quot;textField&quot;&apos;) !== -1, &apos;Must have an input&apos;);
       done();
     });
   });
@@ -264,7 +264,7 @@ describe(&apos;TextField Builder&apos;, () =&gt; {
   it(&apos;Should allow you to change the label&apos;, (done) =&gt; {
     Harness.setComponentProperty(&apos;label&apos;, &apos;Text Field&apos;, &apos;First Name&apos;, (preview) =&gt; {
       assert(preview.match(/label.*input/), &apos;Label must be on top.&apos;);
-      assert(preview.indexOf(&apos;&lt;label class=&quot;control-label&quot; style=&quot;&quot;&gt;First Name&lt;/label&gt;&apos;) !== -1, &apos;Must have a label&apos;);
+      assert(preview.indexOf(&apos;&lt;label class=&quot;control-label&quot; style=&quot;&quot; for=&quot;textField2&quot;&gt;First Name&lt;/label&gt;&apos;) !== -1, &apos;Must have a label&apos;);
       done();
     });
   });
