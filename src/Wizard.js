@@ -193,7 +193,7 @@ export default class Wizard extends Webform {
 
   setPage(num) {
     if (num === this.page) {
-      return;
+      return Promise.resolve();
     }
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
