@@ -15,9 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue in builder where if you have an HTML Elememnt and configure it with no content, you can no longer see that component in the builder.
  - Problem with the TextArea character counter that would get off when in WYWIWYG mode.
+ - Changed function passed into to current page object
 
 ### Changed
  - Upgraded jquery@3.4.0, choices.js@7.0.0, marked@0.6.2
+ - Update Text field component to link Label ("for" attribute) with input's id
 
 ## 3.19.8
 ### Fixed
