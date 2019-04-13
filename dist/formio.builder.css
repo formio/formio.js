@@ -894,30 +894,10 @@ body.formio-dialog-open {
   .formbuilder .drag-container:hover {
     cursor: move;
     border: dotted 2px #ccc; }
-  .formbuilder .component-btn-group {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1000;
-    margin-top: -2px; }
-  .formbuilder .formio-component:not(:hover) .component-btn-group {
-    display: none; }
-  .formbuilder .builder-group-button {
-    background-color: transparent;
-    white-space: normal;
-    text-align: left; }
   .formbuilder .form-builder-group-header {
     padding: 0; }
   .formbuilder .formio-dialog .tab-content {
     padding-top: 12px; }
-  .formbuilder .component-btn-group .component-settings-button {
-    float: right;
-    z-index: 1001;
-    margin: 4px 4px 0 0;
-    z-index: 1001;
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
-    box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6); }
   .formbuilder .formio-component-hidden, .formbuilder .formio-component-form {
     border: 2px dashed #ddd; }
   .formbuilder .formio-component-hidden {
@@ -928,13 +908,6 @@ body.formio-dialog-open {
   .formbuilder .row.formio-component-columns {
     margin-left: 0;
     margin-right: 0; }
-  .formbuilder .btn-xxs, .formbuilder .btn-group-xxs > .btn, .formbuilder .component-btn-group .component-settings-button {
-    padding: 2px 2px;
-    font-size: 10px;
-    line-height: 1.2em;
-    border-radius: 0;
-    width: 18px;
-    height: 18px; }
   .formbuilder .formcomponents .formcomponent {
     text-align: left;
     padding: 5px 5px 5px 8px;
@@ -962,3 +935,35 @@ body.formio-dialog-open {
     cursor: pointer; }
   .formbuilder .panel-body .drag-and-drop-alert {
     margin-bottom: 0; }
+
+.component-btn-group {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+  margin-top: -2px; }
+
+.btn-xxs, .btn-group-xxs > .btn, .component-btn-group .component-settings-button {
+  padding: 2px 2px;
+  font-size: 10px;
+  line-height: 1.2em;
+  border-radius: 0;
+  width: 18px;
+  height: 18px; }
+
+.formio-component:not(:hover) .component-btn-group {
+  display: none; }
+
+.builder-group-button {
+  background-color: transparent;
+  white-space: normal;
+  text-align: left; }
+
+.component-btn-group .component-settings-button {
+  float: right;
+  z-index: 1001;
+  margin: 4px 4px 0 0;
+  z-index: 1001;
+  -webkit-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
+  -moz-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
+  box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6); }

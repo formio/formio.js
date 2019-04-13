@@ -12,40 +12,12 @@
     border: dotted 2px #ccc;
   }
 
-  .component-btn-group {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1000;
-    margin-top: -2px;
-  }
-
-  .formio-component:not(:hover) .component-btn-group {
-    display: none;
-  }
-
-  .builder-group-button {
-    background-color: transparent;
-    white-space: normal;
-    text-align: left;
-  }
-
   .form-builder-group-header {
     padding: 0;
   }
 
   .formio-dialog .tab-content {
     padding-top: 12px;
-  }
-
-  .component-btn-group .component-settings-button {
-    float: right;
-    z-index: 1001;
-    margin: 4px 4px 0 0;
-    z-index: 1001;
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
-    box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
   }
 
   .formio-component-hidden, .formio-component-form {
@@ -62,15 +34,6 @@
   .row.formio-component-columns {
     margin-left: 0;
     margin-right: 0;
-  }
-
-  .btn-xxs, .btn-group-xxs > .btn, .component-btn-group .component-settings-button {
-    padding: 2px 2px;
-    font-size: 10px;
-    line-height: 1.2em;
-    border-radius: 0;
-    width: 18px;
-    height: 18px;
   }
 
   .formcomponents .formcomponent {
@@ -117,4 +80,41 @@
   .panel-body .drag-and-drop-alert {
     margin-bottom: 0;
   }
+}
+
+.component-btn-group {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+  margin-top: -2px;
+}
+
+.btn-xxs, .btn-group-xxs > .btn, .component-btn-group .component-settings-button {
+  padding: 2px 2px;
+  font-size: 10px;
+  line-height: 1.2em;
+  border-radius: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.formio-component:not(:hover) .component-btn-group {
+  display: none;
+}
+
+.builder-group-button {
+  background-color: transparent;
+  white-space: normal;
+  text-align: left;
+}
+
+.component-btn-group .component-settings-button {
+  float: right;
+  z-index: 1001;
+  margin: 4px 4px 0 0;
+  z-index: 1001;
+  -webkit-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
+  -moz-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
+  box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
 }
