@@ -29902,7 +29902,7 @@
     "__docId__": 1546,
     "kind": "file",
     "name": "src/components/number/Number.js",
-    "content": "import { maskInput, conformToMask } from 'vanilla-text-mask';\nimport _ from 'lodash';\nimport { createNumberMask } from 'text-mask-addons';\nimport BaseComponent from '../base/Base';\nimport { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';\n\nexport default class NumberComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      type: 'number',\n      label: 'Number',\n      key: 'number',\n      validate: {\n        min: '',\n        max: '',\n        step: 'any',\n        integer: ''\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Number',\n      icon: 'fa fa-hashtag',\n      group: 'basic',\n      documentation: 'http://help.form.io/userguide/#number',\n      weight: 10,\n      schema: NumberComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.validators = this.validators.concat(['min', 'max']);\n\n    const separators = getNumberSeparators(this.options.language);\n\n    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator\n      || separators.decimalSeparator;\n\n    if (this.component.delimiter) {\n      if (this.options.hasOwnProperty('thousandsSeparator')) {\n        console.warn(\"Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.\");\n      }\n\n      this.delimiter = this.options.thousandsSeparator || separators.delimiter;\n    }\n    else {\n      this.delimiter = '';\n    }\n\n    this.decimalLimit = getNumberDecimalLimit(this.component);\n\n    // Currencies to override BrowserLanguage Config. Object key {}\n    if (_.has(this.options, `languageOverride.${this.options.language}`)) {\n      const override = _.get(this.options, `languageOverride.${this.options.language}`);\n      this.decimalSeparator = override.decimalSeparator;\n      this.delimiter = override.delimiter;\n    }\n    this.numberMask = createNumberMask({\n      prefix: '',\n      suffix: '',\n      requireDecimal: _.get(this.component, 'requireDecimal', false),\n      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),\n      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),\n      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),\n      allowNegative: _.get(this.component, 'allowNegative', true),\n      allowDecimal: _.get(this.component, 'allowDecimal',\n        !(this.component.validate && this.component.validate.integer))\n    });\n  }\n\n  get defaultSchema() {\n    return NumberComponent.schema();\n  }\n\n  get defaultValue() {\n    let defaultValue = super.defaultValue;\n    if (!defaultValue && this.component.defaultValue === 0) {\n      defaultValue = this.component.defaultValue;\n    }\n    return defaultValue;\n  }\n\n  parseNumber(value) {\n    // Remove delimiters and convert decimal separator to dot.\n    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');\n\n    if (this.component.validate && this.component.validate.integer) {\n      return parseInt(value, 10);\n    }\n    else {\n      return parseFloat(value);\n    }\n  }\n\n  setInputMask(input) {\n    input.setAttribute('pattern', '\\\\d*');\n\n    input.mask = maskInput({\n      inputElement: input,\n      mask: this.numberMask\n    });\n  }\n\n  elementInfo() {\n    const info = super.elementInfo();\n    info.attr.type = 'text';\n    info.attr.inputmode = 'numeric';\n    info.changeEvent = 'input';\n    return info;\n  }\n\n  getValueAt(index) {\n    if (!this.inputs.length || !this.inputs[index]) {\n      return null;\n    }\n\n    const val = this.inputs[index].value;\n\n    if (!val) {\n      return undefined;\n    }\n\n    return this.parseNumber(val);\n  }\n\n  clearInput(input) {\n    let value = parseFloat(input);\n\n    if (!_.isNaN(value)) {\n      value = String(value).replace('.', this.decimalSeparator);\n    }\n    else {\n      value = null;\n    }\n\n    return value;\n  }\n\n  formatValue(value) {\n    if (this.component.requireDecimal && value && !value.includes(this.decimalSeparator)) {\n      return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;\n    }\n    else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {\n      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)})}`;\n    }\n\n    return value;\n  }\n\n  setValueAt(index, value) {\n    return super.setValueAt(index, this.formatValue(this.clearInput(value)));\n  }\n\n  focus() {\n    const input = this.inputs[0];\n    if (input) {\n      input.focus();\n      input.setSelectionRange(0, input.value.length);\n    }\n  }\n\n  getMaskedValue(value) {\n    return conformToMask(value.toString(), this.numberMask).conformedValue;\n  }\n\n  /** @override **/\n  createInput(...args) {\n    const input = super.createInput(...args);\n\n    if (this.component.requireDecimal) {\n      this.addEventListener(input, 'blur', () => {\n        const index = this.inputs.indexOf(input);\n\n        if (index !== -1) {\n          this.setValueAt(index, this.getValueAt(index));\n        }\n      });\n    }\n\n    return input;\n  }\n\n  getView(value) {\n    if (!value && value !== 0) {\n      return '';\n    }\n    const widget = this.widget;\n    if (widget && widget.getView) {\n      return widget.getView(value);\n    }\n\n    if (Array.isArray(value)) {\n      return value.map(this.getMaskedValue).join(', ');\n    }\n    return this.getMaskedValue(value);\n  }\n}\n",
+    "content": "import { maskInput, conformToMask } from 'vanilla-text-mask';\nimport _ from 'lodash';\nimport { createNumberMask } from 'text-mask-addons';\nimport BaseComponent from '../base/Base';\nimport { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';\n\nexport default class NumberComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      type: 'number',\n      label: 'Number',\n      key: 'number',\n      validate: {\n        min: '',\n        max: '',\n        step: 'any',\n        integer: ''\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Number',\n      icon: 'fa fa-hashtag',\n      group: 'basic',\n      documentation: 'http://help.form.io/userguide/#number',\n      weight: 10,\n      schema: NumberComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.validators = this.validators.concat(['min', 'max']);\n\n    const separators = getNumberSeparators(this.options.language);\n\n    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator\n      || separators.decimalSeparator;\n\n    if (this.component.delimiter) {\n      if (this.options.hasOwnProperty('thousandsSeparator')) {\n        console.warn(\"Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.\");\n      }\n\n      this.delimiter = this.options.thousandsSeparator || separators.delimiter;\n    }\n    else {\n      this.delimiter = '';\n    }\n\n    this.decimalLimit = getNumberDecimalLimit(this.component);\n\n    // Currencies to override BrowserLanguage Config. Object key {}\n    if (_.has(this.options, `languageOverride.${this.options.language}`)) {\n      const override = _.get(this.options, `languageOverride.${this.options.language}`);\n      this.decimalSeparator = override.decimalSeparator;\n      this.delimiter = override.delimiter;\n    }\n    this.numberMask = createNumberMask({\n      prefix: '',\n      suffix: '',\n      requireDecimal: _.get(this.component, 'requireDecimal', false),\n      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),\n      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),\n      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),\n      allowNegative: _.get(this.component, 'allowNegative', true),\n      allowDecimal: _.get(this.component, 'allowDecimal',\n        !(this.component.validate && this.component.validate.integer))\n    });\n  }\n\n  get defaultSchema() {\n    return NumberComponent.schema();\n  }\n\n  get defaultValue() {\n    let defaultValue = super.defaultValue;\n    if (!defaultValue && this.component.defaultValue === 0) {\n      defaultValue = this.component.defaultValue;\n    }\n    return defaultValue;\n  }\n\n  parseNumber(value) {\n    // Remove delimiters and convert decimal separator to dot.\n    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');\n\n    if (this.component.validate && this.component.validate.integer) {\n      return parseInt(value, 10);\n    }\n    else {\n      return parseFloat(value);\n    }\n  }\n\n  setInputMask(input) {\n    input.setAttribute('pattern', '\\\\d*');\n\n    input.mask = maskInput({\n      inputElement: input,\n      mask: this.numberMask\n    });\n  }\n\n  elementInfo() {\n    const info = super.elementInfo();\n    info.attr.type = 'text';\n    info.attr.inputmode = 'numeric';\n    info.changeEvent = 'input';\n    info.attr.id = this.component.key;\n    return info;\n  }\n\n  getValueAt(index) {\n    if (!this.inputs.length || !this.inputs[index]) {\n      return null;\n    }\n\n    const val = this.inputs[index].value;\n\n    if (!val) {\n      return undefined;\n    }\n\n    return this.parseNumber(val);\n  }\n\n  clearInput(input) {\n    let value = parseFloat(input);\n\n    if (!_.isNaN(value)) {\n      value = String(value).replace('.', this.decimalSeparator);\n    }\n    else {\n      value = null;\n    }\n\n    return value;\n  }\n\n  formatValue(value) {\n    if (this.component.requireDecimal && value && !value.includes(this.decimalSeparator)) {\n      return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;\n    }\n    else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {\n      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)})}`;\n    }\n\n    return value;\n  }\n\n  setValueAt(index, value) {\n    return super.setValueAt(index, this.formatValue(this.clearInput(value)));\n  }\n\n  focus() {\n    const input = this.inputs[0];\n    if (input) {\n      input.focus();\n      input.setSelectionRange(0, input.value.length);\n    }\n  }\n\n  getMaskedValue(value) {\n    return conformToMask(value.toString(), this.numberMask).conformedValue;\n  }\n\n  /** @override **/\n  createInput(...args) {\n    const input = super.createInput(...args);\n\n    if (this.component.requireDecimal) {\n      this.addEventListener(input, 'blur', () => {\n        const index = this.inputs.indexOf(input);\n\n        if (index !== -1) {\n          this.setValueAt(index, this.getValueAt(index));\n        }\n      });\n    }\n\n    return input;\n  }\n\n  getView(value) {\n    if (!value && value !== 0) {\n      return '';\n    }\n    const widget = this.widget;\n    if (widget && widget.getView) {\n      return widget.getView(value);\n    }\n\n    if (Array.isArray(value)) {\n      return value.map(this.getMaskedValue).join(', ');\n    }\n    return this.getMaskedValue(value);\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/number/Number.js",
     "access": "public",
@@ -30193,7 +30193,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#getValueAt",
     "access": "public",
     "description": null,
-    "lineNumber": 115,
+    "lineNumber": 116,
     "undocument": true,
     "params": [
       {
@@ -30220,7 +30220,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#clearInput",
     "access": "public",
     "description": null,
-    "lineNumber": 129,
+    "lineNumber": 130,
     "undocument": true,
     "params": [
       {
@@ -30247,7 +30247,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#formatValue",
     "access": "public",
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 143,
     "undocument": true,
     "params": [
       {
@@ -30274,7 +30274,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#setValueAt",
     "access": "public",
     "description": null,
-    "lineNumber": 153,
+    "lineNumber": 154,
     "undocument": true,
     "params": [
       {
@@ -30307,7 +30307,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#focus",
     "access": "public",
     "description": null,
-    "lineNumber": 157,
+    "lineNumber": 158,
     "undocument": true,
     "params": [],
     "return": null
@@ -30323,7 +30323,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#getMaskedValue",
     "access": "public",
     "description": null,
-    "lineNumber": 165,
+    "lineNumber": 166,
     "undocument": true,
     "params": [
       {
@@ -30350,7 +30350,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#createInput",
     "access": "public",
     "description": null,
-    "lineNumber": 170,
+    "lineNumber": 171,
     "override": true,
     "params": [
       {
@@ -30378,7 +30378,7 @@
     "longname": "src/components/number/Number.js~NumberComponent#getView",
     "access": "public",
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 187,
     "undocument": true,
     "params": [
       {
@@ -32640,7 +32640,7 @@
     "__docId__": 1700,
     "kind": "file",
     "name": "src/components/select/Select.js",
-    "content": "import Choices from 'choices.js/public/assets/scripts/choices.js';\nimport _ from 'lodash';\nimport BaseComponent from '../base/Base';\nimport Formio from '../../Formio';\n\nexport default class SelectComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      type: 'select',\n      label: 'Select',\n      key: 'select',\n      data: {\n        values: [],\n        json: '',\n        url: '',\n        resource: '',\n        custom: ''\n      },\n      limit: 100,\n      dataSrc: 'values',\n      valueProperty: '',\n      filter: '',\n      searchEnabled: true,\n      searchField: '',\n      minSearch: 0,\n      readOnlyValue: false,\n      authenticate: false,\n      template: '<span>{{ item.label }}</span>',\n      selectFields: '',\n      searchThreshold: 0.3,\n      fuseOptions: {},\n      customOptions: {}\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Select',\n      group: 'basic',\n      icon: 'fa fa-th-list',\n      weight: 70,\n      documentation: 'http://help.form.io/userguide/#select',\n      schema: SelectComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n\n    // Trigger an update.\n    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);\n\n    // Keep track of the select options.\n    this.selectOptions = [];\n\n    // Keep track of the last batch of items loaded.\n    this.currentItems = [];\n    this.loadedItems = 0;\n    this.isScrollLoading = false;\n    this.scrollTop = 0;\n\n    // If this component has been activated.\n    this.activated = false;\n\n    // Determine when the items have been loaded.\n    this.itemsLoaded = new Promise((resolve) => {\n      this.itemsLoadedResolve = resolve;\n    });\n  }\n\n  get dataReady() {\n    return this.itemsLoaded;\n  }\n\n  get defaultSchema() {\n    return SelectComponent.schema();\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  elementInfo() {\n    const info = super.elementInfo();\n    info.type = 'select';\n    info.changeEvent = 'change';\n    return info;\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  itemTemplate(data) {\n    if (!data) {\n      return '';\n    }\n\n    // If they wish to show the value in read only mode, then just return the itemValue here.\n    if (this.options.readOnly && this.component.readOnlyValue) {\n      return this.itemValue(data);\n    }\n\n    // Perform a fast interpretation if we should not use the template.\n    if (data && !this.component.template) {\n      const itemLabel = data.label || data;\n      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;\n    }\n    if (typeof data === 'string') {\n      return this.t(data);\n    }\n\n    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;\n    if (template) {\n      const label = template.replace(/<\\/?[^>]+(>|$)/g, '');\n      return template.replace(label, this.t(label));\n    }\n    else {\n      return JSON.stringify(data);\n    }\n  }\n\n  /**\n   * @param {*} data\n   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data\n   * @return {*}\n   */\n  itemValue(data, forceUseValue = false) {\n    if (_.isObject(data)) {\n      if (this.component.valueProperty) {\n        return _.get(data, this.component.valueProperty);\n      }\n\n      if (forceUseValue) {\n        return data.value;\n      }\n    }\n\n    return data;\n  }\n\n  createInput(container) {\n    this.selectContainer = container;\n    this.selectInput = super.createInput(container);\n  }\n\n  /**\n   * Adds an option to the select dropdown.\n   *\n   * @param value\n   * @param label\n   */\n  addOption(value, label, attr) {\n    const option = {\n      value: value,\n      label: label\n    };\n\n    if (value) {\n      this.selectOptions.push(option);\n    }\n    if (this.choices) {\n      return;\n    }\n\n    option.element = document.createElement('option');\n    if (this.dataValue === option.value) {\n      option.element.setAttribute('selected', 'selected');\n      option.element.selected = 'selected';\n    }\n    option.element.innerHTML = label;\n    if (attr) {\n      _.each(attr, (value, key) => {\n        option.element.setAttribute(key, value);\n      });\n    }\n    this.selectInput.appendChild(option.element);\n  }\n\n  addValueOptions(items) {\n    items = items || [];\n    if (!this.selectOptions.length) {\n      if (this.choices) {\n        // Add the currently selected choices if they don't already exist.\n        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];\n        return this.addCurrentChoices(currentChoices, items);\n      }\n      else if (!this.component.multiple) {\n        this.addPlaceholder(this.selectInput);\n      }\n    }\n    return false;\n  }\n\n  /**\n   * Return if the list is loading from scroll. or not.\n   *\n   * @return {boolean|*}\n   */\n  get scrollLoading() {\n    return this.isScrollLoading;\n  }\n\n  /**\n   * Sets the scroll loading state.\n   *\n   * @param isScrolling\n   * @return {*}\n   */\n  set scrollLoading(isScrolling) {\n    // Only continue if they are different.\n    if (this.isScrollLoading === isScrolling) {\n      return;\n    }\n    if (isScrolling) {\n      this.choices.setChoices([...this.selectOptions, {\n        value: '',\n        label: 'Loading...',\n        disabled: true,\n      }], 'value', 'label', true);\n    }\n    else {\n      const loadingItem = this.scrollList.querySelector('.choices__item--disabled');\n      if (loadingItem) {\n        // Remove the loading text.\n        this.scrollList.removeChild(loadingItem);\n      }\n    }\n    this.scrollList.scrollTo(0, this.scrollTop);\n    this.isScrollLoading = isScrolling;\n    return isScrolling;\n  }\n\n  stopInfiniteScroll() {\n    // Remove the infinite scroll listener.\n    this.scrollLoading = false;\n    this.scrollList.removeEventListener('scroll', this.onScroll);\n  }\n\n  /* eslint-disable max-statements */\n  setItems(items, fromSearch) {\n    // If the items is a string, then parse as JSON.\n    if (typeof items == 'string') {\n      try {\n        items = JSON.parse(items);\n      }\n      catch (err) {\n        console.warn(err.message);\n        items = [];\n      }\n    }\n\n    // Allow js processing (needed for form builder)\n    if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {\n      const newItems = this.component.onSetItems(this, items);\n      if (newItems) {\n        items = newItems;\n      }\n    }\n\n    if (!this.choices && this.selectInput) {\n      if (this.loading) {\n        this.removeChildFrom(this.selectInput, this.selectContainer);\n      }\n\n      this.selectInput.innerHTML = '';\n    }\n\n    // If they provided select values, then we need to get them instead.\n    if (this.component.selectValues) {\n      items = _.get(items, this.component.selectValues);\n    }\n\n    if (this.scrollLoading) {\n      // Check if the first two items are equal, and if so, then we can assume that this is the same list\n      // and we should skip over the loading.\n      if (\n        this.currentItems.length &&\n        items.length &&\n        _.isEqual(this.currentItems[0], items[0]) &&\n        _.isEqual(this.currentItems[1], items[1])\n      ) {\n        this.stopInfiniteScroll();\n        this.loading = false;\n        return;\n      }\n\n      // If we have gone beyond our limit, then stop.\n      if (items.limit && (items.length < items.limit)) {\n        this.stopInfiniteScroll();\n      }\n\n      // Increment the loadedItems.\n      this.loadedItems += items.length;\n    }\n    else {\n      this.selectOptions = [];\n      this.loadedItems = items.length;\n    }\n\n    this.currentItems = items;\n\n    // Add the value options.\n    if (!fromSearch) {\n      this.addValueOptions(items);\n    }\n\n    if (this.component.widget === 'html5' && !this.component.placeholder) {\n      this.addOption(null, '');\n    }\n\n    // Iterate through each of the items.\n    _.each(items, (item) => {\n      this.addOption(this.itemValue(item), this.itemTemplate(item));\n    });\n\n    if (this.choices) {\n      this.choices.setChoices(this.selectOptions, 'value', 'label', true);\n    }\n    else if (this.loading) {\n      // Re-attach select input.\n      this.appendTo(this.selectInput, this.selectContainer);\n    }\n\n    // We are no longer loading.\n    this.scrollLoading = false;\n    this.loading = false;\n\n    // If a value is provided, then select it.\n    if (this.dataValue) {\n      this.setValue(this.dataValue, true);\n    }\n    else {\n      // If a default value is provided then select it.\n      const defaultValue = this.defaultValue;\n      if (defaultValue) {\n        this.setValue(defaultValue);\n      }\n    }\n\n    // Say we are done loading the items.\n    this.itemsLoadedResolve();\n  }\n  /* eslint-enable max-statements */\n\n  loadItems(url, search, headers, options, method, body) {\n    options = options || {};\n\n    // See if they have not met the minimum search requirements.\n    const minSearch = parseInt(this.component.minSearch, 10);\n    if (\n      this.component.searchField &&\n      (minSearch > 0) &&\n      (!search || (search.length < minSearch))\n    ) {\n      // Set empty items.\n      return this.setItems([]);\n    }\n\n    // Ensure we have a method and remove any body if method is get\n    method = method || 'GET';\n    if (method.toUpperCase() === 'GET') {\n      body = null;\n    }\n\n    const limit = this.component.limit || 100;\n    const skip = this.loadedItems || 0;\n    const query = (this.component.dataSrc === 'url') ? {} : {\n      limit: limit,\n      skip: skip\n    };\n\n    // Allow for url interpolation.\n    url = this.interpolate(url, {\n      formioBase: Formio.getBaseUrl(),\n      search,\n      limit,\n      skip,\n      page: Math.abs(Math.floor(skip / limit))\n    });\n\n    // Add search capability.\n    if (this.component.searchField && search) {\n      if (Array.isArray(search)) {\n        query[`${this.component.searchField}__in`] = search.join(',');\n      }\n      else {\n        query[`${this.component.searchField}__regex`] = search;\n      }\n    }\n\n    // If they wish to return only some fields.\n    if (this.component.selectFields) {\n      query.select = this.component.selectFields;\n    }\n\n    // Add sort capability\n    if (this.component.sort) {\n      query.sort = this.component.sort;\n    }\n\n    if (!_.isEmpty(query)) {\n      // Add the query string.\n      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));\n    }\n\n    // Add filter capability\n    if (this.component.filter) {\n      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);\n    }\n\n    // Make the request.\n    options.header = headers;\n    this.loading = true;\n    Formio.makeRequest(this.options.formio, 'select', url, method, body, options)\n      .then((response) => {\n        this.loading = false;\n        const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);\n        this.setItems(response, !!search);\n        if (scrollTop && this.choices) {\n          this.choices.choiceList.scrollToTop();\n        }\n      })\n      .catch((err) => {\n        this.stopInfiniteScroll();\n        this.loading = false;\n        this.itemsLoadedResolve();\n        this.emit('componentError', {\n          component: this.component,\n          message: err.toString()\n        });\n        console.warn(`Unable to load resources for ${this.key}`);\n      });\n  }\n\n  /**\n   * Get the request headers for this select dropdown.\n   */\n  get requestHeaders() {\n    // Create the headers object.\n    const headers = new Formio.Headers();\n\n    // Add custom headers to the url.\n    if (this.component.data && this.component.data.headers) {\n      try {\n        _.each(this.component.data.headers, (header) => {\n          if (header.key) {\n            headers.set(header.key, this.interpolate(header.value));\n          }\n        });\n      }\n      catch (err) {\n        console.warn(err.message);\n      }\n    }\n\n    return headers;\n  }\n\n  getCustomItems() {\n    return this.evaluate(this.component.data.custom, {\n      values: []\n    }, 'values');\n  }\n\n  updateCustomItems() {\n    this.setItems(this.getCustomItems() || []);\n  }\n\n  /* eslint-disable max-statements */\n  updateItems(searchInput, forceUpdate) {\n    if (!this.component.data) {\n      console.warn(`Select component ${this.key} does not have data configuration.`);\n      this.itemsLoadedResolve();\n      return;\n    }\n\n    // Only load the data if it is visible.\n    if (!this.checkConditions()) {\n      this.itemsLoadedResolve();\n      return;\n    }\n\n    switch (this.component.dataSrc) {\n      case 'values':\n        this.component.valueProperty = 'value';\n        this.setItems(this.component.data.values);\n        break;\n      case 'json':\n        this.setItems(this.component.data.json);\n        break;\n      case 'custom':\n        this.updateCustomItems();\n        break;\n      case 'resource': {\n        // If there is no resource, or we are lazyLoading, wait until active.\n        if (!this.component.data.resource || (!forceUpdate && !this.active)) {\n          return;\n        }\n        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;\n        resourceUrl += (`/${this.component.data.resource}/submission`);\n\n        try {\n          this.loadItems(resourceUrl, searchInput, this.requestHeaders);\n        }\n        catch (err) {\n          console.warn(`Unable to load resources for ${this.key}`);\n        }\n        break;\n      }\n      case 'url': {\n        if (!forceUpdate && !this.active) {\n          // If we are lazyLoading, wait until activated.\n          return;\n        }\n        let url = this.component.data.url;\n        let method;\n        let body;\n\n        if (url.substr(0, 1) === '/') {\n          let baseUrl = Formio.getProjectUrl();\n          if (!baseUrl) {\n            baseUrl = Formio.getBaseUrl();\n          }\n          url = baseUrl + this.component.data.url;\n        }\n\n        if (!this.component.data.method) {\n          method = 'GET';\n        }\n        else {\n          method = this.component.data.method;\n          if (method.toUpperCase() === 'POST') {\n            body = this.component.data.body;\n          }\n          else {\n            body = null;\n          }\n        }\n        const options = this.component.authenticate ? {} : { noToken: true };\n        this.loadItems(url, searchInput, this.requestHeaders, options, method, body);\n        break;\n      }\n    }\n  }\n  /* eslint-enable max-statements */\n\n  addPlaceholder(input) {\n    if (!this.component.placeholder || !input) {\n      return;\n    }\n    const placeholder = document.createElement('option');\n    placeholder.setAttribute('placeholder', true);\n    placeholder.appendChild(this.text(this.component.placeholder));\n    input.appendChild(placeholder);\n  }\n\n  /**\n   * Activate this select control.\n   */\n  activate() {\n    if (this.active) {\n      return;\n    }\n    this.activated = true;\n    if (this.choices) {\n      this.choices.setChoices([{\n        value: '',\n        label: `<i class=\"${this.iconClass('refresh')}\" style=\"font-size:1.3em;\"></i>`\n      }], 'value', 'label', true);\n    }\n    else {\n      this.addOption('', this.t('loading...'));\n    }\n    this.triggerUpdate();\n  }\n\n  get active() {\n    return !this.component.lazyLoad || this.activated;\n  }\n\n  /* eslint-disable max-statements */\n  addInput(input, container) {\n    super.addInput(input, container);\n    if (this.component.multiple) {\n      input.setAttribute('multiple', true);\n    }\n\n    if (this.component.widget === 'html5') {\n      this.triggerUpdate();\n      this.focusableElement = input;\n      this.addEventListener(input, 'focus', () => this.update());\n      this.addEventListener(input, 'keydown', (event) => {\n        const { keyCode } = event;\n\n        if ([8, 46].includes(keyCode)) {\n          this.setValue(null);\n        }\n      });\n      return;\n    }\n\n    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;\n    const placeholderValue = this.t(this.component.placeholder);\n    let customOptions = this.component.customOptions || {};\n    if (typeof customOptions == 'string') {\n      try {\n        customOptions = JSON.parse(customOptions);\n      }\n      catch (err) {\n        console.warn(err.message);\n        customOptions = {};\n      }\n    }\n\n    const choicesOptions = {\n      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),\n      itemSelectText: '',\n      classNames: {\n        containerOuter: 'choices form-group formio-choices',\n        containerInner: 'form-control'\n      },\n      addItemText: false,\n      placeholder: !!this.component.placeholder,\n      placeholderValue: placeholderValue,\n      noResultsText: this.t('No results found'),\n      noChoicesText: this.t('No choices to choose from'),\n      searchPlaceholderValue: this.t('Type to search'),\n      shouldSort: false,\n      position: (this.component.dropdown || 'auto'),\n      searchEnabled: useSearch,\n      searchChoices: !this.component.searchField,\n      searchFields: _.get(this, 'component.searchFields', ['label']),\n      fuseOptions: Object.assign({\n        include: 'score',\n        threshold: _.get(this, 'component.searchThreshold', 0.3),\n      }, _.get(this, 'component.fuseOptions', {})),\n      itemComparer: _.isEqual,\n      ...customOptions,\n    };\n\n    const tabIndex = input.tabIndex;\n    this.addPlaceholder(input);\n    input.setAttribute('dir', this.i18next.dir());\n    this.choices = new Choices(input, choicesOptions);\n\n    if (this.component.multiple) {\n      this.focusableElement = this.choices.input.element;\n    }\n    else {\n      this.focusableElement = this.choices.containerInner.element;\n      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');\n      if (useSearch) {\n        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());\n      }\n    }\n\n    this.scrollList = this.choices.choiceList.element;\n    this.onScroll = () => {\n      if (\n        !this.scrollLoading &&\n        ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)\n      ) {\n        this.scrollTop = this.scrollList.scrollTop;\n        this.scrollLoading = true;\n        this.triggerUpdate(this.choices.input.element.value);\n      }\n    };\n    this.scrollList.addEventListener('scroll', this.onScroll);\n\n    this.addFocusBlurEvents(this.focusableElement);\n    this.focusableElement.setAttribute('tabIndex', tabIndex);\n\n    this.setInputStyles(this.choices.containerOuter.element);\n\n    // If a search field is provided, then add an event listener to update items on search.\n    if (this.component.searchField) {\n      // Make sure to clear the search when no value is provided.\n      if (this.choices && this.choices.input && this.choices.input.element) {\n        this.addEventListener(this.choices.input.element, 'input', (event) => {\n          if (!event.target.value) {\n            this.triggerUpdate();\n          }\n        });\n      }\n      this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));\n      this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());\n    }\n\n    this.addEventListener(input, 'showDropdown', () => {\n      if (this.dataValue) {\n        this.triggerUpdate();\n      }\n      this.update();\n    });\n    if (placeholderValue && this.choices._isSelectOneElement) {\n      this.addEventListener(input, 'removeItem', () => {\n        const items = this.choices._store.activeItems;\n        if (!items.length) {\n          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);\n        }\n      });\n    }\n\n    // Add value options.\n    if (this.addValueOptions()) {\n      this.restoreValue();\n    }\n\n    // Force the disabled state with getters and setters.\n    this.disabled = this.disabled;\n    this.triggerUpdate();\n  }\n\n  /* eslint-enable max-statements */\n\n  update() {\n    if (this.component.dataSrc === 'custom') {\n      this.updateCustomItems();\n    }\n\n    // Activate the control.\n    this.activate();\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (!this.choices) {\n      return;\n    }\n    if (disabled) {\n      this.setDisabled(this.choices.containerInner.element, true);\n      this.focusableElement.removeAttribute('tabIndex');\n      this.choices.disable();\n    }\n    else {\n      this.setDisabled(this.choices.containerInner.element, false);\n      this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);\n      this.choices.enable();\n    }\n  }\n\n  show(show) {\n    // If we go from hidden to visible, trigger a refresh.\n    const triggerUpdate = show && (this._visible !== show);\n    show = super.show(show);\n    if (triggerUpdate) {\n      this.triggerUpdate();\n    }\n    return show;\n  }\n\n  /**\n   * @param {*} value\n   * @param {Array} items\n   */\n  addCurrentChoices(values, items, keyValue) {\n    if (!values) {\n      return false;\n    }\n    const notFoundValuesToAdd = [];\n    const added = values.reduce((defaultAdded, value) => {\n      if (!value) {\n        return defaultAdded;\n      }\n      let found = false;\n\n      // Make sure that `items` and `this.selectOptions` points\n      // to the same reference. Because `this.selectOptions` is\n      // internal property and all items are populated by\n      // `this.addOption` method, we assume that items has\n      // 'label' and 'value' properties. This assumption allows\n      // us to read correct value from the item.\n      const isSelectOptions = items === this.selectOptions;\n      if (items && items.length) {\n        _.each(items, (choice) => {\n          if (choice._id && value._id && (choice._id === value._id)) {\n            found = true;\n            return false;\n          }\n          const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);\n          found |= _.isEqual(itemValue, value);\n          return found ? false : true;\n        });\n      }\n\n      // Add the default option if no item is found.\n      if (!found) {\n        notFoundValuesToAdd.push({\n          value: this.itemValue(value),\n          label: this.itemTemplate(value)\n        });\n        return true;\n      }\n      return found || defaultAdded;\n    }, false);\n\n    if (notFoundValuesToAdd.length) {\n      if (this.choices) {\n        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');\n      }\n      else {\n        notFoundValuesToAdd.map(notFoundValue => {\n          this.addOption(notFoundValue.value, notFoundValue.label);\n        });\n      }\n    }\n    return added;\n  }\n\n  getView(data) {\n    return (this.component.multiple && Array.isArray(data))\n      ? data.map(this.asString.bind(this)).join(', ')\n      : this.asString(data);\n  }\n\n  getValue() {\n    if (this.viewOnly || this.loading || !this.selectOptions.length) {\n      return this.dataValue;\n    }\n    let value = '';\n    if (this.choices) {\n      value = this.choices.getValue(true);\n\n      // Make sure we don't get the placeholder\n      if (\n        !this.component.multiple &&\n        this.component.placeholder &&\n        (value === this.t(this.component.placeholder))\n      ) {\n        value = '';\n      }\n    }\n    else {\n      const values = [];\n      _.each(this.selectOptions, (selectOption) => {\n        if (selectOption.element && selectOption.element.selected) {\n          values.push(selectOption.value);\n        }\n      });\n      value = this.component.multiple ? values : values.shift();\n    }\n    // Choices will return undefined if nothing is selected. We really want '' to be empty.\n    if (value === undefined || value === null) {\n      value = '';\n    }\n    return value;\n  }\n\n  redraw() {\n    super.redraw();\n    this.triggerUpdate();\n  }\n\n  setValue(value, flags) {\n    flags = this.getFlags.apply(this, arguments);\n    const previousValue = this.dataValue;\n    if (this.component.multiple && !Array.isArray(value)) {\n      value = value ? [value] : [];\n    }\n    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;\n    const hasValue = Array.isArray(value) ? value.length : value;\n    const changed = this.hasChanged(value, previousValue);\n    this.dataValue = value;\n\n    // Do not set the value if we are loading... that will happen after it is done.\n    if (this.loading) {\n      return changed;\n    }\n\n    // Determine if we need to perform an initial lazyLoad api call if searchField is provided.\n    if (\n      this.component.searchField &&\n      this.component.lazyLoad &&\n      !this.lazyLoadInit &&\n      !this.active &&\n      !this.selectOptions.length &&\n      hasValue\n    ) {\n      this.loading = true;\n      this.lazyLoadInit = true;\n      this.triggerUpdate(this.dataValue, true);\n      return changed;\n    }\n\n    // Add the value options.\n    this.addValueOptions();\n\n    if (this.choices) {\n      // Now set the value.\n      if (hasValue) {\n        this.choices.removeActiveItems();\n        // Add the currently selected choices if they don't already exist.\n        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];\n        if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {\n          this.choices.setChoices(this.selectOptions, 'value', 'label', true);\n        }\n        this.choices.setChoiceByValue(value);\n      }\n      else if (hasPreviousValue) {\n        this.choices.removeActiveItems();\n      }\n    }\n    else {\n      if (hasValue) {\n        const values = Array.isArray(value) ? value : [value];\n        _.each(this.selectOptions, (selectOption) => {\n          _.each(values, (val) => {\n            if (_.isEqual(val, selectOption.value)) {\n              selectOption.element.selected = true;\n              selectOption.element.setAttribute('selected', 'selected');\n              return false;\n            }\n          });\n        });\n      }\n      else {\n        _.each(this.selectOptions, (selectOption) => {\n          selectOption.element.selected = false;\n          selectOption.element.removeAttribute('selected');\n        });\n      }\n    }\n\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  /**\n   * Deletes the value of the component.\n   */\n  deleteValue() {\n    this.setValue('', {\n      noUpdateEvent: true\n    });\n    _.unset(this.data, this.key);\n  }\n\n  /**\n   * Check if a component is eligible for multiple validation\n   *\n   * @return {boolean}\n   */\n  validateMultiple() {\n    // Select component will contain one input when flagged as multiple.\n    return false;\n  }\n\n  /**\n   * Ouput this select dropdown as a string value.\n   * @return {*}\n   */\n  asString(value) {\n    value = value || this.getValue();\n\n    if (['values', 'custom'].includes(this.component.dataSrc)) {\n      const {\n        items,\n        valueProperty,\n      } = this.component.dataSrc === 'values'\n        ? {\n          items: this.component.data.values,\n          valueProperty: 'value',\n        }\n        : {\n          items: this.getCustomItems(),\n          valueProperty: this.component.valueProperty,\n        };\n\n      value = (this.component.multiple && Array.isArray(value))\n        ? _.filter(items, (item) => value.includes(item.value))\n        : valueProperty\n          ? _.find(items, [valueProperty, value])\n          : value;\n    }\n\n    if (_.isString(value)) {\n      return value;\n    }\n\n    if (Array.isArray(value)) {\n      const items = [];\n      value.forEach(item => items.push(this.itemTemplate(item)));\n      return items.length > 0 ? items.join('<br />') : '-';\n    }\n\n    return !_.isNil(value)\n      ? this.itemTemplate(value)\n      : '-';\n  }\n\n  setupValueElement(element) {\n    element.innerHTML = this.asString();\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.choices) {\n      this.choices.destroyed = true;\n      this.choices.destroy();\n      this.choices = null;\n    }\n  }\n\n  focus() {\n    this.focusableElement.focus();\n  }\n}\n",
+    "content": "import Choices from 'choices.js/public/assets/scripts/choices.js';\nimport _ from 'lodash';\nimport BaseComponent from '../base/Base';\nimport Formio from '../../Formio';\n\nexport default class SelectComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      type: 'select',\n      label: 'Select',\n      key: 'select',\n      data: {\n        values: [],\n        json: '',\n        url: '',\n        resource: '',\n        custom: ''\n      },\n      limit: 100,\n      dataSrc: 'values',\n      valueProperty: '',\n      filter: '',\n      searchEnabled: true,\n      searchField: '',\n      minSearch: 0,\n      readOnlyValue: false,\n      authenticate: false,\n      template: '<span>{{ item.label }}</span>',\n      selectFields: '',\n      searchThreshold: 0.3,\n      fuseOptions: {},\n      customOptions: {}\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Select',\n      group: 'basic',\n      icon: 'fa fa-th-list',\n      weight: 70,\n      documentation: 'http://help.form.io/userguide/#select',\n      schema: SelectComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n\n    // Trigger an update.\n    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);\n\n    // Keep track of the select options.\n    this.selectOptions = [];\n\n    // Keep track of the last batch of items loaded.\n    this.currentItems = [];\n    this.loadedItems = 0;\n    this.isScrollLoading = false;\n    this.scrollTop = 0;\n\n    // If this component has been activated.\n    this.activated = false;\n\n    // Determine when the items have been loaded.\n    this.itemsLoaded = new Promise((resolve) => {\n      this.itemsLoadedResolve = resolve;\n    });\n  }\n\n  get dataReady() {\n    return this.itemsLoaded;\n  }\n\n  get defaultSchema() {\n    return SelectComponent.schema();\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  elementInfo() {\n    const info = super.elementInfo();\n    info.type = 'select';\n    info.changeEvent = 'change';\n    info.attr.id = this.component.key;\n    return info;\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  itemTemplate(data) {\n    if (!data) {\n      return '';\n    }\n\n    // If they wish to show the value in read only mode, then just return the itemValue here.\n    if (this.options.readOnly && this.component.readOnlyValue) {\n      return this.itemValue(data);\n    }\n\n    // Perform a fast interpretation if we should not use the template.\n    if (data && !this.component.template) {\n      const itemLabel = data.label || data;\n      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;\n    }\n    if (typeof data === 'string') {\n      return this.t(data);\n    }\n\n    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;\n    if (template) {\n      const label = template.replace(/<\\/?[^>]+(>|$)/g, '');\n      return template.replace(label, this.t(label));\n    }\n    else {\n      return JSON.stringify(data);\n    }\n  }\n\n  /**\n   * @param {*} data\n   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data\n   * @return {*}\n   */\n  itemValue(data, forceUseValue = false) {\n    if (_.isObject(data)) {\n      if (this.component.valueProperty) {\n        return _.get(data, this.component.valueProperty);\n      }\n\n      if (forceUseValue) {\n        return data.value;\n      }\n    }\n\n    return data;\n  }\n\n  createInput(container) {\n    this.selectContainer = container;\n    this.selectInput = super.createInput(container);\n  }\n\n  /**\n   * Adds an option to the select dropdown.\n   *\n   * @param value\n   * @param label\n   */\n  addOption(value, label, attr) {\n    const option = {\n      value: value,\n      label: label\n    };\n\n    if (value) {\n      this.selectOptions.push(option);\n    }\n    if (this.choices) {\n      return;\n    }\n\n    option.element = document.createElement('option');\n    if (this.dataValue === option.value) {\n      option.element.setAttribute('selected', 'selected');\n      option.element.selected = 'selected';\n    }\n    option.element.innerHTML = label;\n    if (attr) {\n      _.each(attr, (value, key) => {\n        option.element.setAttribute(key, value);\n      });\n    }\n    this.selectInput.appendChild(option.element);\n  }\n\n  addValueOptions(items) {\n    items = items || [];\n    if (!this.selectOptions.length) {\n      if (this.choices) {\n        // Add the currently selected choices if they don't already exist.\n        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];\n        return this.addCurrentChoices(currentChoices, items);\n      }\n      else if (!this.component.multiple) {\n        this.addPlaceholder(this.selectInput);\n      }\n    }\n    return false;\n  }\n\n  /**\n   * Return if the list is loading from scroll. or not.\n   *\n   * @return {boolean|*}\n   */\n  get scrollLoading() {\n    return this.isScrollLoading;\n  }\n\n  /**\n   * Sets the scroll loading state.\n   *\n   * @param isScrolling\n   * @return {*}\n   */\n  set scrollLoading(isScrolling) {\n    // Only continue if they are different.\n    if (this.isScrollLoading === isScrolling) {\n      return;\n    }\n    if (isScrolling) {\n      this.choices.setChoices([...this.selectOptions, {\n        value: '',\n        label: 'Loading...',\n        disabled: true,\n      }], 'value', 'label', true);\n    }\n    else {\n      const loadingItem = this.scrollList.querySelector('.choices__item--disabled');\n      if (loadingItem) {\n        // Remove the loading text.\n        this.scrollList.removeChild(loadingItem);\n      }\n    }\n    this.scrollList.scrollTo(0, this.scrollTop);\n    this.isScrollLoading = isScrolling;\n    return isScrolling;\n  }\n\n  stopInfiniteScroll() {\n    // Remove the infinite scroll listener.\n    this.scrollLoading = false;\n    this.scrollList.removeEventListener('scroll', this.onScroll);\n  }\n\n  /* eslint-disable max-statements */\n  setItems(items, fromSearch) {\n    // If the items is a string, then parse as JSON.\n    if (typeof items == 'string') {\n      try {\n        items = JSON.parse(items);\n      }\n      catch (err) {\n        console.warn(err.message);\n        items = [];\n      }\n    }\n\n    // Allow js processing (needed for form builder)\n    if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {\n      const newItems = this.component.onSetItems(this, items);\n      if (newItems) {\n        items = newItems;\n      }\n    }\n\n    if (!this.choices && this.selectInput) {\n      if (this.loading) {\n        this.removeChildFrom(this.selectInput, this.selectContainer);\n      }\n\n      this.selectInput.innerHTML = '';\n    }\n\n    // If they provided select values, then we need to get them instead.\n    if (this.component.selectValues) {\n      items = _.get(items, this.component.selectValues);\n    }\n\n    if (this.scrollLoading) {\n      // Check if the first two items are equal, and if so, then we can assume that this is the same list\n      // and we should skip over the loading.\n      if (\n        this.currentItems.length &&\n        items.length &&\n        _.isEqual(this.currentItems[0], items[0]) &&\n        _.isEqual(this.currentItems[1], items[1])\n      ) {\n        this.stopInfiniteScroll();\n        this.loading = false;\n        return;\n      }\n\n      // If we have gone beyond our limit, then stop.\n      if (items.limit && (items.length < items.limit)) {\n        this.stopInfiniteScroll();\n      }\n\n      // Increment the loadedItems.\n      this.loadedItems += items.length;\n    }\n    else {\n      this.selectOptions = [];\n      this.loadedItems = items.length;\n    }\n\n    this.currentItems = items;\n\n    // Add the value options.\n    if (!fromSearch) {\n      this.addValueOptions(items);\n    }\n\n    if (this.component.widget === 'html5' && !this.component.placeholder) {\n      this.addOption(null, '');\n    }\n\n    // Iterate through each of the items.\n    _.each(items, (item) => {\n      this.addOption(this.itemValue(item), this.itemTemplate(item));\n    });\n\n    if (this.choices) {\n      this.choices.setChoices(this.selectOptions, 'value', 'label', true);\n    }\n    else if (this.loading) {\n      // Re-attach select input.\n      this.appendTo(this.selectInput, this.selectContainer);\n    }\n\n    // We are no longer loading.\n    this.scrollLoading = false;\n    this.loading = false;\n\n    // If a value is provided, then select it.\n    if (this.dataValue) {\n      this.setValue(this.dataValue, true);\n    }\n    else {\n      // If a default value is provided then select it.\n      const defaultValue = this.defaultValue;\n      if (defaultValue) {\n        this.setValue(defaultValue);\n      }\n    }\n\n    // Say we are done loading the items.\n    this.itemsLoadedResolve();\n  }\n  /* eslint-enable max-statements */\n\n  loadItems(url, search, headers, options, method, body) {\n    options = options || {};\n\n    // See if they have not met the minimum search requirements.\n    const minSearch = parseInt(this.component.minSearch, 10);\n    if (\n      this.component.searchField &&\n      (minSearch > 0) &&\n      (!search || (search.length < minSearch))\n    ) {\n      // Set empty items.\n      return this.setItems([]);\n    }\n\n    // Ensure we have a method and remove any body if method is get\n    method = method || 'GET';\n    if (method.toUpperCase() === 'GET') {\n      body = null;\n    }\n\n    const limit = this.component.limit || 100;\n    const skip = this.loadedItems || 0;\n    const query = (this.component.dataSrc === 'url') ? {} : {\n      limit: limit,\n      skip: skip\n    };\n\n    // Allow for url interpolation.\n    url = this.interpolate(url, {\n      formioBase: Formio.getBaseUrl(),\n      search,\n      limit,\n      skip,\n      page: Math.abs(Math.floor(skip / limit))\n    });\n\n    // Add search capability.\n    if (this.component.searchField && search) {\n      if (Array.isArray(search)) {\n        query[`${this.component.searchField}__in`] = search.join(',');\n      }\n      else {\n        query[`${this.component.searchField}__regex`] = search;\n      }\n    }\n\n    // If they wish to return only some fields.\n    if (this.component.selectFields) {\n      query.select = this.component.selectFields;\n    }\n\n    // Add sort capability\n    if (this.component.sort) {\n      query.sort = this.component.sort;\n    }\n\n    if (!_.isEmpty(query)) {\n      // Add the query string.\n      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));\n    }\n\n    // Add filter capability\n    if (this.component.filter) {\n      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);\n    }\n\n    // Make the request.\n    options.header = headers;\n    this.loading = true;\n    Formio.makeRequest(this.options.formio, 'select', url, method, body, options)\n      .then((response) => {\n        this.loading = false;\n        const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);\n        this.setItems(response, !!search);\n        if (scrollTop && this.choices) {\n          this.choices.choiceList.scrollToTop();\n        }\n      })\n      .catch((err) => {\n        this.stopInfiniteScroll();\n        this.loading = false;\n        this.itemsLoadedResolve();\n        this.emit('componentError', {\n          component: this.component,\n          message: err.toString()\n        });\n        console.warn(`Unable to load resources for ${this.key}`);\n      });\n  }\n\n  /**\n   * Get the request headers for this select dropdown.\n   */\n  get requestHeaders() {\n    // Create the headers object.\n    const headers = new Formio.Headers();\n\n    // Add custom headers to the url.\n    if (this.component.data && this.component.data.headers) {\n      try {\n        _.each(this.component.data.headers, (header) => {\n          if (header.key) {\n            headers.set(header.key, this.interpolate(header.value));\n          }\n        });\n      }\n      catch (err) {\n        console.warn(err.message);\n      }\n    }\n\n    return headers;\n  }\n\n  getCustomItems() {\n    return this.evaluate(this.component.data.custom, {\n      values: []\n    }, 'values');\n  }\n\n  updateCustomItems() {\n    this.setItems(this.getCustomItems() || []);\n  }\n\n  /* eslint-disable max-statements */\n  updateItems(searchInput, forceUpdate) {\n    if (!this.component.data) {\n      console.warn(`Select component ${this.key} does not have data configuration.`);\n      this.itemsLoadedResolve();\n      return;\n    }\n\n    // Only load the data if it is visible.\n    if (!this.checkConditions()) {\n      this.itemsLoadedResolve();\n      return;\n    }\n\n    switch (this.component.dataSrc) {\n      case 'values':\n        this.component.valueProperty = 'value';\n        this.setItems(this.component.data.values);\n        break;\n      case 'json':\n        this.setItems(this.component.data.json);\n        break;\n      case 'custom':\n        this.updateCustomItems();\n        break;\n      case 'resource': {\n        // If there is no resource, or we are lazyLoading, wait until active.\n        if (!this.component.data.resource || (!forceUpdate && !this.active)) {\n          return;\n        }\n        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;\n        resourceUrl += (`/${this.component.data.resource}/submission`);\n\n        try {\n          this.loadItems(resourceUrl, searchInput, this.requestHeaders);\n        }\n        catch (err) {\n          console.warn(`Unable to load resources for ${this.key}`);\n        }\n        break;\n      }\n      case 'url': {\n        if (!forceUpdate && !this.active) {\n          // If we are lazyLoading, wait until activated.\n          return;\n        }\n        let url = this.component.data.url;\n        let method;\n        let body;\n\n        if (url.substr(0, 1) === '/') {\n          let baseUrl = Formio.getProjectUrl();\n          if (!baseUrl) {\n            baseUrl = Formio.getBaseUrl();\n          }\n          url = baseUrl + this.component.data.url;\n        }\n\n        if (!this.component.data.method) {\n          method = 'GET';\n        }\n        else {\n          method = this.component.data.method;\n          if (method.toUpperCase() === 'POST') {\n            body = this.component.data.body;\n          }\n          else {\n            body = null;\n          }\n        }\n        const options = this.component.authenticate ? {} : { noToken: true };\n        this.loadItems(url, searchInput, this.requestHeaders, options, method, body);\n        break;\n      }\n    }\n  }\n  /* eslint-enable max-statements */\n\n  addPlaceholder(input) {\n    if (!this.component.placeholder || !input) {\n      return;\n    }\n    const placeholder = document.createElement('option');\n    placeholder.setAttribute('placeholder', true);\n    placeholder.appendChild(this.text(this.component.placeholder));\n    input.appendChild(placeholder);\n  }\n\n  /**\n   * Activate this select control.\n   */\n  activate() {\n    if (this.active) {\n      return;\n    }\n    this.activated = true;\n    if (this.choices) {\n      this.choices.setChoices([{\n        value: '',\n        label: `<i class=\"${this.iconClass('refresh')}\" style=\"font-size:1.3em;\"></i>`\n      }], 'value', 'label', true);\n    }\n    else {\n      this.addOption('', this.t('loading...'));\n    }\n    this.triggerUpdate();\n  }\n\n  get active() {\n    return !this.component.lazyLoad || this.activated;\n  }\n\n  /* eslint-disable max-statements */\n  addInput(input, container) {\n    super.addInput(input, container);\n    if (this.component.multiple) {\n      input.setAttribute('multiple', true);\n    }\n\n    if (this.component.widget === 'html5') {\n      this.triggerUpdate();\n      this.focusableElement = input;\n      this.addEventListener(input, 'focus', () => this.update());\n      this.addEventListener(input, 'keydown', (event) => {\n        const { keyCode } = event;\n\n        if ([8, 46].includes(keyCode)) {\n          this.setValue(null);\n        }\n      });\n      return;\n    }\n\n    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;\n    const placeholderValue = this.t(this.component.placeholder);\n    let customOptions = this.component.customOptions || {};\n    if (typeof customOptions == 'string') {\n      try {\n        customOptions = JSON.parse(customOptions);\n      }\n      catch (err) {\n        console.warn(err.message);\n        customOptions = {};\n      }\n    }\n\n    const choicesOptions = {\n      removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),\n      itemSelectText: '',\n      classNames: {\n        containerOuter: 'choices form-group formio-choices',\n        containerInner: 'form-control'\n      },\n      addItemText: false,\n      placeholder: !!this.component.placeholder,\n      placeholderValue: placeholderValue,\n      noResultsText: this.t('No results found'),\n      noChoicesText: this.t('No choices to choose from'),\n      searchPlaceholderValue: this.t('Type to search'),\n      shouldSort: false,\n      position: (this.component.dropdown || 'auto'),\n      searchEnabled: useSearch,\n      searchChoices: !this.component.searchField,\n      searchFields: _.get(this, 'component.searchFields', ['label']),\n      fuseOptions: Object.assign({\n        include: 'score',\n        threshold: _.get(this, 'component.searchThreshold', 0.3),\n      }, _.get(this, 'component.fuseOptions', {})),\n      itemComparer: _.isEqual,\n      ...customOptions,\n    };\n\n    const tabIndex = input.tabIndex;\n    this.addPlaceholder(input);\n    input.setAttribute('dir', this.i18next.dir());\n    this.choices = new Choices(input, choicesOptions);\n\n    if (this.component.multiple) {\n      this.focusableElement = this.choices.input.element;\n    }\n    else {\n      this.focusableElement = this.choices.containerInner.element;\n      this.choices.containerOuter.element.setAttribute('tabIndex', '-1');\n      if (useSearch) {\n        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());\n      }\n    }\n\n    this.scrollList = this.choices.choiceList.element;\n    this.onScroll = () => {\n      if (\n        !this.scrollLoading &&\n        ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)\n      ) {\n        this.scrollTop = this.scrollList.scrollTop;\n        this.scrollLoading = true;\n        this.triggerUpdate(this.choices.input.element.value);\n      }\n    };\n    this.scrollList.addEventListener('scroll', this.onScroll);\n\n    this.addFocusBlurEvents(this.focusableElement);\n    this.focusableElement.setAttribute('tabIndex', tabIndex);\n\n    this.setInputStyles(this.choices.containerOuter.element);\n\n    // If a search field is provided, then add an event listener to update items on search.\n    if (this.component.searchField) {\n      // Make sure to clear the search when no value is provided.\n      if (this.choices && this.choices.input && this.choices.input.element) {\n        this.addEventListener(this.choices.input.element, 'input', (event) => {\n          if (!event.target.value) {\n            this.triggerUpdate();\n          }\n        });\n      }\n      this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));\n      this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());\n    }\n\n    this.addEventListener(input, 'showDropdown', () => {\n      if (this.dataValue) {\n        this.triggerUpdate();\n      }\n      this.update();\n    });\n    if (placeholderValue && this.choices._isSelectOneElement) {\n      this.addEventListener(input, 'removeItem', () => {\n        const items = this.choices._store.activeItems;\n        if (!items.length) {\n          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);\n        }\n      });\n    }\n\n    // Add value options.\n    if (this.addValueOptions()) {\n      this.restoreValue();\n    }\n\n    // Force the disabled state with getters and setters.\n    this.disabled = this.disabled;\n    this.triggerUpdate();\n  }\n\n  /* eslint-enable max-statements */\n\n  update() {\n    if (this.component.dataSrc === 'custom') {\n      this.updateCustomItems();\n    }\n\n    // Activate the control.\n    this.activate();\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (!this.choices) {\n      return;\n    }\n    if (disabled) {\n      this.setDisabled(this.choices.containerInner.element, true);\n      this.focusableElement.removeAttribute('tabIndex');\n      this.choices.disable();\n    }\n    else {\n      this.setDisabled(this.choices.containerInner.element, false);\n      this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);\n      this.choices.enable();\n    }\n  }\n\n  show(show) {\n    // If we go from hidden to visible, trigger a refresh.\n    const triggerUpdate = show && (this._visible !== show);\n    show = super.show(show);\n    if (triggerUpdate) {\n      this.triggerUpdate();\n    }\n    return show;\n  }\n\n  /**\n   * @param {*} value\n   * @param {Array} items\n   */\n  addCurrentChoices(values, items, keyValue) {\n    if (!values) {\n      return false;\n    }\n    const notFoundValuesToAdd = [];\n    const added = values.reduce((defaultAdded, value) => {\n      if (!value) {\n        return defaultAdded;\n      }\n      let found = false;\n\n      // Make sure that `items` and `this.selectOptions` points\n      // to the same reference. Because `this.selectOptions` is\n      // internal property and all items are populated by\n      // `this.addOption` method, we assume that items has\n      // 'label' and 'value' properties. This assumption allows\n      // us to read correct value from the item.\n      const isSelectOptions = items === this.selectOptions;\n      if (items && items.length) {\n        _.each(items, (choice) => {\n          if (choice._id && value._id && (choice._id === value._id)) {\n            found = true;\n            return false;\n          }\n          const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);\n          found |= _.isEqual(itemValue, value);\n          return found ? false : true;\n        });\n      }\n\n      // Add the default option if no item is found.\n      if (!found) {\n        notFoundValuesToAdd.push({\n          value: this.itemValue(value),\n          label: this.itemTemplate(value)\n        });\n        return true;\n      }\n      return found || defaultAdded;\n    }, false);\n\n    if (notFoundValuesToAdd.length) {\n      if (this.choices) {\n        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');\n      }\n      else {\n        notFoundValuesToAdd.map(notFoundValue => {\n          this.addOption(notFoundValue.value, notFoundValue.label);\n        });\n      }\n    }\n    return added;\n  }\n\n  getView(data) {\n    return (this.component.multiple && Array.isArray(data))\n      ? data.map(this.asString.bind(this)).join(', ')\n      : this.asString(data);\n  }\n\n  getValue() {\n    if (this.viewOnly || this.loading || !this.selectOptions.length) {\n      return this.dataValue;\n    }\n    let value = '';\n    if (this.choices) {\n      value = this.choices.getValue(true);\n\n      // Make sure we don't get the placeholder\n      if (\n        !this.component.multiple &&\n        this.component.placeholder &&\n        (value === this.t(this.component.placeholder))\n      ) {\n        value = '';\n      }\n    }\n    else {\n      const values = [];\n      _.each(this.selectOptions, (selectOption) => {\n        if (selectOption.element && selectOption.element.selected) {\n          values.push(selectOption.value);\n        }\n      });\n      value = this.component.multiple ? values : values.shift();\n    }\n    // Choices will return undefined if nothing is selected. We really want '' to be empty.\n    if (value === undefined || value === null) {\n      value = '';\n    }\n    return value;\n  }\n\n  redraw() {\n    super.redraw();\n    this.triggerUpdate();\n  }\n\n  setValue(value, flags) {\n    flags = this.getFlags.apply(this, arguments);\n    const previousValue = this.dataValue;\n    if (this.component.multiple && !Array.isArray(value)) {\n      value = value ? [value] : [];\n    }\n    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;\n    const hasValue = Array.isArray(value) ? value.length : value;\n    const changed = this.hasChanged(value, previousValue);\n    this.dataValue = value;\n\n    // Do not set the value if we are loading... that will happen after it is done.\n    if (this.loading) {\n      return changed;\n    }\n\n    // Determine if we need to perform an initial lazyLoad api call if searchField is provided.\n    if (\n      this.component.searchField &&\n      this.component.lazyLoad &&\n      !this.lazyLoadInit &&\n      !this.active &&\n      !this.selectOptions.length &&\n      hasValue\n    ) {\n      this.loading = true;\n      this.lazyLoadInit = true;\n      this.triggerUpdate(this.dataValue, true);\n      return changed;\n    }\n\n    // Add the value options.\n    this.addValueOptions();\n\n    if (this.choices) {\n      // Now set the value.\n      if (hasValue) {\n        this.choices.removeActiveItems();\n        // Add the currently selected choices if they don't already exist.\n        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];\n        if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {\n          this.choices.setChoices(this.selectOptions, 'value', 'label', true);\n        }\n        this.choices.setChoiceByValue(value);\n      }\n      else if (hasPreviousValue) {\n        this.choices.removeActiveItems();\n      }\n    }\n    else {\n      if (hasValue) {\n        const values = Array.isArray(value) ? value : [value];\n        _.each(this.selectOptions, (selectOption) => {\n          _.each(values, (val) => {\n            if (_.isEqual(val, selectOption.value)) {\n              selectOption.element.selected = true;\n              selectOption.element.setAttribute('selected', 'selected');\n              return false;\n            }\n          });\n        });\n      }\n      else {\n        _.each(this.selectOptions, (selectOption) => {\n          selectOption.element.selected = false;\n          selectOption.element.removeAttribute('selected');\n        });\n      }\n    }\n\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  /**\n   * Deletes the value of the component.\n   */\n  deleteValue() {\n    this.setValue('', {\n      noUpdateEvent: true\n    });\n    _.unset(this.data, this.key);\n  }\n\n  /**\n   * Check if a component is eligible for multiple validation\n   *\n   * @return {boolean}\n   */\n  validateMultiple() {\n    // Select component will contain one input when flagged as multiple.\n    return false;\n  }\n\n  /**\n   * Ouput this select dropdown as a string value.\n   * @return {*}\n   */\n  asString(value) {\n    value = value || this.getValue();\n\n    if (['values', 'custom'].includes(this.component.dataSrc)) {\n      const {\n        items,\n        valueProperty,\n      } = this.component.dataSrc === 'values'\n        ? {\n          items: this.component.data.values,\n          valueProperty: 'value',\n        }\n        : {\n          items: this.getCustomItems(),\n          valueProperty: this.component.valueProperty,\n        };\n\n      value = (this.component.multiple && Array.isArray(value))\n        ? _.filter(items, (item) => value.includes(item.value))\n        : valueProperty\n          ? _.find(items, [valueProperty, value])\n          : value;\n    }\n\n    if (_.isString(value)) {\n      return value;\n    }\n\n    if (Array.isArray(value)) {\n      const items = [];\n      value.forEach(item => items.push(this.itemTemplate(item)));\n      return items.length > 0 ? items.join('<br />') : '-';\n    }\n\n    return !_.isNil(value)\n      ? this.itemTemplate(value)\n      : '-';\n  }\n\n  setupValueElement(element) {\n    element.innerHTML = this.asString();\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.choices) {\n      this.choices.destroyed = true;\n      this.choices.destroy();\n      this.choices = null;\n    }\n  }\n\n  focus() {\n    this.focusableElement.focus();\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/select/Select.js",
     "access": "public",
@@ -32968,7 +32968,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#createWrapper",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 91,
     "undocument": true,
     "params": [],
     "return": {
@@ -32988,7 +32988,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#itemTemplate",
     "access": "public",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 95,
     "undocument": true,
     "params": [
       {
@@ -33015,7 +33015,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#itemValue",
     "access": "public",
     "description": "",
-    "lineNumber": 128,
+    "lineNumber": 129,
     "params": [
       {
         "nullable": null,
@@ -33060,7 +33060,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#createInput",
     "access": "public",
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 143,
     "undocument": true,
     "params": [
       {
@@ -33081,7 +33081,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#selectContainer",
     "access": "public",
     "description": null,
-    "lineNumber": 143,
+    "lineNumber": 144,
     "undocument": true,
     "type": {
       "types": [
@@ -33098,7 +33098,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#selectInput",
     "access": "public",
     "description": null,
-    "lineNumber": 144,
+    "lineNumber": 145,
     "undocument": true,
     "type": {
       "types": [
@@ -33117,7 +33117,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#addOption",
     "access": "public",
     "description": "Adds an option to the select dropdown.",
-    "lineNumber": 153,
+    "lineNumber": 154,
     "params": [
       {
         "nullable": null,
@@ -33153,7 +33153,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#addValueOptions",
     "access": "public",
     "description": null,
-    "lineNumber": 180,
+    "lineNumber": 181,
     "undocument": true,
     "params": [
       {
@@ -33180,7 +33180,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#scrollLoading",
     "access": "public",
     "description": "Return if the list is loading from scroll. or not.",
-    "lineNumber": 200,
+    "lineNumber": 201,
     "return": {
       "nullable": null,
       "types": [
@@ -33207,7 +33207,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#scrollLoading",
     "access": "public",
     "description": "Sets the scroll loading state.",
-    "lineNumber": 210,
+    "lineNumber": 211,
     "params": [
       {
         "nullable": null,
@@ -33240,7 +33240,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#stopInfiniteScroll",
     "access": "public",
     "description": null,
-    "lineNumber": 234,
+    "lineNumber": 235,
     "undocument": true,
     "params": [],
     "return": null
@@ -33256,7 +33256,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#setItems",
     "access": "public",
     "description": null,
-    "lineNumber": 241,
+    "lineNumber": 242,
     "undocument": true,
     "params": [
       {
@@ -33283,7 +33283,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#loading",
     "access": "public",
     "description": null,
-    "lineNumber": 284,
+    "lineNumber": 285,
     "undocument": true,
     "type": {
       "types": [
@@ -33302,7 +33302,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#loadItems",
     "access": "public",
     "description": null,
-    "lineNumber": 346,
+    "lineNumber": 347,
     "undocument": true,
     "params": [
       {
@@ -33359,7 +33359,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#requestHeaders",
     "access": "public",
     "description": "Get the request headers for this select dropdown.",
-    "lineNumber": 439,
+    "lineNumber": 440,
     "type": {
       "types": [
         "*"
@@ -33377,7 +33377,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#getCustomItems",
     "access": "public",
     "description": null,
-    "lineNumber": 460,
+    "lineNumber": 461,
     "undocument": true,
     "params": [],
     "return": {
@@ -33397,7 +33397,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#updateCustomItems",
     "access": "public",
     "description": null,
-    "lineNumber": 466,
+    "lineNumber": 467,
     "undocument": true,
     "params": [],
     "return": null
@@ -33413,7 +33413,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#updateItems",
     "access": "public",
     "description": null,
-    "lineNumber": 471,
+    "lineNumber": 472,
     "undocument": true,
     "params": [
       {
@@ -33442,7 +33442,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#addPlaceholder",
     "access": "public",
     "description": null,
-    "lineNumber": 548,
+    "lineNumber": 549,
     "undocument": true,
     "params": [
       {
@@ -33465,7 +33465,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#activate",
     "access": "public",
     "description": "Activate this select control.",
-    "lineNumber": 561,
+    "lineNumber": 562,
     "params": [],
     "return": null
   },
@@ -33480,7 +33480,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#active",
     "access": "public",
     "description": null,
-    "lineNumber": 578,
+    "lineNumber": 579,
     "undocument": true,
     "type": {
       "types": [
@@ -33499,7 +33499,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#addInput",
     "access": "public",
     "description": null,
-    "lineNumber": 583,
+    "lineNumber": 584,
     "undocument": true,
     "params": [
       {
@@ -33526,7 +33526,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#focusableElement",
     "access": "public",
     "description": null,
-    "lineNumber": 591,
+    "lineNumber": 592,
     "undocument": true,
     "type": {
       "types": [
@@ -33543,7 +33543,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#choices",
     "access": "public",
     "description": null,
-    "lineNumber": 645,
+    "lineNumber": 646,
     "undocument": true,
     "type": {
       "types": [
@@ -33560,7 +33560,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#scrollList",
     "access": "public",
     "description": null,
-    "lineNumber": 658,
+    "lineNumber": 659,
     "undocument": true,
     "type": {
       "types": [
@@ -33577,7 +33577,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#onScroll",
     "access": "public",
     "description": null,
-    "lineNumber": 659,
+    "lineNumber": 660,
     "undocument": true,
     "type": {
       "types": [
@@ -33596,7 +33596,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#update",
     "access": "public",
     "description": null,
-    "lineNumber": 717,
+    "lineNumber": 718,
     "undocument": true,
     "params": [],
     "return": null
@@ -33612,7 +33612,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#disabled",
     "access": "public",
     "description": null,
-    "lineNumber": 726,
+    "lineNumber": 727,
     "undocument": true
   },
   {
@@ -33626,7 +33626,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#show",
     "access": "public",
     "description": null,
-    "lineNumber": 743,
+    "lineNumber": 744,
     "undocument": true,
     "params": [
       {
@@ -33653,7 +33653,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#addCurrentChoices",
     "access": "public",
     "description": "",
-    "lineNumber": 757,
+    "lineNumber": 758,
     "params": [
       {
         "nullable": null,
@@ -33693,7 +33693,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#getView",
     "access": "public",
     "description": null,
-    "lineNumber": 811,
+    "lineNumber": 812,
     "undocument": true,
     "params": [
       {
@@ -33720,7 +33720,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 817,
+    "lineNumber": 818,
     "undocument": true,
     "params": [],
     "return": {
@@ -33740,7 +33740,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#redraw",
     "access": "public",
     "description": null,
-    "lineNumber": 850,
+    "lineNumber": 851,
     "undocument": true,
     "params": [],
     "return": null
@@ -33756,7 +33756,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 855,
+    "lineNumber": 856,
     "undocument": true,
     "params": [
       {
@@ -33787,7 +33787,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#dataValue",
     "access": "public",
     "description": null,
-    "lineNumber": 864,
+    "lineNumber": 865,
     "undocument": true,
     "type": {
       "types": [
@@ -33804,7 +33804,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#lazyLoadInit",
     "access": "public",
     "description": null,
-    "lineNumber": 881,
+    "lineNumber": 882,
     "undocument": true,
     "type": {
       "types": [
@@ -33823,7 +33823,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#deleteValue",
     "access": "public",
     "description": "Deletes the value of the component.",
-    "lineNumber": 932,
+    "lineNumber": 933,
     "params": [],
     "return": null
   },
@@ -33838,7 +33838,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#validateMultiple",
     "access": "public",
     "description": "Check if a component is eligible for multiple validation",
-    "lineNumber": 944,
+    "lineNumber": 945,
     "return": {
       "nullable": null,
       "types": [
@@ -33860,7 +33860,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#asString",
     "access": "public",
     "description": "Ouput this select dropdown as a string value.",
-    "lineNumber": 953,
+    "lineNumber": 954,
     "return": {
       "nullable": null,
       "types": [
@@ -33889,7 +33889,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#setupValueElement",
     "access": "public",
     "description": null,
-    "lineNumber": 992,
+    "lineNumber": 993,
     "undocument": true,
     "params": [
       {
@@ -33912,7 +33912,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 996,
+    "lineNumber": 997,
     "undocument": true,
     "params": [],
     "return": null
@@ -33928,7 +33928,7 @@
     "longname": "src/components/select/Select.js~SelectComponent#focus",
     "access": "public",
     "description": null,
-    "lineNumber": 1005,
+    "lineNumber": 1006,
     "undocument": true,
     "params": [],
     "return": null
@@ -46014,7 +46014,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.20.0-beta.1\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.0.0\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.1.0\",\n    \"fetch-ponyfill\": \"^6.0.2\",\n    \"flatpickr\": \"^4.5.7\",\n    \"i18next\": \"^15.0.9\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.1\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.7.2\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.4.3\",\n    \"@babel/core\": \"^7.4.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.4.3\",\n    \"@babel/preset-env\": \"^7.4.3\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"core-js\": \"^2.6.5\",\n    \"del\": \"^4.1.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.16.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.3.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.0\",\n    \"karma\": \"^4.0.1\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.2\",\n    \"mocha\": \"^6.1.2\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.3.1\",\n    \"webpack\": \"^4.29.6\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"3.20.0-beta.1\",\n  \"description\": \"Common js library for client side interaction with <form.io>\",\n  \"main\": \"index.js\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"publish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\",\n    \"test:watch\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --no-single-run --auto-watch\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Travis Tidwell\",\n      \"github\": \"https://github.com/travist\",\n      \"email\": \"travis@form.io\"\n    },\n    {\n      \"name\": \"Randall Knutson\",\n      \"github\": \"https://github.com/randallknutson\",\n      \"email\": \"randall@form.io\"\n    },\n    {\n      \"name\": \"Doug Lee\",\n      \"github\": \"https://github.com/douglaselee\",\n      \"email\": \"douglaselee@comcast.net\"\n    },\n    {\n      \"name\": \"Eric Alter\",\n      \"email\": \"neolanders@hotmail.com\"\n    },\n    {\n      \"name\": \"Guillaume SMAHA\",\n      \"email\": \"guillaume.smaha@gmail.com\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.0.0\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-json-patch\": \"^2.1.0\",\n    \"fetch-ponyfill\": \"^6.0.2\",\n    \"flatpickr\": \"^4.5.7\",\n    \"i18next\": \"^15.0.9\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.6\",\n    \"lodash\": \"^4.17.11\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.23\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"shallow-copy\": \"0.0.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.2\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"vanilla-picker\": \"^2.7.2\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.4.3\",\n    \"@babel/core\": \"^7.4.3\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.2.0\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.2.0\",\n    \"@babel/polyfill\": \"^7.4.3\",\n    \"@babel/preset-env\": \"^7.4.3\",\n    \"babel-eslint\": \"^10.0.1\",\n    \"babel-loader\": \"^8.0.5\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.0.18\",\n    \"core-js\": \"^2.6.5\",\n    \"del\": \"^4.1.0\",\n    \"escape-string-regexp\": \"^1.0.5\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^5.16.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.3.1\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.0\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.0.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^5.0.0\",\n    \"gulp-filter\": \"^5.1.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.0\",\n    \"karma\": \"^4.0.1\",\n    \"karma-chrome-launcher\": \"^2.2.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^3.0.5\",\n    \"marked\": \"^0.6.2\",\n    \"mocha\": \"^6.1.3\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pygments-css\": \"^1.0.0\",\n    \"sinon\": \"^7.3.1\",\n    \"webpack\": \"^4.30.0\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
