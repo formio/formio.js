@@ -84,6 +84,7 @@ export default class SelectComponent extends BaseComponent {
     const info = super.elementInfo();
     info.type = 'select';
     info.changeEvent = 'change';
+    info.attr.id = this.component.key;
     return info;
   }
 
