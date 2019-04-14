@@ -43,7 +43,6 @@ export default class TextFieldComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
-    info.attr.id = this.component.key;
     if (this.component.hasOwnProperty('spellcheck')) {
       info.attr.spellcheck = this.component.spellcheck;
     }
@@ -69,10 +68,8 @@ export default class TextFieldComponent extends BaseComponent {
       return inputGroup;
     }
     //if component should have multiple masks
-    const id = `${this.key}`;
     const attr = this.info.attr;
     attr.class += ' formio-multiple-mask-input';
-    attr.id = id;
     const textInput = this.ce('input', attr);
 
     const inputGroup = this.ce('div', {

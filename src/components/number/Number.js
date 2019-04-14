@@ -109,7 +109,6 @@ export default class NumberComponent extends BaseComponent {
     info.attr.type = 'text';
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';
-    info.attr.id = this.component.key;
     return info;
   }
 
