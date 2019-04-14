@@ -2650,7 +2650,8 @@ export default class BaseComponent extends Component {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
-      lang: this.options.language
+      lang: this.options.language,
+      id: `${this.component.id}_input`
     };
 
     if (this.component.placeholder) {
