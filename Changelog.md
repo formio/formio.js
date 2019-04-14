@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.0-beta.2
+### Fixed
+ - Made it so that all input elements have an id.
+ - Fixing the builder styles for drag and drop.
+
 ## 3.20.0-beta.1
 ### Added
  - Ability to edit JSON of component in builder
