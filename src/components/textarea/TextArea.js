@@ -50,7 +50,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.wysiwygRendered = false;
     }
 
-    super.show(show, noClear);
+    return super.show(show, noClear);
   }
 
   setupValueElement(element) {
