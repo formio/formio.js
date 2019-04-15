@@ -847,8 +847,8 @@ export default class SelectComponent extends Field {
       value = this.component.multiple ? values : values.shift();
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
-    if (value === undefined || value === null) {
-      value = '';
+    if (value === undefined || value === null || value === '') {
+      value = this.dataValue;
     }
     return value;
   }
