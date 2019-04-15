@@ -848,7 +848,24 @@ export default class Webform extends NestedComponent {
     if (this.element) {
       this.build();
     }
+    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
+    this.on('resetForm', () => this.resetValue(), true);
+    this.on('deleteSubmission', () => this.deleteSubmission(), true);
+    this.on('refreshData', () => this.updateValue(), true);
+
     return this.formReady;
+  }
+
+  destroy() {
+    this.off('submitButton');
+    this.off('checkValidity');
+    this.off('requestUrl');
+    this.off('resetForm');
+    this.off('deleteSubmission');
+    this.off('refreshData');
+    return super.destroy();
   }
 
   build(element) {
@@ -881,12 +898,6 @@ export default class Webform extends NestedComponent {
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
-    this.on('submitButton', (options) => this.submit(false, options), true);
-    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
-    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
-    this.on('resetForm', () => this.resetValue(), true);
-    this.on('deleteSubmission', () => this.deleteSubmission(), true);
-    this.on('refreshData', () => this.updateValue(), true);
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise;
