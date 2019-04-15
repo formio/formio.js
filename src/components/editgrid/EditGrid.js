@@ -80,9 +80,10 @@ export default class EditGridComponent extends NestedComponent {
   init() {
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
-    this.editRows = dataValue.map((row) => ({
+    this.editRows = dataValue.map((row, rowIndex) => ({
       isOpen: false,
       data: row,
+      components: this.createRowComponents(row, rowIndex),
     }));
     // In builder we need one row so the components will show up.
     if (this.options.attachMode === 'builder') {
@@ -90,9 +91,9 @@ export default class EditGridComponent extends NestedComponent {
     }
   }
 
-  render() {
+  render(children) {
     const dataValue = this.dataValue || [];
-    return super.render(this.renderTemplate('editgrid', {
+    return super.render(children || this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
       header: this.renderString(_.get(this.component, 'templates.header'), {
         components: this.component.components,
@@ -173,7 +174,17 @@ export default class EditGridComponent extends NestedComponent {
           row: dataValue[rowIndex],
           rowIndex,
           components: this.component.components,
-          getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
+          flattenedComponents: this.flattenComponents(rowIndex),
+          getView: (component, data) => {
+            console.log('getView() method is depricated, consider usage of flattenedComponents[componentKey].getView(data)');
+            const builtComponent = Components.create(component, this.options, data, true);
+            const result = builtComponent.getView(data);
+
+            builtComponent.destroy();
+
+            return result;
+          },
+
         });
     }
   }
@@ -213,6 +224,44 @@ export default class EditGridComponent extends NestedComponent {
     return valid;
   }
 
+  everyComponent(fn, rowIndex) {
+    const components = this.getComponents(rowIndex);
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
+        if (component.everyComponent(fn) === false) {
+          return false;
+        }
+      }
+    });
+  }
+
+  flattenComponents(rowIndex) {
+    const result = {};
+
+    this.everyComponent((component) => {
+      result[component.key] = component;
+    }, rowIndex);
+
+    return result;
+  }
+
+  getComponents(rowIndex) {
+    return this.options.builder
+      ? super.getComponents()
+      : _.isNumber(rowIndex)
+        ? (this.editRows[rowIndex].components || [])
+        : this.editRows.reduce((result, row) => result.concat(row.components || []), []);
+  }
+
+  destroyComponents(rowIndex) {
+    const components = this.getComponents(rowIndex).slice();
+    components.forEach((comp) => comp.destroy());
+  }
+
   addRow() {
     if (this.options.readOnly) {
       return;
@@ -249,7 +298,6 @@ export default class EditGridComponent extends NestedComponent {
     else {
       editRow.data = dataSnapshot;
     }
-    editRow.components = this.createRowComponents(editRow.data, rowIndex);
     this.redraw();
   }
 
@@ -283,6 +331,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       this.clearErrors(rowIndex);
+      this.destroyComponents(rowIndex);
       if (this.component.inlineEdit) {
         this.splice(rowIndex);
       }
@@ -332,6 +381,7 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.readOnly) {
       return;
     }
+    this.destroyComponents(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
@@ -472,9 +522,9 @@ export default class EditGridComponent extends NestedComponent {
       }
       else {
         this.editRows[rowIndex] = {
-          components: [],
+          components: this.createRowComponents(row, rowIndex),
           isOpen: false,
-          data: row
+          data: row,
         };
       }
     });
