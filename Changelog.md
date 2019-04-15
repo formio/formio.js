@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Tagpad: sending excess headers on loading background image by URL 
+
 ## 3.20.0-beta.2
 ### Fixed
  - Made it so that all input elements have an id.
