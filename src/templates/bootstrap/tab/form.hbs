@@ -9,11 +9,11 @@
     </ul>
   </div>
   {% component.components.forEach(function(tab, index) { %}
-  <div 
-    role="tabpanel" 
+  <div
+    role="tabpanel"
     class="card-body tab-pane{{ currentTab === index ? ' active' : ''}}"
-    style="display: {{currentTab === index ? 'block' : 'none'}}" 
-    ref="{{tabKey}}""
+    style="display: {{currentTab === index ? 'block' : 'none'}}"
+    ref="{{tabKey}}"
   >
     {{tabComponents[index]}}
   </div>

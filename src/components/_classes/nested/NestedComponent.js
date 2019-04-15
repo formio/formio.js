@@ -124,6 +124,16 @@ export default class NestedComponent extends Field {
     });
   }
 
+  flattenComponents() {
+    const result = {};
+
+    this.everyComponent((component) => {
+      result[component.key] = component;
+    });
+
+    return result;
+  }
+
   /**
    * Perform an iteration over each component within this container component.
    *
