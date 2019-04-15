@@ -10,7 +10,7 @@ import maskInput from 'vanilla-text-mask';
  * The root component for all elements within the Form.io renderer.
  */
 export default class Element {
-  constructor(options, id) {
+  constructor(options) {
     /**
      * The options for this component.
      * @type {{}}
@@ -27,8 +27,7 @@ export default class Element {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = id || FormioUtils.getRandomComponentId();
-
+    this.id = FormioUtils.getRandomComponentId();
     /**
      * An array of event handlers so that the destry command can deregister them.
      * @type {Array}

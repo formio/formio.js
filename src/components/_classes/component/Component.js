@@ -181,7 +181,7 @@ export default class Component extends Element {
       template: 'bootstrap3',
       renderMode: 'form',
       attachMode: 'full'
-    }, options || {}), (component && component.id) ? component.id : null);
+    }, options || {}));
 
     // Save off the original component.
     this.originalComponent = _.cloneDeep(component);
