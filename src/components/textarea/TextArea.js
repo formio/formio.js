@@ -181,6 +181,15 @@ export default class TextAreaComponent extends TextFieldComponent {
           settings, () => this.updateEditorValue(this.quill.root.innerHTML)
         ).then((quill) => {
           this.editor = quill;
+          if (this.component.isUploadEnabled) {
+            const _this = this;
+            quill.getModule('toolbar').addHandler('image', function() {
+              //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+              //we also need current component instance as we use some fields and methods from it as well
+              _this.imageHandler.call(this, _this);
+            } );
+          }
+          quill.root.spellcheck = this.component.spellcheck;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.disable();
           }
@@ -217,7 +226,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     return element;
   }
 
-  imageHandler() {
+  imageHandler(componentInstance) {
     let fileInput = this.container.querySelector('input.ql-image[type=file]');
     if (fileInput == null) {
       fileInput = document.createElement('input');
@@ -234,8 +243,8 @@ export default class TextAreaComponent extends TextFieldComponent {
         }
 
         this.editor.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
-        this.root.formio
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = componentInstance.component;
+        componentInstance.root.formio
           .uploadFile(
             uploadStorage,
             files[0],
@@ -246,7 +255,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadOptions
           )
           .then((result) => {
-            return this.root.formio.downloadFile(result);
+            return componentInstance.root.formio.downloadFile(result);
           })
           .then(result => {
             this.editor.enable(true);

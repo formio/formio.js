@@ -4,7 +4,50 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+<<<<<<< HEAD
 [Unreleased]
+=======
+## [Unreleased]
+### Fixed
+ - WYSIWYG image upload being broken after lazy load change
+
+## 3.20.0-beta.2
+### Fixed
+ - Made it so that all input elements have an id.
+ - Fixing the builder styles for drag and drop.
+
+## 3.20.0-beta.1
+### Added
+ - Ability to edit JSON of component in builder
+ - Ability to show/hide specific buttons in builder
+ - Added a "beforeNext" hook that enables external controllers to hook into the wizard navigation.
+ - FOR-2168: Fixed problems with TextArea in multiple setting where value would not set when adding multiple values with Add Another button.
+ - Update Checkbox to add checkbox-checked class like Radio adds radio-selected class (https://github.com/formio/formio.js/pull/1136)
+
+### Fixed
+ - Issue in builder where if you have an HTML Elememnt and configure it with no content, you can no longer see that component in the builder.
+ - Problem with the TextArea character counter that would get off when in WYWIWYG mode.
+ - Changed function passed into to current page object
+
+### Changed
+ - Upgraded jquery@3.4.0, choices.js@7.0.0, marked@0.6.2
+ - Update Text field component to link Label ("for" attribute) with input's id
+
+## 3.19.8
+### Fixed
+ - Textareas were sometimes unsetting themselves on data change.
+ - Sketchpad: sending excess headers on loading background image by URL 
+
+## 3.19.7
+### Fixed
+ - Added form id to radio names so they are unique with multiple of the same form on a page.
+ - Textarea without wysiwyg crashed on set value after lazy load changes.
+
+## 3.19.6
+### Fixed
+ - Problem where the wysiwyg editors would show up on a readOnly form and pdf.
+
+>>>>>>> 35698d1... Fixed WYSIWYG image upload being broken after lazy load change
 ### Added
  - FOR-2019: Ability to override CSS Classes in templates
 
