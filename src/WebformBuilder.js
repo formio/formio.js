@@ -855,13 +855,35 @@ export default class WebformBuilder extends Webform {
     return super.clear();
   }
 
-  addComponentTo(parent, schema, element, sibling) {
-    return parent.addComponent(
+  addComponentTo(schema, parent, element, sibling, after) {
+    const component = parent.addComponent(
       schema,
       element,
       parent.data,
       sibling
     );
+
+    if (after) {
+      after(component);
+    }
+
+    // Get path to the component in the parent component.
+    let path = 'components';
+    switch (component.parent.type) {
+      case 'table':
+        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        break;
+      case 'columns':
+        path = `columns[${component.column}].components`;
+        break;
+      case 'tabs':
+        path = `components[${component.tab}].components`;
+        break;
+    }
+    // Index within container
+    const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
+    this.emit('addComponent', component, path, index);
+    return component;
   }
 
   /* eslint-disable  max-statements */
@@ -905,33 +927,15 @@ export default class WebformBuilder extends Webform {
       }
 
       // Add the new component.
-      const component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
+      const component = this.addComponentTo(componentSchema, newParent.component, newParent, sibling, (comp) => {
+        // Set that this is a new component.
+        comp.isNew = true;
 
-      // Set that this is a new component.
-      component.isNew = true;
-
-      // Pass along the save event.
-      if (target.dragEvents) {
-        component.dragEvents = target.dragEvents;
-      }
-
-      // Get path to the component in the parent component.
-      let path = 'components';
-      switch (component.parent.type) {
-        case 'table':
-          path = `rows[${component.tableRow}][${component.tableColumn}].components`;
-          break;
-        case 'columns':
-          path = `columns[${component.column}].components`;
-          break;
-        case 'tabs':
-          path = `components[${component.tab}].components`;
-          break;
-      }
-      // Index within container
-      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
-
-      this.emit('addComponent', component, path, index);
+        // Pass along the save event.
+        if (target.dragEvents) {
+          comp.dragEvents = target.dragEvents;
+        }
+      });
 
       // Edit the component.
       this.editComponent(component);
@@ -948,17 +952,17 @@ export default class WebformBuilder extends Webform {
 
       // Remove the component from its parent.
       if (element.component.parent) {
+        this.emit('deleteComponent', element.component);
         element.component.parent.removeComponent(element.component);
       }
 
-      // Add the component to its new parent.
-      const component = newParent.component.addComponent(
+      // Add the new component.
+      const component = this.addComponentTo(
         componentSchema,
+        newParent.component,
         newParent,
-        newParent.component.data,
         sibling
       );
-
       if (target.dragEvents && target.dragEvents.onSave) {
         target.dragEvents.onSave(component);
       }
