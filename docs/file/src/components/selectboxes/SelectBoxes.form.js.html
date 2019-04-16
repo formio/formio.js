@@ -211,8 +211,15 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/selectboxes/SelectBoxes.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import radioEditForm from &apos;../radio/Radio.form&apos;;
+import SelectBoxesEditValidation from &apos;./editSelectBoxes/SelectBoxes.edit.validation&apos;;
+
 export default function(...extend) {
-  return radioEditForm(...extend);
+  return radioEditForm([
+    {
+      key: &apos;validation&apos;,
+      components: SelectBoxesEditValidation
+    }
+  ], ...extend);
 }
 </code></pre>
 

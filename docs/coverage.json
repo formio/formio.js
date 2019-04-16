@@ -1,7 +1,7 @@
 {
-  "coverage": "17.24%",
-  "expectCount": 1757,
-  "actualCount": 303,
+  "coverage": "17.19%",
+  "expectCount": 1768,
+  "actualCount": 304,
   "files": {
     "src/EventEmitter.js": {
       "expectCount": 3,
@@ -295,11 +295,11 @@
         839,
         853,
         858,
-        868,
-        977,
-        990,
+        890,
+        981,
         994,
-        1011
+        998,
+        1015
       ]
     },
     "src/Wizard.js": {
@@ -371,15 +371,15 @@
       ]
     },
     "src/components/Components.js": {
-      "expectCount": 6,
-      "actualCount": 0,
+      "expectCount": 7,
+      "actualCount": 1,
       "undocumentLines": [
         4,
         5,
         12,
         24,
         28,
-        32
+        85
       ]
     },
     "src/components/address/Address.form.js": {
@@ -485,38 +485,38 @@
         1511,
         1581,
         1626,
-        1772,
-        1787,
-        1791,
-        1795,
-        1801,
-        1805,
-        1842,
-        1890,
-        1923,
-        1945,
-        1959,
-        1973,
-        2199,
-        2349,
-        2361,
-        2367,
+        1781,
+        1796,
+        1800,
+        1804,
+        1810,
+        1814,
+        1851,
+        1899,
+        1932,
+        1954,
+        1968,
+        1982,
+        2208,
+        2358,
+        2370,
         2376,
-        2389,
-        2393,
-        2423,
-        2457,
-        2465,
-        2470,
-        2481,
-        2486,
-        2570,
-        2583,
-        2604,
-        2618,
-        2673,
-        2679,
-        2722
+        2385,
+        2398,
+        2402,
+        2432,
+        2466,
+        2474,
+        2479,
+        2490,
+        2495,
+        2579,
+        2592,
+        2613,
+        2627,
+        2682,
+        2688,
+        2731
       ]
     },
     "src/components/base/Base.spec.js": {
@@ -1088,8 +1088,8 @@
         743,
         747,
         751,
-        838,
-        864
+        878,
+        904
       ]
     },
     "src/components/form/Form.form.js": {
@@ -1564,22 +1564,25 @@
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        4
       ]
     },
     "src/components/selectboxes/SelectBoxes.js": {
-      "expectCount": 11,
+      "expectCount": 14,
       "actualCount": 2,
       "undocumentLines": [
         4,
         5,
         14,
         25,
-        30,
-        34,
-        42,
-        67,
-        113
+        28,
+        32,
+        36,
+        44,
+        69,
+        115,
+        148,
+        152
       ]
     },
     "src/components/signature/Signature.form.js": {
@@ -1756,20 +1759,20 @@
         138,
         144,
         147,
-        204,
-        210,
-        262,
-        282,
-        299,
-        321,
-        325,
-        329,
-        337,
-        347,
-        362,
-        374,
-        381,
-        393
+        209,
+        215,
+        267,
+        287,
+        304,
+        326,
+        330,
+        334,
+        342,
+        352,
+        367,
+        379,
+        386,
+        398
       ]
     },
     "src/components/textfield/TextField.form.js": {
@@ -2093,11 +2096,24 @@
       ]
     },
     "src/utils/formUtils.js": {
-      "expectCount": 17,
+      "expectCount": 22,
       "actualCount": 15,
       "undocumentLines": [
-        263,
-        299
+        192,
+        193,
+        194,
+        195,
+        330,
+        367,
+        374
+      ]
+    },
+    "src/utils/formUtils.spec.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4
       ]
     },
     "src/utils/jsonlogic/operators.js": {

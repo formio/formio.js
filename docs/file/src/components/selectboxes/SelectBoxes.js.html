@@ -236,6 +236,8 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
+
+    this.validators = this.validators.concat([&apos;minSelectedCount&apos;, &apos;maxSelectedCount&apos;]);
     this.component.inputType = &apos;checkbox&apos;;
   }
 
@@ -320,6 +322,43 @@ export default class SelectBoxesComponent extends RadioComponent {
     });
 
     this.updateValue(flags);
+  }
+
+  checkValidity(data, dirty, rowData) {
+    const maxCount = this.component.validate.maxSelectedCount;
+
+    if (maxCount) {
+      const count = Object.keys(this.validationValue).reduce((total, key) =&gt;{
+        if (this.validationValue[key]) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      if (count &gt;= maxCount) {
+        this.inputs.forEach(item =&gt; {
+          if (!item.checked) {
+            item.disabled = true;
+          }
+        });
+        const message = this.component.maxSelectedCountMessage
+          ? this.component.maxSelectedCountMessage
+          : `You can only select up to ${maxCount} items to continue.`;
+        this.setCustomValidity(message);
+        return false;
+      }
+      else {
+        this.inputs.forEach(item =&gt; {
+          item.disabled = false;
+        });
+      }
+    }
+
+    return super.checkValidity(data, dirty, rowData);
+  }
+
+  get validationValue() {
+    return super.validationValue;
   }
 
   getView(value) {

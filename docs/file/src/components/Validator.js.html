@@ -333,6 +333,58 @@ export default {
         return parseFloat(value) &lt;= max;
       }
     },
+    minSelectedCount: {
+      key: &apos;validate.minSelectedCount&apos;,
+      message(component, setting) {
+        return component.component.minSelectedCountMessage
+          ? component.component.minSelectedCountMessage
+          : component.t(component.errorMessage(&apos;minSelectedCount&apos;), {
+              minCount: parseFloat(setting),
+              data: component.data
+            });
+      },
+      check(component, setting, value) {
+        const min = parseFloat(setting);
+
+        if (!min) {
+          return true;
+        }
+        const count = Object.keys(value).reduce((total, key) =&gt;{
+          if (value[key]) {
+            total++;
+          }
+          return total;
+        }, 0);
+
+        return count &gt;= min;
+      }
+    },
+    maxSelectedCount: {
+      key: &apos;validate.maxSelectedCount&apos;,
+      message(component, setting) {
+        return component.component.maxSelectedCountMessage
+          ? component.component.maxSelectedCountMessage
+          : component.t(component.errorMessage(&apos;maxSelectedCount&apos;), {
+              minCount: parseFloat(setting),
+              data: component.data
+            });
+      },
+      check(component, setting, value) {
+        const max = parseFloat(setting);
+
+        if (!max) {
+          return true;
+        }
+        const count = Object.keys(value).reduce((total, key) =&gt;{
+          if (value[key]) {
+            total++;
+          }
+          return total;
+        }, 0);
+
+        return count &lt;= max;
+      }
+    },
     minLength: {
       key: &apos;validate.minLength&apos;,
       message(component, setting) {

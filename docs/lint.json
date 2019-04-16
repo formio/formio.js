@@ -291,35 +291,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1866,
+        "lineNumber": 1875,
         "line": "  /**"
       },
       {
-        "lineNumber": 1867,
+        "lineNumber": 1876,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1868,
+        "lineNumber": 1877,
         "line": "   *"
       },
       {
-        "lineNumber": 1869,
+        "lineNumber": 1878,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1870,
+        "lineNumber": 1879,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1871,
+        "lineNumber": 1880,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1872,
+        "lineNumber": 1881,
         "line": "   */"
       },
       {
-        "lineNumber": 1873,
+        "lineNumber": 1882,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -338,27 +338,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2170,
+        "lineNumber": 2179,
         "line": "  /**"
       },
       {
-        "lineNumber": 2171,
+        "lineNumber": 2180,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2172,
+        "lineNumber": 2181,
         "line": "   *"
       },
       {
-        "lineNumber": 2173,
+        "lineNumber": 2182,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2174,
+        "lineNumber": 2183,
         "line": "   */"
       },
       {
-        "lineNumber": 2175,
+        "lineNumber": 2184,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -375,35 +375,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2221,
+        "lineNumber": 2230,
         "line": "  /**"
       },
       {
-        "lineNumber": 2222,
+        "lineNumber": 2231,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2223,
+        "lineNumber": 2232,
         "line": "   *"
       },
       {
-        "lineNumber": 2224,
+        "lineNumber": 2233,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2225,
+        "lineNumber": 2234,
         "line": "   *"
       },
       {
-        "lineNumber": 2226,
+        "lineNumber": 2235,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2227,
+        "lineNumber": 2236,
         "line": "   */"
       },
       {
-        "lineNumber": 2228,
+        "lineNumber": 2237,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -420,35 +420,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2311,
+        "lineNumber": 2320,
         "line": "  /**"
       },
       {
-        "lineNumber": 2312,
+        "lineNumber": 2321,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2313,
+        "lineNumber": 2322,
         "line": "   *"
       },
       {
-        "lineNumber": 2314,
+        "lineNumber": 2323,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2315,
+        "lineNumber": 2324,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2316,
+        "lineNumber": 2325,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2317,
+        "lineNumber": 2326,
         "line": "   */"
       },
       {
-        "lineNumber": 2318,
+        "lineNumber": 2327,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -467,31 +467,31 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2433,
+        "lineNumber": 2442,
         "line": "  /**"
       },
       {
-        "lineNumber": 2434,
+        "lineNumber": 2443,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2435,
+        "lineNumber": 2444,
         "line": "   *"
       },
       {
-        "lineNumber": 2436,
+        "lineNumber": 2445,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2437,
+        "lineNumber": 2446,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2438,
+        "lineNumber": 2447,
         "line": "   */"
       },
       {
-        "lineNumber": 2439,
+        "lineNumber": 2448,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
@@ -941,51 +941,51 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 137,
+        "lineNumber": 138,
         "line": "/**"
       },
       {
-        "lineNumber": 138,
+        "lineNumber": 139,
         "line": " * Get a component by its key"
       },
       {
-        "lineNumber": 139,
-        "line": " *"
-      },
-      {
         "lineNumber": 140,
-        "line": " * @param {Object} components"
+        "line": " *"
       },
       {
         "lineNumber": 141,
-        "line": " *   The components to iterate."
+        "line": " * @param {Object} components"
       },
       {
         "lineNumber": 142,
-        "line": " * @param {String|Object} key"
+        "line": " *   The components to iterate."
       },
       {
         "lineNumber": 143,
-        "line": " *   The key of the component to get, or a query of the component to search."
+        "line": " * @param {String|Object} key"
       },
       {
         "lineNumber": 144,
-        "line": " *"
+        "line": " *   The key of the component to get, or a query of the component to search."
       },
       {
         "lineNumber": 145,
-        "line": " * @returns {Object}"
+        "line": " *"
       },
       {
         "lineNumber": 146,
-        "line": " *   The component that matches the given key, or undefined if not found."
+        "line": " * @returns {Object}"
       },
       {
         "lineNumber": 147,
-        "line": " */"
+        "line": " *   The component that matches the given key, or undefined if not found."
       },
       {
         "lineNumber": 148,
+        "line": " */"
+      },
+      {
+        "lineNumber": 149,
         "line": "export function getComponent(components, key, includeAll) {"
       }
     ],
@@ -1004,43 +1004,43 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 190,
+        "lineNumber": 222,
         "line": "/**"
       },
       {
-        "lineNumber": 191,
+        "lineNumber": 223,
         "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form."
       },
       {
-        "lineNumber": 192,
+        "lineNumber": 224,
         "line": " *"
       },
       {
-        "lineNumber": 193,
+        "lineNumber": 225,
         "line": " * @param components"
       },
       {
-        "lineNumber": 194,
+        "lineNumber": 226,
         "line": " * @param key"
       },
       {
-        "lineNumber": 195,
+        "lineNumber": 227,
         "line": " * @param fn"
       },
       {
-        "lineNumber": 196,
+        "lineNumber": 228,
         "line": " * @param path"
       },
       {
-        "lineNumber": 197,
-        "line": " * @returns {*}"
+        "lineNumber": 229,
+        "line": " * @returns boolean - If the component was found."
       },
       {
-        "lineNumber": 198,
+        "lineNumber": 230,
         "line": " */"
       },
       {
-        "lineNumber": 199,
+        "lineNumber": 231,
         "line": "export function findComponent(components, key, path, fn) {"
       }
     ],

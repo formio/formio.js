@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.20.0-beta.3
 ### Fixed
+ - Problem where form builder would not fire any events when moving components.
+ - Fixing the form merging logic and also adding tests to ensure future functionality.
  - Tagpad: sending excess headers on loading background image by URL 
  - WYSIWYG image upload being broken after lazy load change
+ - Fixed auto adjusting columns when all components are not visible within.
+
+### Added
+ - A missing "return" in the show method of the TextArea component.
+ - Added validation for min & max cheched for selectboxes
+ - Extra protection to ensure all components get an auto-generated "key" if not provided when rendering/building.
 
 ## 3.20.0-beta.2
 ### Fixed

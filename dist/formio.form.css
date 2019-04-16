@@ -147,6 +147,14 @@ dialog.fixed {
 .formio-component-submit .submit-fail[disabled] {
   opacity: 1; }
 
+.formio-component-submit button.uploads-in-progress {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
 .form-control.flatpickr-input {
   background-color: #fff; }
 
