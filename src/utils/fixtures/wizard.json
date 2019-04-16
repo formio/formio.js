@@ -1,0 +1,825 @@
+{
+  "_id": "59bbe2ee8c246100079191b5",
+  "modified": "2019-04-16T11:54:03.026Z",
+  "title": "Benefits Enrollment",
+  "name": "benefitsEnrollment",
+  "path": "benefits",
+  "display": "wizard",
+  "action": "",
+  "machineName": "jvfglykvmetpjvt:benefitsEnrollment",
+  "project": "59bbe2ec8c246100079191ae",
+  "created": "2017-09-15T14:25:50.117Z",
+  "components": [
+    {
+      "hideLabel": false,
+      "clearOnHide": false,
+      "key": "panel",
+      "input": false,
+      "title": "Employee Information",
+      "theme": "default",
+      "tableView": false,
+      "components": [
+        {
+          "hideLabel": false,
+          "properties": {
+            "": ""
+          },
+          "input": true,
+          "tableView": true,
+          "label": "Employee",
+          "key": "employee",
+          "placeholder": "Select the employee for these benefits",
+          "data": {
+            "values": [
+              {
+                "value": "",
+                "label": ""
+              }
+            ],
+            "json": "",
+            "url": "",
+            "resource": "59bbe2ed8c246100079191b3",
+            "custom": "",
+            "project": "59bbe2ec8c246100079191ae"
+          },
+          "dataSrc": "resource",
+          "valueProperty": "",
+          "defaultValue": "",
+          "refreshOn": "",
+          "filter": "",
+          "authenticate": false,
+          "template": "<span>{{ item.data.email }}</span>",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false
+          },
+          "type": "select",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "searchField": "data.email__regex",
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        }
+      ],
+      "type": "panel",
+      "breadcrumb": "default",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "properties": {
+        "": ""
+      }
+    },
+    {
+      "hideLabel": false,
+      "properties": {
+        "": ""
+      },
+      "breadcrumb": "default",
+      "input": false,
+      "title": "Health Plan",
+      "theme": "success",
+      "components": [
+        {
+          "hideLabel": false,
+          "input": true,
+          "tableView": true,
+          "label": "Select your health plan",
+          "key": "healthplan",
+          "placeholder": "Choose one",
+          "data": {
+            "values": [
+              {
+                "value": "ppo",
+                "label": "PPO"
+              },
+              {
+                "value": "hsa",
+                "label": "HSA"
+              },
+              {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "json": "",
+            "url": "",
+            "resource": ""
+          },
+          "dataSrc": "values",
+          "valueProperty": "",
+          "defaultValue": "",
+          "refreshOn": "",
+          "filter": "",
+          "authenticate": false,
+          "template": "<span>{{ item.label }}</span>",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false
+          },
+          "type": "select",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "lockKey": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        },
+        {
+          "hideLabel": false,
+          "conditional": {
+            "eq": "hsa",
+            "when": "healthplan",
+            "show": "true"
+          },
+          "tags": [],
+          "type": "number",
+          "validate": {
+            "custom": "",
+            "multiple": "",
+            "integer": "",
+            "step": "0.01",
+            "max": "",
+            "min": "",
+            "required": false
+          },
+          "persistent": true,
+          "protected": false,
+          "defaultValue": 0,
+          "suffix": "per pay period",
+          "prefix": "$",
+          "placeholder": "",
+          "key": "contributionAmount",
+          "label": "Contribution Amount",
+          "inputType": "number",
+          "tableView": true,
+          "input": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        },
+        {
+          "hideLabel": false,
+          "input": true,
+          "tableView": true,
+          "label": "Select your Dental Plan",
+          "key": "selectyourDentalPlan",
+          "placeholder": "Choose one",
+          "data": {
+            "values": [
+              {
+                "value": "dentalHealthCenterPlan",
+                "label": "Dental Health Center Plan"
+              },
+              {
+                "value": "dentalBlueFreedomPlan",
+                "label": "Dental Blue Freedom Plan"
+              },
+              {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "json": "",
+            "url": "",
+            "resource": ""
+          },
+          "dataSrc": "values",
+          "valueProperty": "",
+          "defaultValue": "",
+          "refreshOn": "",
+          "filter": "",
+          "authenticate": false,
+          "template": "<span>{{ item.label }}</span>",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false
+          },
+          "type": "select",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        },
+        {
+          "hideLabel": false,
+          "input": true,
+          "tree": true,
+          "components": [
+            {
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "",
+              "label": "Full Name",
+              "key": "fullName",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "input": true,
+              "tableView": false,
+              "label": "Date of Birth",
+              "key": "dateofBirth",
+              "placeholder": "",
+              "format": "yyyy-MM-dd",
+              "enableDate": true,
+              "enableTime": false,
+              "datepickerMode": "day",
+              "datePicker": {
+                "showWeeks": true,
+                "startingDay": 0,
+                "initDate": "",
+                "minMode": "day",
+                "maxMode": "year",
+                "yearRange": "20",
+                "datepickerMode": "day",
+                "minDate": null,
+                "maxDate": null
+              },
+              "timePicker": {
+                "hourStep": 1,
+                "minuteStep": 1,
+                "showMeridian": true,
+                "readonlyInput": false,
+                "mousewheel": true,
+                "arrowkeys": true
+              },
+              "protected": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "custom": ""
+              },
+              "type": "datetime",
+              "hideLabel": false,
+              "tags": [],
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "defaultDate": "",
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "input": true,
+              "tableView": false,
+              "label": "Gender",
+              "key": "gender1",
+              "placeholder": "",
+              "data": {
+                "values": [
+                  {
+                    "value": "male",
+                    "label": "Male"
+                  },
+                  {
+                    "value": "female",
+                    "label": "Female"
+                  }
+                ],
+                "json": "",
+                "url": "",
+                "resource": ""
+              },
+              "dataSrc": "values",
+              "valueProperty": "",
+              "defaultValue": "",
+              "refreshOn": "",
+              "filter": "",
+              "authenticate": false,
+              "template": "<span>{{ item.label }}</span>",
+              "multiple": false,
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false
+              },
+              "type": "select",
+              "hideLabel": false,
+              "tags": [],
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "999-99-9999",
+              "label": "Social Security #",
+              "key": "socialSecurity",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            }
+          ],
+          "tableView": false,
+          "label": "Participants",
+          "key": "participants",
+          "protected": false,
+          "persistent": true,
+          "type": "datagrid",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        }
+      ],
+      "type": "panel",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": "",
+        "eq": ""
+      },
+      "clearOnHide": false,
+      "tableView": false
+    },
+    {
+      "hideLabel": false,
+      "properties": {
+        "": ""
+      },
+      "breadcrumb": "default",
+      "conditional": {
+        "eq": "",
+        "when": "",
+        "show": ""
+      },
+      "tags": [],
+      "type": "panel",
+      "components": [
+        {
+          "hideLabel": false,
+          "lockKey": true,
+          "conditional": {
+            "eq": "",
+            "when": null,
+            "show": ""
+          },
+          "tags": [],
+          "type": "select",
+          "validate": {
+            "required": false
+          },
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "multiple": false,
+          "template": "<span>{{ item.label }}</span>",
+          "authenticate": false,
+          "filter": "",
+          "refreshOn": "",
+          "defaultValue": "",
+          "valueProperty": "",
+          "dataSrc": "values",
+          "data": {
+            "resource": "",
+            "url": "",
+            "json": "",
+            "values": [
+              {
+                "label": "1 x Salary",
+                "value": "1XSalary"
+              },
+              {
+                "label": "2 x Salary",
+                "value": "2XSalary"
+              },
+              {
+                "label": "3 x Salary",
+                "value": "3XSalary"
+              },
+              {
+                "label": "4 x Salary",
+                "value": "4XSalary"
+              },
+              {
+                "label": "5 x Salary",
+                "value": "5XSalary"
+              },
+              {
+                "label": "None",
+                "value": "none"
+              }
+            ]
+          },
+          "placeholder": "Select an insurance plan",
+          "key": "supplementalPlan",
+          "label": "Supplemental Insurance",
+          "tableView": false,
+          "input": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        },
+        {
+          "hideLabel": false,
+          "conditional": {
+            "eq": "",
+            "when": null,
+            "show": ""
+          },
+          "tags": [],
+          "type": "number",
+          "validate": {
+            "custom": "",
+            "multiple": "",
+            "integer": "",
+            "step": "1000",
+            "max": "",
+            "min": "",
+            "required": false
+          },
+          "persistent": true,
+          "protected": false,
+          "defaultValue": 0,
+          "suffix": "USD",
+          "prefix": "$",
+          "placeholder": "Enter an amount",
+          "key": "dependentLifeInsurance",
+          "label": "Dependent Life Insurance",
+          "inputType": "number",
+          "tableView": false,
+          "input": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        },
+        {
+          "hideLabel": false,
+          "input": true,
+          "tree": true,
+          "components": [
+            {
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "",
+              "label": "Full Name",
+              "key": "fullName1",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "",
+              "label": "Relationship",
+              "key": "relationship",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "input": true,
+              "tableView": false,
+              "inputType": "number",
+              "label": "Percent of Benefit",
+              "key": "percentofBenefit",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "%",
+              "defaultValue": 0,
+              "protected": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "min": "",
+                "max": "",
+                "step": "1",
+                "integer": "",
+                "multiple": "",
+                "custom": ""
+              },
+              "type": "number",
+              "hideLabel": false,
+              "tags": [],
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "hidden": false,
+              "clearOnHide": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            }
+          ],
+          "tableView": false,
+          "label": "Beneficiaries",
+          "key": "beneficiaries",
+          "protected": false,
+          "persistent": true,
+          "type": "datagrid",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "hidden": false,
+          "clearOnHide": true,
+          "autofocus": false
+        }
+      ],
+      "theme": "info",
+      "title": "Life Insurance",
+      "input": false,
+      "clearOnHide": false,
+      "tableView": false
+    },
+    {
+      "hideLabel": false,
+      "conditional": {
+        "eq": "",
+        "when": null,
+        "show": ""
+      },
+      "tags": [],
+      "type": "panel",
+      "components": [
+        {
+          "hideLabel": false,
+          "conditional": {
+            "eq": "",
+            "when": null,
+            "show": ""
+          },
+          "tags": [],
+          "type": "content",
+          "html": "<p>I certify below that I have completed this form to the best of my knowledge, and I understand the following:</p>\n\n<ul>\n\t<li>My coverage elections on this form cannot be revoked or modified during the year unless I have a qualifying change in status as defined by the IRS; I may, however, change my coverage elections during the next open enrollment period.</li>\n\t<li>My pay will be reduced by the amount of any required contributions noted for the coverages elected where the contributions are pre-tax.</li>\n\t<li>I acknowledge receiving a copy of the Faculty &amp; Staff Benefits Handbook for my employee classification and reading the descriptions of the benefit plans in which I am enrolling. I also understand any limitations or restrictions on coverage or benefits under these benefit plans as described in the Faculty &amp; Staff Benefits Handbook. If I have enrolled in a Health Care or Dependent Care Flexible Spending Account, I agree to the provisions printed on the reverse side of this form.</li>\n</ul>\n\n<p>I give permission to the health plan I select to obtain and/or examine my medical records (and/or those of my dependent(s)) from any health care practitioner or institution in which care is provided while a member, to the extent permitted by law; and I (we) understand the benefits and agree to the provisions as described in the Plan document.</p>\n",
+          "input": false
+        },
+        {
+          "conditional": {
+            "eq": "",
+            "when": null,
+            "show": ""
+          },
+          "tags": [],
+          "hideLabel": true,
+          "type": "signature",
+          "validate": {
+            "required": false
+          },
+          "persistent": true,
+          "protected": false,
+          "maxWidth": "2.5",
+          "minWidth": "0.5",
+          "backgroundColor": "rgb(245,245,235)",
+          "penColor": "black",
+          "height": "150px",
+          "width": "100%",
+          "footer": "Sign above",
+          "placeholder": "",
+          "key": "signature1",
+          "label": "Signature",
+          "tableView": false,
+          "input": true,
+          "hidden": false,
+          "clearOnHide": true
+        }
+      ],
+      "theme": "default",
+      "title": "Signature",
+      "input": false,
+      "clearOnHide": false,
+      "tableView": false
+    }
+  ],
+  "owner": "5a70fe5625671b00013042f6",
+  "submissionAccess": [
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "create_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "read_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "update_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "delete_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "create_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "read_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "update_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "delete_own"
+    }
+  ],
+  "access": [
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af",
+        "59bbe2ec8c246100079191b0",
+        "59bbe2ec8c246100079191b1"
+      ],
+      "type": "read_all"
+    }
+  ],
+  "tags": [
+    "common"
+  ],
+  "type": "form",
+  "_vid": 517,
+  "revisions": "original",
+  "properties": {
+    "testing": "one"
+  }
+}

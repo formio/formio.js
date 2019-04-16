@@ -10,6 +10,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import round from 'lodash/round';
 import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
+import findIndex from 'lodash/findIndex';
 import jsonpatch from 'fast-json-patch';
 
 /**
@@ -188,6 +189,37 @@ export function findComponents(components, query) {
   return searchComponents(components, query);
 }
 
+let possibleFind = null;
+let possiblePath = [];
+let unknownCounter = {};
+const checkComponent = function(component, key, path) {
+  // Search for components without a key as well.
+  if (!component.key) {
+    if (!unknownCounter.hasOwnProperty(component.type)) {
+      unknownCounter[component.type] = 0;
+    }
+    unknownCounter[component.type]++;
+    if (key === component.type + unknownCounter[component.type]) {
+      possibleFind = component;
+      possiblePath = clone(path);
+    }
+  }
+  else if (possibleFind && (component.key === possibleFind.key)) {
+    const nextCount = component.key.match(/([0-9]+)$/g);
+    if (nextCount) {
+      unknownCounter[component.type] = parseInt(nextCount.pop(), 10);
+      possibleFind = null;
+      possiblePath = [];
+    }
+  }
+
+  if (component.key === key) {
+    return true;
+  }
+
+  return false;
+};
+
 /**
  * This function will find a component in a form and return the component AND THE PATH to the component in the form.
  *
@@ -195,16 +227,26 @@ export function findComponents(components, query) {
  * @param key
  * @param fn
  * @param path
- * @returns {*}
+ * @returns boolean - If the component was found.
  */
 export function findComponent(components, key, path, fn) {
-  if (!components) return;
-  path = path || [];
-
-  if (!key) {
-    return fn(components);
+  if (!components || !key) {
+    return false;
+  }
+  if (typeof path === 'function') {
+    fn = path;
+    path = [];
   }
 
+  path = path || [];
+  if (!path.length) {
+    // Reset search params.
+    possibleFind = null;
+    possiblePath = [];
+    unknownCounter = {};
+  }
+
+  let found = false;
   components.forEach(function(component, index) {
     var newPath = path.slice();
     newPath.push(index);
@@ -215,8 +257,14 @@ export function findComponent(components, key, path, fn) {
       component.columns.forEach(function(column, index) {
         var colPath = newPath.slice();
         colPath.push(index);
-        colPath.push('components');
-        findComponent(column.components, key, colPath, fn);
+        column.type = 'column';
+        if (checkComponent(column, key, colPath)) {
+          found = true;
+          fn(column, colPath);
+        }
+        else if (findComponent(column.components, key, colPath.concat(['components']), fn)) {
+          found = true;
+        }
       });
     }
 
@@ -228,21 +276,40 @@ export function findComponent(components, key, path, fn) {
         row.forEach(function(column, index) {
           var colPath = rowPath.slice();
           colPath.push(index);
-          colPath.push('components');
-          findComponent(column.components, key, colPath, fn);
+          column.type = 'cell';
+          if (checkComponent(column, key, colPath)) {
+            found = true;
+            fn(column, colPath);
+          }
+          else if (findComponent(column.components, key, colPath.concat(['components']), fn)) {
+            found = true;
+          }
         });
       });
     }
 
-    if (component.hasOwnProperty('components') && Array.isArray(component.components)) {
-      newPath.push('components');
-      findComponent(component.components, key, newPath, fn);
+    if (
+      component.hasOwnProperty('components') && Array.isArray(component.components) &&
+      findComponent(component.components, key, newPath.concat(['components']), fn)
+    ) {
+      found = true;
     }
 
-    if (component.key === key) {
+    // Check this component.
+    if (checkComponent(component, key, newPath)) {
+      found = true;
       fn(component, newPath);
     }
   });
+
+  // If the component was not found BUT there was a possibility then return it.
+  if (!path.length && !found && possibleFind) {
+    found = true;
+    fn(possibleFind, possiblePath);
+  }
+
+  // Return if this if found.
+  return found;
 }
 
 /**
@@ -261,23 +328,23 @@ export function removeComponent(components, path) {
 }
 
 export function generateFormChange(type, data) {
-  let change;
+  let change = null;
+  const schema = data.schema;
   switch (type) {
     case 'add':
       change = {
         op: 'add',
-        key: data.component.key,
-        container: data.parent.key, // Parent component
-        path: data.path, // Path to container within parent component.
-        index: data.index, // Index of component in parent container.
-        component: data.component
+        key: schema.key,
+        container: data.parent.key,
+        index: findIndex(data.parent.components, { id: data.id }),
+        component: schema
       };
       break;
     case 'edit':
       change = {
         op: 'edit',
-        key: data.originalComponent.key,
-        patches: jsonpatch.compare(data.originalComponent, data.component)
+        key: schema.key,
+        patches: jsonpatch.compare(data.originalComponent, schema)
       };
 
       // Don't save if nothing changed.
@@ -288,13 +355,21 @@ export function generateFormChange(type, data) {
     case 'remove':
       change = {
         op: 'remove',
-        key: data.component.key,
+        key: schema.key,
       };
       break;
   }
 
   return change;
 }
+
+// Get the parent component provided a component key.
+const getParent = function(form, key, fn) {
+  if (!findComponent(form.components, key, null, fn)) {
+    // Return the root form if no parent is found so it will add the component to the root form.
+    fn(form);
+  }
+};
 
 export function applyFormChanges(form, changes) {
   const failed = [];
@@ -303,13 +378,7 @@ export function applyFormChanges(form, changes) {
     switch (change.op) {
       case 'add':
         var newComponent = change.component;
-
-        // Find the container to set the component in.
-        findComponent(form.components, change.container, null, function(parent) {
-          if (!change.container) {
-            parent = form;
-          }
-
+        getParent(form, change.container, function(parent) {
           // A move will first run an add so remove any existing components with matching key before inserting.
           findComponent(form.components, change.key, null, function(component, path) {
             // If found, use the existing component. (If someone else edited it, the changes would be here)
@@ -318,8 +387,7 @@ export function applyFormChanges(form, changes) {
           });
 
           found = true;
-          var container = get(parent, change.path);
-          container.splice(change.index, 0, newComponent);
+          parent.components.splice(change.index, 0, newComponent);
         });
         break;
       case 'remove':

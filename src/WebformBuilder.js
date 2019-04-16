@@ -502,7 +502,7 @@ export default class WebformBuilder extends Webform {
         return;
       }
       event.preventDefault();
-      const originalComponent = component.component;
+      const originalComponent = component.schema;
       component.isNew = false;
       //for JSON Edit use value in 'componentJson' field as JSON of component
       if (isJsonEdit) {
