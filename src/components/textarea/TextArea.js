@@ -190,7 +190,12 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.wysiwyg, () => this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) => {
       if (this.component.isUploadEnabled) {
-        quill.getModule('toolbar').addHandler('image', this.imageHandler);
+        const _this = this;
+        quill.getModule('toolbar').addHandler('image', function() {
+          //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+          //we also need current component instance as we use some fields and methods from it as well
+          _this.imageHandler.call(this, _this);
+        } );
       }
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
@@ -207,7 +212,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  imageHandler() {
+  imageHandler(componentInstance) {
     let fileInput = this.container.querySelector('input.ql-image[type=file]');
 
     if (fileInput == null) {
@@ -225,8 +230,8 @@ export default class TextAreaComponent extends TextFieldComponent {
         }
 
         this.quill.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
-        this.root.formio
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = componentInstance.component;
+        componentInstance.root.formio
           .uploadFile(
             uploadStorage,
             files[0],
@@ -237,7 +242,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadOptions
           )
           .then(result => {
-            return this.root.formio.downloadFile(result);
+            return componentInstance.root.formio.downloadFile(result);
           })
           .then(result => {
             this.quill.enable(true);
