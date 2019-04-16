@@ -53,7 +53,7 @@ export default class Components {
           options.unknown[component.type].count++;
           component.key = component.type + options.unknown[component.type].count;
         }
-        while (!options.keys.hasOwnProperty(component.key));
+        while (options.keys.hasOwnProperty(component.key));
         options.unknown.__keys[component.key] = true;
       }
       // Alter previously defined dynamic keys if a conflict exists.
@@ -69,7 +69,7 @@ export default class Components {
             options.unknown[component.type].count++;
             prevComponent.key = component.type + options.unknown[component.type].count;
           }
-          while (!options.keys.hasOwnProperty(prevComponent.key));
+          while (options.keys.hasOwnProperty(prevComponent.key));
           options.keys[prevComponent.key] = prevComponent;
           options.unknown.__keys[prevComponent.key] = true;
           delete options.unknown.__keys[component.key];
