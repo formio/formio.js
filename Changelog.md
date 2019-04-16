@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Fixed
  - Tagpad: sending excess headers on loading background image by URL 
+ - WYSIWYG image upload being broken after lazy load change
 
 ## 3.20.0-beta.2
 ### Fixed
