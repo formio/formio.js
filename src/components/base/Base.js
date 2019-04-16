@@ -1760,10 +1760,14 @@ export default class BaseComponent extends Component {
         element.style.visibility = 'visible';
         element.style.position = 'relative';
       }
-      else if (this.parent && this.parent.parent && this.parent.parent.component.type === 'columns' &&
-                this.parent.parent.component.autoAdjust) {
-                  element.style.visibility = 'hidden';
-                  element.style.position = 'relative';
+      else if (
+        this.parent &&
+        this.parent.parent &&
+        (this.parent.parent.component.type === 'columns') &&
+        this.parent.parent.component.autoAdjust
+      ) {
+        element.style.visibility = 'hidden';
+        element.style.position = 'relative';
       }
       else {
         element.setAttribute('hidden', true);
