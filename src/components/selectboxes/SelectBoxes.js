@@ -112,7 +112,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     this.updateValue(flags);
   }
 
-  onChange(flags, fromRoot) {
+  checkValidity(data, dirty, rowData) {
     const maxCount = this.component.validate.maxSelectedCount;
 
     if (maxCount) {
@@ -133,14 +133,16 @@ export default class SelectBoxesComponent extends RadioComponent {
           ? this.component.maxSelectedCountMessage
           : `You can only select up to ${maxCount} items to continue.`;
         this.setCustomValidity(message);
+        return false;
       }
       else {
         this.inputs.forEach(item => {
           item.disabled = false;
         });
-        super.onChange(flags, fromRoot);
       }
     }
+
+    return super.checkValidity(data, dirty, rowData);
   }
 
   get validationValue() {

@@ -152,7 +152,7 @@ export default {
       message(component, setting) {
         return component.component.maxSelectedCountMessage
           ? component.component.maxSelectedCountMessage
-          : component.t(component.errorMessage('manSelectedCount'), {
+          : component.t(component.errorMessage('maxSelectedCount'), {
               minCount: parseFloat(setting),
               data: component.data
             });
