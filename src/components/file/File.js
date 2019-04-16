@@ -795,6 +795,42 @@ export default class FileComponent extends BaseComponent {
         this.uploadStatusList.appendChild(uploadStatus);
 
         if (fileUpload.status !== 'error') {
+          // Track uploads in progress.
+          if (fileService.uploadsInProgress === undefined) {
+            const cssClass = 'uploads-in-progress';
+            var submitButton = this.root.element
+                .querySelector('.formio-component-submit')
+                .querySelector('button');
+            var array = new Array();
+            fileService.uploadsInProgress = {
+              array: array,
+              add: function(item) {
+                if (cssClass && (array.length === 0)) {
+                  submitButton.classList.add(cssClass);
+                }
+                array.push(item);
+              },
+              remove: function(item) {
+                array.splice(array.indexOf(item), 1);
+                if (cssClass && (array.length === 0)) {
+                  submitButton.classList.remove(cssClass);
+                }
+              },
+              report: function() {
+                const n = array.length;
+                var msg = `Uploads in progress: ${n}`;
+                if (n>0) {
+                  const keys = array.map(x => x.component.key);
+                  msg += ` (${keys.join(', ')})`;
+                }
+                console.log(msg);
+              }
+            };
+          }
+          const uploadsInProgress = fileService.uploadsInProgress;
+          uploadsInProgress.add(this);
+          //uploadsInProgress.report();
+          //
           if (this.component.privateDownload) {
             file.private = true;
           }
@@ -820,6 +856,10 @@ export default class FileComponent extends BaseComponent {
               }
               files.push(fileInfo);
               this.setValue(this.dataValue);
+              // Track uploads in progress.
+              uploadsInProgress.remove(this);
+              //uploadsInProgress.report();
+              //
               this.triggerChange();
             })
             .catch(response => {
