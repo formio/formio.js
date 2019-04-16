@@ -178,7 +178,7 @@ export default class Tagpad extends NestedComponent {
       this.backgroundReady.resolve();
     }
     else if (this.component.imageUrl) {
-      Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true })
+      Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
         .then(image => {
           this.background.innerHTML = image;
           this.backgroundReady.resolve();
