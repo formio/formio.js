@@ -190,7 +190,12 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.wysiwyg, () => this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) => {
       if (this.component.isUploadEnabled) {
-        quill.getModule('toolbar').addHandler('image', this.imageHandler);
+        const _this = this;
+        quill.getModule('toolbar').addHandler('image', function() {
+          //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+          //we also need current component instance as we use some fields and methods from it as well
+          _this.imageHandler.call(_this, this);
+        } );
       }
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
@@ -207,8 +212,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  imageHandler() {
-    let fileInput = this.container.querySelector('input.ql-image[type=file]');
+  imageHandler(quillInstance) {
+    let fileInput = quillInstance.container.querySelector('input.ql-image[type=file]');
 
     if (fileInput == null) {
       fileInput = document.createElement('input');
@@ -217,14 +222,14 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.classList.add('ql-image');
       fileInput.addEventListener('change', () => {
         const files = fileInput.files;
-        const range = this.quill.getSelection(true);
+        const range = quillInstance.quill.getSelection(true);
 
         if (!files || !files.length) {
           console.warn('No files selected');
           return;
         }
 
-        this.quill.enable(false);
+        quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
         this.root.formio
           .uploadFile(
@@ -240,9 +245,9 @@ export default class TextAreaComponent extends TextFieldComponent {
             return this.root.formio.downloadFile(result);
           })
           .then(result => {
-            this.quill.enable(true);
+            quillInstance.quill.enable(true);
             const Delta = Quill.import('delta');
-            this.quill.updateContents(new Delta()
+            quillInstance.quill.updateContents(new Delta()
                 .retain(range.index)
                 .delete(range.length)
                 .insert({ image: result.url })
@@ -251,10 +256,10 @@ export default class TextAreaComponent extends TextFieldComponent {
           }).catch(error => {
           console.warn('Quill image upload failed');
           console.warn(error);
-          this.quill.enable(true);
+          quillInstance.quill.enable(true);
         });
       });
-      this.container.appendChild(fileInput);
+      quillInstance.container.appendChild(fileInput);
     }
     fileInput.click();
   }
