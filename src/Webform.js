@@ -869,7 +869,7 @@ export default class Webform extends NestedComponent {
   }
 
   build(element) {
-    if (element) {
+    if (element || this.element) {
       return this.ready.then(() => {
         element = element || this.element;
         super.build(element);
