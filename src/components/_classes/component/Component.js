@@ -395,7 +395,8 @@ export default class Component extends Element {
   }
 
   init() {
-    // Can be overridden
+    // Attach the refresh on events.
+    this.attachRefreshOn();
   }
 
   destroy() {
@@ -762,9 +763,6 @@ export default class Component extends Element {
         title: title.replace(/(?:\r\n|\r|\n)/g, '<br />'),
       });
     });
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
 
     // Attach logic.
     this.attachLogic();
