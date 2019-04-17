@@ -1212,7 +1212,7 @@ export default class Formio {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
       var authClient = Okta;
-      var accessToken = authClient.tokenManager.get('accessToken')
+      authClient.tokenManager.get('accessToken')
         .then(accessToken => {
           if (accessToken) {
             resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
