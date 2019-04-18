@@ -75,8 +75,12 @@ export default class NumberComponent extends Input {
     return NumberComponent.schema();
   }
 
-  get emptyValue() {
-    return '';
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === 0) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
   }
 
   parseNumber(value) {
@@ -121,7 +125,7 @@ export default class NumberComponent extends Input {
     const val = this.refs.input[index].value;
 
     if (!val) {
-      return '';
+      return undefined;
     }
 
     return this.parseNumber(val);
