@@ -725,8 +725,21 @@ export default class Sketchpad extends Base {
     backgroundSvg = backgroundSvg[0];
     if (this.useBackgroundDimensions) {
       const viewBox = backgroundSvg.getAttribute('viewBox');
-      //TODO implement the case when viewBox is not defined: use 'x', 'y', 'width' and 'height' attributes from SVG element (or use 0, 0, 640, 480 relatively if any is not defined)
-      const [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(parseFloat);
+      let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+      if (viewBox) {
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(parseFloat);
+      }
+      else {
+        //if viewBox is not defined, use 'x', 'y', 'width' and 'height' SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+          { attribute: 'x', defaultValue: 0 },
+          { attribute: 'y', defaultValue: 0 },
+          { attribute: 'width', defaultValue: 640 },
+          { attribute: 'height', defaultValue: 480 }
+        ].map(dimension => {
+          return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+        });
+      }
       //set  dimensions to width and height from viewBox of background svg
       this.dimensions = {
         width: viewBoxWidth,
