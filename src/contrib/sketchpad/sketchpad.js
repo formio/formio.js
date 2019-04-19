@@ -419,19 +419,18 @@ export default class Sketchpad extends Base {
     this.editSketchpad.background.container = this.ce('div', {
       class: 'formio-edit-sketchpad-background'
     });
+    //init two instance
+    this.two = new Two({
+      type: Two.Types.svg,
+    }).appendTo(this.editSketchpad.canvas.container);
+    //init canvas SVG variable
+    this.editSketchpad.canvas.svg = this.two.renderer.domElement;
+    this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
 
     this.addBackground();
     this.backgroundReady.promise.then(() => {
-      this.two = new Two({
-        type: Two.Types.svg,
-        width: this.dimensions.width,
-        height: this.dimensions.height
-      }).appendTo(this.editSketchpad.canvas.container);
-
-      this.editSketchpad.canvas.svg = this.two.renderer.domElement;
-      this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
+      this.backgroundReady.isReady = true;
       this.attach();
-
       // Disable if needed.
       if (this.shouldDisable) {
         this.disabled = true;
@@ -752,7 +751,6 @@ export default class Sketchpad extends Base {
         minX: viewBoxMinX,
         minY: viewBoxMinY
       };
-      //TODO make sure it's ok when background image has minX minY not equal zero (positive, negative)
       this.zoomInfo.canvasViewBox.default = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
     }
     else {
@@ -795,6 +793,7 @@ export default class Sketchpad extends Base {
         height: height
       };
     }
+    //set current zoom to default
     this.zoomInfo.canvasViewBox.current = _.cloneDeep(this.zoomInfo.canvasViewBox.default);
     this.zoomInfo.backgroundViewBox.current = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
 
@@ -803,19 +802,24 @@ export default class Sketchpad extends Base {
     this.editSketchpad.background.container.style['min-width'] = `${this.dimensions.width}px`;
     this.editSketchpad.background.container.style['min-height'] = `${this.dimensions.height}px`;
 
+    //set background containers content to SVG markup
     this.viewSketchpad.background.container.innerHTML = svgMarkup;
     this.editSketchpad.background.container.innerHTML = svgMarkup;
+    //init svg variables
     this.viewSketchpad.background.svg = this.viewSketchpad.background.container.firstElementChild;
     this.editSketchpad.background.svg = this.editSketchpad.background.container.firstElementChild;
 
-    //TODO make sure doesn't need to do the same for canvas in case of useBackgroundDimensions
+    //set background image viewBox
     const bgViewBox = this.zoomInfo.backgroundViewBox.current;
     this.viewSketchpad.background.svg.setAttribute('viewBox', `${bgViewBox.minX} ${bgViewBox.minY} ${bgViewBox.width} ${bgViewBox.height}`);
     this.editSketchpad.background.svg.setAttribute('viewBox', `${bgViewBox.minX} ${bgViewBox.minY} ${bgViewBox.width} ${bgViewBox.height}`);
+    //set canvas image viewBox (necessary at least for useBackgroundDimensions when background image has minX and minY other that 0
+    const canvasViewBox = this.zoomInfo.canvasViewBox.current;
+    //this.viewSketchpad.canvas.svg.setAttribute('viewBox', `${canvasViewBox.minX} ${canvasViewBox.minY} ${canvasViewBox.width} ${canvasViewBox.height}`);
+    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${canvasViewBox.minX} ${canvasViewBox.minY} ${canvasViewBox.width} ${canvasViewBox.height}`);
 
-    //set width and height of SVG element to dimensions
-    this.editSketchpad.background.svg.setAttribute('width', `${this.dimensions.width}px`);
-    this.editSketchpad.background.svg.setAttribute('height', `${this.dimensions.height}px`);
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
   }
 
   clear() {
@@ -884,7 +888,7 @@ export default class Sketchpad extends Base {
   }
 
   setValue(value) {
-    if (!this.two) {
+    if (!this.backgroundReady.isReady || !this.two) {
       return;
     }
     this.draw(value);
@@ -997,8 +1001,8 @@ export default class Sketchpad extends Base {
     this.zoomInfo.backgroundViewBox.current.minY = this.zoomInfo.backgroundViewBox.current.minY < this.zoomInfo.backgroundViewBox.default.minY ? this.zoomInfo.backgroundViewBox.default.minY : this.zoomInfo.backgroundViewBox.current.minY;
     //don't let offset go out of SVG on the right and on the bottom
     //canvas
-    const canvasMaxOffsetX = this.zoomInfo.canvasViewBox.default.width - this.zoomInfo.canvasViewBox.current.width,
-      canvasMaxOffsetY = this.zoomInfo.canvasViewBox.default.height - this.zoomInfo.canvasViewBox.current.height;
+    const canvasMaxOffsetX = this.zoomInfo.canvasViewBox.default.width - this.zoomInfo.canvasViewBox.current.width + this.zoomInfo.canvasViewBox.default.minX,
+      canvasMaxOffsetY = this.zoomInfo.canvasViewBox.default.height - this.zoomInfo.canvasViewBox.current.height + this.zoomInfo.canvasViewBox.default.minY;
     this.zoomInfo.canvasViewBox.current.minX = this.zoomInfo.canvasViewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.canvasViewBox.current.minX;
     this.zoomInfo.canvasViewBox.current.minY = this.zoomInfo.canvasViewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.canvasViewBox.current.minY;
     //background
