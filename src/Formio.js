@@ -1211,29 +1211,31 @@ export default class Formio {
     return new Promise((resolve, reject) => {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = new Okta(options);
-      var accessToken = authClient.tokenManager.get('accessToken');
-      if (accessToken) {
-        resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
-      }
-      else if (location.hash) {
-        authClient.token.parseFromUrl()
-          .then(token => {
-            authClient.tokenManager.add('accessToken', token);
-            resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
-          })
-          .catch(err => {
-            console.warn(err);
-            reject(err);
-          });
-      }
-      else {
-        authClient.token.getWithRedirect({
-          responseType: 'token',
-          scopes: options.scopes
+      var authClient = Okta;
+      var accessToken = authClient.tokenManager.get('accessToken')
+        .then(accessToken => {
+          if (accessToken) {
+            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
+          }
+          else if (location.hash) {
+            authClient.token.parseFromUrl()
+              .then(token => {
+                authClient.tokenManager.add('accessToken', token);
+                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
+              })
+              .catch(err => {
+                console.warn(err);
+                reject(err);
+              });
+          }
+          else {
+            authClient.token.getWithRedirect({
+              responseType: 'token',
+              scopes: options.scopes
+            });
+            resolve(false);
+          }
         });
-        resolve(false);
-      }
     });
   }
 
