@@ -51,6 +51,56 @@ export default class Sketchpad extends Base {
     };
   }
 
+  /**
+   * Builds the component.
+   */
+  build(state) {
+    state = state || {};
+    this.calculatedValue = state.calculatedValue;
+
+    this.createElement();
+
+    this.createLabel(this.element);
+
+    this.viewSketchpad.canvas.container = this.ce('div', { class: 'formio-view-sketchpad-canvas' });
+    this.viewSketchpad.background.container = this.ce('div', { class: 'formio-view-sketchpad-background' });
+    this.addEventListener(this.viewSketchpad.canvas.container, 'click', this.editSvg.bind(this));
+    this.element.appendChild(this.ce('div', {
+      class: 'formio-view-sketchpad-container'
+    }, [
+      this.viewSketchpad.canvas.container,
+      this.viewSketchpad.background.container
+    ]));
+    this.editSketchpad.canvas.container = this.ce('div', { class: 'formio-edit-sketchpad-canvas' });
+    this.editSketchpad.background.container = this.ce('div', {
+      class: 'formio-edit-sketchpad-background'
+    });
+    //init two instance
+    this.two = new Two({
+      type: Two.Types.svg,
+    }).appendTo(this.editSketchpad.canvas.container);
+    //init canvas SVG variable
+    this.editSketchpad.canvas.svg = this.two.renderer.domElement;
+    this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
+
+    this.addBackground();
+    this.backgroundReady.promise.then(() => {
+      this.backgroundReady.isReady = true;
+      this.attach();
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
+
+      // Restore the value.
+      this.restoreValue();
+
+      this.autofocus();
+
+      this.attachLogic();
+    });
+  }
+
   getValue() {
     return this.dataValue;
   }
@@ -385,56 +435,6 @@ export default class Sketchpad extends Base {
         title: 'Clear All'
       }
     ];
-  }
-
-  /**
-   * Builds the component.
-   */
-  build(state) {
-    state = state || {};
-    this.calculatedValue = state.calculatedValue;
-
-    this.createElement();
-
-    this.createLabel(this.element);
-
-    this.viewSketchpad.canvas.container = this.ce('div', { class: 'formio-view-sketchpad-canvas' });
-    this.viewSketchpad.background.container = this.ce('div', { class: 'formio-view-sketchpad-background' });
-    this.addEventListener(this.viewSketchpad.canvas.container, 'click', this.editSvg.bind(this));
-    this.element.appendChild(this.ce('div', {
-      class: 'formio-view-sketchpad-container'
-    }, [
-      this.viewSketchpad.canvas.container,
-      this.viewSketchpad.background.container
-    ]));
-    this.editSketchpad.canvas.container = this.ce('div', { class: 'formio-edit-sketchpad-canvas' });
-    this.editSketchpad.background.container = this.ce('div', {
-      class: 'formio-edit-sketchpad-background'
-    });
-    //init two instance
-    this.two = new Two({
-      type: Two.Types.svg,
-    }).appendTo(this.editSketchpad.canvas.container);
-    //init canvas SVG variable
-    this.editSketchpad.canvas.svg = this.two.renderer.domElement;
-    this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
-
-    this.addBackground();
-    this.backgroundReady.promise.then(() => {
-      this.backgroundReady.isReady = true;
-      this.attach();
-      // Disable if needed.
-      if (this.shouldDisable) {
-        this.disabled = true;
-      }
-
-      // Restore the value.
-      this.restoreValue();
-
-      this.autofocus();
-
-      this.attachLogic();
-    });
   }
 
   editSvg() {
