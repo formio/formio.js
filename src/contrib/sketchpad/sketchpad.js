@@ -704,6 +704,7 @@ export default class Sketchpad extends Base {
     //TODO make sure component works without background
   }
 
+  /* eslint-disable max-statements */
   setBackgroundImage(svgMarkup) {
     const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'text/xml');
     let backgroundSvg = xmlDoc.getElementsByTagName('svg');
@@ -800,6 +801,7 @@ export default class Sketchpad extends Base {
     //set dimensions for Two.js instance
     this.setEditorSize(this.dimensions.width, this.dimensions.height);
   }
+  /* eslint-enable max-statements */
 
   clear() {
     this.two.clear();
@@ -957,10 +959,9 @@ export default class Sketchpad extends Base {
 
   updateSvgViewBox() {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
-    /* eslint-disable max-len */
-    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${this.zoomInfo.viewBox.current.minX} ${this.zoomInfo.viewBox.current.minY} ${this.zoomInfo.viewBox.current.width} ${this.zoomInfo.viewBox.current.height}`);
-    this.editSketchpad.background.svg.setAttribute('viewBox', `${this.zoomInfo.viewBox.current.minX} ${this.zoomInfo.viewBox.current.minY} ${this.zoomInfo.viewBox.current.width} ${this.zoomInfo.viewBox.current.height}`);
-    /* eslint-enable max-len */
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.editSketchpad.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
   }
 
   setTotalMultiplier(multiplier) {
@@ -975,5 +976,7 @@ export default class Sketchpad extends Base {
     //change width of background svg so it matches editor SVG
     this.editSketchpad.background.svg.style.width = width;
     this.editSketchpad.background.svg.style.height = height;
+    this.editSketchpad.background.container.style['min-width'] = width;
+    this.editSketchpad.background.container.style['min-height'] = height;
   }
 }
