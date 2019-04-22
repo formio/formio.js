@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Sketchpad: Ability to use dimensions from background SVG instead of providing ```component.width``` and ```component.height```
+ - Sketchpad: ```defaultZoom``` setting
+
 ## 3.20.0-beta.3
 ### Fixed
  - Problem where form builder would not fire any events when moving components.
