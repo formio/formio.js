@@ -23,6 +23,24 @@ export default [
     weight: 51
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'filter',
+    label: 'Filter Query',
+    description: 'The filter query for results.',
+    tooltip: 'Use this to provide additional filtering using query parameters.',
+    weight: 51.3
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'sort',
+    label: 'Sort Query',
+    description: 'The sort query for results.',
+    tooltip: 'Use this to provide additional sorting using query parameters.',
+    weight: 51.6
+  },
+  {
     type: 'tags',
     input: true,
     key: 'searchFields',
