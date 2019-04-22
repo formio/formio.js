@@ -550,7 +550,17 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => {
+      if (!value) {
+        return value;
+      }
+      //provide possibility to override CSS classes in templates
+      switch (type) {
+        case 'class':
+          return Templates.current.hasOwnProperty('cssClasses') && Templates.current.cssClasses[value.toString()] ? Templates.current.cssClasses[value.toString()] : value;
+      }
+      return value;
+    };
   }
 
   getTemplate(names, modes) {
