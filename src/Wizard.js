@@ -124,6 +124,7 @@ export default class Wizard extends Webform {
     return new Promise((resolve, reject) => {
       this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
         if (err) {
+          this.showErrors(err, true);
           reject(err);
         }
 
