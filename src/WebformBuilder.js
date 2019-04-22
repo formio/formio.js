@@ -56,7 +56,7 @@ export default class WebformBuilder extends Webform {
               { attr: 'style', value: 'text-align:center;' },
               { attr: 'role', value: 'alert' }
             ],
-            content: 'Drag and Drop a form component'
+            content: this.t('Drag and Drop a form component')
           }
         ];
       }
@@ -343,7 +343,7 @@ export default class WebformBuilder extends Webform {
           class: 'col col-sm-6'
         }, this.ce('p', {
           class: 'lead'
-        }, `${componentInfo.title} Component`)),
+        }, `${this.t(componentInfo.title)} ${this.t('Component')}`)),
         this.ce('div', {
           class: 'col col-sm-6'
         }, [
@@ -980,7 +980,7 @@ export default class WebformBuilder extends Webform {
     if (!this.getComponents().length) {
       this.submitButton = this.addComponent({
         type: 'button',
-        label: 'Submit',
+        label: this.t('Submit'),
         key: 'submit',
         size: 'md',
         block: false,
