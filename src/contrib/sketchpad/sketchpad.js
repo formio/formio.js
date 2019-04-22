@@ -10,11 +10,15 @@ export default class Sketchpad extends Base {
       type: 'sketchpad',
       label: 'Sketchpad',
       key: 'sketchpad',
+      defaultZoom: 100
     }, ...extend);
   }
 
   constructor(...args) {
     super(...args);
+    _.defaults(this.component, {
+      defaultZoom: 100
+    });
     this.deleted = [];
     this.viewSketchpad = {
       canvas: {},
@@ -485,6 +489,7 @@ export default class Sketchpad extends Base {
         initialDialogClose();
       }
     };
+    this.resetZoom();
   }
 
   saveSvg() {
@@ -924,7 +929,7 @@ export default class Sketchpad extends Base {
   }
 
   resetZoom() {
-    this.zoom({ x: 0, y: 0 }, 1 / this.zoomInfo.totalMultiplier);
+    this.zoom({ x: 0, y: 0 }, (this.component.defaultZoom / 100) / this.zoomInfo.totalMultiplier);
   }
 
   getActualCoordinates(coordinate) {
