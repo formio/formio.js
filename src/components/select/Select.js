@@ -219,7 +219,7 @@ export default class SelectComponent extends BaseComponent {
         disabled: true,
       }], 'value', 'label', true);
     }
-    else {
+    else if (this.scrollList) {
       const loadingItem = this.scrollList.querySelector('.choices__item--disabled');
       if (loadingItem) {
         // Remove the loading text.
@@ -234,7 +234,9 @@ export default class SelectComponent extends BaseComponent {
   stopInfiniteScroll() {
     // Remove the infinite scroll listener.
     this.scrollLoading = false;
-    this.scrollList.removeEventListener('scroll', this.onScroll);
+    if (this.scrollList) {
+      this.scrollList.removeEventListener('scroll', this.onScroll);
+    }
   }
 
   /* eslint-disable max-statements */
