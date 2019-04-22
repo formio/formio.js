@@ -268,7 +268,7 @@ export default class WebformBuilder extends Webform {
               { attr: &apos;style&apos;, value: &apos;text-align:center;&apos; },
               { attr: &apos;role&apos;, value: &apos;alert&apos; }
             ],
-            content: &apos;Drag and Drop a form component&apos;
+            content: this.t(&apos;Drag and Drop a form component&apos;)
           }
         ];
       }
@@ -555,7 +555,7 @@ export default class WebformBuilder extends Webform {
           class: &apos;col col-sm-6&apos;
         }, this.ce(&apos;p&apos;, {
           class: &apos;lead&apos;
-        }, `${componentInfo.title} Component`)),
+        }, `${this.t(componentInfo.title)} ${this.t(&apos;Component&apos;)}`)),
         this.ce(&apos;div&apos;, {
           class: &apos;col col-sm-6&apos;
         }, [
@@ -1192,7 +1192,7 @@ export default class WebformBuilder extends Webform {
     if (!this.getComponents().length) {
       this.submitButton = this.addComponent({
         type: &apos;button&apos;,
-        label: &apos;Submit&apos;,
+        label: this.t(&apos;Submit&apos;),
         key: &apos;submit&apos;,
         size: &apos;md&apos;,
         block: false,

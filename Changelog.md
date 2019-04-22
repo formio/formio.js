@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.20.0
 ### Added
  - Sketchpad: Ability to use dimensions from background SVG instead of providing ```component.width``` and ```component.height```
  - Sketchpad: ```defaultZoom``` setting
+ - The value of the component to the evalContext so that it is available in all executed contexts.
+ - Include additional texts under translation - https://github.com/formio/formio.js/pull/1191
+ - Add sort & filter on resource component - https://github.com/formio/formio.js/pull/1188
+
+### Fixed
+ - Fixing Okta SSO get AccessToken error - https://github.com/formio/formio.js/pull/1193
+ - Added error message for beforeNext hook
+ - Adding some protections around scrollList references.
 
 ## 3.20.0-beta.3
 ### Fixed
