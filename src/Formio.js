@@ -1042,10 +1042,19 @@ export default class Formio {
   }
 
   static registerPlugin(plugin, name) {
-    Formio.plugins.push(plugin);
-    Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-    plugin.__name = name;
-    (plugin.init || Formio.noop).call(plugin, Formio);
+    let found = false;
+    Formio.plugins.forEach((existing) => {
+      if (existing.__name === name) {
+        found = true;
+      }
+    });
+    if (!found) {
+      // Do not register already registered plugins.
+      Formio.plugins.push(plugin);
+      Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      plugin.__name = name;
+      (plugin.init || Formio.noop).call(plugin, Formio);
+    }
   }
 
   static getPlugin(name) {
