@@ -2,6 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
@@ -133,8 +134,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
     if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
       this.updateValue({
-        modified: true
+        modified: !this.autoModified
       }, newValue);
+      this.autoModified = false;
     }
   }
 
@@ -244,6 +246,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        let requestData;
         this.root.formio
           .uploadFile(
             uploadStorage,
@@ -255,6 +258,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadOptions
           )
           .then(result => {
+            requestData = result;
             return this.root.formio.downloadFile(result);
           })
           .then(result => {
@@ -263,7 +267,13 @@ export default class TextAreaComponent extends TextFieldComponent {
             quillInstance.quill.updateContents(new Delta()
                 .retain(range.index)
                 .delete(range.length)
-                .insert({ image: result.url })
+                .insert(
+                  {
+                    image: result.url
+                  },
+                  {
+                    alt: JSON.stringify(requestData),
+                  })
               , Quill.sources.USER);
             fileInput.value = '';
           }).catch(error => {
@@ -286,6 +296,41 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
   /* eslint-enable max-statements */
 
+  setWysiwygValue(value) {
+    if (this.htmlView) {
+      // For HTML view, just view the contents.
+      if (this.input) {
+        this.setContent(this.input, this.interpolate(value));
+      }
+    }
+    else if (this.editorReady) {
+      return this.editorReady.then((editor) => {
+        this.autoModified = true;
+        switch (this.component.editor) {
+          case 'ace':
+            editor.setValue(this.setConvertedValue(value));
+            break;
+          case 'quill':
+            if (this.component.isUploadEnabled) {
+              this.setAsyncConvertedValue(value)
+                .then(result => {
+                  editor.setContents(editor.clipboard.convert(result));
+                });
+            }
+            else {
+              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            }
+            break;
+          case 'ckeditor':
+            editor.data.set(this.setConvertedValue(value));
+            break;
+        }
+      });
+    }
+
+    return NativePromise.resolve();
+  }
+
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
       try {
@@ -301,6 +346,51 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     return value;
+  }
+
+  setAsyncConvertedValue(value) {
+    if (this.component.as && this.component.as === 'json' && value) {
+      try {
+        value = JSON.stringify(value, null, 2);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    if (!_.isString(value)) {
+      value = '';
+    }
+
+    const htmlDoc = new DOMParser().parseFromString(value,'text/html');
+    const images = htmlDoc.getElementsByTagName('img');
+    if (images.length) {
+      return this.setImagesUrl(images)
+        .then( () => {
+          value = htmlDoc.getElementsByTagName('body')[0].firstElementChild;
+          return new XMLSerializer().serializeToString(value);
+        });
+    }
+    else {
+      return Promise.resolve(value);
+    }
+  }
+
+  setImagesUrl(images) {
+    return Promise.all(_.map(images, image => {
+      let requestData;
+      try {
+        requestData = JSON.parse(image.getAttribute('alt'));
+      }
+      catch (error) {
+        console.warn(error);
+      }
+
+      return this.root.formio.downloadFile(requestData)
+        .then((result) => {
+          image.setAttribute('src', result.url);
+        });
+    }));
   }
 
   removeBlanks(value) {
@@ -353,40 +443,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
-      this.editorReady.then((editor) => {
-        switch (this.component.editor) {
-          case 'ace':
-            if (shouldSetValue) {
-              editor.setValue(this.setConvertedValue(value));
-            }
-            break;
-          case 'quill':
-            if (shouldSetValue) {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
-            break;
-          case 'ckeditor':
-            if (shouldSetValue) {
-              editor.data.set(this.setConvertedValue(value));
-            }
-            break;
-        }
-        this.updateValue(flags);
-      });
-    }
-
-    // Update on change.
-    this.updateOnChange(flags, changed);
-
-    // Return if the value has changed.
+    this.setWysiwygValue(newValue, () => this.updateOnChange(flags, changed));
     return changed;
   }
 
