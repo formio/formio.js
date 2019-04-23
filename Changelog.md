@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.1
+### Fixed
+ - Problem where forms configured for "fontawesome" would not show the DateTime calendar icon on the field.
+
 ## 3.20.0
 ### Added
  - Sketchpad: Ability to use dimensions from background SVG instead of providing ```component.width``` and ```component.height```
