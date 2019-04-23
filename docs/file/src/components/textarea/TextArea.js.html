@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -240,12 +242,27 @@ export default class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
+    this.wysiwygRendered = false;
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
   }
 
   get defaultSchema() {
     return TextAreaComponent.schema();
+  }
+
+  show(show, noClear) {
+    if (show &amp;&amp; !this.wysiwygRendered) {
+      this.enableWysiwyg();
+      this.setWysiwygValue(this.dataValue);
+      this.wysiwygRendered = true;
+    }
+    else if (!show &amp;&amp; this.wysiwygRendered) {
+      this.destroyWysiwyg();
+      this.wysiwygRendered = false;
+    }
+
+    return super.show(show, noClear);
   }
 
   setupValueElement(element) {
@@ -284,19 +301,31 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly &amp;&amp; this.component.wysiwyg;
   }
 
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue({
+        modified: true
+      }, newValue);
+    }
+  }
+
+  /* eslint-disable max-statements */
   createInput(container) {
-    const _this = this;
-    if (this.isPlain) {
-      if (this.options.readOnly) {
-        this.input = this.ce(&apos;div&apos;, {
-          class: &apos;well&apos;
-        });
-        container.appendChild(this.input);
-        return this.input;
-      }
-      else {
-        return super.createInput(container);
-      }
+    if (this.options.readOnly) {
+      this.input = this.ce(&apos;div&apos;, {
+        class: &apos;well&apos;
+      });
+      container.appendChild(this.input);
+      return this.input;
+    }
+    else if (this.isPlain) {
+      return super.createInput(container);
     }
 
     if (this.htmlView) {
@@ -314,18 +343,21 @@ export default class TextAreaComponent extends TextFieldComponent {
     container.appendChild(this.input);
     this.addCounter(container);
 
+    return this.input;
+  }
+  /* eslint-enable max-statements */
+
+  enableWysiwyg() {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
+      return;
+    }
+
     if (this.component.editor === &apos;ace&apos;) {
       this.editorReady = Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, &apos;https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js&apos;, true)
         .then(() =&gt; {
           const mode = this.component.as || &apos;javascript&apos;;
           this.editor = ace.edit(this.input);
-          this.editor.on(&apos;change&apos;, () =&gt; {
-            const newValue = this.getConvertedValue(this.editor.getValue());
-            // Do not bother to update if they are both empty.
-            if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-              this.updateValue(null, newValue);
-            }
-          });
+          this.editor.on(&apos;change&apos;, () =&gt; this.updateEditorValue(this.editor.getValue()));
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
@@ -336,21 +368,20 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === &apos;ckeditor&apos;) {
-      this.editorReady = this.addCKE(this.input, null, (newValue) =&gt; this.updateValue(null, newValue)).then((editor) =&gt; {
-        this.editor = editor;
-        if (this.options.readOnly || this.component.disabled) {
-          this.editor.isReadOnly = true;
-        }
-
-        // Set the default rows.
-        let value = &apos;&apos;;
-        const numRows = parseInt(this.component.rows, 10);
-        for (let i = 0; i &lt; numRows; i++) {
-          value += &apos;&lt;p&gt;&lt;/p&gt;&apos;;
-        }
-        editor.data.set(value);
-        return editor;
-      });
+      this.editorReady = this.addCKE(this.input, null, (newValue) =&gt; this.updateEditorValue(newValue))
+        .then((editor) =&gt; {
+          this.editor = editor;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.isReadOnly = true;
+          }
+          const numRows = parseInt(this.component.rows, 10);
+          if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
+            // Default height is 21px with 10px margin + a 14px top margin.
+            const editorHeight = (numRows * 31) + 14;
+            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+          }
+          return editor;
+        });
       return this.input;
     }
 
@@ -368,12 +399,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Add the quill editor.
     this.editorReady = this.addQuill(
       this.input,
-      this.component.wysiwyg, () =&gt; {
-        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
-      }
+      this.component.wysiwyg, () =&gt; this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) =&gt; {
       if (this.component.isUploadEnabled) {
-        quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, imageHandler);
+        const _this = this;
+        quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, function() {
+          //we need initial &apos;this&apos; because quill calls this method with its own context and we need some inner quill methods exposed in it
+          //we also need current component instance as we use some fields and methods from it as well
+          _this.imageHandler.call(_this, this);
+        } );
       }
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
@@ -382,59 +416,83 @@ export default class TextAreaComponent extends TextFieldComponent {
 
       return quill;
     }).catch(err =&gt; console.warn(err));
+  }
 
-    return this.input;
+  destroyWysiwyg() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  }
 
-    function imageHandler() {
-      let fileInput = this.container.querySelector(&apos;input.ql-image[type=file]&apos;);
+  imageHandler(quillInstance) {
+    let fileInput = quillInstance.container.querySelector(&apos;input.ql-image[type=file]&apos;);
 
-      if (fileInput == null) {
-        fileInput = document.createElement(&apos;input&apos;);
-        fileInput.setAttribute(&apos;type&apos;, &apos;file&apos;);
-        fileInput.setAttribute(&apos;accept&apos;, &apos;image/*&apos;);
-        fileInput.classList.add(&apos;ql-image&apos;);
-        fileInput.addEventListener(&apos;change&apos;, () =&gt; {
-          const files = fileInput.files;
-          const range = this.quill.getSelection(true);
+    if (fileInput == null) {
+      fileInput = document.createElement(&apos;input&apos;);
+      fileInput.setAttribute(&apos;type&apos;, &apos;file&apos;);
+      fileInput.setAttribute(&apos;accept&apos;, &apos;image/*&apos;);
+      fileInput.classList.add(&apos;ql-image&apos;);
+      fileInput.addEventListener(&apos;change&apos;, () =&gt; {
+        const files = fileInput.files;
+        const range = quillInstance.quill.getSelection(true);
 
-          if (!files || !files.length) {
-            console.warn(&apos;No files selected&apos;);
-            return;
-          }
+        if (!files || !files.length) {
+          console.warn(&apos;No files selected&apos;);
+          return;
+        }
 
-          this.quill.enable(false);
-          const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = _this.component;
-          _this.root.formio
-            .uploadFile(
-              uploadStorage,
-              files[0],
-              uniqueName(files[0].name),
-              uploadDir || &apos;&apos;, //should pass empty string if undefined
-              null,
-              uploadUrl,
-              uploadOptions
-            )
-            .then(result =&gt; {
-              return _this.root.formio.downloadFile(result);
-            })
-            .then(result =&gt; {
-              this.quill.enable(true);
-              const Delta = Quill.import(&apos;delta&apos;);
-              this.quill.updateContents(new Delta()
-                  .retain(range.index)
-                  .delete(range.length)
-                  .insert({ image: result.url })
-                , Quill.sources.USER);
-              fileInput.value = &apos;&apos;;
-            }).catch(error =&gt; {
-            console.warn(&apos;Quill image upload failed&apos;);
-            console.warn(error);
-            this.quill.enable(true);
-          });
+        quillInstance.quill.enable(false);
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        this.root.formio
+          .uploadFile(
+            uploadStorage,
+            files[0],
+            uniqueName(files[0].name),
+            uploadDir || &apos;&apos;, //should pass empty string if undefined
+            null,
+            uploadUrl,
+            uploadOptions
+          )
+          .then(result =&gt; {
+            return this.root.formio.downloadFile(result);
+          })
+          .then(result =&gt; {
+            quillInstance.quill.enable(true);
+            const Delta = Quill.import(&apos;delta&apos;);
+            quillInstance.quill.updateContents(new Delta()
+                .retain(range.index)
+                .delete(range.length)
+                .insert({ image: result.url })
+              , Quill.sources.USER);
+            fileInput.value = &apos;&apos;;
+          }).catch(error =&gt; {
+          console.warn(&apos;Quill image upload failed&apos;);
+          console.warn(error);
+          quillInstance.quill.enable(true);
         });
-        this.container.appendChild(fileInput);
-      }
-      fileInput.click();
+      });
+      quillInstance.container.appendChild(fileInput);
+    }
+    fileInput.click();
+  }
+
+  setWysiwygValue(value) {
+    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
+      return;
+    }
+
+    if (this.editorReady) {
+      this.editorReady.then((editor) =&gt; {
+        if (this.component.editor === &apos;ace&apos;) {
+          editor.setValue(this.setConvertedValue(value));
+        }
+        else if (this.component.editor === &apos;ckeditor&apos;) {
+          editor.data.set(this.setConvertedValue(value));
+        }
+        else {
+          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+        }
+      });
     }
   }
 
@@ -447,6 +505,11 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(err);
       }
     }
+
+    if (!_.isString(value)) {
+      value = &apos;&apos;;
+    }
+
     return value;
   }
 
@@ -458,7 +521,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== &apos;string&apos;) {
         return input;
       }
-      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).replace(/&lt;p&gt;&lt;br&gt;&lt;\/p&gt;/g, &apos;&apos;);
+      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;);
     };
 
     if (Array.isArray(value)) {
@@ -489,52 +552,28 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    const shouldSetValue = !_.isEqual(value, this.getValue());
     value = value || &apos;&apos;;
-    if (this.isPlain) {
-      if (this.options.readOnly) {
-        // For readOnly, just view the contents.
-        if (this.input) {
-          this.input.innerHTML = this.interpolate(value);
+    if (this.options.readOnly || this.htmlView) {
+      // For readOnly, just view the contents.
+      if (this.input) {
+        if (Array.isArray(value)) {
+          value = value.join(&apos;&lt;br/&gt;&lt;br/&gt;&apos;);
         }
-        this.dataValue = value;
-        return;
+        this.input.innerHTML = this.interpolate(value);
       }
-      else {
-        return super.setValue(this.setConvertedValue(value), flags);
-      }
+      this.dataValue = value;
+      return;
+    }
+    else if (this.isPlain) {
+      value = Array.isArray(value) ? value.map((val) =&gt; this.setConvertedValue(val)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
     this.dataValue = value;
 
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.input.innerHTML = this.interpolate(value);
-      }
-    }
-    else if (this.editorReady) {
-      this.editorReady.then((editor) =&gt; {
-        if (this.component.editor === &apos;ace&apos;) {
-          if (shouldSetValue) {
-            editor.setValue(this.setConvertedValue(value));
-          }
-        }
-        else if (this.component.editor === &apos;ckeditor&apos;) {
-          if (shouldSetValue) {
-            editor.data.set(this.setConvertedValue(value));
-          }
-          this.updateValue(flags);
-        }
-        else {
-          if (shouldSetValue) {
-            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-          }
-          this.updateValue(flags);
-        }
-      });
-    }
+    this.setWysiwygValue(value, flags);
+    this.updateValue(flags);
   }
 
   getConvertedValue(value) {
@@ -565,11 +604,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.editor || this.quill) {
-      return this.dataValue;
-    }
-
-    return this.component.multiple ? [] : &apos;&apos;;
+    return this.dataValue;
   }
 
   elementInfo() {

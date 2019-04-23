@@ -43,7 +43,6 @@ export default class TextFieldComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
-
     if (this.component.hasOwnProperty('spellcheck')) {
       info.attr.spellcheck = this.component.spellcheck;
     }
@@ -69,10 +68,8 @@ export default class TextFieldComponent extends BaseComponent {
       return inputGroup;
     }
     //if component should have multiple masks
-    const id = `${this.key}`;
     const attr = this.info.attr;
     attr.class += ' formio-multiple-mask-input';
-    attr.id = id;
     const textInput = this.ce('input', attr);
 
     const inputGroup = this.ce('div', {
@@ -129,13 +126,39 @@ export default class TextFieldComponent extends BaseComponent {
     }
   }
 
+  removeTags(value) {
+    if (!value) {
+      return;
+    }
+
+    const removeEditorBlank = function(input) {
+      if (typeof input !== 'string') {
+        return input;
+      }
+
+      return input.replace(/<(.*?)>/g, '');
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) => {
+        value[index] = removeEditorBlank(input);
+      });
+    }
+    else {
+      value = removeEditorBlank(value);
+    }
+
+    return value;
+  }
+
   onChange(flags, fromRoot) {
     super.onChange(flags, fromRoot);
     if (this.wordCount) {
       this.setCounter('words', this.wordCount, this.dataValue.trim().split(/\s+/).length, this.maxWordCount);
     }
     if (this.charCount) {
-      this.setCounter('characters', this.charCount, this.dataValue.length, this.maxCharCount);
+      const value = this.component.wysiwyg ? this.removeTags(this.dataValue) : this.dataValue;
+      this.setCounter('characters', this.charCount, value.length, this.maxCharCount);
     }
   }
 

@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -253,7 +255,6 @@ export default class TextFieldComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = &apos;input&apos;;
-
     if (this.component.hasOwnProperty(&apos;spellcheck&apos;)) {
       info.attr.spellcheck = this.component.spellcheck;
     }
@@ -279,10 +280,8 @@ export default class TextFieldComponent extends BaseComponent {
       return inputGroup;
     }
     //if component should have multiple masks
-    const id = `${this.key}`;
     const attr = this.info.attr;
     attr.class += &apos; formio-multiple-mask-input&apos;;
-    attr.id = id;
     const textInput = this.ce(&apos;input&apos;, attr);
 
     const inputGroup = this.ce(&apos;div&apos;, {
@@ -339,13 +338,39 @@ export default class TextFieldComponent extends BaseComponent {
     }
   }
 
+  removeTags(value) {
+    if (!value) {
+      return;
+    }
+
+    const removeEditorBlank = function(input) {
+      if (typeof input !== &apos;string&apos;) {
+        return input;
+      }
+
+      return input.replace(/&lt;(.*?)&gt;/g, &apos;&apos;);
+    };
+
+    if (Array.isArray(value)) {
+      value.forEach((input, index) =&gt; {
+        value[index] = removeEditorBlank(input);
+      });
+    }
+    else {
+      value = removeEditorBlank(value);
+    }
+
+    return value;
+  }
+
   onChange(flags, fromRoot) {
     super.onChange(flags, fromRoot);
     if (this.wordCount) {
       this.setCounter(&apos;words&apos;, this.wordCount, this.dataValue.trim().split(/\s+/).length, this.maxWordCount);
     }
     if (this.charCount) {
-      this.setCounter(&apos;characters&apos;, this.charCount, this.dataValue.length, this.maxCharCount);
+      const value = this.component.wysiwyg ? this.removeTags(this.dataValue) : this.dataValue;
+      this.setCounter(&apos;characters&apos;, this.charCount, value.length, this.maxCharCount);
     }
   }
 

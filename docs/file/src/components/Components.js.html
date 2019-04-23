@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -239,10 +241,64 @@ export default class Components {
     Components.components[name] = comp;
   }
 
+  /**
+   * Ensure that all components have a key that is not used else-where in the form.
+   * @param component
+   * @param options
+   */
+  /* eslint-disable max-depth */
+  static ensureKey(component, options) {
+    options = options || {};
+    if (!options.unknown) {
+      options.unknown = { __keys: {} };
+    }
+    if (!options.keys) {
+      options.keys = {};
+    }
+    // Ensure all components have a key, even if it is dynamically determined.
+    if (component) {
+      if (!component.key) {
+        if (!options.unknown[component.type]) {
+          options.unknown[component.type] = { count: 0 };
+        }
+        do {
+          options.unknown[component.type].count++;
+          component.key = component.type + options.unknown[component.type].count;
+        }
+        while (options.keys.hasOwnProperty(component.key));
+        options.unknown.__keys[component.key] = true;
+      }
+      // Alter previously defined dynamic keys if a conflict exists.
+      else if (
+        options.keys.hasOwnProperty(component.key) &amp;&amp;
+        options.unknown.__keys.hasOwnProperty(component.key)
+      ) {
+        const nextCount = component.key.match(/([0-9]+)$/g);
+        if (nextCount) {
+          options.unknown[component.type].count = parseInt(nextCount.pop(), 10);
+          const prevComponent = options.keys[component.key];
+          do {
+            options.unknown[component.type].count++;
+            prevComponent.key = component.type + options.unknown[component.type].count;
+          }
+          while (options.keys.hasOwnProperty(prevComponent.key));
+          options.keys[prevComponent.key] = prevComponent;
+          options.unknown.__keys[prevComponent.key] = true;
+          delete options.unknown.__keys[component.key];
+        }
+      }
+
+      // Save this component in the keys object.
+      options.keys[component.key] = component;
+    }
+  }
+  /* eslint-enable max-depth */
+
   static create(component, options, data, nobuild) {
     let comp = null;
     if (component.type &amp;&amp; Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
+      Components.ensureKey(component, options);
     }
     else {
       comp = new UnknownComponent(component, options, data);

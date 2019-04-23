@@ -1,0 +1,981 @@
+{
+  "_id": "59bbe2ee8c246100079191b6",
+  "modified": "2019-04-16T11:24:09.542Z",
+  "title": "Employment Application",
+  "name": "employmentApplication",
+  "path": "application",
+  "display": "form",
+  "machineName": "jvfglykvmetpjvt:employmentApplication",
+  "project": "59bbe2ec8c246100079191ae",
+  "created": "2017-09-15T14:25:50.536Z",
+  "components": [
+    {
+      "tableView": false,
+      "input": false,
+      "title": "Personal Information",
+      "theme": "primary",
+      "components": [
+        {
+          "tableView": false,
+          "input": false,
+          "columns": [
+            {
+              "pull": 0,
+              "push": 0,
+              "offset": 0,
+              "width": 6,
+              "components": [
+                {
+                  "clearOnHide": true,
+                  "hidden": false,
+                  "input": true,
+                  "tableView": true,
+                  "inputType": "text",
+                  "inputMask": "",
+                  "label": "First Name",
+                  "key": "firstName",
+                  "placeholder": "Enter your first name",
+                  "prefix": "",
+                  "suffix": "",
+                  "multiple": false,
+                  "defaultValue": "",
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "validate": {
+                    "required": false,
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "custom": "",
+                    "customPrivate": false
+                  },
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  },
+                  "type": "textfield",
+                  "tags": [],
+                  "autofocus": false,
+                  "spellcheck": true
+                },
+                {
+                  "hidden": false,
+                  "clearOnHide": true,
+                  "input": true,
+                  "tableView": true,
+                  "label": "Home Address",
+                  "key": "homeAddress",
+                  "placeholder": "Enter your home address",
+                  "multiple": false,
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "map": {
+                    "region": "",
+                    "key": ""
+                  },
+                  "validate": {
+                    "required": false
+                  },
+                  "type": "address",
+                  "tags": [],
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  },
+                  "autofocus": false
+                },
+                {
+                  "clearOnHide": true,
+                  "hidden": false,
+                  "input": true,
+                  "tableView": true,
+                  "inputType": "email",
+                  "label": "Email Address",
+                  "key": "emailAddress",
+                  "placeholder": "Enter your email address",
+                  "prefix": "",
+                  "suffix": "",
+                  "defaultValue": "",
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "kickbox": {
+                    "enabled": false
+                  },
+                  "type": "email",
+                  "tags": [],
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  },
+                  "autofocus": false
+                }
+              ]
+            },
+            {
+              "pull": 0,
+              "push": 0,
+              "offset": 0,
+              "width": 6,
+              "components": [
+                {
+                  "clearOnHide": true,
+                  "hidden": false,
+                  "input": true,
+                  "tableView": true,
+                  "inputType": "text",
+                  "inputMask": "",
+                  "label": "Last Name",
+                  "key": "lastName",
+                  "placeholder": "Enter your last name",
+                  "prefix": "",
+                  "suffix": "",
+                  "multiple": false,
+                  "defaultValue": "",
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "validate": {
+                    "required": false,
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "custom": "",
+                    "customPrivate": false
+                  },
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  },
+                  "type": "textfield",
+                  "tags": [],
+                  "autofocus": false,
+                  "spellcheck": true
+                },
+                {
+                  "clearOnHide": true,
+                  "hidden": false,
+                  "input": true,
+                  "tableView": true,
+                  "inputMask": "(999) 999-9999",
+                  "label": "Phone Number",
+                  "key": "phoneNumber",
+                  "placeholder": "Enter your phone number",
+                  "prefix": "",
+                  "suffix": "",
+                  "multiple": false,
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "defaultValue": "",
+                  "validate": {
+                    "required": false
+                  },
+                  "type": "phoneNumber",
+                  "tags": [],
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  },
+                  "autofocus": false,
+                  "inputType": "tel"
+                }
+              ]
+            }
+          ],
+          "type": "columns",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "clearOnHide": false,
+          "label": "Columns",
+          "hideLabel": true
+        }
+      ],
+      "type": "panel",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "clearOnHide": false
+    },
+    {
+      "tableView": false,
+      "input": false,
+      "title": "Position Information",
+      "theme": "success",
+      "components": [
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "input": true,
+          "tableView": true,
+          "inputType": "text",
+          "inputMask": "",
+          "label": "Title of position you are applying for",
+          "key": "title",
+          "placeholder": "",
+          "prefix": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": "",
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false,
+            "minLength": "",
+            "maxLength": "",
+            "pattern": "",
+            "custom": "",
+            "customPrivate": false
+          },
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "type": "textfield",
+          "tags": [],
+          "lockKey": true,
+          "autofocus": false,
+          "spellcheck": true
+        },
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "input": true,
+          "tableView": true,
+          "label": "Department",
+          "key": "department",
+          "placeholder": "Select the department",
+          "data": {
+            "values": [
+              {
+                "value": "humanResources",
+                "label": "Human Resources"
+              },
+              {
+                "value": "it",
+                "label": "IT"
+              },
+              {
+                "value": "management",
+                "label": "Management"
+              },
+              {
+                "value": "sales",
+                "label": "Sales"
+              },
+              {
+                "value": "support",
+                "label": "Support"
+              },
+              {
+                "value": "qualityAssurance",
+                "label": "Quality Assurance"
+              }
+            ],
+            "json": "",
+            "url": "",
+            "resource": ""
+          },
+          "dataSrc": "values",
+          "valueProperty": "",
+          "defaultValue": "",
+          "refreshOn": "",
+          "filter": "",
+          "authenticate": false,
+          "template": "<span>{{ item.label }}</span>",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false
+          },
+          "type": "select",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "autofocus": false
+        }
+      ],
+      "type": "panel",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "clearOnHide": false
+    },
+    {
+      "tableView": false,
+      "input": false,
+      "title": "Previous Experience",
+      "theme": "default",
+      "components": [
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "input": true,
+          "tree": true,
+          "components": [
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "",
+              "label": "Title",
+              "key": "title1",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "input": true,
+              "tableView": false,
+              "inputType": "text",
+              "inputMask": "",
+              "label": "Company",
+              "key": "company",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": "",
+              "multiple": false,
+              "defaultValue": "",
+              "protected": false,
+              "unique": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "minLength": "",
+                "maxLength": "",
+                "pattern": "",
+                "custom": "",
+                "customPrivate": false
+              },
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "type": "textfield",
+              "hideLabel": false,
+              "tags": [],
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "defaultDate": "",
+              "input": true,
+              "tableView": false,
+              "label": "From",
+              "key": "from",
+              "placeholder": "",
+              "format": "yyyy-MM-dd",
+              "enableDate": true,
+              "enableTime": false,
+              "datepickerMode": "month",
+              "datePicker": {
+                "showWeeks": true,
+                "startingDay": 0,
+                "initDate": "",
+                "minMode": "month",
+                "maxMode": "year",
+                "yearRange": "20",
+                "datepickerMode": "day",
+                "minDate": null,
+                "maxDate": null
+              },
+              "timePicker": {
+                "hourStep": 1,
+                "minuteStep": 1,
+                "showMeridian": true,
+                "readonlyInput": false,
+                "mousewheel": true,
+                "arrowkeys": true
+              },
+              "protected": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "custom": ""
+              },
+              "type": "datetime",
+              "hideLabel": false,
+              "tags": [],
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "defaultDate": "",
+              "input": true,
+              "tableView": false,
+              "label": "To",
+              "key": "to",
+              "placeholder": "",
+              "format": "yyyy-MM-dd",
+              "enableDate": true,
+              "enableTime": false,
+              "datepickerMode": "day",
+              "datePicker": {
+                "showWeeks": true,
+                "startingDay": 0,
+                "initDate": "",
+                "minMode": "month",
+                "maxMode": "year",
+                "yearRange": "20",
+                "datepickerMode": "day",
+                "minDate": null,
+                "maxDate": null
+              },
+              "timePicker": {
+                "hourStep": 1,
+                "minuteStep": 1,
+                "showMeridian": true,
+                "readonlyInput": false,
+                "mousewheel": true,
+                "arrowkeys": true
+              },
+              "protected": false,
+              "persistent": true,
+              "validate": {
+                "required": false,
+                "custom": ""
+              },
+              "type": "datetime",
+              "hideLabel": false,
+              "tags": [],
+              "conditional": {
+                "show": "",
+                "when": null,
+                "eq": ""
+              },
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            }
+          ],
+          "tableView": false,
+          "label": "Previous Experience",
+          "key": "previousExperience",
+          "protected": false,
+          "persistent": true,
+          "type": "datagrid",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "autofocus": false
+        }
+      ],
+      "type": "panel",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "clearOnHide": false
+    },
+    {
+      "tableView": false,
+      "conditional": {
+        "eq": "",
+        "when": null,
+        "show": ""
+      },
+      "tags": [],
+      "type": "panel",
+      "components": [
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "conditional": {
+            "eq": "",
+            "when": null,
+            "show": ""
+          },
+          "tags": [],
+          "type": "datagrid",
+          "persistent": true,
+          "protected": false,
+          "key": "references",
+          "label": "References",
+          "tableView": false,
+          "components": [
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "tags": [],
+              "hideLabel": false,
+              "type": "textfield",
+              "conditional": {
+                "eq": "",
+                "when": null,
+                "show": ""
+              },
+              "validate": {
+                "customPrivate": false,
+                "custom": "",
+                "pattern": "",
+                "maxLength": "",
+                "minLength": "",
+                "required": false
+              },
+              "persistent": true,
+              "unique": false,
+              "protected": false,
+              "defaultValue": "",
+              "multiple": false,
+              "suffix": "",
+              "prefix": "",
+              "placeholder": "",
+              "key": "fullName",
+              "label": "Full Name",
+              "inputMask": "",
+              "inputType": "text",
+              "tableView": false,
+              "input": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "tags": [],
+              "hideLabel": false,
+              "type": "textfield",
+              "conditional": {
+                "eq": "",
+                "when": null,
+                "show": ""
+              },
+              "validate": {
+                "customPrivate": false,
+                "custom": "",
+                "pattern": "",
+                "maxLength": "",
+                "minLength": "",
+                "required": false
+              },
+              "persistent": true,
+              "unique": false,
+              "protected": false,
+              "defaultValue": "",
+              "multiple": false,
+              "suffix": "",
+              "prefix": "",
+              "placeholder": "",
+              "key": "relationship",
+              "label": "Relationship",
+              "inputMask": "",
+              "inputType": "text",
+              "tableView": false,
+              "input": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "spellcheck": true,
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "conditional": {
+                "eq": "",
+                "when": null,
+                "show": ""
+              },
+              "tags": [],
+              "hideLabel": false,
+              "type": "phoneNumber",
+              "validate": {
+                "required": false
+              },
+              "defaultValue": "",
+              "persistent": true,
+              "unique": false,
+              "protected": false,
+              "multiple": false,
+              "suffix": "",
+              "prefix": "",
+              "placeholder": "",
+              "key": "phoneNumber1",
+              "label": "Phone Number",
+              "inputMask": "(999) 999-9999",
+              "tableView": false,
+              "input": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "inputType": "tel",
+              "labelPosition": "top",
+              "properties": {}
+            },
+            {
+              "clearOnHide": true,
+              "hidden": false,
+              "conditional": {
+                "eq": "",
+                "when": null,
+                "show": ""
+              },
+              "tags": [],
+              "hideLabel": false,
+              "type": "email",
+              "kickbox": {
+                "enabled": false
+              },
+              "persistent": true,
+              "unique": false,
+              "protected": false,
+              "defaultValue": "",
+              "suffix": "",
+              "prefix": "",
+              "placeholder": "",
+              "key": "email",
+              "label": "Email",
+              "inputType": "email",
+              "tableView": false,
+              "input": true,
+              "inDataGrid": true,
+              "autofocus": false,
+              "labelPosition": "top",
+              "properties": {}
+            }
+          ],
+          "tree": true,
+          "input": true,
+          "autofocus": false
+        }
+      ],
+      "theme": "warning",
+      "title": "References",
+      "input": false,
+      "clearOnHide": false
+    },
+    {
+      "tableView": false,
+      "input": false,
+      "title": "Other Information",
+      "theme": "info",
+      "components": [
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "input": true,
+          "tableView": false,
+          "inputType": "text",
+          "inputMask": "",
+          "label": "How did you hear about this position?",
+          "key": "howdidyouhearaboutthisposition",
+          "placeholder": "",
+          "prefix": "",
+          "suffix": "",
+          "multiple": false,
+          "defaultValue": "",
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "validate": {
+            "required": false,
+            "minLength": "",
+            "maxLength": "",
+            "pattern": "",
+            "custom": "",
+            "customPrivate": false
+          },
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "type": "textfield",
+          "tags": [],
+          "autofocus": false,
+          "spellcheck": true
+        },
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "input": true,
+          "tableView": false,
+          "label": "Why should we hire you?",
+          "key": "whyshouldwehireyou",
+          "placeholder": "",
+          "prefix": "",
+          "suffix": "",
+          "rows": 3,
+          "multiple": false,
+          "defaultValue": "",
+          "protected": false,
+          "persistent": true,
+          "wysiwyg": false,
+          "validate": {
+            "required": false,
+            "minLength": "",
+            "maxLength": "",
+            "pattern": "",
+            "custom": ""
+          },
+          "type": "textarea",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "autofocus": false,
+          "spellcheck": true
+        },
+        {
+          "clearOnHide": true,
+          "hidden": false,
+          "imageSize": "200",
+          "image": false,
+          "input": true,
+          "tableView": false,
+          "label": "Resume",
+          "key": "resume",
+          "placeholder": "",
+          "multiple": false,
+          "defaultValue": "",
+          "protected": false,
+          "persistent": true,
+          "type": "file",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "storage": "s3",
+          "autofocus": false,
+          "filePattern": "*",
+          "fileMinSize": "0KB",
+          "fileMaxSize": "1GB"
+        }
+      ],
+      "type": "panel",
+      "tags": [],
+      "conditional": {
+        "show": "",
+        "when": null,
+        "eq": ""
+      },
+      "clearOnHide": false
+    },
+    {
+      "input": true,
+      "label": "Submit",
+      "tableView": false,
+      "key": "submit",
+      "size": "md",
+      "leftIcon": "",
+      "rightIcon": "",
+      "block": false,
+      "action": "submit",
+      "disableOnInvalid": false,
+      "theme": "primary",
+      "type": "button",
+      "autofocus": false
+    }
+  ],
+  "owner": "5a9585b36e09570001a04594",
+  "submissionAccess": [
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "create_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "read_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "update_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af"
+      ],
+      "type": "delete_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1",
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "create_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1",
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "read_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1",
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "update_own"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1",
+        "59bbe2ec8c246100079191b0"
+      ],
+      "type": "delete_own"
+    },
+    {
+      "roles": [],
+      "type": "team_read"
+    },
+    {
+      "roles": [],
+      "type": "team_write"
+    },
+    {
+      "roles": [],
+      "type": "team_admin"
+    }
+  ],
+  "access": [
+    {
+      "roles": [],
+      "type": "create_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191af",
+        "59bbe2ec8c246100079191b0",
+        "59bbe2ec8c246100079191b1"
+      ],
+      "type": "read_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1"
+      ],
+      "type": "update_all"
+    },
+    {
+      "roles": [
+        "59bbe2ec8c246100079191b1"
+      ],
+      "type": "delete_all"
+    },
+    {
+      "roles": [],
+      "type": "create_own"
+    },
+    {
+      "roles": [],
+      "type": "read_own"
+    },
+    {
+      "roles": [],
+      "type": "update_own"
+    },
+    {
+      "roles": [],
+      "type": "delete_own"
+    },
+    {
+      "roles": [],
+      "type": "team_read"
+    },
+    {
+      "roles": [],
+      "type": "team_write"
+    },
+    {
+      "roles": [],
+      "type": "team_admin"
+    }
+  ],
+  "tags": [
+    "common"
+  ],
+  "type": "form",
+  "_vid": 68,
+  "revisions": "original",
+  "properties": {
+    "firm": "area51"
+  }
+}

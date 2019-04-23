@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -229,6 +231,13 @@ export default class WebformBuilder extends Webform {
 
     // Setup the builder options.
     this.options.builder = _.defaultsDeep({}, this.options.builder, this.defaultComponents);
+    this.options.enableButtons = _.defaults({}, this.options.enableButtons, {
+      remove: true,
+      copy: true,
+      paste: true,
+      edit: true,
+      editJson: false,
+    });
 
     // Turn off if explicitely said to do so...
     _.each(this.defaultComponents, (config, key) =&gt; {
@@ -259,7 +268,7 @@ export default class WebformBuilder extends Webform {
               { attr: &apos;style&apos;, value: &apos;text-align:center;&apos; },
               { attr: &apos;role&apos;, value: &apos;alert&apos; }
             ],
-            content: &apos;Drag and Drop a form component&apos;
+            content: this.t(&apos;Drag and Drop a form component&apos;)
           }
         ];
       }
@@ -317,6 +326,16 @@ export default class WebformBuilder extends Webform {
           this.pasteComponent(comp);
         });
 
+        const editJsonButton = this.ce(&apos;div&apos;, {
+          class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-edit-json&apos;
+        }, this.getIcon(&apos;wrench&apos;));
+        this.addEventListener(editJsonButton, &apos;click&apos;, () =&gt; this.editComponent(comp, true));
+        new Tooltip(editJsonButton, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Edit JSON&apos;)
+        });
+
         // Set in paste mode if we have an item in our clipboard.
         if (window.sessionStorage) {
           const data = window.sessionStorage.getItem(&apos;formio.clipboard&apos;);
@@ -328,7 +347,13 @@ export default class WebformBuilder extends Webform {
         // Add the edit buttons to the component.
         comp.prepend(this.ce(&apos;div&apos;, {
           class: &apos;component-btn-group&apos;
-        }, [removeButton, copyButton, pasteButton, editButton]));
+        }, [
+          this.options.enableButtons.remove ? removeButton : null,
+          this.options.enableButtons.copy ? copyButton : null,
+          this.options.enableButtons.paste ? pasteButton : null,
+          this.options.enableButtons.editJson ? editJsonButton : null,
+          this.options.enableButtons.edit ? editButton : null
+        ]));
       }
 
       if (!container.noDrop) {
@@ -490,10 +515,12 @@ export default class WebformBuilder extends Webform {
   }
 
   /* eslint-disable max-statements */
-  editComponent(component) {
+  editComponent(component, isJsonEdit) {
     const componentCopy = _.cloneDeep(component);
     let componentClass = Components.components[componentCopy.component.type];
     const isCustom = componentClass === undefined;
+    //custom component should be edited as JSON
+    isJsonEdit = isJsonEdit || isCustom;
     componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
@@ -528,7 +555,7 @@ export default class WebformBuilder extends Webform {
           class: &apos;col col-sm-6&apos;
         }, this.ce(&apos;p&apos;, {
           class: &apos;lead&apos;
-        }, `${componentInfo.title} Component`)),
+        }, `${this.t(componentInfo.title)} ${this.t(&apos;Component&apos;)}`)),
         this.ce(&apos;div&apos;, {
           class: &apos;col col-sm-6&apos;
         }, [
@@ -582,7 +609,27 @@ export default class WebformBuilder extends Webform {
     const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
 
     // Get the editform for this component.
-    const editForm = componentClass.editForm(_.cloneDeep(overrides));
+    let editForm;
+    //custom component has its own Edit Form defined
+    if (isJsonEdit &amp;&amp; !isCustom) {
+      editForm = {
+        &apos;components&apos;: [
+          {
+            &apos;type&apos;: &apos;textarea&apos;,
+            &apos;as&apos;: &apos;json&apos;,
+            &apos;editor&apos;: &apos;ace&apos;,
+            &apos;weight&apos;: 10,
+            &apos;input&apos;: true,
+            &apos;key&apos;: &apos;componentJson&apos;,
+            &apos;label&apos;: &apos;Component JSON&apos;,
+            &apos;tooltip&apos;: &apos;Edit the JSON for this component.&apos;
+          }
+        ]
+      };
+    }
+    else {
+      editForm = componentClass.editForm(_.cloneDeep(overrides));
+    }
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, &apos;defaultValue&apos;);
@@ -615,15 +662,15 @@ export default class WebformBuilder extends Webform {
     // Register for when the edit form changes.
     this.editForm.on(&apos;change&apos;, (event) =&gt; {
       if (event.changed) {
-        // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component &amp;&amp; (event.changed.component.key === &apos;key&apos;)) || isCustom) {
+        // See if this is a manually modified key. Treat JSON edited component keys as manually modified
+        if ((event.changed.component &amp;&amp; (event.changed.component.key === &apos;key&apos;)) || isJsonEdit) {
           componentCopy.keyModified = true;
         }
 
         // Set the component JSON to the new data.
         var editFormData = this.editForm.getValue().data;
         //for custom component use value in &apos;componentJson&apos; field as JSON of component
-        if (editFormData.type === &apos;custom&apos; &amp;&amp; editFormData.componentJson) {
+        if ((editFormData.type === &apos;custom&apos; || isJsonEdit) &amp;&amp; editFormData.componentJson) {
           componentCopy.component = editFormData.componentJson;
         }
         else {
@@ -638,7 +685,7 @@ export default class WebformBuilder extends Webform {
     // Modify the component information in the edit form.
     this.editForm.formReady.then(() =&gt; {
       //for custom component populate component setting with component JSON
-      if (isCustom) {
+      if (isJsonEdit) {
         this.editForm.setValue({
           data: {
             componentJson: _.cloneDeep(componentCopy.component)
@@ -667,10 +714,10 @@ export default class WebformBuilder extends Webform {
         return;
       }
       event.preventDefault();
-      const originalComponent = component.component;
+      const originalComponent = component.schema;
       component.isNew = false;
-      //for custom component use value in &apos;componentJson&apos; field as JSON of component
-      if (isCustom) {
+      //for JSON Edit use value in &apos;componentJson&apos; field as JSON of component
+      if (isJsonEdit) {
         component.component = this.editForm.data.componentJson;
       }
       else {
@@ -791,7 +838,7 @@ export default class WebformBuilder extends Webform {
     }, this.text(info.title));
 
     // Add a listener when it is clicked.
-    if (!bootstrapVersion()) {
+    if (!bootstrapVersion(this.options)) {
       this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
         const clickedGroupId = event.target.getAttribute(&apos;data-target&apos;).replace(&apos;#group-&apos;, &apos;&apos;);
@@ -842,7 +889,7 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = &apos;panel-collapse collapse&apos;;
     if (info.default) {
-      switch (bootstrapVersion()) {
+      switch (bootstrapVersion(this.options)) {
         case 4:
           groupBodyClass += &apos; show&apos;;
           break;
@@ -1020,13 +1067,35 @@ export default class WebformBuilder extends Webform {
     return super.clear();
   }
 
-  addComponentTo(parent, schema, element, sibling) {
-    return parent.addComponent(
+  addComponentTo(schema, parent, element, sibling, after) {
+    const component = parent.addComponent(
       schema,
       element,
       parent.data,
       sibling
     );
+
+    if (after) {
+      after(component);
+    }
+
+    // Get path to the component in the parent component.
+    let path = &apos;components&apos;;
+    switch (component.parent.type) {
+      case &apos;table&apos;:
+        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        break;
+      case &apos;columns&apos;:
+        path = `columns[${component.column}].components`;
+        break;
+      case &apos;tabs&apos;:
+        path = `components[${component.tab}].components`;
+        break;
+    }
+    // Index within container
+    const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
+    this.emit(&apos;addComponent&apos;, component, path, index);
+    return component;
   }
 
   /* eslint-disable  max-statements */
@@ -1070,33 +1139,15 @@ export default class WebformBuilder extends Webform {
       }
 
       // Add the new component.
-      const component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
+      const component = this.addComponentTo(componentSchema, newParent.component, newParent, sibling, (comp) =&gt; {
+        // Set that this is a new component.
+        comp.isNew = true;
 
-      // Set that this is a new component.
-      component.isNew = true;
-
-      // Pass along the save event.
-      if (target.dragEvents) {
-        component.dragEvents = target.dragEvents;
-      }
-
-      // Get path to the component in the parent component.
-      let path = &apos;components&apos;;
-      switch (component.parent.type) {
-        case &apos;table&apos;:
-          path = `rows[${component.tableRow}][${component.tableColumn}].components`;
-          break;
-        case &apos;columns&apos;:
-          path = `columns[${component.column}].components`;
-          break;
-        case &apos;tabs&apos;:
-          path = `components[${component.tab}].components`;
-          break;
-      }
-      // Index within container
-      const index = _.findIndex(_.get(component.parent.schema, path), { key: component.component.key }) || 0;
-
-      this.emit(&apos;addComponent&apos;, component, path, index);
+        // Pass along the save event.
+        if (target.dragEvents) {
+          comp.dragEvents = target.dragEvents;
+        }
+      });
 
       // Edit the component.
       this.editComponent(component);
@@ -1113,17 +1164,17 @@ export default class WebformBuilder extends Webform {
 
       // Remove the component from its parent.
       if (element.component.parent) {
+        this.emit(&apos;deleteComponent&apos;, element.component);
         element.component.parent.removeComponent(element.component);
       }
 
-      // Add the component to its new parent.
-      const component = newParent.component.addComponent(
+      // Add the new component.
+      const component = this.addComponentTo(
         componentSchema,
+        newParent.component,
         newParent,
-        newParent.component.data,
         sibling
       );
-
       if (target.dragEvents &amp;&amp; target.dragEvents.onSave) {
         target.dragEvents.onSave(component);
       }
@@ -1141,7 +1192,7 @@ export default class WebformBuilder extends Webform {
     if (!this.getComponents().length) {
       this.submitButton = this.addComponent({
         type: &apos;button&apos;,
-        label: &apos;Submit&apos;,
+        label: this.t(&apos;Submit&apos;),
         key: &apos;submit&apos;,
         size: &apos;md&apos;,
         block: false,
@@ -1164,7 +1215,7 @@ export default class WebformBuilder extends Webform {
         return el.classList.contains(&apos;drag-copy&apos;);
       },
       accepts(el, target) {
-        return !target.classList.contains(&apos;no-drop&apos;);
+        return !el.contains(target) &amp;&amp; !target.classList.contains(&apos;no-drop&apos;);
       }
     }).on(&apos;drop&apos;, (element, target, source, sibling) =&gt; this.onDrop(element, target, source, sibling));
 

@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -640,7 +642,8 @@ export default class Formio {
     if (!token) {
       return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
     }
-    return this.makeRequest(&apos;tempToken&apos;, `${this.projectUrl}/token`, &apos;GET&apos;, null, {
+    const authUrl = Formio.authUrl || this.projectUrl;
+    return this.makeRequest(&apos;tempToken&apos;, `${authUrl}/token`, &apos;GET&apos;, null, {
       ignoreCache: true,
       header: new Headers({
         &apos;x-expire&apos;: expire,
@@ -913,7 +916,7 @@ export default class Formio {
     const cacheKey = btoa(url);
 
     // Get the cached promise to save multiple loads.
-    if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
+    if (!Formio.ignoreCache &amp;&amp; !opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
       return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
@@ -1037,7 +1040,7 @@ export default class Formio {
         }
 
         // Cache the response.
-        if (method === &apos;GET&apos;) {
+        if (!Formio.ignoreCache &amp;&amp; (method === &apos;GET&apos;)) {
           Formio.cache[cacheKey] = _cloneDeep(result);
         }
 
@@ -1215,6 +1218,10 @@ export default class Formio {
     Formio.projectUrlSet = true;
   }
 
+  static setAuthUrl(url) {
+    Formio.authUrl = url;
+  }
+
   static getAppUrl() {
     console.warn(&apos;Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.&apos;);
     return Formio.projectUrl;
@@ -1299,12 +1306,15 @@ export default class Formio {
   }
 
   static currentUser(formio, options) {
-    let projectUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
-    projectUrl += &apos;/current&apos;;
+    let authUrl = Formio.authUrl;
+    if (!authUrl) {
+      authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
+    }
+    authUrl += &apos;/current&apos;;
     const user = Formio.getUser(options);
     if (user) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(user), {
-        url: projectUrl,
+        url: authUrl,
         method: &apos;GET&apos;,
         options
       });
@@ -1312,12 +1322,12 @@ export default class Formio {
     const token = Formio.getToken(options);
     if ((!options || !options.external) &amp;&amp; !token) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
-        url: projectUrl,
+        url: authUrl,
         method: &apos;GET&apos;,
         options
       });
     }
-    return Formio.makeRequest(formio, &apos;currentUser&apos;, projectUrl, &apos;GET&apos;, null, options)
+    return Formio.makeRequest(formio, &apos;currentUser&apos;, authUrl, &apos;GET&apos;, null, options)
       .then((response) =&gt; {
         Formio.setUser(response, options);
         return response;
@@ -1330,7 +1340,7 @@ export default class Formio {
     Formio.setToken(null, options);
     Formio.setUser(null, options);
     Formio.clearCache();
-    const projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
     return Formio.makeRequest(formio, &apos;logout&apos;, `${projectUrl}/logout`);
   }
 
@@ -1394,7 +1404,8 @@ export default class Formio {
     }
 
     // go to the saml sso endpoint for this project.
-    window.location.href = `${Formio.projectUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    const authUrl = Formio.authUrl || Formio.projectUrl;
+    window.location.href = `${authUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
     return false;
   }
 
@@ -1412,29 +1423,31 @@ export default class Formio {
     return new Promise((resolve, reject) =&gt; {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = new Okta(options);
-      var accessToken = authClient.tokenManager.get(&apos;accessToken&apos;);
-      if (accessToken) {
-        resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
-      }
-      else if (location.hash) {
-        authClient.token.parseFromUrl()
-          .then(token =&gt; {
-            authClient.tokenManager.add(&apos;accessToken&apos;, token);
-            resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
-          })
-          .catch(err =&gt; {
-            console.warn(err);
-            reject(err);
-          });
-      }
-      else {
-        authClient.token.getWithRedirect({
-          responseType: &apos;token&apos;,
-          scopes: options.scopes
+      var authClient = Okta;
+      authClient.tokenManager.get(&apos;accessToken&apos;)
+        .then(accessToken =&gt; {
+          if (accessToken) {
+            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
+          }
+          else if (location.hash) {
+            authClient.token.parseFromUrl()
+              .then(token =&gt; {
+                authClient.tokenManager.add(&apos;accessToken&apos;, token);
+                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
+              })
+              .catch(err =&gt; {
+                console.warn(err);
+                reject(err);
+              });
+          }
+          else {
+            authClient.token.getWithRedirect({
+              responseType: &apos;token&apos;,
+              scopes: options.scopes
+            });
+            resolve(false);
+          }
         });
-        resolve(false);
-      }
     });
   }
 
@@ -1535,12 +1548,14 @@ export default class Formio {
 }
 
 // Define all the static properties.
+Formio.ignoreCache = false;
 Formio.libraries = {};
 Formio.Promise = Promise;
 Formio.fetch = fetch;
 Formio.Headers = Headers;
 Formio.baseUrl = &apos;https://api.form.io&apos;;
 Formio.projectUrl = Formio.baseUrl;
+Formio.authUrl = &apos;&apos;;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};

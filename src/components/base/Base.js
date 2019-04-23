@@ -801,6 +801,7 @@ export default class BaseComponent extends Component {
       instance: this,
       component: this.component,
       row: this.data,
+      value: ((this.key && this.hasValue()) ? this.dataValue : this.emptyValue),
       rowIndex: this.rowIndex,
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
@@ -906,7 +907,7 @@ export default class BaseComponent extends Component {
     const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = '';
-    values = values || this.dataValue;
+    values = (values && values.length > 0) ? values : this.dataValue;
     _.each(values, (value, index) => {
       const tr = this.ce('tr');
       if (allowReorder) {
@@ -1461,7 +1462,7 @@ export default class BaseComponent extends Component {
   destroyInputs() {
     _.each(this.inputs, (input) => {
       input = this.performInputMapping(input);
-      if (input.mask) {
+      if (input.mask && input.mask.destroy) {
         input.mask.destroy();
       }
       if (input.widget) {
@@ -1758,6 +1759,15 @@ export default class BaseComponent extends Component {
       if (show) {
         element.removeAttribute('hidden');
         element.style.visibility = 'visible';
+        element.style.position = 'relative';
+      }
+      else if (
+        this.parent &&
+        this.parent.parent &&
+        (this.parent.parent.component.type === 'columns') &&
+        this.parent.parent.component.autoAdjust
+      ) {
+        element.style.visibility = 'hidden';
         element.style.position = 'relative';
       }
       else {
@@ -2258,7 +2268,7 @@ export default class BaseComponent extends Component {
 
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: [],
+      value: this.defaultValue,
       data
     }, 'value');
 
@@ -2650,7 +2660,8 @@ export default class BaseComponent extends Component {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
-      lang: this.options.language
+      lang: this.options.language,
+      id: this.key || this.id
     };
 
     if (this.component.placeholder) {

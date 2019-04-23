@@ -1,7 +1,7 @@
 {
   "name": "formiojs",
   "description": "Common js library for client side interaction with <form.io>",
-  "version": "3.16.5",
+  "version": "3.20.0-beta.2",
   "main": "dist/formio.min.js",
   "license": "MIT",
   "homepage": "https://github.com/formio/formio.js",
@@ -13,10 +13,10 @@
     "tests"
   ],
   "dependencies": {
-    "choices.js": "^6.0.3",
-    "dialog-polyfill": "^0.4.10",
+    "choices.js": "^7.0.0",
+    "dialog-polyfill": "^0.5.0",
     "eventemitter2": "^4.1.0",
-    "i18next": "^15.0.7",
+    "i18next": "^15.0.9",
     "json-logic-js": "^1.2.2",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",

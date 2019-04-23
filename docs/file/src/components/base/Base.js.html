@@ -130,8 +130,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -1011,6 +1013,7 @@ export default class BaseComponent extends Component {
       instance: this,
       component: this.component,
       row: this.data,
+      value: ((this.key &amp;&amp; this.hasValue()) ? this.dataValue : this.emptyValue),
       rowIndex: this.rowIndex,
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
@@ -1116,7 +1119,7 @@ export default class BaseComponent extends Component {
     const allowReorder = this.allowReorder;
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
-    values = values || this.dataValue;
+    values = (values &amp;&amp; values.length &gt; 0) ? values : this.dataValue;
     _.each(values, (value, index) =&gt; {
       const tr = this.ce(&apos;tr&apos;);
       if (allowReorder) {
@@ -1671,7 +1674,7 @@ export default class BaseComponent extends Component {
   destroyInputs() {
     _.each(this.inputs, (input) =&gt; {
       input = this.performInputMapping(input);
-      if (input.mask) {
+      if (input.mask &amp;&amp; input.mask.destroy) {
         input.mask.destroy();
       }
       if (input.widget) {
@@ -1968,6 +1971,15 @@ export default class BaseComponent extends Component {
       if (show) {
         element.removeAttribute(&apos;hidden&apos;);
         element.style.visibility = &apos;visible&apos;;
+        element.style.position = &apos;relative&apos;;
+      }
+      else if (
+        this.parent &amp;&amp;
+        this.parent.parent &amp;&amp;
+        (this.parent.parent.component.type === &apos;columns&apos;) &amp;&amp;
+        this.parent.parent.component.autoAdjust
+      ) {
+        element.style.visibility = &apos;hidden&apos;;
         element.style.position = &apos;relative&apos;;
       }
       else {
@@ -2468,7 +2480,7 @@ export default class BaseComponent extends Component {
 
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: [],
+      value: this.defaultValue,
       data
     }, &apos;value&apos;);
 
@@ -2860,7 +2872,8 @@ export default class BaseComponent extends Component {
       name: this.options.name,
       type: this.component.inputType || &apos;text&apos;,
       class: &apos;form-control&apos;,
-      lang: this.options.language
+      lang: this.options.language,
+      id: this.key || this.id
     };
 
     if (this.component.placeholder) {
