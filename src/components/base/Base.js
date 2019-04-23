@@ -1443,6 +1443,11 @@ export default class BaseComponent extends Component {
       return null;
     }
 
+    // Pass along some options.
+    settings.icons = this.options.icons;
+    settings.i18n = this.options.i18n;
+    settings.language = this.options.language;
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(), true);
