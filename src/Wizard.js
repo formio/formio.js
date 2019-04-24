@@ -351,9 +351,9 @@ export default class Wizard extends Webform {
       ]);
 
       const clickable = this.page !== i && clickableFlag;
+      const prevPage = i < this.page;
       let pageClass = 'page-item ';
-      pageClass += (i === this.page) ? 'active' : (clickable ? '' : 'disabled');
-
+      pageClass += (i === this.page) ? 'active' : (clickable ? (prevPage ? 'seen' : '') : 'disabled');
       const pageButton = this.ce('li', {
         class: pageClass,
         style: (clickable) ? 'cursor: pointer;' : ''
