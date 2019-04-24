@@ -718,9 +718,15 @@ export default class Formio {
       headers.append('x-jwt-token', token);
     }
 
+    // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.
+    const headerObj = {};
+    headers.forEach(function(value, name) {
+      headerObj[name] = value;
+    });
+
     let options = {
       method: method,
-      headers: headers,
+      headers: headerObj,
       mode: 'cors'
     };
     if (data) {
@@ -733,7 +739,7 @@ export default class Formio {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
-    const requestToken = options.headers.get('x-jwt-token');
+    const requestToken = options.headers['x-jwt-token'];
     const result = Formio.fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
