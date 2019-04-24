@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.2
+### Fixed
+ - Headers were not being passed properly to fetch requests due to change from whatwg-fetch to fetch-ponyfill.
+
 ## 3.20.1
 ### Fixed
  - Problem where forms configured for "fontawesome" would not show the DateTime calendar icon on the field.
