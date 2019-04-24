@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
+import { sanitize } from 'dompurify';
 import Formio from './Formio';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
@@ -54,9 +55,8 @@ export default class Webform extends NestedComponent {
    */
   /* eslint-disable max-statements */
   constructor() {
-    let element;
-    let options;
-    if (arguments[0] instanceof HTMLElement) {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
       options = arguments[1];
     }
@@ -848,13 +848,32 @@ export default class Webform extends NestedComponent {
     if (this.element) {
       this.build();
     }
+    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
+    this.on('resetForm', () => this.resetValue(), true);
+    this.on('deleteSubmission', () => this.deleteSubmission(), true);
+    this.on('refreshData', () => this.updateValue(), true);
+
     return this.formReady;
   }
 
+  destroy() {
+    this.off('submitButton');
+    this.off('checkValidity');
+    this.off('requestUrl');
+    this.off('resetForm');
+    this.off('deleteSubmission');
+    this.off('refreshData');
+    return super.destroy();
+  }
+
   build(element) {
-    element = element || this.element;
-    if (element) {
-      return this.ready.then(() => super.build(element));
+    if (element || this.element) {
+      return this.ready.then(() => {
+        element = element || this.element;
+        super.build(element);
+      });
     }
     return this.ready;
   }
@@ -863,7 +882,7 @@ export default class Webform extends NestedComponent {
     return super.render(this.renderTemplate('webform', {
       classes: 'formio-form',
       children: this.renderComponents(),
-    }), (this.options.attachMode === 'builder') ? 'builder' : 'form');
+    }), (this.options.attachMode === 'builder') ? 'builder' : 'form', true);
   }
 
   redraw() {
@@ -872,7 +891,7 @@ export default class Webform extends NestedComponent {
       return;
     }
     this.clear();
-    this.element.innerHTML = this.render();
+    this.setContent(this.element, this.render());
     this.attach(this.element);
   }
 
@@ -881,12 +900,6 @@ export default class Webform extends NestedComponent {
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
-    this.on('submitButton', (options) => this.submit(false, options), true);
-    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
-    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
-    this.on('resetForm', () => this.resetValue(), true);
-    this.on('deleteSubmission', () => this.deleteSubmission(), true);
-    this.on('refreshData', () => this.updateValue());
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise;
@@ -931,7 +944,7 @@ export default class Webform extends NestedComponent {
         class: `alert alert-${type}`,
         role: 'alert'
       });
-      this.alert.innerHTML = message;
+      this.setContent(this.alert, message);
     }
     if (!this.alert) {
       return;

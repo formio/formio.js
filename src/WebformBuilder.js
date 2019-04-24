@@ -12,8 +12,19 @@ require('./components/builder');
 
 export default class WebformBuilder extends Component {
 // eslint-disable-next-line max-statements
-  constructor(options) {
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
     super(null, options);
+
+    this.element = element;
+
     this.builderHeight = 0;
     this.schemas = {};
 
@@ -168,7 +179,9 @@ export default class WebformBuilder extends Component {
       }
 
       // Add container to draggable list.
-      this.dragula.containers.push(containerElement);
+      if (this.dragula) {
+        this.dragula.containers.push(containerElement);
+      }
 
       // Since we added a wrapper, need to return the original element so that we can find the components inside it.
       return element.children[0];
@@ -198,10 +211,10 @@ export default class WebformBuilder extends Component {
         removeComponent: 'single',
         editComponent: 'single',
         copyComponent: 'single',
-        pasteComponnt: 'single'
+        pasteComponent: 'single'
       });
 
-      if (component.refs.copyButton) {
+      if (component.refs.copyComponent) {
         new Tooltip(component.refs.copyComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -212,7 +225,7 @@ export default class WebformBuilder extends Component {
           this.copyComponent(component));
       }
 
-      if (component.refs.pasteButton) {
+      if (component.refs.pasteComponent) {
         const pasteToolTip = new Tooltip(component.refs.pasteComponent, {
           trigger: 'hover',
           placement: 'top',
@@ -258,7 +271,16 @@ export default class WebformBuilder extends Component {
   }
 
   createForm(options) {
-    return new Webform(options);
+    this.webform = new Webform(options);
+    if (this.element) {
+      this.loadRefs(this.element, {
+        form: 'single'
+      });
+      if (this.refs.form) {
+        this.webform.element = this.refs.form;
+      }
+    }
+    return this.webform;
   }
 
   /**
@@ -470,6 +492,7 @@ export default class WebformBuilder extends Component {
     else {
       target.formioContainer.push(info);
     }
+    this.emit('addComponent', info);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
@@ -548,7 +571,7 @@ export default class WebformBuilder extends Component {
         'hidden',
         'calculatedValue'
       ])] };
-      this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
+      this.setContent(this.componentEdit.querySelector('[ref="preview"]'), this.preview.render());
     }
 
     // Change the "default value" field to be reflective of this component.
@@ -585,8 +608,8 @@ export default class WebformBuilder extends Component {
     // This is the render step.
     const editFormOptions = _.get(this, 'options.editForm', {});
     this.editForm = new Webform(
-      _.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
       {
+        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
         language: this.options.language,
         ...editFormOptions
       }
@@ -627,11 +650,11 @@ export default class WebformBuilder extends Component {
     ]));
 
     this.componentEdit = this.ce('div');
-    this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
+    this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: componentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview.render(),
-    });
+    }));
 
     this.dialog = this.createModal(this.componentEdit);
 
@@ -748,9 +771,10 @@ export default class WebformBuilder extends Component {
       if (data) {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this._form.components, schema);
-        component.parent.addComponent(schema, false, false, component.element.nextSibling);
+        BuilderUtils.uniquify(this.webform.components, schema);
+        component.parent.addComponent(schema, false, component.element.nextElementSibling.lastElementChild);
         this.form = this.schema;
+        this.emit('saveComponent');
       }
     }
   }

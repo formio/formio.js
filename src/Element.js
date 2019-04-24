@@ -10,7 +10,7 @@ import maskInput from 'vanilla-text-mask';
  * The root component for all elements within the Form.io renderer.
  */
 export default class Element {
-  constructor(options, id) {
+  constructor(options) {
     /**
      * The options for this component.
      * @type {{}}
@@ -27,8 +27,7 @@ export default class Element {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = id || FormioUtils.getRandomComponentId();
-
+    this.id = FormioUtils.getRandomComponentId();
     /**
      * An array of event handlers so that the destry command can deregister them.
      * @type {Array}
@@ -69,7 +68,7 @@ export default class Element {
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
    */
-  on(event, cb) {
+  on(event, cb, internal) {
     if (!this.events) {
       return;
     }
@@ -77,6 +76,7 @@ export default class Element {
 
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
+    cb.internal = internal;
 
     // Register for this event.
     return this.events.on(type, cb);
@@ -166,13 +166,6 @@ export default class Element {
   }
 
   removeEventListeners() {
-    _.each(this.events._events, (events, type) => {
-      _.each(events, (listener) => {
-        if (listener && (this.id === listener.id)) {
-          this.events.off(type, listener);
-        }
-      });
-    });
     this.eventHandlers.forEach(handler => {
       if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
         handler.obj.removeEventListener(handler.type, handler.func);
@@ -183,11 +176,22 @@ export default class Element {
     this.inputMasks = [];
   }
 
+  removeAllEvents() {
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
+      });
+    });
+  }
+
   /**
    * Removes all event listeners attached to this component.
    */
   destroy() {
     this.removeEventListeners();
+    this.removeAllEvents();
   }
 
   /**
@@ -255,7 +259,7 @@ export default class Element {
    * @return {HTMLElement} - The created element.
    */
   ce(type, attr, children = null) {
-    console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
+    // console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
     // Create the element.
     const element = document.createElement(type);
 

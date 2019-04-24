@@ -60,6 +60,10 @@ export default class SignatureComponent extends Input {
     return `${super.className} signature-pad`;
   }
 
+  labelIsHidden() {
+    return true;
+  }
+
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     super.setValue(value, flags);
@@ -82,13 +86,17 @@ export default class SignatureComponent extends Input {
       if (this.refs.canvas) {
         this.refs.canvas.style.display = 'inherit';
       }
-      this.refs.signatureImage.style.display = 'none';
+      if (this.refs.signatureImage) {
+        this.refs.signatureImage.style.display = 'none';
+      }
     }
     else {
       if (this.refs.canvas) {
         this.refs.canvas.style.display = 'none';
       }
-      this.refs.signatureImage.style.display = 'inherit';
+      if (this.refs.signatureImage) {
+        this.refs.signatureImage.style.display = 'inherit';
+      }
     }
   }
 
@@ -98,11 +106,15 @@ export default class SignatureComponent extends Input {
     if (this.signaturePad) {
       if (disabled) {
         this.signaturePad.off();
-        this.refresh.classList.add('disabled');
+        if (this.refs.refresh) {
+          this.refs.refresh.classList.add('disabled');
+        }
       }
       else {
         this.signaturePad.on();
-        this.refresh.classList.remove('disabled');
+        if (this.refs.refresh) {
+          this.refs.refresh.classList.remove('disabled');
+        }
       }
     }
   }

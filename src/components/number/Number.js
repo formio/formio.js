@@ -50,7 +50,7 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    this.decimalLimit = _.get(this.component, 'decimalLimit', getNumberDecimalLimit(this.component));
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -64,7 +64,7 @@ export default class NumberComponent extends Input {
       requireDecimal: _.get(this.component, 'requireDecimal', false),
       thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+      decimalLimit: this.decimalLimit,
       allowNegative: _.get(this.component, 'allowNegative', true),
       allowDecimal: _.get(this.component, 'allowDecimal',
         !(this.component.validate && this.component.validate.integer))
@@ -75,8 +75,12 @@ export default class NumberComponent extends Input {
     return NumberComponent.schema();
   }
 
-  get emptyValue() {
-    return '';
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultValue === 0) {
+      defaultValue = this.component.defaultValue;
+    }
+    return defaultValue;
   }
 
   parseNumber(value) {
@@ -121,7 +125,7 @@ export default class NumberComponent extends Input {
     const val = this.refs.input[index].value;
 
     if (!val) {
-      return '';
+      return undefined;
     }
 
     return this.parseNumber(val);

@@ -46,7 +46,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   get inputInfo() {
     const info = super.inputInfo;
     info.type = this.component.wysiwyg ? 'div' : 'textarea';
-    if (this.component.hasOwnProperty('spellcheck')) {
+    if (this.component.rows) {
       info.attr.rows = this.component.rows;
     }
     return info;
@@ -78,7 +78,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = this.interpolate(value);
     }
     if (element) {
-      element.innerHTML = value;
+      this.setContent(element, value);
     }
   }
 
@@ -162,6 +162,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on('input', () => this.acePlaceholder());
             setTimeout(() => this.acePlaceholder(), 100);
+            this.editor.setValue(this.setConvertedValue(this.dataValue));
             return this.editor;
           });
         break;
@@ -205,25 +206,27 @@ export default class TextAreaComponent extends TextFieldComponent {
             }
 
             this.editor.on('text-change', () => {
-              this.updateValue(null, this.getConvertedValue(this.editor.root.innerHTML));
+              this.updateValue(null, this.getConvertedValue(this.sanitize(this.editor.root.innerHTML)));
             });
 
+            this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
             return this.editor;
           });
         break;
       case 'ckeditor':
         this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', true)
           .then((ClassicEditor) => {
-            ClassicEditor.create(element, settings).then(editor => {
+            return ClassicEditor.create(element, settings).then(editor => {
               editor.model.document.on('change', () => this.updateValue(null, editor.data.get()));
               this.editor = editor;
+              this.editor.data.set(this.setConvertedValue(this.dataValue));
+              return this.editor;
             });
-            return this.editor;
           });
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
-          this.updateValue(null, element.value, index);
+          this.updateValue(null, null, index);
         });
     }
 
@@ -358,7 +361,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.htmlView) {
       // For HTML view, just view the contents.
       if (this.input) {
-        this.input.innerHTML = this.interpolate(value);
+        this.setContent(this.input, this.interpolate(value));
       }
     }
     else if (this.editorReady) {

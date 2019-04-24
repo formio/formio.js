@@ -105,7 +105,6 @@ export default class TabsComponent extends NestedComponent {
 
   detach(all) {
     super.detach(all);
-    delete this.columns;
   }
 
   /**

@@ -1,9 +1,11 @@
 import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import { sanitize } from 'dompurify';
+
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
-import templates from '../../../templates';
+import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 
@@ -179,7 +181,7 @@ export default class Component extends Element {
       template: 'bootstrap3',
       renderMode: 'form',
       attachMode: 'full'
-    }, options || {}), (component && component.id) ? component.id : null);
+    }, options || {}));
 
     // Save off the original component.
     this.originalComponent = _.cloneDeep(component);
@@ -369,11 +371,7 @@ export default class Component extends Element {
   }
 
   set template(template) {
-    // Only import templates once.
-    if (!this.options.templateLoaded) {
-      this.options.templates = _.merge({}, templates[template], this.options.templates || {});
-      this.options.templateLoaded = true;
-    }
+    Templates.template = template;
   }
 
   get labelInfo() {
@@ -397,7 +395,8 @@ export default class Component extends Element {
   }
 
   init() {
-    // Can be overridden
+    // Attach the refresh on events.
+    this.attachRefreshOn();
   }
 
   destroy() {
@@ -551,7 +550,7 @@ export default class Component extends Element {
   }
 
   get transform() {
-    return this.options.templates ? this.options.templates.transform.bind(this.options.templates) : (type, value) => value;
+    return Templates.current.hasOwnProperty('transform') ? Templates.current.transform.bind(Templates.current) : (type, value) => value;
   }
 
   getTemplate(names, modes) {
@@ -562,24 +561,24 @@ export default class Component extends Element {
     }
 
     for (const name of names) {
-      if (this.options.templates[name]) {
+      if (Templates.current[name]) {
         for (const mode of modes) {
-          if (this.options.templates[name][mode]) {
-            return this.options.templates[name][mode];
+          if (Templates.current[name][mode]) {
+            return Templates.current[name][mode];
           }
         }
       }
     }
     // Default back to bootstrap if not defined.
     const name = names[names.length - 1];
-    if (!templates['bootstrap'][name]) {
+    if (!Templates.templates['bootstrap'][name]) {
       return `Unknown template: ${name}`;
     }
     for (const mode of modes) {
-      if (templates['bootstrap'][name][mode]) {
-        return templates['bootstrap'][name][mode];
+      if (Templates.templates['bootstrap'][name][mode]) {
+        return Templates.templates['bootstrap'][name][mode];
       }
-      return templates['bootstrap'][name]['form'];
+      return Templates.templates['bootstrap'][name]['form'];
     }
   }
 
@@ -614,6 +613,21 @@ export default class Component extends Element {
       data,
       mode
     );
+  }
+
+  /**
+   * Sanitize an html string.
+   *
+   * @param string
+   * @returns {*}
+   */
+  sanitize(dirty) {
+    return sanitize(dirty, {
+      ADD_ATTR: ['ref'],
+      USE_PROFILES: {
+        html: true
+      }
+    });
   }
 
   /**
@@ -711,11 +725,11 @@ export default class Component extends Element {
 
   build(element) {
     this.empty(element);
-    element.innerHTML = this.render();
+    this.setContent(element, this.render());
     this.attach(element);
   }
 
-  render(children = `Unknown component: ${this.component.type}`) {
+  render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     this.rendered = true;
     return this.renderTemplate('component', {
       visible: this.visible,
@@ -723,7 +737,7 @@ export default class Component extends Element {
       classes: this.className,
       styles: this.customStyle,
       children
-    });
+    }, topLevel);
   }
 
   attach(element) {
@@ -749,9 +763,6 @@ export default class Component extends Element {
         title: title.replace(/(?:\r\n|\r|\n)/g, '<br />'),
       });
     });
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
 
     // Attach logic.
     this.attachLogic();
@@ -804,7 +815,7 @@ export default class Component extends Element {
       ) {
         this.refresh(event.changed.value);
       }
-    });
+    }, true);
   }
 
   attachRefreshOn() {
@@ -907,7 +918,7 @@ export default class Component extends Element {
     const self = this;
 
     const dialog = this.ce('div');
-    dialog.innerHTML = this.renderTemplate('dialog');
+    this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
     dialog.refs = {};
@@ -1029,8 +1040,8 @@ export default class Component extends Element {
   }
 
   iconClass(name, spinning) {
-    const iconset = this.options.iconset || this.options.templates.defaultIconset;
-    return this.options.templates ? this.options.templates.iconClass(iconset, name, spinning) : name;
+    const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
+    return Templates.current.hasOwnProperty('iconClass') ? Templates.current.iconClass(iconset, name, spinning) : name;
   }
 
   /**
@@ -1061,6 +1072,14 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
+  setContent(element, content) {
+    if (element instanceof HTMLElement) {
+      element.innerHTML = this.sanitize(content);
+      return true;
+    }
+    return false;
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
@@ -1070,7 +1089,7 @@ export default class Component extends Element {
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
-    this.element.outerHTML = this.render();
+    this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
 
     this.attach(this.element);
@@ -1267,9 +1286,9 @@ export default class Component extends Element {
     }
 
     if (this.refs.messageContainer) {
-      this.refs.messageContainer.innerHTML = this.renderTemplate('message', {
+      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
         message
-      });
+      }));
       // const errorMessage = this.ce('p', {
       //   class: 'help-block'
       // });
@@ -1564,7 +1583,7 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.defaultValue;
+      const defaultValue = this.component.multiple ? [] : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
@@ -1739,6 +1758,9 @@ export default class Component extends Element {
     if (error && (dirty || !this.pristine)) {
       const message = this.invalidMessage(data, dirty, true);
       this.setCustomValidity(message, dirty);
+    }
+    else {
+      this.setCustomValidity('');
     }
     return !error;
   }
@@ -1945,7 +1967,7 @@ export default class Component extends Element {
             }
             this.redraw();
           }
-        });
+        }, true);
       }
     });
   }
@@ -1983,7 +2005,7 @@ export default class Component extends Element {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on('render', () => this.focus());
+      this.on('render', () => this.focus(), true);
     }
   }
 

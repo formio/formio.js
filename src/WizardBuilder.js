@@ -2,8 +2,17 @@ import WebformBuilder from './WebformBuilder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
-  constructor(...args) {
-    super(...args);
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
+    super(null, options);
+    // this.element = element;
 
     this._form = {
       components: [
@@ -15,10 +24,16 @@ export default class WizardBuilder extends WebformBuilder {
         }
       ]
     };
+
+    this.page = 0;
   }
 
   get pages() {
     return _.filter(this._form.components, { type: 'panel' });
+  }
+
+  get currentPage() {
+    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
   }
 
   set form(value) {
@@ -41,6 +56,10 @@ export default class WizardBuilder extends WebformBuilder {
     return this._form;
   }
 
+  get schema() {
+    return this._form;
+  }
+
   render() {
     return this.renderTemplate('builderWizard', {
       sidebar: this.renderTemplate('builderSidebar', {
@@ -57,7 +76,6 @@ export default class WizardBuilder extends WebformBuilder {
       addPage: 'multiple',
       gotoPage: 'multiple',
     });
-    super.attach(element);
 
     this.refs.addPage.forEach(link => {
       this.addEventListener(link, 'click', (event) => {
@@ -72,6 +90,8 @@ export default class WizardBuilder extends WebformBuilder {
         this.setPage(index);
       });
     });
+
+    return super.attach(element);
   }
 
   rebuild() {
@@ -94,6 +114,14 @@ export default class WizardBuilder extends WebformBuilder {
     };
     this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
+    this.rebuild();
+  }
+
+  setPage(index) {
+    if (index === this.page) {
+      return;
+    }
+    this.page = index;
     this.rebuild();
   }
 }

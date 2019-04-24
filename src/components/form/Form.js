@@ -223,7 +223,7 @@ export default class FormComponent extends Component {
   subscribe() {
     this.on('nosubmit', value => {
       this.nosubmit = value;
-    });
+    }, true);
   }
 
   destroy() {
@@ -288,6 +288,11 @@ export default class FormComponent extends Component {
 
     if (this.subFormLoaded) {
       return this.subFormReady;
+    }
+
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
     }
 
     // Determine if we already have a loaded form object.

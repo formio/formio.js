@@ -162,11 +162,11 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer) {
-      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.renderTemplate('selectOption', {
+      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
         selected: this.dataValue === option.value,
         option,
         attrs,
-      }));
+      })));
     }
   }
 
@@ -176,9 +176,7 @@ export default class SelectComponent extends Field {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        return currentChoices.reduce((defaultAdded, choice) => {
-          return (this.addCurrentChoices(choice, items) || defaultAdded);
-        }, false);
+        return this.addCurrentChoices(currentChoices, items);
       }
       else if (!this.component.multiple) {
         this.addPlaceholder();
@@ -278,6 +276,7 @@ export default class SelectComponent extends Field {
         _.isEqual(this.currentItems[1], items[1])
       ) {
         this.stopInfiniteScroll();
+        this.loading = false;
         return;
       }
 
@@ -402,7 +401,7 @@ export default class SelectComponent extends Field {
 
     // Add filter capability
     if (this.component.filter) {
-      url += `&${this.interpolate(this.component.filter)}`;
+      url += (!url.includes('?') ? '?' : '&') + this.interpolate(this.component.filter);
     }
 
     // Make the request.
@@ -410,9 +409,10 @@ export default class SelectComponent extends Field {
     this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
+        this.loading = false;
         const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
         this.setItems(response, !!search);
-        if (scrollTop) {
+        if (scrollTop && this.choices) {
           this.choices.choiceList.scrollToTop();
         }
       })
@@ -724,7 +724,8 @@ export default class SelectComponent extends Field {
 
     // Add value options.
     if (this.addValueOptions()) {
-      this.restoreValue();
+      this.choices.setChoiceByValue(this.dataValue);
+      // this.restoreValue();
     }
 
     // Force the disabled state with getters and setters.
@@ -776,9 +777,17 @@ export default class SelectComponent extends Field {
    * @param {*} value
    * @param {Array} items
    */
-  addCurrentChoices(value, items) {
-    if (value) {
+  addCurrentChoices(values, items, keyValue) {
+    if (!values) {
+      return false;
+    }
+    const notFoundValuesToAdd = [];
+    const added = values.reduce((defaultAdded, value) => {
+      if (!value) {
+        return defaultAdded;
+      }
       let found = false;
+
       // Make sure that `items` and `this.selectOptions` points
       // to the same reference. Because `this.selectOptions` is
       // internal property and all items are populated by
@@ -792,26 +801,34 @@ export default class SelectComponent extends Field {
             found = true;
             return false;
           }
-          found |= _.isEqual(this.itemValue(choice, isSelectOptions), value);
+          const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
+          found |= _.isEqual(itemValue, value);
           return found ? false : true;
         });
       }
 
       // Add the default option if no item is found.
       if (!found) {
-        if (this.choices) {
-          this.choices.setChoices([{
-            value: this.itemValue(value),
-            label: this.itemTemplate(value)
-          }], 'value', 'label', true);
-        }
-        else {
-          this.addOption(this.itemValue(value), this.itemTemplate(value));
-        }
+        notFoundValuesToAdd.push({
+          value: this.itemValue(value),
+          label: this.itemTemplate(value)
+        });
         return true;
       }
+      return found || defaultAdded;
+    }, false);
+
+    if (notFoundValuesToAdd.length) {
+      if (this.choices) {
+        this.choices.setChoices(notFoundValuesToAdd, 'value', 'label');
+      }
+      else {
+        notFoundValuesToAdd.map(notFoundValue => {
+          this.addOption(notFoundValue.value, notFoundValue.label);
+        });
+      }
     }
-    return false;
+    return added;
   }
 
   getView(data) {
@@ -847,8 +864,8 @@ export default class SelectComponent extends Field {
       value = this.component.multiple ? values : values.shift();
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
-    if (value === undefined || value === null) {
-      value = '';
+    if (value === undefined || value === null || value === '') {
+      value = this.dataValue;
     }
     return value;
   }
@@ -892,20 +909,16 @@ export default class SelectComponent extends Field {
     // Add the value options.
     this.addValueOptions();
 
-    if (!this.element) {
-      return;
-    }
-
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
         const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
-        _.each(currentChoices, (choice) => {
-          this.addCurrentChoices(choice, this.selectOptions);
-        });
-        this.choices.setChoices(this.selectOptions, 'value', 'label', true).setChoiceByValue(value);
+        if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
+          this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+        }
+        this.choices.setChoiceByValue(value);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();

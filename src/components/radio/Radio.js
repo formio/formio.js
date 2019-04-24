@@ -64,7 +64,7 @@ export default class RadioComponent extends Field {
     if (this.viewOnly) {
       return this.dataValue;
     }
-    let value = '';
+    let value = this.dataValue;
     if (!this.refs.input) {
       return value;
     }

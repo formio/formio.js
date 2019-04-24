@@ -77,6 +77,10 @@ export default class ColumnsComponent extends NestedComponent {
     this.rows = this.groupByRow();
   }
 
+  labelIsHidden() {
+    return true;
+  }
+
   render() {
     return super.render(this.renderTemplate('columns', {
       columnKey: this.columnKey,
