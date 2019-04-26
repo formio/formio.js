@@ -5,6 +5,7 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
+import 'custom-event-polyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
