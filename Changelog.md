@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.3
+### Fixed
+ - IE issues by adding a CustomEvent polyfill.
+ - Possible problems where a plugin could be registered more than once.
+
+### Changed
+ - Upgraded fetch-mock@7.3.3, i18next@15.1.0, gulp-clean-css@4.2.0
+
 ## 3.20.2
 ### Fixed
  - Headers were not being passed properly to fetch requests due to change from whatwg-fetch to fetch-ponyfill.

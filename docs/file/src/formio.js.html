@@ -217,6 +217,7 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from &apos;native-promise-only&apos;;
 import fetchPonyfill from &apos;fetch-ponyfill&apos;;
+import &apos;custom-event-polyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
 import copy from &apos;shallow-copy&apos;;
@@ -930,9 +931,15 @@ export default class Formio {
       headers.append(&apos;x-jwt-token&apos;, token);
     }
 
+    // The fetch-ponyfill can&apos;t handle a proper Headers class anymore. Change it back to an object.
+    const headerObj = {};
+    headers.forEach(function(value, name) {
+      headerObj[name] = value;
+    });
+
     let options = {
       method: method,
-      headers: headers,
+      headers: headerObj,
       mode: &apos;cors&apos;
     };
     if (data) {
@@ -945,7 +952,7 @@ export default class Formio {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
-    const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
+    const requestToken = options.headers[&apos;x-jwt-token&apos;];
     const result = Formio.fetch(url, options)
       .then((response) =&gt; {
         // Allow plugins to respond.
@@ -1254,10 +1261,19 @@ export default class Formio {
   }
 
   static registerPlugin(plugin, name) {
-    Formio.plugins.push(plugin);
-    Formio.plugins.sort((a, b) =&gt; (b.priority || 0) - (a.priority || 0));
-    plugin.__name = name;
-    (plugin.init || Formio.noop).call(plugin, Formio);
+    let found = false;
+    Formio.plugins.forEach((existing) =&gt; {
+      if (existing.__name === name) {
+        found = true;
+      }
+    });
+    if (!found) {
+      // Do not register already registered plugins.
+      Formio.plugins.push(plugin);
+      Formio.plugins.sort((a, b) =&gt; (b.priority || 0) - (a.priority || 0));
+      plugin.__name = name;
+      (plugin.init || Formio.noop).call(plugin, Formio);
+    }
   }
 
   static getPlugin(name) {
