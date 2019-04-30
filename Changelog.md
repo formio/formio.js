@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.4
+### Added
+ - A way for the SAML SSO to force the authentication to always trigger against the SAML provider.
+
 ## 3.20.3
 ### Fixed
  - IE issues by adding a CustomEvent polyfill.

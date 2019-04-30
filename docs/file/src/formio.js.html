@@ -1409,8 +1409,11 @@ export default class Formio {
       return retVal;
     }
 
-    // Only continue if we are not authenticated.
-    if (Formio.getToken()) {
+    if (options.forceAuth) {
+      Formio.setUser(null);
+    }
+    else if (Formio.getToken()) {
+      // If we are not forcing the authentication and we have a token, then return here.
       return false;
     }
 
