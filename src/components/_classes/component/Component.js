@@ -1539,8 +1539,11 @@ export default class Component extends Element {
     if (this.component.multiple && !Array.isArray(value)) {
       value = value ? [value] : [];
     }
-    // this.buildRows(value);
+
     const isArray = Array.isArray(value);
+    if (isArray && this.refs.input.length !== value.length) {
+      this.redraw();
+    }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
