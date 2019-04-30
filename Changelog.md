@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.20.4
 ### Added
  - A way for the SAML SSO to force the authentication to always trigger against the SAML provider.
+ 
+### Changed
+ - Upgraded @babel/cli@7.4.4, @babel/core@7.4.4, @babel/polyfill@7.4.4, @babel/preset-env@7.4.4, del@4.1.1
 
 ## 3.20.3
 ### Fixed
