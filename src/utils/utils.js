@@ -50,8 +50,7 @@ export function evaluate(func, args, ret, tokenize) {
   }
 
   // Deeply cloning the form is expensive - only do it if it looks like the function needs it
-  if ((typeof func === 'string'   && func.includes('form')) ||
-      (typeof func === 'function' && func.toString().includes('form'))) {
+  if (func.toString().includes('form')) {
     args.form = _.cloneDeep(args.form);
   }
   else {
