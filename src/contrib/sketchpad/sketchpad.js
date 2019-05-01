@@ -623,7 +623,7 @@ export default class Sketchpad extends Base {
         e.preventDefault();
 
         const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-        const touch = e.originalEvent.changedTouches[0];
+        const touch = e.changedTouches[0];
         //change cursor
         let cursor = 'default';
         if (this.modes[this.state.mode].cursor) {
@@ -641,7 +641,7 @@ export default class Sketchpad extends Base {
           e.preventDefault();
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           if (this.modes[this.state.mode].drag) {
             this.modes[this.state.mode].drag(this.getActualCoordinates({
               x: touch.pageX - offset.left,
@@ -659,7 +659,7 @@ export default class Sketchpad extends Base {
             .removeEventListener('touchend', touchEnd);
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           //change cursor
           let cursor = 'default';
           if (this.modes[this.state.mode].cursor) {
