@@ -1,18 +1,35 @@
 import _ from 'lodash';
 
 export default class Node {
-  constructor(parent, node = {}, isNew = true) {
-    const { data = {}, children = [] } = node;
+  constructor(
+    parent,
+    {
+      data = {},
+      children = [],
+    } = {},
+    {
+      createComponents,
+      isNew = true,
+      removeComponents,
+    } = {},
+  ) {
     this.parent = parent;
-    this.level = this.parent ? this.parent.level + 1 : 0;
-    this.persistentData = data;
+    this.previousData = {};
+    this.persistentData = _.cloneDeep(data);
     this.new = isNew;
+    this.createComponents = createComponents;
+    this.removeComponents = removeComponents;
     this.revertAvailable = false;
     this.editing = false;
     this.collapsed = false;
     this.components = [];
-    this.children = children;
+
     this.resetData();
+    this.children = children.map((child) => new Node(this, child, {
+      createComponents,
+      isNew: false,
+      removeComponents,
+    }));
 }
 
   get value() {
@@ -43,6 +60,7 @@ export default class Node {
   get hasChildren() {
     return Array.isArray(this.children) && this.children.length > 0;
   }
+
   eachChild(iteratee) {
     iteratee(this);
     this.children.forEach((child) => child.eachChild(iteratee));
@@ -61,7 +79,11 @@ export default class Node {
       return null;
     }
 
-    const child = new Node(this);
+    const child = new Node(this, {}, {
+      createComponents: this.createComponents,
+      isNew: true,
+      removeComponents: this.removeComponents,
+    });
     this.children = this.children.concat(child);
     return child;
   }
@@ -113,6 +135,7 @@ export default class Node {
   remove() {
     this.parent.removeChild(this);
     this.parent = null;
+    this.clearComponents();
     return this;
   }
 
@@ -126,13 +149,35 @@ export default class Node {
   }
 
   commitData() {
-    this.previousData = _.clone(this.persistentData);
+    this.previousData = this.persistentData;
     this.persistentData = _.cloneDeep(this.data);
+    this.clearComponents();
     return this;
   }
 
   resetData() {
     this.data = _.cloneDeep(this.persistentData);
+    this.updateComponentsContext();
     return this;
+  }
+
+  updateComponentsContext() {
+    if (this.changing) {
+      this.instantiateComponents();
+    }
+    else {
+      this.clearComponents();
+    }
+
+    return this;
+  }
+
+  instantiateComponents() {
+    this.components = this.createComponents(this.data);
+  }
+
+  clearComponents() {
+    this.removeComponents(this.components);
+    this.components = [];
   }
 }

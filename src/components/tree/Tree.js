@@ -1,264 +1,524 @@
-// import isEmpty from 'lodash/isEmpty';
 import _ from 'lodash';
-import flow from 'lodash/flow';
 import Component from '../_classes/component/Component';
+import Components from '../Components';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Node from './Node';
 
 export default class TreeComponent extends NestedComponent {
+  static schema(...extend) {
+    return NestedComponent.schema({
+      label: 'Tree',
+      key: 'tree',
+      type: 'tree',
+      clearOnHide: true,
+      input: true,
+      tree: true,
+      components: [
+        {
+          type: 'textfield',
+          input: true,
+          key: 'field0',
+          label: 'Field 0',
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'field1',
+          label: 'Field 1',
+        },
+      ],
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Tree',
+      icon: 'fa fa-indent',
+      group: 'data',
+      weight: 30,
+      schema: TreeComponent.schema(),
+    };
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'tree';
-    this.renderTree = this.renderTree.bind(this);
-    this.renderChildNodes = this.renderChildNodes.bind(this);
-    this.renderTreeItem = this.renderTreeItem.bind(this);
-    this.renderForm = this.renderForm.bind(this);
   }
 
   get emptyValue() {
-    return {};
+    return {
+      data: {
+        field0: 1,
+        field1: 2,
+      },
+      children: [
+        {
+          data: {
+            field0: 3,
+            field1: 4,
+          },
+          children: [
+            {
+              data: {
+                field0: 7,
+                field1: 8,
+              },
+              children: [],
+            }
+          ],
+        },
+        {
+          data: {
+            field0: 5,
+            field1: 6,
+          },
+          children: [],
+        },
+      ],
+    };
+  }
+
+  get viewComponents() {
+    if (!this.viewComponentsInstantiated) {
+      this.viewComponentsInstantiated = true;
+      this._viewComponents = this.createComponents({});
+    }
+
+    return this._viewComponents;
   }
 
   init() {
-    this.component.components = [{
-      type: 'textfield',
-      input: true,
-      key: 'field0',
-      label: 'Field 0'
-    }, {
-      type: 'textfield',
-      input: true,
-      key: 'field1',
-      label: 'Field 1'
-    }];
-
-    this.components = this.components || [];
+    this.components = [];
+    this.componentOptions = {
+      ...this.options,
+      parent: this,
+      root: this.root || this,
+    };
+    this.setRoot();
+    this.viewComponentsInstantiated = false;
+    this._viewComponents = [];
   }
 
-  /**
-   * Pure version of `addComponents`;
-   */
-  createComponents(...args) {
-    // temporary context to collect all componets
-    const context = Object.create(this);
-    context.components = [];
-    super.addComponents.apply(context, args);
-    return context.components;
+  destroy() {
+    super.destroy();
+    this.removeComponents(this._viewComponents);
   }
 
-  updateNodeData(node = {}, data) {
-    if (this.hasChanged(node.persistentData, data)) {
-      node.data = data;
-      node.commitData();
-
-      if (node.hasData) {
-        node.components.forEach(cmp => {
-          this.setNestedValue(cmp, node.data, null, false);
-        });
-      }
-    }
-
-    return node;
-  }
-
-  updateNodeChildren(node = {}, spec = {}) {
-    const oldChildren = _.get(node, 'children', []);
-    const newChildren = _.get(spec, 'children', []);
-    const nextChildren = newChildren.map(
-      (next, index) => {
-        const prev = oldChildren[index];
-
-        // if we already have node, just update it
-        if (prev instanceof Node) {
-          return prev;
-        }
-        // if there new node, create new instance
-        else {
-          return this.createNode(node, next, false);
-        }
-      }
+  createComponents(data) {
+    return this.component.components.map(
+      (component) => Components.create(component, this.componentOptions, data),
     );
-
-    // filter nodes, that should be destroyed
-    const rest = oldChildren.filter(ch => !nextChildren.includes(ch));
-    rest.forEach(this.removeNode);
-    node.children = nextChildren;
-
-    return node;
   }
 
-  addNodeCs(node) {
-    node.components = this.createComponents(node.data);
-
-    return node;
+  removeComponents(components) {
+    return components.map((component) => component.destroy());
   }
 
-  updateNode(node = {}, spec = {}) {
-    const { children =  [] } = spec;
-    this.updateNodeChildren(node, spec);
-    this.updateNodeData(node, spec.data);
+  interateNodeComponents(components, fn) {
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
 
-    if (node.hasData && _.isEmpty(node.components)) {
-      this.addNodeCs(node);
-    }
+      if (typeof component.everyComponent === 'function') {
+        if (component.everyComponent(fn) === false) {
+          return false;
+        }
+      }
+    });
+  }
 
-    children.forEach((childSpec, index) => {
-      this.updateNode(node.children[index], childSpec);
+  flattenNodeComponents(components) {
+    const result = {};
+
+    this.interateNodeComponents(components, (component) => {
+      result[component.key] = component;
     });
 
-    return node;
+    return result;
   }
 
-  createNode(parent, spec, isNew) {
-    const { children = [], ...nodespec } = spec;
-    const node = new Node(parent, nodespec, isNew);
-    node.children = children.map(child => {
-      return this.createNode(node, child, false);
-    });
+  // updateNodeData(node = {}, data) {
+  //   if (this.hasChanged(node.persistentData, data)) {
+  //     node.data = data;
+  //     node.commitData();
 
-    return node;
-  }
+  //     if (node.hasData) {
+  //       node.components.forEach(cmp => {
+  //         this.setNestedValue(cmp, node.data, null, false);
+  //       });
+  //     }
+  //   }
+
+  //   return node;
+  // }
+
+  // updateNodeChildren(node = {}, spec = {}) {
+  //   const oldChildren = _.get(node, 'children', []);
+  //   const newChildren = _.get(spec, 'children', []);
+  //   const nextChildren = newChildren.map(
+  //     (next, index) => {
+  //       const prev = oldChildren[index];
+
+  //       // if we already have node, just update it
+  //       if (prev instanceof Node) {
+  //         return prev;
+  //       }
+  //       // if there new node, create new instance
+  //       else {
+  //         return this.createNode(node, next, false);
+  //       }
+  //     }
+  //   );
+
+  //   // filter nodes, that should be destroyed
+  //   const rest = oldChildren.filter(ch => !nextChildren.includes(ch));
+  //   rest.forEach(this.removeNode);
+  //   node.children = nextChildren;
+
+  //   return node;
+  // }
+
+  // addNodeCs(node) {
+  //   node.components = this.createComponents(node.data);
+
+  //   return node;
+  // }
+
+  // updateNode(node = {}, spec = {}) {
+  //   const { children =  [] } = spec;
+  //   this.updateNodeChildren(node, spec);
+  //   this.updateNodeData(node, spec.data);
+
+  //   if (node.hasData && _.isEmpty(node.components)) {
+  //     this.addNodeCs(node);
+  //   }
+
+  //   children.forEach((childSpec, index) => {
+  //     this.updateNode(node.children[index], childSpec);
+  //   });
+
+  //   return node;
+  // }
 
   render() {
+    if (this.options.builder) {
+      return super.render();
+    }
+
     return super.render(this.renderTree(this.tree));
   }
 
-  renderTree(node = {}) {
-    const children = node.hasChildren && this.renderChildNodes(node.children);
-    const form = (node.changing || node.hasData) && this.renderForm(node);
+  renderTree(node = {}, odd = true) {
+    const childNodes = (node.hasChildren && !node.collapsed)
+      ? this.renderChildNodes(node.children, !odd)
+      : [];
+    const content = node.changing
+      ? this.renderEdit(node)
+      : this.renderView(node);
 
     return this.renderTemplate('tree', {
-      children,
-      form,
-      level: node.level,
-      isRoot: node.isRoot,
+      odd,
+      childNodes,
+      content,
       node,
     });
   }
 
-  renderChildNodes(nodes = []) {
-    return this.renderTemplate('components', {
-      children: nodes.map(flow([this.renderTree, this.renderTreeItem]))
+  renderChildNodes(nodes = [], odd) {
+    return nodes.map((node) => this.renderTree(node, odd));
+  }
+
+  renderEdit(node = {}) {
+    return this.renderTemplate('treeEdit', {
+      children: this.renderComponents(node.components),
+      node,
     });
   }
 
-  renderTreeItem(children) {
-    return this.renderTemplate('treeItem', { children });
-  }
-
-  renderForm(node = {}) {
-    if (node.changing) {
-      return this.renderTemplate(
-        'treeEdit',
-        { children: this.renderComponents(node.components) }
-      );
-    }
-
+  renderView(node = {}) {
     return this.renderTemplate('treeView', {
-      views: node.components.map(cmp => cmp.getView(cmp.dataValue)),
-      readOnly: this.options.readOnly,
-      revertAvailable: node.revertAvailable,
+      values: this.viewComponents.map((component) => {
+        component.data = node.data;
+        return component.getView(component.dataValue);
+      }),
+      nodeData: node.data,
+      node,
     });
   }
 
   attach(element) {
+    if (this.options.builder) {
+      return super.attach(element);
+    }
+
     this.loadRefs(element, {
-      root: 'single'
+      root: 'single',
     });
 
     return Promise.all([
       super.attach(element),
-      this.attachNode(this.refs.root, this.tree)
+      this.attachNode(this.refs.root, this.tree),
     ]);
   }
 
   attachNode(element, node) {
-    let formPromise = Promise.resolve();
-    let childPromise = Promise.resolve();
+    let componentsPromise = Promise.resolve();
+    let childrenPromise = Promise.resolve();
 
-    node.refs = _.reduce(element.children, (refs, elt) => {
-      return { ...refs, [elt.getAttribute('ref')]: elt };
-    }, {});
+    node.refs = _.reduce(
+      element.children,
+      (refs, child) => (
+        child.hasAttribute('ref')
+          ? {
+            ...refs,
+            [child.getAttribute('ref')]: child,
+          }
+          : refs
+      ),
+      {},
+    );
 
-    this.loadRefs.call(node, node.refs.nodeActions, {
-      add: 'single'
-    });
-
-    if (node.refs.nodeForm) {
-      this.loadRefs.call(node, node.refs.nodeForm, {
-        formActionSave: 'single',
-        formActionCancel: 'single'
-      });
+    if (node.refs.content) {
+      this.attachActions(node);
+      componentsPromise = this.attachComponents(node);
     }
 
-    if (node.refs.add) {
-      this.addEventListener(node.refs.add, 'click', () => {
+    if (node.refs.childNodes) {
+      childrenPromise = this.attachChildren(node);
+    }
+
+    return Promise.all([
+      componentsPromise,
+      childrenPromise,
+    ]);
+  }
+
+  attachActions(node) {
+    this.loadRefs.call(node, node.refs.content, {
+      addChild: 'single',
+      cancelNode: 'single',
+      editNode: 'single',
+      removeNode: 'single',
+      revertNode: 'single',
+      saveNode: 'single',
+      toggleNode: 'single',
+    });
+
+    if (node.refs.addChild) {
+      this.addEventListener(node.refs.addChild, 'click', () => {
         this.addChild(node);
       });
     }
 
-    if (node.refs.formActionSave) {
-      this.addEventListener(node.refs.formActionSave, 'click', () => {
-        this.save(node);
+    if (node.refs.cancelNode) {
+      this.addEventListener(node.refs.cancelNode, 'click', () => {
+        this.cancelNode(node);
       });
     }
 
-    if (node.refs.nodeForm) {
-      formPromise = this.attachComponents(node.refs.nodeForm, node.components);
+    if (node.refs.editNode) {
+      this.addEventListener(node.refs.editNode, 'click', () => {
+        this.editNode(node);
+      });
     }
 
-    if (node.refs.nodeChildren) {
-      const nodeElements = _.map(node.refs.nodeChildren.children, li => li.firstChild);
-      childPromise = Promise.all(
-        nodeElements.map(
-          (elt, index) => this.attachNode(elt, node.children[index])
-        )
-      );
+    if (node.refs.removeNode) {
+      this.addEventListener(node.refs.removeNode, 'click', () => {
+        this.removeNode(node);
+      });
     }
 
-    return Promise.all([
-      formPromise,
-      childPromise
-    ]);
+    if (node.refs.revertNode) {
+      this.addEventListener(node.refs.revertNode, 'click', () => {
+        this.revertNode(node);
+      });
+    }
+
+    if (node.refs.saveNode) {
+      this.addEventListener(node.refs.saveNode, 'click', () => {
+        this.saveNode(node);
+      });
+    }
+
+    if (node.refs.toggleNode) {
+      this.addEventListener(node.refs.toggleNode, 'click', () => {
+        this.toggleNode(node);
+      });
+    }
+  }
+
+  attachComponents(node) {
+    this.loadRefs.call(node, node.refs.content, {
+      nodeEdit: 'single',
+    });
+
+    return node.refs.nodeEdit
+      ? super.attachComponents(node.refs.nodeEdit, node.components)
+      : Promise.resolve();
+  }
+
+  attachChildren(node) {
+    const childElements = node.refs.childNodes.children;
+
+    return Promise.all(
+      _.map(
+        childElements,
+        (childElement, index) => this.attachNode(childElement, node.children[index]),
+      ),
+    );
   }
 
   setValue(value) {
-    this.dataValue = value;
-
-    if (!(this.tree instanceof Node)) {
-      this.tree = this.createNode(null, this.dataValue, false);
-    }
-
-    this.tree = this.updateNode(this.tree, this.dataValue);
+    this.updateValue({}, value);
+    this.setRoot();
   }
 
-  // updateValue(...args) {
-  //   // super.updateValue(...args);
-  //   // this.setValue(this.tree.value);
-  //   // this.redraw();
-  // }
+  addChild(parent) {
+    if (this.options.readOnly || parent.new) {
+      return;
+    }
 
-  save(node) {
-    node.save();
-    this.updateValue();
-    this.redraw();
+    this.hook('tree.addChild', {
+      parent,
+      component: this,
+    }, () => {
+      const child = parent.addChild();
+      this.redraw();
+
+      return child;
+    });
+  }
+
+  cancelNode(node) {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    this.hook('tree.cancelNode', {
+      node,
+      component: this,
+    }, () => {
+      if (node.isRoot) {
+        this.removeRoot();
+      }
+      else {
+        node.cancel();
+        this.redraw();
+      }
+
+      return node;
+    });
+  }
+
+  editNode(node) {
+    if (this.options.readOnly || node.new) {
+      return;
+    }
+
+    this.hook('tree.editNode', {
+      node,
+      component: this,
+    }, () => {
+      node.edit();
+      this.redraw();
+
+      return node;
+    });
   }
 
   removeNode(node) {
-    const { components = [] } = node;
-    node.remove();
-    components.forEach(cmp => cmp.destroy());
-  }
-
-  addChild(parentNode) {
-    const child = parentNode.addChild();
-
-    if (child) {
-      this.addNodeCs(child);
+    if (this.options.readOnly || node.new) {
+      return;
     }
 
+    this.hook('tree.removeNode', {
+      node,
+      component: this,
+    }, () => {
+      if (node.isRoot) {
+        this.removeRoot();
+      }
+      else {
+        node.remove();
+        this.updateTree();
+      }
+
+      return node;
+    });
+  }
+
+  revertNode(node) {
+    if (this.options.readOnly || !node.revertAvailable) {
+      return;
+    }
+
+    this.hook('tree.revertNode', {
+      node,
+      component: this,
+    }, () => {
+      node.revert();
+      this.updateTree();
+
+      return node;
+    });
+  }
+
+  saveNode(node) {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    this.hook('tree.saveNode', {
+      node,
+      component: this,
+    }, () => {
+      node.save();
+      this.updateTree();
+
+      return node;
+    });
+  }
+
+  toggleNode(node) {
+    this.hook('tree.toggleNode', {
+      node,
+      component: this,
+    }, () => {
+      node.collapsed = !node.collapsed;
+      this.redraw();
+
+      return node;
+    });
+  }
+
+  removeRoot() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    this.dataValue = this.defaultValue;
+    this.setRoot();
+    this.redraw();
+  }
+
+  setRoot() {
+    const value = this.dataValue;
+    this.tree = new Node(null, value, {
+      isNew: !value.data,
+      createComponents: this.createComponents.bind(this),
+      removeComponents: this.removeComponents,
+    });
+    this.hook('tree.setRoot', {
+      root: this.tree,
+      component: this,
+    });
+  }
+
+  updateTree() {
+    this.updateValue({}, this.tree.value);
     this.redraw();
   }
 }
 
 TreeComponent.prototype.hasChanged = Component.prototype.hasChanged;
+TreeComponent.prototype.updateValue = Component.prototype.updateValue;

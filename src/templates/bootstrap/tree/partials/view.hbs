@@ -1,18 +1,21 @@
 <div class="row">
-  {% views.forEach(function(children) { %}
-  <div class="col-sm-2">
-    {{ children }}
-  </div>
+  {% values.forEach(function(value) { %}
+    <div class="col-sm-2">
+      {{ value }}
+    </div>
   {% }) %}
-  <div class="col-sm-3 pull-right">
+  <div class="col-sm-3">
     <div class="btn-group pull-right">
-      <button ref="toggle" class="btn btn-default btn-sm toggleNode">{{ t(node.collapsed ? 'Expand' : 'Collapse') }}</button>
-      {% if (!readOnly) { %}
-      <button ref="edit" class="btn btn-default btn-sm editNode">{{ t('Edit') }}</button>
-      <button ref="remove" class="btn btn-default btn-sm removeNode">{{ t('Delete') }}</button>
+      {% if (node.hasChildren) { %}
+        <button ref="toggleNode" class="btn btn-default btn-sm toggleNode">{{ t(node.collapsed ? 'Expand' : 'Collapse') }}</button>
       {% } %}
-      {% if (revertAvailable) { %}
-      <button ref="revert" class="btn btn-danger btn-sm revertNode">{{ t('Revert') }}</button>
+      {% if (!readOnly) { %}
+        <button ref="addChild" class="btn btn-default btn-sm addChild">{{ t('Add') }}</button>
+        <button ref="editNode" class="btn btn-default btn-sm editNode">{{ t('Edit') }}</button>
+        <button ref="removeNode" class="btn btn-danger btn-sm removeNode">{{ t('Delete') }}</button>
+        {% if (node.revertAvailable) { %}
+          <button ref="revertNode" class="btn btn-danger btn-sm revertNode">{{ t('Revert') }}</button>
+        {% } %}
       {% } %}
     </div>
   </div>

@@ -873,3 +873,19 @@ body.formio-dialog-open {
 .formio-component.alert-danger .help-block {
   color: inherit;
 }
+
+.tree {
+  &__level {
+    &_even {
+      background-color: #f6f6f6;
+    }
+  }
+
+  &__node-content {
+    margin-bottom: 10px;
+  }
+
+  &__node-children {
+    margin: 0;
+  }
+}
