@@ -216,6 +216,12 @@ export default class Tagpad extends NestedComponent {
   }
 
   selectDot(index) {
+    if (index === null) {
+      this.empty(this.form);
+      this.components = [];
+      this.formRendered = false;
+      return;
+    }
     if (!this.formRendered) {
       this.renderForm();
     }
@@ -264,7 +270,7 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(0);
+    this.selectDot(this.dataValue.length > 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -302,6 +308,7 @@ export default class Tagpad extends NestedComponent {
     this.dots = [];
     //clear canvas
     this.two.clear();
+    this.two.render();
     //draw dots
     this.setValue(this.dataValue);
   }
