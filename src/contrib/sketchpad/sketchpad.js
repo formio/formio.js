@@ -3,6 +3,7 @@ import Two from 'two.js';
 import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
+import editForm from './Sketchpad.form';
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -13,6 +14,17 @@ export default class Sketchpad extends Base {
       defaultZoom: 100
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: 'Sketchpad',
+    group: 'advanced',
+    icon: 'fa fa-image',
+    weight: 110,
+    documentation: 'http://help.form.io/userguide/',
+    schema: Sketchpad.schema()
+  }
+
+  static editForm = editForm
 
   constructor(...args) {
     super(...args);
