@@ -4,13 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 3.20.5
+## 3.20.6
 ### Fixed
- - Only clone form in custom conditionals if needed as it is expensive.
  - Fix touch events on sketchpad, tagpad
  - Fix removing last dot from tagpad
  - Fix checkbox label id in datagrids always referring to same item
  - Add builder info to tagpad and sketchpad
+
+## 3.20.5
+### Fixed
+ - Only clone form in custom conditionals if needed as it is expensive.
 
 ## 3.20.4
 ### Added
