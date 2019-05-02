@@ -3,6 +3,7 @@ import Two from 'two.js';
 import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
+import editForm from './Sketchpad.form';
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -13,6 +14,17 @@ export default class Sketchpad extends Base {
       defaultZoom: 100
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: 'Sketchpad',
+    group: 'advanced',
+    icon: 'fa fa-image',
+    weight: 110,
+    documentation: 'http://help.form.io/userguide/',
+    schema: Sketchpad.schema()
+  }
+
+  static editForm = editForm
 
   constructor(...args) {
     super(...args);
@@ -623,7 +635,7 @@ export default class Sketchpad extends Base {
         e.preventDefault();
 
         const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-        const touch = e.originalEvent.changedTouches[0];
+        const touch = e.changedTouches[0];
         //change cursor
         let cursor = 'default';
         if (this.modes[this.state.mode].cursor) {
@@ -641,7 +653,7 @@ export default class Sketchpad extends Base {
           e.preventDefault();
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           if (this.modes[this.state.mode].drag) {
             this.modes[this.state.mode].drag(this.getActualCoordinates({
               x: touch.pageX - offset.left,
@@ -659,7 +671,7 @@ export default class Sketchpad extends Base {
             .removeEventListener('touchend', touchEnd);
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           //change cursor
           let cursor = 'default';
           if (this.modes[this.state.mode].cursor) {

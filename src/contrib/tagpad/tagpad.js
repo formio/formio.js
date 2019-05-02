@@ -5,6 +5,7 @@ import BaseComponent from '../../components/base/Base';
 import { Components } from '../../formio.form';
 import Formio from '../../Formio';
 import { eachComponent } from '../../utils/utils';
+import editForm from './Tagpad.form';
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -17,9 +18,21 @@ export default class Tagpad extends NestedComponent {
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: '#333',
-      dotFillColor: '#ccc'
+      dotFillColor: '#ccc',
+      components: []
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: 'Tagpad',
+    group: 'advanced',
+    icon: 'fa fa-tag',
+    weight: 115,
+    documentation: 'http://help.form.io/userguide/',
+    schema: Tagpad.schema()
+  }
+
+  static editForm = editForm
 
   constructor(...args) {
     super(...args);
@@ -216,6 +229,12 @@ export default class Tagpad extends NestedComponent {
   }
 
   selectDot(index) {
+    if (index === null) {
+      this.empty(this.form);
+      this.components = [];
+      this.formRendered = false;
+      return;
+    }
     if (!this.formRendered) {
       this.renderForm();
     }
@@ -264,7 +283,7 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(0);
+    this.selectDot(this.dataValue.length > 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -302,6 +321,7 @@ export default class Tagpad extends NestedComponent {
     this.dots = [];
     //clear canvas
     this.two.clear();
+    this.two.render();
     //draw dots
     this.setValue(this.dataValue);
   }
