@@ -1,3 +1,4 @@
+import Element from './Element';
 import Formio from './Formio';
 import Wizard from './Wizard';
 import PDF from './PDF';
@@ -5,7 +6,7 @@ import Webform from './Webform';
 import templates from './templates';
 import { sanitize } from 'dompurify';
 
-export default class Form {
+export default class Form extends Element {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
    *
@@ -23,6 +24,7 @@ export default class Form {
    * form.build();
    */
   constructor(...args) {
+    super(...args);
     this.ready = new Promise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -201,14 +203,22 @@ export default class Form {
     return this.render().then(html => {
       this.setContent(this.element, html);
       return this.attach(this.element).then(() => this.instance);
-    });
+    })
+      .then((param) => {
+        this.emit('build', param);
+        return param;
+      });
   }
 
   render() {
     if (!this.instance) {
       return Promise.reject('Form not ready. Use form.ready promise');
     }
-    return Promise.resolve(this.instance.render());
+    return Promise.resolve(this.instance.render())
+      .then((param) => {
+        this.emit('render', param);
+        return param;
+      });
   }
 
   attach(element) {
@@ -216,7 +226,11 @@ export default class Form {
       return Promise.reject('Form not ready. Use form.ready promise');
     }
     this.element = element;
-    return this.instance.attach(this.element);
+    return this.instance.attach(this.element)
+      .then((param) => {
+        this.emit('attach', param);
+        return param;
+      });
   }
 }
 
