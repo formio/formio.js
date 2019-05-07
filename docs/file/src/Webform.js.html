@@ -548,6 +548,11 @@ export default class Webform extends NestedComponent {
     });
   }
 
+  destroy() {
+    delete Formio.forms[this.id];
+    return super.destroy();
+  }
+
   /**
    * Sets the the outside wrapper element of the Form.
    *

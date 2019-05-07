@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.9
+### Fixed
+ - Fixed memory-leak where the global Formio.forms were not deleted when the form is destroyed.
+
 ## 3.20.8
 ### Added
  - The user, form and access to the userPermissions check.
