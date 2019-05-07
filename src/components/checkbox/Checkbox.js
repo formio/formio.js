@@ -187,6 +187,12 @@ export default class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
+    let inputId = this.id;
+    if (this.options.row) {
+      inputId += `-${this.options.row}`;
+    }
+    inputId += `-${this.root.id}`;
+    this.info.attr.id = inputId;
     const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
