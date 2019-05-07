@@ -10,6 +10,7 @@ import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
+import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 const { fetch, Headers } = fetchPonyfill({
@@ -531,72 +532,87 @@ export default class Formio {
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
-  // Determine if the user can submit the form.
-  canSubmit() {
-    /* eslint-disable max-statements, max-depth */
+  /**
+   * Returns the user permissions to a form and submission.
+   *
+   * @param user - The user or current user if undefined. For anonymous, use "null"
+   * @param form - The form or current form if undefined. For no form check, use "null"
+   * @param submission - The submisison or "index" if undefined.
+   *
+   * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}
+   */
+  userPermissions(user, form, submission) {
     return Promise.all([
-      this.loadForm(),
-      this.currentUser(),
+      (form !== undefined) ? Promise.resolve(form) : this.loadForm(),
+      (user !== undefined) ? Promise.resolve(user) : this.currentUser(),
       this.accessInfo()
     ]).then((results) => {
       const form = results.shift();
-      const user = results.shift();
+      const user = results.shift() || { _id: false, roles: [] };
       const access = results.shift();
-
-      // Get the anonymous and admin roles.
-      let anonRole = {};
-      let adminRole = {};
+      const permMap = {
+        create: 'create',
+        read: 'read',
+        update: 'edit',
+        delete: 'delete'
+      };
+      const perms = {
+        create: false,
+        read: false,
+        edit: false,
+        delete: false
+      };
       for (const roleName in access.roles) {
         if (access.roles.hasOwnProperty(roleName)) {
           const role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
+          if (role.default && (user._id === false)) {
+            // User is anonymous. Add the anonymous role.
+            user.roles.push(role._id);
           }
-          if (role.admin) {
-            adminRole = role;
+          else if (role.admin && user.roles.indexOf(role._id) !== -1) {
+            perms.create = true;
+            perms.read = true;
+            perms.delete = true;
+            perms.edit = true;
+            return perms;
           }
         }
       }
-
-      let canSubmit = false;
-      let canSubmitAnonymously = false;
-
-      // If the user is an admin, then they can submit this form.
-      if (user && user.roles.includes(adminRole._id)) {
-        return true;
-      }
-
-      for (const i in form.submissionAccess) {
-        if (form.submissionAccess.hasOwnProperty(i)) {
-          const subRole = form.submissionAccess[i];
-          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (const j in subRole.roles) {
-              if (subRole.roles.hasOwnProperty(j)) {
-                // Check if anonymous is allowed.
-                if (anonRole._id === subRole.roles[j]) {
-                  canSubmitAnonymously = true;
-                }
-                // Check if the logged in user has the appropriate role.
-                if (user && user.roles.includes(subRole.roles[j])) {
-                  canSubmit = true;
-                  break;
-                }
-              }
-            }
-            if (canSubmit) {
-              break;
+      if (form && form.submissionAccess) {
+        for (let i = 0; i < form.submissionAccess.length; i++) {
+          const permission = form.submissionAccess[i];
+          const [perm, scope] = permission.type.split('_');
+          if (['create', 'read', 'update', 'delete'].includes(perm)) {
+            if (_intersection(permission.roles, user.roles).length) {
+              perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));
             }
           }
         }
       }
-      // If their user cannot submit, but anonymous can, then delete token and allow submission.
-      if (!canSubmit && canSubmitAnonymously) {
-        canSubmit = true;
-        Formio.setUser(null);
-      }
-      return canSubmit;
+      return perms;
     });
-    /* eslint-enable max-statements, max-depth */
+  }
+
+  /**
+   * Determine if the current user can submit a form.
+   * @return {*}
+   */
+  canSubmit() {
+    return this.userPermissions().then((perms) => {
+      // If there is user and they cannot create, then check anonymous user permissions.
+      if (!perms.create && Formio.getUser()) {
+        return this.userPermissions(null).then((anonPerms) => {
+          if (anonPerms.create) {
+            Formio.setUser(null);
+            return true;
+          }
+
+          return false;
+        });
+      }
+
+      return perms.create;
+    });
   }
 
   getUrlParts(url) {
@@ -1212,7 +1228,7 @@ export default class Formio {
 
     // go to the saml sso endpoint for this project.
     const authUrl = Formio.authUrl || Formio.projectUrl;
-    window.location.href = `${authUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    window.location.href = `${authUrl}/saml/sso?relay=${encodeURIComponent(options.relay)}`;
     return false;
   }
 
