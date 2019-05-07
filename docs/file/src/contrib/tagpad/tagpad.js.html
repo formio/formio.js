@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -217,6 +219,7 @@ import BaseComponent from &apos;../../components/base/Base&apos;;
 import { Components } from &apos;../../formio.form&apos;;
 import Formio from &apos;../../Formio&apos;;
 import { eachComponent } from &apos;../../utils/utils&apos;;
+import editForm from &apos;./Tagpad.form&apos;;
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -229,9 +232,21 @@ export default class Tagpad extends NestedComponent {
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: &apos;#333&apos;,
-      dotFillColor: &apos;#ccc&apos;
+      dotFillColor: &apos;#ccc&apos;,
+      components: []
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: &apos;Tagpad&apos;,
+    group: &apos;advanced&apos;,
+    icon: &apos;fa fa-tag&apos;,
+    weight: 115,
+    documentation: &apos;http://help.form.io/userguide/&apos;,
+    schema: Tagpad.schema()
+  }
+
+  static editForm = editForm
 
   constructor(...args) {
     super(...args);
@@ -428,6 +443,12 @@ export default class Tagpad extends NestedComponent {
   }
 
   selectDot(index) {
+    if (index === null) {
+      this.empty(this.form);
+      this.components = [];
+      this.formRendered = false;
+      return;
+    }
     if (!this.formRendered) {
       this.renderForm();
     }
@@ -476,7 +497,7 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(0);
+    this.selectDot(this.dataValue.length &gt; 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -514,6 +535,7 @@ export default class Tagpad extends NestedComponent {
     this.dots = [];
     //clear canvas
     this.two.clear();
+    this.two.render();
     //draw dots
     this.setValue(this.dataValue);
   }

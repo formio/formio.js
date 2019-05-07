@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -222,6 +224,7 @@ import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
 import copy from &apos;shallow-copy&apos;;
 import * as providers from &apos;./providers&apos;;
+import _intersection from &apos;lodash/intersection&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
 const { fetch, Headers } = fetchPonyfill({
@@ -743,72 +746,87 @@ export default class Formio {
     return Formio.pluginAlter(&apos;wrapFileRequestPromise&apos;, request, requestArgs);
   }
 
-  // Determine if the user can submit the form.
-  canSubmit() {
-    /* eslint-disable max-statements, max-depth */
+  /**
+   * Returns the user permissions to a form and submission.
+   *
+   * @param user - The user or current user if undefined. For anonymous, use &quot;null&quot;
+   * @param form - The form or current form if undefined. For no form check, use &quot;null&quot;
+   * @param submission - The submisison or &quot;index&quot; if undefined.
+   *
+   * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}
+   */
+  userPermissions(user, form, submission) {
     return Promise.all([
-      this.loadForm(),
-      this.currentUser(),
+      (form !== undefined) ? Promise.resolve(form) : this.loadForm(),
+      (user !== undefined) ? Promise.resolve(user) : this.currentUser(),
       this.accessInfo()
     ]).then((results) =&gt; {
       const form = results.shift();
-      const user = results.shift();
+      const user = results.shift() || { _id: false, roles: [] };
       const access = results.shift();
-
-      // Get the anonymous and admin roles.
-      let anonRole = {};
-      let adminRole = {};
+      const permMap = {
+        create: &apos;create&apos;,
+        read: &apos;read&apos;,
+        update: &apos;edit&apos;,
+        delete: &apos;delete&apos;
+      };
+      const perms = {
+        create: false,
+        read: false,
+        edit: false,
+        delete: false
+      };
       for (const roleName in access.roles) {
         if (access.roles.hasOwnProperty(roleName)) {
           const role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
+          if (role.default &amp;&amp; (user._id === false)) {
+            // User is anonymous. Add the anonymous role.
+            user.roles.push(role._id);
           }
-          if (role.admin) {
-            adminRole = role;
+          else if (role.admin &amp;&amp; user.roles.indexOf(role._id) !== -1) {
+            perms.create = true;
+            perms.read = true;
+            perms.delete = true;
+            perms.edit = true;
+            return perms;
           }
         }
       }
-
-      let canSubmit = false;
-      let canSubmitAnonymously = false;
-
-      // If the user is an admin, then they can submit this form.
-      if (user &amp;&amp; user.roles.includes(adminRole._id)) {
-        return true;
-      }
-
-      for (const i in form.submissionAccess) {
-        if (form.submissionAccess.hasOwnProperty(i)) {
-          const subRole = form.submissionAccess[i];
-          if (subRole.type === &apos;create_all&apos; || subRole.type === &apos;create_own&apos;) {
-            for (const j in subRole.roles) {
-              if (subRole.roles.hasOwnProperty(j)) {
-                // Check if anonymous is allowed.
-                if (anonRole._id === subRole.roles[j]) {
-                  canSubmitAnonymously = true;
-                }
-                // Check if the logged in user has the appropriate role.
-                if (user &amp;&amp; user.roles.includes(subRole.roles[j])) {
-                  canSubmit = true;
-                  break;
-                }
-              }
-            }
-            if (canSubmit) {
-              break;
+      if (form &amp;&amp; form.submissionAccess) {
+        for (let i = 0; i &lt; form.submissionAccess.length; i++) {
+          const permission = form.submissionAccess[i];
+          const [perm, scope] = permission.type.split(&apos;_&apos;);
+          if ([&apos;create&apos;, &apos;read&apos;, &apos;update&apos;, &apos;delete&apos;].includes(perm)) {
+            if (_intersection(permission.roles, user.roles).length) {
+              perms[permMap[perm]] = (scope === &apos;all&apos;) || (!submission || (user._id === submission.owner));
             }
           }
         }
       }
-      // If their user cannot submit, but anonymous can, then delete token and allow submission.
-      if (!canSubmit &amp;&amp; canSubmitAnonymously) {
-        canSubmit = true;
-        Formio.setUser(null);
-      }
-      return canSubmit;
+      return perms;
     });
-    /* eslint-enable max-statements, max-depth */
+  }
+
+  /**
+   * Determine if the current user can submit a form.
+   * @return {*}
+   */
+  canSubmit() {
+    return this.userPermissions().then((perms) =&gt; {
+      // If there is user and they cannot create, then check anonymous user permissions.
+      if (!perms.create &amp;&amp; Formio.getUser()) {
+        return this.userPermissions(null).then((anonPerms) =&gt; {
+          if (anonPerms.create) {
+            Formio.setUser(null);
+            return true;
+          }
+
+          return false;
+        });
+      }
+
+      return perms.create;
+    });
   }
 
   getUrlParts(url) {
@@ -1424,7 +1442,7 @@ export default class Formio {
 
     // go to the saml sso endpoint for this project.
     const authUrl = Formio.authUrl || Formio.projectUrl;
-    window.location.href = `${authUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    window.location.href = `${authUrl}/saml/sso?relay=${encodeURIComponent(options.relay)}`;
     return false;
   }
 

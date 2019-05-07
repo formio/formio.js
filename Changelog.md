@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.7
+### Fixed
+ - The relay url on the SAML authentication to encode the full url.
+ - FOR-2221: Skip supplying `form` during FormioUtils.evaluate() unless we need it
+
+### Added
+ - A userPermissions method on Formio to check user permissions on forms and submissions.
+ 
+### Changed
+ - Refactored the "canSubmit" method to use the new userPermissions method.
+
 ## 3.20.6
 ### Fixed
  - Fix touch events on sketchpad, tagpad
