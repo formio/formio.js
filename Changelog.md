@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.8
+### Added
+ - The user, form and access to the userPermissions check.
+
 ## 3.20.7
 ### Fixed
  - The relay url on the SAML authentication to encode the full url.
