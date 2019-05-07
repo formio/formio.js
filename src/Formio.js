@@ -557,6 +557,9 @@ export default class Formio {
         delete: 'delete'
       };
       const perms = {
+        user: user,
+        form: form,
+        access: access,
         create: false,
         read: false,
         edit: false,
