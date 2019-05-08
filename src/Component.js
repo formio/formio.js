@@ -172,14 +172,15 @@ export default class Component {
   /**
    * Removes all event listeners attached to this component.
    */
-  destroy() {
+  destroy(full = false) {
     _.each(this.events._events, (events, type) => {
-      _.each(events, (listener) => {
+      _.each(_.castArray(events), (listener) => {
         if (listener && (this.id === listener.id) && listener.internal) {
           this.events.off(type, listener);
         }
       });
     });
+
     _.each(this.eventHandlers, (handler) => {
       if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
         handler.obj.removeEventListener(handler.type, handler.func);
@@ -189,6 +190,10 @@ export default class Component {
     // Destroy the input masks.
     this.inputMasks.forEach(mask => mask.destroy());
     this.inputMasks = [];
+
+    if (full) {
+      this.events.removeAllListeners();
+    }
   }
 
   /**

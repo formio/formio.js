@@ -1487,7 +1487,7 @@ export default class BaseComponent extends Component {
    * Remove all event handlers.
    */
   destroy() {
-    const state = super.destroy() || {};
+    const state = super.destroy(...arguments) || {};
     this.destroyInputs();
     state.calculatedValue = this.calculatedValue;
     return state;
