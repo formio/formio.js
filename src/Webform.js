@@ -951,6 +951,9 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build(state) {
+    // Clear any existing event handlers in case this is a rebuild
+    this.eventHandlers.forEach(h => this.removeEventListener(h.obj, h.type));
+
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
