@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.10
+### Fixed
+ - FOR-2241: Fixed the missing false value for conditional logic.
+ - Issues where Field Logic would get in an infinite loop.
+ - FOR-2248: Resolved some memory leak problems when using builder.
+ - Fixing problems where the tabs and checkbox disappear when redraw is called on them.
+
 ## 3.20.9
 ### Fixed
  - Fixed memory-leak where the global Formio.forms were not deleted when the form is destroyed.
