@@ -129,6 +129,12 @@ export default class TabsComponent extends NestedComponent {
       this.tabs.push(tabPanel);
     });
 
+    if (this.element) {
+      this.appendChild(this.element, [this.tabsBar, this.tabsContent]);
+      this.element.className = this.className;
+      return this.element;
+    }
+
     this.element = this.ce('div', {
       id: this.id,
       class: this.className,
