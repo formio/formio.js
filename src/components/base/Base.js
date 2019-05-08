@@ -179,7 +179,6 @@ export default class BaseComponent extends Component {
   /* eslint-disable max-statements */
   constructor(component, options, data) {
     super(options, (component && component.id) ? component.id : null);
-    this.originalComponent = _.cloneDeep(component);
 
     // Determine if we are inside a datagrid.
     this.inDataGrid = this.options.inDataGrid;
@@ -214,6 +213,9 @@ export default class BaseComponent extends Component {
 
     // Add the id to the component.
     this.component.id = this.id;
+
+    // Set the original component.
+    this.originalComponent = _.cloneDeep(this.component);
 
     /**
      * The bounding HTML Element which this component is rendered.
