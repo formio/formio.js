@@ -15,9 +15,6 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
-    if (this.component.multiple) {
-      return [super.defaultValue];
-    }
     return super.defaultValue;
   }
 
