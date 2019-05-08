@@ -1560,7 +1560,7 @@ export default class Component extends Element {
    */
   setValueAt(index, value, flags) {
     flags = flags || {};
-    if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
+    if (!flags.noDefault && (value === null || value === undefined)) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);
