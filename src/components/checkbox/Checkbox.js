@@ -89,7 +89,7 @@ export default class CheckBoxComponent extends BaseComponent {
     // If the element is already created, don't recreate.
     if (this.element) {
       //update class for case when Logic changed container class (customClass)
-      this.element.className = this.className;
+      this.element.className = `form-check ${this.className}`;
       return this.element;
     }
 
