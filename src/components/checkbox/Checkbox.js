@@ -86,17 +86,18 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   createElement() {
-    // If the element is already created, don't recreate.
-    if (this.element) {
-      //update class for case when Logic changed container class (customClass)
-      this.element.className = `form-check ${this.className}`;
-      return this.element;
-    }
-
     let className = `form-check ${this.className}`;
     if (!this.labelIsHidden()) {
       className += ` ${this.component.inputType || 'checkbox'}`;
     }
+
+    // If the element is already created, don't recreate.
+    if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = className;
+      return this.element;
+    }
+
     this.element = this.ce('div', {
       id: this.id,
       class: className
