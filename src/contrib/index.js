@@ -15,4 +15,11 @@ const Contrib = {
 export default Contrib;
 if (typeof global === 'object' && global.Formio) {
   global.Formio.contrib = Contrib;
+
+  if (global.Formio.Components) {
+    global.Formio.Components.setComponents(Contrib);
+  }
+  else {
+    console.log('Failed to register contrib components');
+  }
 }
