@@ -41,13 +41,25 @@ export default [
     weight: 51.6
   },
   {
-    type: 'tags',
+    type: 'textfield',
     input: true,
-    key: 'searchFields',
-    label: 'Search Fields',
-    tooltip: 'A list of search filters based on the fields of the resource. See the <a target=\'_blank\' href=\'https://github.com/travist/resourcejs#filtering-the-results\'>Resource.js documentation</a> for the format of these filters.',
-    placeholder: 'The fields to query on the server',
-    weight: 52
+    key: 'searchField',
+    label: 'Search Query Name',
+    weight: 52,
+    description: 'Name of URL query parameter',
+    tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.'
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'minSearch',
+    weight: 52.5,
+    label: 'Minimum Search Length',
+    tooltip: 'The minimum amount of characters they must type before a search is made.',
+    defaultValue: 0,
+    conditional: {
+      json: { '!=': [{ var: 'data.searchField' }, ''] }
+    }
   },
   {
     type: 'textarea',
