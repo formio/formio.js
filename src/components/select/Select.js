@@ -632,7 +632,7 @@ export default class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', ['label']),
+      searchFields: [_.get(this, 'component.searchField', 'label')],
       fuseOptions: Object.assign({
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
