@@ -57,6 +57,11 @@
   white-space: pre-wrap;
 }
 
+/* Force all textareas to break long words when overflowing (if width is set) */
+.formio-disabled-input.formio-component-textarea .well {
+  overflow-wrap: break-word;
+}
+
 .formio-component-tags tags {
   background-color: #fff;
 }
