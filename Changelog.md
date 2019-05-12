@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unerleased]
+### Fixed
+ - Sketchpad: issue in Chrome with background image being displayed as text
+
 ## 3.20.10
 ### Fixed
  - FOR-2241: Fixed the missing false value for conditional logic.
