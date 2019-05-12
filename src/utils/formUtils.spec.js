@@ -1,9 +1,9 @@
-import { expect, assert } from 'chai';
 import _ from 'lodash';
 const application = require('./fixtures/application.json');
 const wizard = require('./fixtures/wizard.json');
 import * as FormUtils from './formUtils';
 import async from 'async';
+import assert from 'power-assert';
 
 describe('findComponent', () => {
   it('Should be able to find a regular component', (done) => {
