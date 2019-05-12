@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unerleased]
+## 3.20.11
 ### Fixed
+ - FOR-2216: Add white-space:pre-wrap to native + ACE textareas in readonly/disabled/PDF mode
  - Sketchpad: issue in Chrome with background image being displayed as text
  - FOR-2239: Sketchpad -> Fixed issues with background being shifted in datagrid
+ - power-assert output not shown when running formio.js unit tests with karma
+ - Component.addClass() adds 'null' to class attribute
+
+### Added
+ - Add automatic contrib component registration
 
 ## 3.20.10
 ### Fixed

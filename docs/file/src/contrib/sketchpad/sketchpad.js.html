@@ -937,7 +937,7 @@ export default class Sketchpad extends Base {
 
   /* eslint-disable max-statements */
   setBackgroundImage(svgMarkup) {
-    const xmlDoc = new DOMParser().parseFromString(svgMarkup, &apos;text/xml&apos;);
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, &apos;image/svg+xml&apos;);
     let backgroundSvg = xmlDoc.getElementsByTagName(&apos;svg&apos;);
     if (!backgroundSvg || !backgroundSvg[0]) {
       console.warn(`Sketchpad &apos;${this.component.key}&apos;: Background SVG doesn&apos;t contain &lt;svg&gt; tag on it`);
@@ -1010,7 +1010,9 @@ export default class Sketchpad extends Base {
     //set current zoom to default
     this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
 
-    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    svgMarkup =  new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it retured &apos;&lt;svg:svg&gt;...&lt;/svg:svg&gt;&apos; string after serialization instead of &lt;svg&gt;...&lt;/svg&gt;
+    svgMarkup = svgMarkup.replace(&apos;&lt;svg:svg&apos;, &apos;&lt;svg&apos;).replace(&apos;&lt;/svg:svg&gt;&apos;, &apos;&lt;/svg&gt;&apos;);
 
     this.editSketchpad.background.container.style[&apos;min-width&apos;] = `${this.dimensions.width}px`;
     this.editSketchpad.background.container.style[&apos;min-height&apos;] = `${this.dimensions.height}px`;
