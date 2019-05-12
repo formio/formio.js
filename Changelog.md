@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unerleased]
 ### Fixed
  - Sketchpad: issue in Chrome with background image being displayed as text
+ - FOR-2239: Sketchpad -> Fixed issues with background being shifted in datagrid
 
 ## 3.20.10
 ### Fixed
