@@ -51,6 +51,17 @@
   display:none;
 }
 
+/* Force native + Ace textareas to use pre-wrap whitespace in readonly mode (preserves visual linebreaks) */
+.formio-disabled-input.formio-component-nativeTextArea > .well,
+.formio-disabled-input.formio-component-ace            > .well {
+  white-space: pre-wrap;
+}
+
+/* Force all textareas to break long words when overflowing (if width is set) */
+.formio-disabled-input.formio-component-textarea .well {
+  overflow-wrap: break-word;
+}
+
 .formio-component-tags tags {
   background-color: #fff;
 }
