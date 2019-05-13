@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
- - Tagpad: Background being invisible in readOnly mode
+ - Tagpad: Background being invisible in readOnly mode and overflowing its container
 
 ## 3.20.11
 ### Fixed
