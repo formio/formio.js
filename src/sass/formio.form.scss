@@ -1009,7 +1009,10 @@ body.formio-dialog-open {
 
 .formio-disabled-input .formio-tagpad-canvas {
   cursor: not-allowed;
-  background-color: #eee
+}
+
+.formio-disabled-input .formio-tagpad-image-container {
+  background-color: #eee;
 }
 
 .formio-tagpad-background {

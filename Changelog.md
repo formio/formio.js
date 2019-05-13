@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Tagpad: Background being invisible in readOnly mode
+
 ## 3.20.11
 ### Fixed
  - FOR-2216: Add white-space:pre-wrap to native + ACE textareas in readonly/disabled/PDF mode
