@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
+
 ### Fixed
  - Tagpad: Background being invisible in readOnly mode and overflowing its container
 

@@ -665,16 +665,18 @@ export default class BaseComponent extends Component {
       'aria-label': 'close'
     });
 
+    const modalBodyContainer = this.ce('div', {
+      class: 'formio-dialog-content'
+    }, [
+      modalBody,
+      closeDialog
+    ]);
+
     const dialog = this.ce('div', {
       class: 'formio-dialog formio-dialog-theme-default component-settings'
     }, [
       modalOverlay,
-      this.ce('div', {
-        class: 'formio-dialog-content'
-      }, [
-        modalBody,
-        closeDialog
-      ])
+      modalBodyContainer
     ]);
 
     this.addEventListener(modalOverlay, 'click', (event) => {
@@ -690,6 +692,7 @@ export default class BaseComponent extends Component {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
+    dialog.bodyContainer = modalBodyContainer;
     dialog.close = () => {
       dialog.dispatchEvent(new CustomEvent('close'));
       this.removeChildFrom(dialog, document.body);
