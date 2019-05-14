@@ -236,9 +236,9 @@ export default class Sketchpad extends Base {
     weight: 110,
     documentation: &apos;http://help.form.io/userguide/&apos;,
     schema: Sketchpad.schema()
-  }
+  };
 
-  static editForm = editForm
+  static editForm = editForm;
 
   constructor(...args) {
     super(...args);
@@ -273,6 +273,8 @@ export default class Sketchpad extends Base {
       linewidth: 1,
       circleSize: 10
     };
+
+    this.dimensionsMultiplier = 1;
 
     this.zoomInfo = {
       viewBox: {},
@@ -676,28 +678,12 @@ export default class Sketchpad extends Base {
     this.addClass(this.editorModal, &apos;formio-sketchpad-edit-dialog&apos;);
     this.addClass(this.editorModal.body, &apos;formio-sketchpad-edit-dialog-body&apos;);
     const toolbar = this.createToolbar();
-    const metaInfoContainer = this.ce(&apos;div&apos;,
-      {
-        class: &apos;formio-sketchpad-meta-info&apos;
-      },
-      this.ce(&apos;span&apos;,
-        {},
-        [
-          this.totalMultiplierElement = this.ce(&apos;span&apos;, {},
-            this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100
-          ),
-          this.t(&apos;x&apos;)
-        ]
-      )
+    const metaInfoContainer = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-meta-info&apos; },
+      this.ce(&apos;span&apos;, {}, [
+        this.totalMultiplierElement = this.ce(&apos;span&apos;, {}, this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100),
+        this.t(&apos;x&apos;)
+      ])
     );
-    this.editorModal.body.appendChild(toolbar);
-    this.editorModal.body.appendChild(this.ce(&apos;div&apos;, {
-      class: &apos;formio-edit-sketchpad-container&apos;
-    }, [
-      this.editSketchpad.canvas.container,
-      this.editSketchpad.background.container
-    ]));
-    this.editorModal.body.appendChild(metaInfoContainer);
     this.saveSvgButton = this.ce(&apos;button&apos;, {
       class: &apos;btn btn-success formio-sketchpad-save-button&apos;
     }, this.t(&apos;Save&apos;));
@@ -705,17 +691,56 @@ export default class Sketchpad extends Base {
       this.saveSvg();
       this.editorModal.close(true);
     });
-    this.editorModal.body.appendChild(this.saveSvgButton);
+    this.editorModalHeader = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-edit-dialog-header&apos; }, [toolbar]);
+    this.editorModalFooter = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-edit-dialog-footer&apos; }, [metaInfoContainer, this.saveSvgButton]);
+    this.editorModalContent = this.ce(&apos;div&apos;, {
+      class: &apos;formio-edit-sketchpad-container&apos;
+    }, [
+      this.editSketchpad.canvas.container,
+      this.editSketchpad.background.container
+    ]);
+    this.editorModal.body.appendChild(this.editorModalHeader);
+    this.editorModal.body.appendChild(this.editorModalContent);
+    this.editorModal.body.appendChild(this.editorModalFooter);
+    const resizeListener = () =&gt; {
+      this.stretchDrawingArea();
+      this.setEditorSize(this.dimensions.width, this.dimensions.height);
+    };
+    window.addEventListener(&apos;resize&apos;, resizeListener);
+    this.stretchDrawingArea();
     this.editValue = _.cloneDeep(this.dataValue);
     this.draw(this.editValue);
     const initialDialogClose = this.editorModal.close;
     this.editorModal.close = (ignoreWarning) =&gt; {
       if (ignoreWarning || confirm(&apos;Are you sure you want to close? Your unsaved progress will be lost&apos;)) {
         this.resetZoom();
+        window.removeEventListener(&apos;resize&apos;, resizeListener);
         initialDialogClose();
       }
     };
     this.resetZoom();
+  }
+
+  stretchDrawingArea() {
+    const [modalWidth, modalHeight] = [this.editorModal.bodyContainer.clientWidth, this.editorModal.bodyContainer.clientHeight];
+    const computedStyle = getComputedStyle(this.editorModal.bodyContainer);
+    const [paddingTop, paddingBottom, paddingLeft, paddingRight] = [&apos;paddingTop&apos;, &apos;paddingBottom&apos;, &apos;paddingLeft&apos;, &apos;paddingRight&apos;].map(property =&gt; {
+      return parseFloat(computedStyle[property]);
+    });
+    const [headerHeight, footerHeight] = [this.editorModalHeader.offsetHeight, this.editorModalFooter.offsetHeight],
+      //dimensions of available space in modal
+      availableWidth = modalWidth - paddingLeft - paddingRight,
+      availableHeight = modalHeight - paddingTop - paddingBottom - headerHeight - footerHeight,
+      //default width of drawing area
+      defaultWidth = this.zoomInfo.viewBox.default.width,
+      defaultHeight = this.zoomInfo.viewBox.default.height,
+      widthRatio = availableWidth / defaultWidth,
+      heightRatio = availableHeight / defaultHeight;
+    //use the smallest ratio as multiplier so that drawing area doesn&apos;t overflow popup in any dimension
+    this.dimensionsMultiplier = Math.min(widthRatio, heightRatio);
+    //calculate new dimensions so that drawing area fills all free modal space
+    this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
+    this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
   }
 
   saveSvg() {
@@ -1010,7 +1035,7 @@ export default class Sketchpad extends Base {
     //set current zoom to default
     this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
 
-    svgMarkup =  new XMLSerializer().serializeToString(backgroundSvg);
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
     //fix weird issue in Chrome when it retured &apos;&lt;svg:svg&gt;...&lt;/svg:svg&gt;&apos; string after serialization instead of &lt;svg&gt;...&lt;/svg&gt;
     svgMarkup = svgMarkup.replace(&apos;&lt;svg:svg&apos;, &apos;&lt;svg&apos;).replace(&apos;&lt;/svg:svg&gt;&apos;, &apos;&lt;/svg&gt;&apos;);
 
@@ -1034,6 +1059,7 @@ export default class Sketchpad extends Base {
     //set dimensions for Two.js instance
     this.setEditorSize(this.dimensions.width, this.dimensions.height);
   }
+
   /* eslint-enable max-statements */
 
   clear() {
@@ -1131,8 +1157,8 @@ export default class Sketchpad extends Base {
     this.zoomInfo.viewBox.current.height =
       Math.round(this.zoomInfo.viewBox.default.height / this.zoomInfo.totalMultiplier);
     if (
-      this.zoomInfo.viewBox.current.width &gt; this.dimensions.width &amp;&amp;
-      this.zoomInfo.viewBox.current.height &gt; this.dimensions.height
+      this.zoomInfo.viewBox.current.width &gt; this.zoomInfo.viewBox.default.width &amp;&amp;
+      this.zoomInfo.viewBox.current.height &gt; this.zoomInfo.viewBox.default.height
     ) {
       //if should get less than initial size, change editor size instead of viewBox size
       this.setEditorSize(
@@ -1162,8 +1188,8 @@ export default class Sketchpad extends Base {
 
   getActualCoordinates(coordinate) {
     //recalculate coordinate taking into account current zoom
-    coordinate.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.current.minX);
-    coordinate.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier) + this.zoomInfo.viewBox.current.minY);
+    coordinate.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minX);
+    coordinate.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minY);
     return coordinate;
   }
 

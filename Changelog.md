@@ -4,12 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.20.12
 ### Added
  - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
+ - Min and Max validations to the DataGrid form builder interface.
 
 ### Fixed
  - Tagpad: Background being invisible in readOnly mode and overflowing its container
+ - When pasting a copied component into an empty layout component, it should paste the component inside the layout component instead of below it.
+ - Issues where the "Allow override of calculated value" would get in a bad state.
+ 
+### Changed
+ - Upgraded i18next@15.1.1, babel-loader@8.0.6
 
 ## 3.20.11
 ### Fixed

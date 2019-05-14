@@ -2755,13 +2755,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -3457,13 +3457,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4189,13 +4189,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4525,13 +4525,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -5953,13 +5953,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6183,6 +6183,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/editform/datagrid.edit.display.js",
     "file/src/components/datagrid/editForm/DataGrid.edit.display.js.html",
     "src/components/datagrid/editForm/DataGrid.edit.display.js",
+    "file"
+  ],
+  [
+    "src/components/datagrid/editform/datagrid.edit.validation.js",
+    "file/src/components/datagrid/editForm/DataGrid.edit.validation.js.html",
+    "src/components/datagrid/editForm/DataGrid.edit.validation.js",
     "file"
   ],
   [
@@ -7891,25 +7897,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
-    "src/components/form/Form.js~FormComponent#nosubmit",
-    "member"
-  ],
-  [
-    "src/components/form/form.js~formcomponent#nosubmit",
     "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
-    "src/components/form/form.js~formcomponent#parentvisible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
-    "src/components/form/Form.js~FormComponent#parentVisible",
+    "src/components/form/form.js~formcomponent#nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
+    "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#parentvisible",
     "class/src/components/form/Form.js~FormComponent.html#instance-set-parentVisible",
+    "src/components/form/Form.js~FormComponent#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
     "src/components/form/Form.js~FormComponent#parentVisible",
     "member"
   ],
@@ -7921,13 +7927,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
@@ -7999,13 +8005,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
@@ -8569,13 +8575,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
     "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
     "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
@@ -8695,13 +8701,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -9853,13 +9859,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-scrollLoading",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-scrollLoading",
     "src/components/select/Select.js~SelectComponent#scrollLoading",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-scrollLoading",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-scrollLoading",
     "src/components/select/Select.js~SelectComponent#scrollLoading",
     "member"
   ],
@@ -11592,6 +11598,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/contrib/sketchpad/sketchpad.js~sketchpad#dimensionsmultiplier",
+    "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-dimensionsMultiplier",
+    "src/contrib/sketchpad/sketchpad.js~Sketchpad#dimensionsMultiplier",
+    "member"
+  ],
+  [
     "src/contrib/sketchpad/sketchpad.js~sketchpad#disabled",
     "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-disabled",
     "src/contrib/sketchpad/sketchpad.js~Sketchpad#disabled",
@@ -11649,6 +11661,24 @@ window.esdocSearchIndex = [
     "src/contrib/sketchpad/sketchpad.js~sketchpad#editormodal",
     "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-editorModal",
     "src/contrib/sketchpad/sketchpad.js~Sketchpad#editorModal",
+    "member"
+  ],
+  [
+    "src/contrib/sketchpad/sketchpad.js~sketchpad#editormodalcontent",
+    "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-editorModalContent",
+    "src/contrib/sketchpad/sketchpad.js~Sketchpad#editorModalContent",
+    "member"
+  ],
+  [
+    "src/contrib/sketchpad/sketchpad.js~sketchpad#editormodalfooter",
+    "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-editorModalFooter",
+    "src/contrib/sketchpad/sketchpad.js~Sketchpad#editorModalFooter",
+    "member"
+  ],
+  [
+    "src/contrib/sketchpad/sketchpad.js~sketchpad#editormodalheader",
+    "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-editorModalHeader",
+    "src/contrib/sketchpad/sketchpad.js~Sketchpad#editorModalHeader",
     "member"
   ],
   [
@@ -11782,6 +11812,12 @@ window.esdocSearchIndex = [
     "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-member-state",
     "src/contrib/sketchpad/sketchpad.js~Sketchpad#state",
     "member"
+  ],
+  [
+    "src/contrib/sketchpad/sketchpad.js~sketchpad#stretchdrawingarea",
+    "class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html#instance-method-stretchDrawingArea",
+    "src/contrib/sketchpad/sketchpad.js~Sketchpad#stretchDrawingArea",
+    "method"
   ],
   [
     "src/contrib/sketchpad/sketchpad.js~sketchpad#styles",

@@ -879,16 +879,18 @@ export default class BaseComponent extends Component {
       &apos;aria-label&apos;: &apos;close&apos;
     });
 
+    const modalBodyContainer = this.ce(&apos;div&apos;, {
+      class: &apos;formio-dialog-content&apos;
+    }, [
+      modalBody,
+      closeDialog
+    ]);
+
     const dialog = this.ce(&apos;div&apos;, {
       class: &apos;formio-dialog formio-dialog-theme-default component-settings&apos;
     }, [
       modalOverlay,
-      this.ce(&apos;div&apos;, {
-        class: &apos;formio-dialog-content&apos;
-      }, [
-        modalBody,
-        closeDialog
-      ])
+      modalBodyContainer
     ]);
 
     this.addEventListener(modalOverlay, &apos;click&apos;, (event) =&gt; {
@@ -904,6 +906,7 @@ export default class BaseComponent extends Component {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
+    dialog.bodyContainer = modalBodyContainer;
     dialog.close = () =&gt; {
       dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
       this.removeChildFrom(dialog, document.body);
@@ -2482,6 +2485,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       (this.calculatedValue !== null) &amp;&amp;
+      (this.calculatedValue !== this.emptyValue) &amp;&amp;
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
       return false;
@@ -2497,7 +2501,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       firstPass &amp;&amp;
-      !this.isEmpty(dataValue) &amp;&amp;
+      (dataValue !== this.emptyValue) &amp;&amp;
       !_.isEqual(dataValue, calculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.
