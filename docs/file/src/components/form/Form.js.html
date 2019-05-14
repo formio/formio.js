@@ -594,6 +594,7 @@ export default class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags, norecurse) {
+    this._submission = submission;
     if (this.subForm || norecurse) {
       if (
         !norecurse &amp;&amp;
@@ -614,7 +615,7 @@ export default class FormComponent extends BaseComponent {
       }
     }
 
-    const changed = super.setValue(submission, flags);
+    const changed = super.setValue(this._submission, flags);
     const hidden = this.isHidden();
     let subForm;
     if (hidden) {
@@ -623,7 +624,7 @@ export default class FormComponent extends BaseComponent {
     else {
       subForm = this.loadSubForm();
     }
-    subForm.then(() =&gt; this.setValue(submission, flags, true));
+    subForm.then(() =&gt; this.setValue(this._submission, flags, true));
     return changed;
   }
 
@@ -669,6 +670,7 @@ export default class FormComponent extends BaseComponent {
     switch (event) {
     case &apos;focus&apos;:
     case &apos;blur&apos;:
+    case &apos;change&apos;:
     case &apos;componentChange&apos;:
     case &apos;componentError&apos;:
     case &apos;error&apos;:

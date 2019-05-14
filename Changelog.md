@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.13
+### Fixed
+ - Problem with subforms where the submission data could possibly reset.
+ - Problem with duplicate change events firing from the form components.
+
 ## 3.20.12
 ### Added
  - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
