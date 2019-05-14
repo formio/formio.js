@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
 
+### Fixed
+ - Tagpad: Background being invisible in readOnly mode and overflowing its container
+
 ## 3.20.11
 ### Fixed
  - FOR-2216: Add white-space:pre-wrap to native + ACE textareas in readonly/disabled/PDF mode
