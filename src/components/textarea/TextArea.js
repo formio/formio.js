@@ -98,8 +98,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
     if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
       this.updateValue({
-        modified: true
+        modified: !this.autoModified
       }, newValue);
+      this.autoModified = false;
     }
   }
 
@@ -271,6 +272,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorReady) {
       this.editorReady.then((editor) => {
+        this.autoModified = true;
         if (this.component.editor === 'ace') {
           editor.setValue(this.setConvertedValue(value));
         }
