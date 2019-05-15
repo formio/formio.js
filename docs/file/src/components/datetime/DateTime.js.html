@@ -282,7 +282,7 @@ export default class DateTimeComponent extends BaseComponent {
     }
 
     /* eslint-disable camelcase */
-    this.component.widget = {
+    this.originalComponent.widget = this.component.widget = {
       type: &apos;calendar&apos;,
       timezone,
       displayInTimezone: _.get(this.component, &apos;displayInTimezone&apos;, &apos;viewer&apos;),

@@ -699,7 +699,7 @@ export default class SelectComponent extends BaseComponent {
 
     switch (this.component.dataSrc) {
       case &apos;values&apos;:
-        this.component.valueProperty = &apos;value&apos;;
+        this.component.valueProperty = this.originalComponent.valueProperty = &apos;value&apos;;
         this.setItems(this.component.data.values);
         break;
       case &apos;json&apos;:

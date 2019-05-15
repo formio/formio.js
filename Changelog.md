@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.14
+### Fixed
+ - Field logic infinite redraw issue with Select dropdowns.
+ - Problems where the Calendar widgets would not work when Field logic is enabled.
+
 ## 3.20.13
 ### Fixed
  - Problem with subforms where the submission data could possibly reset.
