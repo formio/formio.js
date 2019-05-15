@@ -136,9 +136,11 @@ export default class FormComponent extends BaseComponent {
       this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {
         this.subForm.off('change');
-        this.subForm.on('change', (event) => {
+        this.subForm.on('change', () => {
           this.dataValue = this.subForm.getValue();
-          this.triggerChange(_.get(event, 'changed.flags', {}));
+          this.triggerChange({
+            noEmit: true
+          });
         });
       });
       this.subForm.url = this.formSrc;
@@ -456,7 +458,6 @@ export default class FormComponent extends BaseComponent {
     switch (event) {
     case 'focus':
     case 'blur':
-    case 'change':
     case 'componentChange':
     case 'componentError':
     case 'error':
