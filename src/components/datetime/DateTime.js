@@ -68,7 +68,7 @@ export default class DateTimeComponent extends BaseComponent {
     }
 
     /* eslint-disable camelcase */
-    this.component.widget = {
+    this.originalComponent.widget = this.component.widget = {
       type: 'calendar',
       timezone,
       displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),
