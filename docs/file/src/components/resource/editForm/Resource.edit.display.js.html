@@ -255,15 +255,6 @@
     weight: 51.6
   },
   {
-    type: &apos;tags&apos;,
-    input: true,
-    key: &apos;searchFields&apos;,
-    label: &apos;Search Fields&apos;,
-    tooltip: &apos;A list of search filters based on the fields of the resource. See the &lt;a target=\&apos;_blank\&apos; href=\&apos;https://github.com/travist/resourcejs#filtering-the-results\&apos;&gt;Resource.js documentation&lt;/a&gt; for the format of these filters.&apos;,
-    placeholder: &apos;The fields to query on the server&apos;,
-    weight: 52
-  },
-  {
     type: &apos;textarea&apos;,
     input: true,
     key: &apos;template&apos;,
@@ -273,6 +264,73 @@
     rows: 3,
     weight: 53,
     tooltip: &apos;The HTML template for the result data items.&apos;
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    weight: 54,
+    key: &apos;searchEnabled&apos;,
+    label: &apos;Enable Search&apos;,
+    defaultValue: true,
+    tooltip: &apos;When checked, the select dropdown will allow for searching.&apos;
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;searchField&apos;,
+    label: &apos;Search Field for Query&apos;,
+    weight: 55,
+    description: &apos;Name of URL query parameter (leave blank for client-side search)&apos;,
+    tooltip: &apos;The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter with \&apos;__regex\&apos; appended. Leave empty to use client-side search within the list of choices.&apos;,
+    conditional: {
+      json: { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] }
+    }
+  },
+  {
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;minSearch&apos;,
+    weight: 56,
+    label: &apos;Server-Side Search: Minimum Input Length&apos;,
+    tooltip: &apos;The minimum amount of characters to be typed before a search query is made.&apos;,
+    defaultValue: 0,
+    conditional: {
+      json: {
+        and: [
+          { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] },
+          { &apos;!=&apos;: [{ var: &apos;data.searchField&apos; }, &apos;&apos;] }
+        ]
+      }
+    }
+  },
+  {
+    label: &apos;Client-Side Search Threshold&apos;,
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;searchThreshold&apos;,
+    validate: {
+      min: 0,
+      customMessage: &apos;&apos;,
+      json: &apos;&apos;,
+      max: 1
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.1,
+    weight: 57,
+    tooltip: &apos;At what point does the match algorithm for static search give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.&apos;,
+    conditional: {
+      json: {
+        and: [
+          { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] },
+          { &apos;==&apos;: [{ var: &apos;data.searchField&apos; }, &apos;&apos;] }
+        ]
+      }
+    }
   }
 ];
 </code></pre>

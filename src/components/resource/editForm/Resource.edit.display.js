@@ -67,8 +67,7 @@ export default [
     label: 'Search Field for Query',
     weight: 55,
     description: 'Name of URL query parameter (leave blank for client-side search)',
-    tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter with \'__rege
-x\' appended. Leave empty to use client-side search within the list of choices.',
+    tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter with \'__regex\' appended. Leave empty to use client-side search within the list of choices.',
     conditional: {
       json: { '!=': [{ var: 'data.searchEnabled' }, ''] }
     }

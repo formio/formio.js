@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.16
+### Fixed
+ - Fix error where the modified flag was getting fired for wysiwyg editors.
+
+### Changed
+ - Clenaup Choices.selectFields functionality.
+
+### Added
+ - Add config for search in Resource components
+
 ## 3.20.15
 ### Fixed
  - Issue where submission with form revisions enabled on "original" form setting was using wrong form.
