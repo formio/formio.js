@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Sketchpad: Small gap at the bottom of view mode image
 
+### Added
+ - Tagpad: Automatic resizing of drawing area to fill half of available width
+
 ## 3.20.14
 ### Fixed
  - Field logic infinite redraw issue with Select dropdowns.

@@ -13,8 +13,6 @@ export default class Tagpad extends NestedComponent {
       type: 'tagpad',
       label: 'Tagpad',
       key: 'tagpad',
-      canvasWidth: 640,
-      canvasHeight: 480,
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: '#333',
@@ -30,22 +28,27 @@ export default class Tagpad extends NestedComponent {
     weight: 115,
     documentation: 'http://help.form.io/userguide/',
     schema: Tagpad.schema()
-  }
+  };
 
-  static editForm = editForm
+  static editForm = editForm;
 
   constructor(...args) {
     super(...args);
     this.type = 'tagpad';
     this.dots = [];
     _.defaults(this.component, {
-      canvasWidth: 640,
-      canvasHeight: 480,
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: '#333',
       dotFillColor: '#ccc'
     });
+    //init background ready promise
+    const backgroundReadyPromise = new Promise((resolve, reject) => {
+      this.backgroundReady = { resolve, reject };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
+    //init dimensions multiplier
+    this.dimensionsMultiplier = 1;
   }
 
   build(state) {
@@ -80,12 +83,10 @@ export default class Tagpad extends NestedComponent {
       class: 'formio-tagpad-background'
     });
     this.canvasContainer = this.ce('div', {
-      class: 'formio-tagpad-image-container',
-      style: `width: ${this.component.canvasWidth}px;`
+      class: 'formio-tagpad-image-container'
     }, [this.canvas, this.background]);
     this.formContainer = this.ce('div', {
-        class: 'formio-tagpad-form-container',
-        style: `margin-left: -${this.component.canvasWidth}px; padding-left: ${this.component.canvasWidth}px;`
+        class: 'formio-tagpad-form-container'
       },
       this.form = this.ce('div', {
         class: 'formio-tagpad-form'
@@ -94,13 +95,17 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
     this.two = new Two({
-      type: Two.Types.svg,
-      width: this.component.canvasWidth,
-      height: this.component.canvasHeight
+      type: Two.Types.svg
     }).appendTo(this.canvas);
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
-    this.attachDrawEvents();
+    this.on('initialized', () => {
+      this.backgroundReady.promise.then(() => {
+        //when element is already displayed in browser and background is ready, stretch drawing area to fit background dimensions
+        this.stretchDrawingArea();
+      });
+    });
+    this.attach();
     this.redrawDots();
   }
 
@@ -143,6 +148,11 @@ export default class Tagpad extends NestedComponent {
     this.formRendered = true;
   }
 
+  attach() {
+    this.attachDrawEvents();
+    window.addEventListener('resize', this.stretchDrawingArea.bind(this));
+  }
+
   attachDrawEvents() {
     if (this.options.readOnly) {
       return;
@@ -151,10 +161,10 @@ export default class Tagpad extends NestedComponent {
     const mouseEnd = (e) => {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
-      this.addDot({
+      this.addDot(this.getActualCoordinate({
         x: e.clientX - offset.left,
         y: e.clientY - offset.top
-      });
+      }));
     };
     this.canvasSvg.addEventListener('mouseup', mouseEnd);
 
@@ -163,14 +173,29 @@ export default class Tagpad extends NestedComponent {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
       const touch = e.originalEvent.changedTouches[0];
-      this.addDot({
+      this.addDot(this.getActualCoordinate({
         x: touch.pageX - offset.left,
         y: touch.pageY - offset.top
-      });
+      }));
     };
     this.canvasSvg.addEventListener('touchend', touchEnd);
 
     this.two.update();
+  }
+
+  getActualCoordinate(coordinate) {
+    //recalculate coordinate taking into account changed size of drawing area
+    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier);
+    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier);
+    return coordinate;
+  }
+
+  stretchDrawingArea() {
+    const width = this.background.offsetWidth;
+    const height = this.background.offsetHeight;
+    //will need dimensions multiplier for coordinates calculation
+    this.dimensionsMultiplier = width / this.dimensions.width;
+    this.setEditorSize(width, height);
   }
 
   get dataReady() {
@@ -178,22 +203,14 @@ export default class Tagpad extends NestedComponent {
   }
 
   addBackground() {
-    const backgroundReadyPromise = new Promise((resolve, reject) => {
-      this.backgroundReady = {
-        resolve,
-        reject
-      };
-    });
-    this.backgroundReady.promise = backgroundReadyPromise;
     if (this.component.image) {
-      //TODO check that inserted html contains SVG tag on it
-      this.background.innerHTML = this.component.image;
+      this.setBackgroundImage(this.component.image);
       this.backgroundReady.resolve();
     }
     else if (this.component.imageUrl) {
       Formio.makeStaticRequest(this.component.imageUrl, 'GET', null, { noToken: true, headers: {} })
         .then(image => {
-          this.background.innerHTML = image;
+          this.setBackgroundImage(image);
           this.backgroundReady.resolve();
         })
         .catch(() => {
@@ -202,6 +219,66 @@ export default class Tagpad extends NestedComponent {
           this.backgroundReady.resolve();
         });
     }
+  }
+
+  setBackgroundImage(svgMarkup) {
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
+    let backgroundSvg = xmlDoc.getElementsByTagName('svg');
+    if (!backgroundSvg || !backgroundSvg[0]) {
+      console.warn(`Tagpad '${this.component.key}': Background SVG doesn't contain <svg> tag on it`);
+      return;
+    }
+    backgroundSvg = backgroundSvg[0];
+    //read initial dimensions from viewBox
+    const initialViewBox = backgroundSvg.getAttribute('viewBox');
+    let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+    if (initialViewBox) {
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = initialViewBox.split(' ').map(parseFloat);
+    }
+    else {
+      //if viewBox is not defined, use 'x', 'y', 'width' and 'height' SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+        { attribute: 'x', defaultValue: 0 },
+        { attribute: 'y', defaultValue: 0 },
+        { attribute: 'width', defaultValue: 640 },
+        { attribute: 'height', defaultValue: 480 }
+      ].map(dimension => {
+        return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+      });
+    }
+    //set initial dimensions to width and height from viewBox of background svg
+    this.dimensions = {
+      width: viewBoxWidth,
+      height: viewBoxHeight
+    };
+    //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
+    backgroundSvg.removeAttribute('width');
+    backgroundSvg.removeAttribute('height');
+    const viewBox = {
+      width: this.dimensions.width,
+      height: this.dimensions.height,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
+    };
+    //set background image viewBox
+    backgroundSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
+    this.canvasSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
+    svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
+
+    this.background.innerHTML = svgMarkup;
+
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
+  }
+
+  setEditorSize(width, height) {
+    this.two.width = width;
+    this.two.height = height;
+    this.two.update();
   }
 
   addDot(coordinate) {
