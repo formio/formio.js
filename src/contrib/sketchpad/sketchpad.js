@@ -606,7 +606,7 @@ export default class Sketchpad extends Base {
         }
         this.editSketchpad.canvas.svg.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
-          this.modes[this.state.mode].eventStart(this.getActualCoordinates({
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: e.clientX - offset.left,
             y: e.clientY - offset.top
           }));
@@ -616,7 +616,7 @@ export default class Sketchpad extends Base {
           e.preventDefault();
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
           if (this.modes[this.state.mode].drag) {
-            this.modes[this.state.mode].drag(this.getActualCoordinates({
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
               x: e.clientX - offset.left,
               y: e.clientY - offset.top
             }));
@@ -638,7 +638,7 @@ export default class Sketchpad extends Base {
           this.editSketchpad.canvas.svg.style.cursor = cursor;
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
           if (this.modes[this.state.mode].eventEnd) {
-            this.modes[this.state.mode].eventEnd(this.getActualCoordinates({
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
               x: e.clientX - offset.left,
               y: e.clientY - offset.top
             }));
@@ -668,7 +668,7 @@ export default class Sketchpad extends Base {
         }
         this.editSketchpad.canvas.svg.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
-          this.modes[this.state.mode].eventStart(this.getActualCoordinates({
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: touch.pageX - offset.left,
             y: touch.pageY - offset.top
           }));
@@ -680,7 +680,7 @@ export default class Sketchpad extends Base {
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
           const touch = e.changedTouches[0];
           if (this.modes[this.state.mode].drag) {
-            this.modes[this.state.mode].drag(this.getActualCoordinates({
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
               x: touch.pageX - offset.left,
               y: touch.pageY - offset.top
             }));
@@ -704,7 +704,7 @@ export default class Sketchpad extends Base {
           }
           this.editSketchpad.canvas.svg.style.cursor = cursor;
           if (this.modes[this.state.mode].eventEnd) {
-            this.modes[this.state.mode].eventEnd(this.getActualCoordinates({
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
               x: touch.pageX - offset.left,
               y: touch.pageY - offset.top
             }));
@@ -822,7 +822,7 @@ export default class Sketchpad extends Base {
     this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
 
     svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
-    //fix weird issue in Chrome when it retured '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
+    //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
 
     this.editSketchpad.background.container.style['min-width'] = `${this.dimensions.width}px`;
@@ -972,7 +972,7 @@ export default class Sketchpad extends Base {
     this.zoom({ x: 0, y: 0 }, (this.component.defaultZoom / 100) / this.zoomInfo.totalMultiplier);
   }
 
-  getActualCoordinates(coordinate) {
+  getActualCoordinate(coordinate) {
     //recalculate coordinate taking into account current zoom
     coordinate.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minX);
     coordinate.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minY);

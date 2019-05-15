@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Tagpad: Automatic resizing of drawing area to fill half of available width
+
 ## 3.20.14
 ### Fixed
  - Field logic infinite redraw issue with Select dropdowns.

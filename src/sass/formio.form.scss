@@ -939,7 +939,7 @@ body.formio-dialog-open {
   bottom: 3%;
   width: auto;
   overflow: auto;
-  
+
   .formio-dialog-close {
     z-index: 4;
   }
@@ -1006,6 +1006,7 @@ body.formio-dialog-open {
 
 .formio-tagpad-image-container {
   float: left;
+  width: 50%;
   z-index: 1;
   position: relative;
   border: 1px dashed #999;
@@ -1013,13 +1014,13 @@ body.formio-dialog-open {
 }
 
 .formio-tagpad-form-container {
-  width: 100%;
+  width: 50%;
   float: left;
 }
 
 .formio-tagpad-canvas {
   cursor: crosshair;
-  position: relative;
+  position: absolute;
   z-index: 2;
 }
 
@@ -1031,19 +1032,8 @@ body.formio-dialog-open {
   background-color: #eee;
 }
 
-.formio-tagpad-background {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 1;
-}
-
 .formio-tagpad-background svg {
   width: 100%;
-  height: 100%;
-  position: absolute;
 }
 
 .formio-tagpad-form {
