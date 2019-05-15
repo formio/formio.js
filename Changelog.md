@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Sketchpad: Small gap at the bottom of view mode image
+
 ## 3.20.14
 ### Fixed
  - Field logic infinite redraw issue with Select dropdowns.
