@@ -615,6 +615,7 @@ export default class SelectComponent extends BaseComponent {
       }
     }
 
+    const searchField = this.component.searchField;
     const choicesOptions = {
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
@@ -631,8 +632,9 @@ export default class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
-      searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', ['label']),
+      searchChoices: !searchField,
+      searchFields: this.component.searchFields
+        || (searchField ? [`value.${searchField}`] : ['label']),
       fuseOptions: Object.assign({
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
