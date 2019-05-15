@@ -487,6 +487,30 @@ export default class Formio {
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, &apos;GET&apos;, null, opts);
   }
 
+  loadFormRevision(vid, query, opts) {
+    if (!this.formUrl &amp;&amp; !this.vUrl) {
+      return Promise.reject(&apos;No form url set.&apos;);
+    }
+
+    // Set the version url if not set.
+    if (vid &amp;&amp; !this.vUrl) {
+      this.vId = vid;
+      this.vUrl = `${this.formUrl}/v/${vid}`;
+    }
+
+    // If they specified a revision form, load the revised form components.
+    if (query &amp;&amp; isObject(query)) {
+      query = Formio.serialize(query.params);
+    }
+    if (query) {
+      query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
+    }
+    else {
+      query = this.query;
+    }
+    return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts);
+  }
+
   loadForm(query, opts) {
     return this.load(&apos;form&apos;, query, opts)
       .then((currentForm) =&gt; {
@@ -498,17 +522,7 @@ export default class Formio {
         if (currentForm.revisions === &apos;current&apos; &amp;&amp; this.submissionId) {
           return currentForm;
         }
-        // If they specified a revision form, load the revised form components.
-        if (query &amp;&amp; isObject(query)) {
-          query = Formio.serialize(query.params);
-        }
-        if (query) {
-          query = this.query ? (`${this.query}&amp;${query}`) : (`?${query}`);
-        }
-        else {
-          query = this.query;
-        }
-        return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts)
+        return this.loadFormRevision(this.vId, query, opts)
           .then((revisionForm) =&gt; {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don&apos;t cross polinate multiple form loads.

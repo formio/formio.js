@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.20.15
 ### Fixed
+ - Issue where submission with form revisions enabled on "original" form setting was using wrong form.
+ - Problem where subform change events were not propagating change flags to the parent form change event.
  - Sketchpad: Small gap at the bottom of view mode image
+ - Issue where the change event from a Nested form component was setting the form component as the source instead of the component that triggered the change within.
 
 ### Added
  - Tagpad: Automatic resizing of drawing area to fill half of available width

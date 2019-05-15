@@ -941,6 +941,24 @@ export default class Webform extends NestedComponent {
   }
 
   /**
+   * Explicitely sets the submission value directly without waiting on any form loads etc.
+   *
+   * @param submission
+   * @return {*}
+   */
+  setSubmissionValue(submission, flags) {
+    this.submissionSet = true;
+    if (!this.setValue(submission, flags)) {
+      if (this.hasChanged(submission, this.getValue())) {
+        this.triggerChange({
+          noValidate: true
+        });
+      }
+    }
+    return this.dataReady.then(() =&gt; this.submissionReadyResolve(submission));
+  }
+
+  /**
    * Sets a submission and returns the promise when it is ready.
    * @param submission
    * @param flags
@@ -949,16 +967,23 @@ export default class Webform extends NestedComponent {
   setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () =&gt; {
-        // If nothing changed, still trigger an update.
         this.submissionSet = true;
-        if (!this.setValue(submission, flags)) {
-          if (this.hasChanged(submission, this.getValue())) {
-            this.triggerChange({
-              noValidate: true
+        if (
+          submission._fvid &amp;&amp;
+          this._form.revisions === &apos;original&apos; &amp;&amp;
+          submission._fvid !== this._form._vid
+        ) {
+          return this.formio.loadFormRevision(submission._fvid).then((revision) =&gt; {
+            this._form._vid = submission._fvid;
+            this._form.components = revision.components;
+            return this.setForm(this._form).then(() =&gt; {
+              return this.setSubmissionValue(submission, flags);
             });
-          }
+          });
         }
-        return this.dataReady.then(() =&gt; this.submissionReadyResolve(submission));
+        else {
+          return this.setSubmissionValue(submission, flags);
+        }
       },
       (err) =&gt; this.submissionReadyReject(err)
     ).catch(
