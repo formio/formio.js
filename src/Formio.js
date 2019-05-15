@@ -273,6 +273,30 @@ export default class Formio {
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
   }
 
+  loadFormRevision(vid, query, opts) {
+    if (!this.formUrl && !this.vUrl) {
+      return Promise.reject('No form url set.');
+    }
+
+    // Set the version url if not set.
+    if (vid && !this.vUrl) {
+      this.vId = vid;
+      this.vUrl = `${this.formUrl}/v/${vid}`;
+    }
+
+    // If they specified a revision form, load the revised form components.
+    if (query && isObject(query)) {
+      query = Formio.serialize(query.params);
+    }
+    if (query) {
+      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
+    }
+    else {
+      query = this.query;
+    }
+    return this.makeRequest('form', this.vUrl + query, 'get', null, opts);
+  }
+
   loadForm(query, opts) {
     return this.load('form', query, opts)
       .then((currentForm) => {
@@ -284,17 +308,7 @@ export default class Formio {
         if (currentForm.revisions === 'current' && this.submissionId) {
           return currentForm;
         }
-        // If they specified a revision form, load the revised form components.
-        if (query && isObject(query)) {
-          query = Formio.serialize(query.params);
-        }
-        if (query) {
-          query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
-        }
-        else {
-          query = this.query;
-        }
-        return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
+        return this.loadFormRevision(this.vId, query, opts)
           .then((revisionForm) => {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don't cross polinate multiple form loads.
