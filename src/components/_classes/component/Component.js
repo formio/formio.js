@@ -1539,8 +1539,11 @@ export default class Component extends Element {
     if (this.component.multiple && !Array.isArray(value)) {
       value = value ? [value] : [];
     }
-    // this.buildRows(value);
+
     const isArray = Array.isArray(value);
+    if (isArray && this.refs.input.length !== value.length) {
+      this.redraw();
+    }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
@@ -1557,7 +1560,7 @@ export default class Component extends Element {
    */
   setValueAt(index, value, flags) {
     flags = flags || {};
-    if (!flags.noDefault && (value === null || value === undefined)) {
+    if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
       value = this.defaultValue;
     }
     const input = this.performInputMapping(this.refs.input[index]);

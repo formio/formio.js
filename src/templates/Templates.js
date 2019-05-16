@@ -1,4 +1,5 @@
 import templates from './index';
+import _ from 'lodash';
 
 export default class Templates {
   static get templates() {
@@ -9,7 +10,8 @@ export default class Templates {
   }
 
   static set current(templates) {
-    Templates._current = templates;
+    const defaultTemplates = Templates._framework && Templates.templates.hasOwnProperty(Templates._framework) ? Templates.templates[Templates._framework] : Templates.templates.bootstrap;
+    Templates._current = _.merge(defaultTemplates, templates);
   }
 
   static get current() {

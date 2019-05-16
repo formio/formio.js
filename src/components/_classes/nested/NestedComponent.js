@@ -505,6 +505,10 @@ export default class NestedComponent extends Field {
     );
   }
 
+  isLastPage() {
+    return this.pages.length - 1 === this.page;
+  }
+
   isValid(data, dirty) {
     return this.getComponents().reduce(
       (valid, comp) => comp.isValid(data, dirty) && valid,
@@ -518,7 +522,11 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    return this.getComponents().reduce(
+    const components = this.wizard && !this.isLastPage()
+      ? this.pages[this.page]
+      : this.getComponents();
+
+    return components.reduce(
       (check, comp) => comp.checkValidity(data, dirty) && check,
       super.checkValidity(data, dirty)
     );
