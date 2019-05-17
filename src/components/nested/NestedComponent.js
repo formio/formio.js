@@ -187,6 +187,10 @@ export default class NestedComponent extends BaseComponent {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
+    if (state && state.persist) {
+      comp.persist = state.persist;
+      delete state.persist;
+    }
     comp.build(state);
     comp.isBuilt = true;
     if (component.internal) {
@@ -254,7 +258,8 @@ export default class NestedComponent extends BaseComponent {
    */
   removeComponent(component, components) {
     components = components || this.components;
-    const state = component.destroy();
+    const state = component.destroy() || {};
+    state.persist = component.persist;
     const element = component.getElement();
     if (element && element.parentNode) {
       this.removeChildFrom(element, element.parentNode);
