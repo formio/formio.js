@@ -607,7 +607,11 @@ export default class SelectComponent extends Field {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.inputInfo.changeEvent, (event) => {
+      // Check if event was fired from removeItem
+      const newValue = event.detail.value === this.dataValue ? '' : event.detail.value;
+      return this.updateValue({}, newValue);
+    });
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
