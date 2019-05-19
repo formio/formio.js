@@ -192,6 +192,11 @@ export default class BaseComponent extends Component {
     this._hasCondition = null;
 
     /**
+     * A persistent data object that can persist between component instances.
+     */
+    this.persist = {};
+
+    /**
      * The data object in which this component resides.
      * @type {*}
      */
@@ -1824,12 +1829,10 @@ export default class BaseComponent extends Component {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (!flags.noValidate) {
-      this.pristine = false;
-    }
 
     if (flags.modified) {
       // Add a modified class if this element was manually modified.
+      this.pristine = false;
       this.addClass(this.getElement(), 'formio-modified');
     }
 
