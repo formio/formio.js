@@ -334,6 +334,11 @@ export default class Webform extends NestedComponent {
     });
   }
 
+  destroy() {
+    delete Formio.forms[this.id];
+    return super.destroy();
+  }
+
   /**
    * Sets the the outside wrapper element of the Form.
    *
@@ -722,6 +727,24 @@ export default class Webform extends NestedComponent {
   }
 
   /**
+   * Explicitely sets the submission value directly without waiting on any form loads etc.
+   *
+   * @param submission
+   * @return {*}
+   */
+  setSubmissionValue(submission, flags) {
+    this.submissionSet = true;
+    if (!this.setValue(submission, flags)) {
+      if (this.hasChanged(submission, this.getValue())) {
+        this.triggerChange({
+          noValidate: true
+        });
+      }
+    }
+    return this.dataReady.then(() => this.submissionReadyResolve(submission));
+  }
+
+  /**
    * Sets a submission and returns the promise when it is ready.
    * @param submission
    * @param flags
@@ -730,16 +753,23 @@ export default class Webform extends NestedComponent {
   setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () => {
-        // If nothing changed, still trigger an update.
         this.submissionSet = true;
-        if (!this.setValue(submission, flags)) {
-          if (this.hasChanged(submission, this.getValue())) {
-            this.triggerChange({
-              noValidate: true
+        if (
+          submission._fvid &&
+          this._form.revisions === 'original' &&
+          submission._fvid !== this._form._vid
+        ) {
+          return this.formio.loadFormRevision(submission._fvid).then((revision) => {
+            this._form._vid = submission._fvid;
+            this._form.components = revision.components;
+            return this.setForm(this._form).then(() => {
+              return this.setSubmissionValue(submission, flags);
             });
-          }
+          });
         }
-        return this.dataReady.then(() => this.submissionReadyResolve(submission));
+        else {
+          return this.setSubmissionValue(submission, flags);
+        }
       },
       (err) => this.submissionReadyReject(err)
     ).catch(
@@ -946,6 +976,9 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build(state) {
+    // Clear any existing event handlers in case this is a rebuild
+    this.eventHandlers.forEach(h => this.removeEventListener(h.obj, h.type));
+
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);

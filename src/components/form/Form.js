@@ -138,7 +138,9 @@ export default class FormComponent extends BaseComponent {
         this.subForm.off('change');
         this.subForm.on('change', () => {
           this.dataValue = this.subForm.getValue();
-          this.triggerChange();
+          this.triggerChange({
+            noEmit: true
+          });
         });
       });
       this.subForm.url = this.formSrc;
@@ -380,6 +382,7 @@ export default class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags, norecurse) {
+    this._submission = submission;
     if (this.subForm || norecurse) {
       if (
         !norecurse &&
@@ -400,7 +403,7 @@ export default class FormComponent extends BaseComponent {
       }
     }
 
-    const changed = super.setValue(submission, flags);
+    const changed = super.setValue(this._submission, flags);
     const hidden = this.isHidden();
     let subForm;
     if (hidden) {
@@ -409,7 +412,7 @@ export default class FormComponent extends BaseComponent {
     else {
       subForm = this.loadSubForm();
     }
-    subForm.then(() => this.setValue(submission, flags, true));
+    subForm.then(() => this.setValue(this._submission, flags, true));
     return changed;
   }
 

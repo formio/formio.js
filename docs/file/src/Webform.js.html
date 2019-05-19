@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -546,6 +548,11 @@ export default class Webform extends NestedComponent {
     });
   }
 
+  destroy() {
+    delete Formio.forms[this.id];
+    return super.destroy();
+  }
+
   /**
    * Sets the the outside wrapper element of the Form.
    *
@@ -934,6 +941,24 @@ export default class Webform extends NestedComponent {
   }
 
   /**
+   * Explicitely sets the submission value directly without waiting on any form loads etc.
+   *
+   * @param submission
+   * @return {*}
+   */
+  setSubmissionValue(submission, flags) {
+    this.submissionSet = true;
+    if (!this.setValue(submission, flags)) {
+      if (this.hasChanged(submission, this.getValue())) {
+        this.triggerChange({
+          noValidate: true
+        });
+      }
+    }
+    return this.dataReady.then(() =&gt; this.submissionReadyResolve(submission));
+  }
+
+  /**
    * Sets a submission and returns the promise when it is ready.
    * @param submission
    * @param flags
@@ -942,16 +967,23 @@ export default class Webform extends NestedComponent {
   setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () =&gt; {
-        // If nothing changed, still trigger an update.
         this.submissionSet = true;
-        if (!this.setValue(submission, flags)) {
-          if (this.hasChanged(submission, this.getValue())) {
-            this.triggerChange({
-              noValidate: true
+        if (
+          submission._fvid &amp;&amp;
+          this._form.revisions === &apos;original&apos; &amp;&amp;
+          submission._fvid !== this._form._vid
+        ) {
+          return this.formio.loadFormRevision(submission._fvid).then((revision) =&gt; {
+            this._form._vid = submission._fvid;
+            this._form.components = revision.components;
+            return this.setForm(this._form).then(() =&gt; {
+              return this.setSubmissionValue(submission, flags);
             });
-          }
+          });
         }
-        return this.dataReady.then(() =&gt; this.submissionReadyResolve(submission));
+        else {
+          return this.setSubmissionValue(submission, flags);
+        }
       },
       (err) =&gt; this.submissionReadyReject(err)
     ).catch(
@@ -1158,6 +1190,9 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build(state) {
+    // Clear any existing event handlers in case this is a rebuild
+    this.eventHandlers.forEach(h =&gt; this.removeEventListener(h.obj, h.type));
+
     this.on(&apos;submitButton&apos;, (options) =&gt; this.submit(false, options), true);
     this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);

@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -217,6 +219,7 @@ import BaseComponent from &apos;../../components/base/Base&apos;;
 import { Components } from &apos;../../formio.form&apos;;
 import Formio from &apos;../../Formio&apos;;
 import { eachComponent } from &apos;../../utils/utils&apos;;
+import editForm from &apos;./Tagpad.form&apos;;
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -224,27 +227,42 @@ export default class Tagpad extends NestedComponent {
       type: &apos;tagpad&apos;,
       label: &apos;Tagpad&apos;,
       key: &apos;tagpad&apos;,
-      canvasWidth: 640,
-      canvasHeight: 480,
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: &apos;#333&apos;,
-      dotFillColor: &apos;#ccc&apos;
+      dotFillColor: &apos;#ccc&apos;,
+      components: []
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: &apos;Tagpad&apos;,
+    group: &apos;advanced&apos;,
+    icon: &apos;fa fa-tag&apos;,
+    weight: 115,
+    documentation: &apos;http://help.form.io/userguide/&apos;,
+    schema: Tagpad.schema()
+  };
+
+  static editForm = editForm;
 
   constructor(...args) {
     super(...args);
     this.type = &apos;tagpad&apos;;
     this.dots = [];
     _.defaults(this.component, {
-      canvasWidth: 640,
-      canvasHeight: 480,
       dotSize: 10,
       dotStrokeSize: 2,
       dotStrokeColor: &apos;#333&apos;,
       dotFillColor: &apos;#ccc&apos;
     });
+    //init background ready promise
+    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
+      this.backgroundReady = { resolve, reject };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
+    //init dimensions multiplier
+    this.dimensionsMultiplier = 1;
   }
 
   build(state) {
@@ -279,12 +297,10 @@ export default class Tagpad extends NestedComponent {
       class: &apos;formio-tagpad-background&apos;
     });
     this.canvasContainer = this.ce(&apos;div&apos;, {
-      class: &apos;formio-tagpad-image-container&apos;,
-      style: `width: ${this.component.canvasWidth}px;`
+      class: &apos;formio-tagpad-image-container&apos;
     }, [this.canvas, this.background]);
     this.formContainer = this.ce(&apos;div&apos;, {
-        class: &apos;formio-tagpad-form-container&apos;,
-        style: `margin-left: -${this.component.canvasWidth}px; padding-left: ${this.component.canvasWidth}px;`
+        class: &apos;formio-tagpad-form-container&apos;
       },
       this.form = this.ce(&apos;div&apos;, {
         class: &apos;formio-tagpad-form&apos;
@@ -293,13 +309,17 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
     this.two = new Two({
-      type: Two.Types.svg,
-      width: this.component.canvasWidth,
-      height: this.component.canvasHeight
+      type: Two.Types.svg
     }).appendTo(this.canvas);
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
-    this.attachDrawEvents();
+    this.on(&apos;initialized&apos;, () =&gt; {
+      this.backgroundReady.promise.then(() =&gt; {
+        //when element is already displayed in browser and background is ready, stretch drawing area to fit background dimensions
+        this.stretchDrawingArea();
+      });
+    });
+    this.attach();
     this.redrawDots();
   }
 
@@ -342,6 +362,11 @@ export default class Tagpad extends NestedComponent {
     this.formRendered = true;
   }
 
+  attach() {
+    this.attachDrawEvents();
+    window.addEventListener(&apos;resize&apos;, this.stretchDrawingArea.bind(this));
+  }
+
   attachDrawEvents() {
     if (this.options.readOnly) {
       return;
@@ -350,10 +375,10 @@ export default class Tagpad extends NestedComponent {
     const mouseEnd = (e) =&gt; {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
-      this.addDot({
+      this.addDot(this.getActualCoordinate({
         x: e.clientX - offset.left,
         y: e.clientY - offset.top
-      });
+      }));
     };
     this.canvasSvg.addEventListener(&apos;mouseup&apos;, mouseEnd);
 
@@ -362,14 +387,29 @@ export default class Tagpad extends NestedComponent {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
       const touch = e.originalEvent.changedTouches[0];
-      this.addDot({
+      this.addDot(this.getActualCoordinate({
         x: touch.pageX - offset.left,
         y: touch.pageY - offset.top
-      });
+      }));
     };
     this.canvasSvg.addEventListener(&apos;touchend&apos;, touchEnd);
 
     this.two.update();
+  }
+
+  getActualCoordinate(coordinate) {
+    //recalculate coordinate taking into account changed size of drawing area
+    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier);
+    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier);
+    return coordinate;
+  }
+
+  stretchDrawingArea() {
+    const width = this.background.offsetWidth;
+    const height = this.background.offsetHeight;
+    //will need dimensions multiplier for coordinates calculation
+    this.dimensionsMultiplier = width / this.dimensions.width;
+    this.setEditorSize(width, height);
   }
 
   get dataReady() {
@@ -377,22 +417,14 @@ export default class Tagpad extends NestedComponent {
   }
 
   addBackground() {
-    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
-      this.backgroundReady = {
-        resolve,
-        reject
-      };
-    });
-    this.backgroundReady.promise = backgroundReadyPromise;
     if (this.component.image) {
-      //TODO check that inserted html contains SVG tag on it
-      this.background.innerHTML = this.component.image;
+      this.setBackgroundImage(this.component.image);
       this.backgroundReady.resolve();
     }
     else if (this.component.imageUrl) {
       Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true, headers: {} })
         .then(image =&gt; {
-          this.background.innerHTML = image;
+          this.setBackgroundImage(image);
           this.backgroundReady.resolve();
         })
         .catch(() =&gt; {
@@ -401,6 +433,66 @@ export default class Tagpad extends NestedComponent {
           this.backgroundReady.resolve();
         });
     }
+  }
+
+  setBackgroundImage(svgMarkup) {
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, &apos;image/svg+xml&apos;);
+    let backgroundSvg = xmlDoc.getElementsByTagName(&apos;svg&apos;);
+    if (!backgroundSvg || !backgroundSvg[0]) {
+      console.warn(`Tagpad &apos;${this.component.key}&apos;: Background SVG doesn&apos;t contain &lt;svg&gt; tag on it`);
+      return;
+    }
+    backgroundSvg = backgroundSvg[0];
+    //read initial dimensions from viewBox
+    const initialViewBox = backgroundSvg.getAttribute(&apos;viewBox&apos;);
+    let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+    if (initialViewBox) {
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = initialViewBox.split(&apos; &apos;).map(parseFloat);
+    }
+    else {
+      //if viewBox is not defined, use &apos;x&apos;, &apos;y&apos;, &apos;width&apos; and &apos;height&apos; SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+      [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+        { attribute: &apos;x&apos;, defaultValue: 0 },
+        { attribute: &apos;y&apos;, defaultValue: 0 },
+        { attribute: &apos;width&apos;, defaultValue: 640 },
+        { attribute: &apos;height&apos;, defaultValue: 480 }
+      ].map(dimension =&gt; {
+        return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+      });
+    }
+    //set initial dimensions to width and height from viewBox of background svg
+    this.dimensions = {
+      width: viewBoxWidth,
+      height: viewBoxHeight
+    };
+    //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
+    backgroundSvg.removeAttribute(&apos;width&apos;);
+    backgroundSvg.removeAttribute(&apos;height&apos;);
+    const viewBox = {
+      width: this.dimensions.width,
+      height: this.dimensions.height,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
+    };
+    //set background image viewBox
+    backgroundSvg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
+    this.canvasSvg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it returned &apos;&lt;svg:svg&gt;...&lt;/svg:svg&gt;&apos; string after serialization instead of &lt;svg&gt;...&lt;/svg&gt;
+    svgMarkup = svgMarkup.replace(&apos;&lt;svg:svg&apos;, &apos;&lt;svg&apos;).replace(&apos;&lt;/svg:svg&gt;&apos;, &apos;&lt;/svg&gt;&apos;);
+
+    this.background.innerHTML = svgMarkup;
+
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
+  }
+
+  setEditorSize(width, height) {
+    this.two.width = width;
+    this.two.height = height;
+    this.two.update();
   }
 
   addDot(coordinate) {
@@ -428,6 +520,12 @@ export default class Tagpad extends NestedComponent {
   }
 
   selectDot(index) {
+    if (index === null) {
+      this.empty(this.form);
+      this.components = [];
+      this.formRendered = false;
+      return;
+    }
     if (!this.formRendered) {
       this.renderForm();
     }
@@ -476,7 +574,7 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(0);
+    this.selectDot(this.dataValue.length &gt; 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -514,6 +612,7 @@ export default class Tagpad extends NestedComponent {
     this.dots = [];
     //clear canvas
     this.two.clear();
+    this.two.render();
     //draw dots
     this.setValue(this.dataValue);
   }

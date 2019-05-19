@@ -94,6 +94,15 @@ dialog.fixed {
   border: none;
   display: none; }
 
+/* Force native + Ace textareas to use pre-wrap whitespace in readonly mode (preserves visual linebreaks) */
+.formio-disabled-input.formio-component-nativeTextArea > .well,
+.formio-disabled-input.formio-component-ace > .well {
+  white-space: pre-wrap; }
+
+/* Force all textareas to break long words when overflowing (if width is set) */
+.formio-disabled-input.formio-component-textarea .well {
+  overflow-wrap: break-word; }
+
 .formio-component-tags tags {
   background-color: #fff; }
 
@@ -779,8 +788,16 @@ body.formio-dialog-open {
   z-index: 3; }
 
 .formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
-  width: 90%;
-  text-align: center; }
+  text-align: center;
+  position: fixed;
+  top: 3%;
+  left: 3%;
+  right: 3%;
+  bottom: 3%;
+  width: auto;
+  overflow: auto; }
+  .formio-sketchpad-edit-dialog.formio-dialog.formio-dialog-theme-default .formio-dialog-content .formio-dialog-close {
+    z-index: 4; }
 
 .formio-sketchpad-svg {
   border: 1px dashed #999; }
@@ -789,8 +806,6 @@ body.formio-dialog-open {
   display: inline-block;
   text-align: left;
   max-width: 100%; }
-  .formio-sketchpad-edit-dialog-body .formio-dialog-close {
-    z-index: 4; }
 
 .formio-sketchpad-meta-info {
   text-align: right; }
@@ -810,49 +825,56 @@ body.formio-dialog-open {
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 1;
+  z-index: 1; }
+
+.formio-view-sketchpad-background {
   background: #ffffff; }
+
+.formio-edit-sketchpad-background {
+  text-align: center; }
 
 .formio-view-sketchpad-background svg {
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  position: absolute; }
+
+.formio-edit-sketchpad-background svg {
+  background: #ffffff; }
 
 .formio-view-sketchpad-canvas,
 .formio-edit-sketchpad-canvas {
   position: relative;
-  z-index: 2; }
+  z-index: 2;
+  text-align: center; }
+
+.formio-view-sketchpad-canvas svg {
+  display: block; }
 
 .formio-tagpad-image-container {
   float: left;
+  width: 50%;
   z-index: 1;
   position: relative;
   border: 1px dashed #999;
   border-radius: 3px; }
 
 .formio-tagpad-form-container {
-  width: 100%;
+  width: 50%;
   float: left; }
 
 .formio-tagpad-canvas {
   cursor: crosshair;
-  position: relative;
+  position: absolute;
   z-index: 2; }
 
 .formio-disabled-input .formio-tagpad-canvas {
-  cursor: not-allowed;
+  cursor: not-allowed; }
+
+.formio-disabled-input .formio-tagpad-image-container {
   background-color: #eee; }
 
-.formio-tagpad-background {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 1; }
-
 .formio-tagpad-background svg {
-  width: 100%;
-  height: 100%; }
+  width: 100%; }
 
 .formio-tagpad-form {
   padding-left: 5px;

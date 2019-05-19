@@ -4,6 +4,133 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.16
+### Fixed
+ - Fix error where the modified flag was getting fired for wysiwyg editors.
+
+### Changed
+ - Clenaup Choices.selectFields functionality.
+
+### Added
+ - Add config for search in Resource components
+
+## 3.20.15
+### Fixed
+ - Issue where submission with form revisions enabled on "original" form setting was using wrong form.
+ - Problem where subform change events were not propagating change flags to the parent form change event.
+ - Sketchpad: Small gap at the bottom of view mode image
+ - Issue where the change event from a Nested form component was setting the form component as the source instead of the component that triggered the change within.
+
+### Added
+ - Tagpad: Automatic resizing of drawing area to fill half of available width
+
+## 3.20.14
+### Fixed
+ - Field logic infinite redraw issue with Select dropdowns.
+ - Problems where the Calendar widgets would not work when Field logic is enabled.
+
+## 3.20.13
+### Fixed
+ - Problem with subforms where the submission data could possibly reset.
+ - Problem with duplicate change events firing from the form components.
+
+## 3.20.12
+### Added
+ - FOR-2273: Sketchpad -> Automatic resizing of drawing area to fill all free space in modal 
+ - Min and Max validations to the DataGrid form builder interface.
+
+### Fixed
+ - Tagpad: Background being invisible in readOnly mode and overflowing its container
+ - When pasting a copied component into an empty layout component, it should paste the component inside the layout component instead of below it.
+ - Issues where the "Allow override of calculated value" would get in a bad state.
+ 
+### Changed
+ - Upgraded i18next@15.1.1, babel-loader@8.0.6
+
+## 3.20.11
+### Fixed
+ - FOR-2216: Add white-space:pre-wrap to native + ACE textareas in readonly/disabled/PDF mode
+ - Sketchpad: issue in Chrome with background image being displayed as text
+ - FOR-2239: Sketchpad -> Fixed issues with background being shifted in datagrid
+ - power-assert output not shown when running formio.js unit tests with karma
+ - Component.addClass() adds 'null' to class attribute
+
+### Added
+ - Add automatic contrib component registration
+
+## 3.20.10
+### Fixed
+ - FOR-2241: Fixed the missing false value for conditional logic.
+ - Issues where Field Logic would get in an infinite loop.
+ - FOR-2248: Resolved some memory leak problems when using builder.
+ - Fixing problems where the tabs and checkbox disappear when redraw is called on them.
+
+## 3.20.9
+### Fixed
+ - Fixed memory-leak where the global Formio.forms were not deleted when the form is destroyed.
+
+## 3.20.8
+### Added
+ - The user, form and access to the userPermissions check.
+
+## 3.20.7
+### Fixed
+ - The relay url on the SAML authentication to encode the full url.
+ - FOR-2221: Skip supplying `form` during FormioUtils.evaluate() unless we need it
+
+### Added
+ - A userPermissions method on Formio to check user permissions on forms and submissions.
+ 
+### Changed
+ - Refactored the "canSubmit" method to use the new userPermissions method.
+
+## 3.20.6
+### Fixed
+ - Fix touch events on sketchpad, tagpad
+ - Fix removing last dot from tagpad
+ - Fix checkbox label id in datagrids always referring to same item
+ - Add builder info to tagpad and sketchpad
+
+## 3.20.5
+### Fixed
+ - Only clone form in custom conditionals if needed as it is expensive.
+
+## 3.20.4
+### Added
+ - A way for the SAML SSO to force the authentication to always trigger against the SAML provider.
+ 
+### Changed
+ - Upgraded @babel/cli@7.4.4, @babel/core@7.4.4, @babel/polyfill@7.4.4, @babel/preset-env@7.4.4, del@4.1.1
+
+## 3.20.3
+### Fixed
+ - IE issues by adding a CustomEvent polyfill.
+ - Possible problems where a plugin could be registered more than once.
+
+### Changed
+ - Upgraded fetch-mock@7.3.3, i18next@15.1.0, gulp-clean-css@4.2.0
+
+## 3.20.2
+### Fixed
+ - Headers were not being passed properly to fetch requests due to change from whatwg-fetch to fetch-ponyfill.
+
+## 3.20.1
+### Fixed
+ - Problem where forms configured for "fontawesome" would not show the DateTime calendar icon on the field.
+
+## 3.20.0
+### Added
+ - Sketchpad: Ability to use dimensions from background SVG instead of providing ```component.width``` and ```component.height```
+ - Sketchpad: ```defaultZoom``` setting
+ - The value of the component to the evalContext so that it is available in all executed contexts.
+ - Include additional texts under translation - https://github.com/formio/formio.js/pull/1191
+ - Add sort & filter on resource component - https://github.com/formio/formio.js/pull/1188
+
+### Fixed
+ - Fixing Okta SSO get AccessToken error - https://github.com/formio/formio.js/pull/1193
+ - Added error message for beforeNext hook
+ - Adding some protections around scrollList references.
+
 ## 3.20.0-beta.3
 ### Fixed
  - Problem where form builder would not fire any events when moving components.

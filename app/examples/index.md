@@ -84,6 +84,7 @@ Formio.createForm(document.getElementById('formio'), {
 <div class="card card-body bg-light">
 <div id="formio"></div>
 <script type="text/javascript">
+Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {

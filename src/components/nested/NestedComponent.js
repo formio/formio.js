@@ -503,7 +503,7 @@ export default class NestedComponent extends BaseComponent {
    * @param state
    */
   destroy() {
-    const state = super.destroy() || {};
+    const state = super.destroy(...arguments) || {};
     this.destroyComponents(state);
     return state;
   }

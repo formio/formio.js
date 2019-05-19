@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -391,7 +393,6 @@ export default class BaseComponent extends Component {
   /* eslint-disable max-statements */
   constructor(component, options, data) {
     super(options, (component &amp;&amp; component.id) ? component.id : null);
-    this.originalComponent = _.cloneDeep(component);
 
     // Determine if we are inside a datagrid.
     this.inDataGrid = this.options.inDataGrid;
@@ -426,6 +427,9 @@ export default class BaseComponent extends Component {
 
     // Add the id to the component.
     this.component.id = this.id;
+
+    // Set the original component.
+    this.originalComponent = _.cloneDeep(this.component);
 
     /**
      * The bounding HTML Element which this component is rendered.
@@ -875,16 +879,18 @@ export default class BaseComponent extends Component {
       &apos;aria-label&apos;: &apos;close&apos;
     });
 
+    const modalBodyContainer = this.ce(&apos;div&apos;, {
+      class: &apos;formio-dialog-content&apos;
+    }, [
+      modalBody,
+      closeDialog
+    ]);
+
     const dialog = this.ce(&apos;div&apos;, {
       class: &apos;formio-dialog formio-dialog-theme-default component-settings&apos;
     }, [
       modalOverlay,
-      this.ce(&apos;div&apos;, {
-        class: &apos;formio-dialog-content&apos;
-      }, [
-        modalBody,
-        closeDialog
-      ])
+      modalBodyContainer
     ]);
 
     this.addEventListener(modalOverlay, &apos;click&apos;, (event) =&gt; {
@@ -900,6 +906,7 @@ export default class BaseComponent extends Component {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
+    dialog.bodyContainer = modalBodyContainer;
     dialog.close = () =&gt; {
       dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
       this.removeChildFrom(dialog, document.body);
@@ -1013,6 +1020,7 @@ export default class BaseComponent extends Component {
       instance: this,
       component: this.component,
       row: this.data,
+      value: ((this.key &amp;&amp; this.hasValue()) ? this.dataValue : this.emptyValue),
       rowIndex: this.rowIndex,
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
@@ -1654,6 +1662,11 @@ export default class BaseComponent extends Component {
       return null;
     }
 
+    // Pass along some options.
+    settings.icons = this.options.icons;
+    settings.i18n = this.options.i18n;
+    settings.language = this.options.language;
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on(&apos;update&apos;, () =&gt; this.updateValue(), true);
@@ -1691,7 +1704,7 @@ export default class BaseComponent extends Component {
    * Remove all event handlers.
    */
   destroy() {
-    const state = super.destroy() || {};
+    const state = super.destroy(...arguments) || {};
     this.destroyInputs();
     state.calculatedValue = this.calculatedValue;
     return state;
@@ -2472,6 +2485,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       (this.calculatedValue !== null) &amp;&amp;
+      (this.calculatedValue !== this.emptyValue) &amp;&amp;
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
       return false;
@@ -2487,7 +2501,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       firstPass &amp;&amp;
-      !this.isEmpty(dataValue) &amp;&amp;
+      (dataValue !== this.emptyValue) &amp;&amp;
       !_.isEqual(dataValue, calculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.

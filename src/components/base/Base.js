@@ -179,7 +179,6 @@ export default class BaseComponent extends Component {
   /* eslint-disable max-statements */
   constructor(component, options, data) {
     super(options, (component && component.id) ? component.id : null);
-    this.originalComponent = _.cloneDeep(component);
 
     // Determine if we are inside a datagrid.
     this.inDataGrid = this.options.inDataGrid;
@@ -214,6 +213,9 @@ export default class BaseComponent extends Component {
 
     // Add the id to the component.
     this.component.id = this.id;
+
+    // Set the original component.
+    this.originalComponent = _.cloneDeep(this.component);
 
     /**
      * The bounding HTML Element which this component is rendered.
@@ -663,16 +665,18 @@ export default class BaseComponent extends Component {
       'aria-label': 'close'
     });
 
+    const modalBodyContainer = this.ce('div', {
+      class: 'formio-dialog-content'
+    }, [
+      modalBody,
+      closeDialog
+    ]);
+
     const dialog = this.ce('div', {
       class: 'formio-dialog formio-dialog-theme-default component-settings'
     }, [
       modalOverlay,
-      this.ce('div', {
-        class: 'formio-dialog-content'
-      }, [
-        modalBody,
-        closeDialog
-      ])
+      modalBodyContainer
     ]);
 
     this.addEventListener(modalOverlay, 'click', (event) => {
@@ -688,6 +692,7 @@ export default class BaseComponent extends Component {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
+    dialog.bodyContainer = modalBodyContainer;
     dialog.close = () => {
       dialog.dispatchEvent(new CustomEvent('close'));
       this.removeChildFrom(dialog, document.body);
@@ -801,7 +806,7 @@ export default class BaseComponent extends Component {
       instance: this,
       component: this.component,
       row: this.data,
-      value: this.dataValue,
+      value: ((this.key && this.hasValue()) ? this.dataValue : this.emptyValue),
       rowIndex: this.rowIndex,
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
@@ -1443,6 +1448,11 @@ export default class BaseComponent extends Component {
       return null;
     }
 
+    // Pass along some options.
+    settings.icons = this.options.icons;
+    settings.i18n = this.options.i18n;
+    settings.language = this.options.language;
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(), true);
@@ -1480,7 +1490,7 @@ export default class BaseComponent extends Component {
    * Remove all event handlers.
    */
   destroy() {
-    const state = super.destroy() || {};
+    const state = super.destroy(...arguments) || {};
     this.destroyInputs();
     state.calculatedValue = this.calculatedValue;
     return state;
@@ -2261,6 +2271,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &&
       (this.calculatedValue !== null) &&
+      (this.calculatedValue !== this.emptyValue) &&
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
       return false;
@@ -2276,7 +2287,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &&
       firstPass &&
-      !this.isEmpty(dataValue) &&
+      (dataValue !== this.emptyValue) &&
       !_.isEqual(dataValue, calculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.

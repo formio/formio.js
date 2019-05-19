@@ -5,10 +5,12 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
+import 'custom-event-polyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import * as providers from './providers';
+import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 const { fetch, Headers } = fetchPonyfill({
@@ -271,6 +273,30 @@ export default class Formio {
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
   }
 
+  loadFormRevision(vid, query, opts) {
+    if (!this.formUrl && !this.vUrl) {
+      return Promise.reject('No form url set.');
+    }
+
+    // Set the version url if not set.
+    if (vid && !this.vUrl) {
+      this.vId = vid;
+      this.vUrl = `${this.formUrl}/v/${vid}`;
+    }
+
+    // If they specified a revision form, load the revised form components.
+    if (query && isObject(query)) {
+      query = Formio.serialize(query.params);
+    }
+    if (query) {
+      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
+    }
+    else {
+      query = this.query;
+    }
+    return this.makeRequest('form', this.vUrl + query, 'get', null, opts);
+  }
+
   loadForm(query, opts) {
     return this.load('form', query, opts)
       .then((currentForm) => {
@@ -282,17 +308,7 @@ export default class Formio {
         if (currentForm.revisions === 'current' && this.submissionId) {
           return currentForm;
         }
-        // If they specified a revision form, load the revised form components.
-        if (query && isObject(query)) {
-          query = Formio.serialize(query.params);
-        }
-        if (query) {
-          query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
-        }
-        else {
-          query = this.query;
-        }
-        return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
+        return this.loadFormRevision(this.vId, query, opts)
           .then((revisionForm) => {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don't cross polinate multiple form loads.
@@ -530,72 +546,90 @@ export default class Formio {
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
-  // Determine if the user can submit the form.
-  canSubmit() {
-    /* eslint-disable max-statements, max-depth */
+  /**
+   * Returns the user permissions to a form and submission.
+   *
+   * @param user - The user or current user if undefined. For anonymous, use "null"
+   * @param form - The form or current form if undefined. For no form check, use "null"
+   * @param submission - The submisison or "index" if undefined.
+   *
+   * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}
+   */
+  userPermissions(user, form, submission) {
     return Promise.all([
-      this.loadForm(),
-      this.currentUser(),
+      (form !== undefined) ? Promise.resolve(form) : this.loadForm(),
+      (user !== undefined) ? Promise.resolve(user) : this.currentUser(),
       this.accessInfo()
     ]).then((results) => {
       const form = results.shift();
-      const user = results.shift();
+      const user = results.shift() || { _id: false, roles: [] };
       const access = results.shift();
-
-      // Get the anonymous and admin roles.
-      let anonRole = {};
-      let adminRole = {};
+      const permMap = {
+        create: 'create',
+        read: 'read',
+        update: 'edit',
+        delete: 'delete'
+      };
+      const perms = {
+        user: user,
+        form: form,
+        access: access,
+        create: false,
+        read: false,
+        edit: false,
+        delete: false
+      };
       for (const roleName in access.roles) {
         if (access.roles.hasOwnProperty(roleName)) {
           const role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
+          if (role.default && (user._id === false)) {
+            // User is anonymous. Add the anonymous role.
+            user.roles.push(role._id);
           }
-          if (role.admin) {
-            adminRole = role;
+          else if (role.admin && user.roles.indexOf(role._id) !== -1) {
+            perms.create = true;
+            perms.read = true;
+            perms.delete = true;
+            perms.edit = true;
+            return perms;
           }
         }
       }
-
-      let canSubmit = false;
-      let canSubmitAnonymously = false;
-
-      // If the user is an admin, then they can submit this form.
-      if (user && user.roles.includes(adminRole._id)) {
-        return true;
-      }
-
-      for (const i in form.submissionAccess) {
-        if (form.submissionAccess.hasOwnProperty(i)) {
-          const subRole = form.submissionAccess[i];
-          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (const j in subRole.roles) {
-              if (subRole.roles.hasOwnProperty(j)) {
-                // Check if anonymous is allowed.
-                if (anonRole._id === subRole.roles[j]) {
-                  canSubmitAnonymously = true;
-                }
-                // Check if the logged in user has the appropriate role.
-                if (user && user.roles.includes(subRole.roles[j])) {
-                  canSubmit = true;
-                  break;
-                }
-              }
-            }
-            if (canSubmit) {
-              break;
+      if (form && form.submissionAccess) {
+        for (let i = 0; i < form.submissionAccess.length; i++) {
+          const permission = form.submissionAccess[i];
+          const [perm, scope] = permission.type.split('_');
+          if (['create', 'read', 'update', 'delete'].includes(perm)) {
+            if (_intersection(permission.roles, user.roles).length) {
+              perms[permMap[perm]] = (scope === 'all') || (!submission || (user._id === submission.owner));
             }
           }
         }
       }
-      // If their user cannot submit, but anonymous can, then delete token and allow submission.
-      if (!canSubmit && canSubmitAnonymously) {
-        canSubmit = true;
-        Formio.setUser(null);
-      }
-      return canSubmit;
+      return perms;
     });
-    /* eslint-enable max-statements, max-depth */
+  }
+
+  /**
+   * Determine if the current user can submit a form.
+   * @return {*}
+   */
+  canSubmit() {
+    return this.userPermissions().then((perms) => {
+      // If there is user and they cannot create, then check anonymous user permissions.
+      if (!perms.create && Formio.getUser()) {
+        return this.userPermissions(null).then((anonPerms) => {
+          if (anonPerms.create) {
+            Formio.setUser(null);
+            return true;
+          }
+
+          return false;
+        });
+      }
+
+      return perms.create;
+    });
   }
 
   getUrlParts(url) {
@@ -718,9 +752,15 @@ export default class Formio {
       headers.append('x-jwt-token', token);
     }
 
+    // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.
+    const headerObj = {};
+    headers.forEach(function(value, name) {
+      headerObj[name] = value;
+    });
+
     let options = {
       method: method,
-      headers: headers,
+      headers: headerObj,
       mode: 'cors'
     };
     if (data) {
@@ -733,7 +773,7 @@ export default class Formio {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
-    const requestToken = options.headers.get('x-jwt-token');
+    const requestToken = options.headers['x-jwt-token'];
     const result = Formio.fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
@@ -1042,10 +1082,19 @@ export default class Formio {
   }
 
   static registerPlugin(plugin, name) {
-    Formio.plugins.push(plugin);
-    Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-    plugin.__name = name;
-    (plugin.init || Formio.noop).call(plugin, Formio);
+    let found = false;
+    Formio.plugins.forEach((existing) => {
+      if (existing.__name === name) {
+        found = true;
+      }
+    });
+    if (!found) {
+      // Do not register already registered plugins.
+      Formio.plugins.push(plugin);
+      Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      plugin.__name = name;
+      (plugin.init || Formio.noop).call(plugin, Formio);
+    }
   }
 
   static getPlugin(name) {
@@ -1181,8 +1230,11 @@ export default class Formio {
       return retVal;
     }
 
-    // Only continue if we are not authenticated.
-    if (Formio.getToken()) {
+    if (options.forceAuth) {
+      Formio.setUser(null);
+    }
+    else if (Formio.getToken()) {
+      // If we are not forcing the authentication and we have a token, then return here.
       return false;
     }
 
@@ -1193,7 +1245,7 @@ export default class Formio {
 
     // go to the saml sso endpoint for this project.
     const authUrl = Formio.authUrl || Formio.projectUrl;
-    window.location.href = `${authUrl}/saml/sso?relay=${encodeURI(options.relay)}`;
+    window.location.href = `${authUrl}/saml/sso?relay=${encodeURIComponent(options.relay)}`;
     return false;
   }
 
@@ -1211,29 +1263,31 @@ export default class Formio {
     return new Promise((resolve, reject) => {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = new Okta(options);
-      var accessToken = authClient.tokenManager.get('accessToken');
-      if (accessToken) {
-        resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
-      }
-      else if (location.hash) {
-        authClient.token.parseFromUrl()
-          .then(token => {
-            authClient.tokenManager.add('accessToken', token);
-            resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
-          })
-          .catch(err => {
-            console.warn(err);
-            reject(err);
-          });
-      }
-      else {
-        authClient.token.getWithRedirect({
-          responseType: 'token',
-          scopes: options.scopes
+      var authClient = Okta;
+      authClient.tokenManager.get('accessToken')
+        .then(accessToken => {
+          if (accessToken) {
+            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
+          }
+          else if (location.hash) {
+            authClient.token.parseFromUrl()
+              .then(token => {
+                authClient.tokenManager.add('accessToken', token);
+                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
+              })
+              .catch(err => {
+                console.warn(err);
+                reject(err);
+              });
+          }
+          else {
+            authClient.token.getWithRedirect({
+              responseType: 'token',
+              scopes: options.scopes
+            });
+            resolve(false);
+          }
         });
-        resolve(false);
-      }
     });
   }
 

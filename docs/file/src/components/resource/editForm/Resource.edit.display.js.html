@@ -131,9 +131,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-sketchpad">contrib/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/sketchpad/sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-tagpad">contrib/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/tagpad/tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -235,13 +237,22 @@
     weight: 51
   },
   {
-    type: &apos;tags&apos;,
+    type: &apos;textfield&apos;,
     input: true,
-    key: &apos;searchFields&apos;,
-    label: &apos;Search Fields&apos;,
-    tooltip: &apos;A list of search filters based on the fields of the resource. See the &lt;a target=\&apos;_blank\&apos; href=\&apos;https://github.com/travist/resourcejs#filtering-the-results\&apos;&gt;Resource.js documentation&lt;/a&gt; for the format of these filters.&apos;,
-    placeholder: &apos;The fields to query on the server&apos;,
-    weight: 52
+    key: &apos;filter&apos;,
+    label: &apos;Filter Query&apos;,
+    description: &apos;The filter query for results.&apos;,
+    tooltip: &apos;Use this to provide additional filtering using query parameters.&apos;,
+    weight: 51.3
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;sort&apos;,
+    label: &apos;Sort Query&apos;,
+    description: &apos;The sort query for results.&apos;,
+    tooltip: &apos;Use this to provide additional sorting using query parameters.&apos;,
+    weight: 51.6
   },
   {
     type: &apos;textarea&apos;,
@@ -253,6 +264,73 @@
     rows: 3,
     weight: 53,
     tooltip: &apos;The HTML template for the result data items.&apos;
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    weight: 54,
+    key: &apos;searchEnabled&apos;,
+    label: &apos;Enable Search&apos;,
+    defaultValue: true,
+    tooltip: &apos;When checked, the select dropdown will allow for searching.&apos;
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;searchField&apos;,
+    label: &apos;Search Field for Query&apos;,
+    weight: 55,
+    description: &apos;Name of URL query parameter (leave blank for client-side search)&apos;,
+    tooltip: &apos;The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter with \&apos;__regex\&apos; appended. Leave empty to use client-side search within the list of choices.&apos;,
+    conditional: {
+      json: { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] }
+    }
+  },
+  {
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;minSearch&apos;,
+    weight: 56,
+    label: &apos;Server-Side Search: Minimum Input Length&apos;,
+    tooltip: &apos;The minimum amount of characters to be typed before a search query is made.&apos;,
+    defaultValue: 0,
+    conditional: {
+      json: {
+        and: [
+          { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] },
+          { &apos;!=&apos;: [{ var: &apos;data.searchField&apos; }, &apos;&apos;] }
+        ]
+      }
+    }
+  },
+  {
+    label: &apos;Client-Side Search Threshold&apos;,
+    mask: false,
+    tableView: true,
+    alwaysEnabled: false,
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;searchThreshold&apos;,
+    validate: {
+      min: 0,
+      customMessage: &apos;&apos;,
+      json: &apos;&apos;,
+      max: 1
+    },
+    delimiter: false,
+    requireDecimal: false,
+    encrypted: false,
+    defaultValue: 0.1,
+    weight: 57,
+    tooltip: &apos;At what point does the match algorithm for static search give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.&apos;,
+    conditional: {
+      json: {
+        and: [
+          { &apos;!=&apos;: [{ var: &apos;data.searchEnabled&apos; }, &apos;&apos;] },
+          { &apos;==&apos;: [{ var: &apos;data.searchField&apos; }, &apos;&apos;] }
+        ]
+      }
+    }
   }
 ];
 </code></pre>

@@ -56,7 +56,7 @@ export default class WebformBuilder extends Webform {
               { attr: 'style', value: 'text-align:center;' },
               { attr: 'role', value: 'alert' }
             ],
-            content: 'Drag and Drop a form component'
+            content: this.t('Drag and Drop a form component')
           }
         ];
       }
@@ -343,7 +343,7 @@ export default class WebformBuilder extends Webform {
           class: 'col col-sm-6'
         }, this.ce('p', {
           class: 'lead'
-        }, `${componentInfo.title} Component`)),
+        }, `${this.t(componentInfo.title)} ${this.t('Component')}`)),
         this.ce('div', {
           class: 'col col-sm-6'
         }, [
@@ -520,8 +520,8 @@ export default class WebformBuilder extends Webform {
     });
 
     this.addEventListener(this.dialog, 'close', () => {
-      this.editForm.destroy();
-      this.preview.destroy();
+      this.editForm.destroy(true);
+      this.preview.destroy(true);
       if (component.isNew) {
         this.deleteComponent(component);
       }
@@ -561,7 +561,13 @@ export default class WebformBuilder extends Webform {
       const schema = JSON.parse(data);
       window.sessionStorage.removeItem('formio.clipboard');
       BuilderUtils.uniquify(this._form, schema);
-      component.parent.addComponent(schema, false, false, component.element.nextSibling);
+      // If this is an empty "nested" component, and it is empty, then paste the component inside this component.
+      if ((typeof component.addComponent === 'function') && !component.components.length) {
+        component.addComponent(schema);
+      }
+      else {
+        component.parent.addComponent(schema, false, false, component.element.nextSibling);
+      }
       this.form = this.schema;
     }
   }
@@ -980,7 +986,7 @@ export default class WebformBuilder extends Webform {
     if (!this.getComponents().length) {
       this.submitButton = this.addComponent({
         type: 'button',
-        label: 'Submit',
+        label: this.t('Submit'),
         key: 'submit',
         size: 'md',
         block: false,

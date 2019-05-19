@@ -48,7 +48,15 @@ export function evaluate(func, args, ret, tokenize) {
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
-  args.form = _.cloneDeep(args.form);
+
+  // Deeply cloning the form is expensive - only do it if it looks like the function needs it
+  if (func.toString().includes('form')) {
+    args.form = _.cloneDeep(args.form);
+  }
+  else {
+    delete args.form;
+  }
+
   const componentKey = args.component.key;
   if (typeof func === 'string') {
     if (ret) {

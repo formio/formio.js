@@ -90,6 +90,14 @@ export default class CheckBoxComponent extends BaseComponent {
     if (!this.labelIsHidden()) {
       className += ` ${this.component.inputType || 'checkbox'}`;
     }
+
+    // If the element is already created, don't recreate.
+    if (this.element) {
+      //update class for case when Logic changed container class (customClass)
+      this.element.className = className;
+      return this.element;
+    }
+
     this.element = this.ce('div', {
       id: this.id,
       class: className
@@ -187,6 +195,12 @@ export default class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
+    let inputId = this.id;
+    if (this.options.row) {
+      inputId += `-${this.options.row}`;
+    }
+    inputId += `-${this.root.id}`;
+    this.info.attr.id = inputId;
     const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;

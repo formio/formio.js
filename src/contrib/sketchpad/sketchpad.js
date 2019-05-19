@@ -3,6 +3,7 @@ import Two from 'two.js';
 import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
+import editForm from './Sketchpad.form';
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -10,16 +11,25 @@ export default class Sketchpad extends Base {
       type: 'sketchpad',
       label: 'Sketchpad',
       key: 'sketchpad',
-      width: 640,
-      height: 480
+      defaultZoom: 100
     }, ...extend);
   }
+
+  static builderInfo = {
+    title: 'Sketchpad',
+    group: 'advanced',
+    icon: 'fa fa-image',
+    weight: 110,
+    documentation: 'http://help.form.io/userguide/',
+    schema: Sketchpad.schema()
+  };
+
+  static editForm = editForm;
 
   constructor(...args) {
     super(...args);
     _.defaults(this.component, {
-      width: 640,
-      height: 480
+      defaultZoom: 100
     });
     this.deleted = [];
     this.viewSketchpad = {
@@ -30,7 +40,18 @@ export default class Sketchpad extends Base {
       canvas: {},
       background: {}
     };
-
+    //will use dimensions from background viewBox if either width or height is not defined for component
+    //TODO maybe change this criteria to AND instead of OR, use defined dimension and default another missing dimension to value from viewBox (in this case will need to use promise in case of any missing dimension
+    this.useBackgroundDimensions = !this.component.width || !this.component.height;
+    //initialize backgroundReady promise
+    const backgroundReadyPromise = new Promise((resolve, reject) => {
+      this.backgroundReady = {
+        resolve,
+        reject
+      };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
+    //default state of SVG editor
     this.state = {
       mode: Object.keys(this.modes)[0],
       stroke: '#333',
@@ -39,28 +60,63 @@ export default class Sketchpad extends Base {
       circleSize: 10
     };
 
+    this.dimensionsMultiplier = 1;
+
     this.zoomInfo = {
-      canvasViewBox: {
-        current: {
-          width: this.component.width,
-          height: this.component.height,
-          minX: 0,
-          minY: 0
-        },
-        default: {
-          width: this.component.width,
-          height: this.component.height,
-          minX: 0,
-          minY: 0
-        }
-      },
-      backgroundViewBox: {
-        current: {},
-        default: {}
-      },
+      viewBox: {},
       multiplier: 1.5,
       totalMultiplier: 1
     };
+  }
+
+  /**
+   * Builds the component.
+   */
+  build(state) {
+    state = state || {};
+    this.calculatedValue = state.calculatedValue;
+
+    this.createElement();
+
+    this.createLabel(this.element);
+
+    this.viewSketchpad.canvas.container = this.ce('div', { class: 'formio-view-sketchpad-canvas' });
+    this.viewSketchpad.background.container = this.ce('div', { class: 'formio-view-sketchpad-background' });
+    this.addEventListener(this.viewSketchpad.canvas.container, 'click', this.editSvg.bind(this));
+    this.element.appendChild(this.ce('div', {
+      class: 'formio-view-sketchpad-container'
+    }, [
+      this.viewSketchpad.canvas.container,
+      this.viewSketchpad.background.container
+    ]));
+    this.editSketchpad.canvas.container = this.ce('div', { class: 'formio-edit-sketchpad-canvas' });
+    this.editSketchpad.background.container = this.ce('div', {
+      class: 'formio-edit-sketchpad-background'
+    });
+    //init two instance
+    this.two = new Two({
+      type: Two.Types.svg,
+    }).appendTo(this.editSketchpad.canvas.container);
+    //init canvas SVG variable
+    this.editSketchpad.canvas.svg = this.two.renderer.domElement;
+    this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
+
+    this.addBackground();
+    this.backgroundReady.promise.then(() => {
+      this.backgroundReady.isReady = true;
+      this.attach();
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
+
+      // Restore the value.
+      this.restoreValue();
+
+      this.autofocus();
+
+      this.attachLogic();
+    });
   }
 
   getValue() {
@@ -79,12 +135,12 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'pencil'
         },
-        eventStart: (coordinates) => {
-          this.points = [coordinates.canvas];
-          this.prev = coordinates.canvas;
+        eventStart: (coordinate) => {
+          this.points = [coordinate];
+          this.prev = coordinate;
           this.curve = this.two.makeCurve([
             new Two.Vector(this.prev.x, this.prev.y),
-            new Two.Vector(coordinates.canvas.x, coordinates.canvas.y + 1)
+            new Two.Vector(coordinate.x, coordinate.y + 1)
           ], true);
           this.curve.noFill().stroke = this.state.stroke;
           this.curve.linewidth = this.state.linewidth;
@@ -94,11 +150,11 @@ export default class Sketchpad extends Base {
           this.layers.push(this.curve);
           this.curve._renderer.elem.addEventListener('click', (e) => this.click(e, this.layers.length));
         },
-        drag: (coordinates) => {
-          this.points.push(coordinates.canvas);
-          this.curve.vertices.push(new Two.Vector(coordinates.canvas.x, coordinates.canvas.y));
+        drag: (coordinate) => {
+          this.points.push(coordinate);
+          this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
           this.two.update();
-          this.prev = coordinates.canvas;
+          this.prev = coordinate;
         },
         eventEnd: () => {
           const value = this.editValue.slice();
@@ -121,13 +177,13 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'line'
         },
-        eventStart: (coordinates) => {
-          this.center = coordinates.canvas;
+        eventStart: (coordinate) => {
+          this.center = coordinate;
           this.line = this.two.makeLine(
-            coordinates.canvas.x,
-            coordinates.canvas.y,
-            coordinates.canvas.x,
-            coordinates.canvas.y
+            coordinate.x,
+            coordinate.y,
+            coordinate.x,
+            coordinate.y
           );
           this.line.fill = this.state.fill;
           this.line.stroke = this.state.stroke;
@@ -137,9 +193,9 @@ export default class Sketchpad extends Base {
           const index = this.layers.length - 1;
           this.line._renderer.elem.addEventListener('click', (e) => this.click(e, index));
         },
-        drag: (coordinates) => {
-          this.line.vertices[1].x = coordinates.canvas.x;
-          this.line.vertices[1].y = coordinates.canvas.y;
+        drag: (coordinate) => {
+          this.line.vertices[1].x = coordinate.x;
+          this.line.vertices[1].y = coordinate.y;
           this.two.update();
         },
         eventEnd: () => {
@@ -173,9 +229,9 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'circle'
         },
-        eventStart: (coordinates) => {
-          this.center = coordinates.canvas;
-          const layer = this.two.makeCircle(coordinates.canvas.x, coordinates.canvas.y, this.state.circleSize);
+        eventStart: (coordinate) => {
+          this.center = coordinate;
+          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
           layer.fill = this.state.fill;
           layer.stroke = this.state.stroke;
           layer.linewidth = this.state.linewidth;
@@ -222,11 +278,11 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'rectangle'
         },
-        eventStart: (coordinates) => {
-          this.dragStartPoint = coordinates.canvas;
+        eventStart: (coordinate) => {
+          this.dragStartPoint = coordinate;
         },
-        drag: (coordinates) => {
-          this.dragEndPoint = coordinates.canvas;
+        drag: (coordinate) => {
+          this.dragEndPoint = coordinate;
           if (this.rectangle) {
             this.rectangle.remove();
           }
@@ -274,8 +330,8 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'zoomIn'
         },
-        eventStart: (coordinates) => {
-          this.zoom(coordinates, this.zoomInfo.multiplier);
+        eventStart: (coordinate) => {
+          this.zoom(coordinate, this.zoomInfo.multiplier);
         }
       },
       zoomOut: {
@@ -287,8 +343,8 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'zoomOut'
         },
-        eventStart: (coordinates) => {
-          this.zoom(coordinates, 1 / this.zoomInfo.multiplier);
+        eventStart: (coordinate) => {
+          this.zoom(coordinate, 1 / this.zoomInfo.multiplier);
         }
       },
       drag: {
@@ -301,26 +357,20 @@ export default class Sketchpad extends Base {
         state: {
           mode: 'drag'
         },
-        eventStart: (coordinates) => {
-          this.dragStartPoint = coordinates;
+        eventStart: (coordinate) => {
+          this.dragStartPoint = coordinate;
         },
-        drag: (coordinates) => {
+        drag: (coordinate) => {
           if (!this.dragLastPoint) {
             this.dragLastPoint = this.dragStartPoint;
           }
           const offset = {
-            canvas: {
-              x: Math.round(coordinates.canvas.x - this.dragStartPoint.canvas.x),
-              y: Math.round(coordinates.canvas.y - this.dragStartPoint.canvas.y)
-            },
-            background: {
-              x: Math.round(coordinates.background.x - this.dragStartPoint.background.x),
-              y: Math.round(coordinates.background.y - this.dragStartPoint.background.y)
-            }
+            x: Math.round(coordinate.x - this.dragStartPoint.x),
+            y: Math.round(coordinate.y - this.dragStartPoint.y)
           };
-          if (offset.canvas.x !== 0 || offset.canvas.y !== 0 || offset.background.x !== 0 || offset.background.y !== 0) {
+          if (offset.x !== 0 || offset.y !== 0) {
             this.dragImage(offset);
-            this.dragLastPoint = coordinates;
+            this.dragLastPoint = coordinate;
           }
         }
       }
@@ -405,57 +455,6 @@ export default class Sketchpad extends Base {
     ];
   }
 
-  /**
-   * Builds the component.
-   */
-  build(state) {
-    state = state || {};
-    this.calculatedValue = state.calculatedValue;
-
-    this.createElement();
-
-    this.createLabel(this.element);
-
-    this.viewSketchpad.canvas.container = this.ce('div', { class: 'formio-view-sketchpad-canvas' });
-    this.viewSketchpad.background.container = this.ce('div', { class: 'formio-view-sketchpad-background' });
-    this.addEventListener(this.viewSketchpad.canvas.container, 'click', this.editSvg.bind(this));
-    this.element.appendChild(this.ce('div', {
-      class: 'formio-view-sketchpad-container'
-    }, [
-      this.viewSketchpad.canvas.container,
-      this.viewSketchpad.background.container
-    ]));
-    this.editSketchpad.canvas.container = this.ce('div', { class: 'formio-edit-sketchpad-canvas' });
-    this.editSketchpad.background.container = this.ce('div', {
-      class: 'formio-edit-sketchpad-background',
-      style: `min-width: ${this.component.width}px; min-height: ${this.component.height}px;`
-    });
-    this.two = new Two({
-      type: Two.Types.svg,
-      width: this.component.width,
-      height: this.component.height
-    }).appendTo(this.editSketchpad.canvas.container);
-
-    this.editSketchpad.canvas.svg = this.two.renderer.domElement;
-    this.addClass(this.editSketchpad.canvas.svg, 'formio-sketchpad-svg');
-
-    this.addBackground();
-
-    this.attach();
-
-    // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
-    }
-
-    // Restore the value.
-    this.restoreValue();
-
-    this.autofocus();
-
-    this.attachLogic();
-  }
-
   editSvg() {
     if (this.options.readOnly) {
       return;
@@ -465,28 +464,12 @@ export default class Sketchpad extends Base {
     this.addClass(this.editorModal, 'formio-sketchpad-edit-dialog');
     this.addClass(this.editorModal.body, 'formio-sketchpad-edit-dialog-body');
     const toolbar = this.createToolbar();
-    const metaInfoContainer = this.ce('div',
-      {
-        class: 'formio-sketchpad-meta-info'
-      },
-      this.ce('span',
-        {},
-        [
-          this.totalMultiplierElement = this.ce('span', {},
-            this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100
-          ),
-          this.t('x')
-        ]
-      )
+    const metaInfoContainer = this.ce('div', { class: 'formio-sketchpad-meta-info' },
+      this.ce('span', {}, [
+        this.totalMultiplierElement = this.ce('span', {}, this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100),
+        this.t('x')
+      ])
     );
-    this.editorModal.body.appendChild(toolbar);
-    this.editorModal.body.appendChild(this.ce('div', {
-      class: 'formio-edit-sketchpad-container'
-    }, [
-      this.editSketchpad.canvas.container,
-      this.editSketchpad.background.container
-    ]));
-    this.editorModal.body.appendChild(metaInfoContainer);
     this.saveSvgButton = this.ce('button', {
       class: 'btn btn-success formio-sketchpad-save-button'
     }, this.t('Save'));
@@ -494,16 +477,56 @@ export default class Sketchpad extends Base {
       this.saveSvg();
       this.editorModal.close(true);
     });
-    this.editorModal.body.appendChild(this.saveSvgButton);
+    this.editorModalHeader = this.ce('div', { class: 'formio-sketchpad-edit-dialog-header' }, [toolbar]);
+    this.editorModalFooter = this.ce('div', { class: 'formio-sketchpad-edit-dialog-footer' }, [metaInfoContainer, this.saveSvgButton]);
+    this.editorModalContent = this.ce('div', {
+      class: 'formio-edit-sketchpad-container'
+    }, [
+      this.editSketchpad.canvas.container,
+      this.editSketchpad.background.container
+    ]);
+    this.editorModal.body.appendChild(this.editorModalHeader);
+    this.editorModal.body.appendChild(this.editorModalContent);
+    this.editorModal.body.appendChild(this.editorModalFooter);
+    const resizeListener = () => {
+      this.stretchDrawingArea();
+      this.setEditorSize(this.dimensions.width, this.dimensions.height);
+    };
+    window.addEventListener('resize', resizeListener);
+    this.stretchDrawingArea();
     this.editValue = _.cloneDeep(this.dataValue);
     this.draw(this.editValue);
     const initialDialogClose = this.editorModal.close;
     this.editorModal.close = (ignoreWarning) => {
       if (ignoreWarning || confirm('Are you sure you want to close? Your unsaved progress will be lost')) {
         this.resetZoom();
+        window.removeEventListener('resize', resizeListener);
         initialDialogClose();
       }
     };
+    this.resetZoom();
+  }
+
+  stretchDrawingArea() {
+    const [modalWidth, modalHeight] = [this.editorModal.bodyContainer.clientWidth, this.editorModal.bodyContainer.clientHeight];
+    const computedStyle = getComputedStyle(this.editorModal.bodyContainer);
+    const [paddingTop, paddingBottom, paddingLeft, paddingRight] = ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'].map(property => {
+      return parseFloat(computedStyle[property]);
+    });
+    const [headerHeight, footerHeight] = [this.editorModalHeader.offsetHeight, this.editorModalFooter.offsetHeight],
+      //dimensions of available space in modal
+      availableWidth = modalWidth - paddingLeft - paddingRight,
+      availableHeight = modalHeight - paddingTop - paddingBottom - headerHeight - footerHeight,
+      //default width of drawing area
+      defaultWidth = this.zoomInfo.viewBox.default.width,
+      defaultHeight = this.zoomInfo.viewBox.default.height,
+      widthRatio = availableWidth / defaultWidth,
+      heightRatio = availableHeight / defaultHeight;
+    //use the smallest ratio as multiplier so that drawing area doesn't overflow popup in any dimension
+    this.dimensionsMultiplier = Math.min(widthRatio, heightRatio);
+    //calculate new dimensions so that drawing area fills all free modal space
+    this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
+    this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
   }
 
   saveSvg() {
@@ -583,7 +606,7 @@ export default class Sketchpad extends Base {
         }
         this.editSketchpad.canvas.svg.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
-          this.modes[this.state.mode].eventStart(this.getActualCoordinates({
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: e.clientX - offset.left,
             y: e.clientY - offset.top
           }));
@@ -593,7 +616,7 @@ export default class Sketchpad extends Base {
           e.preventDefault();
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
           if (this.modes[this.state.mode].drag) {
-            this.modes[this.state.mode].drag(this.getActualCoordinates({
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
               x: e.clientX - offset.left,
               y: e.clientY - offset.top
             }));
@@ -615,7 +638,7 @@ export default class Sketchpad extends Base {
           this.editSketchpad.canvas.svg.style.cursor = cursor;
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
           if (this.modes[this.state.mode].eventEnd) {
-            this.modes[this.state.mode].eventEnd(this.getActualCoordinates({
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
               x: e.clientX - offset.left,
               y: e.clientY - offset.top
             }));
@@ -637,7 +660,7 @@ export default class Sketchpad extends Base {
         e.preventDefault();
 
         const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-        const touch = e.originalEvent.changedTouches[0];
+        const touch = e.changedTouches[0];
         //change cursor
         let cursor = 'default';
         if (this.modes[this.state.mode].cursor) {
@@ -645,7 +668,7 @@ export default class Sketchpad extends Base {
         }
         this.editSketchpad.canvas.svg.style.cursor = cursor;
         if (this.modes[this.state.mode].eventStart) {
-          this.modes[this.state.mode].eventStart(this.getActualCoordinates({
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
             x: touch.pageX - offset.left,
             y: touch.pageY - offset.top
           }));
@@ -655,9 +678,9 @@ export default class Sketchpad extends Base {
           e.preventDefault();
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           if (this.modes[this.state.mode].drag) {
-            this.modes[this.state.mode].drag(this.getActualCoordinates({
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
               x: touch.pageX - offset.left,
               y: touch.pageY - offset.top
             }));
@@ -673,7 +696,7 @@ export default class Sketchpad extends Base {
             .removeEventListener('touchend', touchEnd);
 
           const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
-          const touch = e.originalEvent.changedTouches[0];
+          const touch = e.changedTouches[0];
           //change cursor
           let cursor = 'default';
           if (this.modes[this.state.mode].cursor) {
@@ -681,7 +704,7 @@ export default class Sketchpad extends Base {
           }
           this.editSketchpad.canvas.svg.style.cursor = cursor;
           if (this.modes[this.state.mode].eventEnd) {
-            this.modes[this.state.mode].eventEnd(this.getActualCoordinates({
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
               x: touch.pageX - offset.left,
               y: touch.pageY - offset.top
             }));
@@ -705,13 +728,6 @@ export default class Sketchpad extends Base {
   }
 
   addBackground() {
-    const backgroundReadyPromise = new Promise((resolve, reject) => {
-      this.backgroundReady = {
-        resolve,
-        reject
-      };
-    });
-    this.backgroundReady.promise = backgroundReadyPromise;
     if (this.component.image) {
       this.setBackgroundImage(this.component.image);
       this.backgroundReady.resolve();
@@ -730,45 +746,107 @@ export default class Sketchpad extends Base {
     //TODO make sure component works without background
   }
 
+  /* eslint-disable max-statements */
   setBackgroundImage(svgMarkup) {
-    //TODO check that inserted html contains SVG tag on it
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml');
+    let backgroundSvg = xmlDoc.getElementsByTagName('svg');
+    if (!backgroundSvg || !backgroundSvg[0]) {
+      console.warn(`Sketchpad '${this.component.key}': Background SVG doesn't contain <svg> tag on it`);
+      return;
+    }
+    backgroundSvg = backgroundSvg[0];
+    if (this.useBackgroundDimensions) {
+      const viewBox = backgroundSvg.getAttribute('viewBox');
+      let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+      if (viewBox) {
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(parseFloat);
+      }
+      else {
+        //if viewBox is not defined, use 'x', 'y', 'width' and 'height' SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+          { attribute: 'x', defaultValue: 0 },
+          { attribute: 'y', defaultValue: 0 },
+          { attribute: 'width', defaultValue: 640 },
+          { attribute: 'height', defaultValue: 480 }
+        ].map(dimension => {
+          return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+        });
+      }
+      //set  dimensions to width and height from viewBox of background svg
+      this.dimensions = {
+        width: viewBoxWidth,
+        height: viewBoxHeight
+      };
+      //set default and current viewBox sizes for canvas and background (should be based on background)
+      this.zoomInfo.viewBox.default = {
+        width: this.dimensions.width,
+        height: this.dimensions.height,
+        minX: viewBoxMinX,
+        minY: viewBoxMinY
+      };
+    }
+    else {
+      //set dimensions to component width and height
+      this.dimensions = {
+        width: this.component.width,
+        height: this.component.height
+      };
+      let viewBoxValue = backgroundSvg.getAttribute('viewBox');
+
+      if (!viewBoxValue) {
+        // since zooming works based on viewBox, we need to have explicitly defined value for it
+        // if viewBox is not defined on SVG element, browser behaves like it's equal to "0 0 <current_width> <current_height>"
+        // since background image should match dimensions of editor image, current width and height will always be equal to component.width and component.height
+        // as a result:
+        viewBoxValue = `0 0 ${this.dimensions.width} ${this.dimensions.height}`;
+        backgroundSvg.setAttribute('viewBox', viewBoxValue);
+      }
+      let [initialMinX, initialMinY, initialWidth, initialHeight] = viewBoxValue.split(' ').map(parseFloat);
+      initialMinX = initialMinX || 0;
+      initialMinY = initialMinY || 0;
+      initialWidth = initialWidth || this.dimensions.width;
+      initialHeight = initialHeight || this.dimensions.height;
+      const width = this.dimensions.width,
+        height = this.dimensions.height,
+        minX = Math.round(initialMinX - (this.dimensions.width - initialWidth) / 2),
+        minY = Math.round(initialMinY - (this.dimensions.height - initialHeight) / 2);
+      //set initial zoom info for SVG
+      this.zoomInfo.viewBox.default = {
+        width: width,
+        height: height,
+        minX: minX,
+        minY: minY
+      };
+    }
+    //set current zoom to default
+    this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
+
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
+    svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
+
+    this.editSketchpad.background.container.style['min-width'] = `${this.dimensions.width}px`;
+    this.editSketchpad.background.container.style['min-height'] = `${this.dimensions.height}px`;
+
+    //set background containers content to SVG markup
     this.viewSketchpad.background.container.innerHTML = svgMarkup;
     this.editSketchpad.background.container.innerHTML = svgMarkup;
+    //init svg variables
     this.viewSketchpad.background.svg = this.viewSketchpad.background.container.firstElementChild;
     this.editSketchpad.background.svg = this.editSketchpad.background.container.firstElementChild;
-    //set width and height of SVG element to component.width and component.height
-    this.editSketchpad.background.svg.setAttribute('width', `${this.component.width}px`);
-    this.editSketchpad.background.svg.setAttribute('height', `${this.component.height}px`);
-    let viewBoxValue = this.editSketchpad.background.svg.getAttribute('viewBox');
 
-    if (!viewBoxValue) {
-      // since zooming works based on viewBox, we need to have explicitly defined value for it
-      // if viewBox is not defined on SVG element, browser behaves like it's equal to "0 0 <current_width> <current_height>"
-      // since background image should match dimensions of editor image, current width and height will always be equal to component.width and component.height
-      // as a result:
-      viewBoxValue = `0 0 ${this.component.width} ${this.component.height}`;
-      this.editSketchpad.background.svg.setAttribute('viewBox', viewBoxValue);
-    }
-    let [initialMinX, initialMinY, initialWidth, initialHeight] = viewBoxValue.split(' ').map(parseFloat);
-    initialMinX = initialMinX || 0;
-    initialMinY = initialMinY || 0;
-    initialWidth = initialWidth || this.component.width;
-    initialHeight = initialHeight || this.component.height;
-    const width = this.component.width,
-      height = this.component.height,
-      minX = Math.round(initialMinX - (this.component.width - initialWidth) / 2),
-      minY = Math.round(initialMinY - (this.component.height - initialHeight) / 2);
-    //set initial zoom info for background SVG
-    this.zoomInfo.backgroundViewBox.default = {
-      minX: minX,
-      minY: minY,
-      width: width,
-      height: height
-    };
-    this.viewSketchpad.background.svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
-    this.editSketchpad.background.svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
-    this.zoomInfo.backgroundViewBox.current = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
+    //set background image viewBox
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.viewSketchpad.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.editSketchpad.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    //set canvas image viewBox (necessary at least for useBackgroundDimensions when background image has minX and minY other that 0
+    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
   }
+
+  /* eslint-enable max-statements */
 
   clear() {
     this.two.clear();
@@ -836,7 +914,7 @@ export default class Sketchpad extends Base {
   }
 
   setValue(value) {
-    if (!this.two) {
+    if (!this.backgroundReady.isReady || !this.two) {
       return;
     }
     this.draw(value);
@@ -850,88 +928,61 @@ export default class Sketchpad extends Base {
     svgElement.removeAttribute('height');
     svgElement.removeAttribute('width');
     svgElement.style.cursor = 'pointer';
-    svgElement.setAttribute('viewBox', `0 0 ${this.component.width} ${this.component.height}`);
+    //set viewBox to default to reset zoom
+    const viewBox = this.zoomInfo.viewBox.default;
+    svgElement.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
     this.viewSketchpad.canvas.container.innerHTML = '';
     this.viewSketchpad.canvas.container.appendChild(svgElement);
   }
 
-  zoom(coordinates, multiplier) {
+  zoom(coordinate, multiplier) {
     this.setTotalMultiplier(this.zoomInfo.totalMultiplier * multiplier);
     //calculate new viewBox width for canvas
-    this.zoomInfo.canvasViewBox.current.width =
-      Math.round(this.zoomInfo.canvasViewBox.default.width / this.zoomInfo.totalMultiplier);
-    this.zoomInfo.canvasViewBox.current.height =
-      Math.round(this.zoomInfo.canvasViewBox.default.height / this.zoomInfo.totalMultiplier);
-    //calculate new viewBox width for background
-    this.zoomInfo.backgroundViewBox.current.width =
-      Math.round(this.zoomInfo.backgroundViewBox.default.width / this.zoomInfo.totalMultiplier);
-    this.zoomInfo.backgroundViewBox.current.height =
-      Math.round(this.zoomInfo.backgroundViewBox.default.height / this.zoomInfo.totalMultiplier);
+    this.zoomInfo.viewBox.current.width =
+      Math.round(this.zoomInfo.viewBox.default.width / this.zoomInfo.totalMultiplier);
+    this.zoomInfo.viewBox.current.height =
+      Math.round(this.zoomInfo.viewBox.default.height / this.zoomInfo.totalMultiplier);
     if (
-      this.zoomInfo.canvasViewBox.current.width > this.component.width &&
-      this.zoomInfo.canvasViewBox.current.height > this.component.height
+      this.zoomInfo.viewBox.current.width > this.zoomInfo.viewBox.default.width &&
+      this.zoomInfo.viewBox.current.height > this.zoomInfo.viewBox.default.height
     ) {
       //if should get less than initial size, change editor size instead of viewBox size
       this.setEditorSize(
-        this.component.width * this.zoomInfo.totalMultiplier,
-        this.component.height * this.zoomInfo.totalMultiplier
+        this.dimensions.width * this.zoomInfo.totalMultiplier,
+        this.dimensions.height * this.zoomInfo.totalMultiplier
       );
       //restore default viewBox values for canvas and background
-      this.zoomInfo.canvasViewBox.current = _.cloneDeep(this.zoomInfo.canvasViewBox.default);
-      this.zoomInfo.backgroundViewBox.current = _.cloneDeep(this.zoomInfo.backgroundViewBox.default);
+      this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
     }
     else {
       //if should get more than initial size, change viewBox size
       //restore editor size if needed
-      if (this.two.width !== this.component.width || this.two.height !== this.component.height) {
-        this.setEditorSize(this.component.width, this.component.height);
+      if (this.two.width !== this.dimensions.width || this.two.height !== this.dimensions.height) {
+        this.setEditorSize(this.dimensions.width, this.dimensions.height);
       }
       //calculate SVG offset so that coordinate would be center of zoomed image
-      this.zoomInfo.canvasViewBox.current.minX = coordinates.canvas.x - this.zoomInfo.canvasViewBox.current.width / 2;
-      this.zoomInfo.canvasViewBox.current.minY = coordinates.canvas.y - this.zoomInfo.canvasViewBox.current.height / 2;
-      //do same for background SVG
-      /* eslint-disable max-len */
-      this.zoomInfo.backgroundViewBox.current.minX = coordinates.background.x - this.zoomInfo.backgroundViewBox.current.width / 2;
-      this.zoomInfo.backgroundViewBox.current.minY = coordinates.background.y - this.zoomInfo.backgroundViewBox.current.height / 2;
-      /* eslint-enable max-len */
+      this.zoomInfo.viewBox.current.minX = coordinate.x - this.zoomInfo.viewBox.current.width / 2;
+      this.zoomInfo.viewBox.current.minY = coordinate.y - this.zoomInfo.viewBox.current.height / 2;
       this.normalizeSvgOffset();
     }
     this.updateSvgViewBox();
   }
 
   resetZoom() {
-    this.zoom({
-      canvas: { x: 0, y: 0 },
-      background: { x: 0, y: 0 },
-    }, 1 / this.zoomInfo.totalMultiplier);
+    this.zoom({ x: 0, y: 0 }, (this.component.defaultZoom / 100) / this.zoomInfo.totalMultiplier);
   }
 
-  getActualCoordinates(coordinate) {
+  getActualCoordinate(coordinate) {
     //recalculate coordinate taking into account current zoom
-    const actualCoordinates = {
-      canvas: {},
-      background: {}
-    };
-    //TODO check if coordinates are different
-    /* eslint-disable max-len */
-    //canvas
-    actualCoordinates.canvas.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier) + this.zoomInfo.canvasViewBox.current.minX);
-    actualCoordinates.canvas.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier) + this.zoomInfo.canvasViewBox.current.minY);
-    //background
-    actualCoordinates.background.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier) * (this.zoomInfo.backgroundViewBox.default.width / this.component.width) + this.zoomInfo.backgroundViewBox.current.minX);
-    actualCoordinates.background.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier) * (this.zoomInfo.backgroundViewBox.default.height / this.component.height) + this.zoomInfo.backgroundViewBox.current.minY);
-    /* eslint-enable max-len */
-    return actualCoordinates;
+    coordinate.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minX);
+    coordinate.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minY);
+    return coordinate;
   }
 
   dragImage(offset) {
     //calculate new offsets for SVG
-    //canvas
-    this.zoomInfo.canvasViewBox.current.minX = this.zoomInfo.canvasViewBox.current.minX - offset.canvas.x;
-    this.zoomInfo.canvasViewBox.current.minY = this.zoomInfo.canvasViewBox.current.minY - offset.canvas.y;
-    //background
-    this.zoomInfo.backgroundViewBox.current.minX = this.zoomInfo.backgroundViewBox.current.minX - offset.background.x;
-    this.zoomInfo.backgroundViewBox.current.minY = this.zoomInfo.backgroundViewBox.current.minY - offset.background.y;
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX - offset.x;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY - offset.y;
     this.normalizeSvgOffset();
     this.updateSvgViewBox();
   }
@@ -940,31 +991,22 @@ export default class Sketchpad extends Base {
     /* eslint-disable max-len */
     //don't let offset go out of SVG on the left and on the top
     //canvas
-    this.zoomInfo.canvasViewBox.current.minX = this.zoomInfo.canvasViewBox.current.minX < this.zoomInfo.canvasViewBox.default.minX ? this.zoomInfo.canvasViewBox.default.minX : this.zoomInfo.canvasViewBox.current.minX;
-    this.zoomInfo.canvasViewBox.current.minY = this.zoomInfo.canvasViewBox.current.minY < this.zoomInfo.canvasViewBox.default.minY ? this.zoomInfo.canvasViewBox.default.minY : this.zoomInfo.canvasViewBox.current.minY;
-    //background
-    this.zoomInfo.backgroundViewBox.current.minX = this.zoomInfo.backgroundViewBox.current.minX < this.zoomInfo.backgroundViewBox.default.minX ? this.zoomInfo.backgroundViewBox.default.minX : this.zoomInfo.backgroundViewBox.current.minX;
-    this.zoomInfo.backgroundViewBox.current.minY = this.zoomInfo.backgroundViewBox.current.minY < this.zoomInfo.backgroundViewBox.default.minY ? this.zoomInfo.backgroundViewBox.default.minY : this.zoomInfo.backgroundViewBox.current.minY;
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX < this.zoomInfo.viewBox.default.minX ? this.zoomInfo.viewBox.default.minX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY < this.zoomInfo.viewBox.default.minY ? this.zoomInfo.viewBox.default.minY : this.zoomInfo.viewBox.current.minY;
     //don't let offset go out of SVG on the right and on the bottom
     //canvas
-    const canvasMaxOffsetX = this.zoomInfo.canvasViewBox.default.width - this.zoomInfo.canvasViewBox.current.width,
-      canvasMaxOffsetY = this.zoomInfo.canvasViewBox.default.height - this.zoomInfo.canvasViewBox.current.height;
-    this.zoomInfo.canvasViewBox.current.minX = this.zoomInfo.canvasViewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.canvasViewBox.current.minX;
-    this.zoomInfo.canvasViewBox.current.minY = this.zoomInfo.canvasViewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.canvasViewBox.current.minY;
-    //background
-    const backgroundMaxOffsetX = this.zoomInfo.backgroundViewBox.default.width - this.zoomInfo.backgroundViewBox.current.width + this.zoomInfo.backgroundViewBox.default.minX,
-      backgroundMaxOffsetY = this.zoomInfo.backgroundViewBox.default.height - this.zoomInfo.backgroundViewBox.current.height + this.zoomInfo.backgroundViewBox.default.minY;
-    this.zoomInfo.backgroundViewBox.current.minX = this.zoomInfo.backgroundViewBox.current.minX > (backgroundMaxOffsetX) ? backgroundMaxOffsetX : this.zoomInfo.backgroundViewBox.current.minX;
-    this.zoomInfo.backgroundViewBox.current.minY = this.zoomInfo.backgroundViewBox.current.minY > (backgroundMaxOffsetY) ? backgroundMaxOffsetY : this.zoomInfo.backgroundViewBox.current.minY;
+    const canvasMaxOffsetX = this.zoomInfo.viewBox.default.width - this.zoomInfo.viewBox.current.width + this.zoomInfo.viewBox.default.minX,
+      canvasMaxOffsetY = this.zoomInfo.viewBox.default.height - this.zoomInfo.viewBox.current.height + this.zoomInfo.viewBox.default.minY;
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX > (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY > (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.viewBox.current.minY;
     /* eslint-enable max-len */
   }
 
   updateSvgViewBox() {
     //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
-    /* eslint-disable max-len */
-    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${this.zoomInfo.canvasViewBox.current.minX} ${this.zoomInfo.canvasViewBox.current.minY} ${this.zoomInfo.canvasViewBox.current.width} ${this.zoomInfo.canvasViewBox.current.height}`);
-    this.editSketchpad.background.svg.setAttribute('viewBox', `${this.zoomInfo.backgroundViewBox.current.minX} ${this.zoomInfo.backgroundViewBox.current.minY} ${this.zoomInfo.backgroundViewBox.current.width} ${this.zoomInfo.backgroundViewBox.current.height}`);
-    /* eslint-enable max-len */
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.editSketchpad.canvas.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.editSketchpad.background.svg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
   }
 
   setTotalMultiplier(multiplier) {
@@ -979,5 +1021,7 @@ export default class Sketchpad extends Base {
     //change width of background svg so it matches editor SVG
     this.editSketchpad.background.svg.style.width = width;
     this.editSketchpad.background.svg.style.height = height;
+    this.editSketchpad.background.container.style['min-width'] = width;
+    this.editSketchpad.background.container.style['min-height'] = height;
   }
 }

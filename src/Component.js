@@ -172,14 +172,15 @@ export default class Component {
   /**
    * Removes all event listeners attached to this component.
    */
-  destroy() {
+  destroy(full = false) {
     _.each(this.events._events, (events, type) => {
-      _.each(events, (listener) => {
+      _.each(_.castArray(events), (listener) => {
         if (listener && (this.id === listener.id) && listener.internal) {
           this.events.off(type, listener);
         }
       });
     });
+
     _.each(this.eventHandlers, (handler) => {
       if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
         handler.obj.removeEventListener(handler.type, handler.func);
@@ -189,6 +190,10 @@ export default class Component {
     // Destroy the input masks.
     this.inputMasks.forEach(mask => mask.destroy());
     this.inputMasks = [];
+
+    if (full) {
+      this.events.removeAllListeners();
+    }
   }
 
   /**
@@ -390,7 +395,7 @@ export default class Component {
       return;
     }
     className = ` ${className} `;
-    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+    return ((` ${element.className} `).replace(/[\n\t\r\f]/g, ' ').indexOf(className) > -1);
   }
 
   /**
@@ -402,14 +407,13 @@ export default class Component {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    if (!element) {
+    if (!element || this.hasClass(element, className)) {
       return this;
     }
 
     const classes = element.getAttribute('class');
-    if (!classes?.includes(className)) {
-      element.setAttribute('class', `${classes} ${className}`);
-    }
+    const classesNew = classes ? `${classes} ${className}` : className;
+    element.setAttribute('class', classesNew);
 
     return this;
   }
@@ -423,14 +427,16 @@ export default class Component {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    if (!element) {
+    if (!element || !this.hasClass(element, className)) {
       return this;
     }
 
+    // $1: preceding whitespace or start, $2: class name, $3: trailing whitespace or end
+    const pattern = `([ \\t\\n\\f\\r]+|^)(${className})([ \\t\\n\\f\\r]+|$)`;
     const classes = element.getAttribute('class');
-    if (classes) {
-      element.setAttribute('class', classes.replace(new RegExp(` ${className}`, 'g'), ''));
-    }
+
+    // this removes the class including its preceding white space, but leaves the trailing whitespace as is
+    element.setAttribute('class', classes.replace(new RegExp(pattern, 'gm'), '$3').trim());
 
     return this;
   }

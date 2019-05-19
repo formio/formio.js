@@ -219,7 +219,7 @@ export default class SelectComponent extends BaseComponent {
         disabled: true,
       }], 'value', 'label', true);
     }
-    else {
+    else if (this.scrollList) {
       const loadingItem = this.scrollList.querySelector('.choices__item--disabled');
       if (loadingItem) {
         // Remove the loading text.
@@ -234,7 +234,9 @@ export default class SelectComponent extends BaseComponent {
   stopInfiniteScroll() {
     // Remove the infinite scroll listener.
     this.scrollLoading = false;
-    this.scrollList.removeEventListener('scroll', this.onScroll);
+    if (this.scrollList) {
+      this.scrollList.removeEventListener('scroll', this.onScroll);
+    }
   }
 
   /* eslint-disable max-statements */
@@ -483,7 +485,7 @@ export default class SelectComponent extends BaseComponent {
 
     switch (this.component.dataSrc) {
       case 'values':
-        this.component.valueProperty = 'value';
+        this.component.valueProperty = this.originalComponent.valueProperty = 'value';
         this.setItems(this.component.data.values);
         break;
       case 'json':
@@ -613,6 +615,7 @@ export default class SelectComponent extends BaseComponent {
       }
     }
 
+    const searchField = this.component.searchField;
     const choicesOptions = {
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
@@ -629,8 +632,9 @@ export default class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
-      searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', ['label']),
+      searchChoices: !searchField,
+      searchFields: this.component.searchFields
+        || (searchField ? [`value.${searchField}`] : ['label']),
       fuseOptions: Object.assign({
         include: 'score',
         threshold: _.get(this, 'component.searchThreshold', 0.3),
