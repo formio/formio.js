@@ -295,7 +295,7 @@ describe(&apos;Day Component&apos;, () =&gt; {
       });
 
       component.on(&apos;componentChange&apos;, () =&gt; {
-        component.checkValidity();
+        component.checkValidity(null, true);
       });
 
       component.setValue(&apos;3/40/2017&apos;);

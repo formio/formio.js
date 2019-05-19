@@ -314,8 +314,8 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.updateValue({
         modified: !this.autoModified
       }, newValue);
-      this.autoModified = false;
     }
+    this.autoModified = false;
   }
 
   /* eslint-disable max-statements */
@@ -446,6 +446,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        let requestData;
         this.root.formio
           .uploadFile(
             uploadStorage,
@@ -457,6 +458,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadOptions
           )
           .then(result =&gt; {
+            requestData = result;
             return this.root.formio.downloadFile(result);
           })
           .then(result =&gt; {
@@ -465,7 +467,13 @@ export default class TextAreaComponent extends TextFieldComponent {
             quillInstance.quill.updateContents(new Delta()
                 .retain(range.index)
                 .delete(range.length)
-                .insert({ image: result.url })
+                .insert(
+                  {
+                    image: result.url
+                  },
+                  {
+                    alt: JSON.stringify(requestData),
+                  })
               , Quill.sources.USER);
             fileInput.value = &apos;&apos;;
           }).catch(error =&gt; {
@@ -494,7 +502,15 @@ export default class TextAreaComponent extends TextFieldComponent {
           editor.data.set(this.setConvertedValue(value));
         }
         else {
-          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          if (this.component.isUploadEnabled) {
+            this.setAsyncConvertedValue(value)
+              .then(result =&gt; {
+                editor.setContents(editor.clipboard.convert(result));
+              });
+          }
+          else {
+            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          }
         }
       });
     }
@@ -515,6 +531,51 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     return value;
+  }
+
+  setAsyncConvertedValue(value) {
+    if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
+      try {
+        value = JSON.stringify(value, null, 2);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    if (!_.isString(value)) {
+      value = &apos;&apos;;
+    }
+
+    const htmlDoc = new DOMParser().parseFromString(value,&apos;text/html&apos;);
+    const images = htmlDoc.getElementsByTagName(&apos;img&apos;);
+    if (images.length) {
+      return this.setImagesUrl(images)
+        .then( () =&gt; {
+          value = htmlDoc.getElementsByTagName(&apos;body&apos;)[0].firstElementChild;
+          return new XMLSerializer().serializeToString(value);
+        });
+    }
+    else {
+      return Promise.resolve(value);
+    }
+  }
+
+  setImagesUrl(images) {
+    return Promise.all(_.map(images, image =&gt; {
+      let requestData;
+      try {
+        requestData = JSON.parse(image.getAttribute(&apos;alt&apos;));
+      }
+      catch (error) {
+        console.warn(error);
+      }
+
+      return this.root.formio.downloadFile(requestData)
+        .then((result) =&gt; {
+          image.setAttribute(&apos;src&apos;, result.url);
+        });
+    }));
   }
 
   removeBlanks(value) {
