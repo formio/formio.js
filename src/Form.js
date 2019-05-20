@@ -125,6 +125,7 @@ export default class Form extends Element {
    */
   setDisplay(display) {
     this.form.display = display;
+    this.setForm(this.form);
     return this.build();
   }
 
