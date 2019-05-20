@@ -904,9 +904,7 @@ export default class Webform extends NestedComponent {
     return this.onFormBuild = this.render().then(() => {
       this.formReadyResolve();
       this.onFormBuild = null;
-      if (this.submissionSet) {
-        this.setValue(this.submission);
-      }
+      this.setValue(this.submission);
       if (!this.changing) {
         this.triggerChange();
       }
