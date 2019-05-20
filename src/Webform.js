@@ -1118,7 +1118,11 @@ export default class Webform extends NestedComponent {
    * @alias reset
    */
   cancel(noconfirm) {
-    if (noconfirm || confirm('Are you sure you want to cancel?')) {
+    let shouldReset = true;
+    this.hook('beforeCancel', (callbackValue) => {
+      shouldReset = callbackValue;
+    });
+    if (shouldReset && (noconfirm || confirm('Are you sure you want to cancel?'))) {
       this.resetValue();
       return true;
     }
