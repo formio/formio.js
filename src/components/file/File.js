@@ -756,7 +756,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
-        const fileName = uniqueName(file.name);
+        const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
           name: fileName,
