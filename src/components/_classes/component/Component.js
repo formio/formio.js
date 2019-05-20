@@ -478,6 +478,10 @@ export default class Component extends Element {
     this._currentForm = instance;
   }
 
+  get builderMode() {
+    return this.options.attachMode === 'builder';
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -1851,7 +1855,7 @@ export default class Component extends Element {
    */
   asString(value) {
     value = value || this.getValue();
-    return Array.isArray(value) ? value.join(', ') : value.toString();
+    return (Array.isArray(value) ? value : [value]).map(_.toString).join(', ');
   }
 
   /**
