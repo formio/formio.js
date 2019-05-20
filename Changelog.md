@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.20.17
+### Fixed
+ - Issue with the onChange for textarea's with wysiwyg enabled.
+ - Problems where the pristine flag would not get set correctly.
+
 ## 3.20.16
 ### Fixed
  - Fix error where the modified flag was getting fired for wysiwyg editors.
