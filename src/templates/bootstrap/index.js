@@ -37,6 +37,8 @@ import signature from './signature';
 import survey from './survey';
 import tab from './tab';
 import table from './table';
+import tree from './tree';
+import treePartials from './tree/partials';
 import webform from './webform';
 import well from './well';
 import wizard from './wizard';
@@ -94,6 +96,8 @@ export default {
   survey,
   tab,
   table,
+  tree,
+  ...treePartials,
   webform,
   well,
   wizard,
