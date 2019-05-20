@@ -308,6 +308,8 @@ export default class NestedComponent extends Field {
   }
 
   attach(element) {
+    const superPromise = super.attach(element);
+
     this.loadRefs(element, {
       header: 'single',
       collapsed: this.collapsed,
@@ -326,8 +328,8 @@ export default class NestedComponent extends Field {
     }
 
     return Promise.all([
-      super.attach(element),
-      childPromise
+      superPromise,
+      childPromise,
     ]);
   }
 

@@ -171,6 +171,14 @@ export default class NumberComponent extends Input {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
   }
 
+  getValue() {
+    const value = super.getValue();
+    if (value === '') {
+      return undefined;
+    }
+    return value;
+  }
+
   getView(value) {
     if (!value && value !== 0) {
       return '';
