@@ -1398,6 +1398,20 @@ export default class BaseComponent extends Component {
     return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
+  addAutofillHoneyInput(container, input) {
+    const autofillInput = this.ce('input', {
+      type: 'text',
+      name: this.info.attr.name,
+      style: 'display: none',
+    });
+
+    input.addEventListener('change', (event) => {
+      autofillInput.value = JSON.stringify(event.detail.value);
+    });
+
+    container.appendChild(autofillInput);
+  }
+
   /**
    * Creates a new input element.
    * @param {HTMLElement} container - The container which should hold this new input element.
@@ -1405,6 +1419,10 @@ export default class BaseComponent extends Component {
    */
   createInput(container) {
     const input = this.ce(this.info.type, this.info.attr);
+    if (this.info.type === 'select') {
+      this.addAutofillHoneyInput(container, input);
+    }
+
     this.setInputMask(input);
     input.widget = this.createWidget();
     const inputGroup = this.addInputGroup(input, container);

@@ -648,6 +648,10 @@ export default class SelectComponent extends BaseComponent {
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
 
+    this.selectContainer.children[1].addEventListener('change', (event) => {
+      this.updateValue({}, JSON.parse(event.target.value));
+    });
+
     if (this.component.multiple) {
       this.focusableElement = this.choices.input.element;
     }
