@@ -15,6 +15,7 @@ module.exports = {
     '**/*.unit.js'
   ],
   plugins: [
+    '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-optional-chaining',
     ['babel-plugin-inline-import', { extensions: ['.hbs'] }]

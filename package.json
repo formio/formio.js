@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "4.0.0-beta.32",
+  "version": "4.0.0-beta.33",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "files": [
@@ -91,6 +91,7 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/polyfill": "^7.2.5",

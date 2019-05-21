@@ -418,15 +418,90 @@ export default class WebformBuilder extends Component {
         return !el.contains(target) && !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
+    window.addEventListener('scroll', this.scroll.bind(this));
 
     return this.webform.attach(this.refs.form);
   }
+
+  scroll = _.debounce(() => {
+    function getElementTop(element) {
+      var de = document.documentElement;
+      var box = element.getBoundingClientRect();
+      return box.top + window.pageYOffset - de.clientTop;
+    }
+
+    var minHeight = 200;
+    var headerOffset = 50;
+    var bottomOffset = 15;
+
+    // var formComponents = this.refs.sidebar;
+    // var formBuilder = this.element;
+    var windowEl = window;
+    var windowHeight = windowEl.innerHeight;
+    var windowScrollTop = windowEl.pageYOffset;
+    var windowScrollBottom = windowScrollTop + windowHeight;
+
+    var formBuilderOffsetTop = getElementTop(this.element);
+    var formBuilderHeight = this.element.offsetHeight;
+    var formBuilderOffsetBottom = formBuilderOffsetTop + formBuilderHeight;
+
+    var height = 0;
+
+    if (!formBuilderHeight) {
+      return;
+    }
+
+    if (windowHeight > formBuilderHeight) {
+      this.refs.sidebar.style.height = formBuilderHeight;
+      return;
+    }
+
+    if (windowScrollBottom < formBuilderOffsetTop
+      || windowScrollTop > formBuilderOffsetBottom) {
+      // Form Builder is not visible.
+      return;
+    }
+    else if (windowScrollTop < formBuilderOffsetTop) {
+      // Top part of Form Builder is visible.
+      height = windowScrollBottom - formBuilderOffsetTop - bottomOffset;
+    }
+    else if (windowScrollBottom < formBuilderOffsetBottom) {
+      // Form builder is visible.
+      height = windowHeight - headerOffset - bottomOffset;
+    }
+    else {
+      // Bottom part of Form Builder is visible.
+      height = formBuilderOffsetBottom - windowScrollTop - headerOffset - bottomOffset;
+    }
+
+    if (height < minHeight) {
+      height = minHeight;
+    }
+
+    var maxScroll = formBuilderHeight - height - bottomOffset;
+    var scroll = windowScrollTop - formBuilderOffsetTop + headerOffset;
+    if (scroll < 0) {
+      scroll = 0;
+    }
+    if (scroll > maxScroll) {
+      scroll = maxScroll;
+    }
+
+    // Necessary fix for header.
+    if (scroll > 0 && scroll < headerOffset) {
+      height -= scroll;
+    }
+
+    this.refs.sidebar.setAttribute('style', `height: ${height}px; margin-top: ${scroll}px`);
+  }, 10);
 
   detach() {
     // if (this.dragula) {
     //   this.dragula.destroy();
     // }
     // this.dragula = null;
+    window.removeEventListener('scroll', this.scroll);
+
     super.detach();
   }
 

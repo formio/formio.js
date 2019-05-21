@@ -39,19 +39,6 @@ export default class ColumnsComponent extends NestedComponent {
     return ColumnsComponent.schema();
   }
 
-  get schema() {
-    const schema = _.omit(super.schema, 'components');
-    schema.columns = [];
-    this.eachComponent((component, index) => {
-      _.merge(component.component, _.omit(this.component.columns[index], 'components'));
-      schema.columns.push(component.schema);
-    });
-    for (let i = this.components.length; i < this.component.columns.length; i++) {
-      schema.columns.push(this.component.columns[i]);
-    }
-    return schema;
-  }
-
   get className() {
     return `row ${super.className}`;
   }
