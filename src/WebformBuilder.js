@@ -8,6 +8,7 @@ import Components from './components/Components';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
+import Templates from './templates/Templates';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
@@ -351,6 +352,7 @@ export default class WebformBuilder extends Component {
   render() {
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
+        scroll: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groups: this.groups,
       }),
@@ -369,9 +371,8 @@ export default class WebformBuilder extends Component {
       'sidebar-container': 'multiple',
     });
 
-    this.sideBarTop = this.refs.sidebar.getBoundingClientRect().top + window.scrollY;
-    if (this.sideBarScroll) {
-      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10), true);
+    if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {
+      Templates.current.handleBuilderSidebarScroll.call(this, this);
     }
 
     // See if we have bootstrap.js installed.
@@ -418,89 +419,18 @@ export default class WebformBuilder extends Component {
         return !el.contains(target) && !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
-    window.addEventListener('scroll', this.scroll.bind(this));
 
     return this.webform.attach(this.refs.form);
   }
-
-  scroll = _.debounce(() => {
-    function getElementTop(element) {
-      var de = document.documentElement;
-      var box = element.getBoundingClientRect();
-      return box.top + window.pageYOffset - de.clientTop;
-    }
-
-    var minHeight = 200;
-    var headerOffset = 50;
-    var bottomOffset = 15;
-
-    // var formComponents = this.refs.sidebar;
-    // var formBuilder = this.element;
-    var windowEl = window;
-    var windowHeight = windowEl.innerHeight;
-    var windowScrollTop = windowEl.pageYOffset;
-    var windowScrollBottom = windowScrollTop + windowHeight;
-
-    var formBuilderOffsetTop = getElementTop(this.element);
-    var formBuilderHeight = this.element.offsetHeight;
-    var formBuilderOffsetBottom = formBuilderOffsetTop + formBuilderHeight;
-
-    var height = 0;
-
-    if (!formBuilderHeight) {
-      return;
-    }
-
-    if (windowHeight > formBuilderHeight) {
-      this.refs.sidebar.style.height = formBuilderHeight;
-      return;
-    }
-
-    if (windowScrollBottom < formBuilderOffsetTop
-      || windowScrollTop > formBuilderOffsetBottom) {
-      // Form Builder is not visible.
-      return;
-    }
-    else if (windowScrollTop < formBuilderOffsetTop) {
-      // Top part of Form Builder is visible.
-      height = windowScrollBottom - formBuilderOffsetTop - bottomOffset;
-    }
-    else if (windowScrollBottom < formBuilderOffsetBottom) {
-      // Form builder is visible.
-      height = windowHeight - headerOffset - bottomOffset;
-    }
-    else {
-      // Bottom part of Form Builder is visible.
-      height = formBuilderOffsetBottom - windowScrollTop - headerOffset - bottomOffset;
-    }
-
-    if (height < minHeight) {
-      height = minHeight;
-    }
-
-    var maxScroll = formBuilderHeight - height - bottomOffset;
-    var scroll = windowScrollTop - formBuilderOffsetTop + headerOffset;
-    if (scroll < 0) {
-      scroll = 0;
-    }
-    if (scroll > maxScroll) {
-      scroll = maxScroll;
-    }
-
-    // Necessary fix for header.
-    if (scroll > 0 && scroll < headerOffset) {
-      height -= scroll;
-    }
-
-    this.refs.sidebar.setAttribute('style', `height: ${height}px; margin-top: ${scroll}px`);
-  }, 10);
 
   detach() {
     // if (this.dragula) {
     //   this.dragula.destroy();
     // }
     // this.dragula = null;
-    window.removeEventListener('scroll', this.scroll);
+    if (this.sideBarScroll && Templates.current.clearBuilderSidebarScroll) {
+      Templates.current.clearBuilderSidebarScroll.call(this, this);
+    }
 
     super.detach();
   }
@@ -575,20 +505,6 @@ export default class WebformBuilder extends Component {
 
     // Cause parent to rebuild so component becomes visible.
     target.formioComponent.rebuild();
-  }
-
-  scrollSidebar() {
-    const newTop = (window.scrollY - this.sideBarTop) + this.sideBarScrollOffset;
-    const shouldScroll = (newTop > 0);
-    if (shouldScroll && ((newTop + this.refs.sidebar.offsetHeight) < this.builderHeight)) {
-      this.refs.sidebar.style.marginTop = `${newTop}px`;
-    }
-    else if (shouldScroll && (this.refs.sidebar.offsetHeight < this.builderHeight)) {
-      this.refs.sidebar.style.marginTop = `${this.builderHeight - this.refs.sidebar.offsetHeight}px`;
-    }
-    else {
-      this.refs.sidebar.style.marginTop = '0px';
-    }
   }
 
   setForm(form) {
