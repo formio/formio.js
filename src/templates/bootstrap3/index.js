@@ -1,3 +1,5 @@
+import ResizeObserver from 'resize-observer-polyfill';
+
 import builder from './builder';
 import builderComponent from './builderComponent';
 import builderComponents from './builderComponents';
@@ -40,6 +42,39 @@ export default {
         return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
     }
     return text;
+  },
+  handleBuilderSidebarScroll(builder) {
+    if (builder.scrollResizeObserver) {
+      builder.scrollResizeObserver.disconnect();
+    }
+    builder.scrollResizeObserver = new ResizeObserver(() => {
+      setTimeout(() => {
+        const {
+          form: {
+            parentNode: {
+              clientHeight: formHeight,
+            }
+          },
+          sidebar: {
+            clientHeight: sidebarHeight,
+            parentNode: {
+              style,
+            },
+          },
+        } = builder.refs;
+
+        style.height = `${Math.max(sidebarHeight + 20, formHeight)}px`;
+      });
+    });
+
+    builder.scrollResizeObserver.observe(builder.refs.form);
+    builder.scrollResizeObserver.observe(builder.refs.sidebar);
+  },
+  clearBuilderSidebarScroll(builder) {
+    if (builder.scrollResizeObserver) {
+      builder.scrollResizeObserver.disconnect();
+      builder.scrollResizeObserver = null;
+    }
   },
   defaultIconset: 'glyphicon',
   iconClass,

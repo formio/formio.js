@@ -130,3 +130,10 @@
 .panel-body .drag-and-drop-alert {
   margin-bottom: 0;
 }
+
+.builder-sidebar {
+  &_scroll {
+    position: sticky;
+    top: 15px;
+  }
+}
