@@ -352,7 +352,7 @@ export default class WebformBuilder extends Component {
   render() {
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
-        scroll: this.sideBarScroll,
+        scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groups: this.groups,
       }),
@@ -683,8 +683,10 @@ export default class WebformBuilder extends Component {
               event.data = event.data.componentJson;
             }
 
-            // Set a unique key for this component.
-            BuilderUtils.uniquify(this._form, event.data);
+            if (this._form) {
+              // Set a unique key for this component.
+              BuilderUtils.uniquify(this._form.components, event.data);
+            }
           }
         }
 
