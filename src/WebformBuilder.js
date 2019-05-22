@@ -547,9 +547,10 @@ export default class WebformBuilder extends Component {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
-    if (remove) {
+    const index = parent.formioContainer.indexOf(component);
+    if (remove && index !== -1) {
       this.emit('removeComponent', component);
-      parent.formioContainer.splice(parent.formioContainer.indexOf(component), 1);
+      parent.formioContainer.splice(index, 1);
       parent.formioComponent.rebuild();
     }
     return remove;
