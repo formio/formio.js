@@ -86,6 +86,7 @@ export default class WizardBuilder extends WebformBuilder {
   render() {
     return this.renderTemplate('builderWizard', {
       sidebar: this.renderTemplate('builderSidebar', {
+        scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groups: this.groups,
       }),

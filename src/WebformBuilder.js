@@ -352,7 +352,7 @@ export default class WebformBuilder extends Component {
   render() {
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
-        scroll: this.sideBarScroll,
+        scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groups: this.groups,
       }),

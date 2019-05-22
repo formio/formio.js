@@ -1,4 +1,4 @@
-<div id="builder-sidebar-{{id}}" class="panel-group builder-sidebar{{scroll ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
+<div id="builder-sidebar-{{id}}" class="panel-group builder-sidebar{{scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
   {% groupOrder.forEach(function(groupKey, index) { %}
   <div class="panel panel-default form-builder-panel" ref="group-panel-{{groupKey}}">
     <div class="panel-heading form-builder-group-header">
