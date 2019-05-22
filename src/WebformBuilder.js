@@ -682,8 +682,10 @@ export default class WebformBuilder extends Component {
               event.data = event.data.componentJson;
             }
 
-            // Set a unique key for this component.
-            BuilderUtils.uniquify(this._form, event.data);
+            if (this._form) {
+              // Set a unique key for this component.
+              BuilderUtils.uniquify(this._form.components, event.data);
+            }
           }
         }
 
