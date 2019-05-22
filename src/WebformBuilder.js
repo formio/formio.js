@@ -669,12 +669,15 @@ export default class WebformBuilder extends Component {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
-              this.editForm.getComponent('key', component => {
-                component.setValue(_.camelCase(
-                  event.data.label ||
-                  event.data.placeholder ||
-                  event.data.type
-                ));
+              this.editForm.everyComponent(component => {
+                if (component.key === 'key' && component.parent.component.key === 'tabs') {
+                  component.setValue(_.camelCase(
+                    event.data.label ||
+                    event.data.placeholder ||
+                    event.data.type
+                  ));
+                  return false;
+                }
               });
             }
 
