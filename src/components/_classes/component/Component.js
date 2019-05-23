@@ -178,7 +178,6 @@ export default class Component extends Element {
   /* eslint-disable max-statements */
   constructor(component, options, data) {
     super(Object.assign({
-      template: 'bootstrap3',
       renderMode: 'form',
       attachMode: 'full'
     }, options || {}));
@@ -355,9 +354,6 @@ export default class Component extends Element {
       this.info = this.elementInfo();
     }
 
-    // Set the template
-    this.template = this.options.template;
-
     // Allow anyone to hook into the component creation.
     this.hook('component');
 
@@ -368,10 +364,6 @@ export default class Component extends Element {
   // Allow componets to notify when ready.
   get ready() {
     return Promise.resolve(this);
-  }
-
-  set template(template) {
-    Templates.template = template;
   }
 
   get labelInfo() {
@@ -564,26 +556,38 @@ export default class Component extends Element {
       modes.push('form');
     }
 
+    const templates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+
     for (const name of names) {
-      if (Templates.current[name]) {
+      const templatesByName = templates[name];
+
+      if (templatesByName) {
         for (const mode of modes) {
-          if (Templates.current[name][mode]) {
-            return Templates.current[name][mode];
+          const templateByMode = templatesByName[mode];
+
+          if (templateByMode) {
+            return templateByMode;
           }
         }
       }
     }
     // Default back to bootstrap if not defined.
     const name = names[names.length - 1];
-    if (!Templates.templates['bootstrap'][name]) {
+    const templatesByName = Templates.defaultTemplates[name];
+
+    if (!templatesByName) {
       return `Unknown template: ${name}`;
     }
+
     for (const mode of modes) {
-      if (Templates.templates['bootstrap'][name][mode]) {
-        return Templates.templates['bootstrap'][name][mode];
+      const templateByMode = templatesByName[mode];
+
+      if (templateByMode) {
+        return templateByMode;
       }
-      return Templates.templates['bootstrap'][name]['form'];
     }
+
+    return templatesByName.form;
   }
 
   renderTemplate(name, data = {}, modeOption) {

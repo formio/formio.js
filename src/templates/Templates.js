@@ -10,7 +10,7 @@ export default class Templates {
   }
 
   static set current(templates) {
-    const defaultTemplates = Templates._framework && Templates.templates.hasOwnProperty(Templates._framework) ? Templates.templates[Templates._framework] : Templates.templates.bootstrap;
+    const defaultTemplates = Templates.current;
     Templates._current = _.merge(defaultTemplates, templates);
   }
 
@@ -18,6 +18,11 @@ export default class Templates {
     if (Templates._current) {
       return Templates._current;
     }
+
+    return Templates.defaultTemplates;
+  }
+
+  static get defaultTemplates() {
     return Templates.templates.bootstrap;
   }
 
@@ -25,9 +30,7 @@ export default class Templates {
     if (Templates.templates.hasOwnProperty(framework)) {
       Templates._framework = framework;
       Templates._current = Templates.templates[framework];
-      return true;
     }
-    return false;
   }
 
   static get framework() {
