@@ -139,9 +139,28 @@ export default class SelectComponent extends BaseComponent {
     return data;
   }
 
+  addAutofillHoneyInput(container, input) {
+    const autofillInput = this.ce('input', {
+      type: 'text',
+      name: this.info.attr.name,
+      style: 'display: none',
+    });
+
+    input.addEventListener('change', (event) => {
+      autofillInput.value = JSON.stringify(event.detail.value);
+    });
+
+    autofillInput.addEventListener('change', (event) => {
+      this.updateValue({}, JSON.parse(event.target.value));
+    });
+
+    container.appendChild(autofillInput);
+  }
+
   createInput(container) {
     this.selectContainer = container;
     this.selectInput = super.createInput(container);
+    this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
   }
 
   /**
@@ -647,10 +666,6 @@ export default class SelectComponent extends BaseComponent {
     this.addPlaceholder(input);
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
-
-    this.selectContainer.children[1].addEventListener('change', (event) => {
-      this.updateValue({}, JSON.parse(event.target.value));
-    });
 
     if (this.component.multiple) {
       this.focusableElement = this.choices.input.element;
