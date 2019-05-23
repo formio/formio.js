@@ -1,6 +1,4 @@
 import NestedComponent from '../nested/NestedComponent';
-import Base from '../base/Base';
-import _ from 'lodash';
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
@@ -161,21 +159,24 @@ export default class TabsComponent extends NestedComponent {
 
     this.currentTab = index;
 
-    // Get the current tab.
-    const tab = this.component.components[index];
-    this.empty(this.tabs[index]);
-    this.components.map((comp) => comp.destroy());
-    this.components = [];
-    const components = this.hook('addComponents', tab.components, this);
-    components.forEach((component) => this.addComponent(
-      component,
-      this.tabs[index],
-      this.data,
-      null,
-      null,
-      state,
-    ));
-    this.restoreValue();
+    if (this.options.builder) {
+      // Get the current tab.
+      const tab = this.component.components[index];
+      this.empty(this.tabs[index]);
+      this.components.map((comp) => comp.destroy());
+      this.components = [];
+      const components = this.hook('addComponents', tab.components, this);
+      components.forEach((component) => this.addComponent(
+        component,
+        this.tabs[index],
+        this.data,
+        null,
+        null,
+        state,
+      ));
+      this.restoreValue();
+    }
+
     if (this.tabLinks.length <= index) {
       return;
     }
@@ -188,56 +189,6 @@ export default class TabsComponent extends NestedComponent {
     this.addClass(this.tabLinks[index], 'active')
       .addClass(this.tabLinks[index].tabLink, 'active')
       .addClass(this.tabs[index], 'active');
-
-    this.triggerChange();
-  }
-
-  /**
-   * Return all the components within all the tabs.
-   */
-  getAllComponents() {
-    // If the validity tabs are set, then this usually means we are getting the components that have
-    // triggered errors and need to iterate through these to display them.
-    if (this.validityTabs && this.validityTabs.length) {
-      const comps = this.validityTabs.reduce((components, component) => {
-        if (component && component.getAllComponents) {
-          component = component.getAllComponents();
-        }
-        return components.concat(component);
-      }, []);
-      this.validityTabs = [];
-      return comps;
-    }
-    return super.getAllComponents();
-  }
-
-  /**
-   * Checks the validity by checking all tabs validity.
-   *
-   * @param data
-   * @param dirty
-   */
-  checkValidity(data, dirty) {
-    if (!dirty) {
-      return super.checkValidity(data, dirty);
-    }
-
-    if (!this.checkCondition(null, data)) {
-      this.setCustomValidity('');
-      return true;
-    }
-    const isValid = Base.prototype.checkValidity.call(this, data, dirty);
-    this.validityTabs = [];
-    return this.component.components.reduce((check, comp) => {
-      const tabComp = _.clone(comp);
-      tabComp.type = 'panel';
-      tabComp.internal = true;
-      const component = this.createComponent(tabComp);
-      this.validityTabs.push(component);
-      const valid = component.checkValidity(data, dirty) && check;
-      component.destroy();
-      return valid;
-    }, isValid);
   }
 
   destroy() {
@@ -266,5 +217,25 @@ export default class TabsComponent extends NestedComponent {
   addComponents(element, data, options, state) {
     const { currentTab } = state && state.currentTab ? state : this;
     this.setTab(currentTab, state);
+
+    if (!this.options.builder && !this.options.flatten) {
+      this.components.forEach(c => c.destroy());
+      this.components = [];
+
+      for (let i = 0; i < this.tabs.length; i++) {
+        this.empty(this.tabs[i]);
+
+        const tab = this.component.components[i];
+        if (!tab || !tab.components) {
+          continue;
+        }
+
+        const tabComponents = tab.components;
+
+        tabComponents.forEach(component => {
+          this.addComponent(component, this.tabs[i], this.data, null, null, state);
+        });
+      }
+    }
   }
 }
