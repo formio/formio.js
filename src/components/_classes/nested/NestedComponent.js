@@ -443,6 +443,9 @@ export default class NestedComponent extends Field {
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
+      if (comp.checkData) {
+        valid &= comp.checkData(data, flags);
+      }
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });

@@ -189,7 +189,11 @@ export default class EditGridComponent extends NestedComponent {
     }
   }
 
-  checkData(data, flags = {}, index) {
+  checkData(data, flags = {}) {
+    return this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
+  }
+
+  checkRow(data, editRow, flags = {}) {
     let valid = true;
     if (flags.noCheck) {
       return;
@@ -200,20 +204,23 @@ export default class EditGridComponent extends NestedComponent {
       noUpdateEvent: true
     });
 
-    const editRow = this.editRows[index];
-
     // Iterate through all components and check conditions, and calculate values.
     editRow.components.forEach(comp => {
+      if (comp.checkData) {
+        valid &= comp.checkData(data, flags);
+      }
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
       comp.checkConditions(data);
       if (!flags.noValidate) {
-        valid &= comp.checkValidity(data, !editRow.isOpen);
+        valid &= comp.checkValidity(data, this.component.inlineEdit || !editRow.isOpen);
       }
     });
 
-    valid &= (this.validateRow(index) === true);
+    if (!flags.noValidate) {
+      valid &= (this.validateRow(editRow) === true);
+    }
 
     // Trigger the change if the values changed.
     if (changed) {
@@ -351,7 +358,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     editRow.dirty = true;
-    if (!!this.validateRow(rowIndex) !== true) {
+    if (!!this.validateRow(editRow) !== true) {
       return;
     }
 
@@ -405,15 +412,20 @@ export default class EditGridComponent extends NestedComponent {
       comp.triggerChange = () => {
         // Should we recalculate or something here?
         // TODO: Cause refreshOn to trigger.
+        if (this.component.inlineEdit) {
+          this.triggerChange();
+        }
+        // else {
+        //   this.checkRow(this.data, rowIndex);
+        // }
       };
       components.push(comp);
     });
     return components;
   }
 
-  validateRow(rowIndex, dirty) {
+  validateRow(editRow, dirty) {
     let valid = true;
-    const editRow = this.editRows[rowIndex];
     if (editRow.isOpen) {
       const isDirty = dirty || !!editRow.dirty;
       editRow.components.forEach(comp => {
@@ -449,9 +461,9 @@ export default class EditGridComponent extends NestedComponent {
 
     let rowsValid = true;
     let rowsClosed = true;
-    this.editRows.forEach((editRow, rowIndex) => {
+    this.editRows.forEach((editRow) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(rowIndex, dirty);
+      const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
 
