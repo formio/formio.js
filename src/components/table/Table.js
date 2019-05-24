@@ -16,6 +16,7 @@ export default class TableComponent extends NestedComponent {
 
   static schema(...extend) {
     return NestedComponent.schema({
+      label: 'Table',
       type: 'table',
       input: false,
       key: 'table',
