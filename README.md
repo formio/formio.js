@@ -63,7 +63,7 @@ The following is a simple example on how to render a form within your HTML appli
 
 This will render the following form within your application.
 
-![Alt text](https://monosnap.com/file/iOZ1yB0wPntJLWQwyhdt7ucToLHEfF.png)
+![Alt text](https://api.monosnap.com/file/download?id=iOZ1yB0wPntJLWQwyhdt7ucToLHEfF)
 
 You can also render JSON directly instead of referencing the embed URL from Form.io.
 
