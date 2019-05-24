@@ -433,7 +433,7 @@ export default class SelectComponent extends Field {
    */
   get requestHeaders() {
     // Create the headers object.
-    const headers = new Headers();
+    const headers = new Formio.Headers();
 
     // Add custom headers to the url.
     if (this.component.data && this.component.data.headers) {
