@@ -1,0 +1,38 @@
+<div style="position: relative;">
+  <nav aria-label="navigation">
+    <div class="ui steps">
+      {% panels.forEach(function(panel, index) { %}
+      <a class="{{currentPage === index ? ' active' : ''}} step" ref="{{wizardKey}}-link">
+        <div class="content">
+          <div class="title">{{panel.title}}</div>
+        </div>
+      </a>
+      {% }) %}
+    </div>
+  </nav>
+  <div class="wizard-page" ref="{{wizardKey}}">
+    {{components}}
+  </div>
+  <ul class="ui horizontal list">
+    {% if (buttons.cancel) { %}
+    <li class="item">
+      <button class="ui button secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
+    </li>
+    {% } %}
+    {% if (buttons.previous) { %}
+    <li class="item">
+      <button class="ui button primary btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
+    </li>
+    {% } %}
+    {% if (buttons.next) { %}
+    <li class="item">
+      <button class="ui button primary btn-wizard-nav-next" ref="{{wizardKey}}-next">{{t('next')}}</button>
+    </li>
+    {% } %}
+    {% if (buttons.submit) { %}
+    <li class="item">
+      <button class="ui button primary btn-wizard-nav-submit" ref="{{wizardKey}}-submit">{{t('submit')}}</button>
+    </li>
+    {% } %}
+  </ul>
+</div>
