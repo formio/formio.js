@@ -124,6 +124,7 @@ export default [
     clearOnHide: false,
     label: 'Resource',
     key: 'data.resource',
+    lazyLoad: false,
     weight: 10,
     tooltip: 'The resource to be used with this field.',
     conditional: {
@@ -143,26 +144,29 @@ export default [
     template: '<span>{{ item.label }}</span>',
     valueProperty: 'key',
     dataSrc: 'url',
+    lazyLoad: false,
     onSetItems(component, form) {
       const newItems = [];
 
       eachComponent(form.components, (component, path) => {
-        newItems.push({
-          label: component.label || component.key,
-          key: path
-        });
+        if (component.input) {
+          newItems.push({
+            label: component.label || component.key,
+            key: `data.${path}`
+          });
+        }
       });
 
       return newItems;
     },
     data: {
-      url: '/form/{{ data.resource }}'
+      url: '/form/{{ data.data.resource }}'
     },
     conditional: {
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { var: 'data.resource' }
+          { var: 'data.data.resource' }
         ]
       }
     }
@@ -183,7 +187,7 @@ export default [
     type: 'textfield',
     input: true,
     label: 'Value Property',
-    key: 'valueProperty',
+    key: ' ',
     skipMerge: true,
     clearOnHide: false,
     weight: 13,
