@@ -296,7 +296,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
   /* eslint-enable max-statements */
 
-  setWysiwygValue(value) {
+  setWysiwygValue(value, skipSetting) {
     if (this.htmlView) {
       // For HTML view, just view the contents.
       if (this.input) {
@@ -306,24 +306,26 @@ export default class TextAreaComponent extends TextFieldComponent {
     else if (this.editorReady) {
       return this.editorReady.then((editor) => {
         this.autoModified = true;
-        switch (this.component.editor) {
-          case 'ace':
-            editor.setValue(this.setConvertedValue(value));
-            break;
-          case 'quill':
-            if (this.component.isUploadEnabled) {
-              this.setAsyncConvertedValue(value)
-                .then(result => {
-                  editor.setContents(editor.clipboard.convert(result));
-                });
-            }
-            else {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
-            break;
-          case 'ckeditor':
-            editor.data.set(this.setConvertedValue(value));
-            break;
+        if (!skipSetting) {
+          switch (this.component.editor) {
+            case 'ace':
+              editor.setValue(this.setConvertedValue(value));
+              break;
+            case 'quill':
+              if (this.component.isUploadEnabled) {
+                this.setAsyncConvertedValue(value)
+                  .then(result => {
+                    editor.setContents(editor.clipboard.convert(result));
+                  });
+              }
+              else {
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+              }
+              break;
+            case 'ckeditor':
+              editor.data.set(this.setConvertedValue(value));
+              break;
+          }
         }
       });
     }
@@ -432,7 +434,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    const shouldSetValue = !_.isEqual(value, this.getValue());
+    const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
@@ -443,7 +445,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-    this.setWysiwygValue(newValue, () => this.updateOnChange(flags, changed));
+    this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
     return changed;
   }
 
