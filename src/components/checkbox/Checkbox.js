@@ -312,9 +312,7 @@ export default class CheckBoxComponent extends BaseComponent {
       return;
     }
 
-    if (this.setCheckedState(value) !== undefined) {
-      return this.updateValue(flags, value);
-    }
+    return this.updateValue(flags, value);
   }
 
   getView(value) {
@@ -340,8 +338,13 @@ export default class CheckBoxComponent extends BaseComponent {
         value = this.getRadioGroupValue();
       }
     }
+    else if (flags && flags.modified && this.input.checked && value === undefined) {
+      value = true;
+    }
 
     const changed = super.updateValue(flags, value);
+
+    this.setCheckedState(value);
 
     return changed;
   }
