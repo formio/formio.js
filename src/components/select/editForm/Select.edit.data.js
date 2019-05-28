@@ -16,9 +16,9 @@ export default [
         { label: 'Raw JSON', value: 'json' },
         { label: 'URL', value: 'url' },
         { label: 'Resource', value: 'resource' },
-        { label: 'Custom', value: 'custom' }
-      ]
-    }
+        { label: 'Custom', value: 'custom' },
+      ],
+    },
   },
   {
     type: 'textarea',
@@ -30,8 +30,8 @@ export default [
     label: 'Data Source Raw JSON',
     tooltip: 'A raw JSON array to use as a data source.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'json'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'json'] },
+    },
   },
   {
     type: 'textfield',
@@ -42,8 +42,8 @@ export default [
     placeholder: 'Data Source URL',
     tooltip: 'A URL that returns a JSON array to use as the data source.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
   },
   {
     type: 'checkbox',
@@ -54,12 +54,15 @@ export default [
     weight: 11,
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'resource',
+            'url',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'datagrid',
@@ -73,18 +76,18 @@ export default [
         label: 'Key',
         key: 'key',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
         key: 'value',
         input: true,
-        type: 'textfield'
-      }
+        type: 'textfield',
+      },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
   },
   {
     type: 'datagrid',
@@ -98,26 +101,26 @@ export default [
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
         key: 'value',
         input: true,
         type: 'textfield',
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+      },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'values'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'values'] },
+    },
   },
   {
     type: 'select',
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?type=resource&limit=4294967295&select=_id,title'
+      url: '/form?type=resource&limit=4294967295&select=_id,title',
     },
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
@@ -128,8 +131,8 @@ export default [
     weight: 10,
     tooltip: 'The resource to be used with this field.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+    },
   },
   {
     type: 'select',
@@ -160,16 +163,16 @@ export default [
       return newItems;
     },
     data: {
-      url: '/form/{{ data.data.resource }}'
+      url: '/form/{{ data.data.resource }}',
     },
     conditional: {
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { var: 'data.data.resource' }
-        ]
-      }
-    }
+          { var: 'data.data.resource' },
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -180,14 +183,14 @@ export default [
     description: 'The object path to the iterable items.',
     tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
     input: true,
     label: 'Value Property',
-    key: ' ',
+    key: 'valueProperty',
     skipMerge: true,
     clearOnHide: false,
     weight: 13,
@@ -195,13 +198,15 @@ export default [
     tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
     conditional: {
       json: {
-        and: [
-          { '!==': [{ var: 'data.dataSrc' }, 'values'] },
-          { '!==': [{ var: 'data.dataSrc' }, 'resource'] },
-          { '!==': [{ var: 'data.dataSrc' }, 'custom'] }
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'json',
+            'url',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -215,10 +220,10 @@ export default [
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { '===': [{ var: 'data.valueProperty' }, ''] }
-        ]
-      }
-    }
+          { '===': [{ var: 'data.valueProperty' }, ''] },
+        ],
+      },
+    },
   },
   {
     type: 'checkbox',
@@ -228,8 +233,8 @@ export default [
     tooltip: 'When enabled the request will not include the limit and skip options in the query string',
     weight: 15,
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
@@ -241,12 +246,15 @@ export default [
     tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.',
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'number',
@@ -260,10 +268,10 @@ export default [
       json: {
         and: [
           { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '!=': [{ var: 'data.searchField' }, ''] }
-        ]
-      }
-    }
+          { '!=': [{ var: 'data.searchField' }, ''] },
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -275,12 +283,15 @@ export default [
     tooltip: 'Use this to provide additional filtering using query parameters.',
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -292,12 +303,15 @@ export default [
     tooltip: 'User this to provide additional sorting using query parameters',
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'number',
@@ -310,13 +324,16 @@ export default [
     tooltip: 'Use this to limit the number of items to request or view.',
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-          { '===': [{ var: 'data.dataSrc' }, 'json'] }
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+            'json',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'textarea',
@@ -329,8 +346,8 @@ export default [
     placeholder: "values = data['mykey'];",
     tooltip: 'Write custom code to return the value options. The form data object is available.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'custom'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'custom'] },
+    },
   },
   {
     type: 'textarea',
@@ -341,7 +358,7 @@ export default [
     as: 'html',
     rows: 3,
     weight: 18,
-    tooltip: 'The HTML template for the result data items.'
+    tooltip: 'The HTML template for the result data items.',
   },
   {
     type: 'checkbox',
@@ -350,7 +367,7 @@ export default [
     key: 'searchEnabled',
     label: 'Enable Static Search',
     defaultValue: true,
-    tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.'
+    tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.',
   },
   {
     label: 'Search Threshold',
@@ -364,14 +381,14 @@ export default [
       min: 0,
       customMessage: '',
       json: '',
-      max: 1
+      max: 1,
     },
     delimiter: false,
     requireDecimal: false,
     encrypted: false,
     defaultValue: 0.3,
     weight: 21,
-    tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.'
+    tooltip: 'At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match, a threshold of 1.0 would match anything.',
   },
   {
     type: 'checkbox',
@@ -381,8 +398,8 @@ export default [
     label: 'Save as reference',
     tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+    },
   },
   {
     type: 'checkbox',
@@ -392,8 +409,8 @@ export default [
     label: 'Formio Authenticate',
     tooltip: 'Check this if you would like to use Formio Authentication with the request.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
   },
   {
     type: 'checkbox',
@@ -401,7 +418,7 @@ export default [
     weight: 24,
     key: 'readOnlyValue',
     label: 'Read Only Value',
-    tooltip: 'Check this if you would like to show just the value when in Read Only mode.'
+    tooltip: 'Check this if you would like to show just the value when in Read Only mode.',
   },
   {
     type: 'textarea',
@@ -412,7 +429,7 @@ export default [
     key: 'customOptions',
     label: 'Choices.js options',
     tooltip: 'A raw JSON object to use as options for the Select component (Choices JS).',
-    defaultValue: {}
+    defaultValue: {},
   },
   {
     type: 'select',
@@ -438,12 +455,15 @@ export default [
     },
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
   },
   {
     type: 'checkbox',
@@ -455,11 +475,14 @@ export default [
     tooltip: 'When the Refresh On field is changed, clear this components value.',
     conditional: {
       json: {
-        or: [
-          { '===': [{ var: 'data.dataSrc' }, 'url'] },
-          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
-        ]
-      }
-    }
+        in: [
+          { var: 'data.dataSrc' },
+          [
+            'url',
+            'resource',
+          ],
+        ],
+      },
+    },
   },
 ];
