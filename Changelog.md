@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio, added test
+ 
 ### Added
  - FOR-2290: Ability to specify file name template for File component
 

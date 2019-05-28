@@ -273,7 +273,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     fileInput.click();
   }
 
-  setWysiwygValue(value) {
+  setWysiwygValue(value, skipSetting) {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
@@ -281,21 +281,23 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.editorReady) {
       this.editorReady.then((editor) => {
         this.autoModified = true;
-        if (this.component.editor === 'ace') {
-          editor.setValue(this.setConvertedValue(value));
-        }
-        else if (this.component.editor === 'ckeditor') {
-          editor.data.set(this.setConvertedValue(value));
-        }
-        else {
-          if (this.component.isUploadEnabled) {
-            this.setAsyncConvertedValue(value)
-              .then(result => {
-                editor.setContents(editor.clipboard.convert(result));
-              });
+        if (!skipSetting) {
+          if (this.component.editor === 'ace') {
+            editor.setValue(this.setConvertedValue(value));
+          }
+          else if (this.component.editor === 'ckeditor') {
+            editor.data.set(this.setConvertedValue(value));
           }
           else {
-            editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            if (this.component.isUploadEnabled) {
+              this.setAsyncConvertedValue(value)
+                .then(result => {
+                  editor.setContents(editor.clipboard.convert(result));
+                });
+            }
+            else {
+              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            }
           }
         }
       });
@@ -403,6 +405,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
     if (this.options.readOnly || this.htmlView) {
       // For readOnly, just view the contents.
@@ -423,7 +426,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Set the value when the editor is ready.
     this.dataValue = value;
 
-    this.setWysiwygValue(value, flags);
+    this.setWysiwygValue(value, skipSetting, flags);
     this.updateValue(flags);
   }
 

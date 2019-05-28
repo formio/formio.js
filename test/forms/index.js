@@ -10,6 +10,7 @@ import NestedFormTests from './nested-form-tests';
 import NestedFormNoSubmit from './nested-nosubmit.js';
 import NestedFormEventBubbling from './nested-event-bubbling';
 import NestedConditionallyHidden from './conditional-nested-form-load.js';
+import WysiwygCursor from './wysiwygCursor';
 
 import ChildMetadata from './childMetadata';
 
@@ -25,5 +26,6 @@ export default [
   NestedFormTests,
   NestedFormNoSubmit,
   NestedConditionallyHidden,
-  ChildMetadata
+  ChildMetadata,
+  WysiwygCursor
 ];
