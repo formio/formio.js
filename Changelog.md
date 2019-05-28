@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FOR-2290: Ability to specify file name template for File component
 
+### Fixed
+ - Columns inner Column component having ```input: true``` inside of component JSON
+
+
 ## 3.20.17
 ### Fixed
  - Issue with the onChange for textarea's with wysiwyg enabled.
