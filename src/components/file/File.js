@@ -798,21 +798,22 @@ export default class FileComponent extends BaseComponent {
           // Track uploads in progress.
           if (fileService.uploadsInProgress === undefined) {
             const cssClass = 'uploads-in-progress';
-            var submitButton = this.root.element
-                .querySelector('.formio-component-submit')
-                .querySelector('button');
+            const submitComponent = this.root.element
+                  .querySelector('.formio-component-submit');
+            var submitButton =
+                submitComponent ? submitComponent.querySelector('button') : null;
             var array = new Array();
             fileService.uploadsInProgress = {
               array: array,
               add: function(item) {
-                if (cssClass && (array.length === 0)) {
+                if (submitButton && cssClass && (array.length === 0)) {
                   submitButton.classList.add(cssClass);
                 }
                 array.push(item);
               },
               remove: function(item) {
                 array.splice(array.indexOf(item), 1);
-                if (cssClass && (array.length === 0)) {
+                if (submitButton && cssClass && (array.length === 0)) {
                   submitButton.classList.remove(cssClass);
                 }
               },
