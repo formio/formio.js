@@ -139,9 +139,28 @@ export default class SelectComponent extends BaseComponent {
     return data;
   }
 
+  addAutofillHoneyInput(container, input) {
+    const autofillInput = this.ce('input', {
+      type: 'text',
+      name: this.info.attr.name,
+      style: 'display: none',
+    });
+
+    input.addEventListener('change', (event) => {
+      autofillInput.value = JSON.stringify(event.detail.value);
+    });
+
+    autofillInput.addEventListener('change', (event) => {
+      this.updateValue({}, JSON.parse(event.target.value));
+    });
+
+    container.appendChild(autofillInput);
+  }
+
   createInput(container) {
     this.selectContainer = container;
     this.selectInput = super.createInput(container);
+    this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
   }
 
   /**

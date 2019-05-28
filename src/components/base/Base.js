@@ -1405,6 +1405,7 @@ export default class BaseComponent extends Component {
    */
   createInput(container) {
     const input = this.ce(this.info.type, this.info.attr);
+
     this.setInputMask(input);
     input.widget = this.createWidget();
     const inputGroup = this.addInputGroup(input, container);
