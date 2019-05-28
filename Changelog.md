@@ -4,15 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio, added test
- 
+## 3.21.0 
 ### Added
  - FOR-2290: Ability to specify file name template for File component
 
 ### Fixed
+ - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio, added test
  - Columns inner Column component having ```input: true``` inside of component JSON
+ - File uploads within the wizard forms.
+ - Fix adding new resource from within multiple-values select.
+ 
+### Changed
+ - Make it so that it will keep components from deleting if the component has a getComponents method.
 
 
 ## 3.20.17
