@@ -394,15 +394,30 @@ export function interpolate(rawTemplate, data) {
 /**
  * Make a filename guaranteed to be unique.
  * @param name
+ * @param template
+ * @param evalContext
  * @returns {string}
  */
-export function uniqueName(name) {
-  const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');
-  const fileName = parts[0];
-  const ext = parts.length > 1
+export function uniqueName(name, template, evalContext) {
+  template = template || '{{fileName}}-{{guid}}';
+  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+  if (!template.includes('{{guid}}')) {
+    template = `${template}-{{guid}}`;
+  }
+  const parts = name.split('.');
+  let fileName = parts.slice(0, parts.length - 1).join('.');
+  const extension = parts.length > 1
     ? `.${_.last(parts)}`
     : '';
-  return `${fileName.substr(0, 10)}-${guid()}${ext}`;
+  //allow only 100 characters from original name to avoid issues with filename length restrictions
+  fileName = fileName.substr(0, 100);
+  evalContext = Object.assign(evalContext || {}, {
+    fileName,
+    guid: guid()
+  });
+  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+  const uniqueName = `${interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  return uniqueName;
 }
 
 export function guid() {

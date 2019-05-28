@@ -274,7 +274,12 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setWysiwygValue(value) {
-    if (this.isPlain || this.options.readOnly || this.options.htmlView) {
+    if (
+      this.isPlain ||
+      this.options.readOnly ||
+      this.options.htmlView ||
+      _.isEqual(value, this.getValue())
+    ) {
       return;
     }
 
@@ -423,7 +428,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Set the value when the editor is ready.
     this.dataValue = value;
 
-    this.setWysiwygValue(value, flags);
+    this.setWysiwygValue(value);
     this.updateValue(flags);
   }
 

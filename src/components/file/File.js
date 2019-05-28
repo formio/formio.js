@@ -756,7 +756,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
-        const fileName = uniqueName(file.name);
+        const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
           name: fileName,
@@ -798,21 +798,22 @@ export default class FileComponent extends BaseComponent {
           // Track uploads in progress.
           if (fileService.uploadsInProgress === undefined) {
             const cssClass = 'uploads-in-progress';
-            var submitButton = this.root.element
-                .querySelector('.formio-component-submit')
-                .querySelector('button');
+            const submitComponent = this.root.element
+                  .querySelector('.formio-component-submit');
+            var submitButton =
+                submitComponent ? submitComponent.querySelector('button') : null;
             var array = new Array();
             fileService.uploadsInProgress = {
               array: array,
               add: function(item) {
-                if (cssClass && (array.length === 0)) {
+                if (submitButton && cssClass && (array.length === 0)) {
                   submitButton.classList.add(cssClass);
                 }
                 array.push(item);
               },
               remove: function(item) {
                 array.splice(array.indexOf(item), 1);
-                if (cssClass && (array.length === 0)) {
+                if (submitButton && cssClass && (array.length === 0)) {
                   submitButton.classList.remove(cssClass);
                 }
               },

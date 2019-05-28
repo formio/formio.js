@@ -1,9 +1,22 @@
 import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 export default class ColumnComponent extends NestedComponent {
+  static schema(...extend) {
+    return NestedComponent.schema({
+      label: 'Column',
+      key: 'column',
+      type: 'column',
+      input: false,
+    }, ...extend);
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+  }
+
+  get defaultSchema() {
+    return ColumnComponent.schema();
   }
 
   conditionallyVisible(data) {
