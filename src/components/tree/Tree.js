@@ -13,19 +13,7 @@ export default class TreeComponent extends NestedComponent {
       clearOnHide: true,
       input: true,
       tree: true,
-      components: [
-        {
-          type: 'textfield',
-          input: true,
-          key: 'field0',
-          label: 'Field 0',
-        }, {
-          type: 'textfield',
-          input: true,
-          key: 'field1',
-          label: 'Field 1',
-        },
-      ],
+      components: [],
     }, ...extend);
   }
 
@@ -46,34 +34,7 @@ export default class TreeComponent extends NestedComponent {
 
   get emptyValue() {
     return {
-      data: {
-        field0: 1,
-        field1: 2,
-      },
-      children: [
-        {
-          data: {
-            field0: 3,
-            field1: 4,
-          },
-          children: [
-            {
-              data: {
-                field0: 7,
-                field1: 8,
-              },
-              children: [],
-            }
-          ],
-        },
-        {
-          data: {
-            field0: 5,
-            field1: 6,
-          },
-          children: [],
-        },
-      ],
+      children: [],
     };
   }
 
@@ -103,10 +64,16 @@ export default class TreeComponent extends NestedComponent {
     this.removeComponents(this._viewComponents);
   }
 
-  createComponents(data) {
-    return this.component.components.map(
+  createComponents(data, node) {
+    const components = this.component.components.map(
       (component) => Components.create(component, this.componentOptions, data),
     );
+
+    if (node) {
+      this.checkNode(this.data, node);
+    }
+
+    return components;
   }
 
   removeComponents(components) {
@@ -262,6 +229,10 @@ export default class TreeComponent extends NestedComponent {
   }
 
   attachNode(element, node) {
+    if (!element) {
+      return Promise.resolve();
+    }
+
     let componentsPromise = Promise.resolve();
     let childrenPromise = Promise.resolve();
 
@@ -506,6 +477,7 @@ export default class TreeComponent extends NestedComponent {
     this.tree = new Node(null, value, {
       isNew: !value.data,
       createComponents: this.createComponents.bind(this),
+      checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
     });
     this.hook('tree.setRoot', {
@@ -517,6 +489,46 @@ export default class TreeComponent extends NestedComponent {
   updateTree() {
     this.updateValue({}, this.tree.value);
     this.redraw();
+  }
+
+  checkData(data, flags = {}) {
+    return this.checkNode(data, this.tree, flags);
+  }
+
+  checkNode(data, node, flags = {}) {
+    let valid = true;
+    if (flags.noCheck) {
+      return;
+    }
+
+    // Update the value.
+    let changed = this.updateValue({
+      noUpdateEvent: true
+    });
+
+    // Iterate through all components and check conditions, and calculate values.
+    node.components.forEach(comp => {
+      if (comp.checkData) {
+        valid &= comp.checkData(data, flags);
+      }
+      changed |= comp.calculateValue(data, {
+        noUpdateEvent: true
+      });
+      comp.checkConditions(data);
+      if (!flags.noValidate) {
+        valid &= comp.checkValidity(data, false);
+      }
+    });
+
+    valid = node.children.reduce((result, child) => this.checkNode(data, child, flags) && result, valid);
+
+    // Trigger the change if the values changed.
+    if (changed) {
+      this.triggerChange(flags);
+    }
+
+    // Return if the value is valid.
+    return valid;
   }
 }
 

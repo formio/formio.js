@@ -6,7 +6,6 @@ describe('Base Component Unit Tests', () => {
     const component = new Component();
 
     // Test that we have a proper constructed component.
-    assert.equal(component.options.template, 'bootstrap3');
     assert.equal(component.options.renderMode, 'form');
     assert.equal(component.options.attachMode, 'full');
     assert.equal(component.attached, false);

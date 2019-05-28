@@ -8,6 +8,7 @@ export default class Node {
       children = [],
     } = {},
     {
+      checkNode,
       createComponents,
       isNew = true,
       removeComponents,
@@ -18,14 +19,17 @@ export default class Node {
     this.persistentData = _.cloneDeep(data);
     this.new = isNew;
     this.createComponents = createComponents;
+    this.checkNode = checkNode;
     this.removeComponents = removeComponents;
     this.revertAvailable = false;
     this.editing = false;
     this.collapsed = false;
     this.components = [];
+    this.children = [];
 
     this.resetData();
     this.children = children.map((child) => new Node(this, child, {
+      checkNode,
       createComponents,
       isNew: false,
       removeComponents,
@@ -80,6 +84,7 @@ export default class Node {
     }
 
     const child = new Node(this, {}, {
+      checkNode: this.checkNode,
       createComponents: this.createComponents,
       isNew: true,
       removeComponents: this.removeComponents,
@@ -173,7 +178,8 @@ export default class Node {
   }
 
   instantiateComponents() {
-    this.components = this.createComponents(this.data);
+    this.components = this.createComponents(this.data, this);
+    this.checkNode(this);
   }
 
   clearComponents() {

@@ -59,11 +59,10 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    // Keep track of the last batch of items loaded.
-    this.currentItems = [];
-    this.loadedItems = 0;
-    this.isScrollLoading = false;
-    this.scrollTop = 0;
+    if (this.isSelectResource) {
+      this.serverCount = null;
+      this.isScrollLoading = false;
+    }
 
     // If this component has been activated.
     this.activated = false;
@@ -91,6 +90,10 @@ export default class SelectComponent extends Field {
     info.type = 'select';
     info.changeEvent = 'change';
     return info;
+  }
+
+  get isSelectResource() {
+    return this.component.dataSrc === 'resource';
   }
 
   itemTemplate(data) {
@@ -185,53 +188,6 @@ export default class SelectComponent extends Field {
     return false;
   }
 
-  /**
-   * Return if the list is loading from scroll. or not.
-   *
-   * @return {boolean|*}
-   */
-  get scrollLoading() {
-    return this.isScrollLoading;
-  }
-
-  /**
-   * Sets the scroll loading state.
-   *
-   * @param isScrolling
-   * @return {*}
-   */
-  set scrollLoading(isScrolling) {
-    // Only continue if they are different.
-    if (!this.scrollList || (this.isScrollLoading === isScrolling)) {
-      return;
-    }
-    if (isScrolling) {
-      this.choices.setChoices([...this.selectOptions, {
-        value: '',
-        label: 'Loading...',
-        disabled: true,
-      }], 'value', 'label', true);
-    }
-    else {
-      const loadingItem = this.scrollList.querySelector('.choices__item--disabled');
-      if (loadingItem) {
-        // Remove the loading text.
-        this.scrollList.removeChild(loadingItem);
-      }
-    }
-    this.scrollList.scrollTo(0, this.scrollTop);
-    this.isScrollLoading = isScrolling;
-    return isScrolling;
-  }
-
-  stopInfiniteScroll() {
-    // Remove the infinite scroll listener.
-    this.scrollLoading = false;
-    if (this.scrollList) {
-      this.scrollList.removeEventListener('scroll', this.onScroll);
-    }
-  }
-
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
@@ -266,34 +222,13 @@ export default class SelectComponent extends Field {
       items = _.get(items, this.component.selectValues);
     }
 
-    if (this.scrollLoading) {
-      // Check if the first two items are equal, and if so, then we can assume that this is the same list
-      // and we should skip over the loading.
-      if (
-        this.currentItems.length &&
-        items.length &&
-        _.isEqual(this.currentItems[0], items[0]) &&
-        _.isEqual(this.currentItems[1], items[1])
-      ) {
-        this.stopInfiniteScroll();
-        this.loading = false;
-        return;
-      }
-
-      // If we have gone beyond our limit, then stop.
-      if (items.limit && (items.length < items.limit)) {
-        this.stopInfiniteScroll();
-      }
-
-      // Increment the loadedItems.
-      this.loadedItems += items.length;
+    if (this.isSelectResource) {
+      this.serverCount = items.serverCount;
     }
-    else {
+
+    if (!this.isScrollLoading) {
       this.selectOptions = [];
-      this.loadedItems = items.length;
     }
-
-    this.currentItems = items;
 
     // Add the value options.
     if (!fromSearch) {
@@ -318,7 +253,7 @@ export default class SelectComponent extends Field {
     }
 
     // We are no longer loading.
-    this.scrollLoading = false;
+    this.isScrollLoading = false;
     this.loading = false;
 
     // If a value is provided, then select it.
@@ -359,7 +294,7 @@ export default class SelectComponent extends Field {
     }
 
     const limit = this.component.limit || 100;
-    const skip = this.loadedItems || 0;
+    const skip = this.isScrollLoading ? this.selectOptions.length : 0;
     const query = (this.component.dataSrc === 'url') ? {} : {
       limit: limit,
       skip: skip
@@ -410,14 +345,10 @@ export default class SelectComponent extends Field {
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
-        const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
         this.setItems(response, !!search);
-        if (scrollTop && this.choices) {
-          this.choices.choiceList.scrollToTop();
-        }
       })
       .catch((err) => {
-        this.stopInfiniteScroll();
+        this.isScrollLoading = false;
         this.loading = false;
         this.itemsLoadedResolve();
         this.emit('componentError', {
@@ -475,6 +406,10 @@ export default class SelectComponent extends Field {
     this.updateItems(null, true);
   }
 
+  get additionalResourcesAvailable() {
+    return _.isNil(this.serverCount) || (this.serverCount > this.selectOptions.length);
+  }
+
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
@@ -508,11 +443,13 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        try {
-          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
-        }
-        catch (err) {
-          console.warn(`Unable to load resources for ${this.key}`);
+        if (this.additionalResourcesAvailable) {
+          try {
+            this.loadItems(resourceUrl, searchInput, this.requestHeaders);
+          }
+          catch (err) {
+            console.warn(`Unable to load resources for ${this.key}`);
+          }
         }
         break;
       }
@@ -659,6 +596,7 @@ export default class SelectComponent extends Field {
         threshold: _.get(this, 'component.searchThreshold', 0.3),
       }, _.get(this, 'component.fuseOptions', {})),
       itemComparer: _.isEqual,
+      resetScrollPosition: false,
       ...customOptions,
     };
 
@@ -678,18 +616,25 @@ export default class SelectComponent extends Field {
       }
     }
 
-    this.scrollList = this.choices.choiceList.element;
-    this.onScroll = () => {
-      if (
-        !this.scrollLoading &&
-        ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)
-      ) {
-        this.scrollTop = this.scrollList.scrollTop;
-        this.scrollLoading = true;
-        this.triggerUpdate(this.choices.input.element.value);
-      }
-    };
-    this.scrollList.addEventListener('scroll', this.onScroll);
+    if (this.isSelectResource) {
+      this.scrollList = this.choices.choiceList.element;
+      this.onScroll = () => {
+        if (
+          !this.isScrollLoading &&
+          this.additionalResourcesAvailable &&
+          ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)
+        ) {
+          this.isScrollLoading = true;
+          this.choices.setChoices([{
+            value: `${this.id}-loading`,
+            label: 'Loading...',
+            disabled: true,
+          }], 'value', 'label');
+          this.triggerUpdate(this.choices.input.element.value);
+        }
+      };
+      this.scrollList.addEventListener('scroll', this.onScroll);
+    }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 

@@ -467,7 +467,7 @@ export default class Element {
       util: FormioUtils,
       user: Formio.getUser(),
       moment,
-      instance: this
+      instance: this,
     }, additional);
   }
 

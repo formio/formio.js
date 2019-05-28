@@ -385,7 +385,7 @@ export function addTemplateHash(template) {
  * @returns {XML|string|*|void}
  */
 export function interpolate(rawTemplate, data) {
-  const template = _.isNumber(rawTemplate)
+  const template = (_.isNumber(rawTemplate) && templateHashCache.hasOwnProperty(rawTemplate))
     ? templateHashCache[rawTemplate]
     : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
   if (typeof template === 'function') {
@@ -694,7 +694,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Hours, minutes, seconds
     .replace('HH', 'H')
-    .replace('hh', 'h')
+    .replace('hh', 'G')
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
