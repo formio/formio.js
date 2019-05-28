@@ -1015,13 +1015,12 @@ export default class Component extends Element {
    */
   evalContext(additional) {
     return super.evalContext(Object.assign({
-      instance: this,
       component: this.component,
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
       submission: (this.root ? this.root._submission : {}),
-      form: this.root ? this.root._form : {}
+      form: this.root ? this.root._form : {},
     }, additional));
   }
 
