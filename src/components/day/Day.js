@@ -424,6 +424,11 @@ export default class DayComponent extends Field {
     return this.date;
   }
 
+  getValue() {
+    const result = super.getValue();
+    return (result === '') ? this.dataValue : result;
+  }
+
   /**
    * Get the value at a specific index.
    *
