@@ -31,11 +31,36 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   get defaultValue() {
-    return this.component.name ? '' : (this.component.defaultValue || false).toString() === 'true';
+    return this.isRadioCheckbox ? '' : (this.component.defaultValue || false).toString() === 'true';
   }
 
   get hasSetValue() {
     return this.hasValue();
+  }
+
+  get isRadioCheckbox() {
+    return this.component.inputType === 'radio';
+  }
+
+  getRadioGroupItems() {
+    if (!this.isRadioCheckbox) {
+      return [];
+    }
+
+    return this.currentForm ? this.currentForm.getAllComponents().filter(c =>
+      c.isRadioCheckbox &&
+      c.component.name === this.component.name
+    ) : [];
+  }
+
+  getRadioGroupValue() {
+    if (!this.isRadioCheckbox) {
+      return null;
+    }
+
+    const selectedRadios = this.getRadioGroupItems().filter(c => c.input.checked);
+
+    return _.get(selectedRadios, '[0].component.value');
   }
 
   elementInfo() {
@@ -208,46 +233,46 @@ export default class CheckBoxComponent extends BaseComponent {
 
   set dataValue(value) {
     const setValue = (super.dataValue = value);
-    if (this.component.name) {
+
+    if (this.isRadioCheckbox) {
       _.set(this.data, this.component.key, setValue === this.component.value);
+
+      this.setCheckedState(setValue);
     }
+
     return setValue;
   }
 
   get dataValue() {
     const getValue = super.dataValue;
-    if (this.component.name) {
+    if (this.isRadioCheckbox) {
       _.set(this.data, this.component.key, getValue === this.component.value);
     }
     return getValue;
   }
 
   get key() {
-    return this.component.name ? this.component.name : super.key;
+    return this.isRadioCheckbox ? this.component.name : super.key;
   }
 
   getValueAt(index) {
-    if (this.component.name) {
+    if (this.isRadioCheckbox) {
       return this.inputs[index].checked ? this.component.value : '';
     }
+
     return !!this.inputs[index].checked;
   }
 
   getValue() {
-    const value = super.getValue();
-    if (this.component.name) {
-      return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
-    }
-    else {
-      return value;
-    }
+    return super.getValue();
   }
 
   setCheckedState(value) {
     if (!this.input) {
       return;
     }
-    if (this.component.name) {
+
+    if (this.isRadioCheckbox) {
       this.input.value = (value === this.component.value) ? this.component.value : 0;
       this.input.checked = (value === this.component.value) ? 1 : 0;
     }
@@ -270,9 +295,11 @@ export default class CheckBoxComponent extends BaseComponent {
 
     if (this.input.checked) {
       this.input.setAttribute('checked', true);
+      this.addClass(this.element, 'checkbox-checked');
     }
     else {
       this.input.removeAttribute('checked');
+      this.removeClass(this.element, 'checkbox-checked');
     }
 
     return value;
@@ -280,9 +307,12 @@ export default class CheckBoxComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    if (this.setCheckedState(value) !== undefined) {
-      return this.updateValue(flags, value);
+
+    if (this.isRadioCheckbox && !value) {
+      return;
     }
+
+    return this.updateValue(flags, value);
   }
 
   getView(value) {
@@ -295,16 +325,27 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   updateValue(flags, value) {
-    const changed = super.updateValue(flags, value);
-    if (changed) {
-      const checkedClass = 'checkbox-checked';
-      if (this.getValue()) {
-        this.addClass(this.element, checkedClass);
+    if (this.isRadioCheckbox) {
+      if (value === undefined && this.input.checked) {
+        // Force all siblings elements in radio group to unchecked
+        this.getRadioGroupItems()
+          .filter(c => c !== this && c.input.checked)
+          .forEach(c => c.input.checked = false);
+
+        value = this.component.value;
       }
       else {
-        this.removeClass(this.element, checkedClass);
+        value = this.getRadioGroupValue();
       }
     }
+    else if (flags && flags.modified && this.input.checked && value === undefined) {
+      value = true;
+    }
+
+    const changed = super.updateValue(flags, value);
+
+    this.setCheckedState(value);
+
     return changed;
   }
 }
