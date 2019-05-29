@@ -295,27 +295,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1724,
+        "lineNumber": 1725,
         "line": "  /**"
       },
       {
-        "lineNumber": 1725,
+        "lineNumber": 1726,
         "line": "   * Hide or Show an element."
       },
       {
-        "lineNumber": 1726,
+        "lineNumber": 1727,
         "line": "   *"
       },
       {
-        "lineNumber": 1727,
+        "lineNumber": 1728,
         "line": "   * @param show"
       },
       {
-        "lineNumber": 1728,
+        "lineNumber": 1729,
         "line": "   */"
       },
       {
-        "lineNumber": 1729,
+        "lineNumber": 1730,
         "line": "  show(show, noClear) {"
       }
     ],
@@ -332,35 +332,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1889,
+        "lineNumber": 1890,
         "line": "  /**"
       },
       {
-        "lineNumber": 1890,
+        "lineNumber": 1891,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1891,
+        "lineNumber": 1892,
         "line": "   *"
       },
       {
-        "lineNumber": 1892,
+        "lineNumber": 1893,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1893,
+        "lineNumber": 1894,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1894,
+        "lineNumber": 1895,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1895,
+        "lineNumber": 1896,
         "line": "   */"
       },
       {
-        "lineNumber": 1896,
+        "lineNumber": 1897,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -379,27 +379,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2193,
+        "lineNumber": 2194,
         "line": "  /**"
       },
       {
-        "lineNumber": 2194,
+        "lineNumber": 2195,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2195,
+        "lineNumber": 2196,
         "line": "   *"
       },
       {
-        "lineNumber": 2196,
+        "lineNumber": 2197,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2197,
+        "lineNumber": 2198,
         "line": "   */"
       },
       {
-        "lineNumber": 2198,
+        "lineNumber": 2199,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -416,35 +416,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2244,
+        "lineNumber": 2245,
         "line": "  /**"
       },
       {
-        "lineNumber": 2245,
+        "lineNumber": 2246,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2246,
-        "line": "   *"
-      },
-      {
         "lineNumber": 2247,
-        "line": "   * @param data - The global data object."
+        "line": "   *"
       },
       {
         "lineNumber": 2248,
-        "line": "   *"
+        "line": "   * @param data - The global data object."
       },
       {
         "lineNumber": 2249,
-        "line": "   * @return {boolean} - If the value changed during calculation."
+        "line": "   *"
       },
       {
         "lineNumber": 2250,
-        "line": "   */"
+        "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
         "lineNumber": 2251,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2252,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -461,35 +461,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2335,
+        "lineNumber": 2336,
         "line": "  /**"
       },
       {
-        "lineNumber": 2336,
+        "lineNumber": 2337,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2337,
+        "lineNumber": 2338,
         "line": "   *"
       },
       {
-        "lineNumber": 2338,
+        "lineNumber": 2339,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2339,
+        "lineNumber": 2340,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2340,
+        "lineNumber": 2341,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2341,
+        "lineNumber": 2342,
         "line": "   */"
       },
       {
-        "lineNumber": 2342,
+        "lineNumber": 2343,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -508,31 +508,31 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2457,
+        "lineNumber": 2458,
         "line": "  /**"
       },
       {
-        "lineNumber": 2458,
+        "lineNumber": 2459,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2459,
+        "lineNumber": 2460,
         "line": "   *"
       },
       {
-        "lineNumber": 2460,
+        "lineNumber": 2461,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2461,
+        "lineNumber": 2462,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2462,
+        "lineNumber": 2463,
         "line": "   */"
       },
       {
-        "lineNumber": 2463,
+        "lineNumber": 2464,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
@@ -767,31 +767,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 146,
+        "lineNumber": 165,
         "line": "  /**"
       },
       {
-        "lineNumber": 147,
+        "lineNumber": 166,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 148,
+        "lineNumber": 167,
         "line": "   *"
       },
       {
-        "lineNumber": 149,
+        "lineNumber": 168,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 150,
+        "lineNumber": 169,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 151,
+        "lineNumber": 170,
         "line": "   */"
       },
       {
-        "lineNumber": 152,
+        "lineNumber": 171,
         "line": "  addOption(value, label, attr) {"
       }
     ],
@@ -810,23 +810,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 756,
+        "lineNumber": 775,
         "line": "  /**"
       },
       {
-        "lineNumber": 757,
+        "lineNumber": 776,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 758,
+        "lineNumber": 777,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 759,
+        "lineNumber": 778,
         "line": "   */"
       },
       {
-        "lineNumber": 760,
+        "lineNumber": 779,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],
@@ -1507,35 +1507,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 878,
+        "lineNumber": 893,
         "line": "/**"
       },
       {
-        "lineNumber": 879,
+        "lineNumber": 894,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 880,
+        "lineNumber": 895,
         "line": " *"
       },
       {
-        "lineNumber": 881,
+        "lineNumber": 896,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 882,
+        "lineNumber": 897,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 883,
+        "lineNumber": 898,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 884,
+        "lineNumber": 899,
         "line": " */"
       },
       {
-        "lineNumber": 885,
+        "lineNumber": 900,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1554,35 +1554,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 952,
+        "lineNumber": 967,
         "line": "/**"
       },
       {
-        "lineNumber": 953,
+        "lineNumber": 968,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 954,
+        "lineNumber": 969,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 955,
+        "lineNumber": 970,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 956,
+        "lineNumber": 971,
         "line": " *"
       },
       {
-        "lineNumber": 957,
+        "lineNumber": 972,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 958,
+        "lineNumber": 973,
         "line": " */"
       },
       {
-        "lineNumber": 959,
+        "lineNumber": 974,
         "line": "export function unfold(e) {"
       }
     ],

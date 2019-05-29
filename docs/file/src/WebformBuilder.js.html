@@ -451,7 +451,7 @@ export default class WebformBuilder extends Webform {
       return;
     }
     let remove = true;
-    if (component.type === &apos;components&apos; &amp;&amp; component.getComponents().length &gt; 0) {
+    if ((typeof component.getComponents === &apos;function&apos;) &amp;&amp; component.getComponents().length &gt; 0) {
       const message = &apos;Removing this component will also remove all of its children. Are you sure you want to do this?&apos;;
       remove = window.confirm(this.t(message));
     }

@@ -4,15 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - Tagpad: Layout (Columns, Panel etc.) components not rendering
-
 ## 3.21.0 
 ### Added
  - FOR-2290: Ability to specify file name template for File component
 
 ### Fixed
+ - Reset values for DataGrid component.
+ - Tagpad: Layout (Columns, Panel etc.) components not rendering
  - FOR-2079: Cursor jumping in WYSIWYGs when typing in ng-formio, added test
  - Columns inner Column component having ```input: true``` inside of component JSON
  - File uploads within the wizard forms.
@@ -20,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Changed
  - Make it so that it will keep components from deleting if the component has a getComponents method.
-
+ - Upgraded i18next@15.1.3, @babel/core@7.4.5, @babel/preset-env@7.4.5, webpack@4.32.2
 
 ## 3.20.17
 ### Fixed
