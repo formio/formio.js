@@ -11,6 +11,7 @@ export default class ContainerComponent extends NestedComponent {
       clearOnHide: true,
       input: true,
       tree: true,
+      hideLabel: true,
       components: []
     }, ...extend);
   }
