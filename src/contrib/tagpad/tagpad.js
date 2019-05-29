@@ -119,7 +119,7 @@ export default class Tagpad extends NestedComponent {
       ]
       )
     );
-    eachComponent(this.component.components, (component) => {
+    this.component.components.forEach((component) => {
       //have to avoid using createComponent method as Components there will be empty
       const componentInstance = Components.create(component, this.options, this.data);
       componentInstance.parent = this;
@@ -129,8 +129,9 @@ export default class Tagpad extends NestedComponent {
         oldOnChange.call(componentInstance, flags, fromRoot);
         this.saveSelectedDot();
       };
-      this.components.push(componentInstance);
       this.form.appendChild(componentInstance.getElement());
+      //need to push to this.components all components with input: true so that saving would work properly
+      this.addTagpadComponent(componentInstance);
     });
     this.form.appendChild(this.ce(
       'button',
@@ -146,6 +147,15 @@ export default class Tagpad extends NestedComponent {
       ]
     ));
     this.formRendered = true;
+  }
+
+  addTagpadComponent(componentInstance) {
+    if (componentInstance.component.input) {
+      this.components.push(componentInstance);
+    }
+    else if (componentInstance.components) {
+      componentInstance.components.forEach(this.addTagpadComponent.bind(this));
+    }
   }
 
   attach() {

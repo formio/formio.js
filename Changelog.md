@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Tagpad: Layout (Columns, Panel etc.) components not rendering
+
 ## 3.21.0 
 ### Added
  - FOR-2290: Ability to specify file name template for File component
