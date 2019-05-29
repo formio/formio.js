@@ -195,8 +195,8 @@ export default class Tagpad extends NestedComponent {
 
   getActualCoordinate(coordinate) {
     //recalculate coordinate taking into account changed size of drawing area
-    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier);
-    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier);
+    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier) + this.dimensions.minX;
+    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier) + this.dimensions.minY;
     return coordinate;
   }
 
@@ -259,17 +259,14 @@ export default class Tagpad extends NestedComponent {
     //set initial dimensions to width and height from viewBox of background svg
     this.dimensions = {
       width: viewBoxWidth,
-      height: viewBoxHeight
+      height: viewBoxHeight,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
     };
     //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
     backgroundSvg.removeAttribute('width');
     backgroundSvg.removeAttribute('height');
-    const viewBox = {
-      width: this.dimensions.width,
-      height: this.dimensions.height,
-      minX: viewBoxMinX,
-      minY: viewBoxMinY
-    };
+    const viewBox = this.dimensions;
     //set background image viewBox
     backgroundSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
     //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
