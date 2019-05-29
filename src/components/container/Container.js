@@ -73,7 +73,6 @@ export default class ContainerComponent extends NestedComponent {
     if (!hasValue) {
       // Set the data value and then reset each component to use the new data object.
       this.dataValue = {};
-      this.getComponents().forEach(component => (component.data = this.dataValue));
     }
     return super.setValue(value, flags);
   }
