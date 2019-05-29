@@ -414,6 +414,12 @@ export default class DayComponent extends BaseComponent {
     }
   }
 
+  resetValue() {
+    const emptyValue = '00/00/0000';
+    this.setValue(emptyValue, { noUpdateEvent: true, noValidate: true });
+    _.unset(this.data, this.key);
+  }
+
   /**
    * Get the format for the value string.
    * @returns {string}
