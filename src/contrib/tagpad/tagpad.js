@@ -99,12 +99,17 @@ export default class Tagpad extends NestedComponent {
     }).appendTo(this.canvas);
     this.canvasSvg = this.two.renderer.domElement;
     this.addBackground();
+    // Stretch drawing area on initial rendering of component.
+    // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
+    // For case when component is built before form is initialized:
     this.on('initialized', () => {
-      this.backgroundReady.promise.then(() => {
-        //when element is already displayed in browser and background is ready, stretch drawing area to fit background dimensions
-        this.stretchDrawingArea();
-      });
+      this.stretchDrawingArea();
     });
+    // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
+    this.backgroundReady.promise.then(() => {
+      this.stretchDrawingArea();
+    });
+
     this.attach();
     this.redrawDots();
   }
@@ -203,9 +208,12 @@ export default class Tagpad extends NestedComponent {
   stretchDrawingArea() {
     const width = this.background.offsetWidth;
     const height = this.background.offsetHeight;
-    //will need dimensions multiplier for coordinates calculation
-    this.dimensionsMultiplier = width / this.dimensions.width;
-    this.setEditorSize(width, height);
+    //don't stretch if background dimensions are unknown yet
+    if (width && height) {
+      //will need dimensions multiplier for coordinates calculation
+      this.dimensionsMultiplier = width / this.dimensions.width;
+      this.setEditorSize(width, height);
+    }
   }
 
   get dataReady() {
