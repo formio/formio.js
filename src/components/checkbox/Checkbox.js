@@ -293,15 +293,6 @@ export default class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
 
-    if (this.input.checked) {
-      this.input.setAttribute('checked', true);
-      this.addClass(this.element, 'checkbox-checked');
-    }
-    else {
-      this.input.removeAttribute('checked');
-      this.removeClass(this.element, 'checkbox-checked');
-    }
-
     return value;
   }
 
@@ -312,6 +303,7 @@ export default class CheckBoxComponent extends BaseComponent {
       return;
     }
 
+    this.setCheckedState(value);
     return this.updateValue(flags, value);
   }
 
@@ -343,9 +335,14 @@ export default class CheckBoxComponent extends BaseComponent {
     }
 
     const changed = super.updateValue(flags, value);
-
-    this.setCheckedState(value);
-
+    if (this.input.checked) {
+      this.input.setAttribute('checked', true);
+      this.addClass(this.element, 'checkbox-checked');
+    }
+    else {
+      this.input.removeAttribute('checked');
+      this.removeClass(this.element, 'checkbox-checked');
+    }
     return changed;
   }
 }
