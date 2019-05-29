@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-2310: Tagpad -> Fixed dot being drawn with offset when initial image has minX minY in viewBox
+
 ## 3.21.0 
 ### Added
  - FOR-2290: Ability to specify file name template for File component
