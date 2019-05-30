@@ -78,6 +78,12 @@ export default class SignatureComponent extends Input {
       if (!value) {
         this.signaturePad.clear();
       }
+      else {
+        this.triggerChange();
+      }
+    }
+    if (!this.pristine) {
+      this.triggerChange();
     }
   }
 
