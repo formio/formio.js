@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
-- FOR-2312: Tagpad -> Fixed drawing not working on mobile
+ - FOR-2309: Tagpad -> Fixed drawing area being rendered over builder buttons when no background image is specified
+ - FOR-2312: Tagpad -> Fixed drawing not working on mobile
 
 ## 3.21.2
 ### Fixed

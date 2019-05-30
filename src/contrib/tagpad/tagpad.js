@@ -94,24 +94,30 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.canvasContainer);
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
-    this.two = new Two({
-      type: Two.Types.svg
-    }).appendTo(this.canvas);
-    this.canvasSvg = this.two.renderer.domElement;
-    this.addBackground();
-    // Stretch drawing area on initial rendering of component.
-    // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
-    // For case when component is built before form is initialized:
-    this.on('initialized', () => {
-      this.stretchDrawingArea();
-    });
-    // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
-    this.backgroundReady.promise.then(() => {
-      this.stretchDrawingArea();
-    });
+    if (this.hasBackgroundImage) {
+      this.two = new Two({
+        type: Two.Types.svg
+      }).appendTo(this.canvas);
+      this.canvasSvg = this.two.renderer.domElement;
+      this.addBackground();
 
-    this.attach();
-    this.redrawDots();
+      // Stretch drawing area on initial rendering of component.
+      // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
+      // For case when component is built before form is initialized:
+      this.on('initialized', () => {
+        this.stretchDrawingArea();
+      });
+      // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
+      this.backgroundReady.promise.then(() => {
+        this.stretchDrawingArea();
+      });
+
+      this.attach();
+      this.redrawDots();
+    }
+    else {
+      this.background.innerHTML = this.t('Background image is not specified. Tagpad doesn\'t work without background image');
+    }
   }
 
   renderForm() {
@@ -220,6 +226,10 @@ export default class Tagpad extends NestedComponent {
     return this.backgroundReady.promise;
   }
 
+  get hasBackgroundImage() {
+    return this.component.image || this.component.imageUrl;
+  }
+
   addBackground() {
     if (this.component.image) {
       this.setBackgroundImage(this.component.image);
@@ -233,7 +243,7 @@ export default class Tagpad extends NestedComponent {
         })
         .catch(() => {
           //TODO check that component works in this case anyway
-          console.warn(`Tagpad background didn't load for component: ${this.component.key}`);
+          this.background.innerHTML = this.t('Background image failed to load. Tagpad doesn\'t work without background image');
           this.backgroundReady.resolve();
         });
     }
