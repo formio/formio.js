@@ -1420,7 +1420,6 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      !this.isInputComponent ||
       (!this.visible && this.component.clearOnHide)
     ) {
       return value;

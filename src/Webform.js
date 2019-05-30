@@ -1198,24 +1198,31 @@ export default class Webform extends NestedComponent {
           this.loading = true;
 
           // Use the form action to submit the form if available.
-          let submitFormio = this.formio;
           if (this._form && this._form.action) {
-            submitFormio = new Formio(this._form.action, this.formio ? this.formio.options : {});
+            const method = (submission.data._id && this._form.action.includes(submission.data._id)) ? 'PUT' : 'POST';
+            return Formio.makeStaticRequest(this._form.action, method, submission.data, this.formio ? this.formio.options : {})
+              .then((result) => resolve({
+                submission: result,
+                saved: true,
+              }))
+              .catch(reject);
           }
 
+          const submitFormio = this.formio;
           if (this.nosubmit || !submitFormio) {
             return resolve({
               submission,
               saved: false,
             });
           }
-
           // If this is an actionUrl, then make sure to save the action and not the submission.
           const submitMethod = submitFormio.actionUrl ? 'saveAction' : 'saveSubmission';
-          submitFormio[submitMethod](submission).then((result) => resolve({
-            submission: result,
-            saved: true,
-          })).catch(reject);
+          submitFormio[submitMethod](submission)
+            .then((result) => resolve({
+              submission: result,
+              saved: true,
+            }))
+            .catch(reject);
         });
       });
     });
