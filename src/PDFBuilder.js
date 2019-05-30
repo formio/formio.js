@@ -91,7 +91,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   addComponent(component, element, data, before, noAdd, state) {
-    return super.addComponent(component, element, data, before, noAdd, state);
+    return super.addComponent(component, element, data, before, true, state);
   }
 
   deleteComponent(component) {
