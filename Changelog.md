@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3,21,3
 ### Fixed
  - FOR-2309: Tagpad -> Fixed drawing area being rendered over builder buttons when no background image is specified
  - FOR-2312: Tagpad -> Fixed drawing not working on mobile

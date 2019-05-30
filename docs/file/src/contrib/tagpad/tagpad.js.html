@@ -308,24 +308,30 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.canvasContainer);
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
-    this.two = new Two({
-      type: Two.Types.svg
-    }).appendTo(this.canvas);
-    this.canvasSvg = this.two.renderer.domElement;
-    this.addBackground();
-    // Stretch drawing area on initial rendering of component.
-    // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
-    // For case when component is built before form is initialized:
-    this.on(&apos;initialized&apos;, () =&gt; {
-      this.stretchDrawingArea();
-    });
-    // For case when component is built after form is initialized (for ex. when it&apos;s on inactive tab of Tabs component), so this.on(&apos;initialized&apos;, ...) won&apos;t be fired:
-    this.backgroundReady.promise.then(() =&gt; {
-      this.stretchDrawingArea();
-    });
+    if (this.hasBackgroundImage) {
+      this.two = new Two({
+        type: Two.Types.svg
+      }).appendTo(this.canvas);
+      this.canvasSvg = this.two.renderer.domElement;
+      this.addBackground();
 
-    this.attach();
-    this.redrawDots();
+      // Stretch drawing area on initial rendering of component.
+      // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
+      // For case when component is built before form is initialized:
+      this.on(&apos;initialized&apos;, () =&gt; {
+        this.stretchDrawingArea();
+      });
+      // For case when component is built after form is initialized (for ex. when it&apos;s on inactive tab of Tabs component), so this.on(&apos;initialized&apos;, ...) won&apos;t be fired:
+      this.backgroundReady.promise.then(() =&gt; {
+        this.stretchDrawingArea();
+      });
+
+      this.attach();
+      this.redrawDots();
+    }
+    else {
+      this.background.innerHTML = this.t(&apos;Background image is not specified. Tagpad doesn\&apos;t work without background image&apos;);
+    }
   }
 
   renderForm() {
@@ -401,7 +407,7 @@ export default class Tagpad extends NestedComponent {
     const touchEnd = (e) =&gt; {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
-      const touch = e.originalEvent.changedTouches[0];
+      const touch = e.changedTouches[0];
       this.addDot(this.getActualCoordinate({
         x: touch.pageX - offset.left,
         y: touch.pageY - offset.top
@@ -434,6 +440,10 @@ export default class Tagpad extends NestedComponent {
     return this.backgroundReady.promise;
   }
 
+  get hasBackgroundImage() {
+    return this.component.image || this.component.imageUrl;
+  }
+
   addBackground() {
     if (this.component.image) {
       this.setBackgroundImage(this.component.image);
@@ -447,7 +457,7 @@ export default class Tagpad extends NestedComponent {
         })
         .catch(() =&gt; {
           //TODO check that component works in this case anyway
-          console.warn(`Tagpad background didn&apos;t load for component: ${this.component.key}`);
+          this.background.innerHTML = this.t(&apos;Background image failed to load. Tagpad doesn\&apos;t work without background image&apos;);
           this.backgroundReady.resolve();
         });
     }
