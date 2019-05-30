@@ -193,7 +193,7 @@ export default class Tagpad extends NestedComponent {
     const touchEnd = (e) => {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
-      const touch = e.originalEvent.changedTouches[0];
+      const touch = e.changedTouches[0];
       this.addDot(this.getActualCoordinate({
         x: touch.pageX - offset.left,
         y: touch.pageY - offset.top
