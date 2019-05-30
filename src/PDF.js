@@ -174,7 +174,7 @@ export default class PDF extends Webform {
 window.addEventListener('message', (event) => {
   let eventData = null;
   try {
-    eventData = JSON.parse(event.data);
+    eventData = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
   }
   catch (err) {
     eventData = null;
