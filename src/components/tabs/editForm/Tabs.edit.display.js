@@ -45,6 +45,7 @@ export default [
         input: true,
         key: 'key',
         label: 'Key',
+        allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ]
