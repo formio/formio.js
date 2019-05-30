@@ -907,6 +907,9 @@ export default class Component extends Element {
   }
 
   getView(value) {
+    if (this.component.protected) {
+      return ' --- PROTECTED ---';
+    }
     if (!value) {
       return '';
     }

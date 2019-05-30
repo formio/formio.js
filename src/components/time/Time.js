@@ -39,8 +39,13 @@ export default class TimeComponent extends TextFieldComponent {
 
   get defaultValue() {
     let value = super.defaultValue;
-    if (value) {
-      value = moment(value).format(this.component.format);
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(item => item ? moment(item).format(this.component.format) : item);
+    }
+    else {
+      if (value) {
+        value = moment(value).format(this.component.format);
+      }
     }
     return value;
   }
