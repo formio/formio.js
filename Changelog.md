@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+- FOR-2312: Tagpad -> Fixed drawing not working on mobile
+
 ## 3.21.2
 ### Fixed
  - FOR-2319: Tagpad -> Fixed drawing area not being auto-resized on initial render when it's inside of Tabs component
