@@ -377,6 +377,7 @@ export default class Tagpad extends NestedComponent {
     if (!dots) {
       return;
     }
+    this.dots = [];
     dots.forEach((dot, index) => {
       const shape = this.drawDot(dot, index);
       this.dots.push({
@@ -385,7 +386,6 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(this.dataValue.length > 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -417,6 +417,7 @@ export default class Tagpad extends NestedComponent {
   removeSelectedDot() {
     this.dataValue.splice(this.selectedDotIndex, 1);
     this.redrawDots();
+    this.selectDot(0);
   }
 
   redrawDots() {
