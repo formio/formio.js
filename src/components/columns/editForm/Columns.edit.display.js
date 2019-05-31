@@ -16,10 +16,6 @@ export default [
     ignore: true
   },
   {
-    key: 'hideLabel',
-    ignore: true
-  },
-  {
     key: 'autofocus',
     ignore: true
   },
