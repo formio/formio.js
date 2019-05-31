@@ -334,8 +334,10 @@ export default class Webform extends NestedComponent {
     });
   }
 
-  destroy() {
-    delete Formio.forms[this.id];
+  destroy(preserveGlobal = false) {
+    if (!preserveGlobal) {
+      delete Formio.forms[this.id];
+    }
     return super.destroy();
   }
 

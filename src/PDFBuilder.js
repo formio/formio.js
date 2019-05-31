@@ -81,8 +81,8 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
-  addComponentTo(parent, schema, element, sibling) {
-    const comp = super.addComponentTo(parent, schema, element, sibling);
+  addComponentTo(schema, parent, element, sibling) {
+    const comp = super.addComponentTo(schema, parent, element, sibling);
     comp.isNew = true;
     if (this.pdfForm && schema.overlay) {
       this.pdfForm.postMessage({ name: 'addElement', data: schema });
@@ -142,7 +142,7 @@ export default class PDFBuilder extends WebformBuilder {
       height: 20
     };
 
-    this.addComponentTo(this, schema, this.getContainer());
+    this.addComponentTo(schema, this, this.getContainer());
     this.disableDropZone();
     return false;
   }
@@ -173,7 +173,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.pdfForm = new PDF(this.element, this.options);
       this.addClass(this.pdfForm.element, 'formio-pdf-builder');
     }
-    this.pdfForm.destroy();
+    this.pdfForm.destroy(true);
     this.pdfForm.on('iframe-elementUpdate', schema => {
       const component = this.getComponentById(schema.id);
       if (component && component.component) {
