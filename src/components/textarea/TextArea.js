@@ -293,7 +293,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setConvertedValue(value) {
-    if (this.component.as && this.component.as === 'json' && value) {
+    if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
       }
