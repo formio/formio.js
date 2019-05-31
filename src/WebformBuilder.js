@@ -349,6 +349,10 @@ export default class WebformBuilder extends Component {
     this.webform.form = value;
   }
 
+  get container() {
+    return this._form.components;
+  }
+
   render() {
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
@@ -720,11 +724,16 @@ export default class WebformBuilder extends Component {
       event.preventDefault();
       saved = true;
       this.editForm.detach();
-      const originalComponent = parent.formioContainer[parent.formioContainer.indexOf(component)];
-      parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
-      parent.formioComponent.rebuild();
-      this.emit('saveComponent', component, originalComponent);
+      const parentContainer = parent ? parent.formioContainer : this.container;
+      const parentComponent = parent ? parent.formioComponent : this;
+      const index = parentContainer.indexOf(component);
       this.dialog.close();
+      if (index !== -1) {
+        const originalComponent = parentContainer[index];
+        parentContainer[index] = this.editForm.submission.data;
+        parentComponent.rebuild();
+        this.emit('saveComponent', component, originalComponent);
+      }
     });
 
     this.addEventListener(this.dialog, 'close', () => {
@@ -733,6 +742,9 @@ export default class WebformBuilder extends Component {
       if (isNew && !saved) {
         this.removeComponent(component, parent);
       }
+      // Clean up.
+      this.removeEventListener(this.dialog, 'close');
+      this.dialog = null;
     });
 
     // Called when we edit a component.
