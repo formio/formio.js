@@ -40,6 +40,15 @@ export default class DayComponent extends Field {
     };
   }
 
+  /**
+   * The empty value for day component.
+   *
+   * @return {'00/00/0000'}
+   */
+  get emptyValue() {
+    return '00/00/0000';
+  }
+
   get dayRequired() {
     return this.showDay && _.get(this.component, 'fields.day.required', false);
   }
