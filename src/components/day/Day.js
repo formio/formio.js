@@ -108,6 +108,15 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
+  /**
+   * The empty value for day component.
+   *
+   * @return {'00/00/0000'}
+   */
+  get emptyValue() {
+    return '00/00/0000';
+  }
+
   getInputValue(input, defaultValue) {
     if (_.isObject(input)) {
       const value = parseInt(input.value, 10);
@@ -412,12 +421,6 @@ export default class DayComponent extends BaseComponent {
       year = parts.shift();
       this.yearInput.value = year === '0000' ? undefined : parseInt(year, 10);
     }
-  }
-
-  resetValue() {
-    const emptyValue = '00/00/0000';
-    this.setValue(emptyValue, { noUpdateEvent: true, noValidate: true });
-    _.unset(this.data, this.key);
   }
 
   /**
