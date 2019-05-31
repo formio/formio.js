@@ -168,12 +168,19 @@ export default class FormComponent extends Component {
   }
 
   render() {
+    if (this.options.attachMode === 'builder') {
+      return super.render(this.component.label || 'Nested form');
+    }
     const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
     return super.render(subform);
   }
 
   attach(element) {
     super.attach(element);
+    // Don't attach in builder.
+    if (this.options.attachMode === 'builder') {
+      return Promise.resolve();
+    }
     if (this.subForm) {
       return this.subForm.attach(element);
     }
