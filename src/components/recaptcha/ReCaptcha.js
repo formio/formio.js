@@ -23,6 +23,10 @@ export default class ReCaptchaComponent extends Component {
     };
   }
 
+  render() {
+    super.render(this, true);
+  }
+
   createInput() {
     if (this.options.builder) {
       // We need to see it in builder mode.
