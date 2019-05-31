@@ -31,6 +31,7 @@ import tab from './tab';
 import table from './table';
 import webform from './webform';
 import well from './well';
+import wizard from './wizard';
 import cssClasses from './cssClasses';
 
 export default {
@@ -99,4 +100,5 @@ export default {
   table,
   webform,
   well,
+  wizard
 };
