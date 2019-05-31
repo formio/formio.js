@@ -395,6 +395,34 @@ export default [
     type: 'checkbox',
     input: true,
     weight: 22,
+    key: 'addResource',
+    label: 'Add Resource',
+    tooltip: 'Allows to create a new resource while entering a submission.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+    },
+  },
+  {
+    type: 'textfield',
+    label: 'Add Resource Label',
+    key: 'addResourceLabel',
+    tooltip: 'Set the text of the Add Resource button.',
+    placeholder: 'Add Resource',
+    weight: 23,
+    input: true,
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '!!': { var: 'data.addResource' } },
+        ],
+      },
+    },
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 24,
     key: 'reference',
     label: 'Save as reference',
     tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
@@ -405,7 +433,7 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    weight: 23,
+    weight: 25,
     key: 'authenticate',
     label: 'Formio Authenticate',
     tooltip: 'Check this if you would like to use Formio Authentication with the request.',
@@ -416,7 +444,7 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    weight: 24,
+    weight: 26,
     key: 'readOnlyValue',
     label: 'Read Only Value',
     tooltip: 'Check this if you would like to show just the value when in Read Only mode.',
@@ -425,7 +453,7 @@ export default [
     type: 'textarea',
     as: 'json',
     editor: 'ace',
-    weight: 25,
+    weight: 27,
     input: true,
     key: 'customOptions',
     label: 'Choices.js options',

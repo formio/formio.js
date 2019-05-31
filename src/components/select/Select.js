@@ -1,7 +1,8 @@
-import Choices from 'choices.js/public/assets/scripts/choices.js';
+import Choices from 'choices.js';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
+import Form from '../../Form';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -62,6 +63,7 @@ export default class SelectComponent extends Field {
     if (this.isSelectResource) {
       this.serverCount = null;
       this.isScrollLoading = false;
+      this.downloadedResources = [];
     }
 
     // If this component has been activated.
@@ -226,7 +228,12 @@ export default class SelectComponent extends Field {
       this.serverCount = items.serverCount;
     }
 
-    if (!this.isScrollLoading) {
+    if (this.isScrollLoading) {
+      this.downloadedResources = this.downloadedResources.concat(items);
+      this.downloadedResources.serverCount = items.serverCount;
+    }
+    else {
+      this.downloadedResources = items;
       this.selectOptions = [];
     }
 
@@ -296,8 +303,8 @@ export default class SelectComponent extends Field {
     const limit = this.component.limit || 100;
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
     const query = (this.component.dataSrc === 'url') ? {} : {
-      limit: limit,
-      skip: skip
+      limit,
+      skip,
     };
 
     // Allow for url interpolation.
@@ -353,7 +360,7 @@ export default class SelectComponent extends Field {
         this.itemsLoadedResolve();
         this.emit('componentError', {
           component: this.component,
-          message: err.toString()
+          message: err.toString(),
         });
         console.warn(`Unable to load resources for ${this.key}`);
       });
@@ -407,7 +414,7 @@ export default class SelectComponent extends Field {
   }
 
   get additionalResourcesAvailable() {
-    return _.isNil(this.serverCount) || (this.serverCount > this.selectOptions.length);
+    return _.isNil(this.serverCount) || (this.serverCount > this.downloadedResources.length);
   }
 
   /* eslint-disable max-statements */
@@ -440,6 +447,7 @@ export default class SelectComponent extends Field {
         if (!this.component.data.resource || (!forceUpdate && !this.active)) {
           return;
         }
+
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
@@ -451,6 +459,9 @@ export default class SelectComponent extends Field {
             console.warn(`Unable to load resources for ${this.key}`);
           }
         }
+        else {
+          this.setItems(this.downloadedResources);
+        }
         break;
       }
       case 'url': {
@@ -458,16 +469,13 @@ export default class SelectComponent extends Field {
           // If we are lazyLoading, wait until activated.
           return;
         }
-        let url = this.component.data.url;
+        let { url } = this.component.data;
         let method;
         let body;
 
-        if (url.substr(0, 1) === '/') {
-          let baseUrl = Formio.getProjectUrl();
-          if (!baseUrl) {
-            baseUrl = Formio.getBaseUrl();
-          }
-          url = baseUrl + this.component.data.url;
+        if (url.startsWith('/')) {
+          const baseUrl = Formio.getProjectUrl() || Formio.getBaseUrl();
+          url = baseUrl + url;
         }
 
         if (!this.component.data.method) {
@@ -494,6 +502,7 @@ export default class SelectComponent extends Field {
     if (!this.component.placeholder) {
       return;
     }
+
     this.addOption('', this.component.placeholder, { placeholder: true });
   }
 
@@ -533,13 +542,22 @@ export default class SelectComponent extends Field {
   }
 
   wrapElement(element) {
-    return element;
+    return this.component.addResource
+      ? (
+        this.renderTemplate('resourceAdd', {
+          element
+        })
+      )
+      : element;
   }
 
   /* eslint-disable max-statements */
   attach(element) {
     super.attach(element);
-    this.loadRefs(element, { selectContainer: 'single' });
+    this.loadRefs(element, {
+      selectContainer: 'single',
+      addResource: 'single',
+    });
     const input = this.refs.selectContainer;
     if (!input) {
       return;
@@ -555,12 +573,13 @@ export default class SelectComponent extends Field {
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
-        const { keyCode } = event;
+        const { key } = event;
 
-        if ([8, 46].includes(keyCode)) {
+        if (['Backspace', 'Delete'].includes(key)) {
           this.setValue(null);
         }
       });
+
       return;
     }
 
@@ -683,6 +702,25 @@ export default class SelectComponent extends Field {
     if (this.addValueOptions()) {
       this.choices.setChoiceByValue(this.dataValue);
       // this.restoreValue();
+    }
+
+    if (this.isSelectResource && this.refs.addResource) {
+      this.addEventListener(this.refs.addResource, 'click', (event) => {
+        event.preventDefault();
+
+        const formioForm = this.ce('div');
+        const dialog = this.createModal(formioForm);
+
+        const projectUrl = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl());
+        const formUrl = `${projectUrl}/form/${this.component.data.resource}`;
+        new Form(formioForm, formUrl, {}).ready
+          .then((form) => {
+            form.on('submit', (submission) => {
+              this.setValue(submission);
+              dialog.close();
+            });
+          });
+      });
     }
 
     // Force the disabled state with getters and setters.
