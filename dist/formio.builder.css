@@ -790,8 +790,10 @@ body.formio-dialog-open {
   width: 40px;
   margin-left: 5px; }
 
-.formio-sketchpad-toolbar-button:hover {
-  background: #e6e6e6; }
+.formio-sketchpad-toolbar-button {
+  overflow: visible; }
+  .formio-sketchpad-toolbar-button:hover {
+    background: #e6e6e6; }
 
 .formio-sketchpad-toolbar-group {
   background: #f2f2f2;
