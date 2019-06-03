@@ -194,6 +194,9 @@ export default class FormComponent extends Component {
   }
 
   set root(inst) {
+    if (!inst) {
+      return;
+    }
     this._root = inst;
     this.nosubmit = inst.nosubmit;
   }
