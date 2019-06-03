@@ -1967,7 +1967,7 @@ export default class BaseComponent extends Component {
   }
 
   addCKE(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? null : settings;
+    settings = _.isEmpty(settings) ? {} : settings;
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
         if (!element.parentNode) {
