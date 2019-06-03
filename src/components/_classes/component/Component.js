@@ -556,21 +556,21 @@ export default class Component extends Element {
       modes.push('form');
     }
 
-    const templates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+    let result = null;
 
-    for (const name of names) {
-      const templatesByName = templates[name];
-
-      if (templatesByName) {
-        for (const mode of modes) {
-          const templateByMode = templatesByName[mode];
-
-          if (templateByMode) {
-            return templateByMode;
-          }
-        }
+    if (this.options.templates) {
+      result = this.checkTemplate(this.options.templates, names, modes);
+      if (result) {
+        return result;
       }
     }
+
+    const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+    result = this.checkTemplate(frameworkTemplates, names, modes);
+    if (result) {
+      return result;
+    }
+
     // Default back to bootstrap if not defined.
     const name = names[names.length - 1];
     const templatesByName = Templates.defaultTemplates[name];
@@ -579,6 +579,30 @@ export default class Component extends Element {
       return `Unknown template: ${name}`;
     }
 
+    const templateByMode = this.checkTemplateMode(templatesByName, modes);
+    if (templateByMode) {
+      return templateByMode;
+    }
+
+    return templatesByName.form;
+  }
+
+  checkTemplate(templates, names, modes) {
+    for (const name of names) {
+      const templatesByName = templates[name];
+
+      if (templatesByName) {
+        const templateByMode = this.checkTemplateMode(templatesByName, modes);
+        if (templateByMode) {
+          return templateByMode;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  checkTemplateMode(templatesByName, modes) {
     for (const mode of modes) {
       const templateByMode = templatesByName[mode];
 
@@ -587,7 +611,7 @@ export default class Component extends Element {
       }
     }
 
-    return templatesByName.form;
+    return null;
   }
 
   renderTemplate(name, data = {}, modeOption) {
