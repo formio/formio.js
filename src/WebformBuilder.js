@@ -664,6 +664,18 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
+        // Set the component to the componentJson if this is a custom component.
+        if (isCustom && event.data.componentJson) {
+          const componentJson = event.data.componentJson;
+          // First empty the existing data object.
+          for (const prop in event.data) {
+            if (event.data.hasOwnProperty(prop)) {
+              delete event.data[prop];
+            }
+          }
+          _.merge(event.data, componentJson);
+        }
+
         // See if this is a manually modified key. Treat custom component keys as manually modified
         if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
           componentCopy.keyModified = true;
@@ -683,11 +695,6 @@ export default class WebformBuilder extends Component {
                   return false;
                 }
               });
-            }
-
-            // Set the component to the componentJson if this is a custom component.
-            if (event.data.type === 'custom' && event.data.componentJson) {
-              event.data = event.data.componentJson;
             }
 
             if (this._form) {

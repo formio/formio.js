@@ -13,7 +13,7 @@ export default class UnknownComponent extends Component {
   static get builderInfo() {
     return {
       title: 'Custom',
-      icon: 'fa fa-cubes',
+      icon: 'cubes',
       group: 'advanced',
       documentation: 'https://help.form.io/userguide/form-components/#custom',
       weight: 120,
