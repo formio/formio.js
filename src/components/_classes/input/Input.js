@@ -76,7 +76,7 @@ export default class Input extends Multivalue {
 
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
-    const wordCount = this.dataValue.trim().split(/\s+/).length;
+    const wordCount = _.words(this.dataValue).length;
     return maxWords - wordCount;
   }
 
@@ -124,7 +124,7 @@ export default class Input extends Multivalue {
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter('words', this.refs.wordcount[index], value.trim().split(/\s+/).length, maxWords);
+        this.setCounter('words', this.refs.wordcount[index], _.words(value).length, maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {

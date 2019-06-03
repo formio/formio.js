@@ -169,7 +169,7 @@ export default {
         if (!maxWords || (typeof value !== 'string')) {
           return true;
         }
-        return (value.trim().split(/\s+/).length <= maxWords);
+        return (_.words(value).length <= maxWords);
       }
     },
     minWords: {
@@ -177,7 +177,7 @@ export default {
       message(component, setting) {
         return component.t(component.errorMessage('minWords'), {
           field: component.errorLabel,
-          length: (setting + 1),
+          length: (setting - 1),
           data: component.data
         });
       },
@@ -186,7 +186,7 @@ export default {
         if (!minWords || (typeof value !== 'string')) {
           return true;
         }
-        return (value.trim().split(/\s+/).length >= minWords);
+        return (_.words(value).length >= minWords);
       }
     },
     email: {
