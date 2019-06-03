@@ -282,7 +282,7 @@ export default class Component extends Element {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json', 'mask'];
+    this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     /**
      * Used to trigger a new change in this component.

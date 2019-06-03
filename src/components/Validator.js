@@ -177,7 +177,7 @@ export default {
       message(component, setting) {
         return component.t(component.errorMessage('minWords'), {
           field: component.errorLabel,
-          length: (setting + 1),
+          length: (setting - 1),
           data: component.data
         });
       },

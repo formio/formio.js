@@ -9,6 +9,8 @@ export default {
         pattern: '{{field}} does not match the pattern {{pattern}}',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',
+        minWords: '{{field}} must have more than {{length}} words.',
+        maxWords: '{{field}} must have less than {{length}} words.',
         min: '{{field}} cannot be less than {{min}}.',
         max: '{{field}} cannot be greater than {{max}}.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
