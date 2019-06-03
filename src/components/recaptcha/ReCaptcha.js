@@ -24,7 +24,7 @@ export default class ReCaptchaComponent extends Component {
   }
 
   render() {
-    super.render(this, true);
+    super.render(this.component, true);
   }
 
   createInput() {
