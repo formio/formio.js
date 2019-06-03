@@ -169,7 +169,7 @@ export default {
         if (!maxWords || (typeof value !== 'string')) {
           return true;
         }
-        return (value.trim().split(/\s+/).length <= maxWords);
+        return (_.words(value).length <= maxWords);
       }
     },
     minWords: {
@@ -186,7 +186,7 @@ export default {
         if (!minWords || (typeof value !== 'string')) {
           return true;
         }
-        return (value.trim().split(/\s+/).length >= minWords);
+        return (_.words(value).length >= minWords);
       }
     },
     email: {
