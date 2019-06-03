@@ -33,9 +33,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   get emptyValue() {
-    return {
-      children: [],
-    };
+    return {};
   }
 
   get viewComponents() {
@@ -48,6 +46,10 @@ export default class TreeComponent extends NestedComponent {
   }
 
   init() {
+    if (this.builderMode) {
+      return super.init();
+    }
+
     this.components = [];
     this.componentOptions = {
       ...this.options,
@@ -61,7 +63,10 @@ export default class TreeComponent extends NestedComponent {
 
   destroy() {
     super.destroy();
-    this.removeComponents(this._viewComponents);
+
+    if (!this.builderMode) {
+      this.removeComponents(this._viewComponents);
+    }
   }
 
   createComponents(data, node) {
@@ -79,93 +84,6 @@ export default class TreeComponent extends NestedComponent {
   removeComponents(components) {
     return components.map((component) => component.destroy());
   }
-
-  interateNodeComponents(components, fn) {
-    _.each(components, (component, index) => {
-      if (fn(component, components, index) === false) {
-        return false;
-      }
-
-      if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
-          return false;
-        }
-      }
-    });
-  }
-
-  flattenNodeComponents(components) {
-    const result = {};
-
-    this.interateNodeComponents(components, (component) => {
-      result[component.key] = component;
-    });
-
-    return result;
-  }
-
-  // updateNodeData(node = {}, data) {
-  //   if (this.hasChanged(node.persistentData, data)) {
-  //     node.data = data;
-  //     node.commitData();
-
-  //     if (node.hasData) {
-  //       node.components.forEach(cmp => {
-  //         this.setNestedValue(cmp, node.data, null, false);
-  //       });
-  //     }
-  //   }
-
-  //   return node;
-  // }
-
-  // updateNodeChildren(node = {}, spec = {}) {
-  //   const oldChildren = _.get(node, 'children', []);
-  //   const newChildren = _.get(spec, 'children', []);
-  //   const nextChildren = newChildren.map(
-  //     (next, index) => {
-  //       const prev = oldChildren[index];
-
-  //       // if we already have node, just update it
-  //       if (prev instanceof Node) {
-  //         return prev;
-  //       }
-  //       // if there new node, create new instance
-  //       else {
-  //         return this.createNode(node, next, false);
-  //       }
-  //     }
-  //   );
-
-  //   // filter nodes, that should be destroyed
-  //   const rest = oldChildren.filter(ch => !nextChildren.includes(ch));
-  //   rest.forEach(this.removeNode);
-  //   node.children = nextChildren;
-
-  //   return node;
-  // }
-
-  // addNodeCs(node) {
-  //   node.components = this.createComponents(node.data);
-
-  //   return node;
-  // }
-
-  // updateNode(node = {}, spec = {}) {
-  //   const { children =  [] } = spec;
-  //   this.updateNodeChildren(node, spec);
-  //   this.updateNodeData(node, spec.data);
-
-  //   if (node.hasData && _.isEmpty(node.components)) {
-  //     this.addNodeCs(node);
-  //   }
-
-  //   children.forEach((childSpec, index) => {
-  //     this.updateNode(node.children[index], childSpec);
-  //   });
-
-  //   return node;
-  // }
 
   render() {
     if (this.options.builder) {
@@ -318,7 +236,11 @@ export default class TreeComponent extends NestedComponent {
     }
   }
 
-  attachComponents(node) {
+  attachComponents(node, ...args) {
+    if (this.builderMode) {
+      return super.attachComponents.call(this, node, ...args);
+    }
+
     this.loadRefs.call(node, node.refs.content, {
       nodeEdit: 'single',
     });
@@ -484,6 +406,10 @@ export default class TreeComponent extends NestedComponent {
       root: this.tree,
       component: this,
     });
+  }
+
+  getValue() {
+    return this.dataValue;
   }
 
   updateTree() {
