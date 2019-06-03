@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.21.5
+### Fixed
+ - Issues with the CKEditor not working correctly.
+
 ## 3.21.4
 ### Fixed
  - Issues with the PDF builder.
