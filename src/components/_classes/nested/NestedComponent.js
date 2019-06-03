@@ -6,7 +6,7 @@ import Components from '../../Components';
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
-      tree: true
+      tree: false
     }, ...extend);
   }
 
