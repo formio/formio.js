@@ -1,6 +1,6 @@
 export default [
   {
-    key: 'validate.unique',
+    key: 'unique',
     ignore: true
   },
   {
@@ -9,6 +9,14 @@ export default [
   },
   {
     key: 'validate.maxLength',
+    ignore: true
+  },
+  {
+    key: 'validate.minWords',
+    ignore: true
+  },
+  {
+    key: 'validate.maxWords',
     ignore: true
   },
   {

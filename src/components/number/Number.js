@@ -36,7 +36,7 @@ export default class NumberComponent extends Input {
 
     const separators = getNumberSeparators(this.options.language);
 
-    this.decimalSeparator = this.options.decimalSeparator
+    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
@@ -50,7 +50,7 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = _.get(this.component, 'decimalLimit', getNumberDecimalLimit(this.component));
+    this.decimalLimit = getNumberDecimalLimit(this.component);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -64,7 +64,7 @@ export default class NumberComponent extends Input {
       requireDecimal: _.get(this.component, 'requireDecimal', false),
       thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-      decimalLimit: this.decimalLimit,
+      decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
       allowNegative: _.get(this.component, 'allowNegative', true),
       allowDecimal: _.get(this.component, 'allowDecimal',
         !(this.component.validate && this.component.validate.integer))
