@@ -13,26 +13,26 @@
   <div class="wizard-page" ref="{{wizardKey}}">
     {{components}}
   </div>
-  <ul class="ui horizontal list">
+  <div class="ui horizontal list">
     {% if (buttons.cancel) { %}
-    <li class="item">
+    <div class="item">
       <button class="ui button secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
-    </li>
+    </div>
     {% } %}
     {% if (buttons.previous) { %}
-    <li class="item">
+    <div class="item">
       <button class="ui button primary btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
-    </li>
+    </div>
     {% } %}
     {% if (buttons.next) { %}
-    <li class="item">
+    <div class="item">
       <button class="ui button primary btn-wizard-nav-next" ref="{{wizardKey}}-next">{{t('next')}}</button>
-    </li>
+    </div>
     {% } %}
     {% if (buttons.submit) { %}
-    <li class="item">
+    <div class="item">
       <button class="ui button primary btn-wizard-nav-submit" ref="{{wizardKey}}-submit">{{t('submit')}}</button>
-    </li>
+    </div>
     {% } %}
-  </ul>
+  </div>
 </div>
