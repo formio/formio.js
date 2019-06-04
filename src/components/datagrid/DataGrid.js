@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import dragula from 'dragula';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
 
@@ -98,6 +99,10 @@ export default class DataGridComponent extends NestedComponent {
 
   get datagridKey() {
     return `datagrid-${this.key}`;
+  }
+
+  get allowReorder() {
+    return !this.options.readOnly && _.get(this.component, 'reorder', false);
   }
 
   /**
@@ -210,6 +215,7 @@ export default class DataGridComponent extends NestedComponent {
       hasGroups: this.hasRowGroups(),
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
+      allowReorder: this.allowReorder,
       builder: this.options.attachMode === 'builder',
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
@@ -248,6 +254,16 @@ export default class DataGridComponent extends NestedComponent {
       [this.datagridKey]: 'multiple',
     });
 
+    if (this.allowReorder) {
+      this.refs[`${this.datagridKey}-row`].forEach((row, index) => {
+        row.dragInfo = { index };
+      });
+
+      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+      }).on('drop', this.onReorder.bind(this));
+    }
+
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
     });
@@ -278,6 +294,28 @@ export default class DataGridComponent extends NestedComponent {
       });
     });
     super.attach(element);
+  }
+
+  onReorder(element, _target, _source, sibling) {
+    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
+      console.warn('There is no Drag Info available for either dragged or sibling element');
+      return;
+    }
+
+    const oldPosition = element.dragInfo.index;
+    //should drop at next sibling position; no next sibling means drop to last position
+    const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
+    const movedBelow = newPosition > oldPosition;
+    const dataValue = _.cloneDeep(this.dataValue);
+    const draggedRowData = dataValue[oldPosition];
+
+    //insert element at new position
+    dataValue.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+
+    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
+    this.setValue(dataValue);
   }
 
   addRow() {
@@ -401,6 +439,9 @@ export default class DataGridComponent extends NestedComponent {
         }
       });
     });
+
+    this.triggerChange(flags, changed);
+
     if (changed) {
       this.redraw();
     }

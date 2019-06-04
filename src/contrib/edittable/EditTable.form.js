@@ -39,6 +39,7 @@ export default function(...extend) {
         type: 'datagrid',
         input: true,
         key: 'rowGroups',
+        reorder: true,
         components: [
           {
             label: 'Label',

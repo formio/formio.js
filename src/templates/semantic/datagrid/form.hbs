@@ -7,6 +7,7 @@
   {% if (hasHeader) { %}
   <thead>
     <tr>
+      {% if (component.reorder) { %}<th></th>{% } %}
       {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
@@ -38,6 +39,11 @@
     </tr>
     {% } %}
     <tr ref="{{datagridKey}}-row">
+      {% if (component.reorder) { %}
+        <td>
+          <button type="button" class="formio-drag-button fa fa-bars"></button>
+        </td>
+      {% } %}
       {% columns.forEach(function(col) { %}
       {% if (visibleColumns[col.key]) { %}
       <td ref="{{datagridKey}}">
@@ -62,7 +68,7 @@
   {% if (hasAddButton && hasBottomSubmit) { %}
   <tfoot>
     <tr>
-      <td colspan="{{numColumns}}">
+      <td colspan="{{numColumns + 1}}">
         <button class="ui button primary" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
         </button>

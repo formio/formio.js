@@ -5,6 +5,7 @@ export default [
     input: true,
     label: 'Columns',
     weight: 100,
+    reorder: true,
     components: [
       {
         key: 'label',

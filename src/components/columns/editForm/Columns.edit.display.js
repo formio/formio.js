@@ -31,6 +31,7 @@ export default [
     label: 'Column Properties',
     addAnother: 'Add Column',
     tooltip: 'The width, offset, push, and pull settings for each column.',
+    reorder: true,
     components: [
       {
         type: 'hidden',
