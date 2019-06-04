@@ -716,6 +716,9 @@ export default class SelectComponent extends Field {
         new Form(formioForm, formUrl, {}).ready
           .then((form) => {
             form.on('submit', (submission) => {
+              if (this.component.multiple) {
+                submission = [...this.dataValue, submission];
+              }
               this.setValue(submission);
               dialog.close();
             });
