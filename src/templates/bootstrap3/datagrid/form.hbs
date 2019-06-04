@@ -44,16 +44,19 @@
       </td>
       {% } %}
       {% }) %}
-      {% if (hasExtraColumn && hasRemoveButtons && (removePlacement === 'col')) { %}
-      <td>
-        <button type="button" class="btn btn-default formio-button-remove-row" ref="{{datagridKey}}-removeRow">
-          <i class="{{iconClass('remove-circle')}}"></i>
-        </button>
-      </td>
-      {% } else if (removePlacement === 'corner') { %}
-        <button type="button" tabindex="-1" class="btn btn-xxs btn-danger formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
-          <i class="{{ iconClass('remove') }}"></i>
-        </button>
+      {% if (hasExtraColumn) { %}
+        {% if (!builder && hasRemoveButtons) { %}
+        <td>
+          <button type="button" class="btn btn-default formio-button-remove-row" ref="{{datagridKey}}-removeRow">
+            <i class="{{iconClass('remove-circle')}}"></i>
+          </button>
+        </td>
+        {% } %}
+        {% if (builder) { %}
+        <td ref="{{key}}-container">
+          {{placeholder}}
+        </td>
+        {% } %}
       {% } %}
     </tr>
     {% }) %}

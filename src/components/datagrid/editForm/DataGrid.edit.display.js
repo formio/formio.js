@@ -43,22 +43,6 @@ export default [
     customConditional: 'show = !data.disableAddingRemovingRows'
   },
   {
-    type: 'select',
-    label: 'Remove Button Placement',
-    key: 'removePlacement',
-    defaultValue: 'col',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Right Most Column', value: 'col' },
-        { label: 'Row Top-Right corner', value: 'corner' },
-      ]
-    },
-    weight: 412,
-    input: true,
-    customConditional: 'show = !data.disableAddingRemovingRows'
-  },
-  {
     type: 'checkbox',
     label: 'Default Open Rows',
     key: 'defaultOpen',

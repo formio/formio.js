@@ -170,8 +170,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasExtraColumn() {
-    const rmPlacement = _.get(this, 'component.removePlacement', 'col');
-    return (this.hasRemoveButtons() && rmPlacement === 'col') || this.options.attachMode === 'builder';
+    return (this.hasRemoveButtons() && this.options.attachMode === 'builder');
   }
 
   hasRemoveButtons() {
@@ -195,7 +194,6 @@ export default class DataGridComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('datagrid', {
-      removePlacement: _.get(this, 'component.removePlacement', 'col'),
       rows: this.getRows(),
       columns: this.getColumns(),
       groups: this.hasRowGroups() ? this.getGroups() : [],
