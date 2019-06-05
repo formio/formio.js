@@ -142,6 +142,7 @@ export default class FormComponent extends BaseComponent {
       });
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
+      this.subForm.nosubmit = false;
       this.restoreValue();
       this.subFormReadyResolve(this.subForm);
       return this.subForm;
