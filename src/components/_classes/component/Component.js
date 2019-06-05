@@ -394,7 +394,6 @@ export default class Component extends Element {
   destroy() {
     super.destroy();
     this.detach();
-    // Can be overridden
   }
 
   get isInputComponent() {

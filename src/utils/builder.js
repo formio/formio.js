@@ -14,7 +14,7 @@ export default {
     const formKeys = {};
     eachComponent(container, function(comp) {
       formKeys[comp.key] = true;
-    });
+    }, true);
 
     // Recurse into all child components.
     eachComponent([component], (component) => {
