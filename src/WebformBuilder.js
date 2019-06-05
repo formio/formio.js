@@ -506,14 +506,16 @@ export default class WebformBuilder extends Component {
 
     // Only rebuild the parts needing to be rebuilt.
     if (target !== source) {
-      if (source.contains(target)) {
+      if (source.formioContainer && source.contains(target)) {
         source.formioComponent.rebuild();
       }
       else if (target.contains(source)) {
         target.formioComponent.rebuild();
       }
       else {
-        source.formioComponent.rebuild();
+        if (source.formioContainer) {
+          source.formioComponent.rebuild();
+        }
         target.formioComponent.rebuild();
       }
     }
