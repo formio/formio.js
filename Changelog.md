@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2019: Ability to override CSS Classes in templates
 
 ### Fixed
+ - Creating builder by URL being broken
+
+### Fixed
  - Fallback to default non HTML templates (cssClasses, iconClass, transform, defaultIconSet) being broken
  
 ## 3.16.1

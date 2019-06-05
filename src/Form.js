@@ -97,7 +97,9 @@ export default class Form extends Element {
         this.instance.nosubmit = false;
         this._form = this.instance.form = form;
         return this.instance.ready.then(() => {
-          return this.instance.loadSubmission();
+          if (this.instance.loadSubmission) {
+            return this.instance.loadSubmission();
+          }
         });
       });
     }
