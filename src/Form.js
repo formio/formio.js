@@ -35,11 +35,7 @@ export default class Form extends Element {
       this.element = args[0];
       this.options = args[2];
       this.setForm(args[1])
-        .then(() => {
-          this.build()
-            .then(() => this.readyResolve(this.instance))
-            .catch(this.readyReject);
-        })
+        .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else if (args[0]) {
