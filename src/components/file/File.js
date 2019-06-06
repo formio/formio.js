@@ -334,7 +334,6 @@ export default class FileComponent extends Field {
       });
       if (loadingImages.length) {
         Promise.all(loadingImages).then(() => {
-          this.redraw();
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }
