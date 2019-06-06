@@ -83,6 +83,10 @@ export default class Multivalue extends Field {
     if (value === undefined) {
       value = this.component.defaultValue ?
       this.component.defaultValue : this.emptyValue;
+      // If default is an empty aray, default back to empty value.
+      if (Array.isArray(value) && value.length === 0) {
+        value = this.emptyValue;
+      }
     }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
