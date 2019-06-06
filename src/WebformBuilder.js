@@ -347,6 +347,7 @@ export default class WebformBuilder extends Component {
     }
 
     this.webform.form = value;
+    this.rebuild();
   }
 
   get container() {
@@ -428,10 +429,10 @@ export default class WebformBuilder extends Component {
   }
 
   detach() {
-    // if (this.dragula) {
-    //   this.dragula.destroy();
-    // }
-    // this.dragula = null;
+    if (this.dragula) {
+      this.dragula.destroy();
+    }
+    this.dragula = null;
     if (this.sideBarScroll && Templates.current.clearBuilderSidebarScroll) {
       Templates.current.clearBuilderSidebarScroll.call(this, this);
     }
