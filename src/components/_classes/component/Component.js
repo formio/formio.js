@@ -628,6 +628,7 @@ export default class Component extends Element {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
+    data.builder = this.options.attachMode === 'builder';
 
     // Allow more specific template names
     const names = [
