@@ -44,7 +44,7 @@ export default class FileComponent extends Field {
   static get builderInfo() {
     return {
       title: 'File',
-      group: 'advanced',
+      group: 'premium',
       icon: 'file',
       documentation: 'http://help.form.io/userguide/#file',
       weight: 100,

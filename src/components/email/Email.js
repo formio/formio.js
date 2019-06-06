@@ -16,7 +16,7 @@ export default class EmailComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Email',
-      group: 'common',
+      group: 'advanced',
       icon: 'at',
       documentation: 'http://help.form.io/userguide/#email',
       weight: 10,

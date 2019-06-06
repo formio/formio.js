@@ -29,7 +29,7 @@ export default class EditGridComponent extends NestedComponent {
       icon: 'tasks',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#editgrid',
-      weight: 40,
+      weight: 30,
       schema: EditGridComponent.schema()
     };
   }

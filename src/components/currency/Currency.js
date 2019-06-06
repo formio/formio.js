@@ -16,7 +16,7 @@ export default class CurrencyComponent extends NumberComponent {
   static get builderInfo() {
     return {
       title: 'Currency',
-      group: 'common',
+      group: 'advanced',
       icon: 'usd',
       documentation: 'http://help.form.io/userguide/#currency',
       weight: 70,

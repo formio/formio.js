@@ -22,7 +22,7 @@ export default class TreeComponent extends NestedComponent {
       title: 'Tree',
       icon: 'indent',
       group: 'data',
-      weight: 30,
+      weight: 40,
       schema: TreeComponent.schema(),
     };
   }

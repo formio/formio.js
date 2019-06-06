@@ -16,7 +16,7 @@ export default class ResourceComponent extends SelectComponent {
   static get builderInfo() {
     return {
       title: 'Resource',
-      group: 'advanced',
+      group: 'premium',
       icon: 'files-o',
       weight: 90,
       documentation: 'http://help.form.io/userguide/#resource',

@@ -15,7 +15,7 @@ export default class ReCaptchaComponent extends Component {
   static get builderInfo() {
     return {
       title: 'reCAPTCHA',
-      group: 'advanced',
+      group: 'premium',
       icon: 'refresh',
       documentation: 'http://help.form.io/userguide/#recaptcha',
       weight: 40,
