@@ -15,6 +15,13 @@ export default [
     calculateValue: 'value = data.enableRowGroups ? true : data.disableAddingRemovingRows;',
   },
   {
+    type: 'checkbox',
+    label: 'Allow Reorder',
+    key: 'reorder',
+    weight: 407,
+    input: true,
+  },
+  {
     type: 'textfield',
     label: 'Add Another Text',
     key: 'addAnother',
@@ -92,6 +99,7 @@ export default [
     type: 'datagrid',
     input: true,
     key: 'rowGroups',
+    reorder: true,
     components: [
       {
         label: 'Label',

@@ -10,6 +10,7 @@ export default [
     key: 'questions',
     tooltip: 'The questions you would like to ask in this survey question.',
     weight: 0,
+    reorder: true,
     defaultValue: [{ label: '', value: '' }],
     components: [
       {
@@ -35,6 +36,7 @@ export default [
     key: 'values',
     tooltip: 'The values that can be selected per question. Example: \'Satisfied\', \'Very Satisfied\', etc.',
     weight: 1,
+    reorder: true,
     defaultValue: [{ label: '', value: '' }],
     components: [
       {
