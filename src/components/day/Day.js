@@ -321,7 +321,10 @@ export default class DayComponent extends Field {
       val = this.refs[name].value;
     }
     else if (this.component.fields[name].type === 'select') {
-      val = this.refs[name].options[this.refs[name].selectedIndex].value;
+      const selectedIndex = this.refs[name].selectedIndex;
+      if (selectedIndex !== -1) {
+        val = this.refs[name].options[selectedIndex].value;
+      }
     }
 
     val = parseInt(val, 10);
