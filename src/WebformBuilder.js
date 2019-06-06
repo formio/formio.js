@@ -478,9 +478,6 @@ export default class WebformBuilder extends Component {
         info = info[0];
 
         if (target !== source) {
-          // If the target is different from the source, rebuild the source now that the item has been removed.
-          source.formioComponent.rebuild();
-
           // Ensure the key remains unique in its new container.
           BuilderUtils.uniquify(target.formioContainer, info);
         }
@@ -507,8 +504,25 @@ export default class WebformBuilder extends Component {
       this.editComponent(info, target, isNew);
     }
 
-    // Cause parent to rebuild so component becomes visible.
-    target.formioComponent.rebuild();
+    // Only rebuild the parts needing to be rebuilt.
+    if (target !== source) {
+      if (source.formioContainer && source.contains(target)) {
+        source.formioComponent.rebuild();
+      }
+      else if (target.contains(source)) {
+        target.formioComponent.rebuild();
+      }
+      else {
+        if (source.formioContainer) {
+          source.formioComponent.rebuild();
+        }
+        target.formioComponent.rebuild();
+      }
+    }
+    else {
+      // If they are the same, only rebuild one.
+      target.formioComponent.rebuild();
+    }
   }
 
   setForm(form) {
