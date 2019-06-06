@@ -5,6 +5,7 @@ import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
+import { bootstrapVersion } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -380,10 +381,7 @@ export default class WebformBuilder extends Component {
       Templates.current.handleBuilderSidebarScroll.call(this, this);
     }
 
-    // See if we have bootstrap.js installed.
-    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
-
-    if (!hasBootstrapJS) {
+    if (!bootstrapVersion(this.options)) {
       // Initialize
       this.refs['sidebar-group'].forEach((group) => {
         group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
