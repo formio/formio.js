@@ -793,12 +793,12 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      this.tooltip = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title: this.tooltip
+        title: title
       });
     });
 
