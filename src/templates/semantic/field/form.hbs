@@ -2,10 +2,12 @@
   <label class="{{label.className}}">
     {% if (!label.hidden) { %}
       {{ t(component.label) }}
-      {% if (component.tooltip) { %} 
-        <i ref="tooltip" class="{{iconClass('question-sign')}}" data-title="{{component.tooltip}}"></i>
+      {% if (component.tooltip) { %}
+        <span data-tooltip="{{tooltip}}" data-position="right center">
+          <i class="{{iconClass('question-sign')}}"></i>
+        </span>
       {% } %}
-    {% } %}  
+    {% } %}
   </label>
 {% } %}
 {{element}}

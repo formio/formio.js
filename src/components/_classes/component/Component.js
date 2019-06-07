@@ -237,6 +237,12 @@ export default class Component extends Element {
     this.error = '';
 
     /**
+     * Tool tip text after processing
+     * @type {string}
+     */
+    this.tooltip = '';
+
+    /**
      * The row path of this component.
      * @type {number}
      */
@@ -787,12 +793,12 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip);
+      this.tooltip = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title: title.replace(/(?:\r\n|\r|\n)/g, '<br />'),
+        title: this.tooltip
       });
     });
 
