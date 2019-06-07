@@ -121,9 +121,7 @@ export default class Form extends Element {
   setDisplay(display) {
     this.form.display = display;
     if (this.instance && this.instance.form.display !== display) {
-      if (this.instance) {
-        this.instance.destroy();
-      }
+      this.instance.destroy();
       this.instance = this.create(display);
     }
     return this.setForm(this.form);
