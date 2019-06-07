@@ -136,7 +136,6 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   justify() {
-    console.log('justify', this.rows);
     _.each(this.columns, this.justifyRow.bind(this));
   }
 

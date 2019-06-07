@@ -71,12 +71,13 @@ export default {
   },
 
   getAvailableShortcuts(form, component) {
+    // For some reason form and component are not passing in. Just send default list.
     if (!component) {
-      return [];
+      return this.getAlphaShortcuts();
     }
     return [''].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
-      this.getBindedShortcuts(form.components, component))
-    );
+      [],        // this.getBindedShortcuts(form.components, component))
+    ));
   }
 };

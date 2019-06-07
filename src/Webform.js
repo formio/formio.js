@@ -347,6 +347,7 @@ export default class Webform extends NestedComponent {
   }
 
   executeShortcuts(event) {
+    console.log('exec');
     const { target } = event;
     if (!this.keyboardCatchableElement(target)) {
       return;
@@ -899,10 +900,15 @@ export default class Webform extends NestedComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
+    this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise;
+  }
+
+  detach() {
+    this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    return super.detach();
   }
 
   resetValue() {
