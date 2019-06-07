@@ -2,6 +2,10 @@ import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
+    key: 'multiple',
+    ignore: true
+  },
+  {
     type: 'datagrid',
     input: true,
     label: 'Values',

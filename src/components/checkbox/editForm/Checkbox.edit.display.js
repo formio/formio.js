@@ -10,10 +10,6 @@ export default [
     ignore: true,
   },
   {
-    key: 'description',
-    ignore: true,
-  },
-  {
     type: 'select',
     input: true,
     weight: 350,

@@ -28,6 +28,10 @@ export default [
     ignore: true
   },
   {
+    key: 'disabled',
+    ignore: true
+  },
+  {
     type: 'number',
     label: 'Number of Rows',
     key: 'numRows',

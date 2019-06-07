@@ -6,6 +6,19 @@ export default function(...extend) {
     {
       key: 'display',
       components: EmailEditFormDisplay,
+    },
+    {
+      key: 'validation',
+      components: [
+        {
+          key: 'validate.minWords',
+          ignore: true
+        },
+        {
+          key: 'validate.maxWords',
+          ignore: true
+        }
+      ]
     }
   ], ...extend);
 }

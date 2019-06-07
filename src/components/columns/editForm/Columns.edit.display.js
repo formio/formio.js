@@ -24,6 +24,10 @@ export default [
     ignore: true
   },
   {
+    key: 'disabled',
+    ignore: true
+  },
+  {
     weight: 150,
     type: 'datagrid',
     input: true,

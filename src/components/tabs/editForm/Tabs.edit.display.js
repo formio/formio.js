@@ -28,6 +28,10 @@ export default [
     ignore: true
   },
   {
+    key: 'disabled',
+    ignore: true
+  },
+  {
     key: 'components',
     type: 'datagrid',
     input: true,

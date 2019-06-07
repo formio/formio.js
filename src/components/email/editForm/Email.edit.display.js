@@ -9,4 +9,12 @@ export default [
     key: 'allowMultipleMasks',
     ignore: true,
   },
+  {
+    key: 'showWordCount',
+    ignore: true
+  },
+  {
+    key: 'showCharCount',
+    ignore: true
+  }
 ];

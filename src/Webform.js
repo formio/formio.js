@@ -906,7 +906,9 @@ export default class Webform extends NestedComponent {
   }
 
   detach() {
-    this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    if (this.element) {
+      this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    }
     return super.detach();
   }
 
