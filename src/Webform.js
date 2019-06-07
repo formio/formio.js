@@ -347,7 +347,6 @@ export default class Webform extends NestedComponent {
   }
 
   executeShortcuts(event) {
-    console.log('exec');
     const { target } = event;
     if (!this.keyboardCatchableElement(target)) {
       return;
