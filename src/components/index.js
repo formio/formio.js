@@ -28,7 +28,6 @@ import ButtonComponent from './button/Button';
 import NumberComponent from './number/Number';
 import PasswordComponent from './password/Password';
 import PanelComponent from './panel/Panel';
-import ColumnComponent from './columns/Column';
 import ColumnsComponent from './columns/Columns';
 import TableComponent from './table/Table';
 import RadioComponent from './radio/Radio';
@@ -73,7 +72,6 @@ export default {
   password: PasswordComponent,
   panel: PanelComponent,
   tabs: TabsComponent,
-  column: ColumnComponent,
   columns: ColumnsComponent,
   table: TableComponent,
   radio: RadioComponent,

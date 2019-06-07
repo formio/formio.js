@@ -15,6 +15,7 @@ export default class ColumnsComponent extends NestedComponent {
       input: false,
       tableView: false,
       persistent: false,
+      autoAdjust: false,
       hideOnChildrenHidden: false
     }, ...extend);
   }
@@ -87,6 +88,30 @@ export default class ColumnsComponent extends NestedComponent {
     return 12;
   }
 
+  justifyRow(columns) {
+    const visible = _.filter(columns, 'visible');
+    const nbColumns = columns.length;
+    const nbVisible = visible.length;
+
+    if (nbColumns > 0 && nbVisible > 0) {
+      const w = Math.floor(this.gridSize / nbVisible);
+      const totalWidth = w * nbVisible;
+      const span = this.gridSize - totalWidth;
+
+      _.each(visible, column => {
+        column.component.width = w;
+      });
+
+      // In case when row is not fully filled,
+      // extending last col to fill empty space.
+      _.last(visible).component.width += span;
+
+      _.each(visible, col => {
+        col.element.setAttribute('class', col.className);
+      });
+    }
+  }
+
   /**
    * Group columns in rows.
    * @return {Array.<ColumnComponent[]>}
@@ -108,6 +133,24 @@ export default class ColumnsComponent extends NestedComponent {
     }, initVal);
 
     return _.concat(result.rows, [result.stack]);
+  }
+
+  justify() {
+    console.log('justify', this.rows);
+    _.each(this.columns, this.justifyRow.bind(this));
+  }
+
+  checkConditions(data) {
+    if (this.component.autoAdjust) {
+      const result = super.checkConditions(data);
+
+      this.justify();
+
+      return result;
+    }
+    else {
+      return super.checkConditions(data);
+    }
   }
 
   detach(all) {
