@@ -21,7 +21,7 @@ export default class Wizard extends Webform {
     else {
       options = arguments[0];
     }
-    super(null, options);
+    super(element, options);
     this.panels = [];
     this.pages = [];
     this.globalComponents = [];
