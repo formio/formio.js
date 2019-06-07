@@ -64,6 +64,36 @@ export default [
     ]
   },
   {
+    weight: 413,
+    type: 'checkbox',
+    input: true,
+    key: 'allowMultipleMasks',
+    label: 'Allow Multiple Masks'
+  },
+  {
+    weight: 417,
+    type: 'datagrid',
+    input: true,
+    key: 'inputMasks',
+    label: 'Input Masks',
+    customConditional: 'show = data.allowMultipleMasks === true;',
+    reorder: true,
+    components: [
+      {
+        type: 'textfield',
+        key: 'label',
+        label: 'Label',
+        input: true
+      },
+      {
+        type: 'textfield',
+        key: 'mask',
+        label: 'Mask',
+        input: true
+      }
+    ]
+  },
+  {
     weight: 320,
     type: 'textfield',
     input: true,
