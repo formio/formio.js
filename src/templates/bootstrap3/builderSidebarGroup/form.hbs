@@ -1,0 +1,34 @@
+<div class="panel panel-default form-builder-panel" ref="group-panel-{{groupKey}}">
+  <div class="panel-heading form-builder-group-header">
+    <h5 class="panel-title">
+      <button
+        class="btn btn-block builder-group-button"
+        data-toggle="collapse"
+        data-parent="#{{groupId}}"
+        href="#group-{{groupKey}}"
+        ref="sidebar-anchor"
+      >
+        {{group.title}}
+      </button>
+    </h5>
+  </div>
+  <div
+    id="group-{{groupKey}}"
+    class="panel-collapse collapse{{group.default ? ' in' : ''}}"
+    data-default="{{group.default}}"
+    ref="sidebar-group"
+  >
+    <div id="group-container-{{groupKey}}" class="panel-body no-drop" ref="sidebar-container">
+      {% group.componentOrder.forEach(function(componentKey) { %}
+      <span data-type="{{componentKey}}" class="btn btn-primary btn-xs btn-block formcomponent drag-copy">
+        {% if (group.components[componentKey].icon) { %}
+          <i class="{{iconClass(group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>
+        {% } %}
+        {{group.components[componentKey].title}}
+      </span>
+      {% }) %}
+      {{subgroups.join('')}}
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,30 @@
+<div class="ui segment secondary form-builder-panel" style="padding: 0" ref="group-panel-{{groupKey}}">
+  <div class="form-builder-group-header">
+    <h5 class="panel-title">
+      <button
+        class="ui button basic fluid builder-group-button"
+        data-toggle="collapse"
+        data-parent="{{groupId}}"
+        data-target="#group-{{groupKey}}"
+        ref="sidebar-anchor"
+      >
+        {{group.title}}
+      </button>
+    </h5>
+  </div>
+</div>
+<div class="ui segment" style="padding: 0">
+  <div class="panel-collapse collapse {{group.default ? ' in' : ''}}" data-default="{{group.default}}" id="group-{{groupKey}}" ref="sidebar-group">
+    <div id="group-container-{{groupKey}}" class="card-body panel-body no-drop" ref="sidebar-container">
+      {% group.componentOrder.forEach(function(componentKey) { %}
+      <span data-type="{{componentKey}}" class="ui button mini primary fluid formcomponent drag-copy">
+        {% if (group.components[componentKey].icon) { %}
+          <i class="{{iconClass(group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>
+        {% } %}
+        {{group.components[componentKey].title}}
+        </span>
+      {% }) %}
+      {{subgroups.join('')}}
+    </div>
+  </div>
+</div>

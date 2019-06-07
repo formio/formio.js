@@ -644,7 +644,7 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`);
+    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`, data);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),

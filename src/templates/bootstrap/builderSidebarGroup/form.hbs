@@ -1,0 +1,36 @@
+<div class="card form-builder-panel" ref="group-panel-{{groupKey}}">
+  <div class="card-header form-builder-group-header" id="heading-{{groupKey}}">
+    <h5 class="mb-0">
+      <button
+        class="btn btn-block btn-default builder-group-button"
+        data-toggle="collapse"
+        data-target="#group-{{groupKey}}"
+        aria-expanded="{{group.default}}"
+        aria-controls="group-{{groupKey}}"
+        ref="sidebar-anchor"
+      >
+        {{group.title}}
+      </button>
+    </h5>
+  </div>
+  <div
+    id="group-{{groupKey}}"
+    class="collapse {{group.default ? ' show' : ''}}"
+    data-parent="{{groupId}}"
+    data-default="{{group.default}}"
+    aria-labelledby="heading-{{groupKey}}"
+    ref="sidebar-group"
+  >
+    <div id="group-container-{{groupKey}}" class="card-body no-drop p-2" ref="sidebar-container">
+      {% group.componentOrder.forEach(function(componentKey) { %}
+      <span data-type="{{componentKey}}" class="btn btn-primary btn-sm btn-block formcomponent drag-copy">
+        {% if (group.components[componentKey].icon) { %}
+          <i class="{{iconClass(group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>
+        {% } %}
+        {{group.components[componentKey].title}}
+        </span>
+      {% }) %}
+      {{subgroups.join('')}}
+    </div>
+  </div>
+</div>

@@ -61,6 +61,10 @@ export default class WebformBuilder extends Component {
         this.groups[group] = this.builder[group];
         this.groups[group].components = this.groups[group].components || {};
         this.groups[group].componentOrder = this.groups[group].componentOrder || [];
+        this.groups[group].subgroups = Object.keys(this.groups[group].groups || {}).map((groupKey) => {
+          this.groups[group].groups[groupKey].componentOrder = Object.keys(this.groups[group].groups[groupKey].components).map((key) => key);
+          return this.groups[group].groups[groupKey];
+        });
         this.groupOrder.push(this.groups[group]);
       }
     }
@@ -360,7 +364,18 @@ export default class WebformBuilder extends Component {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
-        groups: this.groups,
+        groupId: `builder-sidebar-${this.id}`,
+        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: this.groups[groupKey],
+          groupKey,
+          groupId: `builder-sidebar-${this.id}`,
+          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `builder-sidebar-${groupKey}`,
+            subgroups: []
+          })),
+        })),
       }),
       form: this.webform.render(),
     });

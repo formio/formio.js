@@ -6,6 +6,7 @@ import builderComponents from './builderComponents';
 import builderEditForm from './builderEditForm';
 import builderPlaceholder from './builderPlaceholder';
 import builderSidebar from './builderSidebar';
+import builderSidebarGroup from './builderSidebarGroup';
 import columns from './columns';
 import datagrid from './datagrid';
 import day from './day';
@@ -85,6 +86,7 @@ export default {
   builderEditForm,
   builderPlaceholder,
   builderSidebar,
+  builderSidebarGroup,
   columns,
   datagrid,
   day,
