@@ -310,7 +310,7 @@ export default class BaseComponent extends Component {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json', 'mask'];
+    this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
     /**
      * Used to trigger a new change in this component.
@@ -1469,7 +1469,8 @@ export default class BaseComponent extends Component {
 
   redraw() {
     // Don't bother if we have not built yet.
-    if (!this.isBuilt) {
+    // Don't redraw if it's builder - because component would lose builder buttons
+    if (!this.isBuilt || this.options.builder) {
       return;
     }
     this.build(this.clear());

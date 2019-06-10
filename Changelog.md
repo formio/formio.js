@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ##[Unreleased]
 ### Fixed
  - Sketchpad: Issues with resizing drawing area on beta portal and JS Fiddles
+ - FOR-2314: Builder buttons missing after redraw (for ex. when component has ```refreshOn: 'data'```)
 
 ## 3.21.5
 ### Fixed
