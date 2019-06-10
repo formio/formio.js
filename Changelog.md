@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+##[Unreleased]
 ### Fixed
+ - Sketchpad: Issues with resizing drawing area on beta portal and JS Fiddles
  - FOR-2314: Builder buttons missing after redraw (for ex. when component has ```refreshOn: 'data'```)
 
 ## 3.21.5
