@@ -42,6 +42,7 @@ export { jsonLogic, moment };
  * @param args
  * @return {*}
  */
+/* eslint-disable max-statements */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
   args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
@@ -112,6 +113,7 @@ export function evaluate(func, args, ret, tokenize) {
   }
   return returnVal;
 }
+/* eslint-enable max-statements */
 
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
