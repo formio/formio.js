@@ -825,8 +825,8 @@ export default class Sketchpad extends Base {
     //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
 
-    this.editSketchpad.background.container.style['min-width'] = `${this.dimensions.width}px`;
-    this.editSketchpad.background.container.style['min-height'] = `${this.dimensions.height}px`;
+    this.editSketchpad.background.container.style.minWidth = `${this.dimensions.width}px`;
+    this.editSketchpad.background.container.style.minHeight = `${this.dimensions.height}px`;
 
     //set background containers content to SVG markup
     this.viewSketchpad.background.container.innerHTML = svgMarkup;
@@ -1021,7 +1021,7 @@ export default class Sketchpad extends Base {
     //change width of background svg so it matches editor SVG
     this.editSketchpad.background.svg.style.width = width;
     this.editSketchpad.background.svg.style.height = height;
-    this.editSketchpad.background.container.style['min-width'] = width;
-    this.editSketchpad.background.container.style['min-height'] = height;
+    this.editSketchpad.background.container.style.minWidth = `${width}px`;
+    this.editSketchpad.background.container.style.minHeight = `${height}px`;
   }
 }
