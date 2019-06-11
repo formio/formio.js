@@ -371,17 +371,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === &apos;ckeditor&apos;) {
-      this.editorReady = this.addCKE(this.input, null, (newValue) =&gt; this.updateEditorValue(newValue))
+      const settings = this.component.wysiwyg.hasOwnProperty(&apos;toolbar&apos;) ? this.component.wysiwyg : {};
+      settings.rows = parseInt(this.component.rows, 10);
+      this.editorReady = this.addCKE(this.input, settings, (newValue) =&gt; this.updateEditorValue(newValue))
         .then((editor) =&gt; {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.isReadOnly = true;
-          }
-          const numRows = parseInt(this.component.rows, 10);
-          if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
-            // Default height is 21px with 10px margin + a 14px top margin.
-            const editorHeight = (numRows * 31) + 14;
-            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
           }
           return editor;
         });
@@ -389,7 +385,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     // Normalize the configurations.
-    if (this.component.wysiwyg &amp;&amp; this.component.wysiwyg.toolbarGroups) {
+    if (
+      this.component.wysiwyg &amp;&amp;
+      (this.component.wysiwyg.hasOwnProperty(&apos;toolbarGroups&apos;) || this.component.wysiwyg.hasOwnProperty(&apos;toolbar&apos;))
+    ) {
       console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
       this.component.wysiwyg = this.wysiwygDefault;
       this.emit(&apos;componentEdit&apos;, this);

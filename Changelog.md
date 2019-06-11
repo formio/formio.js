@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.1
+### Fixed
+ - Issues where the "rows" property was not working on CKEditor.
+
+### Added
+ - Ability to configure the wysiwyg settings for the CKEditor.
+
 ## 3.22.0
 ### Changed
  - Upgraded to core-js@3
