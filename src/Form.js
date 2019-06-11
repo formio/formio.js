@@ -82,9 +82,10 @@ export default class Form extends Element {
   }
 
   setForm(formParam) {
+    let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      return (new Formio(formParam)).loadForm().then((form) => {
+      result = (new Formio(formParam)).loadForm().then((form) => {
         this.instance = this.instance || this.create(form.display);
         this.instance.url = formParam;
         this.instance.nosubmit = false;
@@ -93,14 +94,20 @@ export default class Form extends Element {
           if (this.instance.loadSubmission) {
             return this.instance.loadSubmission();
           }
+          return Promise.resolve();
         });
       });
     }
     else {
       this.instance = this.instance || this.create(formParam.display);
       this._form = this.instance.form = formParam;
-      return this.instance.ready;
+      result = this.instance.ready;
     }
+
+    // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
+    return result.then(() => {
+      this.element = this.instance.element;
+    });
   }
 
   /**
@@ -120,10 +127,8 @@ export default class Form extends Element {
    */
   setDisplay(display) {
     this.form.display = display;
-    if (this.instance && this.instance.form.display !== display) {
-      this.instance.destroy();
-      this.instance = this.create(display);
-    }
+    this.instance.destroy();
+    this.instance = this.create(display);
     return this.setForm(this.form);
   }
 

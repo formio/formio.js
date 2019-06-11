@@ -1113,7 +1113,7 @@ export default class Component extends Element {
 
   redraw() {
     // Don't bother if we have not built yet.
-    if (!this.element) {
+    if (!this.element || !this.element.parentNode) {
       return;
     }
     this.clear();

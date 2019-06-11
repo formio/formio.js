@@ -279,7 +279,7 @@ export default class WebformBuilder extends Component {
   }
 
   createForm(options) {
-    this.webform = new Webform(options);
+    this.webform = new Webform(this.element, options);
     if (this.element) {
       this.loadRefs(this.element, {
         form: 'single'

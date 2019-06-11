@@ -11,8 +11,7 @@ export default class WizardBuilder extends WebformBuilder {
     else {
       options = arguments[0];
     }
-    super(null, options);
-    // this.element = element;
+    super(element, options);
 
     this._form = {
       components: [
@@ -88,7 +87,18 @@ export default class WizardBuilder extends WebformBuilder {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
-        groups: this.groups,
+        groupId: `builder-sidebar-${this.id}`,
+        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: this.groups[groupKey],
+          groupKey,
+          groupId: `builder-sidebar-${this.id}`,
+          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `builder-sidebar-${groupKey}`,
+            subgroups: []
+          })),
+        })),
       }),
       pages: this.pages,
       form: this.webform.render(),
