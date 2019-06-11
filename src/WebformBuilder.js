@@ -41,6 +41,8 @@ export default class WebformBuilder extends Component {
       }
     }
 
+    this.dragDropEnabled = true;
+
     // Setup the builder options.
     this.builder = _.defaultsDeep({}, this.options.builder, this.defaultGroups);
 
@@ -398,7 +400,20 @@ export default class WebformBuilder extends Component {
       });
     }
 
+    if (this.dragDropEnabled) {
+      this.initDragula();
+    }
+
+    return this.webform.attach(this.refs.form);
+  }
+
+  initDragula() {
     const options = this.options;
+
+    if (this.dragula) {
+      this.dragula.destroy();
+    }
+
     this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
       moves(el) {
         let moves = true;
@@ -423,8 +438,6 @@ export default class WebformBuilder extends Component {
         return !el.contains(target) && !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
-
-    return this.webform.attach(this.refs.form);
   }
 
   detach() {

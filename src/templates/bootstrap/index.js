@@ -29,6 +29,8 @@ import message from './message';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
+import pdf from './pdf';
+import pdfBuilder from './pdfBuilder';
 import radio from './radio';
 import resourceAdd from './resourceAdd';
 import select from './select';
@@ -88,6 +90,8 @@ export default {
   multiValueRow,
   multiValueTable,
   panel,
+  pdf,
+  pdfBuilder,
   radio,
   resourceAdd,
   select,
