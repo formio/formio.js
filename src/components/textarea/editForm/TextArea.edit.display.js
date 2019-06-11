@@ -185,6 +185,10 @@ export default [
         or: [
           { '===': [
             { var: 'data.editor' },
+            'ckeditor'
+          ] },
+          { '===': [
+            { var: 'data.editor' },
             'quill'
           ] },
           { '===': [
