@@ -158,17 +158,12 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.component.editor === 'ckeditor') {
       const settings = this.component.wysiwyg.hasOwnProperty('toolbar') ? this.component.wysiwyg : {};
+      settings.rows = parseInt(this.component.rows, 10);
       this.editorReady = this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
         .then((editor) => {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.isReadOnly = true;
-          }
-          const numRows = parseInt(this.component.rows, 10);
-          if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-            // Default height is 21px with 10px margin + a 14px top margin.
-            const editorHeight = (numRows * 31) + 14;
-            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
           }
           return editor;
         });
