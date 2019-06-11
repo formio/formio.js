@@ -157,7 +157,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === 'ckeditor') {
-      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateEditorValue(newValue))
+      const settings = this.component.wysiwyg.hasOwnProperty('toolbar') ? this.component.wysiwyg : {};
+      this.editorReady = this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
         .then((editor) => {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
@@ -175,7 +176,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     // Normalize the configurations.
-    if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
+    if (
+      this.component.wysiwyg &&
+      (this.component.wysiwyg.hasOwnProperty('toolbarGroups') || this.component.wysiwyg.hasOwnProperty('toolbar'))
+    ) {
       console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
       this.component.wysiwyg = this.wysiwygDefault;
       this.emit('componentEdit', this);
