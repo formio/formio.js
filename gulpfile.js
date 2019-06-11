@@ -29,6 +29,13 @@ gulp.task('babel', gulp.series('eslint', function babelTask() {
     .pipe(gulp.dest('lib'));
 }));
 
+// Run babel without linting
+gulp.task('babel-nolint', gulp.series(function babelTask() {
+  return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+    .pipe(babel())
+    .pipe(gulp.dest('lib'));
+}));
+
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {
   return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
@@ -156,6 +163,23 @@ gulp.task('build', gulp.series(
   ),
   'dist'
 ));
+
+// Create a new build (scripts only)
+gulp.task('rebuild-scripts', gulp.series(
+  'babel-nolint',
+  gulp.parallel(
+    'scripts-formio',
+    'scripts-utils',
+    'scripts-embed',
+    'scripts-contrib',
+    'scripts-form',
+    'scripts-full'
+  ),
+  'dist'
+));
+
+// Watch for changes.
+gulp.task('watch-rebuild', () => gulp.watch(['./src/*.js', './src/**/*.js'], gulp.series('rebuild-scripts')));
 
 // Default task. Build and watch.
 gulp.task('default', gulp.series('babel', 'scripts-full', 'watch'));
