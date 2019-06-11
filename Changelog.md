@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[Unreleased]
+## 3.22.0
+### Changed
+ - Upgraded to core-js@3
+ - Upgraded all dependencies.
+
 ### Fixed
+ - Issue where reset for Day component was messing up the data.
  - Sketchpad: Issues with resizing drawing area on beta portal and JS Fiddles
  - FOR-2314: Builder buttons missing after redraw (for ex. when component has ```refreshOn: 'data'```)
 

@@ -16,10 +16,7 @@ module.exports = function(config) {
             exclude: /node_modules/,
             use: {
               loader: 'babel-loader',
-              options: {
-                presets: ['@babel/env'],
-                plugins: ['@babel/plugin-proposal-export-default-from']
-              }
+              options: require('./babel.config.js')
             }
           }
         ]
