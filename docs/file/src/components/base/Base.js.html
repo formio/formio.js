@@ -1683,8 +1683,7 @@ export default class BaseComponent extends Component {
 
   redraw() {
     // Don&apos;t bother if we have not built yet.
-    // Don&apos;t redraw if it&apos;s builder - because component would lose builder buttons
-    if (!this.isBuilt || this.options.builder) {
+    if (!this.isBuilt) {
       return;
     }
     this.build(this.clear());

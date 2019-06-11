@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.2
+### Fixed
+ - Issues with the form builder not able to switch between wizard pages.
+
 ## 3.22.1
 ### Fixed
  - Issues where the "rows" property was not working on CKEditor.
