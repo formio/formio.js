@@ -144,11 +144,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.options.readOnly) {
       return element;
     }
-    // Normalize the configurations.
-    if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
-      console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-      this.component.wysiwyg = this.wysiwygDefault;
-    }
 
     if (this.component.wysiwyg && !this.component.editor) {
       this.component.editor = 'ckeditor';
@@ -177,6 +172,12 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       case 'quill':
+        // Normalize the configurations for quill.
+        if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
+          console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+          settings = this.wysiwygDefault;
+        }
+
         // Add the quill editor.
         this.editorReady = this.addQuill(
           element,
