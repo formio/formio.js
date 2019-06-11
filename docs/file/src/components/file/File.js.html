@@ -969,6 +969,7 @@ export default class FileComponent extends BaseComponent {
     }
     if (this.component.storage &amp;&amp; files &amp;&amp; files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
+      /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, file =&gt; {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
@@ -1087,6 +1088,7 @@ export default class FileComponent extends BaseComponent {
             });
         }
       });
+      /* eslint-enable max-statements */
     }
   }
 

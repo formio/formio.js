@@ -322,6 +322,15 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
+  /**
+   * The empty value for day component.
+   *
+   * @return {&apos;00/00/0000&apos;}
+   */
+  get emptyValue() {
+    return &apos;00/00/0000&apos;;
+  }
+
   getInputValue(input, defaultValue) {
     if (_.isObject(input)) {
       const value = parseInt(input.value, 10);
