@@ -4,6 +4,7 @@ import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import editForm from './Sketchpad.form';
+import NativePromise from 'native-promise-only';
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -44,7 +45,7 @@ export default class Sketchpad extends Base {
     //TODO maybe change this criteria to AND instead of OR, use defined dimension and default another missing dimension to value from viewBox (in this case will need to use promise in case of any missing dimension
     this.useBackgroundDimensions = !this.component.width || !this.component.height;
     //initialize backgroundReady promise
-    const backgroundReadyPromise = new Promise((resolve, reject) => {
+    const backgroundReadyPromise = new NativePromise((resolve, reject) => {
       this.backgroundReady = {
         resolve,
         reject

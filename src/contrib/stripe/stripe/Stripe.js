@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Validator from '../../../components/Validator';
 import BaseComponent from '../../../components/base/Base';
 import Formio from '../../../Formio';
+import NativePromise from 'native-promise-only';
 
 // Register a custom validor to use card validition from Stripe
 if (typeof Validator.validators.stripe === 'undefined') {
@@ -127,7 +128,7 @@ export default class StripeComponent extends BaseComponent {
     }
 
     const that = this;
-    return new Promise(((resolve, reject) => {
+    return new NativePromise(((resolve, reject) => {
       that.authorizePending();
 
       // Get all additionnal data to send to Stripe

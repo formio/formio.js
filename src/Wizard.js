@@ -1,4 +1,4 @@
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 import Webform from './Webform';
@@ -76,7 +76,7 @@ export default class Wizard extends Webform {
     else if (this.wizard.full || !this.pages.length) {
       return super.setForm(this.getWizard());
     }
-    return Promise.reject('Page not found');
+    return NativePromise.reject('Page not found');
   }
 
   getNextPage(data, currentPage) {
@@ -114,14 +114,14 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return Promise.all(this.getPages().map((page) => {
+    return NativePromise.all(this.getPages().map((page) => {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
   beforeNext() {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
         if (err) {
           this.showErrors(err, true);
@@ -155,7 +155,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
-      return Promise.reject(this.showErrors(null, true));
+      return NativePromise.reject(this.showErrors(null, true));
     }
   }
 

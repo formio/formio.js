@@ -3,6 +3,7 @@ import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import Formio from '../../Formio';
+import NativePromise from 'native-promise-only';
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -55,7 +56,7 @@ export default class FileComponent extends BaseComponent {
     super(component, options, data);
 
     // Called when our files are ready.
-    this.filesReady = new Promise((resolve, reject) => {
+    this.filesReady = new NativePromise((resolve, reject) => {
       this.filesReadyResolve = resolve;
       this.filesReadyReject = reject;
     });
@@ -103,7 +104,7 @@ export default class FileComponent extends BaseComponent {
         }
       });
       if (this.loadingImages.length) {
-        Promise.all(this.loadingImages)
+        NativePromise.all(this.loadingImages)
           .then(() => {
             this.refreshDOM();
             setTimeout(() => this.filesReadyResolve(), 100);

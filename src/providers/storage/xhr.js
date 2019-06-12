@@ -1,4 +1,4 @@
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import _trim from 'lodash/trim';
 const XHR = {
   trim(text) {
@@ -8,7 +8,7 @@ const XHR = {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
   upload(formio, type, xhrCb, file, fileName, dir, progressCallback) {
-    return new Promise(((resolve, reject) => {
+    return new NativePromise(((resolve, reject) => {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
 

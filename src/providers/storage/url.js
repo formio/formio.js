@@ -1,8 +1,8 @@
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 
 const url = (formio) => {
   const xhrRequest = (url, name, query, data, options, onprogress) => {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === 'string');
       const fd = new FormData();
@@ -118,7 +118,7 @@ const url = (formio) => {
       }
 
       // Return the original as there is nothing to do.
-      return Promise.resolve(file);
+      return NativePromise.resolve(file);
     }
   };
 };
