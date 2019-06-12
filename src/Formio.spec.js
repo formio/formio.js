@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Chance from 'chance';
 import fetchMock from 'fetch-mock/es5/client';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 
 const chance = Chance();
 const protocol = 'https';
@@ -553,7 +554,7 @@ describe('Plugins', () => {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 3, 'preRequest promise should resolve third');
             // TODO
@@ -562,7 +563,7 @@ describe('Plugins', () => {
       plugin.request = function(requestArgs) {
         assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 5, 'request promise should resolve fifth');
             return testResult;
@@ -716,7 +717,7 @@ describe('Plugins', () => {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 3, 'preRequest promise should resolve third');
             // TODO
@@ -725,7 +726,7 @@ describe('Plugins', () => {
       plugin.staticRequest = function(requestArgs) {
         assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 5, 'request promise should resolve fifth');
             return testResult;
@@ -793,7 +794,7 @@ describe('Plugins', () => {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 3, 'preRequest promise should resolve third');
             // TODO
@@ -802,7 +803,7 @@ describe('Plugins', () => {
       plugin.fileRequest = function(requestArgs) {
         assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() => {
             assert.equal(++step, 5, 'request promise should resolve fifth');
             return testResult;
@@ -889,7 +890,7 @@ describe('Test Formio.js capabilities', () => {
           fetchMock.mock(mock.url, mock.response, { method: mock.method });
         }
       }
-      Promise.resolve()
+      NativePromise.resolve()
         .then(() => {
           return test.test();
         })
@@ -1715,7 +1716,7 @@ describe('Formio.currentUser', () => {
       staticRequest: sinon.spy(() => {
         // Return dummy user
         const userId = generateID();
-        return Promise.resolve({
+        return NativePromise.resolve({
           _id: userId,
           created: new Date().toISOString(),
           modified: new Date().toISOString(),

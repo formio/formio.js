@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 
@@ -455,7 +455,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeNext()));
   }
 
   /**
@@ -464,7 +464,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -565,7 +565,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   get dataReady() {
-    return Promise.all(this.getComponents().map((component) => component.dataReady));
+    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setNestedValue(component, value, flags, changed) {

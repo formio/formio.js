@@ -1,6 +1,6 @@
 /* globals Quill, ClassicEditor */
 import { conformToMask } from 'vanilla-text-mask';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import * as FormioUtils from '../../utils/utils';
@@ -483,7 +483,7 @@ export default class BaseComponent extends Component {
    * @return {*}
    */
   beforeNext() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -493,7 +493,7 @@ export default class BaseComponent extends Component {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -1972,7 +1972,7 @@ export default class BaseComponent extends Component {
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
         if (!element.parentNode) {
-          return Promise.reject();
+          return NativePromise.reject();
         }
         return ClassicEditor.create(element, settings).then(editor => {
           editor.model.document.on('change', () => onChange(editor.data.get()));
@@ -1993,7 +1993,7 @@ export default class BaseComponent extends Component {
     return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         if (!element.parentNode) {
-          return Promise.reject();
+          return NativePromise.reject();
         }
         this.quill = new Quill(element, settings);
 
@@ -2494,7 +2494,7 @@ export default class BaseComponent extends Component {
   }
 
   get dataReady() {
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**

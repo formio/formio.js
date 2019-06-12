@@ -1,4 +1,4 @@
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 
 import _ from 'lodash';
 
@@ -10,7 +10,7 @@ export default class PDF extends Webform {
     super(element, options);
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) => (this.iframeReadyResolve = resolve));
+    this.iframeReady = new NativePromise((resolve) => (this.iframeReadyResolve = resolve));
   }
 
   postMessage(message) {

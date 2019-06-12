@@ -5,7 +5,7 @@ import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent, bootstrapVersion, eachComponent } from './utils/utils';
 import EventEmitter from './EventEmitter';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
 
@@ -34,7 +34,7 @@ export default class WebformBuilder extends Webform {
       }
     });
 
-    this.builderReady = new Promise((resolve) => {
+    this.builderReady = new NativePromise((resolve) => {
       this.builderReadyResolve = resolve;
     });
 
