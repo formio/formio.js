@@ -1,6 +1,5 @@
 /* globals Quill, ClassicEditor */
 import { conformToMask } from 'vanilla-text-mask';
-import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import * as FormioUtils from '../../utils/utils';

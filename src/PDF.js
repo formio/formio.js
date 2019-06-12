@@ -1,5 +1,3 @@
-import Promise from 'native-promise-only';
-
 import _ from 'lodash';
 
 import Formio from './Formio';

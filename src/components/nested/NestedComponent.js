@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Promise from 'native-promise-only';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 

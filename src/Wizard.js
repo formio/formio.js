@@ -1,4 +1,3 @@
-import Promise from 'native-promise-only';
 import _ from 'lodash';
 
 import Webform from './Webform';

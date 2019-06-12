@@ -1,9 +1,4 @@
 /* globals OktaAuth */
-
-// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
-// duck-punch the global Promise definition which messes up Angular 2 since it
-// also duck-punches the global Promise definition. For now, keep native-promise-only.
-import Promise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 import 'custom-event-polyfill';
 import EventEmitter from './EventEmitter';
@@ -13,9 +8,7 @@ import * as providers from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
-const { fetch, Headers } = fetchPonyfill({
-  Promise: Promise
-});
+const { fetch, Headers } = fetchPonyfill();
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;

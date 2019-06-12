@@ -1,4 +1,3 @@
-import Promise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback) {

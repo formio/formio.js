@@ -1,4 +1,3 @@
-import Promise from 'native-promise-only';
 import _trim from 'lodash/trim';
 const XHR = {
   trim(text) {

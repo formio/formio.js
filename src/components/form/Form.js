@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import EventEmitter from 'eventemitter2';
-import Promise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';

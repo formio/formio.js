@@ -1,5 +1,3 @@
-import Promise from 'native-promise-only';
-
 const base64 = () => ({
   title: 'Base64',
   name: 'base64',

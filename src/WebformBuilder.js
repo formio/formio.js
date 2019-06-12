@@ -5,7 +5,6 @@ import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent, bootstrapVersion, eachComponent } from './utils/utils';
 import EventEmitter from './EventEmitter';
-import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
 
