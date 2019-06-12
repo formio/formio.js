@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-2314: Re-fixed builder buttons missing after redraw + fixed Wizard building being broken
+
 ## 3.22.2
 ### Fixed
  - Issues with the form builder not able to switch between wizard pages.
