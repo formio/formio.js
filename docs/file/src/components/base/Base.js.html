@@ -223,7 +223,7 @@ import Validator from &apos;../Validator&apos;;
 import Widgets from &apos;../../widgets&apos;;
 import Component from &apos;../../Component&apos;;
 import dragula from &apos;dragula&apos;;
-const CKEDITOR = &apos;https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/master/build/ckeditor.js&apos;;
+const CKEDITOR = &apos;https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.1/build/ckeditor.js&apos;;
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -1681,9 +1681,10 @@ export default class BaseComponent extends Component {
     return widget;
   }
 
-  redraw() {
+  redraw(shouldRedrawInBuilder) {
     // Don&apos;t bother if we have not built yet.
-    if (!this.isBuilt) {
+    // Don&apos;t redraw if it&apos;s builder - because component would lose builder buttons
+    if (!this.isBuilt || (!shouldRedrawInBuilder &amp;&amp; this.options.builder)) {
       return;
     }
     this.build(this.clear());
@@ -2187,26 +2188,6 @@ export default class BaseComponent extends Component {
         if (!element.parentNode) {
           return Promise.reject();
         }
-
-        if (settings.rows &amp;&amp; _.isFinite(settings.rows)) {
-          /* eslint-disable no-inner-declarations */
-          function NumRowsPlugin(editor) {
-            this.editor = editor;
-          }
-          NumRowsPlugin.prototype.init = function() {
-            const editorHeight = (settings.rows * 31) + 14;
-            this.editor.ui.view.editable.extendTemplate({
-              attributes: {
-                style: {
-                  minHeight: `${(editorHeight)}px`
-                }
-              }
-            });
-          };
-          /* eslint-enable no-inner-declarations */
-          ClassicEditor.builtinPlugins.push(NumRowsPlugin);
-        }
-
         return ClassicEditor.create(element, settings).then(editor =&gt; {
           editor.model.document.on(&apos;change&apos;, () =&gt; onChange(editor.data.get()));
           return editor;

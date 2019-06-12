@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.22.3
+### Changed
+ - Moved core-js as a dependency so that other libs dependent on core-js@2 can still build this module.
+ - Moved the CKEditor NumRows plugin to the formio/ckeditor5-build-classic repo.
+
 ### Fixed
  - FOR-2314: Re-fixed builder buttons missing after redraw + fixed Wizard building being broken
 
