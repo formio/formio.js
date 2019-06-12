@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
+import NativePromise from 'native-promise-only';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -73,7 +74,7 @@ export default class NestedComponent extends Field {
   }
 
   get ready() {
-    return Promise.all(this.getComponents().map(component => component.ready));
+    return NativePromise.all(this.getComponents().map(component => component.ready));
   }
 
   get currentForm() {
@@ -327,7 +328,7 @@ export default class NestedComponent extends Field {
       [this.nestedKey]: 'single',
     });
 
-    let childPromise = Promise.resolve();
+    let childPromise = NativePromise.resolve();
     if (this.refs[this.nestedKey]) {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
@@ -338,7 +339,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return Promise.all([
+    return NativePromise.all([
       superPromise,
       childPromise,
     ]);
@@ -361,7 +362,7 @@ export default class NestedComponent extends Field {
         index++;
       }
     });
-    return Promise.all(promises);
+    return NativePromise.all(promises);
   }
 
   /**
@@ -498,7 +499,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeNext()));
   }
 
   /**
@@ -507,7 +508,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -587,6 +588,10 @@ export default class NestedComponent extends Field {
     this.getComponents().forEach((comp) => comp.resetValue());
     _.unset(this.data, this.key);
     this.setPristine(true);
+  }
+
+  get dataReady() {
+    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setNestedValue(component, value, flags, changed) {

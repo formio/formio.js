@@ -1,4 +1,5 @@
 import { conformToMask } from 'vanilla-text-mask';
+import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import { sanitize } from 'dompurify';
@@ -371,7 +372,7 @@ export default class Component extends Element {
 
   // Allow componets to notify when ready.
   get ready() {
-    return Promise.resolve(this);
+    return NativePromise.resolve(this);
   }
 
   get labelInfo() {
@@ -735,7 +736,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeNext() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -745,7 +746,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -830,7 +831,7 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   addShortcut(element, shortcut) {
@@ -1947,7 +1948,7 @@ export default class Component extends Element {
   }
 
   get dataReady() {
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**
@@ -2127,7 +2128,7 @@ Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
-    Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
+    Component.externalLibraries[name].ready = new NativePromise((resolve, reject) => {
       Component.externalLibraries[name].resolve = resolve;
       Component.externalLibraries[name].reject = reject;
     });
@@ -2208,5 +2209,5 @@ Component.libraryReady = function(name) {
     return Component.externalLibraries[name].ready;
   }
 
-  return Promise.reject(`${name} library was not required.`);
+  return NativePromise.reject(`${name} library was not required.`);
 };
