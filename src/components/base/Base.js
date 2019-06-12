@@ -9,7 +9,7 @@ import Validator from '../Validator';
 import Widgets from '../../widgets';
 import Component from '../../Component';
 import dragula from 'dragula';
-const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/master/build/ckeditor.js';
+const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.1/build/ckeditor.js';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -1974,26 +1974,6 @@ export default class BaseComponent extends Component {
         if (!element.parentNode) {
           return Promise.reject();
         }
-
-        if (settings.rows && _.isFinite(settings.rows)) {
-          /* eslint-disable no-inner-declarations */
-          function NumRowsPlugin(editor) {
-            this.editor = editor;
-          }
-          NumRowsPlugin.prototype.init = function() {
-            const editorHeight = (settings.rows * 31) + 14;
-            this.editor.ui.view.editable.extendTemplate({
-              attributes: {
-                style: {
-                  minHeight: `${(editorHeight)}px`
-                }
-              }
-            });
-          };
-          /* eslint-enable no-inner-declarations */
-          ClassicEditor.builtinPlugins.push(NumRowsPlugin);
-        }
-
         return ClassicEditor.create(element, settings).then(editor => {
           editor.model.document.on('change', () => onChange(editor.data.get()));
           return editor;
