@@ -84,7 +84,7 @@ export default class WizardBuilder extends WebformBuilder {
 
   gotoPage(page) {
     this.currentPage = page;
-    this.redraw();
+    this.redraw(true);
   }
 
   /**

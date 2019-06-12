@@ -1467,9 +1467,10 @@ export default class BaseComponent extends Component {
     return widget;
   }
 
-  redraw() {
+  redraw(shouldRedrawInBuilder) {
     // Don't bother if we have not built yet.
-    if (!this.isBuilt) {
+    // Don't redraw if it's builder - because component would lose builder buttons
+    if (!this.isBuilt || (!shouldRedrawInBuilder && this.options.builder)) {
       return;
     }
     this.build(this.clear());
