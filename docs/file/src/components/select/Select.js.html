@@ -216,6 +216,7 @@
 import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Formio from &apos;../../Formio&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class SelectComponent extends BaseComponent {
   static schema(...extend) {
@@ -277,7 +278,7 @@ export default class SelectComponent extends BaseComponent {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) =&gt; {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
       this.itemsLoadedResolve = resolve;
     });
   }

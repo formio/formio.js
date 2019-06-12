@@ -215,7 +215,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import { isMongoId, eachComponent } from &apos;../../utils/utils&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Form from &apos;../../Form&apos;;
@@ -247,7 +247,7 @@ export default class FormComponent extends BaseComponent {
     super(component, options, data);
     this.subForm = null;
     this.formSrc = &apos;&apos;;
-    this.subFormReady = new Promise((resolve, reject) =&gt; {
+    this.subFormReady = new NativePromise((resolve, reject) =&gt; {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
@@ -530,7 +530,7 @@ export default class FormComponent extends BaseComponent {
           return this.dataValue;
         }).catch(err =&gt; {
           this.subForm.onSubmissionError(err);
-          return Promise.reject(err);
+          return NativePromise.reject(err);
         });
       });
     }
@@ -551,7 +551,7 @@ export default class FormComponent extends BaseComponent {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return Promise.resolve(this.dataValue);
+      return NativePromise.resolve(this.dataValue);
     }
 
     // This submission has not been submitted yet.

@@ -220,6 +220,7 @@ import { Components } from &apos;../../formio.form&apos;;
 import Formio from &apos;../../Formio&apos;;
 import { eachComponent } from &apos;../../utils/utils&apos;;
 import editForm from &apos;./Tagpad.form&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -257,7 +258,7 @@ export default class Tagpad extends NestedComponent {
       dotFillColor: &apos;#ccc&apos;
     });
     //init background ready promise
-    const backgroundReadyPromise = new Promise((resolve, reject) =&gt; {
+    const backgroundReadyPromise = new NativePromise((resolve, reject) =&gt; {
       this.backgroundReady = { resolve, reject };
     });
     this.backgroundReady.promise = backgroundReadyPromise;

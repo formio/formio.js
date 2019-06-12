@@ -217,7 +217,7 @@ import moment from &apos;moment&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import i18next from &apos;i18next&apos;;
 import Formio from &apos;./Formio&apos;;
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import NestedComponent from &apos;./components/nested/NestedComponent&apos;;
 import { currentTimezone } from &apos;./utils/utils&apos;;
@@ -400,7 +400,7 @@ export default class Webform extends NestedComponent {
      * });
      * form.src = &apos;https://examples.form.io/example&apos;;
      */
-    this.formReady = new Promise((resolve, reject) =&gt; {
+    this.formReady = new NativePromise((resolve, reject) =&gt; {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -428,7 +428,7 @@ export default class Webform extends NestedComponent {
      * });
      * form.src = &apos;https://examples.form.io/example/submission/234234234234234243&apos;;
      */
-    this.submissionReady = new Promise((resolve, reject) =&gt; {
+    this.submissionReady = new NativePromise((resolve, reject) =&gt; {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -449,7 +449,7 @@ export default class Webform extends NestedComponent {
      *
      * @type {Promise}
      */
-    this.onElement = new Promise((resolve) =&gt; {
+    this.onElement = new NativePromise((resolve) =&gt; {
       /**
        * Called when the element has been resolved.
        *
@@ -489,7 +489,7 @@ export default class Webform extends NestedComponent {
    * @return {Promise}
    */
   set language(lang) {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       this.options.language = lang;
       try {
         i18next.changeLanguage(lang, (err) =&gt; {
@@ -528,10 +528,10 @@ export default class Webform extends NestedComponent {
    */
   localize() {
     if (i18next.initialized) {
-      return Promise.resolve(i18next);
+      return NativePromise.resolve(i18next);
     }
     i18next.initialized = true;
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       try {
         i18next.init(this.options.i18n, (err) =&gt; {
           // Get language but remove any ;q=1 that might exist on it.
@@ -1389,7 +1389,7 @@ export default class Webform extends NestedComponent {
   }
 
   submitForm(options = {}) {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
         return resolve({
@@ -1483,7 +1483,7 @@ export default class Webform extends NestedComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) =&gt; this.onSubmit(submission, saved))
-      .catch((err) =&gt; Promise.reject(this.onSubmissionError(err)));
+      .catch((err) =&gt; NativePromise.reject(this.onSubmissionError(err)));
   }
 
   /**

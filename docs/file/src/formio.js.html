@@ -217,7 +217,7 @@
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import &apos;custom-event-polyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
@@ -228,7 +228,7 @@ import _intersection from &apos;lodash/intersection&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
 const { fetch, Headers } = fetchPonyfill({
-  Promise: Promise
+  Promise: NativePromise
 });
 
 const isBoolean = (val) =&gt; typeof val === typeof true;
@@ -418,7 +418,7 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      Promise.reject(&apos;Nothing to delete&apos;);
+      NativePromise.reject(&apos;Nothing to delete&apos;);
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], &apos;delete&apos;, null, opts);
@@ -458,7 +458,7 @@ export default class Formio {
       query = this.query;
     }
     if (!this[_id]) {
-      return Promise.reject(`Missing ${_id}`);
+      return NativePromise.reject(`Missing ${_id}`);
     }
     return this.makeRequest(type, this[_url] + query, &apos;get&apos;, null, opts);
   }
@@ -489,7 +489,7 @@ export default class Formio {
 
   loadFormRevision(vid, query, opts) {
     if (!this.formUrl &amp;&amp; !this.vUrl) {
-      return Promise.reject(&apos;No form url set.&apos;);
+      return NativePromise.reject(&apos;No form url set.&apos;);
     }
 
     // Set the version url if not set.
@@ -600,10 +600,10 @@ export default class Formio {
 
   getProjectId() {
     if (!this.projectId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
     if (this.isObjectId(this.projectId)) {
-      return Promise.resolve(this.projectId);
+      return NativePromise.resolve(this.projectId);
     }
     else {
       return this.loadProject().then((project) =&gt; {
@@ -614,10 +614,10 @@ export default class Formio {
 
   getFormId() {
     if (!this.formId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
     if (this.isObjectId(this.formId)) {
-      return Promise.resolve(this.formId);
+      return NativePromise.resolve(this.formId);
     }
     else {
       return this.loadForm().then((form) =&gt; {
@@ -658,7 +658,7 @@ export default class Formio {
   getTempToken(expire, allowed, options) {
     const token = Formio.getToken(options);
     if (!token) {
-      return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
+      return NativePromise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
     }
     const authUrl = Formio.authUrl || this.projectUrl;
     return this.makeRequest(&apos;tempToken&apos;, `${authUrl}/token`, &apos;GET&apos;, null, {
@@ -677,7 +677,7 @@ export default class Formio {
    */
   getDownloadUrl(form) {
     if (!this.submissionId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
 
     if (!form) {
@@ -696,7 +696,7 @@ export default class Formio {
     apiUrl += &apos;/download&apos;;
 
     let download = this.base + apiUrl;
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       this.getTempToken(3600, `GET:${apiUrl}`).then((tempToken) =&gt; {
         download += `?token=${tempToken.key}`;
         resolve(download);
@@ -770,9 +770,9 @@ export default class Formio {
    * @return {create: boolean, read: boolean, edit: boolean, delete: boolean}
    */
   userPermissions(user, form, submission) {
-    return Promise.all([
-      (form !== undefined) ? Promise.resolve(form) : this.loadForm(),
-      (user !== undefined) ? Promise.resolve(user) : this.currentUser(),
+    return NativePromise.all([
+      (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
+      (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
       this.accessInfo()
     ]).then((results) =&gt; {
       const form = results.shift();
@@ -935,7 +935,7 @@ export default class Formio {
 
   static request(url, method, data, header, opts) {
     if (!url) {
-      return Promise.reject(&apos;No url provided&apos;);
+      return NativePromise.reject(&apos;No url provided&apos;);
     }
     method = (method || &apos;GET&apos;).toUpperCase();
 
@@ -953,7 +953,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!Formio.ignoreCache &amp;&amp; !opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
+      return NativePromise.resolve(_cloneDeep(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -1006,7 +1006,7 @@ export default class Formio {
             ? response.json()
             : response.text())
             .then((error) =&gt; {
-              return Promise.reject(error);
+              return NativePromise.reject(error);
             });
         }
 
@@ -1115,7 +1115,7 @@ export default class Formio {
           delete Formio.cache[cacheKey];
         }
 
-        return Promise.reject(err);
+        return NativePromise.reject(err);
       });
 
     return result;
@@ -1322,7 +1322,7 @@ export default class Formio {
   }
 
   static pluginWait(pluginFn, ...args) {
-    return Promise.all(Formio.plugins.map((plugin) =&gt;
+    return NativePromise.all(Formio.plugins.map((plugin) =&gt;
       (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
   }
 
@@ -1331,10 +1331,10 @@ export default class Formio {
       const plugin = Formio.plugins[index];
 
       if (!plugin) {
-        return Promise.resolve(null);
+        return NativePromise.resolve(null);
       }
 
-      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
+      return NativePromise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
         .then((result) =&gt; {
           if (!isNil(result)) {
             return result;
@@ -1364,7 +1364,7 @@ export default class Formio {
     authUrl += &apos;/current&apos;;
     const user = Formio.getUser(options);
     if (user) {
-      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(user), {
+      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, NativePromise.resolve(user), {
         url: authUrl,
         method: &apos;GET&apos;,
         options
@@ -1372,7 +1372,7 @@ export default class Formio {
     }
     const token = Formio.getToken(options);
     if ((!options || !options.external) &amp;&amp; !token) {
-      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
+      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, NativePromise.resolve(null), {
         url: authUrl,
         method: &apos;GET&apos;,
         options
@@ -1472,9 +1472,9 @@ export default class Formio {
     if (typeof options.OktaAuth === undefined) {
       const errorMessage = &apos;Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.&apos;;
       console.warn(errorMessage);
-      return Promise.reject(errorMessage);
+      return NativePromise.reject(errorMessage);
     }
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
       var authClient = Okta;
@@ -1513,14 +1513,14 @@ export default class Formio {
         return Formio.oktaInit(options);
       default:
         console.warn(&apos;Unknown SSO type&apos;);
-        return Promise.reject(&apos;Unknown SSO type&apos;);
+        return NativePromise.reject(&apos;Unknown SSO type&apos;);
     }
   }
 
   static requireLibrary(name, property, src, polling) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
-      Formio.libraries[name].ready = new Promise((resolve, reject) =&gt; {
+      Formio.libraries[name].ready = new NativePromise((resolve, reject) =&gt; {
         Formio.libraries[name].resolve = resolve;
         Formio.libraries[name].reject = reject;
       });
@@ -1597,14 +1597,14 @@ export default class Formio {
       return Formio.libraries[name].ready;
     }
 
-    return Promise.reject(`${name} library was not required.`);
+    return NativePromise.reject(`${name} library was not required.`);
   }
 }
 
 // Define all the static properties.
 Formio.ignoreCache = false;
 Formio.libraries = {};
-Formio.Promise = Promise;
+Formio.Promise = NativePromise;
 Formio.fetch = fetch;
 Formio.Headers = Headers;
 Formio.baseUrl = &apos;https://api.form.io&apos;;

@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/base64.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 const base64 = () =&gt; ({
   title: &apos;Base64&apos;,
@@ -220,7 +220,7 @@ const base64 = () =&gt; ({
   uploadFile(file, fileName) {
     const reader = new FileReader();
 
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       reader.onload = (event) =&gt; {
         const url = event.target.result;
         resolve({
@@ -241,7 +241,7 @@ const base64 = () =&gt; ({
   },
   downloadFile(file) {
     // Return the original as there is nothing to do.
-    return Promise.resolve(file);
+    return NativePromise.resolve(file);
   }
 });
 

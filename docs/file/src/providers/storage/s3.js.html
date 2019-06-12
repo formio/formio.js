@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/s3.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import XHR from &apos;./xhr&apos;;
 const s3 = (formio) =&gt; ({
   uploadFile(file, fileName, dir, progressCallback) {
@@ -251,7 +251,7 @@ const s3 = (formio) =&gt; ({
       return formio.makeRequest(&apos;file&apos;, `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&amp;key=${XHR.trim(file.key)}`, &apos;GET&apos;);
     }
     else {
-      return Promise.resolve(file);
+      return NativePromise.resolve(file);
     }
   }
 });

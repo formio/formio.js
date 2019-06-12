@@ -212,11 +212,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/dropbox.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 const dropbox = (formio) =&gt; ({
   uploadFile(file, fileName, dir, progressCallback) {
-    return new Promise(((resolve, reject) =&gt; {
+    return new NativePromise(((resolve, reject) =&gt; {
       // Send the file with data.
       const xhr = new XMLHttpRequest();
 
@@ -263,7 +263,7 @@ const dropbox = (formio) =&gt; ({
     const token = formio.getToken();
     file.url =
       `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&amp;x-jwt-token=${token}` : &apos;&apos;}`;
-    return Promise.resolve(file);
+    return NativePromise.resolve(file);
   }
 });
 

@@ -217,6 +217,7 @@ import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import Formio from &apos;../../Formio&apos;;
 import _ from &apos;lodash&apos;;
 import { uniqueName } from &apos;../../utils/utils&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -558,12 +559,12 @@ export default class TextAreaComponent extends TextFieldComponent {
         });
     }
     else {
-      return Promise.resolve(value);
+      return NativePromise.resolve(value);
     }
   }
 
   setImagesUrl(images) {
-    return Promise.all(_.map(images, image =&gt; {
+    return NativePromise.all(_.map(images, image =&gt; {
       let requestData;
       try {
         requestData = JSON.parse(image.getAttribute(&apos;alt&apos;));

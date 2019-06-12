@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDF.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 import _ from &apos;lodash&apos;;
 
@@ -224,7 +224,7 @@ export default class PDF extends Webform {
     super(element, options);
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) =&gt; (this.iframeReadyResolve = resolve));
+    this.iframeReady = new NativePromise((resolve) =&gt; (this.iframeReadyResolve = resolve));
   }
 
   postMessage(message) {

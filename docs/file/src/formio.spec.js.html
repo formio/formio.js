@@ -219,6 +219,7 @@ import sinon from &apos;sinon&apos;;
 import Chance from &apos;chance&apos;;
 import fetchMock from &apos;fetch-mock/es5/client&apos;;
 import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 const chance = Chance();
 const protocol = &apos;https&apos;;
@@ -767,7 +768,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
             // TODO
@@ -776,7 +777,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.request = function(requestArgs) {
         assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
             return testResult;
@@ -930,7 +931,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
             // TODO
@@ -939,7 +940,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.staticRequest = function(requestArgs) {
         assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
             return testResult;
@@ -1007,7 +1008,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.preRequest = function(requestArgs) {
         assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
             // TODO
@@ -1016,7 +1017,7 @@ describe(&apos;Plugins&apos;, () =&gt; {
       plugin.fileRequest = function(requestArgs) {
         assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
         assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
-        return Promise.resolve()
+        return NativePromise.resolve()
           .then(() =&gt; {
             assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
             return testResult;
@@ -1103,7 +1104,7 @@ describe(&apos;Test Formio.js capabilities&apos;, () =&gt; {
           fetchMock.mock(mock.url, mock.response, { method: mock.method });
         }
       }
-      Promise.resolve()
+      NativePromise.resolve()
         .then(() =&gt; {
           return test.test();
         })
@@ -1929,7 +1930,7 @@ describe(&apos;Formio.currentUser&apos;, () =&gt; {
       staticRequest: sinon.spy(() =&gt; {
         // Return dummy user
         const userId = generateID();
-        return Promise.resolve({
+        return NativePromise.resolve({
           _id: userId,
           created: new Date().toISOString(),
           modified: new Date().toISOString(),

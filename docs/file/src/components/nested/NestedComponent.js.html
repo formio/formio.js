@@ -213,7 +213,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/nested/NestedComponent.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Components from &apos;../Components&apos;;
 
@@ -669,7 +669,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
   }
 
   /**
@@ -678,7 +678,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -779,7 +779,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   get dataReady() {
-    return Promise.all(this.getComponents().map((component) =&gt; component.dataReady));
+    return NativePromise.all(this.getComponents().map((component) =&gt; component.dataReady));
   }
 
   setNestedValue(component, value, flags, changed) {
