@@ -2,8 +2,8 @@
   <label class="{{label.className}}">
     {% if (!label.hidden) { %}
       {{ t(component.label) }}
-      {% if (component.tooltip) { %}
-        <span data-tooltip="{{title}}" data-position="right center">
+      {% if (tooltip) { %}
+        <span data-tooltip="{{tooltip}}" data-position="right center">
           <i class="{{iconClass('question-sign')}}"></i>
         </span>
       {% } %}
@@ -14,8 +14,10 @@
 {% if (!label.hidden && label.labelPosition === 'bottom') { %}
   <label class="{{label.className}}">
   {{t(component.label)}}
-  {% if (component.tooltip) { %}
-    <i class="{{iconClass('question-sign')}}"></i>
+  {% if (tooltip) { %}
+    <span data-tooltip="{{tooltip}}" data-position="right center">
+      <i class="{{iconClass('question-sign')}}"></i>
+    </span>
   {% } %}
   </label>
 {% } %}

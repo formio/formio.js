@@ -774,6 +774,7 @@ export default class Component extends Element {
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
+      tooltip: this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />'),
       children
     }, topLevel);
   }
