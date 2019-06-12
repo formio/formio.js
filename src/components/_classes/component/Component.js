@@ -240,7 +240,7 @@ export default class Component extends Element {
      * Tool tip text after processing
      * @type {string}
      */
-    this.tooltip = '';
+    this.title = '';
 
     /**
      * The row path of this component.
@@ -774,7 +774,8 @@ export default class Component extends Element {
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
-      children
+      title: this.title,
+      children,
     }, topLevel);
   }
 
@@ -793,12 +794,12 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      this.title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title: title
+        title: this.title
       });
     });
 
