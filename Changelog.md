@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Date picker suffix icon for Bootstrap 4
+
 ## 3.22.4
 ### Changed
  - Changed all "Promise" instances to use the "NativePromise" polyfill so that core-js would not include a Polyfill of Promise. This was causing issues with other frameworks (Angular) where they duck-punch the Promise library and throw errors when anything other than their wrappers are used (like what zone.js does).
