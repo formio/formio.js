@@ -782,6 +782,7 @@ export default class Component extends Element {
   attach(element) {
     this.attached = true;
     this.element = element;
+    element.component = this;
 
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
     if (this.element.id) {
