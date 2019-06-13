@@ -60,6 +60,8 @@ export default class PDF extends Webform {
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
       this.postMessage({ name: 'form', data: form });
+
+      return form;
     });
   }
 
