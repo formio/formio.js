@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.22.5
 ### Fixed
  - Date picker suffix icon for Bootstrap 4
+ - Problems with the PDF builder not allowing edit after the component has been added to the form.
 
 ## 3.22.4
 ### Changed
