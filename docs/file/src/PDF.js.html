@@ -228,6 +228,9 @@ export default class PDF extends Webform {
   }
 
   postMessage(message) {
+    if (!message || !this.iframeReady) {
+      return;
+    }
     if (!message.type) {
       message.type = &apos;iframe-data&apos;;
     }
@@ -274,6 +277,8 @@ export default class PDF extends Webform {
         this.postMessage({ name: &apos;token&apos;, data: this.formio.getToken() });
       }
       this.postMessage({ name: &apos;form&apos;, data: form });
+
+      return form;
     });
   }
 
