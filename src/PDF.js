@@ -14,6 +14,9 @@ export default class PDF extends Webform {
   }
 
   postMessage(message) {
+    if (!message || !this.iframeReady) {
+      return;
+    }
     if (!message.type) {
       message.type = 'iframe-data';
     }
