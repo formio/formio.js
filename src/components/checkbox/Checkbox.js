@@ -68,6 +68,7 @@ export default class CheckBoxComponent extends Component {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
       checked: this.dataValue,
+      tooltip: this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />')
     }));
   }
 
