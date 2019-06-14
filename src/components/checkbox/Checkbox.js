@@ -252,7 +252,7 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   get key() {
-    return this.isRadioCheckbox ? this.component.name : super.key;
+    return (this.isRadioCheckbox && this.component.name) ? this.component.name : super.key;
   }
 
   getValueAt(index) {
