@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.6
+### Fixed
+ - Problem where the wysiwyg settings would get reset when hidden.
+ - Issues where infinite onchange events would get triggered if a checkbox component was configured as Radio, but no Radio Key is provided.
+
 ## 3.22.5
 ### Fixed
  - Date picker suffix icon for Bootstrap 4

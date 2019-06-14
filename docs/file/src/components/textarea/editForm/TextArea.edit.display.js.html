@@ -391,6 +391,7 @@ export default [
     label: &apos;Editor Settings&apos;,
     tooltip: &apos;Enter the WYSIWYG editor JSON configuration.&apos;,
     key: &apos;wysiwyg&apos;,
+    clearOnHide: false,
     customDefaultValue(value, component, row, data, instance) {
       return instance.wysiwygDefault;
     },
