@@ -22,7 +22,8 @@ export default class PDFBuilder extends WebformBuilder {
           signature: true,
           select: true,
           textarea: true,
-          datetime: true
+          datetime: true,
+          file: true
         }
       },
       basic: false,
@@ -200,6 +201,12 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit('updateComponent', component);
+
+        const localComponent = _.find(this.form.components, { id: schema.id });
+        if (localComponent) {
+          localComponent.overlay = _.clone(component.component.overlay);
+        }
+
         this.emit('change', this.form);
       }
       return component;
