@@ -184,7 +184,6 @@ export default class EditGridComponent extends NestedComponent {
 
             return result;
           },
-
         });
     }
   }
@@ -304,6 +303,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       editRow.data = dataSnapshot;
+      this.restoreRowContext(editRow);
     }
     this.redraw();
   }
@@ -332,6 +332,8 @@ export default class EditGridComponent extends NestedComponent {
       editRow.isOpen = false;
       if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
+        editRow.data = editRow.backup;
+        this.restoreRowContext(editRow);
       }
       editRow.data = dataValue[rowIndex] || {};
       this.clearErrors(rowIndex);
@@ -558,5 +560,9 @@ export default class EditGridComponent extends NestedComponent {
 
   restoreComponentsContext() {
     return;
+  }
+
+  restoreRowContext(editRow) {
+    editRow.components.forEach((component) => component.data = editRow.data);
   }
 }
