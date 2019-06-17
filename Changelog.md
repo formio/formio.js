@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - CKEditor settings (```this.component.wysiwyg```) being ignored if ```toolbar``` field is absent
+
 ## 3.22.6
 ### Fixed
  - Problem where the wysiwyg settings would get reset when hidden.
