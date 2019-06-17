@@ -518,7 +518,7 @@ export default class FileComponent extends Field {
     }
   }
 
-  getFile(fileInfo, event) {
+  getFile(fileInfo) {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
@@ -541,7 +541,6 @@ export default class FileComponent extends Field {
         // User is expecting an immediate notification due to attempting to download a file.
         alert(response);
       });
-    event.preventDefault();
   }
 
   focus() {
