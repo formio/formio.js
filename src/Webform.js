@@ -880,7 +880,7 @@ export default class Webform extends NestedComponent {
     return super.render(this.renderTemplate('webform', {
       classes: 'formio-form',
       children: this.renderComponents(),
-    }), (this.options.attachMode === 'builder') ? 'builder' : 'form', true);
+    }), this.builderMode ? 'builder' : 'form', true);
   }
 
   redraw() {

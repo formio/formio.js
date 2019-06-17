@@ -134,7 +134,7 @@ export default class DataMapComponent extends DataGridComponent {
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.disabled &&
-      this.options.attachMode === 'full';
+      this.fullMode;
   }
 
   getColumns() {

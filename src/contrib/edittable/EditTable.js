@@ -137,7 +137,7 @@ export default class EditTableComponent extends DataGridComponent {
 
     this.tableElement.className = this.tableClass;
 
-    if (this.options.builder && !this.hasColumns()) {
+    if (this.builderMode && !this.hasColumns()) {
       this.element.appendChild(this.builderView());
     }
 
@@ -199,7 +199,7 @@ export default class EditTableComponent extends DataGridComponent {
 
   /** @override **/
   buildRow(row, index, state = {}) {
-    if (this.options.builder) {
+    if (this.builderMode) {
       return null;
     }
 

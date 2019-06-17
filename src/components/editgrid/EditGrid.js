@@ -78,6 +78,11 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   init() {
+    if (this.builderMode) {
+      this.editRows = [];
+      return super.init();
+    }
+
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
     this.editRows = dataValue.map((row, rowIndex) => ({
@@ -86,12 +91,16 @@ export default class EditGridComponent extends NestedComponent {
       components: this.createRowComponents(row, rowIndex),
     }));
     // In builder we need one row so the components will show up.
-    if (this.options.attachMode === 'builder') {
+    if (this.builderMode) {
       this.addRow();
     }
   }
 
   render(children) {
+    if (this.builderMode) {
+      return super.render();
+    }
+
     const dataValue = this.dataValue || [];
     return super.render(children || this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
@@ -110,6 +119,10 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   attach(element) {
+    if (this.builderMode) {
+      return super.attach(element);
+    }
+
     this.loadRefs(element, {
       [`${this.editgridKey}-addRow`]: 'multiple',
       [`${this.editgridKey}-removeRow`]: 'multiple',
@@ -184,7 +197,6 @@ export default class EditGridComponent extends NestedComponent {
 
             return result;
           },
-
         });
     }
   }
@@ -257,7 +269,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   getComponents(rowIndex) {
-    return this.options.builder
+    return this.builderMode
       ? super.getComponents()
       : _.isNumber(rowIndex)
         ? (this.editRows[rowIndex].components || [])
@@ -265,6 +277,10 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   destroyComponents(rowIndex) {
+    if (this.builderMode) {
+      return super.destroyComponents();
+    }
+
     const components = this.getComponents(rowIndex).slice();
     components.forEach((comp) => comp.destroy());
   }
@@ -304,6 +320,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       editRow.data = dataSnapshot;
+      this.restoreRowContext(editRow);
     }
     this.redraw();
   }
@@ -332,6 +349,8 @@ export default class EditGridComponent extends NestedComponent {
       editRow.isOpen = false;
       if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
+        editRow.data = editRow.backup;
+        this.restoreRowContext(editRow);
       }
       editRow.data = dataValue[rowIndex] || {};
       this.clearErrors(rowIndex);
@@ -490,21 +509,6 @@ export default class EditGridComponent extends NestedComponent {
     return Array.isArray(value) ? value : [];
   }
 
-  updateValue(flags, value) {
-    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, flags, value);
-  }
-
-  hasChanged(before, after) {
-    if (
-      ((before === undefined) || (before === null)) &&
-      ((after === undefined) || (after === null))
-    ) {
-      return false;
-    }
-    return !_.isEqual(before, after);
-  }
-
   setValue(value, flags) {
     if (!value) {
       return;
@@ -559,4 +563,11 @@ export default class EditGridComponent extends NestedComponent {
   restoreComponentsContext() {
     return;
   }
+
+  restoreRowContext(editRow) {
+    editRow.components.forEach((component) => component.data = editRow.data);
+  }
 }
+
+EditGridComponent.prototype.hasChanged = Component.prototype.hasChanged;
+EditGridComponent.prototype.updateValue = Component.prototype.updateValue;
