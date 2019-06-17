@@ -86,7 +86,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   render() {
-    if (this.options.builder) {
+    if (this.builderMode) {
       return super.render();
     }
 
@@ -132,7 +132,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   attach(element) {
-    if (this.options.builder) {
+    if (this.builderMode) {
       return super.attach(element);
     }
 

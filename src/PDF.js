@@ -113,7 +113,7 @@ export default class PDF extends Webform {
       params.push(`zoom=${this.options.zoom}`);
     }
 
-    if (this.options.builder) {
+    if (this.builderMode) {
       params.push('builder=1');
     }
 
