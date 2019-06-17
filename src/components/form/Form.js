@@ -168,7 +168,7 @@ export default class FormComponent extends Component {
   }
 
   render() {
-    if (this.options.attachMode === 'builder') {
+    if (this.builderMode) {
       return super.render(this.component.label || 'Nested form');
     }
     const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
@@ -178,7 +178,7 @@ export default class FormComponent extends Component {
   attach(element) {
     super.attach(element);
     // Don't attach in builder.
-    if (this.options.attachMode === 'builder') {
+    if (this.builderMode) {
       return Promise.resolve();
     }
     if (this.subForm) {
@@ -292,7 +292,7 @@ export default class FormComponent extends Component {
   /* eslint-disable max-statements */
   loadSubForm() {
     // Don't load form in builder mode.
-    if (this.options.attachMode === 'builder') {
+    if (this.builderMode) {
       return this.subFormReady;
     }
 

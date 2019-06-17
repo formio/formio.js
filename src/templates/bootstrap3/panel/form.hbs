@@ -10,7 +10,7 @@
       {% } %}
     </h4>
   </div>
-  {% if (!collapsed || (options.attachMode === 'builder')) { %}
+  {% if (!collapsed || builder) { %}
   <div class="panel-body" ref="{{nestedKey}}">
     {{children}}
   </div>
