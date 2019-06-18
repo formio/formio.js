@@ -65,6 +65,10 @@
     display: inherit;
   }
 
+  .formio-drop-zone.enabled + .formio-pdf-builder {
+    pointer-events: none;
+  }
+
   .component-settings-button-paste {
     display: none;
   }
