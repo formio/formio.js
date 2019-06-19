@@ -490,7 +490,11 @@ export default class FileComponent extends Field {
           if (this.component.privateDownload) {
             file.private = true;
           }
-          const { storage, url, options } = this.component;
+          const { storage, url, options = {}} = this.component;
+          if (storage === 'indexeddb') {
+            options.indexeddb = this.component.indexeddb;
+            options.indexeddbTable = this.component.indexeddbTable;
+          }
           fileService.uploadFile(storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -519,6 +523,11 @@ export default class FileComponent extends Field {
   }
 
   getFile(fileInfo) {
+    const { storage, options = {} } = this.component;
+    if (storage === 'indexeddb') {
+      options.indexeddb = this.component.indexeddb;
+      options.indexeddbTable = this.component.indexeddbTable;
+    }
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
@@ -526,7 +535,7 @@ export default class FileComponent extends Field {
     if (this.component.privateDownload) {
       fileInfo.private = true;
     }
-    fileService.downloadFile(fileInfo).then((file) => {
+    fileService.downloadFile(fileInfo, options).then((file) => {
       if (file) {
         if (file.storage === 'base64') {
           download(file.url, file.originalName, file.type);

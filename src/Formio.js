@@ -497,7 +497,7 @@ export default class Formio {
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
-  downloadFile(file) {
+  downloadFile(file, options) {
     const requestArgs = {
       method: 'download',
       file: file
@@ -510,7 +510,7 @@ export default class Formio {
             if (file.storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(file.storage)) {
                 const provider = new Formio.providers.storage[file.storage](this);
-                return provider.downloadFile(file);
+                return provider.downloadFile(file, options);
               }
               else {
                 throw ('Storage provider not found');
