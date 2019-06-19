@@ -4,7 +4,7 @@ const request = indexedDB.open("MyDatabase", 3);
 let db;
 
 request.onsuccess = function (event) {
-  db = event.target.result
+  db = event.target.result;
 };
 
 request.onupgradeneeded = function (e) {
