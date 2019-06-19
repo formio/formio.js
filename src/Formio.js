@@ -13,6 +13,7 @@ import * as providers from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
+import _defaults from 'lodash/defaults';
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -743,10 +744,10 @@ export default class Formio {
     }
 
     // Set up and fetch request
-    const headers = header || new Headers(opts.headers || {
+    const headers = header || new Headers(_defaults(opts.headers, {
       'Accept': 'application/json',
       'Content-type': 'application/json; charset=UTF-8'
-    });
+    }));
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
       headers.append('x-jwt-token', token);
