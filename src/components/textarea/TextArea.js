@@ -158,7 +158,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === 'ckeditor') {
-      const settings = this.component.wysiwyg.hasOwnProperty('toolbar') ? this.component.wysiwyg : {};
+      const settings = this.component.wysiwyg || {};
       settings.rows = this.component.rows;
       this.editorReady = this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
         .then((editor) => {
