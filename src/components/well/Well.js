@@ -3,6 +3,7 @@ import NestedComponent from '../nested/NestedComponent';
 export default class WellComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
+      label: 'Well',
       type: 'well',
       key: 'well',
       input: false,
