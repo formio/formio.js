@@ -36,7 +36,7 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: 'indexeddb',
+    key: 'options.indexeddb',
     weight: 10,
     placeholder: 'Enter the indexeddb name',
     conditional: {
@@ -53,7 +53,7 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: 'indexeddbTable',
+    key: 'options.indexeddbTable',
     weight: 10,
     placeholder: 'Enter the name for indexeddb table',
     conditional: {

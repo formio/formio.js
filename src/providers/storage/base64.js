@@ -25,7 +25,6 @@ const base64 = () => ({
   },
   downloadFile(file) {
     // Return the original as there is nothing to do.
-    console.log(file)
     return Promise.resolve(file);
   }
 });
