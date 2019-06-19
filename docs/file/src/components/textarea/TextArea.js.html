@@ -372,7 +372,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === &apos;ckeditor&apos;) {
-      const settings = this.component.wysiwyg.hasOwnProperty(&apos;toolbar&apos;) ? this.component.wysiwyg : {};
+      const settings = this.component.wysiwyg || {};
       settings.rows = this.component.rows;
       this.editorReady = this.addCKE(this.input, settings, (newValue) =&gt; this.updateEditorValue(newValue))
         .then((editor) =&gt; {

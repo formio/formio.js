@@ -227,6 +227,7 @@ import * as providers from &apos;./providers&apos;;
 import _intersection from &apos;lodash/intersection&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
+import _defaults from &apos;lodash/defaults&apos;;
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -957,10 +958,10 @@ export default class Formio {
     }
 
     // Set up and fetch request
-    const headers = header || new Headers(opts.headers || {
+    const headers = header || new Headers(_defaults(opts.headers, {
       &apos;Accept&apos;: &apos;application/json&apos;,
       &apos;Content-type&apos;: &apos;application/json; charset=UTF-8&apos;
-    });
+    }));
     const token = Formio.getToken(opts);
     if (token &amp;&amp; !opts.noToken) {
       headers.append(&apos;x-jwt-token&apos;, token);

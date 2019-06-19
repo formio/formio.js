@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.22.7
+### Changed
+ - Upgraded core-js@3.1.4, i18next@17.0.4, babel-eslint@10.0.2
+
 ### Fixed
  - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
  - CKEditor settings (```this.component.wysiwyg```) being ignored if ```toolbar``` field is absent
+ - FOR-2378: Fix issue with drop events not firing
+
+### Added
+ - FOR-2357: Adding the file component to the PDF builder.
+ - Missing default label for the Well component.
 
 ## 3.22.6
 ### Fixed
