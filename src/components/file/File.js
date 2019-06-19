@@ -531,6 +531,9 @@ export default class FileComponent extends Field {
         if (file.storage === 'base64') {
           download(file.url, file.originalName, file.type);
         }
+        if (file.storage === 'indexeddb') {
+          download(file)
+        }
         else {
           window.open(file.url, '_blank');
         }

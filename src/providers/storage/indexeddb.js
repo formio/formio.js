@@ -1,8 +1,6 @@
-import {openDB, deleteDB, wrap, unwrap} from 'idb';
-
 const uuidv4 = require('uuid/v4')
+const request = indexedDB.open("MyDatabase", 3);
 
-var request = indexedDB.open("MyDatabase", 3);
 let db;
 
 request.onsuccess = function (event) {
@@ -10,15 +8,14 @@ request.onsuccess = function (event) {
 };
 
 request.onupgradeneeded = function (e) {
-  let db = e.target.result;
+  const db = e.target.result;
   db.createObjectStore('cachedForms');
 };
 
 const indexeddb = () => ({
   title: 'indexedDB',
   name: 'indexeddb',
-  uploadFile(file, fileName) {
-    console.log(fileName)
+  uploadFile(file, fileName, dir) {
     if (!('indexedDB' in window)) {
       console.log('This browser doesn\'t support IndexedDB');
       return;
@@ -28,17 +25,11 @@ const indexeddb = () => ({
 
     return new Promise((resolve, reject) => {
       reader.onload = (event) => {
+        let blobObject = new Blob([file], {type: file.type});
 
-        const url = event.target.result;
-
-        const fileAsBlob = new Blob([file])
-
-        let ob = fileAsBlob;
-
-        const id = uuidv4(ob)
+        const id = uuidv4(blobObject);
         let trans = db.transaction(['cachedForms'], 'readwrite');
-        let addReq = trans.objectStore('cachedForms').put(ob, id);
-
+        let addReq = trans.objectStore('cachedForms').put(blobObject, id);
 
         addReq.onerror = function (e) {
           console.log('error storing data');
@@ -49,9 +40,9 @@ const indexeddb = () => ({
           resolve({
             storage: 'indexeddb',
             name: fileName,
-            id
+            size: file.size,
+            id,
           });
-          console.log('data stored');
         };
       };
 
@@ -63,21 +54,22 @@ const indexeddb = () => ({
     });
   },
   downloadFile(file) {
-    let reader = new FileReader();
     return new Promise((resolve, reject) => {
       let trans = db.transaction(['cachedForms'], 'readonly');
-
       let store = trans.objectStore('cachedForms').get(file.id);
-      store.onsuccess = function () {
-        trans.oncomplete = function (e) {
-          console.log(file, store)
-          resolve(store.result);
+      store.onsuccess = () => {
+        trans.oncomplete = (e) => {
+          let dbFile = new File([store.result], file.name, {
+            type: store.result.type,
+          });
+          dbFile.originalName = file.originalName;
+          dbFile.storage = file.storage;
+          resolve(dbFile);
         };
       };
-
-      reader.onerror = () => {
-        return reject(this);
-      };
+      store.onerror = () => {
+        return reject(this)
+      }
     });
   }
 });
