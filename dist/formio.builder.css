@@ -959,6 +959,8 @@ body.formio-dialog-open {
     opacity: 0.1; }
   .formbuilder .formio-drop-zone.enabled {
     display: inherit; }
+  .formbuilder .formio-drop-zone.enabled + .formio-pdf-builder {
+    pointer-events: none; }
   .formbuilder .component-settings-button-paste {
     display: none; }
   .formbuilder .builder-paste-mode .component-settings-button-paste {
