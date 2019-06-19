@@ -34,6 +34,40 @@ export default [
     }
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'indexeddb',
+    weight: 10,
+    placeholder: 'Enter the indexeddb name',
+    conditional: {
+      json: {
+        in: [
+          {
+            var: 'data.storage'
+          },
+          ['indexeddb']
+        ],
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'indexeddbTable',
+    weight: 10,
+    placeholder: 'Enter the name for indexeddb table',
+    conditional: {
+      json: {
+        in: [
+          {
+            var: 'data.storage'
+          },
+          ['indexeddb']
+        ],
+      }
+    }
+  },
+  {
     type: 'textarea',
     key: 'options',
     label: 'Custom request options',

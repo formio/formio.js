@@ -3,10 +3,13 @@ import dropbox from './dropbox';
 import s3 from './s3';
 import azure from './azure';
 import url from './url';
+import indexeddb from './indexeddb';
+
 export default {
   base64: base64,
   dropbox: dropbox,
   s3: s3,
   url: url,
-  azure: azure
+  azure: azure,
+  indexeddb: indexeddb,
 };
