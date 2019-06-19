@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
+
 ## 3.22.6
 ### Fixed
  - Problem where the wysiwyg settings would get reset when hidden.
