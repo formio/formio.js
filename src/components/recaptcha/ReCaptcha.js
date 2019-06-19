@@ -28,7 +28,7 @@ export default class ReCaptchaComponent extends Component {
   }
 
   createInput() {
-    if (this.options.builder) {
+    if (this.builderMode) {
       // We need to see it in builder mode.
       this.append(this.text(this.name));
     }

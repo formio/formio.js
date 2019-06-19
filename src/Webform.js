@@ -618,10 +618,6 @@ export default class Webform extends NestedComponent {
    * @returns {*}
    */
   setForm(form) {
-    if (form.display === 'pdf') {
-      console.warn('You need to instantiate the PDF class to use this form as a pdf.');
-    }
-
     // Create the form.
     this._form = form;
 
@@ -880,7 +876,7 @@ export default class Webform extends NestedComponent {
     return super.render(this.renderTemplate('webform', {
       classes: 'formio-form',
       children: this.renderComponents(),
-    }), (this.options.attachMode === 'builder') ? 'builder' : 'form', true);
+    }), this.builderMode ? 'builder' : 'form', true);
   }
 
   redraw() {

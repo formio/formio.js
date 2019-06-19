@@ -448,7 +448,7 @@ export default class Component extends Element {
    */
   get visible() {
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (this.options.attachMode === 'builder' || this.options.showHiddenFields) {
+    if (this.builderMode || this.options.showHiddenFields) {
       return true;
     }
     if (
@@ -473,6 +473,10 @@ export default class Component extends Element {
 
   set currentForm(instance) {
     this._currentForm = instance;
+  }
+
+  get fullMode() {
+    return this.options.attachMode === 'full';
   }
 
   get builderMode() {
@@ -633,7 +637,7 @@ export default class Component extends Element {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
-    data.builder = this.options.attachMode === 'builder';
+    data.builder = this.builderMode;
 
     // Allow more specific template names
     const names = [
@@ -1186,7 +1190,7 @@ export default class Component extends Element {
    */
   conditionallyVisible(data) {
     data = data || this.rootValue;
-    if (this.options.attachMode === 'builder' || !this.hasCondition()) {
+    if (this.builderMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
@@ -1218,7 +1222,7 @@ export default class Component extends Element {
 
     // Check advanced conditions
     const visible = this.conditionallyVisible(data);
-    if (this.options.attachMode !== 'builder' && this.fieldLogic(data)) {
+    if (!this.builderMode && this.fieldLogic(data)) {
       this.redraw();
     }
 

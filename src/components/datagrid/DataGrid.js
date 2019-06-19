@@ -154,7 +154,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasRowGroups() {
-    return _.get(this, 'component.enableRowGroups', false) && (this.options.attachMode !== 'builder');
+    return _.get(this, 'component.enableRowGroups', false) && !this.builderMode;
   }
 
   totalRowsNumber(groups) {
@@ -169,19 +169,19 @@ export default class DataGridComponent extends NestedComponent {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
       !this.disabled &&
-      this.options.attachMode === 'full' &&
+      this.fullMode &&
       !this.options.preview &&
       (!maxLength || (this.dataValue.length < maxLength));
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() && this.options.attachMode === 'builder');
+    return (this.hasRemoveButtons() || this.builderMode);
   }
 
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.disabled &&
-      this.options.attachMode === 'full' &&
+      this.fullMode &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
@@ -207,14 +207,14 @@ export default class DataGridComponent extends NestedComponent {
       hasHeader: this.hasHeader(),
       hasExtraColumn: this.hasExtraColumn(),
       hasAddButton: this.hasAddButton(),
-      hasRemoveButtons: this.hasRemoveButtons,
+      hasRemoveButtons: this.hasRemoveButtons(),
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
       hasGroups: this.hasRowGroups(),
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
       allowReorder: this.allowReorder,
-      builder: this.options.attachMode === 'builder',
+      builder: this.builderMode,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),

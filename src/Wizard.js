@@ -112,7 +112,7 @@ export default class Wizard extends Webform {
       buttons: this.buttons,
       currentPage: this.page,
       components: this.renderComponents([...this.globalComponents, ...this.pages[this.page]]),
-    }, (this.options.attachMode === 'builder') ? 'builder' : 'form');
+    }, this.builderMode ? 'builder' : 'form');
   }
 
   attach(element) {

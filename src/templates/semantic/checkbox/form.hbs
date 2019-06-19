@@ -1,6 +1,6 @@
 <div class="ui checkbox">
-  <{{input.type}} 
-    ref="input" 
+  <{{input.type}}
+    ref="input"
     id="{{id}}"
     {% for (var attr in input.attr) { %}
     {{attr}}="{{input.attr[attr]}}"
@@ -11,8 +11,10 @@
   <label class="{{input.labelClass}}" for="{{id}}">
     {{input.content}}
     {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
-    {% if (component.tooltip) { %}
-      <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
+    {% if (tooltip) { %}
+      <span data-tooltip="{{tooltip}}" data-position="right center">
+          <i class="{{iconClass('question-sign')}}"></i>
+      </span>
     {% } %}
   </label>
 </div>

@@ -151,16 +151,6 @@ export default class WebformBuilder extends Component {
       });
     };
 
-    this.options.hooks.renderEditgrid = (html, { self }, mode) => {
-      // Prevent recursion.
-      if (mode !== 'form') {
-        return html;
-      }
-      return self.renderTemplate('editgrid', {
-        components: self.renderComponents(),
-      }, 'builder');
-    };
-
     this.options.hooks.renderInput = (html, { self }) => {
       if (self.type === 'hidden') {
         return html + self.name;
@@ -202,13 +192,6 @@ export default class WebformBuilder extends Component {
       component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
 
       // Need to set up horizontal rearrangement of fields.
-    };
-
-    this.options.hooks.attachEditgrid = (element, component) => {
-      component.loadRefs(element, {
-        [`${component.key}-container`]: 'single',
-      });
-      component.attachComponents(component.refs[`${component.key}-container`].parentNode, [], component.component.components);
     };
 
     this.options.hooks.attachComponent = (element, component) => {
