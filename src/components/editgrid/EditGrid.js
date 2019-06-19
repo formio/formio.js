@@ -90,10 +90,7 @@ export default class EditGridComponent extends NestedComponent {
       data: row,
       components: this.createRowComponents(row, rowIndex),
     }));
-    // In builder we need one row so the components will show up.
-    if (this.builderMode) {
-      this.addRow();
-    }
+    this.checkData(this.data);
   }
 
   render(children) {
@@ -305,6 +302,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
+    this.checkRow(this.data, editRow);
     this.redraw();
   }
 
@@ -434,9 +432,9 @@ export default class EditGridComponent extends NestedComponent {
         if (this.component.inlineEdit) {
           this.triggerChange();
         }
-        // else {
-        //   this.checkRow(this.data, rowIndex);
-        // }
+        else {
+          this.checkRow(this.data, this.editRows[rowIndex]);
+        }
       };
       components.push(comp);
     });
@@ -542,6 +540,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
+        this.checkRow(this.data, this.editRows[rowIndex]);
       }
     });
     if (changed) {
