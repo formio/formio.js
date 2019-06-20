@@ -37,7 +37,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.dragDropEnabled = false;
   }
 
-  get defaultComponents() {
+  get defaultGroups() {
     return {
       pdf: {
         title: 'PDF Fields',
