@@ -7,32 +7,29 @@ import PDF from './PDF';
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
-    console.log('Creating PDFBuilder');
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
 
-    // TODO: reinstate this logic; actually accept incoming options and appropriately pass them to super constructor
+    // Force superclass to skip the automatic init; we'll trigger it manually
+    options.skipInit = true;
 
-    // let element, options;
-    // if (arguments[0] instanceof HTMLElement || arguments[1]) {
-    //   element = arguments[0];
-    //   options = arguments[1];
-    // }
-    // else {
-    //   options = arguments[0];
-    // }
-
-    // if (element) {
-    //   super(element, options);
-    // }
-    // else {
-    //   super(options);
-    // }
-
-    super();
+    if (element) {
+      super(element, options);
+    }
+    else {
+      super(options);
+    }
 
     this.dragDropEnabled = false;
   }
 
-  get defaultComponents() {
+  get defaultGroups() {
     return {
       pdf: {
         title: 'PDF Fields',
@@ -73,15 +70,34 @@ export default class PDFBuilder extends WebformBuilder {
   //                                      Y8b d88P
   //                                       "Y88P"
 
+  init() {
+    this.options.attachMode = 'builder';
+    this.webform = this.webform || this.createForm(this.options);
+    this.webform.init();
+  }
+
   render() {
-    return this.renderTemplate('pdfBuilder', {
+    const result = this.renderTemplate('pdfBuilder', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
-        groups: this.groups,
+        groupId: `builder-sidebar-${this.id}`,
+        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: this.groups[groupKey],
+          groupKey,
+          groupId: `builder-sidebar-${this.id}`,
+          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `builder-sidebar-${groupKey}`,
+            subgroups: []
+          })),
+        })),
       }),
       form: this.webform.render()
     });
+
+    return result;
   }
 
   attach(element) {
@@ -98,14 +114,13 @@ export default class PDFBuilder extends WebformBuilder {
         this.prepSidebarComponentsForDrag();
       }
 
-      // this.formReadyResolve();
-
       return this.element;
     });
   }
 
   createForm(options) {
     // Instantiate the webform from the PDF class instead of Webform
+    options.skipInit = false;
     this.webform = new PDF(this.element, options);
 
     this.webform.on('attach', this.onPdfAttach.bind(this));
@@ -133,10 +148,9 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   destroy() {
-    console.log('Destroying PDFBuilder');
-    const state = super.destroy();
+    super.destroy();
+
     this.webform.destroy();
-    return state;
   }
 
   // d8b 8888888888                                                                              888
@@ -159,7 +173,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component);
+        this.editComponent(component.component, this.webform.iframeElement);
         this.emit('updateComponent', component);
       }
       return component;
@@ -184,18 +198,9 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component) {
-        this.editComponent(component);
+        this.editComponent(component.component, this.webform.iframeElement);
       }
     }, true);
-  }
-
-  addComponent(component, element, data, before) {
-    console.log('PDFBuilder.addComponent()');
-    // return super.addComponent(component, element, data, before, true);
-  }
-
-  removeComponent(a, b, c, d, e, f) {
-    console.log('PDFBuilder.removeComponent()');
   }
 
   // 8888888b.                                                                   888                   d8b
@@ -213,7 +218,6 @@ export default class PDFBuilder extends WebformBuilder {
   initDropzoneEvents() {
     // This is required per HTML spec in order for the drop event to fire
     this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {
-      console.log('dropzone dragover');
       e.preventDefault();
       return false;
     });
@@ -236,13 +240,12 @@ export default class PDFBuilder extends WebformBuilder {
       return;
     }
 
-    const iframeRect = getElementRect(this.webform.refs.iframe);
+    const iframeRect = getElementRect(this.webform.refs.iframeContainer);
     this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';
     this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';
   }
 
   onDragStart(e) {
-    console.log('component drag start');
     e.dataTransfer.setData('text/html', null);
 
     this.updateDropzoneDimensions();
@@ -250,14 +253,17 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDropzoneDrop(e) {
-    console.log('dropzone drop');
     this.dropEvent = e;
     e.preventDefault();
     return false;
   }
 
   onDragEnd(e) {
-    console.log('component drag end');
+    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
+    // reflect absolute positioning if accessed after the target element is hidden
+    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
+    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
+
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
 
@@ -284,49 +290,17 @@ export default class PDFBuilder extends WebformBuilder {
 
     this.emit('addComponent', schema);
 
-    // this.webform.rebuild();
-
     schema.overlay = {
-      top: this.dropEvent.offsetY,
-      left: this.dropEvent.offsetX,
+      top: offsetY,
+      left: offsetX,
       width: 100,
       height: 20
     };
 
-    // this.addComponentTo(this, component.schema, this.getContainer());
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
   }
-
-  // addComponentTo(parent, schema, element, sibling) {
-  //   const comp = super.addComponentTo(parent, schema, element, sibling);
-  //   comp.isNew = true;
-  //   if (this.webform && schema.overlay) {
-  //     this.webform.postMessage({ name: 'addElement', data: schema });
-  //   }
-  //   return comp;
-  // }
-
-  // deleteComponent(component) {
-  //   if (this.webform && component.component) {
-  //     this.webform.postMessage({ name: 'removeElement', data: component.component });
-  //   }
-  //   return super.deleteComponent(component);
-  // }
-
-  // removeEventListeners(all) {
-  //   super.removeEventListeners(all);
-  //   _.each(this.groups, (group) => {
-  //     _.each(group.components, (builderComponent) => {
-  //       this.removeEventListener(builderComponent, 'dragstart');
-  //       this.removeEventListener(builderComponent, 'dragend');
-  //     });
-  //   });
-  // }
-
-  // Don't need to add a submit button here... the webform will already do this.
-  // addSubmitButton() {}
 }

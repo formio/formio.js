@@ -7,78 +7,111 @@ import Webform from './Webform';
 
 export default class PDF extends Webform {
   constructor(element, options) {
-    console.log('Creating PDF');
     super(element, options);
 
-    // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) => {
-      console.log('Setting up this.iframeReadyResolve');
-      this.iframeReadyResolve = resolve;
-    });
+    this.refreshIframeReadyPromise();
+
     this.components = [];
   }
 
-  init() {
-    console.log('PDF Init');
+  refreshIframeReadyPromise() {
+    if (this.iframeReadyReject) {
+      this.iframeReady = this.iframeReady.catch(err => {
+        return;
+      });
 
-    // super.init();
+      this.iframeReadyReject();
+    }
+
+    // Resolve when the iframe is ready.
+    this.iframeReady = new Promise((resolve, reject) => {
+      this.iframeReadyResolve = resolve;
+      this.iframeReadyReject = reject;
+    });
+  }
+
+  init() {
+    super.init();
 
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => {
-      console.log('Got submission', submission);
       this.setSubmission(submission).then(() => this.submit());
     }, true);
 
     // Trigger when this form is ready.
     this.on('iframe-ready', () => {
-      console.log('Invoking iframeReadyResolve to mark iframe as ready');
       return this.iframeReadyResolve();
     }, true);
   }
 
-  destroy() {
-    console.log('PDF Destroy');
-    this.off('iframe-submission');
-    this.off('iframe-ready');
-  }
-
   render() {
-    console.log('PDF Render');
     return this.renderTemplate('pdf', {
       classes: 'formio-form-pdf',
       children: this.renderComponents()
     });
   }
 
+  redraw() {
+    return super.redraw();
+  }
+
   attach(element) {
-    console.log('PDF Attach');
-    this.loadRefs(element, {
-      submitButton: 'single',
-      iframe: 'single'
+    return super.attach(element).then(() => {
+      this.loadRefs(element, {
+        submitButton: 'single',
+        iframeContainer: 'single'
+      });
+
+      // iframes cannot be in the template so manually create it
+      this.iframeElement = this.iframeElement || this.ce('iframe', {
+        src: this.getSrc(),
+        id: `iframe-${this.id}`,
+        seamless: true,
+        class: 'formio-iframe'
+      });
+
+      this.refreshIframeReadyPromise();
+
+      this.iframeElement.formioContainer = this.component.components;
+      this.iframeElement.formioComponent = this;
+
+      // Append the iframe to the iframeContainer in the template
+      this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+      // Post the form to the iframe
+      this.postMessage({ name: 'form', data: this.form });
+
+      this.addEventListener(this.refs.submitButton, 'click', () => {
+        this.postMessage({ name: 'getSubmission' });
+      });
+
+      const form = _.cloneDeep(this.form);
+      if (this.formio) {
+        form.projectUrl = this.formio.projectUrl;
+        form.url = this.formio.formUrl;
+        form.base = this.formio.base;
+        this.postMessage({ name: 'token', data: this.formio.getToken() });
+      }
+
+      this.emit('attach');
     });
+  }
 
-    // iframes cannot be in the template so manually create it.
-    this.appendChild(this.refs.iframe, this.ce('iframe', {
-      src: this.getSrc(),
-      id: `iframe-${this.id}`,
-      seamless: true,
-      class: 'formio-iframe'
-    }));
+  detach() {
+    this.removeEventListener(this.refs.submitButton, 'click');
 
-    this.addEventListener(this.refs.submitButton, 'click', () => {
-      console.log('clicked!');
-      this.postMessage({ name: 'getSubmission' });
-    });
+    const result = super.detach();
 
-    const form = _.cloneDeep(this.form);
-    if (this.formio) {
-      form.projectUrl = this.formio.projectUrl;
-      form.url = this.formio.formUrl;
-      form.base = this.formio.base;
-      this.postMessage({ name: 'token', data: this.formio.getToken() });
-    }
+    return result;
+  }
 
-    return super.attach(element);
+  destroy() {
+    this.off('iframe-submission');
+    this.off('iframe-ready');
+
+    const result = super.destroy();
+
+    return result;
   }
 
   getSrc() {
@@ -108,26 +141,7 @@ export default class PDF extends Webform {
     return iframeSrc;
   }
 
-  rebuild() {
-    console.log('PDF Rebuild');
-    // return super.rebuild();
-  }
-
-  redraw() {
-    console.log('PDF Redraw');
-
-    // If iframe already exists, don't redraw.
-    if (this.refs.iframe) {
-      console.log('Skipping redraw');
-      return;
-    }
-
-    // this.postMessage({ name: 'redraw' });
-    return super.redraw();
-  }
-
   setForm(form) {
-    console.log('PDF setForm', form);
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -149,45 +163,44 @@ export default class PDF extends Webform {
       message.type = 'iframe-data';
     }
 
-    this.iframeReady.then(() => {
-      console.log('doing message', message);
-      if (this.refs.iframe && this.refs.iframe.contentWindow) {
-        this.refs.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+    this.iframeReady = this.iframeReady.then(() => {
+      if (this.iframeElement && this.iframeElement.contentWindow) {
+        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
       }
     });
   }
 
-  // // Do not clear the iframe.
-  // clear() {}
+  // Do not clear the iframe.
+  clear() {}
 
-  // setSubmission(submission) {
-  //   submission.readOnly = !!this.options.readOnly;
-  //   this.postMessage({ name: 'submission', data: submission });
-  //   return super.setSubmission(submission).then(() => {
-  //     if (this.formio) {
-  //       this.formio.getDownloadUrl().then((url) => {
-  //         // Add a download button if it has a download url.
-  //         if (!url) {
-  //           return;
-  //         }
-  //         if (!this.downloadButton) {
-  //           if (this.options.primaryProject) {
-  //             url += `&project=${this.options.primaryProject}`;
-  //           }
-  //           this.downloadButton = this.ce('a', {
-  //             href: url,
-  //             target: '_blank',
-  //             style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-  //           }, this.ce('img', {
-  //             src: require('./pdf.image'),
-  //             style: 'width:3em;'
-  //           }));
-  //           this.element.insertBefore(this.downloadButton, this.iframe);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
+  setSubmission(submission) {
+    submission.readOnly = !!this.options.readOnly;
+    this.postMessage({ name: 'submission', data: submission });
+    return super.setSubmission(submission).then(() => {
+      if (this.formio) {
+        this.formio.getDownloadUrl().then((url) => {
+          // Add a download button if it has a download url.
+          if (!url) {
+            return;
+          }
+          if (!this.downloadButton) {
+            if (this.options.primaryProject) {
+              url += `&project=${this.options.primaryProject}`;
+            }
+            this.downloadButton = this.ce('a', {
+              href: url,
+              target: '_blank',
+              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
+            }, this.ce('img', {
+              src: require('./pdf.image'),
+              style: 'width:3em;'
+            }));
+            this.element.insertBefore(this.downloadButton, this.iframe);
+          }
+        });
+      }
+    });
+  }
 }
 
 /**

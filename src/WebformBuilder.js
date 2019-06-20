@@ -258,7 +258,7 @@ export default class WebformBuilder extends Component {
 
     // Notify components if they need to modify their render.
     this.options.attachMode = 'builder';
-    this.webform = this.createForm(this.options);
+    this.webform = this.webform || this.createForm(this.options);
   }
 
   createForm(options) {
@@ -407,41 +407,42 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
-    super.attach(element);
-    this.loadRefs(element, {
-      form: 'single',
-      sidebar: 'single',
-      'container': 'multiple',
-      'sidebar-anchor': 'multiple',
-      'sidebar-group': 'multiple',
-      'sidebar-container': 'multiple',
+    return super.attach(element).then(() => {
+      this.loadRefs(element, {
+        form: 'single',
+        sidebar: 'single',
+        'container': 'multiple',
+        'sidebar-anchor': 'multiple',
+        'sidebar-group': 'multiple',
+        'sidebar-container': 'multiple',
+      });
+
+      if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {
+        Templates.current.handleBuilderSidebarScroll.call(this, this);
+      }
+
+      if (!bootstrapVersion(this.options)) {
+        // Initialize
+        this.refs['sidebar-group'].forEach((group) => {
+          group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
+        });
+
+        // Click event
+        this.refs['sidebar-anchor'].forEach((anchor, index) => {
+          this.addEventListener(anchor, 'click', () => {
+            this.refs['sidebar-group'].forEach((group, groupIndex) => {
+              group.style.display = (groupIndex === index) ? 'inherit' : 'none';
+            });
+          }, true);
+        });
+      }
+
+      if (this.dragDropEnabled) {
+        this.initDragula();
+      }
+
+      return this.webform.attach(this.refs.form);
     });
-
-    if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {
-      Templates.current.handleBuilderSidebarScroll.call(this, this);
-    }
-
-    if (!bootstrapVersion(this.options)) {
-      // Initialize
-      this.refs['sidebar-group'].forEach((group) => {
-        group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
-      });
-
-      // Click event
-      this.refs['sidebar-anchor'].forEach((anchor, index) => {
-        this.addEventListener(anchor, 'click', () => {
-          this.refs['sidebar-group'].forEach((group, groupIndex) => {
-            group.style.display = (groupIndex === index) ? 'inherit' : 'none';
-          });
-        }, true);
-      });
-    }
-
-    if (this.dragDropEnabled) {
-      this.initDragula();
-    }
-
-    return this.webform.attach(this.refs.form);
   }
 
   initDragula() {
