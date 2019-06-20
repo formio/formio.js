@@ -7,8 +7,6 @@ import PDF from './PDF';
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
-    console.log('PDFBuilder - constructor');
-
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
@@ -27,12 +25,6 @@ export default class PDFBuilder extends WebformBuilder {
     else {
       super(options);
     }
-
-    this.stateDebug = this.stateDebug || {
-      initialized: false,
-      rendered: false,
-      attached: false
-    };
 
     this.dragDropEnabled = false;
   }
@@ -79,48 +71,12 @@ export default class PDFBuilder extends WebformBuilder {
   //                                       "Y88P"
 
   init() {
-    console.log(`${this.id} - PDFBuilder - init`);
-
-    this.stateDebug = this.stateDebug || {
-      initialized: false,
-      rendered: false,
-      attached: false
-    };
-
-    if (this.stateDebug.initialized) {
-      console.log('WARNING - INITIALIZING ALREADY-INITIALIZED PDFBUILDER');
-    }
-
-    if (this.stateDebug.rendered) {
-      console.log('WARNING - INITIALIZING RENDERED PDFBUILDER');
-    }
-
-    if (this.stateDebug.attached) {
-      console.log('WARNING - INITIALIZING ATTACHED PDFBUILDER');
-    }
-
-    this.stateDebug.initialized = true;
-
     this.options.attachMode = 'builder';
     this.webform = this.webform || this.createForm(this.options);
     this.webform.init();
   }
 
   render() {
-    console.log(`${this.id} - PDFBuilder - render`);
-
-    if (!this.stateDebug.initialized) {
-      console.log('WARNING - RENDERING UNINITIALIZED PDFBUILDER');
-    }
-
-    if (this.stateDebug.rendered) {
-      console.log('WARNING - RENDERING ALREADY-RENDERED PDFBUILDER');
-    }
-
-    if (this.stateDebug.attached) {
-      console.log('WARNING - RENDERING ATTACHED PDFBUILDER');
-    }
-
     const result = this.renderTemplate('pdfBuilder', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
@@ -141,53 +97,10 @@ export default class PDFBuilder extends WebformBuilder {
       form: this.webform.render()
     });
 
-    this.stateDebug.rendered = true;
-
     return result;
   }
 
-  build() {
-    console.log(`${this.id} - PDFBuilder - build`);
-    return super.build();
-  }
-
-  draw() {
-    console.log(`${this.id} - PDFBuilder - draw`);
-    return super.draw();
-  }
-
-  rebuild() {
-    console.log(`${this.id} - PDFBuilder - rebuild`);
-
-    return super.rebuild();
-  }
-
-  redraw() {
-    console.log(`${this.id} - PDFBuilder - redraw`);
-
-    if (!this.stateDebug.initialized) {
-      console.log(`${this.id} - PDFBuilder - redraw - SKIPPING, unitialized!`);
-      return;
-    }
-
-    return super.redraw();
-  }
-
   attach(element) {
-    console.log(`${this.id} - PDFBuilder - attach`);
-
-    if (!this.stateDebug.initialized) {
-      console.log('WARNING - ATTACHING UNINITIALIZED PDFBUILDER');
-    }
-
-    if (!this.stateDebug.rendered) {
-      console.log('WARNING - ATTACHING UNRENDERED PDFBUILDER');
-    }
-
-    if (this.stateDebug.attached) {
-      console.log('WARNING - ATTACHING ALREADY-ATTACHED PDFBUILDER');
-    }
-
     return super.attach(element).then(() => {
       this.loadRefs(this.element, { iframeDropzone: 'single', 'sidebar-container': 'single' });
 
@@ -201,15 +114,11 @@ export default class PDFBuilder extends WebformBuilder {
         this.prepSidebarComponentsForDrag();
       }
 
-      this.stateDebug.attached = true;
-
       return this.element;
     });
   }
 
   createForm(options) {
-    console.log(`${this.id} - PDFBuilder - createForm`);
-
     // Instantiate the webform from the PDF class instead of Webform
     options.skipInit = false;
     this.webform = new PDF(this.element, options);
@@ -220,8 +129,6 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   setForm(form) {
-    console.log(`${this.id} - PDFBuilder - setForm`);
-
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
         if (this.webform) {
@@ -240,37 +147,10 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
-  detach() {
-    console.log(`${this.id} - PDFBuilder - detach`);
-
-    if (!this.stateDebug.initialized) {
-      console.log('WARNING - DETACHING UNINITIALIZED PDFBUILDER');
-    }
-
-    if (!this.stateDebug.rendered) {
-      console.log('WARNING - DETACHING UNRENDERED PDFBUILDER');
-    }
-
-    if (!this.stateDebug.attached) {
-      console.log('WARNING - DETACHING UNATTACHED PDFBUILDER');
-    }
-
-    const result = super.detach();
-
-    this.stateDebug.attached = false;
-
-    return result;
-  }
-
   destroy() {
-    console.log(`${this.id} - PDFBuilder - destroy`);
-
     super.destroy();
 
     this.webform.destroy();
-
-    this.stateDebug.initialized = false;
-    this.stateDebug.rendered = false;
   }
 
   // d8b 8888888888                                                                              888
@@ -338,7 +218,6 @@ export default class PDFBuilder extends WebformBuilder {
   initDropzoneEvents() {
     // This is required per HTML spec in order for the drop event to fire
     this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {
-      console.log('dropzone dragover');
       e.preventDefault();
       return false;
     });
@@ -367,7 +246,6 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDragStart(e) {
-    console.log('component drag start');
     e.dataTransfer.setData('text/html', null);
 
     this.updateDropzoneDimensions();
@@ -375,15 +253,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   onDropzoneDrop(e) {
-    console.log('dropzone drop');
     this.dropEvent = e;
     e.preventDefault();
     return false;
   }
 
   onDragEnd(e) {
-    console.log('component drag end');
-
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
     const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
