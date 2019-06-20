@@ -39,6 +39,21 @@ export default [
   {
     type: 'checkbox',
     input: true,
+    key: 'allowAutoExpanding',
+    label: 'Allow auto expanding',
+    weight: 415,
+    conditional: {
+      json: {
+        '==': [
+          { var: 'data.editor' },
+          ''
+        ]
+      }
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
     key: 'isUploadEnabled',
     label: 'Enable Image Upload',
     weight: 415.1,
