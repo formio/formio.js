@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.8
+### Added
+ - A way to set the "project" and "base" within the formio.embed.js file.
+
 ## 3.22.7
 ### Changed
  - Upgraded core-js@3.1.4, i18next@17.0.4, babel-eslint@10.0.2
