@@ -398,9 +398,9 @@ export default class PDFBuilder extends WebformBuilder {
     // return super.addComponent(component, element, data, before, true);
   }
 
-  removeComponent(a, b, c, d, e, f) {
-    console.log('PDFBuilder.removeComponent()');
-  }
+  // removeComponent(a, b, c, d, e, f) {
+  //   console.log('PDFBuilder.removeComponent()');
+  // }
 
   // 8888888b.                                                                   888                   d8b
   // 888  "Y88b                                                                  888                   Y8P
@@ -462,6 +462,12 @@ export default class PDFBuilder extends WebformBuilder {
 
   onDragEnd(e) {
     console.log('component drag end');
+
+    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
+    // reflect absolute positioning if accessed after the target element is hidden
+    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;
+    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;
+
     // Always disable the dropzone on drag end
     this.removeClass(this.refs.iframeDropzone, 'enabled');
 
@@ -488,16 +494,13 @@ export default class PDFBuilder extends WebformBuilder {
 
     this.emit('addComponent', schema);
 
-    // this.webform.rebuild();
-
     schema.overlay = {
-      top: this.dropEvent.offsetY,
-      left: this.dropEvent.offsetX,
+      top: offsetY,
+      left: offsetX,
       width: 100,
       height: 20
     };
 
-    // this.addComponentTo(this, component.schema, this.getContainer());
     this.webform.addComponent(schema, {}, null, true);
     this.webform.postMessage({ name: 'addElement', data: schema });
 

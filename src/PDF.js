@@ -186,6 +186,8 @@ export default class PDF extends Webform {
       }
 
       this.stateDebug.attached = true;
+
+      this.emit('attach');
     });
   }
 
@@ -290,7 +292,7 @@ export default class PDF extends Webform {
   }
 
   // Do not clear the iframe.
-  // clear() {}
+  clear() {}
 
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
