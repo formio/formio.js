@@ -289,37 +289,37 @@ export default class PDF extends Webform {
     });
   }
 
-  // // Do not clear the iframe.
+  // Do not clear the iframe.
   // clear() {}
 
-  // setSubmission(submission) {
-  //   submission.readOnly = !!this.options.readOnly;
-  //   this.postMessage({ name: 'submission', data: submission });
-  //   return super.setSubmission(submission).then(() => {
-  //     if (this.formio) {
-  //       this.formio.getDownloadUrl().then((url) => {
-  //         // Add a download button if it has a download url.
-  //         if (!url) {
-  //           return;
-  //         }
-  //         if (!this.downloadButton) {
-  //           if (this.options.primaryProject) {
-  //             url += `&project=${this.options.primaryProject}`;
-  //           }
-  //           this.downloadButton = this.ce('a', {
-  //             href: url,
-  //             target: '_blank',
-  //             style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-  //           }, this.ce('img', {
-  //             src: require('./pdf.image'),
-  //             style: 'width:3em;'
-  //           }));
-  //           this.element.insertBefore(this.downloadButton, this.iframe);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
+  setSubmission(submission) {
+    submission.readOnly = !!this.options.readOnly;
+    this.postMessage({ name: 'submission', data: submission });
+    return super.setSubmission(submission).then(() => {
+      if (this.formio) {
+        this.formio.getDownloadUrl().then((url) => {
+          // Add a download button if it has a download url.
+          if (!url) {
+            return;
+          }
+          if (!this.downloadButton) {
+            if (this.options.primaryProject) {
+              url += `&project=${this.options.primaryProject}`;
+            }
+            this.downloadButton = this.ce('a', {
+              href: url,
+              target: '_blank',
+              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
+            }, this.ce('img', {
+              src: require('./pdf.image'),
+              style: 'width:3em;'
+            }));
+            this.element.insertBefore(this.downloadButton, this.iframe);
+          }
+        });
+      }
+    });
+  }
 }
 
 /**
