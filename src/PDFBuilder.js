@@ -81,8 +81,6 @@ export default class PDFBuilder extends WebformBuilder {
   init() {
     console.log(`${this.id} - PDFBuilder - init`);
 
-    // const result = super.init()
-
     this.stateDebug = this.stateDebug || {
       initialized: false,
       rendered: false,
@@ -106,8 +104,6 @@ export default class PDFBuilder extends WebformBuilder {
     this.options.attachMode = 'builder';
     this.webform = this.webform || this.createForm(this.options);
     this.webform.init();
-
-    // return result;
   }
 
   render() {
@@ -163,15 +159,6 @@ export default class PDFBuilder extends WebformBuilder {
   rebuild() {
     console.log(`${this.id} - PDFBuilder - rebuild`);
 
-    /*
-     There is no WebformBuilder.rebuild; this invokes Component.rebuild():
-
-      rebuild() {
-        this.destroy();
-        this.init();
-        this.redraw();
-      }
-    */
     return super.rebuild();
   }
 
@@ -201,23 +188,6 @@ export default class PDFBuilder extends WebformBuilder {
       console.log('WARNING - ATTACHING ALREADY-ATTACHED PDFBUILDER');
     }
 
-    /*
-      This invokes WebformBuilder.attach(), which does a lot, and which also invokes Component.attach():
-
-      attach(element) {
-        return super.attach(element).then(() => {
-          // loads refs
-
-          // sets up some click events
-
-          // initializes dragula
-
-          // calls .attach() on the webform (for us, PDF.attach())
-
-          return this.webform.attach(this.refs.form);
-        });
-      }
-    */
     return super.attach(element).then(() => {
       this.loadRefs(this.element, { iframeDropzone: 'single', 'sidebar-container': 'single' });
 
@@ -230,8 +200,6 @@ export default class PDFBuilder extends WebformBuilder {
       if (this.refs['sidebar-container']) {
         this.prepSidebarComponentsForDrag();
       }
-
-      // this.formReadyResolve();
 
       this.stateDebug.attached = true;
 
@@ -275,27 +243,6 @@ export default class PDFBuilder extends WebformBuilder {
   detach() {
     console.log(`${this.id} - PDFBuilder - detach`);
 
-    /*
-      This invokes WebformBuilder.detach, and through it Component.detach():
-
-      detach() {
-        if (this.dragula) {
-          this.dragula.destroy();
-        }
-        this.dragula = null;
-        if (this.sideBarScroll && Templates.current.clearBuilderSidebarScroll) {
-          Templates.current.clearBuilderSidebarScroll.call(this, this);
-        }
-
-        // Via Component.detach():
-
-        this.removeEventListeners();
-        if (this.tooltip) {
-          this.tooltip.dispose();
-        }
-      }
-    */
-
     if (!this.stateDebug.initialized) {
       console.log('WARNING - DETACHING UNINITIALIZED PDFBUILDER');
     }
@@ -318,29 +265,12 @@ export default class PDFBuilder extends WebformBuilder {
   destroy() {
     console.log(`${this.id} - PDFBuilder - destroy`);
 
-    /*
-      There is no WebformBuilder.destroy; this invokes Component.destroy():
-
-      destroy() {
-        this.removeEventListeners();
-        this.removeAllEvents();
-        this.detach();
-      }
-    */
-
     super.destroy();
 
-    /*
-      This removes event listeners:
-
-      this.off('iframe-submission');
-      this.off('iframe-ready');
-    */
     this.webform.destroy();
 
     this.stateDebug.initialized = false;
     this.stateDebug.rendered = false;
-    // this.stateDebug.attached = false;
   }
 
   // d8b 8888888888                                                                              888
@@ -392,15 +322,6 @@ export default class PDFBuilder extends WebformBuilder {
       }
     }, true);
   }
-
-  addComponent(component, element, data, before) {
-    console.log('PDFBuilder.addComponent()');
-    // return super.addComponent(component, element, data, before, true);
-  }
-
-  // removeComponent(a, b, c, d, e, f) {
-  //   console.log('PDFBuilder.removeComponent()');
-  // }
 
   // 8888888b.                                                                   888                   d8b
   // 888  "Y88b                                                                  888                   Y8P
@@ -507,33 +428,4 @@ export default class PDFBuilder extends WebformBuilder {
     // Delete the stored drop event now that it's been handled
     this.dropEvent = null;
   }
-
-  // addComponentTo(parent, schema, element, sibling) {
-  //   const comp = super.addComponentTo(parent, schema, element, sibling);
-  //   comp.isNew = true;
-  //   if (this.webform && schema.overlay) {
-  //     this.webform.postMessage({ name: 'addElement', data: schema });
-  //   }
-  //   return comp;
-  // }
-
-  // deleteComponent(component) {
-  //   if (this.webform && component.component) {
-  //     this.webform.postMessage({ name: 'removeElement', data: component.component });
-  //   }
-  //   return super.deleteComponent(component);
-  // }
-
-  // removeEventListeners(all) {
-  //   super.removeEventListeners(all);
-  //   _.each(this.groups, (group) => {
-  //     _.each(group.components, (builderComponent) => {
-  //       this.removeEventListener(builderComponent, 'dragstart');
-  //       this.removeEventListener(builderComponent, 'dragend');
-  //     });
-  //   });
-  // }
-
-  // Don't need to add a submit button here... the webform will already do this.
-  // addSubmitButton() {}
 }

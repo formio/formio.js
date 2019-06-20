@@ -122,13 +122,6 @@ export default class PDF extends Webform {
       return;
     }
 
-    // If iframe already exists, don't redraw.
-    // if (this.refs.iframe) {
-    //   console.log('Skipping redraw');
-    //   return;
-    // }
-
-    // this.postMessage({ name: 'redraw' });
     return super.redraw();
   }
 
@@ -207,8 +200,6 @@ export default class PDF extends Webform {
     }
 
     this.removeEventListener(this.refs.submitButton, 'click');
-
-    // this.removeChild(this.refs.iframe);
 
     const result = super.detach();
 
