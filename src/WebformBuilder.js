@@ -344,6 +344,46 @@ export default class WebformBuilder extends Component {
     return this._form.components;
   }
 
+  /**
+   * When a component sets its api key, we need to check if it is unique within its namespace. Find the namespace root
+   * so we can calculate this correctly.
+   * @param component
+   */
+  findNamespaceRoot(component) {
+    // First get the component with nested parents.
+    const comp = getComponent(this._form.components, component.key, true);
+    const namespaceKey = this.recurseNamespace(comp);
+
+    // If there is no key, it is the root form.
+    if (!namespaceKey || this._form.key === namespaceKey) {
+      return this._form.components;
+    }
+
+    // If the current component is the namespace, we don't need to find it again.
+    if (namespaceKey === component.key) {
+      return component.components;
+    }
+
+    // Get the namespace component so we have the original object.
+    const namespaceComponent = getComponent(this._form.components, namespaceKey, true);
+    return namespaceComponent.components;
+  }
+
+  recurseNamespace(component) {
+    // If there is no parent, we are at the root level.
+    if (!component) {
+      return null;
+    }
+
+    // Some components are their own namespace.
+    if (['container', 'datagrid', 'editgrid', 'tree'].includes(component.type) || component.tree || component.arrayTree) {
+      return component.key;
+    }
+
+    // Anything else, keep going up.
+    return this.recurseNamespace(component.parent);
+  }
+
   render() {
     return this.renderTemplate('builder', {
       sidebar: this.renderTemplate('builderSidebar', {
@@ -471,9 +511,6 @@ export default class WebformBuilder extends Component {
         info.type
       );
 
-      // Set a unique key for this component.
-      BuilderUtils.uniquify([target.formioComponent.component], info);
-
       isNew = true;
     }
     else {
@@ -486,12 +523,12 @@ export default class WebformBuilder extends Component {
 
         // Since splice returns an array of one object, we need to destructure it.
         info = info[0];
-
-        if (target !== source) {
-          // Ensure the key remains unique in its new container.
-          BuilderUtils.uniquify(target.formioContainer, info);
-        }
       }
+    }
+
+    if (target !== source) {
+      // Ensure the key remains unique in its new container.
+      BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
     }
 
     // Insert in the new container.
@@ -508,6 +545,7 @@ export default class WebformBuilder extends Component {
     else {
       target.formioContainer.push(info);
     }
+
     this.emit('addComponent', info);
 
     if (isNew && !this.options.noNewEdit) {
@@ -723,7 +761,7 @@ export default class WebformBuilder extends Component {
 
             if (this._form) {
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this._form.components, event.data);
+              BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), event.data);
             }
           }
         }
@@ -811,7 +849,7 @@ export default class WebformBuilder extends Component {
       if (data) {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this.webform.components, schema);
+        BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), schema);
         component.parent.addComponent(schema, false, component.element.nextElementSibling.lastElementChild);
         this.form = this.schema;
         this.emit('saveComponent');
