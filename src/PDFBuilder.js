@@ -363,7 +363,7 @@ export default class PDFBuilder extends WebformBuilder {
           height: schema.height,
           width: schema.width
         };
-        this.editComponent(component);
+        this.editComponent(component.component, this.webform.iframeElement);
         this.emit('updateComponent', component);
       }
       return component;
@@ -388,7 +388,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component) {
-        this.editComponent(component);
+        this.editComponent(component.component, this.webform.iframeElement);
       }
     }, true);
   }

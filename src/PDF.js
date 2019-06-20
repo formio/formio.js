@@ -16,12 +16,26 @@ export default class PDF extends Webform {
       attached: false
     };
 
-    // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) => {
-      console.log('Setting up this.iframeReadyResolve');
-      this.iframeReadyResolve = resolve;
-    });
+    this.refreshIframeReadyPromise();
+
     this.components = [];
+  }
+
+  refreshIframeReadyPromise() {
+    if (this.iframeReadyReject) {
+      this.iframeReady = this.iframeReady.catch(err => {
+        return;
+      });
+
+      this.iframeReadyReject();
+    }
+
+    // Resolve when the iframe is ready.
+    this.iframeReady = new Promise((resolve, reject) => {
+      console.log('Setting up this.iframeReadyResolve / this.iframeReadyReject');
+      this.iframeReadyResolve = resolve;
+      this.iframeReadyReject = reject;
+    });
   }
 
   init() {
@@ -147,8 +161,16 @@ export default class PDF extends Webform {
         class: 'formio-iframe'
       });
 
+      this.refreshIframeReadyPromise();
+
+      this.iframeElement.formioContainer = this.component.components;
+      this.iframeElement.formioComponent = this;
+
       // Append the iframe to the iframeContainer in the template
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+      // Post the form to the iframe
+      this.postMessage({ name: 'form', data: this.form });
 
       this.addEventListener(this.refs.submitButton, 'click', () => {
         console.log('clicked!');
@@ -259,7 +281,7 @@ export default class PDF extends Webform {
       message.type = 'iframe-data';
     }
 
-    this.iframeReady.then(() => {
+    this.iframeReady = this.iframeReady.then(() => {
       console.log('doing message', message);
       if (this.iframeElement && this.iframeElement.contentWindow) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
