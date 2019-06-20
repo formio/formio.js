@@ -363,7 +363,9 @@ export default class Component extends Element {
     // Allow anyone to hook into the component creation.
     this.hook('component');
 
-    this.init();
+    if (!this.options.skipInit) {
+      this.init();
+    }
   }
   /* eslint-enable max-statements */
 

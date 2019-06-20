@@ -7,8 +7,14 @@ import Webform from './Webform';
 
 export default class PDF extends Webform {
   constructor(element, options) {
-    console.log('Creating PDF');
+    console.log('PDF - constructor');
     super(element, options);
+
+    this.stateDebug = this.stateDebug || {
+      initialized: false,
+      rendered: false,
+      attached: false
+    };
 
     // Resolve when the iframe is ready.
     this.iframeReady = new Promise((resolve) => {
@@ -19,9 +25,29 @@ export default class PDF extends Webform {
   }
 
   init() {
-    console.log('PDF Init');
+    console.log(`${this.id} - PDF - init`);
 
-    // super.init();
+    this.stateDebug = this.stateDebug || {
+      initialized: false,
+      rendered: false,
+      attached: false
+    };
+
+    if (this.stateDebug.initialized) {
+      console.log('WARNING - INITIALIZING ALREADY-INITIALIZED PDF');
+    }
+
+    if (this.stateDebug.rendered) {
+      console.log('WARNING - INITIALIZING RENDERED PDF');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - INITIALIZING ATTACHED PDF');
+    }
+
+    this.stateDebug.initialized = true;
+
+    super.init();
 
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => {
@@ -36,49 +62,148 @@ export default class PDF extends Webform {
     }, true);
   }
 
-  destroy() {
-    console.log('PDF Destroy');
-    this.off('iframe-submission');
-    this.off('iframe-ready');
-  }
-
   render() {
-    console.log('PDF Render');
+    console.log(`${this.id} - PDF - render`);
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - RENDERING UNINITIALIZED PDF');
+    }
+
+    if (this.stateDebug.rendered) {
+      console.log('WARNING - RENDERING ALREADY-RENDERED PDF');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - RENDERING ATTACHED PDF');
+    }
+
+    this.stateDebug.rendered = true;
+
     return this.renderTemplate('pdf', {
       classes: 'formio-form-pdf',
       children: this.renderComponents()
     });
   }
 
-  attach(element) {
-    console.log('PDF Attach');
-    this.loadRefs(element, {
-      submitButton: 'single',
-      iframe: 'single'
-    });
+  build() {
+    console.log(`${this.id} - PDF - build`);
+    return super.build();
+  }
 
-    // iframes cannot be in the template so manually create it.
-    this.appendChild(this.refs.iframe, this.ce('iframe', {
-      src: this.getSrc(),
-      id: `iframe-${this.id}`,
-      seamless: true,
-      class: 'formio-iframe'
-    }));
+  draw() {
+    console.log(`${this.id} - PDF - draw`);
+    return super.draw();
+  }
 
-    this.addEventListener(this.refs.submitButton, 'click', () => {
-      console.log('clicked!');
-      this.postMessage({ name: 'getSubmission' });
-    });
+  rebuild() {
+    console.log(`${this.id} - PDF - rebuild`);
+    return super.rebuild();
+  }
 
-    const form = _.cloneDeep(this.form);
-    if (this.formio) {
-      form.projectUrl = this.formio.projectUrl;
-      form.url = this.formio.formUrl;
-      form.base = this.formio.base;
-      this.postMessage({ name: 'token', data: this.formio.getToken() });
+  redraw() {
+    console.log(`${this.id} - PDF - redraw`);
+
+    if (!this.stateDebug.initialized) {
+      console.log(`${this.id} - PDF - redraw - SKIPPING, unitialized!`);
+      return;
     }
 
-    return super.attach(element);
+    // If iframe already exists, don't redraw.
+    // if (this.refs.iframe) {
+    //   console.log('Skipping redraw');
+    //   return;
+    // }
+
+    // this.postMessage({ name: 'redraw' });
+    return super.redraw();
+  }
+
+  attach(element) {
+    console.log(`${this.id} - PDF - attach`);
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - ATTACHING UNINITIALIZED PDF');
+    }
+
+    if (!this.stateDebug.rendered) {
+      console.log('WARNING - ATTACHING UNRENDERED PDF');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - ATTACHING ALREADY-ATTACHED PDF');
+    }
+
+    return super.attach(element).then(() => {
+      this.loadRefs(element, {
+        submitButton: 'single',
+        iframeContainer: 'single'
+      });
+
+      // iframes cannot be in the template so manually create it
+      this.iframeElement = this.iframeElement || this.ce('iframe', {
+        src: this.getSrc(),
+        id: `iframe-${this.id}`,
+        seamless: true,
+        class: 'formio-iframe'
+      });
+
+      // Append the iframe to the iframeContainer in the template
+      this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+      this.addEventListener(this.refs.submitButton, 'click', () => {
+        console.log('clicked!');
+        this.postMessage({ name: 'getSubmission' });
+      });
+
+      const form = _.cloneDeep(this.form);
+      if (this.formio) {
+        form.projectUrl = this.formio.projectUrl;
+        form.url = this.formio.formUrl;
+        form.base = this.formio.base;
+        this.postMessage({ name: 'token', data: this.formio.getToken() });
+      }
+
+      this.stateDebug.attached = true;
+    });
+  }
+
+  detach() {
+    console.log(`${this.id} - PDF - detach`);
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - DETACHING UNINITIALIZED PDF');
+    }
+
+    if (!this.stateDebug.rendered) {
+      console.log('WARNING - DETACHING UNRENDERED PDF');
+    }
+
+    if (!this.stateDebug.attached) {
+      console.log('WARNING - DETACHING UNATTACHED PDF');
+    }
+
+    this.removeEventListener(this.refs.submitButton, 'click');
+
+    // this.removeChild(this.refs.iframe);
+
+    const result = super.detach();
+
+    this.stateDebug.attached = false;
+
+    return result;
+  }
+
+  destroy() {
+    console.log(`${this.id} - PDF - destroy`);
+    this.off('iframe-submission');
+    this.off('iframe-ready');
+
+    const result = super.destroy();
+
+    this.stateDebug.initialized = false;
+    this.stateDebug.rendered = false;
+
+    return result;
   }
 
   getSrc() {
@@ -108,26 +233,9 @@ export default class PDF extends Webform {
     return iframeSrc;
   }
 
-  rebuild() {
-    console.log('PDF Rebuild');
-    // return super.rebuild();
-  }
-
-  redraw() {
-    console.log('PDF Redraw');
-
-    // If iframe already exists, don't redraw.
-    if (this.refs.iframe) {
-      console.log('Skipping redraw');
-      return;
-    }
-
-    // this.postMessage({ name: 'redraw' });
-    return super.redraw();
-  }
-
   setForm(form) {
-    console.log('PDF setForm', form);
+    console.log(`${this.id} - PDF - setForm`);
+
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -140,6 +248,8 @@ export default class PDF extends Webform {
   }
 
   postMessage(message) {
+    console.log(`${this.id} - PDF - postMessage - ${JSON.stringify(message.name)}`);
+
     // If we get here before the iframeReady promise is set up, it's via the superclass constructor
     if (!this.iframeReady) {
       return;
@@ -151,8 +261,8 @@ export default class PDF extends Webform {
 
     this.iframeReady.then(() => {
       console.log('doing message', message);
-      if (this.refs.iframe && this.refs.iframe.contentWindow) {
-        this.refs.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+      if (this.iframeElement && this.iframeElement.contentWindow) {
+        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
       }
     });
   }

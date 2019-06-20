@@ -126,6 +126,10 @@ export default class Form extends Element {
    * @return {Promise<T>}
    */
   setDisplay(display) {
+    if (this.form.display === display) {
+      return Promise.resolve();
+    }
+
     this.form.display = display;
     this.instance.destroy();
     this.instance = this.create(display);

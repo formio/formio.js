@@ -7,27 +7,32 @@ import PDF from './PDF';
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
-    console.log('Creating PDFBuilder');
+    console.log('PDFBuilder - constructor');
 
-    // TODO: reinstate this logic; actually accept incoming options and appropriately pass them to super constructor
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
 
-    // let element, options;
-    // if (arguments[0] instanceof HTMLElement || arguments[1]) {
-    //   element = arguments[0];
-    //   options = arguments[1];
-    // }
-    // else {
-    //   options = arguments[0];
-    // }
+    // Force superclass to skip the automatic init; we'll trigger it manually
+    options.skipInit = true;
 
-    // if (element) {
-    //   super(element, options);
-    // }
-    // else {
-    //   super(options);
-    // }
+    if (element) {
+      super(element, options);
+    }
+    else {
+      super(options);
+    }
 
-    super();
+    this.stateDebug = this.stateDebug || {
+      initialized: false,
+      rendered: false,
+      attached: false
+    };
 
     this.dragDropEnabled = false;
   }
@@ -73,18 +78,146 @@ export default class PDFBuilder extends WebformBuilder {
   //                                      Y8b d88P
   //                                       "Y88P"
 
+  init() {
+    console.log(`${this.id} - PDFBuilder - init`);
+
+    // const result = super.init()
+
+    this.stateDebug = this.stateDebug || {
+      initialized: false,
+      rendered: false,
+      attached: false
+    };
+
+    if (this.stateDebug.initialized) {
+      console.log('WARNING - INITIALIZING ALREADY-INITIALIZED PDFBUILDER');
+    }
+
+    if (this.stateDebug.rendered) {
+      console.log('WARNING - INITIALIZING RENDERED PDFBUILDER');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - INITIALIZING ATTACHED PDFBUILDER');
+    }
+
+    this.stateDebug.initialized = true;
+
+    this.options.attachMode = 'builder';
+    this.webform = this.webform || this.createForm(this.options);
+    this.webform.init();
+
+    // return result;
+  }
+
   render() {
-    return this.renderTemplate('pdfBuilder', {
+    console.log(`${this.id} - PDFBuilder - render`);
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - RENDERING UNINITIALIZED PDFBUILDER');
+    }
+
+    if (this.stateDebug.rendered) {
+      console.log('WARNING - RENDERING ALREADY-RENDERED PDFBUILDER');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - RENDERING ATTACHED PDFBUILDER');
+    }
+
+    const result = this.renderTemplate('pdfBuilder', {
       sidebar: this.renderTemplate('builderSidebar', {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
-        groups: this.groups,
+        groupId: `builder-sidebar-${this.id}`,
+        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: this.groups[groupKey],
+          groupKey,
+          groupId: `builder-sidebar-${this.id}`,
+          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `builder-sidebar-${groupKey}`,
+            subgroups: []
+          })),
+        })),
       }),
       form: this.webform.render()
     });
+
+    this.stateDebug.rendered = true;
+
+    return result;
+  }
+
+  build() {
+    console.log(`${this.id} - PDFBuilder - build`);
+    return super.build();
+  }
+
+  draw() {
+    console.log(`${this.id} - PDFBuilder - draw`);
+    return super.draw();
+  }
+
+  rebuild() {
+    console.log(`${this.id} - PDFBuilder - rebuild`);
+
+    /*
+     There is no WebformBuilder.rebuild; this invokes Component.rebuild():
+
+      rebuild() {
+        this.destroy();
+        this.init();
+        this.redraw();
+      }
+    */
+    return super.rebuild();
+  }
+
+  redraw() {
+    console.log(`${this.id} - PDFBuilder - redraw`);
+
+    if (!this.stateDebug.initialized) {
+      console.log(`${this.id} - PDFBuilder - redraw - SKIPPING, unitialized!`);
+      return;
+    }
+
+    return super.redraw();
   }
 
   attach(element) {
+    console.log(`${this.id} - PDFBuilder - attach`);
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - ATTACHING UNINITIALIZED PDFBUILDER');
+    }
+
+    if (!this.stateDebug.rendered) {
+      console.log('WARNING - ATTACHING UNRENDERED PDFBUILDER');
+    }
+
+    if (this.stateDebug.attached) {
+      console.log('WARNING - ATTACHING ALREADY-ATTACHED PDFBUILDER');
+    }
+
+    /*
+      This invokes WebformBuilder.attach(), which does a lot, and which also invokes Component.attach():
+
+      attach(element) {
+        return super.attach(element).then(() => {
+          // loads refs
+
+          // sets up some click events
+
+          // initializes dragula
+
+          // calls .attach() on the webform (for us, PDF.attach())
+
+          return this.webform.attach(this.refs.form);
+        });
+      }
+    */
     return super.attach(element).then(() => {
       this.loadRefs(this.element, { iframeDropzone: 'single', 'sidebar-container': 'single' });
 
@@ -100,12 +233,17 @@ export default class PDFBuilder extends WebformBuilder {
 
       // this.formReadyResolve();
 
+      this.stateDebug.attached = true;
+
       return this.element;
     });
   }
 
   createForm(options) {
+    console.log(`${this.id} - PDFBuilder - createForm`);
+
     // Instantiate the webform from the PDF class instead of Webform
+    options.skipInit = false;
     this.webform = new PDF(this.element, options);
 
     this.webform.on('attach', this.onPdfAttach.bind(this));
@@ -114,6 +252,8 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   setForm(form) {
+    console.log(`${this.id} - PDFBuilder - setForm`);
+
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
         if (this.webform) {
@@ -132,11 +272,75 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
+  detach() {
+    console.log(`${this.id} - PDFBuilder - detach`);
+
+    /*
+      This invokes WebformBuilder.detach, and through it Component.detach():
+
+      detach() {
+        if (this.dragula) {
+          this.dragula.destroy();
+        }
+        this.dragula = null;
+        if (this.sideBarScroll && Templates.current.clearBuilderSidebarScroll) {
+          Templates.current.clearBuilderSidebarScroll.call(this, this);
+        }
+
+        // Via Component.detach():
+
+        this.removeEventListeners();
+        if (this.tooltip) {
+          this.tooltip.dispose();
+        }
+      }
+    */
+
+    if (!this.stateDebug.initialized) {
+      console.log('WARNING - DETACHING UNINITIALIZED PDFBUILDER');
+    }
+
+    if (!this.stateDebug.rendered) {
+      console.log('WARNING - DETACHING UNRENDERED PDFBUILDER');
+    }
+
+    if (!this.stateDebug.attached) {
+      console.log('WARNING - DETACHING UNATTACHED PDFBUILDER');
+    }
+
+    const result = super.detach();
+
+    this.stateDebug.attached = false;
+
+    return result;
+  }
+
   destroy() {
-    console.log('Destroying PDFBuilder');
-    const state = super.destroy();
+    console.log(`${this.id} - PDFBuilder - destroy`);
+
+    /*
+      There is no WebformBuilder.destroy; this invokes Component.destroy():
+
+      destroy() {
+        this.removeEventListeners();
+        this.removeAllEvents();
+        this.detach();
+      }
+    */
+
+    super.destroy();
+
+    /*
+      This removes event listeners:
+
+      this.off('iframe-submission');
+      this.off('iframe-ready');
+    */
     this.webform.destroy();
-    return state;
+
+    this.stateDebug.initialized = false;
+    this.stateDebug.rendered = false;
+    // this.stateDebug.attached = false;
   }
 
   // d8b 8888888888                                                                              888
@@ -236,7 +440,7 @@ export default class PDFBuilder extends WebformBuilder {
       return;
     }
 
-    const iframeRect = getElementRect(this.webform.refs.iframe);
+    const iframeRect = getElementRect(this.webform.refs.iframeContainer);
     this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';
     this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';
   }
