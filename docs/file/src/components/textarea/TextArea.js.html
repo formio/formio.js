@@ -304,6 +304,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly &amp;&amp; this.component.wysiwyg;
   }
 
+  get autoExpand() {
+    return this.component.autoExpand;
+  }
+
   /**
    * Updates the editor value.
    *
@@ -353,6 +357,14 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   enableWysiwyg() {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
+      if (this.autoExpand) {
+        this.element.childNodes.forEach((element) =&gt; {
+          if (element.nodeName === &apos;TEXTAREA&apos;) {
+            this.addAutoExpanding(element);
+          }
+        });
+      }
+
       return;
     }
 
@@ -580,6 +592,91 @@ export default class TextAreaComponent extends TextFieldComponent {
     }));
   }
 
+  addAutoExpanding(textarea) {
+    let heightOffset = null;
+    let previousHeight = null;
+
+    const changeOverflow = (value) =&gt; {
+      const width = textarea.style.width;
+
+      textarea.style.width = &apos;0px&apos;;
+      textarea.offsetWidth;
+      textarea.style.width = width;
+
+      textarea.style.overflowY = value;
+    };
+
+    const preventParentScroll = (element, changeSize) =&gt; {
+      const nodeScrolls = [];
+
+      while (element &amp;&amp; element.parentNode &amp;&amp; element.parentNode instanceof Element) {
+        if (element.parentNode.scrollTop) {
+          nodeScrolls.push({
+            node: element.parentNode,
+            scrollTop: element.parentNode.scrollTop,
+          });
+        }
+        element = element.parentNode;
+      }
+
+      changeSize();
+
+      nodeScrolls.forEach((nodeScroll) =&gt; {
+        nodeScroll.node.scrollTop = nodeScroll.scrollTop;
+      });
+    };
+
+    const resize = () =&gt; {
+      if (textarea.scrollHeight === 0) {
+        return;
+      }
+
+      preventParentScroll(textarea, () =&gt; {
+        textarea.style.height = &apos;&apos;;
+        textarea.style.height = `${textarea.scrollHeight + heightOffset}px`;
+      });
+    };
+
+    const update = () =&gt; {
+      resize();
+
+      const styleHeight = Math.round(parseFloat(textarea.style.height));
+      const computed = window.getComputedStyle(textarea, null);
+
+      let currentHeight = textarea.offsetHeight;
+
+      if (currentHeight &lt; styleHeight &amp;&amp; computed.overflowY === &apos;hidden&apos;) {
+        changeOverflow(&apos;scroll&apos;);
+      }
+      else if (computed.overflowY !== &apos;hidden&apos;) {
+        changeOverflow(&apos;hidden&apos;);
+      }
+
+      resize();
+      currentHeight = textarea.offsetHeight;
+
+      if (previousHeight !== currentHeight) {
+        previousHeight = currentHeight;
+        update();
+      }
+    };
+
+    const computedStyle = window.getComputedStyle(textarea, null);
+
+    textarea.style.resize = &apos;none&apos;;
+    heightOffset = parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
+
+    if (window) {
+      this.addEventListener(window, &apos;resize&apos;, update);
+    }
+
+    this.addEventListener(textarea, &apos;input&apos;, update);
+
+    this.updateSize = update;
+
+    update();
+  }
+
   removeBlanks(value) {
     if (!value) {
       return value;
@@ -600,6 +697,14 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = removeBlanks(value);
     }
     return value;
+  }
+
+  onChange() {
+    super.onChange();
+
+    if (this.updateSize) {
+      this.updateSize();
+    }
   }
 
   hasChanged(before, after) {
@@ -660,6 +765,11 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.editorReady) {
       this.editorReady.then((editor) =&gt; editor.destroy());
     }
+
+    if (this.updateSize) {
+      this.removeEventListener(window, &apos;resize&apos;, this.updateSize);
+    }
+
     return super.destroy();
   }
 
