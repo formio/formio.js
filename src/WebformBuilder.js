@@ -341,7 +341,7 @@ export default class WebformBuilder extends Component {
   }
 
   get container() {
-    return this._form.components;
+    return this.webform.form.components;
   }
 
   /**
@@ -351,12 +351,12 @@ export default class WebformBuilder extends Component {
    */
   findNamespaceRoot(component) {
     // First get the component with nested parents.
-    const comp = getComponent(this._form.components, component.key, true);
+    const comp = getComponent(this.webform.form.components, component.key, true);
     const namespaceKey = this.recurseNamespace(comp);
 
     // If there is no key, it is the root form.
-    if (!namespaceKey || this._form.key === namespaceKey) {
-      return this._form.components;
+    if (!namespaceKey || this.form.key === namespaceKey) {
+      return this.form.components;
     }
 
     // If the current component is the namespace, we don't need to find it again.
@@ -365,7 +365,7 @@ export default class WebformBuilder extends Component {
     }
 
     // Get the namespace component so we have the original object.
-    const namespaceComponent = getComponent(this._form.components, namespaceKey, true);
+    const namespaceComponent = getComponent(this.form.components, namespaceKey, true);
     return namespaceComponent.components;
   }
 
@@ -760,7 +760,7 @@ export default class WebformBuilder extends Component {
               });
             }
 
-            if (this._form) {
+            if (this.form) {
               // Set a unique key for this component.
               BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), event.data);
             }
