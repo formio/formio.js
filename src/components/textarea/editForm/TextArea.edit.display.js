@@ -39,8 +39,9 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    key: 'allowAutoExpanding',
-    label: 'Allow auto expanding',
+    key: 'autoExpand',
+    label: 'Auto Expand',
+    tooltip: 'This will make the TextArea auto expand it\'s height as the user is typing into the area.',
     weight: 415,
     conditional: {
       json: {

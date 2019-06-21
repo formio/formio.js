@@ -90,8 +90,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && this.component.wysiwyg;
   }
 
-  get allowAutoExpanding() {
-    return this.component.allowAutoExpanding;
+  get autoExpand() {
+    return this.component.autoExpand;
   }
 
   /**
@@ -143,7 +143,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   enableWysiwyg() {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
-      if (this.allowAutoExpanding) {
+      if (this.autoExpand) {
         this.element.childNodes.forEach((element) => {
           if (element.nodeName === 'TEXTAREA') {
             this.addAutoExpanding(element);
