@@ -125,8 +125,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
   }
 
-  get allowAutoExpanding() {
-    return this.component.allowAutoExpanding;
+  get autoExpand() {
+    return this.component.autoExpand;
   }
 
   /**
@@ -145,7 +145,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   attachElement(element, index) {
-    if (this.allowAutoExpanding && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
+    if (this.autoExpand && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
       element.childNodes.forEach((element) => {
         if (element.nodeName === 'TEXTAREA') {
           this.addAutoExpanding(element);
