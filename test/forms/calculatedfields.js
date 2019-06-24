@@ -29,11 +29,31 @@ export default {
         disabled: true,
         calculateValue: {
           '+': [
-            {var: 'data.a'},
-            {var: 'data.b'}
+            { var: 'data.a' },
+            { var: 'data.b' }
           ]
         }
-      }
+      },
+      {
+        label: 'c',
+        type: 'number',
+        input: true,
+        key: 'c',
+      },
+      {
+        label: 'd',
+        type: 'number',
+        input: true,
+        key: 'd',
+      },
+      {
+        label: 'Total with override',
+        type: 'number',
+        input: true,
+        key: 'totalWithOverride',
+        calculateValue: 'value = data.c + data.d;',
+        allowCalculateOverride: true,
+      },
     ]
   },
   tests: {
@@ -41,13 +61,30 @@ export default {
       form.on('change', () => {
         const value = form.getValue();
         assert.equal(value.data.total, '25');
+
         done();
       });
-      Harness.testSetGet(form, {data: {
-        a: '10',
-        b: '15',
-        total: ''
-      }});
+      Harness.testSetGet(form, {
+        data: {
+          a: '10',
+          b: '15',
+          total: ''
+        }
+      });
+    },
+    'Test field is initially calculated when allow override is checked'(form, done) {
+      form.on('change', () => {
+        const value = form.getValue();
+        assert.equal(value.data.totalWithOverride, 20);
+        done();
+      });
+      form.setValue({
+        data: {
+          c: 7,
+          d: 13
+        }
+      });
     }
+
   }
 };
