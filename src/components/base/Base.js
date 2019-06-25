@@ -2071,7 +2071,7 @@ export default class BaseComponent extends Component {
    * @return {*}
    */
   get dataValue() {
-    if (!this.key) {
+    if (!this.key || (!this.visible && this.component.clearOnHide)) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
