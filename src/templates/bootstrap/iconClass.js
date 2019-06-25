@@ -19,6 +19,9 @@ export default (iconset, name, spinning) => {
       case 'new-window':
         name = 'window-restore';
         break;
+      case 'move':
+        name = 'arrows';
+        break;
     }
   }
 

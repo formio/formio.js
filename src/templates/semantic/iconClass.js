@@ -6,6 +6,7 @@ export default (iconset, name, spinning) => {
     'remove-circle': 'trash alternate outline',
     'new-window': 'external alternate',
     'files-o': 'file outline',
+    'move': 'arrows-alt',
   };
   if (icons.hasOwnProperty(name)) {
     name = icons[name];

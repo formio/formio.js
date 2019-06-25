@@ -201,6 +201,7 @@ export default class WebformBuilder extends Component {
       component.loadRefs(element, {
         removeComponent: 'single',
         editComponent: 'single',
+        moveComponent: 'single',
         copyComponent: 'single',
         pasteComponent: 'single'
       });
@@ -226,6 +227,14 @@ export default class WebformBuilder extends Component {
         component.addEventListener(component.refs.pasteComponent, 'click', () => {
           pasteToolTip.hide();
           this.pasteComponent(component);
+        });
+      }
+
+      if (component.refs.moveComponent) {
+        const moveToolTip = new Tooltip(component.refs.moveComponent, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Move')
         });
       }
 
