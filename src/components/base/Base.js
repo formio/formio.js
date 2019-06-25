@@ -359,15 +359,6 @@ export default class BaseComponent extends Component {
         this.options.name += `[${this.key}]`;
       }
 
-      if (this.visible || !this.component.clearOnHide) {
-        if (!this.data.hasOwnProperty(this.key)) {
-          this.dataValue = this.defaultValue;
-        }
-        else {
-          this.dataValue = this.dataValue;
-        }
-      }
-
       /**
        * The element information for creating the input element.
        * @type {*}
