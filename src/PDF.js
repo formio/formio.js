@@ -55,6 +55,8 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    const formCopy = _.cloneDeep(form);
+
     return super.setForm(form).then(() => {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -62,7 +64,8 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: 'token', data: this.formio.getToken() });
       }
-      this.postMessage({ name: 'form', data: form });
+
+      this.postMessage({ name: 'form', data: formCopy });
 
       return form;
     });
