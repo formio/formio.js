@@ -2086,7 +2086,7 @@ export default class BaseComponent extends Component {
    * @param value
    */
   set dataValue(value) {
-    if (!this.key) {
+    if (!this.key || (!this.visible && this.component.clearOnHide)) {
       return value;
     }
     if ((value === null) || (value === undefined)) {
