@@ -37,8 +37,9 @@ export default [
     type: 'textfield',
     input: true,
     key: 'options.indexeddb',
+    label: 'Database',
     weight: 10,
-    placeholder: 'Enter the indexeddb name',
+    placeholder: 'Enter the indexeddb database name',
     conditional: {
       json: {
         in: [
@@ -53,6 +54,7 @@ export default [
   {
     type: 'textfield',
     input: true,
+    label: 'Table',
     key: 'options.indexeddbTable',
     weight: 10,
     placeholder: 'Enter the name for indexeddb table',

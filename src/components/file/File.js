@@ -529,11 +529,8 @@ export default class FileComponent extends Field {
     }
     fileService.downloadFile(fileInfo, options).then((file) => {
       if (file) {
-        if (file.storage === 'base64') {
-          download(file.url, file.originalName, file.type);
-        }
-        if (file.storage === 'indexeddb') {
-          download(file);
+        if (['base64', 'indexeddb'].includes(file.storage)) {
+          download(file.url, file.originalName || file.name, file.type);
         }
         else {
           window.open(file.url, '_blank');

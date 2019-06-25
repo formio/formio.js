@@ -27,8 +27,18 @@ const indexeddb = () => ({
           const blobObject = new Blob([file], { type: file.type });
 
           const id = uuidv4(blobObject);
+
+          const data = {
+            id,
+            data: blobObject,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            url,
+          };
+
           const trans = db.transaction([options.indexeddbTable], 'readwrite');
-          const addReq = trans.objectStore(options.indexeddbTable).put(blobObject, id);
+          const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
           addReq.onerror = function(e) {
             console.log('error storing data');
@@ -38,8 +48,10 @@ const indexeddb = () => ({
           trans.oncomplete = function(e) {
             resolve({
               storage: 'indexeddb',
-              name: fileName,
+              name: file.name,
               size: file.size,
+              type: file.type,
+              url: url,
               id,
             });
           };
@@ -67,12 +79,23 @@ const indexeddb = () => ({
         const store = trans.objectStore(options.indexeddbTable).get(file.id);
         store.onsuccess = () => {
           trans.oncomplete = (e) => {
-            const dbFile = new File([store.result], file.name, {
+            const result = store.result;
+            const dbFile = new File([store.result.data], file.name, {
               type: store.result.type,
             });
-            dbFile.originalName = file.originalName;
-            dbFile.storage = file.storage;
-            resolve(dbFile);
+
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+              result.url = event.target.result;
+              resolve(result);
+            };
+
+            reader.onerror = () => {
+              return reject(this);
+            };
+
+            reader.readAsDataURL(dbFile);
           };
         };
         store.onerror = () => {
