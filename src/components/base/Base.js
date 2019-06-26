@@ -1798,7 +1798,7 @@ export default class BaseComponent extends Component {
 
   clearOnHide(show) {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false && !this.options.readOnly) {
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (!show) {
         this.deleteValue();
       }
@@ -2071,7 +2071,7 @@ export default class BaseComponent extends Component {
    * @return {*}
    */
   get dataValue() {
-    if (!this.key) {
+    if (!this.key || (!this.visible && this.component.clearOnHide)) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
@@ -2086,7 +2086,7 @@ export default class BaseComponent extends Component {
    * @param value
    */
   set dataValue(value) {
-    if (!this.key) {
+    if (!this.key || (!this.visible && this.component.clearOnHide)) {
       return value;
     }
     if ((value === null) || (value === undefined)) {
