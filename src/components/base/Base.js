@@ -2276,7 +2276,6 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &&
       (this.calculatedValue !== null) &&
-      (this.calculatedValue !== this.emptyValue) &&
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
       return false;
@@ -2292,7 +2291,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &&
       firstPass &&
-      (dataValue !== this.emptyValue) &&
+      !this.isEmpty(dataValue) &&
       !_.isEqual(dataValue, calculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.

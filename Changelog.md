@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-2365: Allow override preventing Number component from being calculated
+
 ## 3.22.9
 ### Added
  - FOR-2329: Added vertical auto expanding to textarea component.
