@@ -708,6 +708,15 @@ export default class Formio {
     const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
     requestArgs.opts = requestArgs.opts || {};
     requestArgs.opts.formio = formio;
+
+    //for Formio requests default Accept and Content-type headers
+    if (!requestArgs.opts.headers) {
+      requestArgs.opts.headers = {};
+    }
+    requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {
+      'Accept': 'application/json',
+      'Content-type': 'application/json;'
+    });
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => Formio.pluginGet('request', requestArgs)
         .then((result) => {
@@ -744,10 +753,10 @@ export default class Formio {
     }
 
     // Set up and fetch request
-    const headers = header || new Headers(_defaults(opts.headers, {
+    const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
-      'Content-type': 'application/json; charset=UTF-8'
-    }));
+      'Content-type': 'application/json;'
+    });
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
       headers.append('x-jwt-token', token);
