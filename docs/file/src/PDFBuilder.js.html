@@ -438,6 +438,20 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   setForm(form) {
+    // If this is a brand new form, make sure it has a submit button component
+    if (!form.created &amp;&amp; !_.find(form.components || [], { type: &apos;button&apos;, action: &apos;submit&apos; })) {
+      form.components.push({
+        type: &apos;button&apos;,
+        label: this.t(&apos;Submit&apos;),
+        key: &apos;submit&apos;,
+        size: &apos;md&apos;,
+        block: false,
+        action: &apos;submit&apos;,
+        disableOnInvalid: true,
+        theme: &apos;primary&apos;
+      });
+    }
+
     return super.setForm(form).then(() =&gt; {
       return this.ready.then(() =&gt; {
         if (this.pdfForm) {

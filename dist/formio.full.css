@@ -2537,6 +2537,13 @@ td > .form-group {
 .signature-pad-body {
   overflow: hidden; }
 
+.signature-pad-body img {
+  width: unset !important;
+  max-width: 100%;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto; }
+
 .signature-pad-canvas {
   border-radius: 4px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.02) inset;

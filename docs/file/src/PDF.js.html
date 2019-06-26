@@ -269,6 +269,8 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    const formCopy = _.cloneDeep(form);
+
     return super.setForm(form).then(() =&gt; {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -276,7 +278,8 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: &apos;token&apos;, data: this.formio.getToken() });
       }
-      this.postMessage({ name: &apos;form&apos;, data: form });
+
+      this.postMessage({ name: &apos;form&apos;, data: formCopy });
 
       return form;
     });
@@ -370,7 +373,7 @@ export default class PDF extends Webform {
 
     if (
       !this.options.readOnly &amp;&amp;
-      _.find(this.form.components, (component) =&gt; component.type === &apos;button&apos; &amp;&amp; component.action === &apos;submit&apos;)
+      _.find(this.form.components, (component) =&gt; component.type === &apos;button&apos; &amp;&amp; component.action === &apos;submit&apos; &amp;&amp; !component.hidden)
     ) {
       this.submitButton = this.ce(&apos;button&apos;, {
         type: &apos;button&apos;,

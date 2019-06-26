@@ -1509,7 +1509,7 @@ export default class BaseComponent extends Component {
       trigger: &apos;hover click&apos;,
       placement: &apos;right&apos;,
       html: true,
-      title: this.interpolate(component.tooltip).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
+      title: this.interpolate(this.t(component.tooltip)).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;)
     });
   }
 
@@ -2012,7 +2012,7 @@ export default class BaseComponent extends Component {
 
   clearOnHide(show) {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false &amp;&amp; !this.options.readOnly) {
+    if (this.component.clearOnHide !== false &amp;&amp; !this.options.readOnly &amp;&amp; !this.options.showHiddenFields) {
       if (!show) {
         this.deleteValue();
       }
@@ -2285,7 +2285,7 @@ export default class BaseComponent extends Component {
    * @return {*}
    */
   get dataValue() {
-    if (!this.key) {
+    if (!this.key || (!this.visible &amp;&amp; this.component.clearOnHide)) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
@@ -2300,7 +2300,7 @@ export default class BaseComponent extends Component {
    * @param value
    */
   set dataValue(value) {
-    if (!this.key) {
+    if (!this.key || (!this.visible &amp;&amp; this.component.clearOnHide)) {
       return value;
     }
     if ((value === null) || (value === undefined)) {
@@ -2490,7 +2490,6 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       (this.calculatedValue !== null) &amp;&amp;
-      (this.calculatedValue !== this.emptyValue) &amp;&amp;
       !_.isEqual(dataValue, this.calculatedValue)
     ) {
       return false;
@@ -2506,7 +2505,7 @@ export default class BaseComponent extends Component {
     if (
       allowOverride &amp;&amp;
       firstPass &amp;&amp;
-      (dataValue !== this.emptyValue) &amp;&amp;
+      !this.isEmpty(dataValue) &amp;&amp;
       !_.isEqual(dataValue, calculatedValue)
     ) {
       // Return that we have a change so it will perform another pass.
