@@ -860,7 +860,7 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem('formio.clipboard');
         BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), schema);
-        component.parent.addComponent(schema, false, component.element.nextElementSibling.lastElementChild);
+        component.parent.addComponent(schema, false, component.element.nextElementSibling ? component.element.nextElementSibling.lastElementChild : null);
         this.form = this.schema;
         this.emit('saveComponent');
       }
