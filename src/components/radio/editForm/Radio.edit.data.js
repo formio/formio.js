@@ -38,7 +38,7 @@ export default [
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
         data: {
-          custom(values, component, data, row, utils, instance, form) {
+          custom({ values, component, data, row, utils, instance, form }) {
             return BuilderUtils.getAvailableShortcuts(form, component);
           }
         }

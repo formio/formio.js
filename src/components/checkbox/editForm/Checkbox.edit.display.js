@@ -18,7 +18,7 @@ export default [
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
     data: {
-      custom(values, component, data, row, utils, instance, form) {
+      custom({ values, component, data, row, utils, instance, form }) {
         return BuilderUtils.getAvailableShortcuts(form, component);
       }
     }
