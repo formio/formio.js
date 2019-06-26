@@ -485,8 +485,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  onChange() {
-    super.onChange();
+  onChange(...args) {
+    super.onChange(...args);
 
     if (this.updateSize) {
       this.updateSize();
