@@ -156,7 +156,7 @@ export default class PDF extends Webform {
 
     if (
       !this.options.readOnly &&
-      _.find(this.form.components, (component) => component.type === 'button' && component.action === 'submit')
+      _.find(this.form.components, (component) => component.type === 'button' && component.action === 'submit' && !component.hidden)
     ) {
       this.submitButton = this.ce('button', {
         type: 'button',
