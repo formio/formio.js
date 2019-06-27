@@ -240,15 +240,12 @@ export default class PDFBuilder extends WebformBuilder {
 
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
-        if (this.pdfForm) {
-          return this.pdfForm.setForm(form).then(newForm => {
-            _.each(this.components, (c, i) => {
-              c.component = _.cloneDeep(newForm.components[i]);
-              c.id = c.component.id;
-            });
+        // Ensure PDFBuilder component IDs are included in form schema to prevent desync with child PDF
+        const formCopy = _.cloneDeep(form);
+        formCopy.components.forEach((c, i) => c.id = this.components[i].id);
 
-            return newForm;
-          });
+        if (this.pdfForm) {
+          return this.pdfForm.setForm(formCopy);
         }
         return form;
       });
