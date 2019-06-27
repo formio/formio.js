@@ -84,10 +84,14 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
-    if (this.component.valueProperty) {
+    if (this.valueProperty) {
       return '';
     }
     return {};
+  }
+
+  get valueProperty() {
+    return this.component.valueProperty || 'value';
   }
 
   get inputInfo() {
@@ -137,8 +141,8 @@ export default class SelectComponent extends Field {
    */
   itemValue(data, forceUseValue = false) {
     if (_.isObject(data)) {
-      if (this.component.valueProperty) {
-        return _.get(data, this.component.valueProperty);
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
       }
 
       if (forceUseValue) {
@@ -436,7 +440,6 @@ export default class SelectComponent extends Field {
 
     switch (this.component.dataSrc) {
       case 'values':
-        this.component.valueProperty = 'value';
         this.setItems(this.component.data.values);
         break;
       case 'json':
@@ -985,7 +988,7 @@ export default class SelectComponent extends Field {
         }
         : {
           items: this.getCustomItems(),
-          valueProperty: this.component.valueProperty,
+          valueProperty: this.valueProperty,
         };
 
       value = (this.component.multiple && Array.isArray(value))
