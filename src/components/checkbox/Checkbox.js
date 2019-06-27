@@ -75,10 +75,17 @@ export default class CheckBoxComponent extends Component {
   attach(element) {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
-    if (this.refs.input.length) {
+    if (this.refs.input) {
       this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+      this.addShortcut(this.input);
     }
     super.attach(element);
+  }
+
+  detach(element) {
+    if (element && this.input) {
+      this.removeShortcut(this.input);
+    }
   }
 
   get emptyValue() {

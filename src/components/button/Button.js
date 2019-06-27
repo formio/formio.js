@@ -111,11 +111,14 @@ export default class ButtonComponent extends Field {
       buttonMessageContainer: 'single',
       buttonMessage: 'single'
     });
+
     super.attach(element);
 
     if (!this.refs.button) {
       return;
     }
+
+    this.addShortcut(this.refs.button);
 
     let onChange = null;
     let onError = null;
@@ -208,6 +211,12 @@ export default class ButtonComponent extends Field {
     }
   }
   /* eslint-enable max-statements */
+
+  detach(element) {
+    if (element && this.refs.button) {
+      this.removeShortcut(this.refs.button);
+    }
+  }
 
   onClick(event) {
     if (this.disabled) {
