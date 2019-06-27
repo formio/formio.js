@@ -38,8 +38,8 @@ export default [
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
         data: {
-          custom({ values, component, data, row, utils, instance, form }) {
-            return BuilderUtils.getAvailableShortcuts(form, component);
+          custom({ instance: { root: { editForm, editComponent } = {} } = {} }) {
+            return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
           }
         }
       }

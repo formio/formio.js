@@ -184,8 +184,8 @@ export default [
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
     data: {
-      custom({ values, component, data, row, utils, instance, form }) {
-        return BuilderUtils.getAvailableShortcuts(form, component);
+      custom({ instance: { root: { editForm, editComponent } = {} } = {} }) {
+        return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
       }
     }
   },
