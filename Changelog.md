@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.22.11
 ### Fixed 
  - FOR-2409: Sketchpad and Tagpad images not loading
  - ```Content-type``` and ```Accept``` headers being added to non-formio requests
