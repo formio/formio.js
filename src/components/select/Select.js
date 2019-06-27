@@ -780,7 +780,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) => {
-      if (!value) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -835,9 +835,11 @@ export default class SelectComponent extends Field {
   }
 
   getValue() {
-    if (this.viewOnly || this.loading || !this.selectOptions.length) {
+    // If the widget isn't active.
+    if (this.viewOnly || this.loading || !this.selectOptions.length || !this.element) {
       return this.dataValue;
     }
+
     let value = this.emptyValue;
     if (this.choices) {
       value = this.choices.getValue(true);
@@ -851,18 +853,15 @@ export default class SelectComponent extends Field {
         value = this.emptyValue;
       }
     }
+    else if (this.refs.selectContainer) {
+      value = this.refs.selectContainer.value;
+    }
     else {
-      const values = [];
-      _.each(this.selectOptions, (selectOption) => {
-        if (selectOption.element && selectOption.element.selected) {
-          values.push(selectOption.value);
-        }
-      });
-      value = this.component.multiple ? values : values.shift();
+      value = this.dataValue;
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
-    if (value === undefined || value === null || value === '') {
-      value = this.dataValue;
+    if (value === undefined || value === null) {
+      value = '';
     }
     return value;
   }
