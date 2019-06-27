@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.12
+### Fixed
+ - Problems with the content-type header getting set incorrectly which was causing request failures.
+
 ## 3.22.11
 ### Fixed 
  - FOR-2409: Sketchpad and Tagpad images not loading

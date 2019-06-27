@@ -929,7 +929,7 @@ export default class Formio {
     }
     requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {
       &apos;Accept&apos;: &apos;application/json&apos;,
-      &apos;Content-type&apos;: &apos;application/json;&apos;
+      &apos;Content-type&apos;: &apos;application/json&apos;
     });
     const request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
       .then(() =&gt; Formio.pluginGet(&apos;request&apos;, requestArgs)
@@ -969,7 +969,7 @@ export default class Formio {
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       &apos;Accept&apos;: &apos;application/json&apos;,
-      &apos;Content-type&apos;: &apos;application/json;&apos;
+      &apos;Content-type&apos;: &apos;application/json&apos;
     });
     const token = Formio.getToken(opts);
     if (token &amp;&amp; !opts.noToken) {
