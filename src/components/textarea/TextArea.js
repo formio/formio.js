@@ -35,6 +35,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   init() {
     super.init();
+    this.editorReady = new NativePromise((resolve) => {
+      this.editorReadyResolve = resolve;
+    });
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
@@ -167,7 +170,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
     switch (this.component.editor) {
       case 'ace':
-        this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
+        Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
           .then((editor) => {
             this.editor = editor.edit(element);
             this.editor.setOptions({
@@ -180,6 +183,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editor.on('input', () => this.acePlaceholder());
             setTimeout(() => this.acePlaceholder(), 100);
             this.editor.setValue(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
             return this.editor;
           });
         break;
@@ -191,7 +195,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         }
 
         // Add the quill editor.
-        this.editorReady = this.addQuill(
+        this.addQuill(
           element,
           settings, () => this.updateEditorValue(this.editor.root.innerHTML)
         ).then((quill) => {
@@ -210,6 +214,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           }
 
           this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
+          this.editorReadyResolve(this.editor);
           return quill;
         }).catch(err => console.warn(err));
         break;
@@ -217,7 +222,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         settings = settings || {};
         settings.rows = this.component.rows;
         settings.base64Upload = true;
-        this.editorReady = this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
+        this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
           .then((editor) => {
             this.editor = editor;
             if (this.options.readOnly || this.component.disabled) {
@@ -230,6 +235,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
             }
             editor.data.set(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
             return editor;
           });
         break;
