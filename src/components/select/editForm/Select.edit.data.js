@@ -150,6 +150,46 @@ export default [
     },
   },
   {
+    type: 'select',
+    input: true,
+    label: 'Value Property',
+    key: 'valueProperty',
+    skipMerge: true,
+    clearOnHide: false,
+    tooltip: 'The field to use as the value.',
+    weight: 11,
+    refreshOn: 'data.resource',
+    template: '<span>{{ item.label }}</span>',
+    valueProperty: 'key',
+    dataSrc: 'url',
+    lazyLoad: false,
+    onSetItems(component, form) {
+      const newItems = [];
+
+      eachComponent(form.components, (component, path) => {
+        if (component.input) {
+          newItems.push({
+            label: component.label || component.key,
+            key: `data.${path}`
+          });
+        }
+      });
+
+      return newItems;
+    },
+    data: {
+      url: '/form/{{ data.data.resource }}',
+    },
+    conditional: {
+      json: {
+        and: [
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { var: 'data.data.resource' },
+        ],
+      },
+    },
+  },
+  {
     type: 'textfield',
     input: true,
     label: 'Value Property',
@@ -166,7 +206,6 @@ export default [
           [
             'json',
             'url',
-            'resource',
           ],
         ],
       },
