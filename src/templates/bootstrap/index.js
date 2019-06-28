@@ -32,6 +32,7 @@ import multiValueTable from './multiValueTable';
 import panel from './panel';
 import pdf from './pdf';
 import pdfBuilder from './pdfBuilder';
+import pdfBuilderUpload from './pdfBuilderUpload';
 import radio from './radio';
 import resourceAdd from './resourceAdd';
 import select from './select';
@@ -94,6 +95,7 @@ export default {
   panel,
   pdf,
   pdfBuilder,
+  pdfBuilderUpload,
   radio,
   resourceAdd,
   select,

@@ -1,9 +1,12 @@
 import _ from 'lodash';
+import Promise from 'native-promise-only';
+import fetchPonyfill from 'fetch-ponyfill';
 
 import WebformBuilder from './WebformBuilder';
 import { getElementRect } from './utils/utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
+const { fetch, Headers } = fetchPonyfill({ Promise });
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -58,6 +61,10 @@ export default class PDFBuilder extends WebformBuilder {
     };
   }
 
+  get hasPDF() {
+    return _.has(this.webform, 'form.settings.pdf');
+  }
+
   // 888      d8b  .d888                                    888
   // 888      Y8P d88P"                                     888
   // 888          888                                       888
@@ -94,15 +101,79 @@ export default class PDFBuilder extends WebformBuilder {
           })),
         })),
       }),
-      form: this.webform.render()
+      form: _.has(this.webform, 'form.settings.pdf') ?
+        this.webform.render() :
+        this.renderTemplate('pdfBuilderUpload', {})
     });
 
     return result;
   }
 
   attach(element) {
+    // PDF Upload
+    if (!this.hasPDF) {
+      this.loadRefs(element, {
+        'fileDrop': 'single',
+        'fileBrowse': 'single',
+        'hiddenFileInputElement': 'single',
+        'uploadError': 'single',
+      });
+      this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {
+        event.preventDefault();
+      });
+
+      // Init the upload error.
+      if (!this.options.pdfServer) {
+        this.setUploadError('PDF Server not set. Please set the PDF Server in options.pdfServer so the upload can occur.');
+      }
+      else {
+        this.setUploadError();
+      }
+
+      if (this.refs.fileDrop) {
+        const element = this;
+        this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
+          this.className = 'fileSelector fileDragOver';
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {
+          this.className = 'fileSelector';
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
+          this.className = 'fileSelector';
+          event.preventDefault();
+          element.upload(event.dataTransfer.files[0]);
+          return false;
+        });
+      }
+
+      if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {
+        this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
+          event.preventDefault();
+          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+          // a click event on it.
+          if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {
+            this.refs.hiddenFileInputElement.trigger('click');
+          }
+          else {
+            this.refs.hiddenFileInputElement.click();
+          }
+        });
+        this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
+          this.upload(this.refs.hiddenFileInputElement.files[0]);
+          this.refs.hiddenFileInputElement.value = '';
+        });
+      }
+
+      return Promise.resolve();
+    }
+
+    // Normal PDF Builder
     return super.attach(element).then(() => {
-      this.loadRefs(this.element, { iframeDropzone: 'single', 'sidebar-container': 'single' });
+      this.loadRefs(this.element, {
+        iframeDropzone: 'single', 'sidebar-container': 'single'
+      });
 
       if (this.refs.iframeDropzone) {
         this.initIframeEvents();
@@ -116,6 +187,45 @@ export default class PDFBuilder extends WebformBuilder {
 
       return this.element;
     });
+  }
+
+  upload(file) {
+    const headers = new Headers({
+      'Accept': 'application/json, text/plain, */*',
+      'Content-type': 'multipart/form-data',
+      // 'x-file-token': tempToken,
+    });
+
+    fetch(this.options.pdfServer, {
+      method: 'POST',
+      headers,
+      form: {
+        file,
+      }
+    })
+      .then(response => {
+        if (response.status !== 200) {
+          response.text().then(info => {
+            this.setUploadError(`${response.statusText} - ${info}`);
+          });
+        }
+        else {
+          // TODO: Set settings.pdf here.
+          this.rebuild();
+        }
+      })
+      .catch(response => {
+        this.setUploadError('Upload failed.');
+        console.log('fail', response);
+      });
+  }
+
+  setUploadError(message) {
+    if (!this.refs.uploadError) {
+      return;
+    }
+    this.refs.uploadError.style.display = message ? '' : 'none';
+    this.refs.uploadError.innerHTML = message;
   }
 
   createForm(options) {

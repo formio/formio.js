@@ -50,7 +50,7 @@ export default class WebformBuilder extends Component {
     // Turn off if explicitely said to do so...
     _.each(this.defaultGroups, (config, key) => {
       if (config === false) {
-        this.options.builder[key] = false;
+        this.builder[key] = false;
       }
     });
 
@@ -166,6 +166,10 @@ export default class WebformBuilder extends Component {
     };
 
     this.options.hooks.attachComponents = (element, components, container, component) => {
+      // Don't attach if no element was found.
+      if (!element) {
+        return;
+      }
       // Attach container and component to element for later reference.
       const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
       containerElement.formioContainer = container;
@@ -450,7 +454,9 @@ export default class WebformBuilder extends Component {
         this.initDragula();
       }
 
-      return this.webform.attach(this.refs.form);
+      if (this.refs.form) {
+        return this.webform.attach(this.refs.form);
+      }
     });
   }
 
