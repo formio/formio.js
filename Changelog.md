@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.14
+### Changed
+ - Reverted https://github.com/formio/formio.js/pull/1428 because it was causing issues with TextArea wysiwyg with default submissions showing up.
+
 ## 3.22.13
 ### Fixed
  - Problem with TextArea lazy-loaded editors where there was a race condition that would present when the value is set before the editor was ready.
