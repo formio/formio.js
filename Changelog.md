@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.13
+### Fixed
+ - Problem with TextArea lazy-loaded editors where there was a race condition that would present when the value is set before the editor was ready.
+ - Make PDF submit component detection less restrictive; schema sometimes lacks the 'action' property
+
 ## 3.22.12
 ### Fixed
  - Problems with the content-type header getting set incorrectly which was causing request failures.
