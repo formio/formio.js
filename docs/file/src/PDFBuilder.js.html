@@ -439,7 +439,7 @@ export default class PDFBuilder extends WebformBuilder {
 
   setForm(form) {
     // If this is a brand new form, make sure it has a submit button component
-    if (!form.created &amp;&amp; !_.find(form.components || [], { type: &apos;button&apos;, action: &apos;submit&apos; })) {
+    if (!form.created &amp;&amp; !_.find(form.components || [], { type: &apos;button&apos;, key: &apos;submit&apos; })) {
       form.components.push({
         type: &apos;button&apos;,
         label: this.t(&apos;Submit&apos;),
@@ -454,15 +454,12 @@ export default class PDFBuilder extends WebformBuilder {
 
     return super.setForm(form).then(() =&gt; {
       return this.ready.then(() =&gt; {
-        if (this.pdfForm) {
-          return this.pdfForm.setForm(form).then(newForm =&gt; {
-            _.each(this.components, (c, i) =&gt; {
-              c.component = _.cloneDeep(newForm.components[i]);
-              c.id = c.component.id;
-            });
+        // Ensure PDFBuilder component IDs are included in form schema to prevent desync with child PDF
+        const formCopy = _.cloneDeep(form);
+        formCopy.components.forEach((c, i) =&gt; c.id = this.components[i].id);
 
-            return newForm;
-          });
+        if (this.pdfForm) {
+          return this.pdfForm.setForm(formCopy);
         }
         return form;
       });
