@@ -30,8 +30,10 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
     this.wysiwygRendered = false;
+    this.editorReady = new NativePromise((resolve) => {
+      this.editorReadyResolve = resolve;
+    });
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
   }
@@ -155,7 +157,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     if (this.component.editor === 'ace') {
-      this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
+      Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
         .then(() => {
           const mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
@@ -164,6 +166,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
+          this.editorReadyResolve(this.editor);
           return this.editor;
         });
       return this.input;
@@ -172,12 +175,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.component.editor === 'ckeditor') {
       const settings = this.component.wysiwyg || {};
       settings.rows = this.component.rows;
-      this.editorReady = this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
+      this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
         .then((editor) => {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.isReadOnly = true;
           }
+          this.editorReadyResolve(this.editor);
           return editor;
         });
       return this.input;
@@ -198,7 +202,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     // Add the quill editor.
-    this.editorReady = this.addQuill(
+    this.addQuill(
       this.input,
       this.component.wysiwyg, () => this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) => {
@@ -215,6 +219,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         quill.disable();
       }
 
+      this.editorReadyResolve(quill);
       return quill;
     }).catch(err => console.warn(err));
   }
