@@ -537,6 +537,9 @@ export default class Component extends Element {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, params) {
+    if (!text) {
+      return '';
+    }
     params = params || {};
     params.data = this.rootValue;
     params.row = this.data;
@@ -800,7 +803,7 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      const title = this.interpolate(tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: 'hover click',
         placement: 'right',
