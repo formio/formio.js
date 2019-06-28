@@ -153,29 +153,8 @@ export default class PDF extends Webform {
     });
   }
 
-  postMessage(message) {
-    // If we get here before the iframeReady promise is set up, it's via the superclass constructor
-    if (!this.iframeReady) {
-      return;
-    }
-
-    if (!message.type) {
-      message.type = 'iframe-data';
-    }
-
-    this.iframeReady = this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow) {
-        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
-      }
-    });
-  }
-
-  // Do not clear the iframe.
-  clear() {}
-
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
-    this.postMessage({ name: 'submission', data: submission });
     return super.setSubmission(submission).then(() => {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) => {
@@ -199,8 +178,29 @@ export default class PDF extends Webform {
           }
         });
       }
+      this.postMessage({ name: 'submission', data: submission });
     });
   }
+
+  postMessage(message) {
+    // If we get here before the iframeReady promise is set up, it's via the superclass constructor
+    if (!this.iframeReady) {
+      return;
+    }
+
+    if (!message.type) {
+      message.type = 'iframe-data';
+    }
+
+    this.iframeReady = this.iframeReady.then(() => {
+      if (this.iframeElement && this.iframeElement.contentWindow) {
+        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+      }
+    });
+  }
+
+  // Do not clear the iframe.
+  clear() {}
 }
 
 /**
