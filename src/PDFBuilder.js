@@ -139,8 +139,8 @@ export default class PDFBuilder extends WebformBuilder {
     schema.overlay = {
       top: event.offsetY,
       left: event.offsetX,
-      width: 100,
-      height: 20
+      width: schema.defaultOverlayWidth || 100,
+      height: schema.defaultOverlayHeight || 20
     };
 
     this.addComponentTo(schema, this, this.getContainer());
