@@ -293,21 +293,23 @@ export default class DayComponent extends Field {
       return null;
     }
     const parts = value.split('/');
-    let day, month, year;
-    if (this.refs.day && this.component.dayFirst && this.showDay) {
+    let day;
+    if (this.component.dayFirst) {
       day = parts.shift();
+    }
+    const month = parts.shift();
+    if (!this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const year = parts.shift();
+
+    if (this.refs.day && this.showDay) {
       this.refs.day.value = day === '00' ? undefined : parseInt(day, 10);
     }
     if (this.refs.month && this.showMonth) {
-      month = parts.shift();
       this.refs.month.value = month === '00' ? undefined : parseInt(month, 10);
     }
-    if (this.refs.day && !this.component.dayFirst && this.showDay) {
-      day = parts.shift();
-      this.refs.day.value = day === '00' ? undefined : parseInt(day, 10);
-    }
     if (this.refs.year && this.showYear) {
-      year = parts.shift();
       this.refs.year.value = year === '0000' ? undefined : parseInt(year, 10);
     }
   }
