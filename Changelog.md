@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to provide HTML attributes for components inputs
+
 ## 3.22.14
 ### Changed
  - Reverted https://github.com/formio/formio.js/pull/1428 because it was causing issues with TextArea wysiwyg with default submissions showing up.
