@@ -136,6 +136,11 @@ export default class PDFBuilder extends WebformBuilder {
       return false;
     }
 
+    // Special case for file components - default to image mode when added via PDF builder
+    if (schema.type === 'file') {
+      schema.image = true;
+    }
+
     schema.overlay = {
       top: event.offsetY,
       left: event.offsetX,
