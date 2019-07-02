@@ -138,7 +138,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = 'ckeditor';
     }
 
-    const settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
     const mode = this.component.as || 'javascript';
 
     // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
