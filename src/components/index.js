@@ -32,10 +32,12 @@ import ColumnsComponent from './columns/Columns';
 import TableComponent from './table/Table';
 import RadioComponent from './radio/Radio';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
+import SketchPadComponent from './sketchpad/Sketchpad';
 import SurveyComponent from './survey/Survey';
 import WellComponent from './well/Well';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
+import TagPadComponent from './tags/Tags';
 import TreeComponent from './tree/Tree';
 import UnknownComponent from './unknown/Unknown';
 import ReCaptchaComponent from './recaptcha/ReCaptcha';
@@ -80,6 +82,8 @@ export default {
   survey: SurveyComponent,
   well: WellComponent,
   file: FileComponent,
+  sketchpad: SketchPadComponent,
+  tagpad: TagPadComponent,
   tree: TreeComponent,
   unknown: UnknownComponent,
 };
