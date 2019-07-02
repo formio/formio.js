@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.22.15
+### Changed
+ - FOR-2415: Set file component to image mode by default when added via PDF builder
+ - FOR-2416: Increase default size of file component PDF overlay
+ - FOR-2417: Fix CSS rule for white-space:pre-wrap
+ - Upgraded i18next@17.0.6, webpack@4.35.2, vanilla-picker@2.9.0, marked@0.6.3
+
+### Fixed
+ - Fix bugs with day component
+ - FOR-2379: Update CKE to 12.2.0-formio.2, enable image support
+
 ## 3.22.14
 ### Changed
  - Reverted https://github.com/formio/formio.js/pull/1428 because it was causing issues with TextArea wysiwyg with default submissions showing up.
