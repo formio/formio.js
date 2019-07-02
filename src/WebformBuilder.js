@@ -294,7 +294,10 @@ export default class WebformBuilder extends Webform {
         'placeholder',
         'tooltip',
         'validate',
-        'disabled'
+        'disabled',
+        'fields.day.required',
+        'fields.month.required',
+        'fields.year.required',
       ]));
     }
 
@@ -427,7 +430,10 @@ export default class WebformBuilder extends Webform {
       'placeholder',
       'tooltip',
       'validate',
-      'disabled'
+      'disabled',
+      'fields.day.required',
+      'fields.month.required',
+      'fields.year.required',
     ]));
 
     // Create the form instance.
