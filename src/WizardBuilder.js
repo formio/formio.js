@@ -13,7 +13,7 @@ export default class WizardBuilder extends WebformBuilder {
     }
     super(element, options);
 
-    this.webform.form = {
+    this._form = {
       components: [
         this.getPageConfig(1),
       ],
@@ -25,7 +25,7 @@ export default class WizardBuilder extends WebformBuilder {
       if (component.refs.removeComponent) {
         this.addEventListener(component.refs.removeComponent, 'click', () => {
           const pageIndex = this.pages.findIndex((page) => page.key === component.key);
-          const componentIndex = this.webform.form.components.findIndex((comp) => comp.key === component.key);
+          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
           if (pageIndex !== -1) {
             this.removePage(pageIndex, componentIndex);
           }
@@ -54,7 +54,7 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get pages() {
-    return _.filter(this.webform.form.components, { type: 'panel' });
+    return _.filter(this._form.components, { type: 'panel' });
   }
 
   get currentPage() {
@@ -62,20 +62,24 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   set form(value) {
-    this.webform.form = value;
-    if (!this.webform.form.components || !Array.isArray(this.webform.form.components)) {
-      this.webform.form.components = [];
+    this._form = value;
+    if (!this._form.components || !Array.isArray(this._form.components)) {
+      this._form.components = [];
     }
 
     if (this.pages.length === 0) {
-      const components = this.webform.form.components.filter((component) => component.type !== 'button');
-      this.webform.form.components = [this.getPageConfig(1, components)];
+      const components = this._form.components.filter((component) => component.type !== 'button');
+      this._form.components = [this.getPageConfig(1, components)];
     }
     this.rebuild();
   }
 
   get form() {
-    return this.webform.form;
+    return this._form;
+  }
+
+  get schema() {
+    return this._form;
   }
 
   render() {
@@ -137,18 +141,18 @@ export default class WizardBuilder extends WebformBuilder {
   addPage() {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
-    this.webform.form.components.push(newPage);
+    this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
     this.rebuild();
   }
 
   removePage(pageIndex, componentIndex) {
-    this.webform.form.components.splice(componentIndex, 1);
+    this._form.components.splice(componentIndex, 1);
 
     if (pageIndex === this.pages.length) {
       // If the last page is removed.
       if (pageIndex === 0) {
-        this.webform.form.components.push(this.getPageConfig(1));
+        this._form.components.push(this.getPageConfig(1));
         this.rebuild();
       }
       else {
