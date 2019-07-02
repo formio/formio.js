@@ -214,8 +214,10 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       case 'ckeditor':
-        this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', true)
+        this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.3.0-formio.1/build/ckeditor.js', true)
           .then((ClassicEditor) => {
+            settings = settings || {};
+            settings.base64Upload = true;
             return ClassicEditor.create(element, settings).then(editor => {
               editor.model.document.on('change', () => this.updateValue(null, editor.data.get()));
               this.editor = editor;
