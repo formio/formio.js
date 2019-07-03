@@ -817,7 +817,8 @@ export default class WebformBuilder extends Component {
         const originalComponent = parentContainer[index];
         parentContainer[index] = this.editForm.submission.data;
         parentComponent.rebuild();
-        this.emit('saveComponent', component, originalComponent);
+        // Should we be passing the instance or the definition here as the component? See WizardBuilder.
+        this.emit('saveComponent', parentContainer[index], originalComponent);
       }
     });
 

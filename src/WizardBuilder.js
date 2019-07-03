@@ -51,6 +51,14 @@ export default class WizardBuilder extends WebformBuilder {
 
       return originalAttachComponentsHook(element, components, container, component);
     };
+
+    // Wizard pages don't replace themselves in the right array. Do that here.
+    this.on('saveComponent', (component, originalComponent) => {
+      if (this._form.components.includes(originalComponent)) {
+        this._form.components[this._form.components.indexOf(originalComponent)] = component;
+        this.rebuild();
+      }
+    }, true);
   }
 
   get pages() {
