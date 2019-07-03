@@ -7,7 +7,8 @@ export default class PasswordComponent extends TextFieldComponent {
       type: 'password',
       label: 'Password',
       key: 'password',
-      protected: true
+      protected: true,
+      tableView: false
     }, ...extend);
   }
 
@@ -23,7 +24,7 @@ export default class PasswordComponent extends TextFieldComponent {
   }
 
   get defaultSchema() {
-    return _.omit(PasswordComponent.schema(), 'protected');
+    return _.omit(PasswordComponent.schema(), ['protected', 'tableView']);
   }
 
   elementInfo() {
