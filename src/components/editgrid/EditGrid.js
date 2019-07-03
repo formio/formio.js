@@ -75,6 +75,7 @@ export default class EditGridComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';
+    this.editRows = [];
   }
 
   init() {
@@ -266,6 +267,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   getComponents(rowIndex) {
+    // Ensure editrows is set.
+    this.editRows = this.editRows || [];
     return this.builderMode
       ? super.getComponents()
       : _.isNumber(rowIndex)
