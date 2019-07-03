@@ -86,6 +86,10 @@ export default class FileComponent extends BaseComponent {
     return this.dataValue;
   }
 
+  getView(value) {
+    return value ? 'Yes' : 'No';
+  }
+
   loadImage(fileInfo) {
     return this.fileService.downloadFile(fileInfo).then(result => {
       return result.url;
