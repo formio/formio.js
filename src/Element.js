@@ -83,6 +83,20 @@ export default class Element {
   }
 
   /**
+   * Allow catching any event.
+   *
+   * @param cb
+   * @returns {this}
+   */
+  onAny(cb) {
+    if (!this.events) {
+      return;
+    }
+
+    return this.events.onAny(cb);
+  }
+
+  /**
    * Removes all listeners for a certain event.
    *
    * @param event

@@ -34,7 +34,6 @@ export default class DataGridComponent extends NestedComponent {
 
   init() {
     this.components = this.components || [];
-    this.numColumns = 0;
 
     // Add new values based on minLength.
     this.rows = [];
@@ -425,6 +424,7 @@ export default class DataGridComponent extends NestedComponent {
       }
       _.each(row, (col, key) => {
         if (col.type === 'components') {
+          col.data = value[rowIndex];
           col.setValue(value[rowIndex], flags);
         }
         else if (value[rowIndex].hasOwnProperty(key)) {

@@ -87,6 +87,17 @@ export default class NestedComponent extends Field {
     });
   }
 
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+    this.eachComponent(component => {
+      component.data = this._data;
+    });
+  }
+
   getComponents() {
     return this.components || [];
   }
