@@ -1,11 +1,13 @@
 import TextFieldComponent from '../textfield/TextField';
+import _ from 'lodash';
 
 export default class PasswordComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'password',
       label: 'Password',
-      key: 'password'
+      key: 'password',
+      protected: true
     }, ...extend);
   }
 
@@ -21,7 +23,7 @@ export default class PasswordComponent extends TextFieldComponent {
   }
 
   get defaultSchema() {
-    return PasswordComponent.schema();
+    return _.omit(PasswordComponent.schema(), 'protected');
   }
 
   elementInfo() {
