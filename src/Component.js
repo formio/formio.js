@@ -377,7 +377,7 @@ export default class Component {
           // If this is an event, add a listener.
           this.addEventListener(element, key.substr(2).toLowerCase(), value);
         }
-        else {
+        else if (key) {
           // Otherwise it is just an attribute.
           element.setAttribute(key, value);
         }

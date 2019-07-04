@@ -152,7 +152,7 @@ export default class DataMapComponent extends NestedComponent {
     }
     const keyHeader = this.ce('th', {
       'class': 'col-2 col-sm-3'
-    }, this.text('Key'));
+    }, this.text(this.component.keyLabel || 'Key'));
     this.createTooltip(keyHeader, {
       tooltip: this.t('Enter the map "key" for this value.')
     });

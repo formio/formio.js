@@ -2686,14 +2686,7 @@ export default class BaseComponent extends Component {
     if (this.component.tabindex) {
       attributes.tabindex = this.component.tabindex;
     }
-
-    if (this.component.htmlAttributes) {
-      this.component.htmlAttributes.forEach(attribute => {
-        if (!attributes.hasOwnProperty(attribute.name)) {
-          attributes[attribute.name] = attribute.value;
-        }
-      });
-    }
+    _.defaults(attributes, this.component.attributes);
 
     return {
       type: 'input',
