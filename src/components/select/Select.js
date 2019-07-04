@@ -761,6 +761,10 @@ export default class SelectComponent extends Field {
     }
   }
 
+  get disabled() {
+    return super.disabled;
+  }
+
   set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
     if (value && (!this._visible !== !value)) {

@@ -80,6 +80,17 @@ export default class SurveyComponent extends Field {
     return value;
   }
 
+  set disabled(disabled) {
+    super.disabled = disabled;
+    _.each(this.refs.input, (input) => {
+      input.disabled = true;
+    });
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
   validateRequired(setting, value) {
     if (!boolValue(setting)) {
       return true;

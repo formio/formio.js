@@ -109,4 +109,8 @@ export default class TagsComponent extends Input {
       this.choices.enable();
     }
   }
+
+  get disabled() {
+    return super.disabled;
+  }
 }

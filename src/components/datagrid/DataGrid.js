@@ -96,6 +96,20 @@ export default class DataGridComponent extends NestedComponent {
     return defaultValue;
   }
 
+  set disabled(disabled) {
+    super.disabled = disabled;
+    _.each(this.refs[`${this.datagridKey}-addRow`], (button) => {
+      button.disabled = disabled;
+    });
+    _.each(this.refs[`${this.datagridKey}-removeRow`], (button) => {
+      button.disabled = disabled;
+    });
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
   get datagridKey() {
     return `datagrid-${this.key}`;
   }

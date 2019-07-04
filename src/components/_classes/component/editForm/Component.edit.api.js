@@ -30,7 +30,7 @@ export default [
       type: 'textfield',
       key: 'value',
       label: 'Value',
-      defaultValue: 'Value',
+      placeholder: 'Value',
       input: true
     }
   },
