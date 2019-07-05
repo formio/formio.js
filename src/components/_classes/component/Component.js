@@ -395,6 +395,8 @@ export default class Component extends Element {
   }
 
   init() {
+    this.disabled = this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
+
     // Attach the refresh on events.
     this.attachRefreshOn();
   }
@@ -642,6 +644,7 @@ export default class Component extends Element {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
+    data.disabled = this.disabled;
     data.builder = this.builderMode;
 
     // Allow more specific template names
@@ -818,11 +821,6 @@ export default class Component extends Element {
     // this.restoreValue();
 
     this.autofocus();
-
-    // Disable if needed.
-    if (this.canDisable) {
-      this.disabled = this.options.readOnly || this.component.disabled;
-    }
 
     // Allow global attach.
     this.hook('attachComponent', element, this);
