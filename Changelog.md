@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - DataMap: cursor jumping when entering value in ng-formio 3.x
+
 ### Added
  - Ability to provide HTML attributes for components inputs
 

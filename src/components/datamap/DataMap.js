@@ -265,7 +265,9 @@ export default class DataMapComponent extends NestedComponent {
   setValue(value) {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
-    this.buildRows();
+    if (changed) {
+      this.buildRows();
+    }
     return changed;
   }
 
