@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to provide HTML attributes for components inputs
+
 ## 3.22.15
 ### Changed
  - FOR-2415: Set file component to image mode by default when added via PDF builder

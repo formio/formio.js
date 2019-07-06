@@ -1,5 +1,13 @@
 export default [
   {
+    type: 'textfield',
+    label: 'Label for Key column',
+    key: 'keyLabel',
+    tooltip: 'Provide a label text for Key column (otherwise \'Key\' will be used)',
+    weight: 404,
+    input: true
+  },
+  {
     type: 'checkbox',
     label: 'Disable Adding / Removing Rows',
     key: 'disableAddingRemovingRows',
