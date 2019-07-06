@@ -9,7 +9,7 @@ import Validator from '../Validator';
 import Widgets from '../../widgets';
 import Component from '../../Component';
 import dragula from 'dragula';
-const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.1/build/ckeditor.js';
+const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -1969,6 +1969,7 @@ export default class BaseComponent extends Component {
 
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
+    settings.base64Upload = true;
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
         if (!element.parentNode) {

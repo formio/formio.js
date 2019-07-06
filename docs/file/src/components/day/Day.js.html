@@ -617,22 +617,27 @@ export default class DayComponent extends BaseComponent {
     if (!value || value === &apos;Invalid date&apos;) {
       return null;
     }
+
+    // Calculate the value parts.
     const parts = value.split(&apos;/&apos;);
-    let day, month, year;
-    if (this.component.dayFirst &amp;&amp; this.showDay) {
+    let day;
+    if (this.component.dayFirst) {
       day = parts.shift();
+    }
+    const month = parts.shift();
+    if (!this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const year = parts.shift();
+
+    // Now set the values.
+    if (this.showDay) {
       this.dayInput.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
     }
     if (this.showMonth) {
-      month = parts.shift();
       this.monthInput.value = month === &apos;00&apos; ? undefined : parseInt(month, 10);
     }
-    if (!this.component.dayFirst &amp;&amp; this.showDay) {
-      day = parts.shift();
-      this.dayInput.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
-    }
     if (this.showYear) {
-      year = parts.shift();
       this.yearInput.value = year === &apos;0000&apos; ? undefined : parseInt(year, 10);
     }
   }

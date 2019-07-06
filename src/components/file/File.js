@@ -37,7 +37,9 @@ export default class FileComponent extends BaseComponent {
       filePattern: '*',
       fileMinSize: '0KB',
       fileMaxSize: '1GB',
-      uploadOnly: false
+      uploadOnly: false,
+      defaultOverlayWidth: 200,
+      defaultOverlayHeight: 200
     }, ...extend);
   }
 
