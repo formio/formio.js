@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.23.0
 ### Fixed
+ - FOR-2388: Fixed problems where the password would not have protected set by default.
+ - FOR-2346: Fixed the submission grid view for file compoennts.
+ - Problem with the Sketchpad dimensions being slightly off when zooming.
  - DataMap: cursor jumping when entering value in ng-formio 3.x
+ - Updated @babel/cli@7.5.0, @babel/core@7.5.0, @babel/plugin-proposal-class-properties@7.5.0, @babel/preset-env@7.5.0, del@5.0.0, eslint@6.0.1, gulp-eslint@6.0.0, moment-timezone@0.5.26, marked@0.7.0
 
 ### Added
  - Ability to provide HTML attributes for components inputs

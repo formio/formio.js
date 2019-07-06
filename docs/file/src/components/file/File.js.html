@@ -302,6 +302,10 @@ export default class FileComponent extends BaseComponent {
     return this.dataValue;
   }
 
+  getView(value) {
+    return value ? &apos;Yes&apos; : &apos;No&apos;;
+  }
+
   loadImage(fileInfo) {
     return this.fileService.downloadFile(fileInfo).then(result =&gt; {
       return result.url;

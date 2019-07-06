@@ -366,7 +366,7 @@ export default class DataMapComponent extends NestedComponent {
     }
     const keyHeader = this.ce(&apos;th&apos;, {
       &apos;class&apos;: &apos;col-2 col-sm-3&apos;
-    }, this.text(&apos;Key&apos;));
+    }, this.text(this.component.keyLabel || &apos;Key&apos;));
     this.createTooltip(keyHeader, {
       tooltip: this.t(&apos;Enter the map &quot;key&quot; for this value.&apos;)
     });
@@ -479,7 +479,9 @@ export default class DataMapComponent extends NestedComponent {
   setValue(value) {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
-    this.buildRows();
+    if (changed) {
+      this.buildRows();
+    }
     return changed;
   }
 

@@ -219,6 +219,7 @@ import BaseEditAPI from &apos;./editForm/Base.edit.api&apos;;
 import BaseEditDisplay from &apos;./editForm/Base.edit.display&apos;;
 import BaseEditLogic from &apos;./editForm/Base.edit.logic&apos;;
 import BaseEditValidation from &apos;./editForm/Base.edit.validation&apos;;
+import BaseEditLayout from &apos;./editForm/Base.edit.layout&apos;;
 import EditFormUtils from &apos;./editForm/utils&apos;;
 
 export default function(...extend) {
@@ -262,6 +263,12 @@ export default function(...extend) {
           key: &apos;logic&apos;,
           weight: 50,
           components: BaseEditLogic
+        },
+        {
+          label: &apos;Layout&apos;,
+          key: &apos;layout&apos;,
+          weight: 60,
+          components: BaseEditLayout
         }
       ]
     }
