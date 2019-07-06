@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - DataMap: cursor jumping when entering value in ng-formio 3.x
 
+### Added
+ - Ability to provide HTML attributes for components inputs
+
 ## 3.22.15
 ### Changed
  - FOR-2415: Set file component to image mode by default when added via PDF builder
