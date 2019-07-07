@@ -11,4 +11,8 @@ export default [
     key: 'defaultValue',
     ignore: true,
   },
+  {
+    key: 'multiple',
+    ignore: true
+  },
 ];

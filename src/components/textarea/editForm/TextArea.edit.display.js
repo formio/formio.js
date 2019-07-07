@@ -11,6 +11,10 @@ export default [
     ignore: true
   },
   {
+    key: 'mask',
+    ignore: true
+  },
+  {
     type: 'number',
     input: true,
     key: 'rows',
