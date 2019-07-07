@@ -137,6 +137,9 @@ export default class Input extends Multivalue {
 
   updateValue(flags, value, index) {
     flags = flags || {};
+    if (!value) {
+      value = this.getValue();
+    }
     value = value === undefined ? this.dataValue : value;
     index = index || 0;
     this.triggerUpdateValueAt(flags, value, index);
