@@ -4,6 +4,10 @@ export default [
     ignore: true,
   },
   {
+    key: 'defaultValue',
+    ignore: true,
+  },
+  {
     key: 'dbIndex',
     ignore: true,
   },
