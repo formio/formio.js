@@ -132,7 +132,7 @@ export default class DayComponent extends Field {
       return this._days;
     }
     this._days = [
-      { value: 0, label: _.get(this.component, 'fields.day.placeholder', '') }
+      { value: '', label: _.get(this.component, 'fields.day.placeholder', '') }
     ];
     for (let x = 1; x <= 31; x++) {
       this._days.push({
@@ -148,7 +148,7 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: undefined, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      { value: '', label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
       { value: 3, label: 'March' },
@@ -170,7 +170,7 @@ export default class DayComponent extends Field {
       return this._years;
     }
     this._years = [
-      { value: 0, label: _.get(this.component, 'fields.year.placeholder', '') }
+      { value: '', label: _.get(this.component, 'fields.year.placeholder', '') }
     ];
     const minYears = _.get(this.component, 'fields.year.minYear', 1900) || 1900;
     const maxYears = _.get(this.component, 'fields.year.maxYear', 2030) || 2030;
@@ -211,7 +211,8 @@ export default class DayComponent extends Field {
         selectOptions: this[`${name}s`].reduce((html, option) =>
           html + this.renderTemplate('selectOption', {
             option,
-            selected: false, attrs: {}
+            selected: false,
+            attrs: {}
           }), ''
         ),
       });
@@ -249,7 +250,7 @@ export default class DayComponent extends Field {
       return false;
     }
 
-    if (this.monthRequired && month < 0) {
+    if (this.monthRequired && !month) {
       return false;
     }
 
@@ -287,6 +288,7 @@ export default class DayComponent extends Field {
    * @param value
    */
   setValueAt(index, value) {
+    console.log('setValueAt', value);
     // temporary solution to avoid input reset
     // on invalid date.
     if (!value || value === 'Invalid date') {
@@ -304,13 +306,13 @@ export default class DayComponent extends Field {
     const year = parts.shift();
 
     if (this.refs.day && this.showDay) {
-      this.refs.day.value = day === '00' ? undefined : parseInt(day, 10);
+      this.refs.day.value = day === '00' ? '' : parseInt(day, 10);
     }
     if (this.refs.month && this.showMonth) {
-      this.refs.month.value = month === '00' ? undefined : parseInt(month, 10);
+      this.refs.month.value = month === '00' ? '' : parseInt(month, 10);
     }
     if (this.refs.year && this.showYear) {
-      this.refs.year.value = year === '0000' ? undefined : parseInt(year, 10);
+      this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);
     }
   }
 
@@ -440,7 +442,7 @@ export default class DayComponent extends Field {
 
   getValue() {
     const result = super.getValue();
-    return (result === '') ? this.dataValue : result;
+    return (!result) ? this.dataValue : result;
   }
 
   /**
