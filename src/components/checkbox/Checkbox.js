@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 
-export default class CheckBoxComponent extends Component {
+export default class CheckBoxComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'checkbox',
       inputType: 'checkbox',
       label: 'Checkbox',
@@ -62,6 +62,12 @@ export default class CheckBoxComponent extends Component {
     info.label = this.t(this.component.label);
     info.labelClass = this.labelClass;
     return info;
+  }
+
+  get labelInfo() {
+    return {
+      hidden: true
+    };
   }
 
   render() {

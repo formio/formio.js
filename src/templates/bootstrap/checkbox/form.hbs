@@ -1,7 +1,7 @@
-<div class="form-check">
+<div class="form-check checkbox">
   <label class="{{input.labelClass}} form-check-label">
-    <{{input.type}} 
-      ref="input" 
+    <{{input.type}}
+      ref="input"
       {% for (var attr in input.attr) { %}
       {{attr}}="{{input.attr[attr]}}"
       {% } %}
