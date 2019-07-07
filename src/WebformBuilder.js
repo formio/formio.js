@@ -777,7 +777,7 @@ export default class WebformBuilder extends Component {
 
             if (this.form) {
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), event.data);
+              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
             }
           }
         }
