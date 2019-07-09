@@ -455,6 +455,10 @@ export default class NestedComponent extends Field {
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
+      // If a source is provided and is the same as the source, then skip.
+      if (source && source.id === comp.id) {
+        return;
+      }
       if (comp.checkData) {
         valid &= comp.checkData(data, flags);
       }

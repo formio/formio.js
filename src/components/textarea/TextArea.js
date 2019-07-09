@@ -2,6 +2,7 @@
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
@@ -34,6 +35,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   init() {
     super.init();
+    this.editorReady = new NativePromise((resolve) => {
+      this.editorReadyResolve = resolve;
+    });
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
@@ -50,25 +54,6 @@ export default class TextAreaComponent extends TextFieldComponent {
       info.attr.rows = this.component.rows;
     }
     return info;
-  }
-
-  get wysiwygDefault() {
-    return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
   }
 
   setupValueElement(element) {
@@ -124,14 +109,36 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
   }
 
+  get autoExpand() {
+    return this.component.autoExpand;
+  }
+
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue({
+        modified: !this.autoModified
+      }, newValue);
+    }
+    this.autoModified = false;
+  }
+
   attachElement(element, index) {
+    if (this.autoExpand && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
+      element.childNodes.forEach((element) => {
+        if (element.nodeName === 'TEXTAREA') {
+          this.addAutoExpanding(element);
+        }
+      });
+    }
+
     if (this.options.readOnly) {
       return element;
-    }
-    // Normalize the configurations.
-    if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
-      console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-      this.component.wysiwyg = this.wysiwygDefault;
     }
 
     if (this.component.wysiwyg && !this.component.editor) {
@@ -144,86 +151,72 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
     switch (this.component.editor) {
       case 'ace':
-        this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
+        Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
           .then((editor) => {
             this.editor = editor.edit(element);
             this.editor.setOptions({
               maxLines: 12,
               minLines: 12
             });
-            this.editor.on('change', () => {
-              const newValue = this.getConvertedValue(this.editor.getValue());
-              // Do not bother to update if they are both empty.
-              if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-                this.updateValue(null, newValue, index);
-              }
-            });
+            this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
             this.editor.getSession().setTabSize(2);
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on('input', () => this.acePlaceholder());
             setTimeout(() => this.acePlaceholder(), 100);
             this.editor.setValue(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
             return this.editor;
           });
         break;
       case 'quill':
-        Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-          { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
-        ], true);
+        // Normalize the configurations for quill.
+        if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
+          console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+          settings = this.wysiwygDefault;
+        }
 
-        this.editorReady = Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
-          .then((Editor) => {
-            this.editor = new Editor(element, settings);
-            this.editor.root.spellcheck = this.component.spellcheck;
-            if (this.component.isUploadEnabled) {
-              this.editor.getModule('toolbar').addHandler('image', () => this.imageHandler());
-            }
+        // Add the quill editor.
+        this.addQuill(
+          element,
+          settings, () => this.updateEditorValue(this.editor.root.innerHTML)
+        ).then((quill) => {
+          this.editor = quill;
+          if (this.component.isUploadEnabled) {
+            const _this = this;
+            quill.getModule('toolbar').addHandler('image', function() {
+              //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+              //we also need current component instance as we use some fields and methods from it as well
+              _this.imageHandler.call(_this, this);
+            } );
+          }
+          quill.root.spellcheck = this.component.spellcheck;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.disable();
+          }
 
-            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-            // const txtArea = document.createElement('textarea');
-            // txtArea.setAttribute('class', 'quill-source-code');
-            // this.editor.addContainer('ql-custom').appendChild(txtArea);
-            // const qlSource = element.parentNode.querySelector('.ql-source');
-            // if (qlSource) {
-            //   this.addEventListener(qlSource, 'click', (event) => {
-            //     event.preventDefault();
-            //     if (txtArea.style.display === 'inherit') {
-            //       this.editor.setContents(this.editor.clipboard.convert(txtArea.value));
-            //     }
-            //     txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-            //   });
-            // }
-            /** END CODEBLOCK **/
-
-            // Allows users to skip toolbar items when tabbing though form
-            const elm = document.querySelectorAll('.ql-formats > button');
-            for (let i = 0; i < elm.length; i++) {
-              elm[i].setAttribute('tabindex', '-1');
-            }
-
-            if (this.options.readOnly || this.disabled) {
-              this.editor.disable();
-            }
-
-            this.editor.on('text-change', () => {
-              this.updateValue(null, this.getConvertedValue(this.sanitize(this.editor.root.innerHTML)));
-            });
-
-            this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
-            return this.editor;
-          });
+          this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
+          this.editorReadyResolve(this.editor);
+          return quill;
+        }).catch(err => console.warn(err));
         break;
       case 'ckeditor':
-        this.editorReady = Formio.requireLibrary('ckeditor', 'ClassicEditor', 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js', true)
-          .then((ClassicEditor) => {
-            settings = settings || {};
-            settings.base64Upload = true;
-            return ClassicEditor.create(element, settings).then(editor => {
-              editor.model.document.on('change', () => this.updateValue(null, editor.data.get()));
-              this.editor = editor;
-              this.editor.data.set(this.setConvertedValue(this.dataValue));
-              return this.editor;
-            });
+        settings = settings || {};
+        settings.rows = this.component.rows;
+        this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
+          .then((editor) => {
+            this.editor = editor;
+            if (this.options.readOnly || this.component.disabled) {
+              this.editor.isReadOnly = true;
+            }
+            const numRows = parseInt(this.component.rows, 10);
+            if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+              // Default height is 21px with 10px margin + a 14px top margin.
+              const editorHeight = (numRows * 31) + 14;
+              editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+            }
+            editor.data.set(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
+            return editor;
           });
         break;
       default:
@@ -235,8 +228,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return element;
   }
 
-  imageHandler() {
-    let fileInput = this.container.querySelector('input.ql-image[type=file]');
+  imageHandler(quillInstance) {
+    let fileInput = quillInstance.container.querySelector('input.ql-image[type=file]');
     if (fileInput == null) {
       fileInput = document.createElement('input');
       fileInput.setAttribute('type', 'file');
@@ -244,15 +237,16 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.classList.add('ql-image');
       fileInput.addEventListener('change', () => {
         const files = fileInput.files;
-        const range = this.editor.getSelection(true);
+        const range = quillInstance.quill.getSelection(true);
 
         if (!files || !files.length) {
           console.warn('No files selected');
           return;
         }
 
-        this.editor.enable(false);
+        quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        let requestData;
         this.root.formio
           .uploadFile(
             uploadStorage,
@@ -263,25 +257,32 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadUrl,
             uploadOptions
           )
-          .then((result) => {
+          .then(result => {
+            requestData = result;
             return this.root.formio.downloadFile(result);
           })
           .then(result => {
-            this.editor.enable(true);
+            quillInstance.quill.enable(true);
             const Delta = Quill.import('delta');
-            this.editor.updateContents(new Delta()
-              .retain(range.index)
-              .delete(range.length)
-              .insert({ image: result.url })
+            quillInstance.quill.updateContents(new Delta()
+                .retain(range.index)
+                .delete(range.length)
+                .insert(
+                  {
+                    image: result.url
+                  },
+                  {
+                    alt: JSON.stringify(requestData),
+                  })
               , Quill.sources.USER);
             fileInput.value = '';
           }).catch(error => {
-            console.warn('Quill image upload failed');
-            console.warn(error);
-            this.editor.enable(true);
-          });
+          console.warn('Quill image upload failed');
+          console.warn(error);
+          quillInstance.quill.enable(true);
+        });
       });
-      this.container.appendChild(fileInput);
+      quillInstance.container.appendChild(fileInput);
     }
     fileInput.click();
   }
@@ -293,6 +294,44 @@ export default class TextAreaComponent extends TextFieldComponent {
   get htmlView() {
     return this.options.readOnly && this.component.wysiwyg;
   }
+  /* eslint-enable max-statements */
+
+  setWysiwygValue(value, skipSetting) {
+    if (this.htmlView) {
+      // For HTML view, just view the contents.
+      if (this.input) {
+        this.setContent(this.input, this.interpolate(value));
+      }
+    }
+    else if (this.editorReady) {
+      return this.editorReady.then((editor) => {
+        this.autoModified = true;
+        if (!skipSetting) {
+          switch (this.component.editor) {
+            case 'ace':
+              editor.setValue(this.setConvertedValue(value));
+              break;
+            case 'quill':
+              if (this.component.isUploadEnabled) {
+                this.setAsyncConvertedValue(value)
+                  .then(result => {
+                    editor.setContents(editor.clipboard.convert(result));
+                  });
+              }
+              else {
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+              }
+              break;
+            case 'ckeditor':
+              editor.data.set(this.setConvertedValue(value));
+              break;
+          }
+        }
+      });
+    }
+
+    return NativePromise.resolve();
+  }
 
   setConvertedValue(value) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
@@ -303,7 +342,142 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(err);
       }
     }
+
+    if (!_.isString(value)) {
+      value = '';
+    }
+
     return value;
+  }
+
+  setAsyncConvertedValue(value) {
+    if (this.component.as && this.component.as === 'json' && value) {
+      try {
+        value = JSON.stringify(value, null, 2);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    if (!_.isString(value)) {
+      value = '';
+    }
+
+    const htmlDoc = new DOMParser().parseFromString(value,'text/html');
+    const images = htmlDoc.getElementsByTagName('img');
+    if (images.length) {
+      return this.setImagesUrl(images)
+        .then( () => {
+          value = htmlDoc.getElementsByTagName('body')[0].firstElementChild;
+          return new XMLSerializer().serializeToString(value);
+        });
+    }
+    else {
+      return NativePromise.resolve(value);
+    }
+  }
+
+  setImagesUrl(images) {
+    return NativePromise.all(_.map(images, image => {
+      let requestData;
+      try {
+        requestData = JSON.parse(image.getAttribute('alt'));
+      }
+      catch (error) {
+        console.warn(error);
+      }
+
+      return this.root.formio.downloadFile(requestData)
+        .then((result) => {
+          image.setAttribute('src', result.url);
+        });
+    }));
+  }
+
+  addAutoExpanding(textarea) {
+    let heightOffset = null;
+    let previousHeight = null;
+
+    const changeOverflow = (value) => {
+      const width = textarea.style.width;
+
+      textarea.style.width = '0px';
+      textarea.offsetWidth;
+      textarea.style.width = width;
+
+      textarea.style.overflowY = value;
+    };
+
+    const preventParentScroll = (element, changeSize) => {
+      const nodeScrolls = [];
+
+      while (element && element.parentNode && element.parentNode instanceof Element) {
+        if (element.parentNode.scrollTop) {
+          nodeScrolls.push({
+            node: element.parentNode,
+            scrollTop: element.parentNode.scrollTop,
+          });
+        }
+        element = element.parentNode;
+      }
+
+      changeSize();
+
+      nodeScrolls.forEach((nodeScroll) => {
+        nodeScroll.node.scrollTop = nodeScroll.scrollTop;
+      });
+    };
+
+    const resize = () => {
+      if (textarea.scrollHeight === 0) {
+        return;
+      }
+
+      preventParentScroll(textarea, () => {
+        textarea.style.height = '';
+        textarea.style.height = `${textarea.scrollHeight + heightOffset}px`;
+      });
+    };
+
+    const update = () => {
+      resize();
+
+      const styleHeight = Math.round(parseFloat(textarea.style.height));
+      const computed = window.getComputedStyle(textarea, null);
+
+      let currentHeight = textarea.offsetHeight;
+
+      if (currentHeight < styleHeight && computed.overflowY === 'hidden') {
+        changeOverflow('scroll');
+      }
+      else if (computed.overflowY !== 'hidden') {
+        changeOverflow('hidden');
+      }
+
+      resize();
+      currentHeight = textarea.offsetHeight;
+
+      if (previousHeight !== currentHeight) {
+        previousHeight = currentHeight;
+        update();
+      }
+    };
+
+    const computedStyle = window.getComputedStyle(textarea, null);
+
+    textarea.style.resize = 'none';
+    heightOffset = parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
+
+    if (window) {
+      this.addEventListener(window, 'resize', update);
+    }
+
+    this.addEventListener(textarea, 'input', update);
+
+    this.updateSize = update;
+
+    update();
   }
 
   removeBlanks(value) {
@@ -314,7 +488,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>/g, '').replace(/<p><br><\/p>/g, '');
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
     };
 
     if (Array.isArray(value)) {
@@ -326,6 +500,14 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = removeBlanks(value);
     }
     return value;
+  }
+
+  onChange(flags, fromRoot) {
+    const changed = super.onChange(flags, fromRoot);
+    if (this.updateSize) {
+      this.updateSize();
+    }
+    return changed;
   }
 
   hasChanged(before, after) {
@@ -345,53 +527,18 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    const shouldSetValue = !_.isEqual(value, this.getValue());
+    const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
-    }
-
-    if (!this.editorReady) {
-      return false;
+      value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
-      this.editorReady.then((editor) => {
-        switch (this.component.editor) {
-          case 'ace':
-            if (shouldSetValue) {
-              editor.setValue(this.setConvertedValue(value));
-            }
-            break;
-          case 'quill':
-            if (shouldSetValue) {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
-            break;
-          case 'ckeditor':
-            if (shouldSetValue) {
-              editor.data.set(this.setConvertedValue(value));
-            }
-            break;
-        }
-      });
-    }
-
-    // Update on change.
-    this.updateOnChange(flags, changed);
-
-    // Return if the value has changed.
+    this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
     return changed;
   }
 
@@ -407,19 +554,23 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  getValue() {
-    if (this.viewOnly || this.htmlView || this.options.readOnly) {
-      return this.dataValue;
+  destroy() {
+    if (this.editorReady) {
+      this.editorReady.then((editor) => editor.destroy());
     }
 
+    if (this.updateSize) {
+      this.removeEventListener(window, 'resize', this.updateSize);
+    }
+
+    return super.destroy();
+  }
+
+  getValue() {
     if (this.isPlain) {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.editor) {
-      return this.dataValue;
-    }
-
-    return this.component.multiple ? [] : '';
+    return this.dataValue;
   }
 }

@@ -8,6 +8,7 @@ import SubmissionSetter from './submissionSetter';
 import NestedFormTests from './nested-form-tests';
 import NestedFormNoSubmit from './nested-nosubmit.js';
 import NestedConditionallyHidden from './conditional-nested-form-load.js';
+import WysiwygCursor from './wysiwygCursor';
 import ChildMetadata from './childMetadata';
 import NestedFormValidation from './nested-form-validation';
 
@@ -23,5 +24,6 @@ export default [
   NestedFormValidation,
   NestedFormNoSubmit,
   NestedConditionallyHidden,
-  ChildMetadata
+  ChildMetadata,
+  WysiwygCursor
 ];

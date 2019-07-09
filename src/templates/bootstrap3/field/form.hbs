@@ -2,8 +2,8 @@
   <label class="control-label {{label.className}}">
     {% if (!label.hidden) { %}
       {{ t(component.label) }}
-      {% if (component.tooltip) { %} 
-        <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{component.tooltip}}"></i>
+      {% if (component.tooltip) { %}
+        <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
       {% } %}
     {% } %}
   </label>
