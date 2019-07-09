@@ -5,3 +5,10 @@
   {{attr}}="{{input.attr[attr]}}"
   {% } %}
 >{{selectOptions}}</select>
+<input type="text"
+       class="formio-select-autocomplete-input"
+       ref="autocompleteInput"
+       {% if (input.attr.autocomplete) { %}
+       autocomplete="{{input.attr.autocomplete}}"
+       {% } %}
+/>
