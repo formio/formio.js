@@ -221,7 +221,6 @@ export default class TextAreaComponent extends TextFieldComponent {
       case 'ckeditor':
         settings = settings || {};
         settings.rows = this.component.rows;
-        settings.base64Upload = true;
         this.addCKE(element, settings, (newValue) => this.updateEditorValue(newValue))
           .then((editor) => {
             this.editor = editor;

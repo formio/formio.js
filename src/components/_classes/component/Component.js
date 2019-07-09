@@ -10,7 +10,7 @@ import Validator from '../../Validator';
 import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
-const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.1/build/ckeditor.js';
+const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -1452,11 +1452,12 @@ export default class Component extends Element {
   }
 
   addCKE(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? null : settings;
+    settings = _.isEmpty(settings) ? {} : settings;
+    settings.base64Upload = true;
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
         if (!element.parentNode) {
-          return Promise.reject();
+          return NativePromise.reject();
         }
         return ClassicEditor.create(element, settings).then(editor => {
           editor.model.document.on('change', () => onChange(editor.data.get()));
@@ -1477,7 +1478,7 @@ export default class Component extends Element {
     return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         if (!element.parentNode) {
-          return Promise.reject();
+          return NativePromise.reject();
         }
         this.quill = new Quill(element, settings);
 
