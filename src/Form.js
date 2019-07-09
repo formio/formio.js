@@ -93,9 +93,9 @@ export default class Form extends Element {
         this._form = this.instance.form = form;
         return this.instance.ready.then(() => {
           if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission();
+            return this.instance.loadSubmission().then(() => this.instance);
           }
-          return NativePromise.resolve();
+          return this.instance;
         });
       });
     }
@@ -108,6 +108,7 @@ export default class Form extends Element {
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
       this.element = this.instance.element;
+      return this.instance;
     });
   }
 
@@ -127,8 +128,8 @@ export default class Form extends Element {
    * @return {Promise<T>}
    */
   setDisplay(display) {
-    if (this.form.display === display) {
-      return NativePromise.resolve();
+    if ((this.form.display === display) && this.instance) {
+      return NativePromise.resolve(this.instance);
     }
 
     this.form.display = display;
