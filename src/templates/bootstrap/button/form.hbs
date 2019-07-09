@@ -7,7 +7,7 @@
 {% if (component.leftIcon) { %}<span class="{{component.leftIcon}}"></span>&nbsp;{% } %}
 {{input.content}}
 {% if (component.tooltip) { %}
-  <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{component.tooltip}}"></i>
+  <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
 {% } %}
 {% if (component.rightIcon) { %}&nbsp;<span class="{{component.rightIcon}}"></span>{% } %}
 </{{input.type}}>
