@@ -505,6 +505,7 @@ export default class WebformBuilder extends Component {
     super.detach();
   }
 
+  /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
       return;
@@ -520,12 +521,23 @@ export default class WebformBuilder extends Component {
 
     if (type) {
       // This is a new component
-      info = _.cloneDeep(this.schemas[type]);
-      info.key = _.camelCase(
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (this.schemas.hasOwnProperty(type)) {
+        info = _.cloneDeep(this.schemas[type]);
+        info.key = _.camelCase(
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
+      else {
+        // This is an existing resource field.
+        const [resource, key] = type.split('_');
+        const resourceGroups = this.groups.resource.subgroups;
+        const resourceGroup = _.find(resourceGroups, { key: resource });
+        if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
+          info = resourceGroup.components[key].schema;
+        }
+      }
 
       isNew = true;
     }
@@ -540,6 +552,11 @@ export default class WebformBuilder extends Component {
         // Since splice returns an array of one object, we need to destructure it.
         info = info[0];
       }
+    }
+
+    // If we haven't found the component, stop.
+    if (!info) {
+      return;
     }
 
     if (target !== source) {

@@ -21,7 +21,7 @@
   >
     <div id="group-container-{{groupKey}}" class="panel-body no-drop" ref="sidebar-container">
       {% group.componentOrder.forEach(function(componentKey) { %}
-      <span data-type="{{componentKey}}" class="btn btn-primary btn-xs btn-block formcomponent drag-copy">
+      <span data-type="{{group.components[componentKey].key}}" class="btn btn-primary btn-xs btn-block formcomponent drag-copy">
         {% if (group.components[componentKey].icon) { %}
           <i class="{{iconClass(group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>
         {% } %}
