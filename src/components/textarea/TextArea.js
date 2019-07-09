@@ -56,25 +56,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 
-  get wysiwygDefault() {
-    return {
-      theme: 'snow',
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
-          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
-  }
-
   setupValueElement(element) {
     let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);

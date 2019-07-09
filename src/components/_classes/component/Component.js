@@ -1434,9 +1434,6 @@ export default class Component extends Element {
       theme: 'snow',
       placeholder: this.t(this.component.placeholder),
       modules: {
-        clipboard: {
-          matchVisual: false
-        },
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
           [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
