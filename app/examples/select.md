@@ -96,7 +96,12 @@ Formio.createForm(document.getElementById('json-values'), {
       key: "selectjson",
       placeholder: "Select one",
       data: {
-        json: '[{"value":"a","label":"A"},{"value":"b","label":"B"},{"value":"c","label":"C"},{"value":"d","label":"D"}]'
+        json: `[
+          {"value":"a","label":"A"},
+          {"value":"b","label":"B"},
+          {"value":"c","label":"C"},
+          {"value":"d","label":"D"}
+        ]`
       },
       dataSrc: "json",
       template: "<span>{% raw %}{{ item.label }}{% endraw %}</span>",
@@ -115,7 +120,12 @@ Formio.createForm(document.getElementById('json-values'), {
             key: "selectjson",
             placeholder: "Select one",
             data: {
-              json: '[{"value":"a","label":"A"},{"value":"b","label":"B"},{"value":"c","label":"C"},{"value":"d","label":"D"}]'
+              json: `[
+                {"value":"a","label":"A"},
+                {"value":"b","label":"B"},
+                {"value":"c","label":"C"},
+                {"value":"d","label":"D"}
+              ]`
             },
             dataSrc: "json",
             template: "<span>{% raw %}{{ item.label }}{% endraw %}</span>",

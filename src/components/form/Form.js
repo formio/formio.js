@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
+import NativePromise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
@@ -32,8 +33,7 @@ export default class FormComponent extends Component {
     super.init();
     this.subForm = null;
     this.formSrc = '';
-
-    this.subFormReady = new Promise((resolve, reject) => {
+    this.subFormReady = new NativePromise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
@@ -178,7 +178,7 @@ export default class FormComponent extends Component {
     super.attach(element);
     // Don't attach in builder.
     if (this.builderMode) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
     if (this.subForm) {
       return this.subForm.attach(element);
@@ -374,7 +374,7 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }).catch(err => {
           this.subForm.onSubmissionError(err);
-          return Promise.reject(err);
+          return NativePromise.reject(err);
         });
       });
     }
@@ -395,7 +395,7 @@ export default class FormComponent extends Component {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return Promise.resolve(this.dataValue);
+      return NativePromise.resolve(this.dataValue);
     }
 
     // This submission has not been submitted yet.

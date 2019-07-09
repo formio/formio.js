@@ -4,6 +4,7 @@ import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import { sanitize } from 'dompurify';
 import Formio from './Formio';
+import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { currentTimezone } from './utils/utils';
@@ -195,7 +196,7 @@ export default class Webform extends NestedComponent {
      * });
      * form.src = 'https://examples.form.io/example';
      */
-    this.formReady = new Promise((resolve, reject) => {
+    this.formReady = new NativePromise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -225,7 +226,7 @@ export default class Webform extends NestedComponent {
      * });
      * form.src = 'https://examples.form.io/example/submission/234234234234234243';
      */
-    this.submissionReady = new Promise((resolve, reject) => {
+    this.submissionReady = new NativePromise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -271,7 +272,7 @@ export default class Webform extends NestedComponent {
    * @return {Promise}
    */
   set language(lang) {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       this.options.language = lang;
       try {
         i18next.changeLanguage(lang, (err) => {
@@ -310,10 +311,10 @@ export default class Webform extends NestedComponent {
    */
   localize() {
     if (i18next.initialized) {
-      return Promise.resolve(i18next);
+      return NativePromise.resolve(i18next);
     }
     i18next.initialized = true;
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       try {
         i18next.init(this.options.i18n, (err) => {
           // Get language but remove any ;q=1 that might exist on it.
@@ -463,7 +464,7 @@ export default class Webform extends NestedComponent {
         this.formReadyReject(err);
       });
     }
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**
@@ -1133,7 +1134,7 @@ export default class Webform extends NestedComponent {
   }
 
   submitForm(options = {}) {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
         return resolve({
@@ -1234,7 +1235,7 @@ export default class Webform extends NestedComponent {
     this.submitting = true;
     return this.submitForm(options)
       .then(({ submission, saved }) => this.onSubmit(submission, saved))
-      .catch((err) => Promise.reject(this.onSubmissionError(err)));
+      .catch((err) => NativePromise.reject(this.onSubmissionError(err)));
   }
 
   /**

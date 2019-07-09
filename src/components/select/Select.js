@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
+import NativePromise from 'native-promise-only';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -70,7 +71,7 @@ export default class SelectComponent extends Field {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) => {
+    this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
   }

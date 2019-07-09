@@ -5,6 +5,7 @@ import PDF from './PDF';
 import Webform from './Webform';
 import templates from './templates';
 import { sanitize } from 'dompurify';
+import NativePromise from 'native-promise-only';
 
 export default class Form extends Element {
   /**
@@ -25,7 +26,7 @@ export default class Form extends Element {
    */
   constructor(...args) {
     super(...args);
-    this.ready = new Promise((resolve, reject) => {
+    this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
@@ -92,9 +93,9 @@ export default class Form extends Element {
         this._form = this.instance.form = form;
         return this.instance.ready.then(() => {
           if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission();
+            return this.instance.loadSubmission().then(() => this.instance);
           }
-          return Promise.resolve();
+          return this.instance;
         });
       });
     }
@@ -107,6 +108,7 @@ export default class Form extends Element {
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
       this.element = this.instance.element;
+      return this.instance;
     });
   }
 
@@ -126,8 +128,8 @@ export default class Form extends Element {
    * @return {Promise<T>}
    */
   setDisplay(display) {
-    if (this.form.display === display) {
-      return Promise.resolve();
+    if ((this.form.display === display) && this.instance) {
+      return NativePromise.resolve(this.instance);
     }
 
     this.form.display = display;
@@ -145,7 +147,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       if (!embed || !embed.src) {
         resolve();
       }
@@ -196,11 +198,11 @@ export default class Form extends Element {
    */
   build() {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return NativePromise.reject('Form not ready. Use form.ready promise');
     }
 
     if (!this.element) {
-      return Promise.reject('No DOM element for form.');
+      return NativePromise.reject('No DOM element for form.');
     }
 
     // Add temporary loader.
@@ -220,9 +222,9 @@ export default class Form extends Element {
 
   render() {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return NativePromise.reject('Form not ready. Use form.ready promise');
     }
-    return Promise.resolve(this.instance.render())
+    return NativePromise.resolve(this.instance.render())
       .then((param) => {
         this.emit('render', param);
         return param;
@@ -231,7 +233,7 @@ export default class Form extends Element {
 
   attach(element) {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return NativePromise.reject('Form not ready. Use form.ready promise');
     }
     this.element = element;
     return this.instance.attach(this.element)

@@ -1,12 +1,14 @@
 import _ from 'lodash';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 
 import WebformBuilder from './WebformBuilder';
 import { getElementRect } from './utils/utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
-const { fetch, Headers } = fetchPonyfill({ Promise });
+const { fetch, Headers } = fetchPonyfill({
+  Promise: NativePromise
+});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -166,7 +168,7 @@ export default class PDFBuilder extends WebformBuilder {
         });
       }
 
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
 
     // Normal PDF Builder
