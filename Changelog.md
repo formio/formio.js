@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FOR-2019: Ability to override CSS Classes in templates
  - Ability to provide HTML attributes for components inputs
 
+### Changed
+ - ```<form>``` being root HTML tag for the form instead of ```<div>``` 
+
 ### Fixed
  - Creating builder by URL being broken
 
