@@ -25,7 +25,12 @@ export default class ReCaptchaComponent extends Component {
   }
 
   render() {
-    super.render(this, true);
+    if (this.builderMode) {
+      return super.render('reCAPTCHA');
+    }
+    else {
+      return super.render('', true);
+    }
   }
 
   createInput() {
@@ -86,7 +91,8 @@ export default class ReCaptchaComponent extends Component {
 
   beforeSubmit() {
     if (this.recaptchaVerifiedPromise) {
-      return this.recaptchaVerifiedPromise;
+      return this.recaptchaVerifiedPromise
+        .then(() => super.beforeSubmit());
     }
     return super.beforeSubmit();
   }
