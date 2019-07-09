@@ -50,7 +50,7 @@ export default {
   getBindedShortcuts(components, input) {
     const result = [];
 
-    eachComponent(components, function(component) {
+    eachComponent(components, (component) => {
       if (component === input) {
         return;
       }
@@ -76,7 +76,7 @@ export default {
     }
     return [''].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
-      this.getBindedShortcuts(form.components, component))
+      this.getBindedShortcuts(form.components, component)),
     );
   }
 };
