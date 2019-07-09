@@ -16,8 +16,8 @@ export default class EditGridComponent extends NestedComponent {
       components: [],
       inlineEdit: false,
       templates: {
-        header: this.defaultHeaderTemplate,
-        row: this.defaultRowTemplate,
+        header: EditGridComponent.defaultHeaderTemplate,
+        row: EditGridComponent.defaultRowTemplate,
         footer: ''
       }
     }, ...extend);
