@@ -339,10 +339,6 @@ export default class TextAreaComponent extends TextFieldComponent {
       return super.setValue(this.setConvertedValue(value), flags);
     }
 
-    if (!this.editorReady) {
-      return false;
-    }
-
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
