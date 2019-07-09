@@ -136,8 +136,8 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.updateValue({
         modified: !this.autoModified
       }, newValue);
-      this.autoModified = false;
     }
+    this.autoModified = false;
   }
 
   attachElement(element, index) {
