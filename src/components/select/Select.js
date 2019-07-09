@@ -879,6 +879,12 @@ export default class SelectComponent extends Field {
   }
 
   setValue(value, flags) {
+    const isNumeric = (val) => {
+      return !isNaN(parseFloat(val)) && isFinite(val);
+    };
+    if (isNumeric(value)) {
+      value = +value;
+    }
     flags = this.getFlags.apply(this, arguments);
     const previousValue = this.dataValue;
     if (this.component.multiple && !Array.isArray(value)) {
