@@ -68,6 +68,10 @@ export default class PDFBuilder extends WebformBuilder {
     return _.has(this.webform.form, 'settings.pdf');
   }
 
+  get projectUrl() {
+    return this.options.projectUrl || Formio.getProjectUrl();
+  }
+
   // 888      d8b  .d888                                    888
   // 888      Y8P d88P"                                     888
   // 888          888                                       888
@@ -127,8 +131,8 @@ export default class PDFBuilder extends WebformBuilder {
       });
 
       // Init the upload error.
-      if (!this.options.url) {
-        this.setUploadError('Form options.url not set. Please set the "url" property of the options for this form. This setting is necessary to upload a pdf background.');
+      if (!this.projectUrl) {
+        this.setUploadError('Form options.projectUrl not set. Please set the "projectUrl" property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.');
       }
       else {
         this.setUploadError();
@@ -202,7 +206,7 @@ export default class PDFBuilder extends WebformBuilder {
     const formData = new FormData();
     formData.append('file', file);
 
-    fetch(`${this.options.url}/upload`, {
+    fetch(`${this.projectUrl}/upload`, {
       method: 'POST',
       headers,
       body: formData
@@ -217,7 +221,7 @@ export default class PDFBuilder extends WebformBuilder {
           response.json().then(data => {
             this.webform.form.settings.pdf = {
               id: data.file,
-              src: `${this.options.url}${data.path}`
+              src: `${this.projectUrl}${data.path}`
             };
             // Now that the settings are set, redraw to show the builder.
             this.redraw();
