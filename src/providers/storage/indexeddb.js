@@ -1,5 +1,5 @@
 const uuidv4 = require('uuid/v4');
-
+import NativePromise from 'native-promise-only';
 const indexeddb = () => ({
   title: 'indexedDB',
   name: 'indexeddb',
@@ -9,7 +9,7 @@ const indexeddb = () => ({
       return;
     }
 
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       const request = indexedDB.open(options.indexeddb, 3);
       request.onsuccess = function(event) {
         const db = event.target.result;
@@ -22,7 +22,7 @@ const indexeddb = () => ({
     }).then((db) => {
       const reader = new FileReader();
 
-      return new Promise((resolve, reject) => {
+      return new NativePromise((resolve, reject) => {
         reader.onload = (event) => {
           const blobObject = new Blob([file], { type: file.type });
 
@@ -66,7 +66,7 @@ const indexeddb = () => ({
     });
   },
   downloadFile(file, options) {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       const request = indexedDB.open(options.indexeddb, 3);
 
       request.onsuccess = function(event) {
@@ -74,7 +74,7 @@ const indexeddb = () => ({
         resolve(db);
       };
     }).then((db) => {
-      return new Promise((resolve, reject) => {
+      return new NativePromise((resolve, reject) => {
         const trans = db.transaction([options.indexeddbTable], 'readonly');
         const store = trans.objectStore(options.indexeddbTable).get(file.id);
         store.onsuccess = () => {
