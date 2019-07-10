@@ -170,11 +170,7 @@ export default class SelectComponent extends Field {
       this.selectOptions.push(option);
     }
 
-    if (this.choices || !this.element) {
-      return;
-    }
-
-    if (this.refs.selectContainer) {
+    if (this.refs.selectContainer && (this.component.widget === 'html5')) {
       this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
         selected: this.dataValue === option.value,
         option,
