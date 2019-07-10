@@ -220,10 +220,15 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../_classes/component/Component.form&apos;;
 
 import SelectEditData from &apos;./editForm/Select.edit.data&apos;;
+import SelectEditDisplay from &apos;./editForm/Select.edit.display&apos;;
 import SelectEditValidation from &apos;./editForm/Select.edit.validation&apos;;
 
 export default function(...extend) {
   return baseEditForm([
+    {
+      key: &apos;display&apos;,
+      components: SelectEditDisplay
+    },
     {
       key: &apos;data&apos;,
       components: SelectEditData

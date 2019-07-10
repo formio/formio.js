@@ -269,7 +269,7 @@ export default {
   getBindedShortcuts(components, input) {
     const result = [];
 
-    eachComponent(components, function(component) {
+    eachComponent(components, (component) =&gt; {
       if (component === input) {
         return;
       }
@@ -290,14 +290,13 @@ export default {
   },
 
   getAvailableShortcuts(form, component) {
-    // For some reason form and component are not passing in. Just send default list.
     if (!component) {
-      return this.getAlphaShortcuts();
+      return [];
     }
     return [&apos;&apos;].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
-      [],        // this.getBindedShortcuts(form.components, component))
-    ));
+      this.getBindedShortcuts(form.components, component)),
+    );
   }
 };
 </code></pre>

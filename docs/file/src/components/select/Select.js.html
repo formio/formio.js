@@ -222,6 +222,7 @@ import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -289,7 +290,7 @@ export default class SelectComponent extends Field {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) =&gt; {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
       this.itemsLoadedResolve = resolve;
     });
   }
@@ -303,10 +304,14 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
-    if (this.component.valueProperty) {
+    if (this.valueProperty) {
       return &apos;&apos;;
     }
     return {};
+  }
+
+  get valueProperty() {
+    return this.component.valueProperty || &apos;value&apos;;
   }
 
   get inputInfo() {
@@ -356,8 +361,8 @@ export default class SelectComponent extends Field {
    */
   itemValue(data, forceUseValue = false) {
     if (_.isObject(data)) {
-      if (this.component.valueProperty) {
-        return _.get(data, this.component.valueProperty);
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
       }
 
       if (forceUseValue) {
@@ -384,11 +389,7 @@ export default class SelectComponent extends Field {
       this.selectOptions.push(option);
     }
 
-    if (this.choices || !this.element) {
-      return;
-    }
-
-    if (this.refs.selectContainer) {
+    if (this.refs.selectContainer &amp;&amp; (this.component.widget === &apos;html5&apos;)) {
       this.refs.selectContainer.insertAdjacentHTML(&apos;beforeend&apos;, this.sanitize(this.renderTemplate(&apos;selectOption&apos;, {
         selected: this.dataValue === option.value,
         option,
@@ -655,7 +656,6 @@ export default class SelectComponent extends Field {
 
     switch (this.component.dataSrc) {
       case &apos;values&apos;:
-        this.component.valueProperty = &apos;value&apos;;
         this.setItems(this.component.data.values);
         break;
       case &apos;json&apos;:
@@ -977,6 +977,10 @@ export default class SelectComponent extends Field {
     }
   }
 
+  get disabled() {
+    return super.disabled;
+  }
+
   set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
     if (value &amp;&amp; (!this._visible !== !value)) {
@@ -999,7 +1003,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) =&gt; {
-      if (!value) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1054,9 +1058,11 @@ export default class SelectComponent extends Field {
   }
 
   getValue() {
-    if (this.viewOnly || this.loading || !this.selectOptions.length) {
+    // If the widget isn&apos;t active.
+    if (this.viewOnly || this.loading || !this.selectOptions.length || !this.element) {
       return this.dataValue;
     }
+
     let value = this.emptyValue;
     if (this.choices) {
       value = this.choices.getValue(true);
@@ -1070,18 +1076,15 @@ export default class SelectComponent extends Field {
         value = this.emptyValue;
       }
     }
+    else if (this.refs.selectContainer) {
+      value = this.refs.selectContainer.value;
+    }
     else {
-      const values = [];
-      _.each(this.selectOptions, (selectOption) =&gt; {
-        if (selectOption.element &amp;&amp; selectOption.element.selected) {
-          values.push(selectOption.value);
-        }
-      });
-      value = this.component.multiple ? values : values.shift();
+      value = this.dataValue;
     }
     // Choices will return undefined if nothing is selected. We really want &apos;&apos; to be empty.
-    if (value === undefined || value === null || value === &apos;&apos;) {
-      value = this.dataValue;
+    if (value === undefined || value === null) {
+      value = &apos;&apos;;
     }
     return value;
   }
@@ -1092,13 +1095,19 @@ export default class SelectComponent extends Field {
   }
 
   setValue(value, flags) {
+    const isNumeric = (val) =&gt; {
+      return !isNaN(parseFloat(val)) &amp;&amp; isFinite(val);
+    };
+    if (isNumeric(value)) {
+      value = +value;
+    }
     flags = this.getFlags.apply(this, arguments);
     const previousValue = this.dataValue;
     if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
       value = value ? [value] : [];
     }
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : typeof value === &apos;object&apos; ? Object.keys(value).length : value;
+    const hasValue = Array.isArray(value) ? value.length : value;
     const changed = this.hasChanged(value, previousValue);
     this.dataValue = value;
 
@@ -1205,7 +1214,7 @@ export default class SelectComponent extends Field {
         }
         : {
           items: this.getCustomItems(),
-          valueProperty: this.component.valueProperty,
+          valueProperty: this.valueProperty,
         };
 
       value = (this.component.multiple &amp;&amp; Array.isArray(value))

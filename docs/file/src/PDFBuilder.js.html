@@ -218,11 +218,16 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDFBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 
 import WebformBuilder from &apos;./WebformBuilder&apos;;
 import { getElementRect } from &apos;./utils/utils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import PDF from &apos;./PDF&apos;;
+const { fetch, Headers } = fetchPonyfill({
+  Promise: NativePromise
+});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -277,6 +282,10 @@ export default class PDFBuilder extends WebformBuilder {
     };
   }
 
+  get hasPDF() {
+    return _.has(this.webform, &apos;form.settings.pdf&apos;);
+  }
+
   // 888      d8b  .d888                                    888
   // 888      Y8P d88P&quot;                                     888
   // 888          888                                       888
@@ -313,15 +322,79 @@ export default class PDFBuilder extends WebformBuilder {
           })),
         })),
       }),
-      form: this.webform.render()
+      form: _.has(this.webform, &apos;form.settings.pdf&apos;) ?
+        this.webform.render() :
+        this.renderTemplate(&apos;pdfBuilderUpload&apos;, {})
     });
 
     return result;
   }
 
   attach(element) {
+    // PDF Upload
+    if (!this.hasPDF) {
+      this.loadRefs(element, {
+        &apos;fileDrop&apos;: &apos;single&apos;,
+        &apos;fileBrowse&apos;: &apos;single&apos;,
+        &apos;hiddenFileInputElement&apos;: &apos;single&apos;,
+        &apos;uploadError&apos;: &apos;single&apos;,
+      });
+      this.addEventListener(this.refs[&apos;pdf-upload-button&apos;], &apos;click&apos;,(event) =&gt; {
+        event.preventDefault();
+      });
+
+      // Init the upload error.
+      if (!this.options.pdfServer) {
+        this.setUploadError(&apos;PDF Server not set. Please set the PDF Server in options.pdfServer so the upload can occur.&apos;);
+      }
+      else {
+        this.setUploadError();
+      }
+
+      if (this.refs.fileDrop) {
+        const element = this;
+        this.addEventListener(this.refs.fileDrop, &apos;dragover&apos;, function(event) {
+          this.className = &apos;fileSelector fileDragOver&apos;;
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, &apos;dragleave&apos;, function(event) {
+          this.className = &apos;fileSelector&apos;;
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, &apos;drop&apos;, function(event) {
+          this.className = &apos;fileSelector&apos;;
+          event.preventDefault();
+          element.upload(event.dataTransfer.files[0]);
+          return false;
+        });
+      }
+
+      if (this.refs.fileBrowse &amp;&amp; this.refs.hiddenFileInputElement) {
+        this.addEventListener(this.refs.fileBrowse, &apos;click&apos;, (event) =&gt; {
+          event.preventDefault();
+          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+          // a click event on it.
+          if (typeof this.refs.hiddenFileInputElement.trigger === &apos;function&apos;) {
+            this.refs.hiddenFileInputElement.trigger(&apos;click&apos;);
+          }
+          else {
+            this.refs.hiddenFileInputElement.click();
+          }
+        });
+        this.addEventListener(this.refs.hiddenFileInputElement, &apos;change&apos;, () =&gt; {
+          this.upload(this.refs.hiddenFileInputElement.files[0]);
+          this.refs.hiddenFileInputElement.value = &apos;&apos;;
+        });
+      }
+
+      return NativePromise.resolve();
+    }
+
+    // Normal PDF Builder
     return super.attach(element).then(() =&gt; {
-      this.loadRefs(this.element, { iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;single&apos; });
+      this.loadRefs(this.element, {
+        iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;single&apos;
+      });
 
       if (this.refs.iframeDropzone) {
         this.initIframeEvents();
@@ -335,6 +408,45 @@ export default class PDFBuilder extends WebformBuilder {
 
       return this.element;
     });
+  }
+
+  upload(file) {
+    const headers = new Headers({
+      &apos;Accept&apos;: &apos;application/json, text/plain, */*&apos;,
+      &apos;Content-type&apos;: &apos;multipart/form-data&apos;,
+      // &apos;x-file-token&apos;: tempToken,
+    });
+
+    fetch(this.options.pdfServer, {
+      method: &apos;POST&apos;,
+      headers,
+      form: {
+        file,
+      }
+    })
+      .then(response =&gt; {
+        if (response.status !== 200) {
+          response.text().then(info =&gt; {
+            this.setUploadError(`${response.statusText} - ${info}`);
+          });
+        }
+        else {
+          // TODO: Set settings.pdf here.
+          this.rebuild();
+        }
+      })
+      .catch(response =&gt; {
+        this.setUploadError(&apos;Upload failed.&apos;);
+        console.log(&apos;fail&apos;, response);
+      });
+  }
+
+  setUploadError(message) {
+    if (!this.refs.uploadError) {
+      return;
+    }
+    this.refs.uploadError.style.display = message ? &apos;&apos; : &apos;none&apos;;
+    this.refs.uploadError.innerHTML = message;
   }
 
   createForm(options) {

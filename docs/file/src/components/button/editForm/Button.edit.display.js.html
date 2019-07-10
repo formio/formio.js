@@ -222,15 +222,15 @@
 export default [
   {
     key: &apos;labelPosition&apos;,
-    ignore: true
+    ignore: true,
   },
   {
     key: &apos;placeholder&apos;,
-    ignore: true
+    ignore: true,
   },
   {
     key: &apos;hideLabel&apos;,
-    ignore: true
+    ignore: true,
   },
   {
     type: &apos;select&apos;,
@@ -248,9 +248,9 @@ export default [
         { label: &apos;Custom&apos;, value: &apos;custom&apos; },
         { label: &apos;Reset&apos;, value: &apos;reset&apos; },
         { label: &apos;OAuth&apos;, value: &apos;oauth&apos; },
-        { label: &apos;POST to URL&apos;, value: &apos;url&apos; }
-      ]
-    }
+        { label: &apos;POST to URL&apos;, value: &apos;url&apos; },
+      ],
+    },
   },
   {
     type: &apos;textfield&apos;,
@@ -261,8 +261,8 @@ export default [
     placeholder: &apos;submitted&apos;,
     input: true,
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;saveState&apos;] }
-    }
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;saveState&apos;] },
+    },
   },
   {
     type: &apos;checkbox&apos;,
@@ -273,8 +273,8 @@ export default [
     weight: 115,
     tooltip: &apos;When the button is pressed, show any validation errors on the form.&apos;,
     conditional: {
-      json: { &apos;!==&apos;: [{ var: &apos;data.action&apos; }, &apos;submit&apos;] }
-    }
+      json: { &apos;!==&apos;: [{ var: &apos;data.action&apos; }, &apos;submit&apos;] },
+    },
   },
   {
     type: &apos;textfield&apos;,
@@ -284,8 +284,8 @@ export default [
     weight: 120,
     tooltip: &apos;The event to fire when the button is clicked.&apos;,
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;event&apos;] }
-    }
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;event&apos;] },
+    },
   },
   {
     type: &apos;textfield&apos;,
@@ -297,8 +297,8 @@ export default [
     tooltip: &apos;The URL where the submission will be sent.&apos;,
     placeholder: &apos;https://example.form.io&apos;,
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;url&apos;] }
-    }
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;url&apos;] },
+    },
   },
   {
     type: &apos;datagrid&apos;,
@@ -313,18 +313,18 @@ export default [
         key: &apos;header&apos;,
         label: &apos;Header&apos;,
         input: true,
-        type: &apos;textfield&apos;
+        type: &apos;textfield&apos;,
       },
       {
         key: &apos;value&apos;,
         label: &apos;Value&apos;,
         input: true,
-        type: &apos;textfield&apos;
+        type: &apos;textfield&apos;,
       }
     ],
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;url&apos;] }
-    }
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;url&apos;] },
+    },
   },
   {
     type: &apos;textarea&apos;,
@@ -337,8 +337,8 @@ export default [
     weight: 120,
     placeholder: &quot;data[&apos;mykey&apos;] = data[&apos;anotherKey&apos;];&quot;,
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;custom&apos;] }
-    }
+      json: { &apos;===&apos;: [{ var: &apos;data.action&apos; }, &apos;custom&apos;] },
+    },
   },
   {
     type: &apos;select&apos;,
@@ -355,9 +355,9 @@ export default [
         { label: &apos;Info&apos;, value: &apos;info&apos; },
         { label: &apos;Success&apos;, value: &apos;success&apos; },
         { label: &apos;Danger&apos;, value: &apos;danger&apos; },
-        { label: &apos;Warning&apos;, value: &apos;warning&apos; }
-      ]
-    }
+        { label: &apos;Warning&apos;, value: &apos;warning&apos; },
+      ],
+    },
   },
   {
     type: &apos;select&apos;,
@@ -372,9 +372,9 @@ export default [
         { label: &apos;Extra Small&apos;, value: &apos;xs&apos; },
         { label: &apos;Small&apos;, value: &apos;sm&apos; },
         { label: &apos;Medium&apos;, value: &apos;md&apos; },
-        { label: &apos;Large&apos;, value: &apos;lg&apos; }
-      ]
-    }
+        { label: &apos;Large&apos;, value: &apos;lg&apos; },
+      ],
+    },
   },
   {
     type: &apos;textfield&apos;,
@@ -383,7 +383,7 @@ export default [
     input: true,
     placeholder: &apos;Enter icon classes&apos;,
     tooltip: &quot;This is the full icon class string to show the icon. Example: &apos;fa fa-plus&apos;&quot;,
-    weight: 160
+    weight: 160,
   },
   {
     type: &apos;textfield&apos;,
@@ -392,7 +392,7 @@ export default [
     input: true,
     placeholder: &apos;Enter icon classes&apos;,
     tooltip: &quot;This is the full icon class string to show the icon. Example: &apos;fa fa-plus&apos;&quot;,
-    weight: 170
+    weight: 170,
   },
   {
     type: &apos;select&apos;,
@@ -403,10 +403,17 @@ export default [
     tooltip: &apos;Shortcut for this component.&apos;,
     dataSrc: &apos;custom&apos;,
     data: {
-      custom(values, component, data, row, utils, instance, form) {
-        return BuilderUtils.getAvailableShortcuts(form, component);
-      }
-    }
+      custom({
+        instance: {
+          root: {
+            editForm,
+            editComponent,
+          } = {},
+        } = {},
+      }) {
+        return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
+      },
+    },
   },
   {
     type: &apos;checkbox&apos;,
@@ -414,7 +421,7 @@ export default [
     label: &apos;Block Button&apos;,
     input: true,
     weight: 155,
-    tooltip: &apos;This control should span the full width of the bounding container.&apos;
+    tooltip: &apos;This control should span the full width of the bounding container.&apos;,
   },
   {
     type: &apos;checkbox&apos;,
@@ -422,8 +429,8 @@ export default [
     label: &apos;Disable on Form Invalid&apos;,
     tooltip: &apos;This will disable this field if the form is invalid.&apos;,
     input: true,
-    weight: 620
-  }
+    weight: 620,
+  },
 ];
 </code></pre>
 

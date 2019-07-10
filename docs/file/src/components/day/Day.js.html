@@ -351,7 +351,7 @@ export default class DayComponent extends Field {
       return this._days;
     }
     this._days = [
-      { value: 0, label: _.get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;) }
+      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;) }
     ];
     for (let x = 1; x &lt;= 31; x++) {
       this._days.push({
@@ -367,7 +367,7 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: undefined, label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;) },
+      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;) },
       { value: 1, label: &apos;January&apos; },
       { value: 2, label: &apos;February&apos; },
       { value: 3, label: &apos;March&apos; },
@@ -389,7 +389,7 @@ export default class DayComponent extends Field {
       return this._years;
     }
     this._years = [
-      { value: 0, label: _.get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;) }
+      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;) }
     ];
     const minYears = _.get(this.component, &apos;fields.year.minYear&apos;, 1900) || 1900;
     const maxYears = _.get(this.component, &apos;fields.year.maxYear&apos;, 2030) || 2030;
@@ -430,7 +430,8 @@ export default class DayComponent extends Field {
         selectOptions: this[`${name}s`].reduce((html, option) =&gt;
           html + this.renderTemplate(&apos;selectOption&apos;, {
             option,
-            selected: false, attrs: {}
+            selected: false,
+            attrs: {}
           }), &apos;&apos;
         ),
       });
@@ -468,7 +469,7 @@ export default class DayComponent extends Field {
       return false;
     }
 
-    if (this.monthRequired &amp;&amp; month &lt; 0) {
+    if (this.monthRequired &amp;&amp; !month) {
       return false;
     }
 
@@ -512,22 +513,24 @@ export default class DayComponent extends Field {
       return null;
     }
     const parts = value.split(&apos;/&apos;);
-    let day, month, year;
-    if (this.refs.day &amp;&amp; this.component.dayFirst &amp;&amp; this.showDay) {
+    let day;
+    if (this.component.dayFirst) {
       day = parts.shift();
-      this.refs.day.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
+    }
+    const month = parts.shift();
+    if (!this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const year = parts.shift();
+
+    if (this.refs.day &amp;&amp; this.showDay) {
+      this.refs.day.value = day === &apos;00&apos; ? &apos;&apos; : parseInt(day, 10);
     }
     if (this.refs.month &amp;&amp; this.showMonth) {
-      month = parts.shift();
-      this.refs.month.value = month === &apos;00&apos; ? undefined : parseInt(month, 10);
-    }
-    if (this.refs.day &amp;&amp; !this.component.dayFirst &amp;&amp; this.showDay) {
-      day = parts.shift();
-      this.refs.day.value = day === &apos;00&apos; ? undefined : parseInt(day, 10);
+      this.refs.month.value = month === &apos;00&apos; ? &apos;&apos; : parseInt(month, 10);
     }
     if (this.refs.year &amp;&amp; this.showYear) {
-      year = parts.shift();
-      this.refs.year.value = year === &apos;0000&apos; ? undefined : parseInt(year, 10);
+      this.refs.year.value = year === &apos;0000&apos; ? &apos;&apos; : parseInt(year, 10);
     }
   }
 
@@ -657,7 +660,7 @@ export default class DayComponent extends Field {
 
   getValue() {
     const result = super.getValue();
-    return (result === &apos;&apos;) ? this.dataValue : result;
+    return (!result) ? this.dataValue : result;
   }
 
   /**

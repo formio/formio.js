@@ -229,7 +229,32 @@ export default function(...extend) {
     {
       key: &apos;data&apos;,
       components: CurrencyEditData
-    }
+    },
+    {
+      key: &apos;validation&apos;,
+      components: [
+        {
+          key: &apos;validate.minLength&apos;,
+          ignore: true,
+        },
+        {
+          key: &apos;validate.maxLength&apos;,
+          ignore: true,
+        },
+        {
+          key: &apos;validate.minWords&apos;,
+          ignore: true,
+        },
+        {
+          key: &apos;validate.maxWords&apos;,
+          ignore: true,
+        },
+        {
+          key: &apos;validate.pattern&apos;,
+          ignore: true,
+        },
+      ]
+    },
   ], ...extend);
 }
 </code></pre>

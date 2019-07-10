@@ -269,7 +269,7 @@ export default class WebformBuilder extends Component {
     // Turn off if explicitely said to do so...
     _.each(this.defaultGroups, (config, key) =&gt; {
       if (config === false) {
-        this.options.builder[key] = false;
+        this.builder[key] = false;
       }
     });
 
@@ -385,6 +385,10 @@ export default class WebformBuilder extends Component {
     };
 
     this.options.hooks.attachComponents = (element, components, container, component) =&gt; {
+      // Don&apos;t attach if no element was found.
+      if (!element) {
+        return;
+      }
       // Attach container and component to element for later reference.
       const containerElement = element.querySelector(`[ref=&quot;${component.component.key}-container&quot;]`) || element;
       containerElement.formioContainer = container;
@@ -420,6 +424,7 @@ export default class WebformBuilder extends Component {
       component.loadRefs(element, {
         removeComponent: &apos;single&apos;,
         editComponent: &apos;single&apos;,
+        moveComponent: &apos;single&apos;,
         copyComponent: &apos;single&apos;,
         pasteComponent: &apos;single&apos;
       });
@@ -445,6 +450,14 @@ export default class WebformBuilder extends Component {
         component.addEventListener(component.refs.pasteComponent, &apos;click&apos;, () =&gt; {
           pasteToolTip.hide();
           this.pasteComponent(component);
+        });
+      }
+
+      if (component.refs.moveComponent) {
+        const moveToolTip = new Tooltip(component.refs.moveComponent, {
+          trigger: &apos;hover&apos;,
+          placement: &apos;top&apos;,
+          title: this.t(&apos;Move&apos;)
         });
       }
 
@@ -660,7 +673,9 @@ export default class WebformBuilder extends Component {
         this.initDragula();
       }
 
-      return this.webform.attach(this.refs.form);
+      if (this.refs.form) {
+        return this.webform.attach(this.refs.form);
+      }
     });
   }
 
@@ -709,6 +724,7 @@ export default class WebformBuilder extends Component {
     super.detach();
   }
 
+  /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
       return;
@@ -724,12 +740,23 @@ export default class WebformBuilder extends Component {
 
     if (type) {
       // This is a new component
-      info = _.cloneDeep(this.schemas[type]);
-      info.key = _.camelCase(
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (this.schemas.hasOwnProperty(type)) {
+        info = _.cloneDeep(this.schemas[type]);
+        info.key = _.camelCase(
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
+      else {
+        // This is an existing resource field.
+        const [resource, key] = type.split(&apos;_&apos;);
+        const resourceGroups = this.groups.resource.subgroups;
+        const resourceGroup = _.find(resourceGroups, { key: resource });
+        if (resourceGroup &amp;&amp; resourceGroup.components.hasOwnProperty(key)) {
+          info = resourceGroup.components[key].schema;
+        }
+      }
 
       isNew = true;
     }
@@ -744,6 +771,11 @@ export default class WebformBuilder extends Component {
         // Since splice returns an array of one object, we need to destructure it.
         info = info[0];
       }
+    }
+
+    // If we haven&apos;t found the component, stop.
+    if (!info) {
+      return;
     }
 
     if (target !== source) {
@@ -981,7 +1013,7 @@ export default class WebformBuilder extends Component {
 
             if (this.form) {
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), event.data);
+              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
             }
           }
         }
@@ -1021,7 +1053,8 @@ export default class WebformBuilder extends Component {
         const originalComponent = parentContainer[index];
         parentContainer[index] = this.editForm.submission.data;
         parentComponent.rebuild();
-        this.emit(&apos;saveComponent&apos;, component, originalComponent);
+        // Should we be passing the instance or the definition here as the component? See WizardBuilder.
+        this.emit(&apos;saveComponent&apos;, parentContainer[index], originalComponent);
       }
     });
 
@@ -1070,7 +1103,7 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         window.sessionStorage.removeItem(&apos;formio.clipboard&apos;);
         BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), schema);
-        component.parent.addComponent(schema, false, component.element.nextElementSibling.lastElementChild);
+        component.parent.addComponent(schema, false, component.element.nextElementSibling ? component.element.nextElementSibling.lastElementChild : null);
         this.form = this.schema;
         this.emit(&apos;saveComponent&apos;);
       }

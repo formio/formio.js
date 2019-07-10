@@ -357,6 +357,18 @@ export default [
     },
   },
   {
+    type: &apos;textfield&apos;,
+    input: true,
+    label: &apos;Data Path&apos;,
+    key: &apos;selectValues&apos;,
+    weight: 12,
+    description: &apos;The object path to the iterable items.&apos;,
+    tooltip: &apos;The property within the source data, where iterable items reside. For example: results.items or results[0].items&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
+    },
+  },
+  {
     type: &apos;select&apos;,
     input: true,
     label: &apos;Value Property&apos;,
@@ -394,18 +406,6 @@ export default [
           { var: &apos;data.data.resource&apos; },
         ],
       },
-    },
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    label: &apos;Data Path&apos;,
-    key: &apos;selectValues&apos;,
-    weight: 12,
-    description: &apos;The object path to the iterable items.&apos;,
-    tooltip: &apos;The property within the source data, where iterable items reside. For example: results.items or results[0].items&apos;,
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
     },
   },
   {

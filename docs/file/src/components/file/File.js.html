@@ -223,6 +223,7 @@ import download from &apos;downloadjs&apos;;
 import Formio from &apos;../../Formio&apos;;
 let Camera;
 const webViewCamera = navigator.camera || Camera;
+import NativePromise from &apos;native-promise-only&apos;;
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -279,7 +280,7 @@ export default class FileComponent extends Field {
       progress: &apos;upload&apos; in new XMLHttpRequest
     };
     // Called when our files are ready.
-    this.filesReady = new Promise((resolve, reject) =&gt; {
+    this.filesReady = new NativePromise((resolve, reject) =&gt; {
       this.filesReadyResolve = resolve;
       this.filesReadyReject = reject;
     });
@@ -552,7 +553,7 @@ export default class FileComponent extends Field {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) =&gt; (image.src = url)));
       });
       if (loadingImages.length) {
-        Promise.all(loadingImages).then(() =&gt; {
+        NativePromise.all(loadingImages).then(() =&gt; {
           this.filesReadyResolve();
         }).catch(() =&gt; this.filesReadyReject());
       }
@@ -748,11 +749,8 @@ export default class FileComponent extends Field {
     }
     fileService.downloadFile(fileInfo, options).then((file) =&gt; {
       if (file) {
-        if (file.storage === &apos;base64&apos;) {
-          download(file.url, file.originalName, file.type);
-        }
-        if (file.storage === &apos;indexeddb&apos;) {
-          download(file);
+        if ([&apos;base64&apos;, &apos;indexeddb&apos;].includes(file.storage)) {
+          download(file.url, file.originalName || file.name, file.type);
         }
         else {
           window.open(file.url, &apos;_blank&apos;);

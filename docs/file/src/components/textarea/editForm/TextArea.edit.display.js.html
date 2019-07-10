@@ -230,6 +230,10 @@ export default [
     ignore: true
   },
   {
+    key: &apos;mask&apos;,
+    ignore: true
+  },
+  {
     type: &apos;number&apos;,
     input: true,
     key: &apos;rows&apos;,
@@ -250,10 +254,26 @@ export default [
         { label: &apos;None&apos;, value: &apos;&apos; },
         { label: &apos;CKEditor&apos;, value: &apos;ckeditor&apos; },
         { label: &apos;ACE&apos;, value: &apos;ace&apos; },
-        { label: &apos;Quill&apos;, value: &apos;quill&apos; },
+        { label: &apos;Quill&apos;, value: &apos;quill&apos; }
       ]
     },
     weight: 415
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;autoExpand&apos;,
+    label: &apos;Auto Expand&apos;,
+    tooltip: &apos;This will make the TextArea auto expand it\&apos;s height as the user is typing into the area.&apos;,
+    weight: 415,
+    conditional: {
+      json: {
+        &apos;==&apos;: [
+          { var: &apos;data.editor&apos; },
+          &apos;&apos;
+        ]
+      }
+    }
   },
   {
     type: &apos;checkbox&apos;,
@@ -396,6 +416,10 @@ export default [
     conditional: {
       json: {
         or: [
+          { &apos;===&apos;: [
+            { var: &apos;data.editor&apos; },
+            &apos;ckeditor&apos;
+          ] },
           { &apos;===&apos;: [
             { var: &apos;data.editor&apos; },
             &apos;quill&apos;

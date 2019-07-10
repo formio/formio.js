@@ -272,11 +272,19 @@ export default class RadioComponent extends Field {
 
   attach(element) {
     this.loadRefs(element, { input: &apos;multiple&apos;, wrapper: &apos;multiple&apos; });
-    this.refs.input.forEach(input =&gt; {
+    this.refs.input.forEach((input, index) =&gt; {
       this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue());
+      this.addShortcut(input, this.component.values[index].shortcut);
     });
-    // this.addShortcut(label, value.shortcut);
     super.attach(element);
+  }
+
+  detach(element) {
+    if (element &amp;&amp; this.refs.input) {
+      this.refs.input.forEach((input, index) =&gt; {
+        this.removeShortcut(input, this.component.values[index].shortcut);
+      });
+    }
   }
 
   getValue() {

@@ -222,7 +222,7 @@
 export default [
   {
     key: &apos;multiple&apos;,
-    ignore: true
+    ignore: true,
   },
   {
     type: &apos;datagrid&apos;,
@@ -238,7 +238,7 @@ export default [
         label: &apos;Label&apos;,
         key: &apos;label&apos;,
         input: true,
-        type: &apos;textfield&apos;
+        type: &apos;textfield&apos;,
       },
       {
         label: &apos;Value&apos;,
@@ -246,7 +246,7 @@ export default [
         input: true,
         type: &apos;textfield&apos;,
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: &apos;row.label&apos; }] }
+        calculateValue: { _camelCase: [{ var: &apos;row.label&apos; }] },
       },
       {
         type: &apos;select&apos;,
@@ -257,12 +257,19 @@ export default [
         tooltip: &apos;The shortcut key for this option.&apos;,
         dataSrc: &apos;custom&apos;,
         data: {
-          custom(values, component, data, row, utils, instance, form) {
-            return BuilderUtils.getAvailableShortcuts(form, component);
-          }
-        }
-      }
-    ]
+          custom({
+            instance: {
+              root: {
+                editForm,
+                editComponent,
+              } = {},
+            } = {},
+          }) {
+            return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
+          },
+        },
+      },
+    ],
   },
 ];
 </code></pre>

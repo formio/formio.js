@@ -241,6 +241,11 @@ export default class SelectBoxesComponent extends RadioComponent {
     };
   }
 
+  constructor(...args) {
+    super(...args);
+    this.validators = this.validators.concat(&apos;minSelectedCount&apos;, &apos;maxSelectedCount&apos;);
+  }
+
   init() {
     super.init();
     this.component.inputType = &apos;checkbox&apos;;
@@ -340,6 +345,60 @@ export default class SelectBoxesComponent extends RadioComponent {
       .filter((v) =&gt; value[v.value])
       .map(&apos;label&apos;)
       .join(&apos;, &apos;);
+  }
+
+  checkValidity(data, dirty, rowData) {
+    console.log(&apos;checkValidity&apos;, data, dirty, rowData);
+    const minCount = this.component.validate.minSelectedCount;
+    const maxCount = this.component.validate.maxSelectedCount;
+
+    if (maxCount || minCount) {
+      const count = Object.keys(this.validationValue).reduce((total, key) =&gt; {
+        if (this.validationValue[key]) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      if (maxCount &amp;&amp; count &gt;= maxCount) {
+        console.log(this.refs);
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            if (!item.checked) {
+              item.disabled = true;
+            }
+          });
+        }
+        if (maxCount &amp;&amp; count &gt; maxCount) {
+          const message = this.component.maxSelectedCountMessage
+            ? this.component.maxSelectedCountMessage
+            : `You can only select up to ${maxCount} items.`;
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
+      }
+      else if (minCount &amp;&amp; count &lt; minCount) {
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            item.disabled = false;
+          });
+        }
+        const message = this.component.minSelectedCountMessage
+          ? this.component.minSelectedCountMessage
+          : `You must select at least ${minCount} items.`;
+        this.setCustomValidity(message, dirty);
+        return false;
+      }
+      else {
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            item.disabled = false;
+          });
+        }
+      }
+    }
+
+    return super.checkValidity(data, dirty, rowData);
   }
 }
 </code></pre>

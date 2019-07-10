@@ -235,8 +235,8 @@ export default class EditGridComponent extends NestedComponent {
       components: [],
       inlineEdit: false,
       templates: {
-        header: this.defaultHeaderTemplate,
-        row: this.defaultRowTemplate,
+        header: EditGridComponent.defaultHeaderTemplate,
+        row: EditGridComponent.defaultRowTemplate,
         footer: &apos;&apos;
       }
     }, ...extend);
@@ -294,6 +294,7 @@ export default class EditGridComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.type = &apos;editgrid&apos;;
+    this.editRows = [];
   }
 
   init() {
@@ -485,6 +486,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   getComponents(rowIndex) {
+    // Ensure editrows is set.
+    this.editRows = this.editRows || [];
     return this.builderMode
       ? super.getComponents()
       : _.isNumber(rowIndex)

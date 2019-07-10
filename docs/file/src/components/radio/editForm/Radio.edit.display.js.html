@@ -225,6 +225,24 @@ export default [
     ignore: true
   },
   {
+    type: &apos;select&apos;,
+    input: true,
+    label: &apos;Options Label Position&apos;,
+    key: &apos;optionsLabelPosition&apos;,
+    tooltip: &apos;Position for the label for options for this field.&apos;,
+    dataSrc: &apos;values&apos;,
+    weight: 32,
+    defaultValue: &apos;right&apos;,
+    data: {
+      values: [
+        { label: &apos;Top&apos;, value: &apos;top&apos; },
+        { label: &apos;Left&apos;, value: &apos;left&apos; },
+        { label: &apos;Right&apos;, value: &apos;right&apos; },
+        { label: &apos;Bottom&apos;, value: &apos;bottom&apos; }
+      ]
+    }
+  },
+  {
     type: &apos;checkbox&apos;,
     input: true,
     key: &apos;inline&apos;,
