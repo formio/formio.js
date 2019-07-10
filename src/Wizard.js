@@ -258,7 +258,7 @@ export default class Wizard extends Webform {
 
   beforeNext() {
     return new NativePromise((resolve, reject) => {
-      this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
+      this.hook('beforeNext', this.currentPage, this.submission, (err) => {
         if (err) {
           this.showErrors(err, true);
           reject(err);
