@@ -14,7 +14,7 @@ export default class PDF extends Webform {
 
   refreshIframeReadyPromise() {
     if (this.iframeReadyReject) {
-      this.iframeReady = this.iframeReady.catch(err => {
+      this.iframeReady = this.iframeReady.catch(() => {
         return;
       });
 

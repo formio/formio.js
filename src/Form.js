@@ -147,7 +147,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new NativePromise((resolve, reject) => {
+    return new NativePromise((resolve) => {
       if (!embed || !embed.src) {
         resolve();
       }

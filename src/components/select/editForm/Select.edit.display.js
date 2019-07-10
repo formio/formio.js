@@ -1,5 +1,3 @@
-import { eachComponent } from '../../../utils/utils';
-
 export default [
   {
     type: 'select',

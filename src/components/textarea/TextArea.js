@@ -1,4 +1,4 @@
-/* global ace, Quill */
+/* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';

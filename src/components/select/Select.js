@@ -404,7 +404,7 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh(value) {
+  refresh() {
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;

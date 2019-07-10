@@ -214,7 +214,7 @@ export default class DataMapComponent extends DataGridComponent {
     return changed;
   }
 
-  checkColumns(data) {
+  checkColumns() {
     return { rebuild: false, show: true };
   }
 }

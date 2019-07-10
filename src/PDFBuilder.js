@@ -228,7 +228,7 @@ export default class PDFBuilder extends WebformBuilder {
           });
         }
       })
-      .catch(response => {
+      .catch(() => {
         this.setUploadError('Upload failed.');
       });
   }
