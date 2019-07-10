@@ -58,6 +58,52 @@ export default function(...extend) {
           placeholder: '#ccc',
           weight: 20
         },
+        {
+          key: 'placeholder',
+          ignore: true
+        },
+        {
+          key: 'tabindex',
+          ignore: true
+        },
+        {
+          key: 'autofocus',
+          ignore: true
+        },
+      ]
+    },
+    {
+      key: 'data',
+      components: [
+        {
+          key: 'multiple',
+          ignore: true
+        },
+        {
+          key: 'encrypted',
+          ignore: true
+        },
+        {
+          key: 'dbIndex',
+          ignore: true
+        },
+        {
+          key: 'defaultValue',
+          ignore: true
+        },
+      ]
+    },
+    {
+      key: 'validation',
+      components: [
+        {
+          key: 'unique',
+          ignore: true
+        },
+        {
+          key: 'validateOn',
+          ignore: true
+        },
       ]
     }
   ], ...extend);

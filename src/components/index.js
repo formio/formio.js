@@ -37,7 +37,7 @@ import SurveyComponent from './survey/Survey';
 import WellComponent from './well/Well';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
-import TagPadComponent from './tags/Tags';
+import TagPadComponent from './tagpad/Tagpad';
 import TreeComponent from './tree/Tree';
 import UnknownComponent from './unknown/Unknown';
 import ReCaptchaComponent from './recaptcha/ReCaptcha';

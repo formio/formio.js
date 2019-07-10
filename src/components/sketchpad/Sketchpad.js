@@ -18,7 +18,7 @@ export default class Sketchpad extends Field {
 
   static builderInfo = {
     title: 'Sketchpad',
-    group: 'advanced',
+    group: 'premium',
     icon: 'fa fa-image',
     weight: 110,
     documentation: 'http://help.form.io/userguide/',
@@ -74,7 +74,8 @@ export default class Sketchpad extends Field {
    * Builds the component.
    */
   render() {
-    return super.render(this.renderTemplate('sketchpad', {}));
+    return super.render('coming soon', {});
+    // return super.render(this.renderTemplate('sketchpad', {}));
   }
 
   getValue() {
@@ -552,6 +553,11 @@ export default class Sketchpad extends Field {
   }
 
   attach(element) {
+    // Disable for now.
+    return super.attach(element);
+  }
+
+  attachOld(element) {
     this.loadRefs(element, {
       sketchpadContainer: 'single',
       sketchpadCanvas: 'single',

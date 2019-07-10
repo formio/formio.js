@@ -1,5 +1,5 @@
 import Two from 'two.js';
-import NestedComponent from '../../components/_classes/nested/NestedComponente';
+import NestedComponent from '../../components/_classes/nested/NestedComponent';
 import _ from 'lodash';
 import { Components } from '../../formio.form';
 import Formio from '../../Formio';
@@ -22,7 +22,7 @@ export default class Tagpad extends NestedComponent {
 
   static builderInfo = {
     title: 'Tagpad',
-    group: 'advanced',
+    group: 'premium',
     icon: 'fa fa-tag',
     weight: 115,
     documentation: 'http://help.form.io/userguide/',
@@ -50,20 +50,27 @@ export default class Tagpad extends NestedComponent {
     this.dimensionsMultiplier = 1;
   }
 
-  build(state) {
-    if (this.options.builder) {
-      return super.build(state, true);
+  render() {
+    if (this.builderMode) {
+      return super.render();
     }
-    this.createElement();
-    this.createLabel(this.element);
-    this.renderTagpad();
-    this.createDescription(this.element);
-    if (this.shouldDisable) {
-      this.disabled = true;
-    }
-    this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
-    this.attachLogic();
+    return super.render('coming soon');
   }
+
+  // build(state) {
+  //   if (this.options.builder) {
+  //     return super.build(state, true);
+  //   }
+  //   this.createElement();
+  //   this.createLabel(this.element);
+  //   this.renderTagpad();
+  //   this.createDescription(this.element);
+  //   if (this.shouldDisable) {
+  //     this.disabled = true;
+  //   }
+  //   this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
+  //   this.attachLogic();
+  // }
 
   set disabled(disabled) {
     super.disabled = disabled;
@@ -168,9 +175,10 @@ export default class Tagpad extends NestedComponent {
     }
   }
 
-  attach() {
-    this.attachDrawEvents();
-    window.addEventListener('resize', this.stretchDrawingArea.bind(this));
+  attach(element) {
+    return super.attach(element);
+    // this.attachDrawEvents();
+    // window.addEventListener('resize', this.stretchDrawingArea.bind(this));
   }
 
   attachDrawEvents() {
