@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
+import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
 import { getElementRect } from './utils/utils';
@@ -103,7 +104,7 @@ export default class PDFBuilder extends WebformBuilder {
           })),
         })),
       }),
-      form: _.has(this.webform, 'form.settings.pdf') ?
+      form: this.hasPDF ?
         this.webform.render() :
         this.renderTemplate('pdfBuilderUpload', {})
     });
@@ -125,8 +126,8 @@ export default class PDFBuilder extends WebformBuilder {
       });
 
       // Init the upload error.
-      if (!this.options.pdfServer) {
-        this.setUploadError('PDF Server not set. Please set the PDF Server in options.pdfServer so the upload can occur.');
+      if (!this.options.url) {
+        this.setUploadError('Form options.url not set. Please set the "url" property of the options for this form. This setting is necessary to upload a pdf background.');
       }
       else {
         this.setUploadError();
@@ -194,16 +195,16 @@ export default class PDFBuilder extends WebformBuilder {
   upload(file) {
     const headers = new Headers({
       'Accept': 'application/json, text/plain, */*',
-      'Content-type': 'multipart/form-data',
-      // 'x-file-token': tempToken,
+      'x-jwt-token': Formio.getToken(),
     });
 
-    fetch(this.options.pdfServer, {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch(`${this.options.url}/upload`, {
       method: 'POST',
       headers,
-      form: {
-        file,
-      }
+      body: formData
     })
       .then(response => {
         if (response.status !== 200) {
@@ -212,13 +213,18 @@ export default class PDFBuilder extends WebformBuilder {
           });
         }
         else {
-          // TODO: Set settings.pdf here.
-          this.rebuild();
+          response.json().then(data => {
+            this.webform.form.settings.pdf = {
+              id: data.file,
+              src: `${this.options.url}${data.path}`
+            };
+            // Now that the settings are set, redraw to show the builder.
+            this.redraw();
+          });
         }
       })
       .catch(response => {
         this.setUploadError('Upload failed.');
-        console.log('fail', response);
       });
   }
 
