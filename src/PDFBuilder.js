@@ -65,7 +65,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   get hasPDF() {
-    return _.has(this.webform, 'form.settings.pdf');
+    return _.has(this.webform.form, 'settings.pdf');
   }
 
   // 888      d8b  .d888                                    888
@@ -113,6 +113,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   attach(element) {
+    console.log('attach', this.hasPDF);
     // PDF Upload
     if (!this.hasPDF) {
       this.loadRefs(element, {
