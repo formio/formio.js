@@ -19,6 +19,8 @@ import file from './file';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import loader from './loader';
+import loading from './loading';
 import message from './message';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
@@ -31,6 +33,8 @@ import signature from './signature';
 import survey from './survey';
 import tab from './tab';
 import table from './table';
+import tree from './tree';
+import treePartials from './tree/partials';
 import webform from './webform';
 import well from './well';
 import wizard from './wizard';
@@ -90,6 +94,8 @@ export default {
   file,
   icon,
   input,
+  loader,
+  loading,
   message,
   multiValueRow,
   multiValueTable,
@@ -101,6 +107,8 @@ export default {
   signature,
   survey,
   tab,
+  tree,
+  ...treePartials,
   table,
   webform,
   well,

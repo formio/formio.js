@@ -1,0 +1,22 @@
+{% if (node.isRoot) { %}
+  <div class="ui relaxed list">
+  <div class="item" ref="root" role="listitem">
+  {% } else { %}
+  <div ref="node" class="item tree__level" role="listitem">
+    {% } %}
+    {% if (content) { %}
+    <div ref="content" class="tree__node-content content">
+      {{ content }}
+    </div>
+    {% } %}
+    {% if (childNodes && childNodes.length) { %}
+    <div ref="childNodes" class="tree__node-children list" role="list">
+      {{ childNodes.join('') }}
+    </div>
+    {% } %}
+    {% if (node.isRoot) { %}
+    </div>
+  </div>
+  {% } else { %}
+  </div>
+{% } %}

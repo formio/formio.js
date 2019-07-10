@@ -1,0 +1,9 @@
+<div class="node-edit">
+  <div ref="nodeEdit">{{ children }}</div>
+  {% if (!readOnly) { %}
+    <div class="node-actions">
+      <button ref="saveNode" class="ui mini primary button saveNode">{{ t('Save') }}</button>
+      <button ref="cancelNode" class="ui mini negative button cancelNode">{{ t('Cancel') }}
+    </div>
+  {% } %}
+</div>
