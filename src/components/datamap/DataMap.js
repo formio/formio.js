@@ -101,7 +101,7 @@ export default class DataMapComponent extends DataGridComponent {
       type: 'textfield',
       input: true,
       hideLabel: true,
-      label: 'Key',
+      label: this.component.keyLabel || 'Key',
       key: 'key',
     };
   }
