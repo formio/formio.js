@@ -1,5 +1,5 @@
 import Field from '../../components/_classes/field/Field';
-// import Two from 'two.js';
+import Two from 'two.js/src/two';
 import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
@@ -97,10 +97,10 @@ export default class Sketchpad extends Field {
         eventStart: (coordinate) => {
           this.points = [coordinate];
           this.prev = coordinate;
-          // this.curve = this.two.makeCurve([
-          //   new Two.Vector(this.prev.x, this.prev.y),
-          //   new Two.Vector(coordinate.x, coordinate.y + 1)
-          // ], true);
+          this.curve = this.two.makeCurve([
+            new Two.Vector(this.prev.x, this.prev.y),
+            new Two.Vector(coordinate.x, coordinate.y + 1)
+          ], true);
           this.curve.noFill().stroke = this.state.stroke;
           this.curve.linewidth = this.state.linewidth;
           this.curve.vertices.forEach((v) => v.addSelf(this.curve.translation));
@@ -111,7 +111,7 @@ export default class Sketchpad extends Field {
         },
         drag: (coordinate) => {
           this.points.push(coordinate);
-          // this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
+          this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
           this.two.update();
           this.prev = coordinate;
         },
