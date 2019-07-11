@@ -650,7 +650,7 @@ export default class Formio {
       .then(() => Formio.pluginGet('staticRequest', requestArgs)
         .then((result) => {
           if (isNil(result)) {
-            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return Formio.request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));
@@ -670,7 +670,7 @@ export default class Formio {
       .then(() => Formio.pluginGet('request', requestArgs)
         .then((result) => {
           if (isNil(result)) {
-            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+            return Formio.request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         }));
