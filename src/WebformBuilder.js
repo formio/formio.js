@@ -803,8 +803,7 @@ export default class WebformBuilder extends Component {
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
       event.preventDefault();
-      this.editForm.destroy();
-      delete this.editForm;
+      this.editForm.detach();
       this.emit('cancelComponent', component);
       this.dialog.close();
     });
@@ -813,8 +812,7 @@ export default class WebformBuilder extends Component {
       event.preventDefault();
       // Since we are already removing the component, don't trigger another remove.
       saved = true;
-      this.editForm.destroy();
-      delete this.editForm;
+      this.editForm.detach();
       this.removeComponent(component, parent);
       this.dialog.close();
     });
@@ -825,8 +823,7 @@ export default class WebformBuilder extends Component {
       }
       event.preventDefault();
       saved = true;
-      this.editForm.destroy();
-      delete this.editForm;
+      this.editForm.detach();
       const parentContainer = parent ? parent.formioContainer : this.container;
       const parentComponent = parent ? parent.formioComponent : this;
       const index = parentContainer.indexOf(component);
