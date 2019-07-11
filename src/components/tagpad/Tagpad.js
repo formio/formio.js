@@ -1,4 +1,4 @@
-import Two from 'two.js';
+// import Two from 'two.js';
 import NestedComponent from '../../components/_classes/nested/NestedComponent';
 import _ from 'lodash';
 import Formio from '../../Formio';
@@ -22,7 +22,7 @@ export default class Tagpad extends NestedComponent {
   static builderInfo = {
     title: 'Tagpad',
     group: 'premium',
-    icon: 'fa fa-tag',
+    icon: 'circle',
     weight: 115,
     documentation: 'http://help.form.io/userguide/',
     schema: Tagpad.schema()
@@ -100,9 +100,9 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
     if (this.hasBackgroundImage) {
-      this.two = new Two({
-        type: Two.Types.svg
-      }).appendTo(this.canvas);
+      // this.two = new Two({
+      //   type: Two.Types.svg
+      // }).appendTo(this.canvas);
       this.canvasSvg = this.two.renderer.domElement;
       this.addBackground();
 
