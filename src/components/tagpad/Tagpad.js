@@ -1,7 +1,6 @@
 import Two from 'two.js';
 import NestedComponent from '../../components/_classes/nested/NestedComponent';
 import _ from 'lodash';
-import { Components } from '../../formio.form';
 import Formio from '../../Formio';
 import editForm from './Tagpad.form';
 import NativePromise from 'native-promise-only';
@@ -127,42 +126,42 @@ export default class Tagpad extends NestedComponent {
   }
 
   renderForm() {
-    this.form.appendChild(this.ce('p', {
-        class: 'formio-tagpad-form-title'
-      },
-      [
-        this.t('Dot: '),
-        this.selectedDotIndexElement = this.ce('span', {}, 'No dot selected')
-      ]
-      )
-    );
-    this.component.components.forEach((component) => {
-      //have to avoid using createComponent method as Components there will be empty
-      const componentInstance = Components.create(component, this.options, this.data);
-      componentInstance.parent = this;
-      componentInstance.root = this.root || this;
-      const oldOnChange = componentInstance.onChange;
-      componentInstance.onChange = (flags, fromRoot) => {
-        oldOnChange.call(componentInstance, flags, fromRoot);
-        this.saveSelectedDot();
-      };
-      this.form.appendChild(componentInstance.getElement());
-      //need to push to this.components all components with input: true so that saving would work properly
-      this.addTagpadComponent(componentInstance);
-    });
-    this.form.appendChild(this.ce(
-      'button',
-      {
-        class: 'btn btn-sm btn-danger formio-tagpad-remove-button',
-        onClick: this.removeSelectedDot.bind(this),
-        title: 'Remove Dot'
-      },
-      [
-        this.ce('i', {
-          class: this.iconClass('trash')
-        })
-      ]
-    ));
+    // this.form.appendChild(this.ce('p', {
+    //     class: 'formio-tagpad-form-title'
+    //   },
+    //   [
+    //     this.t('Dot: '),
+    //     this.selectedDotIndexElement = this.ce('span', {}, 'No dot selected')
+    //   ]
+    //   )
+    // );
+    // this.component.components.forEach((component) => {
+    //   //have to avoid using createComponent method as Components there will be empty
+    //   const componentInstance = Components.create(component, this.options, this.data);
+    //   componentInstance.parent = this;
+    //   componentInstance.root = this.root || this;
+    //   const oldOnChange = componentInstance.onChange;
+    //   componentInstance.onChange = (flags, fromRoot) => {
+    //     oldOnChange.call(componentInstance, flags, fromRoot);
+    //     this.saveSelectedDot();
+    //   };
+    //   this.form.appendChild(componentInstance.getElement());
+    //   //need to push to this.components all components with input: true so that saving would work properly
+    //   this.addTagpadComponent(componentInstance);
+    // });
+    // this.form.appendChild(this.ce(
+    //   'button',
+    //   {
+    //     class: 'btn btn-sm btn-danger formio-tagpad-remove-button',
+    //     onClick: this.removeSelectedDot.bind(this),
+    //     title: 'Remove Dot'
+    //   },
+    //   [
+    //     this.ce('i', {
+    //       class: this.iconClass('trash')
+    //     })
+    //   ]
+    // ));
     this.formRendered = true;
   }
 
