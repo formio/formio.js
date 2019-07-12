@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -217,90 +221,94 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NestedComponent from &apos;./_classes/nested/NestedComponent&apos;;
-import AddressComponent from &apos;./address/Address&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AddressComponent from &apos;./address/Address&apos;;
+import ButtonComponent from &apos;./button/Button&apos;;
+import CheckBoxComponent from &apos;./checkbox/Checkbox&apos;;
+import ColumnsComponent from &apos;./columns/Columns&apos;;
 import Component from &apos;./_classes/component/Component&apos;;
-import ContentComponent from &apos;./content/Content&apos;;
 import ContainerComponent from &apos;./container/Container&apos;;
+import ContentComponent from &apos;./content/Content&apos;;
+import CurrencyComponent from &apos;./currency/Currency&apos;;
 import DataGridComponent from &apos;./datagrid/DataGrid&apos;;
 import DataMapComponent from &apos;./datamap/DataMap&apos;;
 import DateTimeComponent from &apos;./datetime/DateTime&apos;;
 import DayComponent from &apos;./day/Day&apos;;
 import EditGridComponent from &apos;./editgrid/EditGrid&apos;;
-import HTMLComponent from &apos;./html/HTML&apos;;
-import HiddenComponent from &apos;./hidden/Hidden&apos;;
-import FormComponent from &apos;./form/Form&apos;;
-import TextFieldComponent from &apos;./textfield/TextField&apos;;
-import PhoneNumberComponent from &apos;./phonenumber/PhoneNumber&apos;;
 import EmailComponent from &apos;./email/Email&apos;;
-import UrlComponent from &apos;./url/Url&apos;;
-import TimeComponent from &apos;./time/Time&apos;;
-import CheckBoxComponent from &apos;./checkbox/Checkbox&apos;;
-import CurrencyComponent from &apos;./currency/Currency&apos;;
 import FieldsetComponent from &apos;./fieldset/Fieldset&apos;;
-import SignatureComponent from &apos;./signature/Signature&apos;;
-import SelectComponent from &apos;./select/Select&apos;;
-import ResourceComponent from &apos;./resource/Resource&apos;;
-import TextAreaComponent from &apos;./textarea/TextArea&apos;;
-import TagsComponent from &apos;./tags/Tags&apos;;
-import ButtonComponent from &apos;./button/Button&apos;;
-import NumberComponent from &apos;./number/Number&apos;;
-import PasswordComponent from &apos;./password/Password&apos;;
-import PanelComponent from &apos;./panel/Panel&apos;;
-import ColumnsComponent from &apos;./columns/Columns&apos;;
-import TableComponent from &apos;./table/Table&apos;;
-import RadioComponent from &apos;./radio/Radio&apos;;
-import SelectBoxesComponent from &apos;./selectboxes/SelectBoxes&apos;;
-import SurveyComponent from &apos;./survey/Survey&apos;;
-import WellComponent from &apos;./well/Well&apos;;
 import FileComponent from &apos;./file/File&apos;;
+import FormComponent from &apos;./form/Form&apos;;
+import HiddenComponent from &apos;./hidden/Hidden&apos;;
+import HTMLComponent from &apos;./html/HTML&apos;;
+import NestedComponent from &apos;./_classes/nested/NestedComponent&apos;;
+import NumberComponent from &apos;./number/Number&apos;;
+import PanelComponent from &apos;./panel/Panel&apos;;
+import PasswordComponent from &apos;./password/Password&apos;;
+import PhoneNumberComponent from &apos;./phonenumber/PhoneNumber&apos;;
+import RadioComponent from &apos;./radio/Radio&apos;;
+import ReCaptchaComponent from &apos;./recaptcha/ReCaptcha&apos;;
+import ResourceComponent from &apos;./resource/Resource&apos;;
+import SelectBoxesComponent from &apos;./selectboxes/SelectBoxes&apos;;
+import SelectComponent from &apos;./select/Select&apos;;
+import SignatureComponent from &apos;./signature/Signature&apos;;
+import SketchPadComponent from &apos;./sketchpad/Sketchpad&apos;;
+import SurveyComponent from &apos;./survey/Survey&apos;;
+import TableComponent from &apos;./table/Table&apos;;
 import TabsComponent from &apos;./tabs/Tabs&apos;;
+import TagPadComponent from &apos;./tagpad/Tagpad&apos;;
+import TagsComponent from &apos;./tags/Tags&apos;;
+import TextAreaComponent from &apos;./textarea/TextArea&apos;;
+import TextFieldComponent from &apos;./textfield/TextField&apos;;
+import TimeComponent from &apos;./time/Time&apos;;
 import TreeComponent from &apos;./tree/Tree&apos;;
 import UnknownComponent from &apos;./unknown/Unknown&apos;;
-import ReCaptchaComponent from &apos;./recaptcha/ReCaptcha&apos;;
+import UrlComponent from &apos;./url/Url&apos;;
+import WellComponent from &apos;./well/Well&apos;;
 
 export default {
-  nested: NestedComponent,
   address: AddressComponent,
   base: Component,
-  content: ContentComponent,
+  button: ButtonComponent,
+  checkbox: CheckBoxComponent,
+  columns: ColumnsComponent,
   container: ContainerComponent,
+  content: ContentComponent,
+  currency: CurrencyComponent,
   datagrid: DataGridComponent,
   datamap: DataMapComponent,
   datetime: DateTimeComponent,
   day: DayComponent,
-  htmlelement: HTMLComponent,
-  hidden: HiddenComponent,
   editgrid: EditGridComponent,
-  form: FormComponent,
-  textfield: TextFieldComponent,
-  phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
-  url: UrlComponent,
-  time: TimeComponent,
-  checkbox: CheckBoxComponent,
-  currency: CurrencyComponent,
   fieldset: FieldsetComponent,
-  signature: SignatureComponent,
-  select: SelectComponent,
-  resource: ResourceComponent,
-  textarea: TextAreaComponent,
-  tags: TagsComponent,
-  button: ButtonComponent,
+  file: FileComponent,
+  form: FormComponent,
+  hidden: HiddenComponent,
+  htmlelement: HTMLComponent,
+  nested: NestedComponent,
   number: NumberComponent,
-  password: PasswordComponent,
   panel: PanelComponent,
-  tabs: TabsComponent,
-  columns: ColumnsComponent,
-  table: TableComponent,
+  password: PasswordComponent,
+  phoneNumber: PhoneNumberComponent,
   radio: RadioComponent,
   recaptcha: ReCaptchaComponent,
+  resource: ResourceComponent,
+  select: SelectComponent,
   selectboxes: SelectBoxesComponent,
+  signature: SignatureComponent,
+  sketchpad: SketchPadComponent,
   survey: SurveyComponent,
-  well: WellComponent,
-  file: FileComponent,
+  table: TableComponent,
+  tabs: TabsComponent,
+  tagpad: TagPadComponent,
+  tags: TagsComponent,
+  textarea: TextAreaComponent,
+  textfield: TextFieldComponent,
+  time: TimeComponent,
   tree: TreeComponent,
   unknown: UnknownComponent,
+  url: UrlComponent,
+  well: WellComponent,
 };
 </code></pre>
 

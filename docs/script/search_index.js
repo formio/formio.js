@@ -486,6 +486,18 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/sketchpad/sketchpad.form.js~sketchpad",
+    "function/index.html#static-function-Sketchpad",
+    "<span>Sketchpad</span> <span class=\"search-result-import-path\">formiojs/src/components/sketchpad/Sketchpad.form.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/components/sketchpad/sketchpad.js~sketchpad",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html",
+    "<span>Sketchpad</span> <span class=\"search-result-import-path\">formiojs/src/components/sketchpad/Sketchpad.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent",
     "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html",
     "<span>StripeCheckoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/contrib/stripe/checkout/StripeCheckout.js</span>",
@@ -531,6 +543,18 @@ window.esdocSearchIndex = [
     "formiojs/src/components/tabs/tabs.js~tabscomponent",
     "class/src/components/tabs/Tabs.js~TabsComponent.html",
     "<span>TabsComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/tabs/Tabs.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/components/tagpad/tagpad.form.js~tagpad",
+    "function/index.html#static-function-Tagpad",
+    "<span>Tagpad</span> <span class=\"search-result-import-path\">formiojs/src/components/tagpad/Tagpad.form.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/components/tagpad/tagpad.js~tagpad",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html",
+    "<span>Tagpad</span> <span class=\"search-result-import-path\">formiojs/src/components/tagpad/Tagpad.js</span>",
     "class"
   ],
   [
@@ -1432,6 +1456,12 @@ window.esdocSearchIndex = [
     "class/src/Form.js~Form.html#instance-method-create",
     "src/Form.js~Form#create",
     "method"
+  ],
+  [
+    "src/form.js~form#display",
+    "class/src/Form.js~Form.html#instance-member-display",
+    "src/Form.js~Form#display",
+    "member"
   ],
   [
     "src/form.js~form#element",
@@ -2394,6 +2424,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#projecturl",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-projectUrl",
+    "src/PDFBuilder.js~PDFBuilder#projectUrl",
+    "member"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#render",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
     "src/PDFBuilder.js~PDFBuilder#render",
@@ -2587,13 +2623,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2701,13 +2737,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2839,13 +2875,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -3499,13 +3535,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
@@ -3853,13 +3889,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#currentform",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-currentForm",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-currentForm",
     "src/components/_classes/component/Component.js~Component#currentForm",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#currentform",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-currentForm",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-currentForm",
     "src/components/_classes/component/Component.js~Component#currentForm",
     "member"
   ],
@@ -4177,13 +4213,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#label",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-label",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-label",
     "src/components/_classes/component/Component.js~Component#label",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#label",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-label",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-label",
     "src/components/_classes/component/Component.js~Component#label",
     "member"
   ],
@@ -4237,13 +4273,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#parentvisible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentVisible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
     "src/components/_classes/component/Component.js~Component#parentVisible",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#parentvisible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentVisible",
     "src/components/_classes/component/Component.js~Component#parentVisible",
     "member"
   ],
@@ -4567,13 +4603,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#visible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-visible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-visible",
     "src/components/_classes/component/Component.js~Component#visible",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#visible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-visible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-visible",
     "src/components/_classes/component/Component.js~Component#visible",
     "member"
   ],
@@ -4849,13 +4885,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-dataValue",
+    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-set-dataValue",
     "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
     "member"
   ],
   [
     "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-set-dataValue",
+    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-dataValue",
     "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
     "member"
   ],
@@ -5023,13 +5059,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#data",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-data",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-data",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#data",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#data",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-data",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-data",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#data",
     "member"
   ],
@@ -5263,13 +5299,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
@@ -7975,13 +8011,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#currentform",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-currentForm",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-currentForm",
     "src/components/form/Form.js~FormComponent#currentForm",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#currentform",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-currentForm",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-currentForm",
     "src/components/form/Form.js~FormComponent#currentForm",
     "member"
   ],
@@ -8083,25 +8119,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#nosubmit",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
-    "src/components/form/Form.js~FormComponent#nosubmit",
-    "member"
-  ],
-  [
-    "src/components/form/form.js~formcomponent#nosubmit",
     "class/src/components/form/Form.js~FormComponent.html#instance-set-nosubmit",
     "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
-    "src/components/form/form.js~formcomponent#parentvisible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
-    "src/components/form/Form.js~FormComponent#parentVisible",
+    "src/components/form/form.js~formcomponent#nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-nosubmit",
+    "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#parentvisible",
     "class/src/components/form/Form.js~FormComponent.html#instance-set-parentVisible",
+    "src/components/form/Form.js~FormComponent#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#parentvisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
     "src/components/form/Form.js~FormComponent#parentVisible",
     "member"
   ],
@@ -8197,13 +8233,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
@@ -9475,13 +9511,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#visible",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-visible",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-visible",
     "src/components/select/Select.js~SelectComponent#visible",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#visible",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-visible",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-visible",
     "src/components/select/Select.js~SelectComponent#visible",
     "member"
   ],
@@ -9832,6 +9868,414 @@ window.esdocSearchIndex = [
     "file/src/components/signature/fixtures/index.js.html",
     "src/components/signature/fixtures/index.js",
     "file"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.form.js",
+    "file/src/components/sketchpad/Sketchpad.form.js.html",
+    "src/components/sketchpad/Sketchpad.form.js",
+    "file"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js",
+    "file/src/components/sketchpad/Sketchpad.js.html",
+    "src/components/sketchpad/Sketchpad.js",
+    "file"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#actions",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-get-actions",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#actions",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#addbackground",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-addBackground",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#addBackground",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#attach",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-attach",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#attach",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#attachold",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-attachOld",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#attachOld",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#backgroundready",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-backgroundReady",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#backgroundReady",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#center",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-center",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#center",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#clear",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-clear",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#clear",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#clearall",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-clearAll",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#clearAll",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#click",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-click",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#click",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#constructor",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-constructor-constructor",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#constructor",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#copysvgtoview",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-copySvgToView",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#copySvgToView",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#createtoolbar",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-createToolbar",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#createToolbar",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#curve",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-curve",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#curve",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dataready",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-get-dataReady",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dataReady",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#datavalue",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dataValue",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dataValue",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#deleted",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-deleted",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#deleted",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dimensions",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dimensions",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dimensions",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dimensionsmultiplier",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dimensionsMultiplier",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dimensionsMultiplier",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#disabled",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-disabled",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#disabled",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dragendpoint",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dragEndPoint",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dragEndPoint",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dragimage",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-dragImage",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dragImage",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#draglastpoint",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dragLastPoint",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dragLastPoint",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#dragstartpoint",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-dragStartPoint",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#dragStartPoint",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#draw",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-draw",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#draw",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editsketchpad",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editSketchpad",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editSketchpad",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editsvg",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-editSvg",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editSvg",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editvalue",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editValue",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editValue",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editormodal",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editorModal",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editorModal",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editormodalcontent",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editorModalContent",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editorModalContent",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editormodalfooter",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editorModalFooter",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editorModalFooter",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#editormodalheader",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-editorModalHeader",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#editorModalHeader",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#emptyvalue",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-get-emptyValue",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#emptyValue",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#getactualcoordinate",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-getActualCoordinate",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#getActualCoordinate",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#getvalue",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-getValue",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#getValue",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#height",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-height",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#height",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#layers",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-layers",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#layers",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#line",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-line",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#line",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#modes",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-get-modes",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#modes",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#normalizesvgoffset",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-normalizeSvgOffset",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#normalizeSvgOffset",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#points",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-points",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#points",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#prev",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-prev",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#prev",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#rectangle",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-rectangle",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#rectangle",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#redo",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-redo",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#redo",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#render",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-render",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#render",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#resetzoom",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-resetZoom",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#resetZoom",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#savesvg",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-saveSvg",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#saveSvg",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#savesvgbutton",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-saveSvgButton",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#saveSvgButton",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#setactivebutton",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setActiveButton",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setActiveButton",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#setbackgroundimage",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setBackgroundImage",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setBackgroundImage",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#seteditorsize",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setEditorSize",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setEditorSize",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#setstate",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setState",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setState",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#settotalmultiplier",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setTotalMultiplier",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setTotalMultiplier",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#setvalue",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-setValue",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#setValue",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#state",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-state",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#state",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#stretchdrawingarea",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-stretchDrawingArea",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#stretchDrawingArea",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#styles",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-get-styles",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#styles",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#undo",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-undo",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#undo",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#updatesvgviewbox",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-updateSvgViewBox",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#updateSvgViewBox",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#usebackgrounddimensions",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-useBackgroundDimensions",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#useBackgroundDimensions",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#viewsketchpad",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-viewSketchpad",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#viewSketchpad",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#width",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-width",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#width",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#zoom",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-method-zoom",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#zoom",
+    "method"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad#zoominfo",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#instance-member-zoomInfo",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad#zoomInfo",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad.builderinfo",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#static-member-builderInfo",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad.editform",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#static-member-editForm",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad.editForm",
+    "member"
+  ],
+  [
+    "src/components/sketchpad/sketchpad.js~sketchpad.schema",
+    "class/src/components/sketchpad/Sketchpad.js~Sketchpad.html#static-method-schema",
+    "src/components/sketchpad/Sketchpad.js~Sketchpad.schema",
+    "method"
   ],
   [
     "src/components/survey/survey.form.js",
@@ -10198,6 +10642,312 @@ window.esdocSearchIndex = [
     "file/src/components/tabs/editForm/Tabs.edit.display.js.html",
     "src/components/tabs/editForm/Tabs.edit.display.js",
     "file"
+  ],
+  [
+    "src/components/tagpad/tagpad.form.js",
+    "file/src/components/tagpad/Tagpad.form.js.html",
+    "src/components/tagpad/Tagpad.form.js",
+    "file"
+  ],
+  [
+    "src/components/tagpad/tagpad.js",
+    "file/src/components/tagpad/Tagpad.js.html",
+    "src/components/tagpad/Tagpad.js",
+    "file"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#addbackground",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-addBackground",
+    "src/components/tagpad/Tagpad.js~Tagpad#addBackground",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#adddot",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-addDot",
+    "src/components/tagpad/Tagpad.js~Tagpad#addDot",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#addinputerror",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-addInputError",
+    "src/components/tagpad/Tagpad.js~Tagpad#addInputError",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#addtagpadcomponent",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-addTagpadComponent",
+    "src/components/tagpad/Tagpad.js~Tagpad#addTagpadComponent",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#attach",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-attach",
+    "src/components/tagpad/Tagpad.js~Tagpad#attach",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#attachdrawevents",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-attachDrawEvents",
+    "src/components/tagpad/Tagpad.js~Tagpad#attachDrawEvents",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#background",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-background",
+    "src/components/tagpad/Tagpad.js~Tagpad#background",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#backgroundready",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-backgroundReady",
+    "src/components/tagpad/Tagpad.js~Tagpad#backgroundReady",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#canvas",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-canvas",
+    "src/components/tagpad/Tagpad.js~Tagpad#canvas",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#canvascontainer",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-canvasContainer",
+    "src/components/tagpad/Tagpad.js~Tagpad#canvasContainer",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#canvassvg",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-canvasSvg",
+    "src/components/tagpad/Tagpad.js~Tagpad#canvasSvg",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#checkdotvalidity",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-checkDotValidity",
+    "src/components/tagpad/Tagpad.js~Tagpad#checkDotValidity",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#checkvalidity",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-checkValidity",
+    "src/components/tagpad/Tagpad.js~Tagpad#checkValidity",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#components",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-components",
+    "src/components/tagpad/Tagpad.js~Tagpad#components",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#constructor",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-constructor-constructor",
+    "src/components/tagpad/Tagpad.js~Tagpad#constructor",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#dataready",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-get-dataReady",
+    "src/components/tagpad/Tagpad.js~Tagpad#dataReady",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#datavalue",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-dataValue",
+    "src/components/tagpad/Tagpad.js~Tagpad#dataValue",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#dimensions",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-dimensions",
+    "src/components/tagpad/Tagpad.js~Tagpad#dimensions",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#dimensionsmultiplier",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-dimensionsMultiplier",
+    "src/components/tagpad/Tagpad.js~Tagpad#dimensionsMultiplier",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#disabled",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-set-disabled",
+    "src/components/tagpad/Tagpad.js~Tagpad#disabled",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#dotclicked",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-dotClicked",
+    "src/components/tagpad/Tagpad.js~Tagpad#dotClicked",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#dots",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-dots",
+    "src/components/tagpad/Tagpad.js~Tagpad#dots",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#drawdot",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-drawDot",
+    "src/components/tagpad/Tagpad.js~Tagpad#drawDot",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#formcontainer",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-formContainer",
+    "src/components/tagpad/Tagpad.js~Tagpad#formContainer",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#formrendered",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-formRendered",
+    "src/components/tagpad/Tagpad.js~Tagpad#formRendered",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#getactualcoordinate",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-getActualCoordinate",
+    "src/components/tagpad/Tagpad.js~Tagpad#getActualCoordinate",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#getvalue",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-getValue",
+    "src/components/tagpad/Tagpad.js~Tagpad#getValue",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#hasbackgroundimage",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-get-hasBackgroundImage",
+    "src/components/tagpad/Tagpad.js~Tagpad#hasBackgroundImage",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#redrawdots",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-redrawDots",
+    "src/components/tagpad/Tagpad.js~Tagpad#redrawDots",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#removeselecteddot",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-removeSelectedDot",
+    "src/components/tagpad/Tagpad.js~Tagpad#removeSelectedDot",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#render",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-render",
+    "src/components/tagpad/Tagpad.js~Tagpad#render",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#renderform",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-renderForm",
+    "src/components/tagpad/Tagpad.js~Tagpad#renderForm",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#rendertagpad",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-renderTagpad",
+    "src/components/tagpad/Tagpad.js~Tagpad#renderTagpad",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#saveselecteddot",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-saveSelectedDot",
+    "src/components/tagpad/Tagpad.js~Tagpad#saveSelectedDot",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#selectdot",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-selectDot",
+    "src/components/tagpad/Tagpad.js~Tagpad#selectDot",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#selecteddotindex",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-selectedDotIndex",
+    "src/components/tagpad/Tagpad.js~Tagpad#selectedDotIndex",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#setbackgroundimage",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-setBackgroundImage",
+    "src/components/tagpad/Tagpad.js~Tagpad#setBackgroundImage",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#setdotvalidity",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-setDotValidity",
+    "src/components/tagpad/Tagpad.js~Tagpad#setDotValidity",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#seteditorsize",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-setEditorSize",
+    "src/components/tagpad/Tagpad.js~Tagpad#setEditorSize",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#setformvalue",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-setFormValue",
+    "src/components/tagpad/Tagpad.js~Tagpad#setFormValue",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#setvalue",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-setValue",
+    "src/components/tagpad/Tagpad.js~Tagpad#setValue",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#stretchdrawingarea",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-stretchDrawingArea",
+    "src/components/tagpad/Tagpad.js~Tagpad#stretchDrawingArea",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#tagpadcontainer",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-tagpadContainer",
+    "src/components/tagpad/Tagpad.js~Tagpad#tagpadContainer",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#two",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-two",
+    "src/components/tagpad/Tagpad.js~Tagpad#two",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#type",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-member-type",
+    "src/components/tagpad/Tagpad.js~Tagpad#type",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad#updatevalue",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#instance-method-updateValue",
+    "src/components/tagpad/Tagpad.js~Tagpad#updateValue",
+    "method"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad.builderinfo",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#static-member-builderInfo",
+    "src/components/tagpad/Tagpad.js~Tagpad.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad.editform",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#static-member-editForm",
+    "src/components/tagpad/Tagpad.js~Tagpad.editForm",
+    "member"
+  ],
+  [
+    "src/components/tagpad/tagpad.js~tagpad.schema",
+    "class/src/components/tagpad/Tagpad.js~Tagpad.html#static-method-schema",
+    "src/components/tagpad/Tagpad.js~Tagpad.schema",
+    "method"
   ],
   [
     "src/components/tags/tags.form.js",
@@ -12169,13 +12919,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/templates/templates.js~templates.current",
-    "class/src/templates/Templates.js~Templates.html#static-get-current",
+    "class/src/templates/Templates.js~Templates.html#static-set-current",
     "src/templates/Templates.js~Templates.current",
     "member"
   ],
   [
     "src/templates/templates.js~templates.current",
-    "class/src/templates/Templates.js~Templates.html#static-set-current",
+    "class/src/templates/Templates.js~Templates.html#static-get-current",
     "src/templates/Templates.js~Templates.current",
     "member"
   ],
@@ -12187,13 +12937,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-get-framework",
+    "class/src/templates/Templates.js~Templates.html#static-set-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-set-framework",
+    "class/src/templates/Templates.js~Templates.html#static-get-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
@@ -12465,6 +13215,12 @@ window.esdocSearchIndex = [
     "src/templates/bootstrap/signature/index.js",
     "file/src/templates/bootstrap/signature/index.js.html",
     "src/templates/bootstrap/signature/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap/sketchpad/index.js",
+    "file/src/templates/bootstrap/sketchpad/index.js.html",
+    "src/templates/bootstrap/sketchpad/index.js",
     "file"
   ],
   [
