@@ -2,7 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
-import { sanitize } from 'dompurify';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';

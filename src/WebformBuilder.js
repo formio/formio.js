@@ -1,5 +1,3 @@
-/* global $ */
-
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
@@ -235,7 +233,7 @@ export default class WebformBuilder extends Component {
       }
 
       if (component.refs.moveComponent) {
-        const moveToolTip = new Tooltip(component.refs.moveComponent, {
+        new Tooltip(component.refs.moveComponent, {
           trigger: 'hover',
           placement: 'top',
           title: this.t('Move')
@@ -700,7 +698,7 @@ export default class WebformBuilder extends Component {
     const editFormOptions = _.get(this, 'options.editForm', {});
     this.editForm = new Webform(
       {
-        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
+        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
         language: this.options.language,
         ...editFormOptions
       }

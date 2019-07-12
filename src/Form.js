@@ -50,6 +50,7 @@ export default class Form extends Element {
       this.element = null;
       this.options = null;
     }
+    this.display = '';
   }
 
   /**
@@ -62,6 +63,7 @@ export default class Form extends Element {
     if (this.options && this.options.flatten) {
       display = 'form';
     }
+    this.display = display;
     switch (display) {
       case 'wizard':
         return new Wizard(this.element, this.options);
@@ -128,7 +130,7 @@ export default class Form extends Element {
    * @return {Promise<T>}
    */
   setDisplay(display) {
-    if ((this.form.display === display) && this.instance) {
+    if ((this.display === display) && this.instance) {
       return NativePromise.resolve(this.instance);
     }
 
@@ -147,7 +149,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new NativePromise((resolve, reject) => {
+    return new NativePromise((resolve) => {
       if (!embed || !embed.src) {
         resolve();
       }

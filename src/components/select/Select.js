@@ -404,7 +404,7 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh(value) {
+  refresh() {
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
@@ -560,7 +560,15 @@ export default class SelectComponent extends Field {
     this.loadRefs(element, {
       selectContainer: 'single',
       addResource: 'single',
+      autocompleteInput: 'single'
     });
+    //enable autocomplete for select
+    const autocompleteInput = this.refs.autocompleteInput;
+    if (autocompleteInput) {
+      this.addEventListener(autocompleteInput, 'change', (event) => {
+        this.setValue(event.target.value);
+      });
+    }
     const input = this.refs.selectContainer;
     if (!input) {
       return;

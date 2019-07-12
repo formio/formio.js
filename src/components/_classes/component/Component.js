@@ -2188,6 +2188,8 @@ export default class Component extends Element {
       attributes.disabled = 'disabled';
     }
 
+    _.defaults(attributes, this.component.attributes);
+
     return {
       type: 'input',
       component: this.component,

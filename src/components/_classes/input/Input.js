@@ -29,6 +29,8 @@ export default class Input extends Multivalue {
       attr.disabled = 'disabled';
     }
 
+    _.defaults(attr, this.component.attributes);
+
     return {
       id: this.key,
       type: 'input',
