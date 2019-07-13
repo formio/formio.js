@@ -17,7 +17,21 @@ export default [
         { label: 'URL', value: 'url' },
         { label: 'Resource', value: 'resource' },
         { label: 'Custom', value: 'custom' },
+        { label: 'IndexedDB', value: 'indexeddb' },
       ],
+    },
+  },
+  {
+    type: 'textarea',
+    as: 'indexeddb',
+    editor: 'ace',
+    weight: 10,
+    input: true,
+    key: 'data.indexeddb',
+    label: 'Data Source Raw JSON',
+    tooltip: 'A raw JSON array to use as a data source.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'json'] },
     },
   },
   {

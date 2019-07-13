@@ -494,6 +494,46 @@ export default class SelectComponent extends Field {
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
+      case 'indexeddb': {
+        if (!window.indexedDB) {
+          window.alert("Your browser doesn't support current version of indexedDB");
+        }
+
+        const request = window.indexedDB.open('select-values', 3);
+
+        request.onupgradeneeded = (event) => {
+          const arr = [{ value: 1, label: '1' }];
+          const db = event.target.result;
+          const objectStore = db.createObjectStore('select-values', { keyPath: 'myKey', autoIncrement: true });
+          objectStore.transaction.oncomplete = (event) => {
+            const transaction = db.transaction('select-values', 'readwrite');
+            arr.forEach((item) => {
+              transaction.objectStore('select-values').put(item);
+            });
+          };
+        };
+
+        request.onerror = (event) => {
+          // Do something with request.errorCode!
+        };
+        request.onsuccess = (event) => {
+          const db = event.target.result;
+          const transaction = db.transaction(['select-values'], 'readwrite');
+          const objectStore = transaction.objectStore('select-values');
+          new Promise((resolve) => {
+            const responseItems = [];
+            objectStore.getAll().onsuccess = (event) => {
+              event.target.result.forEach((item) => {
+                responseItems.push(item);
+              });
+              resolve(responseItems);
+            };
+          }).then((items) => {
+            this.setItems(items);
+            console.log('send items');
+          });
+        };
+      }
     }
   }
   /* eslint-enable max-statements */
