@@ -530,7 +530,6 @@ export default class SelectComponent extends Field {
             };
           }).then((items) => {
             this.setItems(items);
-            console.log('send items');
           });
         };
       }
