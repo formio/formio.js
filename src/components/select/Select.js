@@ -499,39 +499,43 @@ export default class SelectComponent extends Field {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
 
-        const request = window.indexedDB.open('select-values', 3);
+        if (this.component.findDatabase && this.component.findTable) {
+          const request = window.indexedDB.open(this.component.findDatabase, 3);
 
-        request.onupgradeneeded = (event) => {
-          const arr = [{ value: 1, label: '1' }];
-          const db = event.target.result;
-          const objectStore = db.createObjectStore('select-values', { keyPath: 'myKey', autoIncrement: true });
-          objectStore.transaction.oncomplete = (event) => {
-            const transaction = db.transaction('select-values', 'readwrite');
-            arr.forEach((item) => {
-              transaction.objectStore('select-values').put(item);
+          request.onupgradeneeded = (event) => {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.findTable, { keyPath: 'myKey', autoIncrement: true });
+              objectStore.transaction.oncomplete = () => {
+                const transaction = db.transaction(this.component.findTable, 'readwrite');
+                this.component.customOptions.forEach((item) => {
+                  transaction.objectStore(this.component.findTable).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () => {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.findTable, 'readwrite');
+            const objectStore = transaction.objectStore(this.component.findTable);
+            new Promise((resolve) => {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) => {
+                event.target.result.forEach((item) => {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) => {
+              this.setItems(items);
             });
           };
-        };
-
-        request.onerror = (event) => {
-          // Do something with request.errorCode!
-        };
-        request.onsuccess = (event) => {
-          const db = event.target.result;
-          const transaction = db.transaction(['select-values'], 'readwrite');
-          const objectStore = transaction.objectStore('select-values');
-          new Promise((resolve) => {
-            const responseItems = [];
-            objectStore.getAll().onsuccess = (event) => {
-              event.target.result.forEach((item) => {
-                responseItems.push(item);
-              });
-              resolve(responseItems);
-            };
-          }).then((items) => {
-            this.setItems(items);
-          });
-        };
+        }
       }
     }
   }

@@ -7,7 +7,6 @@ export default [
     weight: 0,
     tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
     key: 'dataSrc',
-    defaultValue: 'values',
     label: 'Data Source Type',
     dataSrc: 'values',
     data: {
@@ -22,17 +21,28 @@ export default [
     },
   },
   {
-    type: 'textarea',
+    type: 'textfield',
     as: 'indexeddb',
     editor: 'ace',
     weight: 10,
     input: true,
-    key: 'data.indexeddb',
-    label: 'Data Source Raw JSON',
-    tooltip: 'A raw JSON array to use as a data source.',
+    key: 'findDatabase',
+    label: 'Database name',
+    tooltip: 'The name of the database you want to get data from.',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'json'] },
+      json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
     },
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'findTable',
+    label: 'Datatable name',
+    weight: 16,
+    tooltip: 'The name of table the from database you want to get data from.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
+    }
   },
   {
     type: 'textarea',
