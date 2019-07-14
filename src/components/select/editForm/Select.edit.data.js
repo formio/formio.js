@@ -7,6 +7,7 @@ export default [
     weight: 0,
     tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
     key: 'dataSrc',
+    defaultValue: 'values',
     label: 'Data Source Type',
     dataSrc: 'values',
     data: {
