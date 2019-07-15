@@ -6,7 +6,6 @@ import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
-import copy from 'shallow-copy';
 import providers from './providers';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -18,6 +17,18 @@ const { fetch, Headers } = fetchPonyfill({
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
 const isObject = (val) => val && typeof val === 'object';
+
+function cloneResponse(response) {
+  const copy = _cloneDeep(response);
+
+  if (Array.isArray(response)) {
+    copy.skip = response.skip;
+    copy.limit = response.limit;
+    copy.serverCount = response.serverCount;
+  }
+
+  return copy;
+}
 
 /**
  * The Formio interface class.
@@ -704,7 +715,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return NativePromise.resolve(_cloneDeep(Formio.cache[cacheKey]));
+      return NativePromise.resolve(cloneResponse(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -822,8 +833,8 @@ export default class Formio {
 
           // Return the result with the headers.
           return {
-            result: result,
-            headers: headers
+            result,
+            headers,
           };
         });
       })
@@ -837,20 +848,7 @@ export default class Formio {
           Formio.cache[cacheKey] = result;
         }
 
-        let resultCopy = {};
-
-        // Shallow copy result so modifications don't end up in cache
-        if (Array.isArray(result)) {
-          resultCopy = result.map(copy);
-          resultCopy.skip = result.skip;
-          resultCopy.limit = result.limit;
-          resultCopy.serverCount = result.serverCount;
-        }
-        else {
-          resultCopy = copy(result);
-        }
-
-        return resultCopy;
+        return cloneResponse(result);
       })
       .catch((err) => {
         if (err === 'Bad Token') {
