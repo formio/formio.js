@@ -232,7 +232,8 @@ export default class ButtonComponent extends Field {
         event.preventDefault();
         event.stopPropagation();
         this.emit('submitButton', {
-          state: this.component.state || 'submitted'
+          state: this.component.state || 'submitted',
+          component: this.component
         });
         break;
       case 'event':
