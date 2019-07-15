@@ -17,8 +17,33 @@ export default [
         { label: 'URL', value: 'url' },
         { label: 'Resource', value: 'resource' },
         { label: 'Custom', value: 'custom' },
+        { label: 'IndexedDB', value: 'indexeddb' },
       ],
     },
+  },
+  {
+    type: 'textfield',
+    as: 'indexeddb',
+    editor: 'ace',
+    weight: 10,
+    input: true,
+    key: 'findDatabase',
+    label: 'Database name',
+    tooltip: 'The name of the database you want to get data from.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
+    },
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'findTable',
+    label: 'Datatable name',
+    weight: 16,
+    tooltip: 'The name of table the from database you want to get data from.',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
+    }
   },
   {
     type: 'textarea',

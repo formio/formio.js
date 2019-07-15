@@ -497,6 +497,49 @@ export default class SelectComponent extends Field {
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
+      case 'indexeddb': {
+        if (!window.indexedDB) {
+          window.alert("Your browser doesn't support current version of indexedDB");
+        }
+
+        if (this.component.findDatabase && this.component.findTable) {
+          const request = window.indexedDB.open(this.component.findDatabase, 3);
+
+          request.onupgradeneeded = (event) => {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.findTable, { keyPath: 'myKey', autoIncrement: true });
+              objectStore.transaction.oncomplete = () => {
+                const transaction = db.transaction(this.component.findTable, 'readwrite');
+                this.component.customOptions.forEach((item) => {
+                  transaction.objectStore(this.component.findTable).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () => {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.findTable, 'readwrite');
+            const objectStore = transaction.objectStore(this.component.findTable);
+            new Promise((resolve) => {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) => {
+                event.target.result.forEach((item) => {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) => {
+              this.setItems(items);
+            });
+          };
+        }
+      }
     }
   }
   /* eslint-enable max-statements */
