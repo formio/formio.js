@@ -1,10 +1,9 @@
-import assert from 'power-assert';
-
-import BaseComponent from './base/Base';
+'use strict';
 import Validator from './Validator';
-
+import Component from './_classes/component/Component';
+import assert from 'power-assert';
 describe('Validator Tests', () => {
-  const baseComponent = new BaseComponent({});
+  const baseComponent = new Component({});
 
   it('Should test for minLength', () => {
     assert.equal(Validator.validators.minLength.check(baseComponent, 5, 'test'), false);

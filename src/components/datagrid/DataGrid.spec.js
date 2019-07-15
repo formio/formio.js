@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import assert from 'power-assert';
 import { expect } from 'chai';
 import Harness from '../../../test/harness';
@@ -10,16 +11,16 @@ import {
   withRowGroupsAndDefValue,
 } from './fixtures';
 
-describe('DataGrid Component', function() {
+describe('DataGrid Component', () => {
+
   it('Should build a data grid component', (done) => {
     Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
-      done();
     });
   });
 
-  it('Should get and set values within the grid.', (done) => {
-    Harness.testCreate(DataGridComponent, comp1).then((component) => {
+  it('Should get and set values within the grid.', () => {
+    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           make: 'Jeep',
@@ -32,12 +33,11 @@ describe('DataGrid Component', function() {
           year: 2014
         }
       ]);
-      done();
     });
   });
 
-  it('Should be able to add another row.', (done) => {
-    Harness.testCreate(DataGridComponent, comp1).then((component) => {
+  it('Should be able to add another row.', () => {
+    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           make: 'Jeep',
@@ -45,7 +45,7 @@ describe('DataGrid Component', function() {
           year: 1997
         }
       ]);
-      component.addValue();
+      component.addRow();
       assert.deepEqual(component.getValue(), [
         {
           make: 'Jeep',
@@ -54,10 +54,10 @@ describe('DataGrid Component', function() {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: ''
         }
       ]);
-      done();
     });
   });
 
@@ -98,17 +98,89 @@ describe('DataGrid Component', function() {
       done(err);
     }
   });
-});
 
-describe('DataGrid Panels', () => {
-  it('Should build a data grid component', (done) => {
-    Harness.testCreate(DataGridComponent, comp2).then((component) => {
-      done();
+  describe('get minLength', () => {
+    it('should return minimal number of required rows', () => {
+      const EIDV = 'Invalid default value';
+      const EDFC = 'Differ from configured value';
+      const EDFG = 'Differ from number of rows in groups';
+      const base = { type: 'datagrid', key: 'testkey' };
+      let schema = _.cloneDeep(base);
+      let datagrid = new DataGridComponent(schema, {});
+
+      expect(datagrid.minLength, EIDV).to.equal(0);
+
+      schema = Object.assign(_.cloneDeep(base), { validate: { minLength: 5 } });
+      datagrid = new DataGridComponent(schema, {});
+      expect(datagrid.minLength, EDFC).to.equal(5);
+
+      schema = Object.assign(_.cloneDeep(base), {
+        enableRowGroups: true,
+        rowGroups: [
+          { label: 'H1', numberOfRows: 1 },
+          { label: 'B2', numberOfRows: 3 },
+          { label: 'C3', numberOfRows: 3 },
+          { label: 'M4', numberOfRows: 2 }
+        ]
+      });
+      datagrid = new DataGridComponent(schema, {});
+      expect(datagrid.minLength, EDFG).to.equal(9);
+
+      schema = Object.assign(_.cloneDeep(base), {
+        validate: { minLength: 5 },
+        enableRowGroups: true,
+        rowGroups: [
+          { label: 'H1', numberOfRows: 1 },
+          { label: 'B2', numberOfRows: 3 },
+          { label: 'C3', numberOfRows: 3 },
+          { label: 'M4', numberOfRows: 2 }
+        ]
+      });
+      datagrid = new DataGridComponent(schema, {});
+      if (datagrid.minLength === 5) {
+        expect.fail('Number of row should take precedence over config');
+      }
+      else {
+        expect(datagrid.minLength, EDFG).to.equal(9);
+      }
     });
   });
 
-  it('Should be able to set the values of one panel in the DataGrid.', (done) => {
-    Harness.testCreate(DataGridComponent, comp2).then((component) => {
+  describe('getGroupSizes', () => {
+    it('should return array of numbers representing group sizes', () => {
+      const { getGroupSizes } = DataGridComponent.prototype;
+      let self = { component: {} };
+
+      expect(getGroupSizes.call(self)).to.deep.equal([]);
+
+      self = { component: {
+        rowGroups: [{ numberOfRows: 1 }]
+      } };
+
+      expect(getGroupSizes.call(self)).to.deep.equal([1]);
+
+      self = { component: {
+        rowGroups: [{ numberOfRows: 1 }, { numberOfRows: 2 }]
+      } };
+
+      expect(getGroupSizes.call(self)).to.deep.equal([1, 2]);
+
+      self = { component: {
+        rowGroups: [{ numberOfRows: 1 }, { numberOfRows: 3 }, { numberOfRows: 10 }]
+      } };
+
+      expect(getGroupSizes.call(self)).to.deep.equal([1, 3, 10]);
+    });
+  });
+});
+
+describe('DataGrid Panels', () => {
+  it('Should build a data grid component', () => {
+    return Harness.testCreate(DataGridComponent, comp2);
+  });
+
+  it('Should be able to set the values of one panel in the DataGrid.', () => {
+    return Harness.testCreate(DataGridComponent, comp2).then((component) => {
       Harness.testSetGet(component, [
         {
           firstName: 'Joe',
@@ -117,7 +189,7 @@ describe('DataGrid Panels', () => {
       ]);
 
       // Now add a new row.
-      component.addValue();
+      component.addRow();
       assert.deepEqual(component.getValue(), [
         {
           firstName: 'Joe',
@@ -128,7 +200,6 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
-      done();
     });
   });
 });

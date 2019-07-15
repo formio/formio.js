@@ -1,0 +1,5 @@
+<div id="{{groupId}}" class="panel-group builder-sidebar{{scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
+  {% groups.forEach(function(group) { %}
+    {{ group }}
+  {% }) %}
+</div>

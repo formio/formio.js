@@ -1,0 +1,913 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 2265,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 79,
+      "column": 0
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 2265,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 79,
+        "column": 0
+      }
+    },
+    "sourceType": "module",
+    "body": [
+      {
+        "type": "ExportDefaultDeclaration",
+        "start": 0,
+        "end": 2264,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 78,
+            "column": 2
+          }
+        },
+        "declaration": {
+          "type": "ObjectExpression",
+          "start": 15,
+          "end": 2263,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 15
+            },
+            "end": {
+              "line": 78,
+              "column": 1
+            }
+          },
+          "properties": [
+            {
+              "type": "ObjectProperty",
+              "start": 19,
+              "end": 1182,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 39,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 19,
+                "end": 23,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "identifierName": "form"
+                },
+                "name": "form"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 25,
+                "end": 1182,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 39,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 26,
+                    "end": 1181,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 39,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n{% if (!readOnly) { %}\n<button class=\"ui button primary\" ref=\"{{editgridKey}}-addRow\">\n  <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n</button>\n{% } %}\n",
+                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n{% if (!readOnly) { %}\n<button class=\"ui button primary\" ref=\"{{editgridKey}}-addRow\">\n  <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n</button>\n{% } %}\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 1186,
+              "end": 2159,
+              "loc": {
+                "start": {
+                  "line": 40,
+                  "column": 2
+                },
+                "end": {
+                  "line": 72,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 1186,
+                "end": 1190,
+                "loc": {
+                  "start": {
+                    "line": 40,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 40,
+                    "column": 6
+                  },
+                  "identifierName": "html"
+                },
+                "name": "html"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 1192,
+                "end": 2159,
+                "loc": {
+                  "start": {
+                    "line": 40,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 72,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 1193,
+                    "end": 2158,
+                    "loc": {
+                      "start": {
+                        "line": 40,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 72,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n",
+                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2163,
+              "end": 2259,
+              "loc": {
+                "start": {
+                  "line": 73,
+                  "column": 2
+                },
+                "end": {
+                  "line": 76,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2163,
+                "end": 2170,
+                "loc": {
+                  "start": {
+                    "line": 73,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 73,
+                    "column": 9
+                  },
+                  "identifierName": "builder"
+                },
+                "name": "builder"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 2172,
+                "end": 2259,
+                "loc": {
+                  "start": {
+                    "line": 73,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 76,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 2173,
+                    "end": 2258,
+                    "loc": {
+                      "start": {
+                        "line": 73,
+                        "column": 12
+                      },
+                      "end": {
+                        "line": 76,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n{{components}}\n",
+                      "cooked": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n{{components}}\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            }
+          ],
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": [],
+  "tokens": [
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 0,
+      "end": 6,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "default",
+        "keyword": "default",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "default",
+      "start": 7,
+      "end": 14,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 7
+        },
+        "end": {
+          "line": 1,
+          "column": 14
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "{",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 15,
+      "end": 16,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 15
+        },
+        "end": {
+          "line": 1,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "form",
+      "start": 19,
+      "end": 23,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 23,
+      "end": 24,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 6
+        },
+        "end": {
+          "line": 2,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 25,
+      "end": 26,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 8
+        },
+        "end": {
+          "line": 2,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n{% if (!readOnly) { %}\n<button class=\"ui button primary\" ref=\"{{editgridKey}}-addRow\">\n  <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n</button>\n{% } %}\n",
+      "start": 26,
+      "end": 1181,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 9
+        },
+        "end": {
+          "line": 39,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 1181,
+      "end": 1182,
+      "loc": {
+        "start": {
+          "line": 39,
+          "column": 0
+        },
+        "end": {
+          "line": 39,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 1182,
+      "end": 1183,
+      "loc": {
+        "start": {
+          "line": 39,
+          "column": 1
+        },
+        "end": {
+          "line": 39,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "html",
+      "start": 1186,
+      "end": 1190,
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 2
+        },
+        "end": {
+          "line": 40,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 1190,
+      "end": 1191,
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 6
+        },
+        "end": {
+          "line": 40,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 1192,
+      "end": 1193,
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 8
+        },
+        "end": {
+          "line": 40,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n<div class=\"editgrid-listgroup ui celled list\">\n  {% if (header) { %}\n  <div class=\"item list-group-header\">\n    {{header}}\n  </div>\n  {% } %}\n  {% rows.forEach(function(row, rowIndex) { %}\n  <div class=\"item\" ref=\"{{editgridKey}}\">\n    {{row}}\n    {% if (openRows[rowIndex] && !readOnly) { %}\n    <div class=\"editgrid-actions\">\n      <button class=\"ui button primary\" ref=\"{{editgridKey}}-saveRow\">{{t(component.saveRow || 'Save')}}</button> \n      {% if (component.removeRow) { %}\n      <button class=\"ui button secondary\" ref=\"{{editgridKey}}-cancelRow\">{{t(component.removeRow || 'Cancel')}}</button>\n      {% } %}\n    </div>\n    {% } %}\n    <div class=\"has-error\">\n      <div class=\"editgrid-row-error help-block\">\n        {{errors[rowIndex]}}\n      </div>\n    </div>\n  </div>\n  {% }) %}\n  {% if (footer) { %}\n  <div class=\"item list-group-footer\">\n    {{footer}}\n  </div>\n  {% } %}\n</div>\n",
+      "start": 1193,
+      "end": 2158,
+      "loc": {
+        "start": {
+          "line": 40,
+          "column": 9
+        },
+        "end": {
+          "line": 72,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2158,
+      "end": 2159,
+      "loc": {
+        "start": {
+          "line": 72,
+          "column": 0
+        },
+        "end": {
+          "line": 72,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2159,
+      "end": 2160,
+      "loc": {
+        "start": {
+          "line": 72,
+          "column": 1
+        },
+        "end": {
+          "line": 72,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "builder",
+      "start": 2163,
+      "end": 2170,
+      "loc": {
+        "start": {
+          "line": 73,
+          "column": 2
+        },
+        "end": {
+          "line": 73,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2170,
+      "end": 2171,
+      "loc": {
+        "start": {
+          "line": 73,
+          "column": 9
+        },
+        "end": {
+          "line": 73,
+          "column": 10
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2172,
+      "end": 2173,
+      "loc": {
+        "start": {
+          "line": 73,
+          "column": 11
+        },
+        "end": {
+          "line": 73,
+          "column": 12
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<label class=\"control-label\" style=\"\">{{t(component.label)}}</label>\n{{components}}\n",
+      "start": 2173,
+      "end": 2258,
+      "loc": {
+        "start": {
+          "line": 73,
+          "column": 12
+        },
+        "end": {
+          "line": 76,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2258,
+      "end": 2259,
+      "loc": {
+        "start": {
+          "line": 76,
+          "column": 0
+        },
+        "end": {
+          "line": 76,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2259,
+      "end": 2260,
+      "loc": {
+        "start": {
+          "line": 76,
+          "column": 1
+        },
+        "end": {
+          "line": 76,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "}",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2262,
+      "end": 2263,
+      "loc": {
+        "start": {
+          "line": 78,
+          "column": 0
+        },
+        "end": {
+          "line": 78,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2263,
+      "end": 2264,
+      "loc": {
+        "start": {
+          "line": 78,
+          "column": 1
+        },
+        "end": {
+          "line": 78,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "eof",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2265,
+      "end": 2265,
+      "loc": {
+        "start": {
+          "line": 79,
+          "column": 0
+        },
+        "end": {
+          "line": 79,
+          "column": 0
+        }
+      }
+    }
+  ]
+}

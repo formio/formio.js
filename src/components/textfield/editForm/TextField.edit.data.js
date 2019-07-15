@@ -5,7 +5,7 @@ export default [
     key: 'inputFormat',
     weight: 105,
     placeholder: 'Input Format',
-    tooltip: '',
+    tooltip: 'Force the output of this field to be sanitized in a specific format.',
     template: '<span>{{ item.label }}</span>',
     data: {
       values: [

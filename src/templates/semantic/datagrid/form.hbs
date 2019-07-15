@@ -1,0 +1,82 @@
+<table class="ui table datagrid-table
+    {{ component.striped ? 'striped' : ''}}
+    {{ component.bordered ? 'celled' : ''}}
+    {{ component.hover ? 'selectable' : ''}}
+    {{ component.condensed ? 'compact' : 'padded'}}
+    " {% if (component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
+  {% if (hasHeader) { %}
+  <thead>
+    <tr>
+      {% if (component.reorder) { %}<th></th>{% } %}
+      {% columns.forEach(function(col) { %}
+      {% if (visibleColumns[col.key]) { %}
+      <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+        {{ col.hideLabel ? '' : t(col.label || col.title) }}
+        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
+      </th>
+      {% } %}
+      {% }) %}
+      {% if (hasExtraColumn) { %}
+      <th>
+        {% if (hasAddButton && hasTopSubmit) { %}
+        <button class="ui button primary" ref="{{datagridKey}}-addRow">
+          <i class="{{iconClass('plus')}}"></i> Add Another
+        </button>
+        {% } %}
+      </th>
+      {% } %}
+    </tr>
+  </thead>
+  {% } %}
+  <tbody ref="{{datagridKey}}-tbody">
+    {% rows.forEach(function(row) { %}
+    {% if (hasGroups && groups[index]) { %}
+    <tr ref="{{datagridKey}}-group-header" class="datagrid-group-header{{hasToggle ? ' clickable' : ''}}">
+      <td
+        ref="{{datagridKey}}-group-label"
+        colspan="{{numColumns}}"
+        class="datagrid-group-label">{{groups[index].label}}</td>
+    </tr>
+    {% } %}
+    <tr ref="{{datagridKey}}-row">
+      {% if (component.reorder) { %}
+        <td>
+          <button type="button" class="formio-drag-button fa fa-bars"></button>
+        </td>
+      {% } %}
+      {% columns.forEach(function(col) { %}
+      {% if (visibleColumns[col.key]) { %}
+      <td ref="{{datagridKey}}">
+        {{row[col.key]}}
+      </td>
+      {% } %}
+      {% }) %}
+      {% if (hasExtraColumn) { %}
+        {% if (!builder && hasRemoveButtons) { %}
+        <td>
+          <button type="button" class="btn-xss ui icon button secondary formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
+            <i class="{{iconClass('remove')}}"></i>
+          </button>
+        </td>
+        {% } %}
+        {% if (builder) { %}
+        <td ref="{{key}}-container">
+          {{placeholder}}
+        </td>
+        {% } %}
+      {% } %}
+    </tr>
+    {% }) %}
+  </tbody>
+  {% if (hasAddButton && hasBottomSubmit) { %}
+  <tfoot>
+    <tr>
+      <td colspan="{{numColumns + 1}}">
+        <button class="ui button primary" ref="{{datagridKey}}-addRow">
+          <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
+        </button>
+      </td>
+    </tr>
+  </tfoot>
+  {% } %}
+</table>

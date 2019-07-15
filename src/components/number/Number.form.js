@@ -1,10 +1,15 @@
-import baseEditForm from '../base/Base.form';
+import textEditForm from '../textfield/TextField.form';
 
+import NumberEditDisplay from './editForm/Number.edit.display';
 import NumberEditData from './editForm/Number.edit.data';
 import NumberEditValidation from './editForm/Number.edit.validation';
 
 export default function(...extend) {
-  return baseEditForm([
+  return textEditForm([
+    {
+      key: 'display',
+      components: NumberEditDisplay
+    },
     {
       key: 'data',
       components: NumberEditData

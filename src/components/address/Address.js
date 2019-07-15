@@ -19,32 +19,41 @@ export default class AddressComponent extends TextFieldComponent {
 
   static get builderInfo() {
     return {
-      title: 'Address Field',
+      title: 'Address',
       group: 'advanced',
-      icon: 'fa fa-home',
+      icon: 'home',
       documentation: 'http://help.form.io/userguide/#address',
-      weight: 30,
+      weight: 35,
       schema: AddressComponent.schema()
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
-    if (component.map && component.map.key) {
-      src += `&key=${component.map.key}`;
+    if (this.component.map && this.component.map.key) {
+      src += `&key=${this.component.map.key}`;
     }
-    if (component.map && component.map.region) {
-      src += `&region=${component.map.region}`;
+    if (this.component.map && this.component.map.region) {
+      src += `&region=${this.component.map.region}`;
     }
     Formio.requireLibrary('googleMaps', 'google.maps.places', src);
 
     // Keep track of the full addresses.
-    this.addresses = [];
+    this.addresses = this.dataValue || '';
+    if (!Array.isArray(this.addresses)) {
+      this.addresses = [this.addresses];
+    }
   }
 
   get defaultSchema() {
     return AddressComponent.schema();
+  }
+
+  get inputInfo() {
+    const info = super.inputInfo;
+    info.attr.class += ' address-search';
+    return info;
   }
 
   setValueAt(index, value, flags) {
@@ -54,7 +63,7 @@ export default class AddressComponent extends TextFieldComponent {
     }
     this.addresses[index] = value;
     if (value && value.formatted_address) {
-      this.inputs[index].value = value.formatted_address;
+      this.refs.input[index].value = value.formatted_address;
     }
   }
 
@@ -456,8 +465,8 @@ export default class AddressComponent extends TextFieldComponent {
     });
   }
 
-  addInput(input, container) {
-    super.addInput(input, container);
+  attachElement(element, index) {
+    super.attachElement(element, index);
     Formio.libraryReady('googleMaps').then(() => {
       let autoCompleteOptions = {};
       if (this.component.map) {
@@ -473,19 +482,13 @@ export default class AddressComponent extends TextFieldComponent {
 
       if (this.component.map && this.component.map.autoCompleteFilter) {
         // Call custom autoComplete to filter suggestions
-        this.autoCompleteInit(input, autoCompleteOptions);
+        this.autoCompleteInit(element, autoCompleteOptions);
       }
       else {
-        const autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete = new google.maps.places.Autocomplete(element);
         autocomplete.addListener('place_changed', () => this.setValue(autocomplete.getPlace()));
       }
     });
-  }
-
-  elementInfo() {
-    const info = super.elementInfo();
-    info.attr.class += ' address-search';
-    return info;
   }
 
   getView(value) {

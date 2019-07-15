@@ -2,22 +2,12 @@ import BuilderUtils from '../../../utils/builder';
 
 export default [
   {
-    type: 'select',
-    input: true,
-    label: 'Label Position',
     key: 'labelPosition',
-    tooltip: 'Position for the label for this field.',
-    defaultValue: 'right',
-    dataSrc: 'values',
-    weight: 20,
-    data: {
-      values: [
-        { label: 'Top', value: 'top' },
-        { label: 'Left', value: 'left' },
-        { label: 'Right', value: 'right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+    ignore: true,
+  },
+  {
+    key: 'placeholder',
+    ignore: true,
   },
   {
     type: 'select',
@@ -28,10 +18,17 @@ export default [
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
     data: {
-      custom(values, component, data, row, utils, instance, form) {
-        return BuilderUtils.getAvailableShortcuts(form, component);
-      }
-    }
+      custom({
+        instance: {
+          root: {
+            editForm,
+            editComponent,
+          } = {},
+        } = {},
+      }) {
+        return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
+      },
+    },
   },
   {
     type: 'select',
@@ -44,9 +41,9 @@ export default [
     data: {
       values: [
         { label: 'Checkbox', value: 'checkbox' },
-        { label: 'Radio', value: 'radio' }
-      ]
-    }
+        { label: 'Radio', value: 'radio' },
+      ],
+    },
   },
   {
     type: 'textfield',
@@ -56,8 +53,8 @@ export default [
     tooltip: 'The key used to trigger the radio button toggle.',
     weight: 420,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-    }
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+    },
   },
   {
     type: 'textfield',
@@ -67,7 +64,7 @@ export default [
     tooltip: 'The value used with this radio button.',
     weight: 430,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-    }
-  }
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+    },
+  },
 ];

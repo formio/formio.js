@@ -19,12 +19,11 @@
   <link href="{{ site.baseurl }}/app/syntax.css" rel="stylesheet">
   <link href="{{ site.baseurl }}/app/main.css" rel="stylesheet">
   <link href="{{ site.baseurl }}/app/fontawesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="{{ site.baseurl }}/app/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   {% if page.template %}
-    <link href="{{ site.baseurl }}/app/bootswatch/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bootswatch.com/4/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   {% if page.template == nil %}
-    <link href="{{ site.baseurl }}/app/bootswatch/yeti/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bootswatch.com/4/cosmo/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
   <script src="{{ site.baseurl }}/app/jquery/jquery.slim.min.js"></script>
@@ -34,11 +33,10 @@
     <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
   <script type="text/javascript">Formio.icons = 'fontawesome';</script>
-  <script type="text/javascript">Formio.setUser(null);</script>
 </head>
 <body>
 <a href="https://github.com/formio/formio.js"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:3000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
   <div class="container">
     <a class="navbar-brand" href="#">
       <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"> | JavaScript SDK Library
@@ -47,14 +45,14 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <ul class="navbar-nav nav-fill">
-        <li class="nav-item px-3 {% if page.section == 'home' %}active bg-white border{% endif %}"><a class="nav-link" href="{{ site.baseurl }}"><i class="fa fa-home"></i></a></li>
-        <li class="nav-item px-3 {% if page.section == 'builder' %}active bg-white border{% endif %}"><a class="nav-link" href="app/builder"><i class="fa fa-th-list"></i> Form Builder</a></li>
-        <li class="nav-item px-3 {% if page.section == 'examples' %}active bg-white border{% endif %}"><a class="nav-link" href="app/examples"><i class="fa fa-check-square-o"></i> Examples</a></li>
-        <li class="nav-item px-3"><a class="nav-link" target="_blank" href="https://github.com/formio/formio.js/wiki"><i class="fa fa-book"></i> Documentation</a></li>
-        <li class="nav-item px-3 {% if page.section == 'sdk'%}active bg-white border{% endif %}"><a class="nav-link" href="app/sdk"><i class="fa fa-list-alt"></i> SDK</a></li>
+      <ul class="navbar-nav nav-fill mr-auto">
+        <li class="nav-item {% if page.section == 'home' %}active bg-white border{% endif %}"><a class="nav-link" href="{{ site.baseurl }}"><i class="fa fa-home"></i></a></li>
+        <li class="nav-item {% if page.section == 'builder' %}active bg-white border{% endif %}"><a class="nav-link" href="app/builder"><i class="fa fa-th-list"></i> Form Builder</a></li>
+        <li class="nav-item {% if page.section == 'examples' %}active bg-white border{% endif %}"><a class="nav-link" href="app/examples"><i class="fa fa-check-square-o"></i> Examples</a></li>
+        <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/formio/formio.js/wiki"><i class="fa fa-book"></i> Documentation</a></li>
+        <li class="nav-item {% if page.section == 'sdk'%}active bg-white border{% endif %}"><a class="nav-link" href="app/sdk"><i class="fa fa-list-alt"></i> SDK</a></li>
       </ul>
-      <ul class="navbar-nav float-right mt-3">
+      <ul class="navbar-nav">
         <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
         <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js/fork" data-size="large" data-show-count="true" aria-label="Fork formio/formio.js on GitHub">Fork</a></li>
       </ul>

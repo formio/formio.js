@@ -1,12 +1,12 @@
 /*globals grecaptcha*/
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 import Formio from '../../Formio';
 import _get from 'lodash/get';
 import NativePromise from 'native-promise-only';
 
-export default class ReCaptchaComponent extends BaseComponent {
+export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'recaptcha',
       key: 'recaptcha',
       label: 'reCAPTCHA'
@@ -16,16 +16,25 @@ export default class ReCaptchaComponent extends BaseComponent {
   static get builderInfo() {
     return {
       title: 'reCAPTCHA',
-      group: 'advanced',
-      icon: 'fa fa-refresh',
+      group: 'premium',
+      icon: 'refresh',
       documentation: 'http://help.form.io/userguide/#recaptcha',
-      weight: 550,
+      weight: 40,
       schema: ReCaptchaComponent.schema()
     };
   }
 
+  render() {
+    if (this.builderMode) {
+      return super.render('reCAPTCHA');
+    }
+    else {
+      return super.render('', true);
+    }
+  }
+
   createInput() {
-    if (this.options.builder) {
+    if (this.builderMode) {
       // We need to see it in builder mode.
       this.append(this.text(this.name));
     }
@@ -82,7 +91,8 @@ export default class ReCaptchaComponent extends BaseComponent {
 
   beforeSubmit() {
     if (this.recaptchaVerifiedPromise) {
-      return this.recaptchaVerifiedPromise;
+      return this.recaptchaVerifiedPromise
+        .then(() => super.beforeSubmit());
     }
     return super.beforeSubmit();
   }

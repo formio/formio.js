@@ -1,18 +1,179 @@
 import assert from 'power-assert';
-
+import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
 import EventEmitter from '../../EventEmitter';
 
 import {
-  comp1
+  comp1,
+  comp2,
+  comp3
 } from './fixtures';
 
 describe('TextField Component', () => {
-  it('Should build a TextField component', (done) => {
-    Harness.testCreate(TextFieldComponent, comp1).then((component) => {
+  it('Should build a TextField component', () => {
+    return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
-      done();
+    });
+  });
+
+  it('Should provide required validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { required: true }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, '', 'firstName', 'First Name is required'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide minLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { minLength: 2 }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 't', 'firstName', 'First Name must be longer than 1 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide maxLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { maxLength: 5 }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be shorter than 6 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide custom validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: {
+        custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
+      }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
+        Harness.testValid(component, 'Tom')
+      ];
+    });
+  });
+
+  it('Should provide json validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: {
+        json: {
+          'if': [
+            {
+              '===': [
+                { var: 'data.firstName' },
+                'Joe'
+              ]
+            },
+            true,
+            'You must be Joe'
+          ]
+        }
+      }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
+        Harness.testValid(component, 'Joe')
+      ];
+    });
+  });
+
+  it('Should allow for multiple values', () => {
+    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
+      Harness.testElements(component, 'table', 1);
+      Harness.testElements(component, 'table tr', 2);
+      Harness.testElements(component, 'table tr:first-child td', 2);
+      Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
+      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
+    });
+  });
+
+  it('Should provide required validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { required: true }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, '', 'firstName', 'First Name is required'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide minLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { minLength: 2 }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 't', 'firstName', 'First Name must be longer than 1 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide maxLength validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: { maxLength: 5 }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'testte', 'firstName', 'First Name must be shorter than 6 characters.'),
+        Harness.testValid(component, 'te')
+      ];
+    });
+  });
+
+  it('Should provide custom validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: {
+        custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
+      }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
+        Harness.testValid(component, 'Tom')
+      ];
+    });
+  });
+
+  it('Should provide json validation', () => {
+    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
+      validate: {
+        json: {
+          'if': [
+            {
+              '===': [
+                { var: 'data.firstName' },
+                'Joe'
+              ]
+            },
+            true,
+            'You must be Joe'
+          ]
+        }
+      }
+    })).then((component) => {
+      return Promise.all[
+        Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
+        Harness.testValid(component, 'Joe')
+      ];
+    });
+  });
+
+  it('Should allow for multiple values', () => {
+    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
+      Harness.testElements(component, 'table', 1);
+      Harness.testElements(component, 'table tr', 2);
+      Harness.testElements(component, 'table tr:first-child td', 2);
+      Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
+      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
     });
   });
 });
@@ -37,22 +198,21 @@ describe('TextField Builder', () => {
     Harness.builderAfter();
   });
 
-  it('Should create a new textfield component', (done) => {
+  it('Should create a new textfield component', () => {
     builder = Harness.buildComponent('textfield');
-    builder.editForm.formReady.then(() => {
+    return builder.editForm.formReady.then(() => {
       // Make sure default preview is correct.
       const preview = builder.componentPreview.innerHTML;
       assert(preview.indexOf('formio-component formio-component-textfield formio-component-textField') !== -1, 'Must have correct classes');
-      assert(preview.indexOf('<label class="control-label" style="" for="textField">Text Field</label>') !== -1, 'Must have a label');
-      assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control" lang="en" id="textField"') !== -1, 'Must have an input');
-      done();
+      assert(preview.indexOf('<label class="control-label" style="">Text Field</label>') !== -1, 'Must have a label');
+      assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control"') !== -1, 'Must have an input');
     });
   });
 
   it('Should allow you to change the label', (done) => {
     Harness.setComponentProperty('label', 'Text Field', 'First Name', (preview) => {
       assert(preview.match(/label.*input/), 'Label must be on top.');
-      assert(preview.indexOf('<label class="control-label" style="" for="textField2">First Name</label>') !== -1, 'Must have a label');
+      assert(preview.indexOf('<label class="control-label" style="">First Name</label>') !== -1, 'Must have a label');
       done();
     });
   });
@@ -139,11 +299,11 @@ describe('TextField Builder', () => {
   });
 
   it('Should set the prefix of the input', (done) => {
-    Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon input-group-prepend">.*<span class="input-group-text">\$<\/span><\/div>.*input/, done);
+    Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon">\$<\/div>.*input/, done);
   });
 
   it('Should set the suffix of the input', (done) => {
-    Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon input-group-append">.*<span class="input-group-text">USD<\/span><\/div>/, done);
+    Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon">USD<\/div>/, done);
   });
 
   it('Should set the custom css class of the input', (done) => {

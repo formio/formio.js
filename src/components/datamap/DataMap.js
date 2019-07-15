@@ -1,11 +1,12 @@
-import BaseComponent from '../base/Base';
-import NestedComponent from '../nested/NestedComponent';
+import Component from '../_classes/component/Component';
+import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
+import EventEmitter from 'eventemitter2';
 import { uniqueKey } from '../../utils/utils';
 
-export default class DataMapComponent extends NestedComponent {
+export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       label: 'Data Map',
       key: 'dataMap',
       type: 'datamap',
@@ -31,10 +32,10 @@ export default class DataMapComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Data Map',
-      icon: 'fa fa-th-list',
+      icon: 'th-list',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datamap',
-      weight: 25,
+      weight: 20,
       schema: DataMapComponent.schema()
     };
   }
@@ -48,7 +49,18 @@ export default class DataMapComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'datamap';
-    this.rows = {};
+  }
+
+  init() {
+    this.components = [];
+    this.rows = [];
+    this.rowKeys = [];
+    this.createRows();
+    this.visibleColumns = {
+      key: true,
+      [this.valueKey]: true
+    };
+    this.component.valueComponent.hideLabel = true;
   }
 
   get defaultSchema() {
@@ -59,228 +71,150 @@ export default class DataMapComponent extends NestedComponent {
     return {};
   }
 
-  hasAddButton() {
-    const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.component.disableAddingRemovingRows &&
-    !this.shouldDisable &&
-      !this.options.builder &&
-      !this.options.preview &&
-      (!maxLength || (Object.keys(this.dataValue).length < maxLength));
+  get dataValue() {
+    if (
+      !this.key ||
+      (!this.visible && this.component.clearOnHide)
+    ) {
+      return this.emptyValue;
+    }
+    if (!this.hasValue()) {
+      this.dataValue = this.emptyValue;
+    }
+    return _.get(this.data, this.key);
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
+  }
+
+  get defaultValue() {
+    const value = super.defaultValue;
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+    return this.emptyValue;
+  }
+
+  get keySchema() {
+    return {
+      type: 'textfield',
+      input: true,
+      hideLabel: true,
+      label: this.component.keyLabel || 'Key',
+      key: 'key',
+    };
+  }
+
+  get valueKey() {
+    return this.component.valueComponent.key;
+  }
+
+  createRows() {
+    const keys = Object.keys(this.dataValue);
+
+    keys.forEach((key, index) => {
+      if (!this.rows[index]) {
+        const row = {
+          key,
+          [this.valueKey]: this.dataValue[key]
+        };
+        this.rows[index] = this.createRowComponents(row, index);
+      }
+    });
+
+    // Delete any extra rows.
+    this.rows.splice(keys.length);
+  }
+
+  hasHeader() {
+    return true;
   }
 
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
-      !this.shouldDisable &&
-      !this.options.builder &&
-      (Object.keys(this.dataValue).length > _.get(this.component, 'validate.minLength', 0));
+      !this.disabled &&
+      this.fullMode;
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  getColumns() {
+    const keySchema = Object.assign({}, this.keySchema);
+    const valueSchema = Object.assign({}, this.component.valueComponent);
+    keySchema.hideLabel = false;
+    valueSchema.hideLabel = false;
+    return this.component.keyBeforeValue ?
+      [keySchema, valueSchema] :
+      [valueSchema, keySchema];
   }
 
-  get componentComponents() {
-    return [this.component.valueComponent];
-  }
+  createRowComponents(row, rowIndex) {
+    // Store existing key name so we know what it is if it changes.
+    let key = row['key'];
+    this.rowKeys[rowIndex] = key;
 
-  build(state) {
-    if (this.options.builder) {
-      return super.build(state, true);
-    }
-    this.createElement();
-    this.createLabel(this.element);
-    let tableClass = 'table datagrid-table table-bordered form-group formio-data-map ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
+    // Create a new event emitter since fields are isolated.
+    const options = _.clone(this.options);
+    options.events = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    options.name += `[${rowIndex}]`;
+    options.row = `${rowIndex}`;
+
+    const components = {};
+
+    components['key'] = this.createComponent(this.keySchema, options, row);
+    components[this.valueKey] = this.createComponent(this.component.valueComponent, options, row);
+
+    // Handle change event
+    options.events.on('formio.componentChange', (event) => {
+      if (event.component.key === 'key') {
+        const newKey = uniqueKey(this.dataValue, event.value);
+        this.dataValue[newKey] = this.dataValue[key];
+        delete this.dataValue[key];
+        key = newKey;
+        this.rowKeys[rowIndex] = newKey;
+        this.triggerChange();
+      }
+      else if (event.component.key === this.valueKey) {
+        this.dataValue[key] = event.value;
+        this.triggerChange();
       }
     });
-    this.tableElement = this.ce('table', {
-      class: tableClass
-    });
-    this.buildRows(state);
-    this.element.appendChild(this.tableElement);
-    this.createDescription(this.element);
-    this.attachLogic();
-  }
 
-  addKeyButton() {
-    if (!this.hasAddButton()) {
-      return null;
-    }
-    const addButton = this.ce('button', {
-      class: 'btn btn-primary formio-button-add-row'
-    });
-    this.addEventListener(addButton, 'click', (event) => {
-      event.preventDefault();
-      this.addRow();
-    });
-
-    addButton.appendChild(this.ce('i', {
-      class: this.iconClass('plus')
-    }));
-    addButton.appendChild(this.text(' '));
-    addButton.appendChild(this.text(this.component.addAnother || 'Add Another'));
-    return addButton;
-  }
-
-  removeKeyButton(key) {
-    const removeButton = this.ce('button', {
-      type: 'button',
-      class: 'btn btn-default btn-secondary formio-button-remove-row'
-    });
-
-    this.addEventListener(removeButton, 'click', (event) => {
-      event.preventDefault();
-      this.removeRow(key);
-    });
-    removeButton.appendChild(this.ce('i', {
-      class: this.iconClass('remove-circle')
-    }));
-    return removeButton;
-  }
-
-  // Build the header.
-  createHeader() {
-    const valueHeader = this.ce('th', {
-      'class': 'col-9 col-sm-8'
-    }, this.text(this.component.valueComponent.label));
-    if (this.component.valueComponent.tooltip) {
-      this.createTooltip(valueHeader, {
-        tooltip: this.t(this.component.valueComponent.tooltip)
-      });
-    }
-    const keyHeader = this.ce('th', {
-      'class': 'col-2 col-sm-3'
-    }, this.text(this.component.keyLabel || 'Key'));
-    this.createTooltip(keyHeader, {
-      tooltip: this.t('Enter the map "key" for this value.')
-    });
-    return this.ce('thead', null, this.ce('tr', {
-        class: 'd-flex'
-      },
-      [
-        this.component.keyBeforeValue ? keyHeader : valueHeader,
-        this.component.keyBeforeValue ? valueHeader : keyHeader,
-        this.hasRemoveButtons() ? this.ce('th', { 'class': 'col-1 col-sm-1' }, null) : null,
-      ]
-    ));
-  }
-
-  buildRows(state) {
-    // Do not builder rows when in builder mode.
-    if (this.options.builder) {
-      return;
-    }
-
-    // Destroy all value components before they are recreated.
-    this.destroyComponents();
-    _.each(this.rows, row => row.value.destroy());
-    this.rows = {};
-    this.empty(this.tableElement);
-    const tableRows = [];
-    _.each(this.dataValue, (value, key) => tableRows.push(this.buildRow(value, key, state)));
-    this.tableElement.appendChild(this.createHeader());
-    this.tableElement.appendChild(this.ce('tbody', null, tableRows));
-    this.tableElement.appendChild(this.ce('tfoot', null,
-      this.ce('tr', null,
-        this.ce('td', { colspan: this.hasRemoveButtons() ? 3 : 2 },
-          this.addKeyButton()
-        )
-      )
-    ));
-  }
-
-  createValueComponent(state) {
-    const container = this.ce('td', {
-      class: 'col-9 col-sm-8'
-    });
-    const schema = this.component.valueComponent;
-    schema.hideLabel = true;
-    const value = this.addComponent(schema, container, {}, null, null, state);
-    value.on('change', () => this.updateValue(), true);
-    return { value, container };
-  }
-
-  buildRow(value, key, state) {
-    if (!this.rows[key]) {
-      this.rows[key] = this.createValueComponent(state);
-    }
-    const row = this.rows[key];
-
-    let lastColumn = null;
-    if (this.hasRemoveButtons()) {
-      row.remove = this.removeKeyButton(key);
-      lastColumn = this.ce('td', { class: 'col-1 col-sm-1' }, row.remove);
-    }
-    row.element = this.ce('tr', {
-      class: 'd-flex',
-      id: `${this.component.id}-row-${key}`
-    });
-
-    // Create our key input.
-    row.keyInput = this.ce('input', {
-      type: 'text',
-      class: 'form-control',
-      id: `${this.component.id}-value-${key}`,
-      value: key
-    });
-    this.addInput(row.keyInput);
-    if (this.component.keyBeforeValue) {
-      row.element.appendChild(this.ce('td', { class: 'col-2 col-sm-3' }, row.keyInput));
-      row.element.appendChild(row.container);
-    }
-    else {
-      row.element.appendChild(row.container);
-      row.element.appendChild(this.ce('td', null, row.keyInput));
-    }
-    row.element.appendChild(lastColumn);
-
-    // Set the value on the value component.
-    row.value.setValue(value);
-    return row.element;
+    return components;
   }
 
   addRow() {
-    const component = this.createValueComponent();
-    const key = uniqueKey(this.dataValue, _.camelCase(component.value.defaultValue) || 'key');
-    this.rows[key] = component;
-    this.dataValue[key] = component.value.defaultValue;
-    this.buildRows();
+    const newKey = uniqueKey(this.dataValue, 'key');
+    this.dataValue[newKey] = 'Value';
+    const index = this.rows.length;
+    this.rows[index] = this.createRowComponents({ key: newKey, [this.valueKey]: this.dataValue[newKey] }, index);
+    this.rowKeys[index] = newKey;
+    this.redraw();
     this.triggerChange();
   }
 
-  removeRow(key) {
-    const value = this.dataValue;
-    delete value[key];
-    this.dataValue = value;
-    this.buildRows();
+  removeRow(index) {
+    delete this.dataValue[this.rowKeys[index]];
+    this.rowKeys.splice(index, 1);
+    this.rows.splice(index, 1);
+    this.redraw();
     this.triggerChange();
-  }
-
-  updateValue(flags, value) {
-    return BaseComponent.prototype.updateValue.call(this, flags, value);
   }
 
   setValue(value) {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
+    this.createRows();
+
     if (changed) {
-      this.buildRows();
+      this.redraw();
     }
     return changed;
   }
 
-  /**
-   * Get the value of this component.
-   *
-   * @returns {*}
-   */
-  getValue() {
-    const value = {};
-    _.each(this.rows, row => {
-      value[row.keyInput.value] = row.value.getValue();
-    });
-    return value;
+  checkColumns() {
+    return { rebuild: false, show: true };
   }
 }

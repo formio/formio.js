@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
-import BaseComponent from '../base/Base';
+import dragula from 'dragula';
+import NestedComponent from '../_classes/nested/NestedComponent';
+import Component from '../_classes/component/Component';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -18,29 +19,39 @@ export default class DataGridComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Data Grid',
-      icon: 'fa fa-th',
+      icon: 'th',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datagrid',
-      weight: 20,
+      weight: 30,
       schema: DataGridComponent.schema()
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  constructor(...args) {
+    super(...args);
     this.type = 'datagrid';
-    this.numRows = 0;
-    this.numColumns = 0;
-    this.rows = [];
+  }
 
-    if (this.hasRowGroups() && !this.options.builder) {
-      const groups = _.get(this.component, 'rowGroups', []);
-      const rowsNum = this.totalRowsNumber(groups);
-      this.setStaticValue(rowsNum);
-      this.dataValue = _.zipWith(this.dataValue, this.defaultValue, (a, b) => {
-        return _.merge(a, b);
-      });
+  init() {
+    this.components = this.components || [];
+
+    // Add new values based on minLength.
+    this.rows = [];
+    this.createRows();
+    this.visibleColumns = {};
+    this.checkColumns(this.dataValue);
+  }
+
+  get dataValue() {
+    const dataValue = super.dataValue;
+    if (!dataValue || !Array.isArray(dataValue)) {
+      return this.emptyValue;
     }
+    return dataValue;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value;
   }
 
   get defaultSchema() {
@@ -55,6 +66,114 @@ export default class DataGridComponent extends NestedComponent {
     return _.get(this.component, 'addAnotherPosition', 'bottom');
   }
 
+  get minLength() {
+    if (this.hasRowGroups()) {
+      return _.sum(this.getGroupSizes());
+    }
+    else {
+      return _.get(this.component, 'validate.minLength', 0);
+    }
+  }
+
+  get defaultValue() {
+    const value = super.defaultValue;
+    let defaultValue;
+
+    if (Array.isArray(value)) {
+      defaultValue = value;
+    }
+    else if (value && (typeof value === 'object')) {
+      defaultValue = [value];
+    }
+    else {
+      defaultValue = this.emptyValue;
+    }
+
+    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
+      defaultValue.push({});
+    }
+
+    return defaultValue;
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    _.each(this.refs[`${this.datagridKey}-addRow`], (button) => {
+      button.disabled = disabled;
+    });
+    _.each(this.refs[`${this.datagridKey}-removeRow`], (button) => {
+      button.disabled = disabled;
+    });
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
+  get datagridKey() {
+    return `datagrid-${this.key}`;
+  }
+
+  get allowReorder() {
+    return !this.options.readOnly && _.get(this.component, 'reorder', false);
+  }
+
+  /**
+   * Split rows into chunks.
+   * @param {Number[]} groups - array of numbers where each item is size of group
+   * @param {Array<T>} rows - rows collection
+   * @return {Array<T[]>}
+   */
+  getRowChunks(groups, rows) {
+    const [, chunks] = groups.reduce(
+      ([startIndex, acc], size) => {
+        const endIndex = startIndex +  size;
+        return [endIndex, [...acc, [startIndex, endIndex]]];
+      }, [0, []]
+    );
+    return chunks.map(range => _.slice(rows, ...range));
+  }
+
+  /**
+   * Create groups object.
+   * Each key in object represents index of first row in group.
+   * @return {Object}
+   */
+  getGroups() {
+    const groups = _.get(this.component, 'rowGroups', []);
+    const sizes = _.map(groups, 'numberOfRows').slice(0, -1);
+    const indexes = sizes.reduce((groupIndexes, size) => {
+      const last = groupIndexes[groupIndexes.length - 1];
+      return groupIndexes.concat(last + size);
+    }, [0]);
+
+    return groups.reduce(
+      (gidxs, group, idx) => {
+        return {
+          ...gidxs,
+          [indexes[idx]]: group
+        };
+      },
+      {}
+    );
+  }
+
+  /**
+   * Retrun group sizes.
+   * @return {Number[]}
+   */
+  getGroupSizes() {
+    return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');
+  }
+
+  hasRowGroups() {
+    return _.get(this, 'component.enableRowGroups', false) && !this.builderMode;
+  }
+
+  totalRowsNumber(groups) {
+    return _.sum(_.map(groups, 'numberOfRows'));
+  }
+
   setStaticValue(n) {
     this.dataValue = _.range(n).map(() => ({}));
   }
@@ -62,21 +181,20 @@ export default class DataGridComponent extends NestedComponent {
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
-    !this.shouldDisable &&
-      !this.options.builder &&
+      !this.disabled &&
+      this.fullMode &&
       !this.options.preview &&
       (!maxLength || (this.dataValue.length < maxLength));
   }
 
   hasExtraColumn() {
-    const rmPlacement = _.get(this, 'component.removePlacement', 'col');
-    return (this.hasRemoveButtons() && rmPlacement === 'col') || this.options.builder;
+    return (this.hasRemoveButtons() || this.builderMode);
   }
 
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
-      !this.shouldDisable &&
-      !this.options.builder &&
+      !this.disabled &&
+      this.fullMode &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
@@ -92,306 +210,197 @@ export default class DataGridComponent extends NestedComponent {
     return !_.isEqual(before, after);
   }
 
-  build() {
-    this.createElement();
-    this.createLabel(this.element);
-    let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
-      }
-    });
-    this.tableElement = this.ce('table', {
-      class: tableClass,
-      style: this.component.layoutFixed ? 'table-layout: fixed;' : '',
-    });
-    this.element.appendChild(this.tableElement);
-    if (!this.dataValue.length) {
-      this.addNewValue();
-    }
-    this.visibleColumns = true;
-    this.errorContainer = this.element;
-    this.restoreValue();
-    this.createDescription(this.element);
-    this.attachLogic();
-  }
-
-  setVisibleComponents() {
-    // Add new values based on minLength.
-    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {
-      this.dataValue.push({});
-    }
-
-    this.numColumns = this.hasExtraColumn() ? 1 : 0;
-    this.numColumns += this.allowReorder ? 1 : 0;
-    this.numRows = this.dataValue.length;
-
-    if (this.visibleColumns === true) {
-      this.numColumns += this.component.components.length;
-      this.visibleComponents = this.component.components;
-      return this.visibleComponents;
-    }
-
-    this.visibleComponents = this.component.components.filter((comp) => this.visibleColumns[comp.key]);
-    this.numColumns += this.visibleComponents.length;
-  }
-
-  buildRows() {
-    this.setVisibleComponents();
-    const state = this.destroy();
-    this.empty(this.tableElement);
-
-    // Build the rows.
-    const tableRows = [];
-    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex, state.rows[rowIndex])));
-
-    // Create the header (must happen after build rows to get correct column length)
-    const header = this.createHeader();
-    if (header) {
-      this.tableElement.appendChild(header);
-    }
-    this.tableBody = this.ce('tbody', null, tableRows);
-    this.tableElement.appendChild(this.tableBody);
-
-    if (this.allowReorder) {
-      this.addDraggable([this.tableBody]);
-    }
-
-    if (this.hasRowGroups() && !this.options.builder) {
-      this.buildGroups();
-    }
-
-    // Create the add row button footer element.
-    if (this.hasBottomSubmit()) {
-      this.tableElement.appendChild(this.ce('tfoot', null,
-        this.ce('tr', null,
-          this.ce('td', { colspan: this.numColumns },
-            this.addButton()
-          )
-        )
-      ));
-    }
-  }
-
-  get allowReorder() {
-    return super.allowReorder && !this.options.builder;
-  }
-
-  onRowDrop(droppedElement, newParent, oldParent, nextSibling) {
-    super.onRowDrop(droppedElement, newParent, oldParent, nextSibling);
-    this.triggerChange();
-  }
-
-  // Build the header.
-  createHeader() {
-    const hasTopButton = this.hasTopSubmit();
-    const hasEnd = this.hasExtraColumn() || hasTopButton;
-    let needsHeader = false;
-    const thead = this.ce('thead', null, this.ce('tr', null,
-      [
-        this.allowReorder ? this.ce('th', {
-          class: 'formio-drag-column-header'
-        }) : null,
-        this.visibleComponents.map(comp => {
-          const th = this.ce('th');
-          if (comp.validate && comp.validate.required) {
-            th.setAttribute('class', 'field-required');
-          }
-          const title = comp.label || comp.title;
-          if (title && !comp.dataGridLabel) {
-            needsHeader = true;
-            th.appendChild(this.text(title));
-            this.createTooltip(th, comp);
-          }
-          return th;
-        }),
-        hasEnd ? this.ce('th', null, (hasTopButton ? this.addButton(true) : null)) : null,
-      ]
-    ));
-    return needsHeader ? thead : null;
-  }
-
-  get dataValue() {
-    const dataValue = super.dataValue;
-    if (!dataValue || !Array.isArray(dataValue)) {
-      return this.emptyValue;
-    }
-    return dataValue;
-  }
-
-  set dataValue(value) {
-    super.dataValue = value;
-  }
-
-  get defaultValue() {
-    const value = super.defaultValue;
-    if (Array.isArray(value)) {
-      return value;
-    }
-    if (value && (typeof value === 'object')) {
-      return [value];
-    }
-    return this.emptyValue;
-  }
-
-  buildRow(rowData, index, state) {
-    state = state || {};
-    const components = _.get(this, 'component.components', []);
-    const colsNum = components.length;
-    const lastColIndex = colsNum - 1;
-    const hasRmButton = this.hasRemoveButtons();
-    const hasTopButton = this.hasTopSubmit();
-    const rmPlacement = _.get(this, 'component.removePlacement', 'col');
-    let useCorner = false;
-    let lastColumn = null;
-    this.rows[index] = {};
-    let firstColumn = null;
-
-    if (this.allowReorder) {
-      firstColumn = this.ce('td', {
-        class: 'formio-drag-column'
-      }, this.dragButton());
-    }
-
-    if (hasRmButton) {
-      if (rmPlacement === 'col') {
-        lastColumn = this.ce('td', {
-          class: 'formio-remove-column'
-        }, this.removeButton(index));
-      }
-      else {
-        useCorner = true;
-      }
-    }
-    else if (this.options.builder) {
-      lastColumn = this.ce('td', {
-        id: `${this.id}-drag-container`,
-        class: 'drag-container'
-      }, this.ce('div', {
-        id: `${this.id}-placeholder`,
-        class: 'alert alert-info',
-        style: 'text-align:center; margin-bottom: 0px;',
-        role: 'alert'
-      }, this.text('Drag and Drop a form component')));
-      this.root.addDragContainer(lastColumn, this);
-    }
-
-    const rowElement =  this.ce('tr', null,
-      [
-        firstColumn,
-        components.map(
-          (cmp, colIndex) => {
-            const cell = this.buildComponent(
-              cmp,
-              colIndex,
-              rowData,
-              index,
-              this.getComponentState(cmp, state)
-            );
-
-            if (hasRmButton && useCorner && lastColIndex === colIndex) {
-              cell.style.position = 'relative';
-              cell.style.width = '50px';
-              cell.append(this.removeButton(index, 'small'));
-              if (hasTopButton ) {
-                cell.setAttribute('colspan', 2);
-              }
-            }
-
-            return cell;
-          }
-        ),
-        lastColumn
-      ]
-    );
-
-    //add element info for drag'n'drop handlers
-    if (this.allowReorder) {
-      rowElement.dragInfo = {
-        index: index
-      };
-    }
-
-    return rowElement;
-  }
-
-  destroyRows() {
-    const state = {};
-    state.rows = state.rows || {};
-    this.rows.forEach((row, rowIndex) => _.forIn(row, col => {
-      state.rows[rowIndex] = state.rows[rowIndex] || {};
-      const compState = this.removeComponent(col, row);
-      if (col.key && compState) {
-        state.rows[rowIndex][col.key] = compState;
-      }
+  render() {
+    return super.render(this.renderTemplate('datagrid', {
+      rows: this.getRows(),
+      columns: this.getColumns(),
+      groups: this.hasRowGroups() ? this.getGroups() : [],
+      visibleColumns: this.visibleColumns,
+      hasToggle: _.get(this, 'component.groupToggle', false),
+      hasHeader: this.hasHeader(),
+      hasExtraColumn: this.hasExtraColumn(),
+      hasAddButton: this.hasAddButton(),
+      hasRemoveButtons: this.hasRemoveButtons(),
+      hasTopSubmit: this.hasTopSubmit(),
+      hasBottomSubmit: this.hasBottomSubmit(),
+      hasGroups: this.hasRowGroups(),
+      numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
+      datagridKey: this.datagridKey,
+      allowReorder: this.allowReorder,
+      builder: this.builderMode,
+      placeholder: this.renderTemplate('builderPlaceholder', {
+        position: this.componentComponents.length,
+      }),
     }));
-    this.rows = [];
-    return state;
   }
 
-  destroy() {
-    const state = this.destroyRows();
-    super.destroy();
-    return state;
+  getRows() {
+    return this.rows.map(row => {
+      const components = {};
+      _.each(row, (col, key) => {
+        components[key] = col.render();
+      });
+      return components;
+    });
   }
 
-  buildComponent(col, colIndex, row, rowIndex, state) {
-    var container;
-    const isVisible = this.visibleColumns &&
-      (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
-    if (isVisible || this.options.builder) {
-      container = this.ce('td');
-      container.noDrop = true;
+  getColumns() {
+    return this.component.components;
+  }
+
+  hasHeader() {
+    return this.component.components.reduce((hasHeader, col) => {
+      // If any of the components has a title and it isn't hidden, display the header.
+      return hasHeader || ((col.label || col.title) && !col.hideLabel);
+    }, false);
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      [`${this.datagridKey}-row`]: 'multiple',
+      [`${this.datagridKey}-tbody`]: 'single',
+      [`${this.datagridKey}-addRow`]: 'multiple',
+      [`${this.datagridKey}-removeRow`]: 'multiple',
+      [`${this.datagridKey}-group-header`]: 'multiple',
+      [this.datagridKey]: 'multiple',
+    });
+
+    if (this.allowReorder) {
+      this.refs[`${this.datagridKey}-row`].forEach((row, index) => {
+        row.dragInfo = { index };
+      });
+
+      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')
+      }).on('drop', this.onReorder.bind(this));
     }
-    const column = _.clone(col);
-    const options = _.clone(this.options);
-    options.name += `[${rowIndex}]`;
-    options.row = `${rowIndex}-${colIndex}`;
-    options.inDataGrid = true;
-    const comp = this.createComponent(_.assign({}, column, {
-      row: options.row
-    }), options, row, null, state);
-    comp.rowIndex = rowIndex;
-    this.hook('addComponent', container, comp, this);
-    this.rows[rowIndex][column.key] = comp;
-    if (isVisible || this.options.builder) {
-      container.appendChild(comp.getElement());
-      return container;
+
+    this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
+      this.addEventListener(addButton, 'click', this.addRow.bind(this));
+    });
+
+    this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {
+      this.addEventListener(removeButton, 'click', this.removeRow.bind(this, index));
+    });
+
+    if (this.hasRowGroups()) {
+      this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);
+      this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
+        this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
+      });
+     }
+
+    const rowLength = _.filter(this.visibleColumns).length;
+    this.rows.forEach((row, rowIndex) => {
+      let columnIndex = 0;
+      this.getColumns().forEach((col) => {
+        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
+          this.attachComponents(
+            this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+            [this.rows[rowIndex][col.key]],
+            this.component.components
+          );
+          columnIndex++;
+        }
+      });
+    });
+    super.attach(element);
+  }
+
+  onReorder(element, _target, _source, sibling) {
+    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
+      console.warn('There is no Drag Info available for either dragged or sibling element');
+      return;
     }
+
+    const oldPosition = element.dragInfo.index;
+    //should drop at next sibling position; no next sibling means drop to last position
+    const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
+    const movedBelow = newPosition > oldPosition;
+    const dataValue = _.cloneDeep(this.dataValue);
+    const draggedRowData = dataValue[oldPosition];
+
+    //insert element at new position
+    dataValue.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+
+    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
+    this.setValue(dataValue);
+  }
+
+  addRow() {
+    this.dataValue.push({});
+    const index = this.rows.length;
+    this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+    this.redraw();
+  }
+
+  removeRow(index) {
+    this.splice(index);
+    this.rows.splice(index, 1);
+    this.redraw();
+  }
+
+  createRows() {
+    // Create any missing rows.
+    this.dataValue.forEach((row, index) => {
+      if (!this.rows[index]) {
+        this.rows[index] = this.createRowComponents(row, index);
+      }
+    });
+    // Delete any extra rows.
+    this.rows.splice(this.dataValue.length);
+  }
+
+  createRowComponents(row, rowIndex) {
+    const components = {};
+    this.component.components.map((col, colIndex) => {
+      const options = _.clone(this.options);
+      options.name += `[${rowIndex}]`;
+      options.row = `${rowIndex}-${colIndex}`;
+      components[col.key] = this.createComponent(col, options, row);
+      components[col.key].rowIndex = rowIndex;
+      components[col.key].inDataGrid = true;
+    });
+    return components;
+  }
+
+  checkColumns(data) {
+    let show = false;
+
+    if (!this.rows || !this.rows.length) {
+      return { rebuld: false, show: false };
+    }
+
+    const visibility = {};
+
+    this.rows.forEach((row) => {
+      _.each(row, (col, key) => {
+        if (col && (typeof col.checkConditions === 'function')) {
+          visibility[key] = !!visibility[key] || col.checkConditions(data);
+        }
+      });
+    });
+    const rebuild = !_.isEqual(visibility, this.visibleColumns);
+    _.each(visibility, (col) => {
+      show |= col;
+    });
+
+    this.visibleColumns = visibility;
+    return { rebuild, show };
   }
 
   checkConditions(data) {
-    let show = super.checkConditions(data);
     // If table isn't visible, don't bother calculating columns.
-    if (!show) {
+    if (!super.checkConditions(data)) {
       return false;
     }
-    let rebuild = false;
-    if (this.visibleColumns === true) {
-      this.visibleColumns = {};
-    }
-    this.component.components.forEach((col) => {
-      let showColumn = false;
-      this.rows.forEach((comps) => {
-        if (comps && comps[col.key] && typeof comps[col.key].checkConditions === 'function') {
-          showColumn |= comps[col.key].checkConditions(data);
-        }
-      });
-      showColumn = showColumn && col.type !== 'hidden' && !col.hidden;
-      if (
-        (this.visibleColumns[col.key] && !showColumn) ||
-        (!this.visibleColumns[col.key] && showColumn)
-      ) {
-        rebuild = true;
-      }
 
-      this.visibleColumns[col.key] = showColumn;
-      show |= showColumn;
-    });
-
+    const { rebuild, show } = this.checkColumns(data);
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
-      this.restoreValue();
+      this.redraw();
     }
 
     // Return if this table should show.
@@ -400,15 +409,14 @@ export default class DataGridComponent extends NestedComponent {
 
   updateValue(flags, value) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return BaseComponent.prototype.updateValue.call(this, flags, value);
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
-  /* eslint-disable max-statements */
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
       this.dataValue = this.defaultValue;
-      this.buildRows();
+      this.createRows();
       return;
     }
     if (!Array.isArray(value)) {
@@ -416,63 +424,40 @@ export default class DataGridComponent extends NestedComponent {
         value = [value];
       }
       else {
-        this.buildRows();
-        return;
+        this.createRows();
+        value = [{}];
       }
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-
-    //always should build if not built yet OR is trying to set empty value (in order to prevent deleting last row)
-    let shouldBuildRows = !this.isBuilt || changed || _.isEqual(this.emptyValue, value);
-    //check if visible columns changed
-    let visibleColumnsAmount = 0;
-    _.forEach(this.visibleColumns, (value) => {
-      if (value) {
-        visibleColumnsAmount++;
-      }
-    });
-    const visibleComponentsAmount = this.visibleComponents ? this.visibleComponents.length : 0;
-    //should build if visible columns changed
-    shouldBuildRows = shouldBuildRows || visibleColumnsAmount !== visibleComponentsAmount;
-    //loop through all rows and check if there is field in new value that differs from current value
-    const keys = this.componentComponents.map((component) => {
-      return component.key;
-    });
-    for (let i = 0; i < value.length; i++) {
-      if (shouldBuildRows) {
-        break;
-      }
-      const valueRow = value[i];
-      for (let j = 0; j < keys.length; j++) {
-        const key = keys[j];
-        const newFieldValue = valueRow[key];
-        const currentFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].getValue() : undefined;
-        const defaultFieldValue = this.rows[i] && this.rows[i][key] ? this.rows[i][key].defaultValue : undefined;
-        const isMissingValue = newFieldValue === undefined && currentFieldValue === defaultFieldValue;
-        if (!isMissingValue && !_.isEqual(newFieldValue, currentFieldValue)) {
-          shouldBuildRows = true;
-          break;
-        }
-      }
-    }
     this.dataValue = value;
-    if (shouldBuildRows) {
-      this.buildRows();
-    }
-    this.rows.forEach((row, index) => {
-      if (value.length <= index) {
+    this.createRows();
+    this.rows.forEach((row, rowIndex) => {
+      if (value.length <= rowIndex) {
         return;
       }
-      _.forIn(row, component => this.setNestedValue(component, value[index], flags));
+      _.each(row, (col, key) => {
+        if (col.type === 'components') {
+          col.data = value[rowIndex];
+          col.setValue(value[rowIndex], flags);
+        }
+        else if (value[rowIndex].hasOwnProperty(key)) {
+          col.data = value[rowIndex];
+          col.setValue(value[rowIndex][key], flags);
+        }
+        else {
+          col.data = value[rowIndex];
+          col.setValue(col.defaultValue, flags);
+        }
+      });
     });
-    return changed;
-  }
-  /* eslint-enable max-statements */
 
-  resetValue() {
-    super.resetValue();
-    this.buildRows();
+    this.triggerChange(flags, changed);
+
+    if (changed) {
+      this.redraw();
+    }
+    return changed;
   }
 
   /**
@@ -513,104 +498,10 @@ export default class DataGridComponent extends NestedComponent {
     return result.length > 0 ? result : null;
   }
 
-  /** @override **/
-  removeButton(index, mode = 'basic') {
-    if (mode === 'small') {
-      return this.removeButtonSmall(index);
-    }
-
-    return super.removeButton(index);
-  }
-
-  removeButtonSmall(index) {
-    const cmpType = _.get(this, 'component.type', 'datagrid');
-    const className = `btn btn-xxs btn-danger formio-${cmpType}-remove`;
-    const button = this.ce(
-      'button',
-      {
-        type: 'button',
-        tabindex: '-1',
-        class: className,
-      },
-      this.ce('i', { class: this.iconClass('remove') })
-    );
-
-    this.addEventListener(button, 'click', (event) => {
-      event.preventDefault();
-      this.removeValue(index);
+  toggleGroup(element, index) {
+    element.classList.toggle('collapsed');
+    _.each(this.refs.chunks[index], row => {
+      row.classList.toggle('hidden');
     });
-
-    return button;
-  }
-
-  /*** Row Groups ***/
-
-  /**
-   * @param {Numbers[]} groups
-   * @param {Array<T>} coll - collection
-   *
-   * @return {Array<T[]>}
-   */
-  getRowChunks(groups, coll) {
-    const [, chunks] = groups.reduce(
-      ([startIndex, acc], size) => {
-        const endIndex = startIndex +  size;
-        return [endIndex, [...acc, [startIndex, endIndex]]];
-      },
-      [0, []]
-    );
-
-    return chunks.map(range => _.slice(coll, ...range));
-  }
-
-  hasRowGroups() {
-    return _.get(this, 'component.enableRowGroups', false);
-  }
-
-  buildGroups() {
-    const groups = _.get(this.component, 'rowGroups', []);
-    const ranges = _.map(groups, 'numberOfRows');
-    const rows = this.tableElement.querySelectorAll('tbody>tr');
-    const tbody = this.tableElement.querySelector('tbody');
-    const chunks = this.getRowChunks(ranges, rows);
-    const firstElements = chunks.map(_.head);
-    const groupElements = groups.map((g, index) => this.buildGroup(g, index, chunks[index]));
-
-    groupElements.forEach((elt, index) => {
-      const row = firstElements[index];
-
-      if (row) {
-        tbody.insertBefore(elt, row);
-      }
-    });
-  }
-
-  buildGroup({ label }, index, groupRows) {
-    const hasToggle = _.get(this, 'component.groupToggle', false);
-    const colsNumber = _.get(this, 'component.components', []).length;
-    const cell = this.ce('td', {
-      colspan: colsNumber,
-      class: 'datagrid-group-label',
-    }, [label]);
-    const header = this.ce('tr', {
-      class: `datagrid-group-header ${hasToggle ? 'clickable' : ''}`,
-    }, cell);
-
-    if (hasToggle) {
-      this.addEventListener(header, 'click', () => {
-        header.classList.toggle('collapsed');
-        _.each(groupRows, row => {
-          row.classList.toggle('hidden');
-        });
-      });
-    }
-
-    return header;
-  }
-
-  totalRowsNumber(groups) {
-    return _.sum(_.map(groups, 'numberOfRows'));
   }
 }
-// const BaseGetSchema = Object.getOwnPropertyDescriptor(BaseComponent.prototype, 'schema');
-// Object.defineProperty(DataGridComponent.prototype, 'schema', BaseGetSchema);

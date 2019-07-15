@@ -1,5 +1,9 @@
 export default [
   {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
     type: 'checkbox',
     label: 'Disable Adding / Removing Rows',
     key: 'disableAddingRemovingRows',
@@ -9,6 +13,13 @@ export default [
     clearOnHide: false,
     customConditional: 'show = !data.enableRowGroups',
     calculateValue: 'value = data.enableRowGroups ? true : data.disableAddingRemovingRows;',
+  },
+  {
+    type: 'checkbox',
+    label: 'Allow Reorder',
+    key: 'reorder',
+    weight: 407,
+    input: true,
   },
   {
     type: 'textfield',
@@ -36,22 +47,6 @@ export default [
       ]
     },
     weight: 411,
-    customConditional: 'show = !data.disableAddingRemovingRows'
-  },
-  {
-    type: 'select',
-    label: 'Remove Button Placement',
-    key: 'removePlacement',
-    defaultValue: 'col',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Right Most Column', value: 'col' },
-        { label: 'Row Top-Right corner', value: 'corner' },
-      ]
-    },
-    weight: 412,
-    input: true,
     customConditional: 'show = !data.disableAddingRemovingRows'
   },
   {
@@ -88,6 +83,7 @@ export default [
     type: 'datagrid',
     input: true,
     key: 'rowGroups',
+    reorder: true,
     components: [
       {
         label: 'Label',

@@ -1,7 +1,7 @@
 /* globals Stripe */
 import _ from 'lodash';
 import Validator from '../../../components/Validator';
-import BaseComponent from '../../../components/base/Base';
+import Component from '../../../components/_classes/component/Component';
 import Formio from '../../../Formio';
 import NativePromise from 'native-promise-only';
 
@@ -33,7 +33,7 @@ if (typeof Validator.validators.stripe === 'undefined') {
 /**
  * This is the StripeComponent class.
  */
-export default class StripeComponent extends BaseComponent {
+export default class StripeComponent extends Component {
   constructor(component, options, data) {
     super(component, options, data);
 

@@ -1,8 +1,8 @@
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 
-export default class ContentComponent extends BaseComponent {
+export default class ContentComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       label: 'Content',
       type: 'content',
       key: 'content',
@@ -14,10 +14,10 @@ export default class ContentComponent extends BaseComponent {
   static get builderInfo() {
     return {
       title: 'Content',
-      group: 'basic',
-      icon: 'fa fa-html5',
+      group: 'layout',
+      icon: 'html5',
       documentation: 'http://help.form.io/userguide/#content-component',
-      weight: 100,
+      weight: 5,
       schema: ContentComponent.schema()
     };
   }
@@ -26,50 +26,31 @@ export default class ContentComponent extends BaseComponent {
     return ContentComponent.schema();
   }
 
-  setHTML() {
-    this.htmlElement.innerHTML = this.interpolate(this.component.html);
+  get content() {
+    return this.component.html ? this.interpolate(this.component.html, { data: this.data, row: this.row }) : '';
   }
 
-  build() {
-    this.createElement();
-    this.htmlElement = this.ce('div', {
-      id: this.id,
-      class: `form-group ${this.component.className}`
-    });
+  render() {
+    return super.render(this.renderTemplate('html', {
+      tag: 'div',
+      attrs: [],
+      content: this.content,
+    }));
+  }
 
-    this.htmlElement.component = this;
-
-    if (this.options.builder) {
-      const editorElement = this.ce('div');
-      this.element.appendChild(editorElement);
-      this.editorReady = this.addCKE(editorElement, null, (html) => {
-        this.component.html = html;
-      }).then((editor) => {
-        this.editor = editor;
-        this.editor.data.set(this.component.html);
-        return editor;
-      }).catch(err => console.warn(err));
+  attach(element) {
+    this.loadRefs(element, { html: 'single' });
+    if (this.component.refreshOnChange) {
+      this.on('change', () => {
+        if (this.refs.html) {
+          this.setContent(this.refs.html, this.content);
+        }
+      }, true);
     }
-    else {
-      this.setHTML();
-      if (this.component.refreshOnChange) {
-        this.on('change', () => this.setHTML(), true);
-      }
-    }
-
-    this.element.appendChild(this.htmlElement);
-    this.attachLogic();
+    super.attach(element);
   }
 
   get emptyValue() {
     return '';
-  }
-
-  destroy() {
-    const state = super.destroy();
-    if (this.editor) {
-      this.editor.destroy();
-    }
-    return state;
   }
 }

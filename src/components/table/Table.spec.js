@@ -6,10 +6,9 @@ import {
 } from './fixtures';
 
 describe('Table Component', () => {
-  it('Should build a Table component', (done) => {
-    Harness.testCreate(TableComponent, comp1).then((component) => {
+  it('Should build a Table component', () => {
+    return Harness.testCreate(TableComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 6);
-      done();
     });
   });
 });

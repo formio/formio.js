@@ -1,9 +1,10 @@
-import BaseComponent from '../base/Base';
+import Input from '../_classes/input/Input';
 
-export default class HiddenComponent extends BaseComponent {
+export default class HiddenComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'hidden',
+      tableView: false,
       inputType: 'hidden'
     }, ...extend);
   }
@@ -12,7 +13,7 @@ export default class HiddenComponent extends BaseComponent {
     return {
       title: 'Hidden',
       group: 'data',
-      icon: 'fa fa-user-secret',
+      icon: 'user-secret',
       weight: 0,
       documentation: 'http://help.form.io/userguide/#hidden',
       schema: HiddenComponent.schema()
@@ -23,7 +24,7 @@ export default class HiddenComponent extends BaseComponent {
     return HiddenComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
@@ -31,16 +32,12 @@ export default class HiddenComponent extends BaseComponent {
     return info;
   }
 
-  build() {
-    super.build();
-    if (this.options.builder) {
-      // We need to see it in builder mode.
-      this.append(this.text(this.name));
-    }
+  labelIsHidden() {
+    return true;
   }
 
-  createLabel() {
-    return;
+  get emptyValue() {
+    return '';
   }
 
   setValue(value, flags) {

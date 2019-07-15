@@ -1,0 +1,26 @@
+{% if (!label.hidden && label.labelPosition !== 'bottom') { %}
+  <label class="{{label.className}}">
+    {% if (!label.hidden) { %}
+      {{ t(component.label) }}
+      {% if (tooltip) { %}
+        <span data-tooltip="{{tooltip}}" data-position="right center">
+          <i class="{{iconClass('question-sign')}}"></i>
+        </span>
+      {% } %}
+    {% } %}
+  </label>
+{% } %}
+{{element}}
+{% if (!label.hidden && label.labelPosition === 'bottom') { %}
+  <label class="{{label.className}}">
+  {{t(component.label)}}
+  {% if (tooltip) { %}
+    <span data-tooltip="{{tooltip}}" data-position="right center">
+      <i class="{{iconClass('question-sign')}}"></i>
+    </span>
+  {% } %}
+  </label>
+{% } %}
+{% if (component.description) { %}
+  <div class="help-block">{{t(component.description)}}</div>
+{% } %}

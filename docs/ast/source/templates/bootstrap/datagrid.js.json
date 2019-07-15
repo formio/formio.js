@@ -1,0 +1,659 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 3715,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 114,
+      "column": 0
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 3715,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 114,
+        "column": 0
+      }
+    },
+    "sourceType": "module",
+    "body": [
+      {
+        "type": "ExportDefaultDeclaration",
+        "start": 0,
+        "end": 3714,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 113,
+            "column": 2
+          }
+        },
+        "declaration": {
+          "type": "ObjectExpression",
+          "start": 15,
+          "end": 3713,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 15
+            },
+            "end": {
+              "line": 113,
+              "column": 1
+            }
+          },
+          "properties": [
+            {
+              "type": "ObjectProperty",
+              "start": 19,
+              "end": 2648,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 76,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 19,
+                "end": 23,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "identifierName": "form"
+                },
+                "name": "form"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 25,
+                "end": 2648,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 76,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 26,
+                    "end": 2647,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 76,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (!builder && hasAddButton && hasTopSubmit) { %}\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && (removePlacement === 'col')) { %}\n        {% if (!builder && hasRemoveButtons) { %}\n        <td>\n          <button type=\"button\" class=\"btn btn-secondary formio-button-remove-row\" ref=\"{{datagridKey}}-removeRow\">\n            <i class=\"{{iconClass('remove-circle')}}\"></i>\n          </button>\n        </td>\n        {% } %}\n        {% if (builder) { %}\n        <td ref=\"{{key}}-container\">\n          {{placeholder}}\n        </td>\n        {% } %}\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn btn-xxs btn-danger formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (!builder && hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
+                      "cooked": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (!builder && hasAddButton && hasTopSubmit) { %}\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && (removePlacement === 'col')) { %}\n        {% if (!builder && hasRemoveButtons) { %}\n        <td>\n          <button type=\"button\" class=\"btn btn-secondary formio-button-remove-row\" ref=\"{{datagridKey}}-removeRow\">\n            <i class=\"{{iconClass('remove-circle')}}\"></i>\n          </button>\n        </td>\n        {% } %}\n        {% if (builder) { %}\n        <td ref=\"{{key}}-container\">\n          {{placeholder}}\n        </td>\n        {% } %}\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn btn-xxs btn-danger formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (!builder && hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2652,
+              "end": 3711,
+              "loc": {
+                "start": {
+                  "line": 77,
+                  "column": 2
+                },
+                "end": {
+                  "line": 112,
+                  "column": 3
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2652,
+                "end": 2656,
+                "loc": {
+                  "start": {
+                    "line": 77,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 77,
+                    "column": 6
+                  },
+                  "identifierName": "html"
+                },
+                "name": "html"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 2658,
+                "end": 3711,
+                "loc": {
+                  "start": {
+                    "line": 77,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 112,
+                    "column": 3
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 2659,
+                    "end": 3710,
+                    "loc": {
+                      "start": {
+                        "line": 77,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 112,
+                        "column": 2
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n  ",
+                      "cooked": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n  "
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            }
+          ],
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": [],
+  "tokens": [
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 0,
+      "end": 6,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "default",
+        "keyword": "default",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "default",
+      "start": 7,
+      "end": 14,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 7
+        },
+        "end": {
+          "line": 1,
+          "column": 14
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "{",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 15,
+      "end": 16,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 15
+        },
+        "end": {
+          "line": 1,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "form",
+      "start": 19,
+      "end": 23,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 23,
+      "end": 24,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 6
+        },
+        "end": {
+          "line": 2,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 25,
+      "end": 26,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 8
+        },
+        "end": {
+          "line": 2,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \" {% if (component.layoutFixed) { %}style=\"table-layout: fixed;\"{% } %}>\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn) { %}\n      <th>\n        {% if (!builder && hasAddButton && hasTopSubmit) { %}\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> Add Another\n        </button>\n        {% } %}\n      </th>\n      {% } %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody ref=\"{{datagridKey}}-tbody\">\n    {% rows.forEach(function(row) { %}\n    <tr ref=\"{{datagridKey}}-row\">\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n      {% if (hasExtraColumn && (removePlacement === 'col')) { %}\n        {% if (!builder && hasRemoveButtons) { %}\n        <td>\n          <button type=\"button\" class=\"btn btn-secondary formio-button-remove-row\" ref=\"{{datagridKey}}-removeRow\">\n            <i class=\"{{iconClass('remove-circle')}}\"></i>\n          </button>\n        </td>\n        {% } %}\n        {% if (builder) { %}\n        <td ref=\"{{key}}-container\">\n          {{placeholder}}\n        </td>\n        {% } %}\n      {% } %}\n      {% else if (removePlacement === 'corner') { %}\n        <button type=\"button\" tabindex=\"-1\" class=\"btn btn-xxs btn-danger formio-{{ component.type }}-remove\" ref=\"{{datagridKey}}-removeRow\">\n          <i class=\"{{ iconClass('remove') }}\"></i>\n        </button>\n      {% } %}\n    </tr>\n    {% }) %}\n  </tbody>\n  {% if (!builder && hasAddButton && hasBottomSubmit) { %}\n  <tfoot>\n    <tr>\n      <td colspan=\"{{numColumns}}\">\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"{{datagridKey}}-addRow\">\n          <i class=\"{{iconClass('plus')}}\"></i> {{t(component.addAnother || 'Add Another')}}\n        </button>\n      </td>\n    </tr>\n  </tfoot>\n  {% } %}\n</table>\n",
+      "start": 26,
+      "end": 2647,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 9
+        },
+        "end": {
+          "line": 76,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2647,
+      "end": 2648,
+      "loc": {
+        "start": {
+          "line": 76,
+          "column": 0
+        },
+        "end": {
+          "line": 76,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2648,
+      "end": 2649,
+      "loc": {
+        "start": {
+          "line": 76,
+          "column": 1
+        },
+        "end": {
+          "line": 76,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "html",
+      "start": 2652,
+      "end": 2656,
+      "loc": {
+        "start": {
+          "line": 77,
+          "column": 2
+        },
+        "end": {
+          "line": 77,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2656,
+      "end": 2657,
+      "loc": {
+        "start": {
+          "line": 77,
+          "column": 6
+        },
+        "end": {
+          "line": 77,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2658,
+      "end": 2659,
+      "loc": {
+        "start": {
+          "line": 77,
+          "column": 8
+        },
+        "end": {
+          "line": 77,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<label class=\"col-form-label\" style=\"\">{{t(component.label)}}</label>\n<table class=\"table datagrid-table table-bordered\n    {{ component.striped ? 'table-striped' : ''}}\n    {{ component.hover ? 'table-hover' : ''}}\n    {{ component.condensed ? 'table-sm' : ''}} \n    \">\n  {% if (hasHeader) { %}\n  <thead>\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <th class=\"{{col.validate && col.validate.required ? 'field-required' : ''}}\">\n        {{ col.hideLabel ? '' : t(col.label || col.title) }}\n        {% if (col.tooltip) { %} <i ref=\"tooltip\" class=\"{{iconClass('question-sign')}} text-muted\" data-title=\"{{col.tooltip}}\"></i>{% } %}\n      </th>\n      {% } %}\n      {% }) %}\n    </tr>\n  </thead>\n  {% } %}\n  <tbody>\n    {% rows.forEach(function(row) { %}\n    <tr>\n      {% columns.forEach(function(col) { %}\n      {% if (visibleColumns[col.key]) { %}\n      <td ref=\"{{datagridKey}}\">\n        {{row[col.key]}}\n      </td>\n      {% } %}\n      {% }) %}\n    </tr>\n    {% }) %}\n  </tbody>\n</table>\n  ",
+      "start": 2659,
+      "end": 3710,
+      "loc": {
+        "start": {
+          "line": 77,
+          "column": 9
+        },
+        "end": {
+          "line": 112,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 3710,
+      "end": 3711,
+      "loc": {
+        "start": {
+          "line": 112,
+          "column": 2
+        },
+        "end": {
+          "line": 112,
+          "column": 3
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "}",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 3712,
+      "end": 3713,
+      "loc": {
+        "start": {
+          "line": 113,
+          "column": 0
+        },
+        "end": {
+          "line": 113,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3713,
+      "end": 3714,
+      "loc": {
+        "start": {
+          "line": 113,
+          "column": 1
+        },
+        "end": {
+          "line": 113,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "eof",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3715,
+      "end": 3715,
+      "loc": {
+        "start": {
+          "line": 114,
+          "column": 0
+        },
+        "end": {
+          "line": 114,
+          "column": 0
+        }
+      }
+    }
+  ]
+}

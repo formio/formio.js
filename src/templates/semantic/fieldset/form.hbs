@@ -1,0 +1,12 @@
+<fieldset>
+  <legend ref="header" class="{{component.collapsible ? 'formio-clickable' : ''}}">
+    {{t(component.legend)}}
+    {% if (component.tooltip) { %}
+      <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
+    {% } %}
+  </legend>  {% if (!collapsed) { %}
+  <div class="card-body" ref="{{nestedKey}}">
+    {{children}}
+  </div>
+  {% } %}
+</fieldset>

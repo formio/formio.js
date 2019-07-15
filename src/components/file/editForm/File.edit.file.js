@@ -56,6 +56,62 @@ export default [
   {
     type: 'textfield',
     input: true,
+    key: 'options.indexeddb',
+    label: 'Database',
+    weight: 10,
+    placeholder: 'Enter the indexeddb database name',
+    conditional: {
+      json: {
+        in: [
+          {
+            var: 'data.storage'
+          },
+          ['indexeddb']
+        ],
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    input: true,
+    label: 'Table',
+    key: 'options.indexeddbTable',
+    weight: 10,
+    placeholder: 'Enter the name for indexeddb table',
+    conditional: {
+      json: {
+        in: [
+          {
+            var: 'data.storage'
+          },
+          ['indexeddb']
+        ],
+      }
+    }
+  },
+  {
+    type: 'textarea',
+    key: 'options',
+    label: 'Custom request options',
+    tooltip: 'Pass your custom xhr options(optional)',
+    rows: 5,
+    editor: 'ace',
+    input: true,
+    weight: 15,
+    placeholder: `{
+  "withCredentials": true
+}`,
+    conditional: {
+      json: {
+        '===': [{
+          var: 'data.storage'
+        }, 'url']
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    input: true,
     key: 'dir',
     label: 'Directory',
     placeholder: '(optional) Enter a directory for the files',
@@ -169,5 +225,5 @@ export default [
     placeholder: '10MB',
     tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
     weight: 70
-  }
+  },
 ];

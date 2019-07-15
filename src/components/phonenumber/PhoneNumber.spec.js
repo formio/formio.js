@@ -6,10 +6,9 @@ import {
 } from './fixtures';
 
 describe('PhoneNumber Component', () => {
-  it('Should build a phone number component', (done) => {
-    Harness.testCreate(PhoneNumberComponent, comp1).then((component) => {
+  it('Should build a phone number component', () => {
+    return Harness.testCreate(PhoneNumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
-      done();
     });
   });
 });

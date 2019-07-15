@@ -2,143 +2,194 @@ import WebformBuilder from './WebformBuilder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
-  setBuilderElement() {
-    return super.setBuilderElement().then(() => {
-      const buildRegion = this.ce('div', {
-        class: 'col-xs-8 col-sm-9 col-md-10 formarea'
-      });
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
+    // Reset skipInit in case PDFBuilder has set it.
+    options.skipInit = false;
 
-      this.element.setAttribute('class', '');
-      this.element.noDrop = true;
-      this.wrapper.insertBefore(buildRegion, this.element);
-      this.pageBar = this.ce('ol', {
-        class: 'breadcrumb'
-      });
+    super(element, options);
 
-      buildRegion.appendChild(this.pageBar);
-      buildRegion.appendChild(this.element);
-      this.currentPage = 0;
-    });
-  }
+    this._form = {
+      components: [
+        this.getPageConfig(1),
+      ],
+    };
 
-  get currentPage() {
-    return this._currentPage || 0;
-  }
+    this.page = 0;
 
-  set currentPage(currentPage) {
-    this._currentPage = currentPage;
+    this.options.hooks.attachPanel = (element, component) => {
+      if (component.refs.removeComponent) {
+        this.addEventListener(component.refs.removeComponent, 'click', () => {
+          const pageIndex = this.pages.findIndex((page) => page.key === component.key);
+          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
+          if (pageIndex !== -1) {
+            this.removePage(pageIndex, componentIndex);
+          }
+        });
+      }
+    };
+
+    const originalRenderComponentsHook = this.options.hooks.renderComponents;
+    this.options.hooks.renderComponents = (html, { components, self }) => {
+      if (self.type === 'form' && !self.root) {
+        return html;
+      }
+      else {
+        return originalRenderComponentsHook(html, { components, self });
+      }
+    };
+
+    const originalAttachComponentsHook = this.options.hooks.attachComponents;
+    this.options.hooks.attachComponents = (element, components, container, component) => {
+      if (component.type === 'form' && !component.root) {
+        return element;
+      }
+
+      return originalAttachComponentsHook(element, components, container, component);
+    };
+
+    // Wizard pages don't replace themselves in the right array. Do that here.
+    this.on('saveComponent', (component, originalComponent) => {
+      if (this._form.components.includes(originalComponent)) {
+        this._form.components[this._form.components.indexOf(originalComponent)] = component;
+        this.rebuild();
+      }
+    }, true);
   }
 
   get pages() {
-    return _.filter(this.component.components, { type: 'panel' });
+    return _.filter(this._form.components, { type: 'panel' });
   }
 
-  addSubmitButton() {
-    // Do nothing...
+  get currentPage() {
+    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
   }
 
-  deleteComponent(component) {
-    let cb;
-    const isPage = this.components.includes(component);
-
-    if (isPage) {
-      cb = () => this.currentPage = 0;
-
-      this.on('deleteComponent', cb);
+  set form(value) {
+    this._form = value;
+    if (!this._form.components || !Array.isArray(this._form.components)) {
+      this._form.components = [];
     }
 
-    super.deleteComponent(component);
-
-    if (isPage) {
-      this.off('deleteComponent', cb);
+    if (this.pages.length === 0) {
+      const components = this._form.components.filter((component) => component.type !== 'button');
+      this._form.components = [this.getPageConfig(1, components)];
     }
+    this.rebuild();
+  }
+
+  get form() {
+    return this._form;
+  }
+
+  get schema() {
+    return this._form;
+  }
+
+  render() {
+    return this.renderTemplate('builderWizard', {
+      sidebar: this.renderTemplate('builderSidebar', {
+        scrollEnabled: this.sideBarScroll,
+        groupOrder: this.groupOrder,
+        groupId: `builder-sidebar-${this.id}`,
+        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
+          group: this.groups[groupKey],
+          groupKey,
+          groupId: `builder-sidebar-${this.id}`,
+          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `builder-sidebar-${groupKey}`,
+            subgroups: []
+          })),
+        })),
+      }),
+      pages: this.pages,
+      form: this.webform.render(),
+    });
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      addPage: 'multiple',
+      gotoPage: 'multiple',
+    });
+
+    this.refs.addPage.forEach(link => {
+      this.addEventListener(link, 'click', (event) => {
+        event.preventDefault();
+        this.addPage();
+      });
+    });
+
+    this.refs.gotoPage.forEach((link, index) => {
+      this.addEventListener(link, 'click', (event) => {
+        event.preventDefault();
+        this.setPage(index);
+      });
+    });
+
+    return super.attach(element);
+  }
+
+  rebuild() {
+    const page = this.currentPage;
+    this.webform.form = {
+      display: 'form',
+      type: 'form',
+      components: page ? [page] : [],
+    };
+    this.redraw();
   }
 
   addPage() {
     const pageNum = (this.pages.length + 1);
-    const newPage = {
-      title: `Page ${pageNum}`,
-      label: `Page ${pageNum}`,
-      type: 'panel',
-      key: `page${pageNum}`
-    };
-    this.component.components.push(newPage);
-    this.addComponent(newPage);
+    const newPage = this.getPageConfig(pageNum);
+    this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
-    this.form = this.schema;
+    this.rebuild();
   }
 
-  addComponents(element, data, options, state) {
-    element = element || this.getContainer();
-    data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents, this);
-    _.each(components, (component, index) => this.addComponent(
-      component,
-      element,
-      data,
-      null,
-      (index !== this.currentPage),
-      this.getComponentState(component, state)
-    ));
-  }
+  removePage(pageIndex, componentIndex) {
+    this._form.components.splice(componentIndex, 1);
 
-  gotoPage(page) {
-    this.currentPage = page;
-    this.redraw(true);
-  }
-
-  /**
-   * Only show the current page.
-   *
-   * @return {Array}
-   */
-  get componentComponents() {
-    const components = this.pages;
-    components.nodrop = true;
-    return components;
-  }
-
-  buildPageBar() {
-    const pages = this.pages;
-
-    // Always ensure we have a single page.
-    if (!pages.length) {
-      return this.addPage();
+    if (pageIndex === this.pages.length) {
+      // If the last page is removed.
+      if (pageIndex === 0) {
+        this._form.components.push(this.getPageConfig(1));
+        this.rebuild();
+      }
+      else {
+        this.setPage(pageIndex - 1);
+      }
     }
-
-    this.empty(this.pageBar);
-    _.each(pages, (page, index) => {
-      const pageLink = this.ce('span', {
-        title: page.title,
-        class: (index === this.currentPage) ?
-          'mr-2 badge badge-primary bg-primary label label-primary wizard-page-label' :
-          'mr-2 badge badge-info bg-info label label-info wizard-page-label'
-      }, this.text(page.title));
-      this.pageBar.appendChild(this.ce('li', null, pageLink));
-      this.addEventListener(pageLink, 'click', (event) => {
-        event.preventDefault();
-        this.gotoPage(index);
-      });
-    });
-
-    const newPage = this.ce('span', {
-      title: this.t('Create Page'),
-      class: 'mr-2 badge badge-success bg-success label label-success wizard-page-label'
-    }, [
-      this.getIcon('plus'),
-      this.text(' PAGE')
-    ]);
-
-    this.addEventListener(newPage, 'click', (event) => {
-      event.preventDefault();
-      this.addPage();
-    });
-
-    this.pageBar.appendChild(this.ce('li', null, newPage));
+    else {
+      this.rebuild();
+    }
   }
 
-  build(state) {
-    super.build(state);
-    this.builderReady.then(() => this.buildPageBar());
+  setPage(index) {
+    if (index === this.page) {
+      return;
+    }
+    this.page = index;
+    this.rebuild();
+  }
+
+  getPageConfig(index, components = []) {
+    return {
+      title: `Page ${index}`,
+      label: `Page ${index}`,
+      type: 'panel',
+      key: `page${index}`,
+      components,
+    };
   }
 }

@@ -7,18 +7,17 @@ import {
 } from './fixtures';
 
 describe('Container Component', () => {
-  it('Should build a container component', (done) => {
-    Harness.testCreate(ContainerComponent, comp1).then((component) => {
+  it('Should build a container component', () => {
+    return Harness.testCreate(ContainerComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="text"]', 2);
       for (let i=0; i < inputs.length; i++) {
         assert.equal(inputs[i].name, `data[${comp1.key}][${comp1.components[i].key}]`);
       }
-      done();
     });
   });
 
-  it('Should be able to set and get data', (done) => {
-    Harness.testCreate(ContainerComponent, comp1).then((component) => {
+  it('Should be able to set and get data', () => {
+    return Harness.testCreate(ContainerComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="text"]', 2);
       Harness.testSetGet(component, {
         firstName: 'Joe',
@@ -26,7 +25,6 @@ describe('Container Component', () => {
       });
       assert.equal(inputs[0].value, 'Joe');
       assert.equal(inputs[1].value, 'Smith');
-      done();
     });
   });
 });

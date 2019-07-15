@@ -32,7 +32,7 @@ describe('Formio Form Renderer tests', () => {
       Harness.testElements(simpleForm, 'input[name="data[firstName]"]', 1);
       Harness.testElements(simpleForm, 'input[name="data[lastName]"]', 1);
       done();
-    });
+    }).catch(done);
   });
 
   it('Should set a submission to the form.', () => {
@@ -66,9 +66,9 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       const label = formElement.querySelector('.control-label');
-      assert.equal(label.innerHTML, 'Spanish Label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should translate a form after instantiate', done => {
@@ -95,9 +95,9 @@ describe('Formio Form Renderer tests', () => {
     }).then(() => {
       translateForm.language = 'es';
       const label = formElement.querySelector('.control-label');
-      assert.equal(label.innerHTML, 'Spanish Label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should add a translation after instantiate', done => {
@@ -128,9 +128,9 @@ describe('Formio Form Renderer tests', () => {
     }).then(() => {
       translateForm.language = 'fr';
       const label = formElement.querySelector('.control-label');
-      assert.equal(label.innerHTML, 'French Label');
+      assert.equal(label.innerHTML.trim(), 'French Label');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should switch a translation after instantiate', done => {
@@ -151,9 +151,9 @@ describe('Formio Form Renderer tests', () => {
     }).then(() => {
       translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);
       const label = formElement.querySelector('.control-label');
-      assert.equal(label.innerHTML, 'Spanish Label');
+      assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
-    });
+    }).catch(done);
   });
 
   it('Should keep translation after redraw', done => {
@@ -329,9 +329,7 @@ describe('Formio Form Renderer tests', () => {
         const form = new Webform(formElement, { language: 'en' });
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
-        }).catch((error) => {
-          done(error);
-        });
+        }).catch(done);
       });
     });
   });

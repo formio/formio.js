@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
-export default class DateTimeComponent extends BaseComponent {
+import Input from '../_classes/input/Input';
+export default class DateTimeComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -11,7 +11,7 @@ export default class DateTimeComponent extends BaseComponent {
       allowInput: true,
       enableDate: true,
       enableTime: true,
-      defaultDate: '',
+      defaultValue: '',
       displayInTimezone: 'viewer',
       timezone: '',
       datepickerMode: 'day',
@@ -41,7 +41,7 @@ export default class DateTimeComponent extends BaseComponent {
     return {
       title: 'Date / Time',
       group: 'advanced',
-      icon: 'fa fa-calendar-plus-o',
+      icon: 'calendar',
       documentation: 'http://help.form.io/userguide/#datetime',
       weight: 40,
       schema: DateTimeComponent.schema()
@@ -68,7 +68,7 @@ export default class DateTimeComponent extends BaseComponent {
     }
 
     /* eslint-disable camelcase */
-    this.originalComponent.widget = this.component.widget = {
+    this.component.widget = {
       type: 'calendar',
       timezone,
       displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),
@@ -80,7 +80,7 @@ export default class DateTimeComponent extends BaseComponent {
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
       format: this.component.format,
-      defaultDate: this.component.defaultDate,
+      defaultValue: this.component.defaultValue,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       time_24hr: time24hr,
@@ -105,6 +105,13 @@ export default class DateTimeComponent extends BaseComponent {
     return DateTimeComponent.schema();
   }
 
+  setValue(value, flags) {
+    if (this.widget) {
+      this.widget.setValue(value);
+    }
+    super.setValue(value, flags);
+  }
+
   get emptyValue() {
     return '';
   }
@@ -116,7 +123,6 @@ export default class DateTimeComponent extends BaseComponent {
     return super.isEmpty(value);
   }
 
-  // This select component can handle multiple items on its own.
   createWrapper() {
     return false;
   }

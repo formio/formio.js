@@ -3,7 +3,7 @@ export default [
     type: 'container',
     key: 'map',
     input: true,
-    weight: 610,
+    weight: 200,
     components: [
       {
         type: 'textfield',
@@ -11,7 +11,7 @@ export default [
         label: 'Region Bias',
         key: 'region',
         tooltip: "The region bias to use for this search. See <a href='https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes' target='_blank'>Region Biasing</a> for more information.",
-        placeholder: 'Dallas'
+        placeholder: 'USA'
       },
       {
         type: 'textfield',

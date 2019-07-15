@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
   static emptyTable(numRows, numCols) {
@@ -16,6 +16,7 @@ export default class TableComponent extends NestedComponent {
 
   static schema(...extend) {
     return NestedComponent.schema({
+      label: 'Table',
       type: 'table',
       input: false,
       key: 'table',
@@ -36,19 +37,11 @@ export default class TableComponent extends NestedComponent {
     return {
       title: 'Table',
       group: 'layout',
-      icon: 'fa fa-table',
+      icon: 'table',
       weight: 40,
       documentation: 'http://help.form.io/userguide/#table',
       schema: TableComponent.schema()
     };
-  }
-
-  constructor(component, options, data) {
-    const originalRows = _.cloneDeep(component.rows);
-    super(component, options, data);
-    if (!_.isEqual(originalRows, this.component.rows)) {
-      this.component.rows = originalRows;
-    }
   }
 
   get defaultSchema() {
@@ -57,96 +50,92 @@ export default class TableComponent extends NestedComponent {
 
   get schema() {
     const schema = _.omit(super.schema, 'components');
-    schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
+    schema.rows = [];
     this.eachComponent((component) => {
-      const row = schema.rows[component.tableRow];
-      const col = row && row[component.tableColumn];
-      if (!row || !col) {
-        return false;
+      if (!schema.rows || !schema.rows.length) {
+        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
+      }
+      if (!schema.rows[component.tableRow]) {
+        schema.rows[component.tableRow] = [];
+      }
+      if (!schema.rows[component.tableRow][component.tableColumn]) {
+        schema.rows[component.tableRow][component.column] = { components: [] };
       }
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
+    if (!schema.rows.length) {
+      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
+    }
     return schema;
   }
 
-  /**
-   *
-   * @param element
-   * @param data
-   */
-  addComponents(element, data, options, state) {
-    // Build the body.
-    this.tbody = this.ce('tbody');
+  get className() {
+    return `table-responsive ${super.className}`;
+  }
+
+  get tableKey() {
+    return `table-${this.key}`;
+  }
+
+  constructor(...args) {
+    super(...args);
+    this.noField = true;
+  }
+
+  init() {
+    super.init();
+    // Ensure component.rows has the correct number of rows and columns.
+    for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {
+      this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];
+      for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {
+        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };
+      }
+      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);
+    }
+    this.component.rows = this.component.rows.slice(0, this.component.numRows);
+
+      this.table = [];
     _.each(this.component.rows, (row, rowIndex) => {
-      const tr = this.ce('tr');
+      this.table[rowIndex] = [];
       _.each(row, (column, colIndex) => {
-        const td = this.ce('td', {
-          id: `${this.id}-${rowIndex}-${colIndex}`
-        });
+        this.table[rowIndex][colIndex] = [];
         _.each(column.components, (comp) => {
-          const component = this.addComponent(comp, td, data, null, null, state);
+          const component = this.createComponent(comp);
           component.tableRow = rowIndex;
           component.tableColumn = colIndex;
+          this.table[rowIndex][colIndex].push(component);
         });
-
-        if (this.options.builder) {
-          if (!column.components || !column.components.length) {
-            td.appendChild(this.ce('div', {
-              id: `${this.id}-${rowIndex}-${colIndex}-placeholder`,
-              class: 'alert alert-info',
-              style: 'text-align:center; margin-bottom: 0px;',
-              role: 'alert'
-            }, this.text('Drag and Drop a form component')));
-          }
-          this.root.addDragContainer(td, this, {
-            onSave(component) {
-              component.tableRow = rowIndex;
-              component.tableColumn = colIndex;
-            }
-          });
-        }
-
-        tr.appendChild(td);
       });
-      this.tbody.appendChild(tr);
     });
   }
 
-  buildHeader() {
-    if (this.component.header && this.component.header.length) {
-      const thead = this.ce('thead');
-      const thr = this.ce('tr');
-      _.each(this.component.header, (header) => {
-        const th = this.ce('th');
-        th.appendChild(this.text(header));
-        thr.appendChild(th);
-      });
-      thead.appendChild(thr);
-      this.table.appendChild(thead);
-    }
+  render() {
+    return super.render(this.renderTemplate('table', {
+      tableKey: this.tableKey,
+      tableComponents: this.table.map(row =>
+        row.map(column =>
+          this.renderComponents(column)
+        )
+      )
+    }));
   }
 
-  build(state) {
-    this.element = this.ce('div', {
-      id: this.id,
-      class: `${this.className}  table-responsive`,
+  attach(element) {
+    const keys = this.table.reduce((prev, row, rowIndex) => {
+      prev[`${this.tableKey}-${rowIndex}`] = 'multiple';
+      return prev;
+    }, {});
+    this.loadRefs(element, keys);
+    super.attach(element);
+    this.table.forEach((row, rowIndex) => {
+      row.forEach((column, columnIndex) => {
+        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+      });
     });
-    this.element.component = this;
+  }
 
-    let tableClass = 'table ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
-      }
-    });
-    this.table = this.ce('table', {
-      class: tableClass
-    });
-
-    this.buildHeader();
-    this.addComponents(null, null, null, state);
-    this.table.appendChild(this.tbody);
-    this.element.appendChild(this.table);
-    this.attachLogic();
+  destroy(all) {
+    super.destroy(all);
+    delete this.table;
   }
 }

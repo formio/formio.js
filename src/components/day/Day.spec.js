@@ -9,11 +9,10 @@ import {
 } from './fixtures';
 
 describe('Day Component', () => {
-  it('Should build a day component', (done) => {
-    Harness.testCreate(DayComponent, comp1).then((component) => {
+  it('Should build a day component', () => {
+    return Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
-      done();
     });
   });
 
@@ -81,7 +80,7 @@ describe('Day Component', () => {
       });
 
       component.on('componentChange', () => {
-        component.checkValidity(null, true);
+        component.checkValidity();
       });
 
       component.setValue('3/40/2017');
@@ -137,7 +136,6 @@ describe('Day Component', () => {
 
       for (const v in tests) {
         component.setValue(v);
-        console.log(valid(), tests[v]);
         assert.equal(valid(), tests[v]);
       }
 

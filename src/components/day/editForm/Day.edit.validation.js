@@ -32,6 +32,15 @@ export default [
     input: true
   },
   {
+    weight: 40,
+    type: 'textfield',
+    label: 'Minimum Day',
+    placeholder: 'yyyy-MM-dd',
+    tooltip: 'A minimum date that can be set. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \'days\')',
+    key: 'minDate',
+    input: true,
+  },
+  {
     weight: 30,
     type: 'textfield',
     label: 'Maximum Day',
@@ -40,13 +49,4 @@ export default [
     key: 'maxDate',
     input: true,
   },
-  {
-    weight: 40,
-    type: 'textfield',
-    label: 'Minimum Day',
-    placeholder: 'yyyy-MM-dd',
-    tooltip: 'A minimum date that can be set. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \'days\')',
-    key: 'minDate',
-    input: true,
-  }
 ];

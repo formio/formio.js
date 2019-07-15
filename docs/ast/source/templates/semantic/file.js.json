@@ -1,0 +1,457 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 4511,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 121,
+      "column": 0
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 4511,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 121,
+        "column": 0
+      }
+    },
+    "sourceType": "module",
+    "body": [
+      {
+        "type": "ExportDefaultDeclaration",
+        "start": 0,
+        "end": 4510,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 120,
+            "column": 2
+          }
+        },
+        "declaration": {
+          "type": "ObjectExpression",
+          "start": 15,
+          "end": 4509,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 15
+            },
+            "end": {
+              "line": 120,
+              "column": 1
+            }
+          },
+          "properties": [
+            {
+              "type": "ObjectProperty",
+              "start": 19,
+              "end": 4506,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 119,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 19,
+                "end": 23,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "identifierName": "form"
+                },
+                "name": "form"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 25,
+                "end": 4506,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 119,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 26,
+                    "end": 4505,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 119,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n{% if (!component.image) { %}\n<div class=\"ui celled list\">\n  <div class=\"item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"></div>\n      {% } %}\n      <div class=\"{% if (self.hasTypes) { %}nine{% } else { %}twelve{% } %} wide column\"><strong>File Name</strong></div>\n      <div class=\"three wide column\"><strong>Size</strong></div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\"><strong>Type</strong></div>\n      {% } %}\n    </div>\n  </div>\n  {% files.forEach(function(file) { %}\n  <li class=\"list-group-item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"><i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i></div>\n      {% } %}\n      <div class=\"twelve wide column\">\n        {% if (component.uploadOnly) { %}\n          {{file.originalName || file.name}}\n        {% } else { %}\n          <a href=\"{{file.url}}\" target=\"_blank\" ref=\"fileLink\">{{file.originalName || file.name}}</a>\n        {% } %}\n      </div>\n      <div class=\"three wide column\">{{fileSize(file.size)}}</div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\">\n          <select class=\"file-type\">\n            {% component.fileTypes.map(function(type) { %}\n              <option class=\"test\" value=\"{{ type.value }}\" {% if (type.value === file.fileType) { %}selected=\"selected\"{% } %}>{{ type.label }}</option>\n            {% }); %}\n          </select>\n        </div>\n      {% } %}\n    </div>\n  </li>\n  {% }) %}\n</div>\n{% } else { %}\n<div>\n  {% files.forEach(function(file) { %}\n  <div>\n    <span>\n      <img ref=\"fileImage\" src=\"\" alt=\"{{file.originalName || file.name}}\" style=\"width:{{component.imageSize}}px\" />\n      {% if (!disabled) { %}\n      <i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% }) %}\n</div>\n{% } %}\n{% if (!disabled && (component.multiple || !files.length)) { %}\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\n{% if (self.useWebViewCamera) { %}\n<div class=\"fileSelector\">\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> Gallery</button>\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> Camera</button>\n</div>\n{% } else if (!self.cameraMode) { %}\n<div class=\"fileSelector\" ref=\"fileDrop\">\n  <i class=\"{{iconClass('cloud-upload')}}\"></i> Drop files to attach, \n    {% if (component.image) { %}\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> Use Camera</a>, \n    {% } %}\n    or <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">browse</a>\n</div>\n{% } else { %}\n<div>\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\n</div>\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> Take Picture</button>\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">Switch to file upload</button>\n{% } %}\n{% } %}\n{% statuses.forEach(function(status) { %}\n<div class=\"file {{statuses.status === 'error' ? ' has-error' : ''}}\">\n  <div class=\"ui grid\">\n    <div class=\"fileName control-label thirteen wide column\">{{status.originalName}} <i class=\"{{iconClass('remove')}}\" ref=\"fileStatusRemove\"></i></div>\n    <div class=\"fileSize control-label three wide column\">{{fileSize(status.size)}}</div>\n  </div>\n  <div class=\"ui grid\">\n    <div class=\"thirteen wide column\">\n      {% if (status.status === 'progress') { %}\n      <div class=\"progress\">\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{status.progress}}\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: {{status.progress}}\">\n          <span class=\"sr-only\">{{status.progress}}% Complete</span>\n        </div>\n      </div>\n      {% } else { %}\n      <div class=\"bg-{{status.status}}\">{{status.message}}</div>\n      {% } %}\n    </div>\n  </div>\n</div>\n{% }) %}\n{% if (!component.storage || support.hasWarning) { %}\n<div class=\"alert alert-warning\">\n  {% if (!component.storage) { %}\n    <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>\n  {% } %}\n  {% if (!support.filereader) { %}\n    <p>File API & FileReader API not supported.</p>\n  {% } %}\n  {% if (!support.formdata) { %}\n    <p>XHR2's FormData is not supported.</p>\n  {% } %}\n  {% if (!support.progress) { %}\n    <p>XHR2's upload progress isn't supported.</p>\n  {% } %}\n</div>\n{% } %}\n",
+                      "cooked": "\n{% if (!component.image) { %}\n<div class=\"ui celled list\">\n  <div class=\"item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"></div>\n      {% } %}\n      <div class=\"{% if (self.hasTypes) { %}nine{% } else { %}twelve{% } %} wide column\"><strong>File Name</strong></div>\n      <div class=\"three wide column\"><strong>Size</strong></div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\"><strong>Type</strong></div>\n      {% } %}\n    </div>\n  </div>\n  {% files.forEach(function(file) { %}\n  <li class=\"list-group-item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"><i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i></div>\n      {% } %}\n      <div class=\"twelve wide column\">\n        {% if (component.uploadOnly) { %}\n          {{file.originalName || file.name}}\n        {% } else { %}\n          <a href=\"{{file.url}}\" target=\"_blank\" ref=\"fileLink\">{{file.originalName || file.name}}</a>\n        {% } %}\n      </div>\n      <div class=\"three wide column\">{{fileSize(file.size)}}</div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\">\n          <select class=\"file-type\">\n            {% component.fileTypes.map(function(type) { %}\n              <option class=\"test\" value=\"{{ type.value }}\" {% if (type.value === file.fileType) { %}selected=\"selected\"{% } %}>{{ type.label }}</option>\n            {% }); %}\n          </select>\n        </div>\n      {% } %}\n    </div>\n  </li>\n  {% }) %}\n</div>\n{% } else { %}\n<div>\n  {% files.forEach(function(file) { %}\n  <div>\n    <span>\n      <img ref=\"fileImage\" src=\"\" alt=\"{{file.originalName || file.name}}\" style=\"width:{{component.imageSize}}px\" />\n      {% if (!disabled) { %}\n      <i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% }) %}\n</div>\n{% } %}\n{% if (!disabled && (component.multiple || !files.length)) { %}\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\n{% if (self.useWebViewCamera) { %}\n<div class=\"fileSelector\">\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> Gallery</button>\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> Camera</button>\n</div>\n{% } else if (!self.cameraMode) { %}\n<div class=\"fileSelector\" ref=\"fileDrop\">\n  <i class=\"{{iconClass('cloud-upload')}}\"></i> Drop files to attach, \n    {% if (component.image) { %}\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> Use Camera</a>, \n    {% } %}\n    or <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">browse</a>\n</div>\n{% } else { %}\n<div>\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\n</div>\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> Take Picture</button>\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">Switch to file upload</button>\n{% } %}\n{% } %}\n{% statuses.forEach(function(status) { %}\n<div class=\"file {{statuses.status === 'error' ? ' has-error' : ''}}\">\n  <div class=\"ui grid\">\n    <div class=\"fileName control-label thirteen wide column\">{{status.originalName}} <i class=\"{{iconClass('remove')}}\" ref=\"fileStatusRemove\"></i></div>\n    <div class=\"fileSize control-label three wide column\">{{fileSize(status.size)}}</div>\n  </div>\n  <div class=\"ui grid\">\n    <div class=\"thirteen wide column\">\n      {% if (status.status === 'progress') { %}\n      <div class=\"progress\">\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{status.progress}}\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: {{status.progress}}\">\n          <span class=\"sr-only\">{{status.progress}}% Complete</span>\n        </div>\n      </div>\n      {% } else { %}\n      <div class=\"bg-{{status.status}}\">{{status.message}}</div>\n      {% } %}\n    </div>\n  </div>\n</div>\n{% }) %}\n{% if (!component.storage || support.hasWarning) { %}\n<div class=\"alert alert-warning\">\n  {% if (!component.storage) { %}\n    <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>\n  {% } %}\n  {% if (!support.filereader) { %}\n    <p>File API & FileReader API not supported.</p>\n  {% } %}\n  {% if (!support.formdata) { %}\n    <p>XHR2's FormData is not supported.</p>\n  {% } %}\n  {% if (!support.progress) { %}\n    <p>XHR2's upload progress isn't supported.</p>\n  {% } %}\n</div>\n{% } %}\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            }
+          ],
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": [],
+  "tokens": [
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 0,
+      "end": 6,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "default",
+        "keyword": "default",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "default",
+      "start": 7,
+      "end": 14,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 7
+        },
+        "end": {
+          "line": 1,
+          "column": 14
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "{",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 15,
+      "end": 16,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 15
+        },
+        "end": {
+          "line": 1,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "form",
+      "start": 19,
+      "end": 23,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 23,
+      "end": 24,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 6
+        },
+        "end": {
+          "line": 2,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 25,
+      "end": 26,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 8
+        },
+        "end": {
+          "line": 2,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n{% if (!component.image) { %}\n<div class=\"ui celled list\">\n  <div class=\"item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"></div>\n      {% } %}\n      <div class=\"{% if (self.hasTypes) { %}nine{% } else { %}twelve{% } %} wide column\"><strong>File Name</strong></div>\n      <div class=\"three wide column\"><strong>Size</strong></div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\"><strong>Type</strong></div>\n      {% } %}\n    </div>\n  </div>\n  {% files.forEach(function(file) { %}\n  <li class=\"list-group-item\">\n    <div class=\"ui grid\">\n      {% if (!disabled) { %}\n      <div class=\"one wide column\"><i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i></div>\n      {% } %}\n      <div class=\"twelve wide column\">\n        {% if (component.uploadOnly) { %}\n          {{file.originalName || file.name}}\n        {% } else { %}\n          <a href=\"{{file.url}}\" target=\"_blank\" ref=\"fileLink\">{{file.originalName || file.name}}</a>\n        {% } %}\n      </div>\n      <div class=\"three wide column\">{{fileSize(file.size)}}</div>\n      {% if (self.hasTypes) { %}\n        <div class=\"three wide column\">\n          <select class=\"file-type\">\n            {% component.fileTypes.map(function(type) { %}\n              <option class=\"test\" value=\"{{ type.value }}\" {% if (type.value === file.fileType) { %}selected=\"selected\"{% } %}>{{ type.label }}</option>\n            {% }); %}\n          </select>\n        </div>\n      {% } %}\n    </div>\n  </li>\n  {% }) %}\n</div>\n{% } else { %}\n<div>\n  {% files.forEach(function(file) { %}\n  <div>\n    <span>\n      <img ref=\"fileImage\" src=\"\" alt=\"{{file.originalName || file.name}}\" style=\"width:{{component.imageSize}}px\" />\n      {% if (!disabled) { %}\n      <i class=\"{{iconClass('remove')}}\" ref=\"removeLink\"></i>\n      {% } %}\n    </span>\n  </div>\n  {% }) %}\n</div>\n{% } %}\n{% if (!disabled && (component.multiple || !files.length)) { %}\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\n{% if (self.useWebViewCamera) { %}\n<div class=\"fileSelector\">\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> Gallery</button>\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> Camera</button>\n</div>\n{% } else if (!self.cameraMode) { %}\n<div class=\"fileSelector\" ref=\"fileDrop\">\n  <i class=\"{{iconClass('cloud-upload')}}\"></i> Drop files to attach, \n    {% if (component.image) { %}\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> Use Camera</a>, \n    {% } %}\n    or <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">browse</a>\n</div>\n{% } else { %}\n<div>\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\n</div>\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> Take Picture</button>\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">Switch to file upload</button>\n{% } %}\n{% } %}\n{% statuses.forEach(function(status) { %}\n<div class=\"file {{statuses.status === 'error' ? ' has-error' : ''}}\">\n  <div class=\"ui grid\">\n    <div class=\"fileName control-label thirteen wide column\">{{status.originalName}} <i class=\"{{iconClass('remove')}}\" ref=\"fileStatusRemove\"></i></div>\n    <div class=\"fileSize control-label three wide column\">{{fileSize(status.size)}}</div>\n  </div>\n  <div class=\"ui grid\">\n    <div class=\"thirteen wide column\">\n      {% if (status.status === 'progress') { %}\n      <div class=\"progress\">\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{status.progress}}\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: {{status.progress}}\">\n          <span class=\"sr-only\">{{status.progress}}% Complete</span>\n        </div>\n      </div>\n      {% } else { %}\n      <div class=\"bg-{{status.status}}\">{{status.message}}</div>\n      {% } %}\n    </div>\n  </div>\n</div>\n{% }) %}\n{% if (!component.storage || support.hasWarning) { %}\n<div class=\"alert alert-warning\">\n  {% if (!component.storage) { %}\n    <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>\n  {% } %}\n  {% if (!support.filereader) { %}\n    <p>File API & FileReader API not supported.</p>\n  {% } %}\n  {% if (!support.formdata) { %}\n    <p>XHR2's FormData is not supported.</p>\n  {% } %}\n  {% if (!support.progress) { %}\n    <p>XHR2's upload progress isn't supported.</p>\n  {% } %}\n</div>\n{% } %}\n",
+      "start": 26,
+      "end": 4505,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 9
+        },
+        "end": {
+          "line": 119,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 4505,
+      "end": 4506,
+      "loc": {
+        "start": {
+          "line": 119,
+          "column": 0
+        },
+        "end": {
+          "line": 119,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 4506,
+      "end": 4507,
+      "loc": {
+        "start": {
+          "line": 119,
+          "column": 1
+        },
+        "end": {
+          "line": 119,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "}",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 4508,
+      "end": 4509,
+      "loc": {
+        "start": {
+          "line": 120,
+          "column": 0
+        },
+        "end": {
+          "line": 120,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 4509,
+      "end": 4510,
+      "loc": {
+        "start": {
+          "line": 120,
+          "column": 1
+        },
+        "end": {
+          "line": 120,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "eof",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 4511,
+      "end": 4511,
+      "loc": {
+        "start": {
+          "line": 121,
+          "column": 0
+        },
+        "end": {
+          "line": 121,
+          "column": 0
+        }
+      }
+    }
+  ]
+}

@@ -6,21 +6,17 @@ import {
 } from './fixtures';
 
 describe('HTML Component', () => {
-  it('Should build an html component', (done) => {
-    Harness.testCreate(HTMLComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build an html component', () => {
+    return Harness.testCreate(HTMLComponent, comp1);
   });
 
-  it('Should build an html component and ignore empty attribute name', (done) => {
+  it('Should build an html component and ignore empty attribute name', () => {
     const comp = comp1;
     comp.attrs.push({
       'attr': '',
       'value': ''
     });
 
-    Harness.testCreate(HTMLComponent, comp1).then(() => {
-      done();
-    });
+    return Harness.testCreate(HTMLComponent, comp1);
   });
 });

@@ -26,8 +26,8 @@ const Harness = {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement, options);
-    formBuilder.form = { components: [] };
-    formBuilder.builderReady.then(done);
+    formBuilder.form = {components: []};
+    formBuilder.webform.ready.then(() => done());
   },
 
   builderAfter() {
@@ -92,7 +92,11 @@ const Harness = {
         if (err) {
           return reject(err);
         }
-        component.build();
+        // Need a parent element to redraw.
+        const parent = document.createElement('div');
+        const element = document.createElement('div');
+        parent.appendChild(element);
+        component.build(element);
         assert(Boolean(component.element), `No ${component.type} element created.`);
         return resolve(component);
       });
@@ -103,13 +107,13 @@ const Harness = {
       form.everyComponent((comp) => {
         if (hidden.includes(comp.component.key)) {
           // Should be hidden.
-          assert(comp.element.hidden, 'Element should not be visible');
-          assert.equal(comp.element.style.visibility, 'hidden');
+          assert(!comp.visible, 'Element should not be visible');
+          assert.equal(comp.element.childElementCount, 0, 'Hidden elements should not have children');
         }
         else {
           // Should be visible.
-          assert(!comp.element.hidden, 'Element should not be hidden');
-          assert((comp.element.style.visibility === '') || (comp.element.style.visibility === 'visible'), 'Element must be visible');
+          assert(comp.visible, 'Element should not be hidden');
+          assert.notEqual(comp.element.childElementCount, 0, 'Element must be visible');
         }
       });
       done();
@@ -132,7 +136,10 @@ const Harness = {
       bubbles: true,
       cancelable: true
     });
-    const element = this.testElement(component, query, true);
+    let element = query;
+    if (typeof query === 'string') {
+      element = this.testElement(component, query, true);
+    }
     return element.dispatchEvent(clickEvent);
   },
   testElements(component, query, number) {
@@ -188,23 +195,10 @@ const Harness = {
     assert(element, `${name} input not found`);
     assert.equal(value, element.value);
   },
-  assertStringEqual(test) {
-    return function(value) {
-      /* eslint-disable no-irregular-whitespace */
-      return value.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ') ===
-        test.replace(/[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g,' ');
-      /* eslint-enable  no-irregular-whitespace */
-    };
-  },
   testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
-    if (typeof visible === 'function') {
-      assert(visible(component.inputs[index].value), 'Failed');
-    }
-    else {
-      assert.deepEqual(component.inputs[index].value, visible);
-    }
+    assert.deepEqual(component.refs.input[index].value, visible);
     return component;
   },
   testSubmission(form, submission, onChange) {
@@ -231,10 +225,42 @@ const Harness = {
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
   },
+  testValid(component, value) {
+    return new Promise((resolve, reject) => {
+      component.on('componentChange', (change) => {
+        const valid = component.checkValidity();
+        if (valid) {
+          assert.equal(change.value, value);
+          resolve();
+        }
+        else {
+          reject('Component should be valid');
+        }
+      });
+      component.setValue(value);
+    });
+  },
+  testInvalid(component, value, field, error) {
+    return new Promise((resolve, reject) => {
+      component.on('componentChange', (change) => {
+        if(component.checkValidity()) {
+          reject('Component should not be valid');
+        }
+      });
+      component.on('componentError', (error) => {
+        assert.equal(error.component.key, field);
+        assert.equal(error.message, error);
+        resolve();
+      });
+
+      // Set the value.
+      component.setValue(value);
+    });
+  },
   testComponent(component, test, done) {
     let testBad = true;
     component.on('componentChange', (change) => {
-      const valid = component.checkValidity(null, true);
+      const valid = component.checkValidity();
       if (valid && !testBad) {
         assert.equal(change.value, test.good.value);
         done();

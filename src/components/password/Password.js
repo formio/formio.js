@@ -8,17 +8,17 @@ export default class PasswordComponent extends TextFieldComponent {
       label: 'Password',
       key: 'password',
       protected: true,
-      tableView: false
+      tableView: false,
     }, ...extend);
   }
 
   static get builderInfo() {
     return {
       title: 'Password',
-      icon: 'fa fa-asterisk',
+      icon: 'asterisk',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#password',
-      weight: 20,
+      weight: 40,
       schema: PasswordComponent.schema()
     };
   }
@@ -27,8 +27,8 @@ export default class PasswordComponent extends TextFieldComponent {
     return _.omit(PasswordComponent.schema(), ['protected', 'tableView']);
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = 'password';
     return info;
   }

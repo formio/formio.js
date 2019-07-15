@@ -1,0 +1,14 @@
+<select
+  ref="{{input.ref ? input.ref : 'selectContainer'}}"
+  {{ input.multiple ? 'multiple' : '' }}
+  {% for (var attr in input.attr) { %}
+  {{attr}}="{{input.attr[attr]}}"
+  {% } %}
+>{{selectOptions}}</select>
+<input type="text"
+       class="formio-select-autocomplete-input"
+       ref="autocompleteInput"
+       {% if (input.attr.autocomplete) { %}
+       autocomplete="{{input.attr.autocomplete}}"
+       {% } %}
+/>

@@ -609,36 +609,6 @@ describe('delay', () => {
   });
 });
 
-describe('unfold', () => {
-  it('should return provided argument', () => {
-    const parameters = [{}, 1, null, 'string'];
-
-    parameters.forEach(p => {
-      assert(p === utils.unfold(p));
-    });
-  });
-
-  it('should call parameter, if it is function and return result', () => {
-    const x = Symbol('__unfold__');
-    assert(utils.unfold(() => x) === x);
-  });
-});
-
-describe('firstNonNil', () => {
-  it('should return first non nil value', () => {
-    expect(utils.firstNonNil([1])).to.equal(1);
-    expect(utils.firstNonNil([1, 3])).to.equal(1);
-    expect(utils.firstNonNil([3, 2, 1])).to.equal(3);
-    expect(utils.firstNonNil([undefined, undefined, 3, 1])).to.equal(3);
-  });
-
-  it('should unfold all functions in array', () => {
-    expect(utils.firstNonNil([() => 1])).to.equal(1);
-    expect(utils.firstNonNil([() => 1, 3])).to.equal(1);
-    expect(utils.firstNonNil([undefined, undefined, () => 3, 1])).to.equal(3);
-  });
-});
-
 describe('withSwitch', () => {
   it('should return Array with two functions', () => {
     const fns = utils.withSwitch();
@@ -672,6 +642,35 @@ describe('withSwitch', () => {
       toggle();
       expect(get()).to.be.equal(42);
     });
+  });
+});
+
+describe('unfold', () => {
+  it('should return provided argument', () => {
+    const parameters = [{}, 1, null, 'string'];
+
+    parameters.forEach(p => {
+      assert(p === utils.unfold(p));
+    });
+  });
+
+  it('should call parameter, if it is function and return result', () => {
+    const x = Symbol('__unfold__');
+    assert(utils.unfold(() => x) === x);
+  });
+});
+
+describe('firstNonNil', () => {
+  it('should return first non nil value', () => {
+    expect(utils.firstNonNil([1])).to.equal(1);
+    expect(utils.firstNonNil([1, 3])).to.equal(1);
+    expect(utils.firstNonNil([3, 2, 1])).to.equal(3);
+    expect(utils.firstNonNil([undefined, undefined, 3, 1])).to.equal(3);
+  });
+  it('should unfold all functions in array', () => {
+    expect(utils.firstNonNil([() => 1])).to.equal(1);
+    expect(utils.firstNonNil([() => 1, 3])).to.equal(1);
+    expect(utils.firstNonNil([undefined, undefined, () => 3, 1])).to.equal(3);
   });
 });
 

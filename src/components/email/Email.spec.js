@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Email Component', () => {
-  it('Should build a email component', (done) => {
-    Harness.testCreate(EmailComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a email component', () => {
+    return Harness.testCreate(EmailComponent, comp1);
   });
 });

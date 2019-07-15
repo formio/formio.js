@@ -1,5 +1,4 @@
-import textFieldEditForm from '../textfield/TextField.form';
-
+import baseEditForm from '../textfield/TextField.form';
 export default function(...extend) {
-  return textFieldEditForm(...extend);
+  return baseEditForm(...extend);
 }

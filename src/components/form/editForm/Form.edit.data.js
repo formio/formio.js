@@ -1,4 +1,4 @@
-import EditFormUtils from '../../base/editForm/utils';
+import EditFormUtils from '../../_classes/component/editForm/utils';
 /* eslint-disable max-len */
 export default [
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 120,

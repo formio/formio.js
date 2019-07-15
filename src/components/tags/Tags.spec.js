@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('Tags Component', function() {
-  it('Should build a tags component', function(done) {
-    Harness.testCreate(TagsComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a tags component', function() {
+    return Harness.testCreate(TagsComponent, comp1);
   });
 });

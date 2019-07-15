@@ -1,5 +1,13 @@
 export default [
   {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
+    key: 'tabindex',
+    ignore: true
+  },
+  {
     type: 'textfield',
     label: 'Label for Key column',
     key: 'keyLabel',

@@ -42,23 +42,32 @@ export { jsonLogic, moment };
  * @param args
  * @return {*}
  */
-/* eslint-disable max-statements */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
+  const component = args.component ? args.component : { key: 'unknown' };
+  Object.defineProperty(args, 'component', {
+    configurable: true,
+    get() {
+      if (!this._component) {
+        this._component = _.cloneDeep(component);
+      }
+      return this._components;
+    }
+  });
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
-
-  // Deeply cloning the form is expensive - only do it if it looks like the function needs it
-  if (func.toString().includes('form')) {
-    args.form = _.cloneDeep(args.form);
-  }
-  else {
-    delete args.form;
-  }
-
-  const componentKey = args.component.key;
+  const { form } = args;
+  Object.defineProperty(args, 'form', {
+    configurable: true,
+    get() {
+      if (!this._form) {
+        this._form = _.cloneDeep(form);
+      }
+      return this._form;
+    }
+  });
+  const componentKey = component.key;
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
@@ -113,7 +122,6 @@ export function evaluate(func, args, ret, tokenize) {
   }
   return returnVal;
 }
-/* eslint-enable max-statements */
 
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
@@ -396,30 +404,15 @@ export function interpolate(rawTemplate, data) {
 /**
  * Make a filename guaranteed to be unique.
  * @param name
- * @param template
- * @param evalContext
  * @returns {string}
  */
-export function uniqueName(name, template, evalContext) {
-  template = template || '{{fileName}}-{{guid}}';
-  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
-  if (!template.includes('{{guid}}')) {
-    template = `${template}-{{guid}}`;
-  }
-  const parts = name.split('.');
-  let fileName = parts.slice(0, parts.length - 1).join('.');
-  const extension = parts.length > 1
+export function uniqueName(name) {
+  const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');
+  const fileName = parts[0];
+  const ext = parts.length > 1
     ? `.${_.last(parts)}`
     : '';
-  //allow only 100 characters from original name to avoid issues with filename length restrictions
-  fileName = fileName.substr(0, 100);
-  evalContext = Object.assign(evalContext || {}, {
-    fileName,
-    guid: guid()
-  });
-  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-  const uniqueName = `${interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
-  return uniqueName;
+  return `${fileName.substr(0, 10)}-${guid()}${ext}`;
 }
 
 export function guid() {
@@ -703,7 +696,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Hours, minutes, seconds
     .replace('HH', 'H')
-    .replace('hh', 'h')
+    .replace('hh', 'G')
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
@@ -716,7 +709,7 @@ export function convertFormatToFlatpickr(format) {
  */
 export function convertFormatToMoment(format) {
   return format
-    // Year conversion.
+  // Year conversion.
     .replace(/y/g, 'Y')
     // Day in month.
     .replace(/d/g, 'D')
@@ -728,10 +721,10 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-    // Short and long month replacement.
+  // Short and long month replacement.
     .replace(/(MMM|MMMM)/g, 'MM')
     // Year conversion
-    .replace(/[ydhmsHM]/g, '9')
+    .replace(/[ydhmsHMG]/g, '9')
     // AM/PM conversion
     .replace(/a/g, 'AA');
 }
@@ -819,11 +812,11 @@ export function getNumberDecimalLimit(component) {
 }
 
 export function getCurrencyAffixes({
-  currency = 'USD',
-  decimalLimit,
-  decimalSeparator,
-  lang,
-}) {
+                                     currency = 'USD',
+                                     decimalLimit,
+                                     decimalSeparator,
+                                     lang,
+                                   }) {
   // Get the prefix and suffix from the localized string.
   let regex = '(.*)?100';
   if (decimalLimit) {
@@ -929,7 +922,7 @@ export function delay(fn, delay = 0, ...args) {
  */
 export function iterateKey(key) {
   if (!key.match(/(\d+)$/)) {
-    return `${key}2`;
+    return `${key}1`;
   }
 
   return key.replace(/(\d+)$/, function(suffix) {

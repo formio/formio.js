@@ -25,10 +25,10 @@ export default class TimeComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Time',
-      icon: 'fa fa-clock-o',
-      group: 'basic',
+      icon: 'clock-o',
+      group: 'advanced',
       documentation: 'http://help.form.io/userguide/#time',
-      weight: 60,
+      weight: 55,
       schema: TimeComponent.schema()
     };
   }
@@ -37,23 +37,38 @@ export default class TimeComponent extends TextFieldComponent {
     return TimeComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get defaultValue() {
+    let value = super.defaultValue;
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(item => item ? moment(item).format(this.component.format) : item);
+    }
+    else {
+      if (value) {
+        value = moment(value).format(this.component.format);
+      }
+    }
+    return value;
+  }
+
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = 'time';
     return info;
   }
+
   getValueAt(index) {
-    if (!this.inputs.length || !this.inputs[index]) {
+    if (!this.refs.input.length || !this.refs.input[index]) {
       return this.emptyValue;
     }
-    const val = this.inputs[index].value;
+    const val = this.refs.input[index].value;
     if (!val) {
       return this.emptyValue;
     }
 
     return moment(val, this.component.format).format('HH:mm:ss');
   }
+
   setValueAt(index, value) {
-    this.inputs[index].value = value ? moment(value, 'HH:mm:ss').format(this.component.format) : value;
+    this.refs.input[index].value = value ? moment(value, 'HH:mm:ss').format(this.component.format) : value;
   }
 }

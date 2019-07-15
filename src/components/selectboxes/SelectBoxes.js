@@ -15,17 +15,20 @@ export default class SelectBoxesComponent extends RadioComponent {
     return {
       title: 'Select Boxes',
       group: 'basic',
-      icon: 'fa fa-plus-square',
+      icon: 'plus-square',
       weight: 60,
       documentation: 'http://help.form.io/userguide/#selectboxes',
       schema: SelectBoxesComponent.schema()
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  constructor(...args) {
+    super(...args);
+    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount');
+  }
 
-    this.validators = this.validators.concat(['minSelectedCount', 'maxSelectedCount']);
+  init() {
+    super.init();
     this.component.inputType = 'checkbox';
   }
 
@@ -33,7 +36,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     return SelectBoxesComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
@@ -70,8 +73,11 @@ export default class SelectBoxesComponent extends RadioComponent {
     if (this.viewOnly) {
       return this.dataValue;
     }
+    if (!this.refs.input || !this.refs.input.length) {
+      return this.dataValue;
+    }
     const value = {};
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       value[input.value] = !!input.checked;
     });
     return value;
@@ -102,7 +108,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       });
     }
 
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
@@ -110,43 +116,6 @@ export default class SelectBoxesComponent extends RadioComponent {
     });
 
     this.updateValue(flags);
-  }
-
-  checkValidity(data, dirty, rowData) {
-    const maxCount = this.component.validate.maxSelectedCount;
-
-    if (maxCount) {
-      const count = Object.keys(this.validationValue).reduce((total, key) =>{
-        if (this.validationValue[key]) {
-          total++;
-        }
-        return total;
-      }, 0);
-
-      if (count >= maxCount) {
-        this.inputs.forEach(item => {
-          if (!item.checked) {
-            item.disabled = true;
-          }
-        });
-        const message = this.component.maxSelectedCountMessage
-          ? this.component.maxSelectedCountMessage
-          : `You can only select up to ${maxCount} items to continue.`;
-        this.setCustomValidity(message);
-        return false;
-      }
-      else {
-        this.inputs.forEach(item => {
-          item.disabled = false;
-        });
-      }
-    }
-
-    return super.checkValidity(data, dirty, rowData);
-  }
-
-  get validationValue() {
-    return super.validationValue;
   }
 
   getView(value) {
@@ -157,5 +126,59 @@ export default class SelectBoxesComponent extends RadioComponent {
       .filter((v) => value[v.value])
       .map('label')
       .join(', ');
+  }
+
+  checkValidity(data, dirty, rowData) {
+    console.log('checkValidity', data, dirty, rowData);
+    const minCount = this.component.validate.minSelectedCount;
+    const maxCount = this.component.validate.maxSelectedCount;
+
+    if (maxCount || minCount) {
+      const count = Object.keys(this.validationValue).reduce((total, key) => {
+        if (this.validationValue[key]) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      if (maxCount && count >= maxCount) {
+        console.log(this.refs);
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            if (!item.checked) {
+              item.disabled = true;
+            }
+          });
+        }
+        if (maxCount && count > maxCount) {
+          const message = this.component.maxSelectedCountMessage
+            ? this.component.maxSelectedCountMessage
+            : `You can only select up to ${maxCount} items.`;
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
+      }
+      else if (minCount && count < minCount) {
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            item.disabled = false;
+          });
+        }
+        const message = this.component.minSelectedCountMessage
+          ? this.component.minSelectedCountMessage
+          : `You must select at least ${minCount} items.`;
+        this.setCustomValidity(message, dirty);
+        return false;
+      }
+      else {
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            item.disabled = false;
+          });
+        }
+      }
+    }
+
+    return super.checkValidity(data, dirty, rowData);
   }
 }

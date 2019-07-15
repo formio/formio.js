@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import Component from '../Component';
-export default class InputWidget extends Component {
+import Element from '../Element';
+export default class InputWidget extends Element {
   constructor(settings, component) {
     super(settings);
     this.namespace = 'formio.widget';
@@ -53,7 +53,7 @@ export default class InputWidget extends Component {
     return null;
   }
 
-  setValue(value) {
-    this._input.value = value;
+  setValue() {
+    return null;
   }
 }

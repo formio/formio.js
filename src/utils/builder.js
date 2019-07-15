@@ -9,10 +9,10 @@ export default {
    * @param {Object} component
    *   The component to uniquify
    */
-  uniquify(form, component) {
+  uniquify(container, component) {
     let changed = false;
     const formKeys = {};
-    eachComponent(form.components, function(comp) {
+    eachComponent(container, function(comp) {
       formKeys[comp.key] = true;
     }, true);
 
@@ -50,7 +50,7 @@ export default {
   getBindedShortcuts(components, input) {
     const result = [];
 
-    eachComponent(components, function(component) {
+    eachComponent(components, (component) => {
       if (component === input) {
         return;
       }
@@ -76,7 +76,7 @@ export default {
     }
     return [''].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
-      this.getBindedShortcuts(form.components, component))
+      this.getBindedShortcuts(form.components, component)),
     );
   }
 };

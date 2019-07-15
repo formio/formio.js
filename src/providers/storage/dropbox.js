@@ -1,5 +1,4 @@
 import NativePromise from 'native-promise-only';
-
 const dropbox = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback) {
     return new NativePromise(((resolve, reject) => {

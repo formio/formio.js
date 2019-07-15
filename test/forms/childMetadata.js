@@ -58,8 +58,6 @@ export default {
   },
   tests: {
     'Parent form with nested child form should have access to child submission metadata'(form, done) {
-      done();
-      /* This is now an invalid test since we have fixed the issue with subforms "submitting" when they shouldn't
       form.submission = {
         data: {}
       };
@@ -75,7 +73,6 @@ export default {
           done();
         });
       });
-      */
     }
   }
 };

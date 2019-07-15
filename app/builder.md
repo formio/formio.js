@@ -56,7 +56,7 @@ lib: builder
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4"><a href="https://github.com/formio/formio" target="_blank"><img class="img-responsive" src="{{ site.baseUrl }}/app/github-logo.png"></a></div>
+      <div class="col-md-4"><a href="https://github.com/formio/formio" target="_blank"><img class="img-responsive" src="https://form.io/assets/images/github-logo.png"></a></div>
       <div class="col-md-8">
         <p>Getting started is as easy as...</p>
         <pre style="background-color: white;">git clone https://github.com/formio/formio.git
@@ -92,15 +92,21 @@ var onForm = function(form) {
 };
 
 var setDisplay = function(display) {
-  builder.setDisplay(display).then(function(instance) {     
-     instance.on('change', function(form) {
-       if (form.components) {
-          formElement.innerHTML = '';
-          jsonElement.innerHTML = '';
-          jsonElement.appendChild(document.createTextNode(JSON.stringify(form, null, 4)));
-          Formio.createForm(formElement, form).then(onForm);
-       }
-     });
+  builder.setDisplay(display).then(function(instance) {
+    var onBuild = function(build) {
+      jsonElement.innerHTML = '';
+      formElement.innerHTML = '';
+      jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
+      Formio.createForm(formElement, instance.form).then(onForm);
+    }
+
+     var jsonElement = document.getElementById('json');
+     var formElement = document.getElementById('formio');
+     instance.on('saveComponent', onBuild);
+   
+     instance.on('editComponent', onBuild);
+     
+     instance.on('updateComponent', onBuild);
    });
 };
 

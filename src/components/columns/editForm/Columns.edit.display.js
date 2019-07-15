@@ -1,5 +1,33 @@
 export default [
   {
+    key: 'labelPosition',
+    ignore: true
+  },
+  {
+    key: 'placeholder',
+    ignore: true
+  },
+  {
+    key: 'description',
+    ignore: true
+  },
+  {
+    key: 'tooltip',
+    ignore: true
+  },
+  {
+    key: 'autofocus',
+    ignore: true
+  },
+  {
+    key: 'tabindex',
+    ignore: true
+  },
+  {
+    key: 'disabled',
+    ignore: true
+  },
+  {
     weight: 150,
     type: 'datagrid',
     input: true,
@@ -9,6 +37,11 @@ export default [
     tooltip: 'The width, offset, push, and pull settings for each column.',
     reorder: true,
     components: [
+      {
+        type: 'hidden',
+        key: 'components',
+        defaultValue: []
+      },
       {
         type: 'number',
         key: 'width',

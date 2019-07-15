@@ -1,0 +1,32 @@
+{% if (component.prefix || component.suffix) { %}
+<div class="input-group">
+{% } %}
+{% if (component.prefix) { %}
+<div class="input-group-prepend" ref="prefix">
+  <span class="input-group-text">
+    {{component.prefix}}
+  </span>
+</div>
+{% } %}
+<{{input.type}}
+  ref="{{input.ref ? input.ref : 'input'}}"
+  {% for (var attr in input.attr) { %}
+  {{attr}}="{{input.attr[attr]}}"
+  {% } %}
+>{{input.content}}</{{input.type}}>
+{% if (component.showCharCount) { %}
+<span class="text-muted pull-right" ref="charcount"></span>
+{% } %}
+{% if (component.showWordCount) { %}
+<span class="text-muted pull-right" ref="wordcount"></span>
+{% } %}
+{% if (component.suffix) { %}
+<div class="input-group-append" ref="suffix">
+  <span class="input-group-text">
+    {{component.suffix}}
+  </span>
+</div>
+{% } %}
+{% if (component.prefix || component.suffix) { %}
+</div>
+{% } %}

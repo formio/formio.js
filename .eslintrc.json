@@ -13,13 +13,15 @@
   },
   "rules": {
     "max-len": [
-      "warn",
+      "off",
       {
-        "code": 123,
+        "code": 160,
         "ignoreComments": true,
         "ignoreStrings": true
       }
     ],
+    "max-statements": [2, 40],
+    "max-depth": [2, 10],
     "no-console": "off",
     "prefer-const": "error",
     "prefer-template": "error",

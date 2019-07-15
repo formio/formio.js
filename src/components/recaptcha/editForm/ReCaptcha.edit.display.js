@@ -37,14 +37,6 @@ export default [
     ignore: true
   },
   {
-    key: 'labelWidth',
-    ignore: true
-  },
-  {
-    key: 'labelMargin',
-    ignore: true
-  },
-  {
     key: 'placeholder',
     ignore: true
   },
@@ -99,5 +91,9 @@ export default [
   {
     key: 'alwaysEnabled',
     ignore: true
-  }
+  },
+  {
+    key: 'tableView',
+    ignore: true
+  },
 ];

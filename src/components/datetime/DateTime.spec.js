@@ -6,9 +6,7 @@ import {
 } from './fixtures';
 
 describe('DateTime Component', () => {
-  it('Should build a date time component', (done) => {
-    Harness.testCreate(DateTimeComponent, comp1).then(() => {
-      done();
-    });
+  it('Should build a date time component', () => {
+    return Harness.testCreate(DateTimeComponent, comp1);
   });
 });

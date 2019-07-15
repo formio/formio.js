@@ -13,8 +13,6 @@ export default {
         maxWords: '{{field}} must have less than {{length}} words.',
         min: '{{field}} cannot be less than {{min}}.',
         max: '{{field}} cannot be greater than {{max}}.',
-        minSelectedCount: 'You must select at least {{minCount}} items to continue.',
-        maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
         minDate: '{{field}} should not contain date before {{- minDate}}',
         invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase

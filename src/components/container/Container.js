@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
-import BaseComponent from '../base/Base';
+import NestedComponent from '../_classes/nested/NestedComponent';
+import Component from '../_classes/component/Component';
 
 export default class ContainerComponent extends NestedComponent {
   static schema(...extend) {
@@ -11,6 +11,7 @@ export default class ContainerComponent extends NestedComponent {
       clearOnHide: true,
       input: true,
       tree: true,
+      hideLabel: true,
       components: []
     }, ...extend);
   }
@@ -18,7 +19,7 @@ export default class ContainerComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Container',
-      icon: 'fa fa-folder-open',
+      icon: 'folder-open',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#container',
       weight: 10,
@@ -26,33 +27,26 @@ export default class ContainerComponent extends NestedComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  constructor(...args) {
+    super(...args);
     this.type = 'container';
+  }
+
+  init() {
+    this.components = this.components || [];
+    this.addComponents(this.dataValue);
   }
 
   get defaultSchema() {
     return ContainerComponent.schema();
   }
 
-  build(state) {
-    this.createElement();
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    if (!this.hasValue()) {
-      this.dataValue = {};
-    }
-    this.addComponents(this.getContainer(), this.dataValue, null, state);
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.attachLogic();
-  }
-
   get emptyValue() {
     return {};
+  }
+
+  get templateName() {
+    return 'container';
   }
 
   hasChanged(before, after) {
@@ -65,7 +59,7 @@ export default class ContainerComponent extends NestedComponent {
 
   updateValue(flags, value) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return BaseComponent.prototype.updateValue.call(this, flags, value);
+    return Component.prototype.updateValue.call(this, flags, value);
   }
 
   setValue(value, flags) {
@@ -80,7 +74,6 @@ export default class ContainerComponent extends NestedComponent {
     if (!hasValue) {
       // Set the data value and then reset each component to use the new data object.
       this.dataValue = {};
-      this.getComponents().forEach(component => (component.data = this.dataValue));
     }
     return super.setValue(value, flags);
   }

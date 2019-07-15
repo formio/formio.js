@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
@@ -23,7 +23,7 @@ export default class ColumnsComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Columns',
-      icon: 'fa fa-columns',
+      icon: 'columns',
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#columns',
       weight: 10,
@@ -31,46 +31,63 @@ export default class ColumnsComponent extends NestedComponent {
     };
   }
 
-  get defaultSchema() {
-    return ColumnsComponent.schema();
-  }
-
-  get schema() {
-    const schema = _.omit(super.schema, 'components');
-    schema.columns = [];
-    this.eachComponent((component, index) => {
-      _.merge(component.component, _.omit(this.component.columns[index], 'components'));
-      schema.columns.push(component.schema);
-    });
-    for (let i = this.components.length; i < this.component.columns.length; i++) {
-      schema.columns.push(this.component.columns[i]);
-    }
-    return schema;
-  }
-
   constructor(component, options, data) {
     super(component, options, data);
     this.rows = [];
+  }
+
+  get defaultSchema() {
+    return ColumnsComponent.schema();
   }
 
   get className() {
     return `row ${super.className}`;
   }
 
+  get columnKey() {
+    return `column-${this.id}`;
+  }
+
+  init() {
+    super.init();
+    this.columns = [];
+    _.each(this.component.columns, (column, index) => {
+      this.columns[index] = [];
+      // Ensure there is a components array.
+      if (!Array.isArray(column.components)) {
+        column.components = [];
+      }
+      _.each(column.components, (component) => {
+        component.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
+        this.columns[index].push(this.createComponent(component));
+      });
+    });
+    this.rows = this.groupByRow();
+  }
+
+  labelIsHidden() {
+    return true;
+  }
+
+  render() {
+    return super.render(this.renderTemplate('columns', {
+      columnKey: this.columnKey,
+      columnComponents: this.columns.map(column => this.renderComponents(column))
+    }));
+  }
+
+  attach(element) {
+    this.loadRefs(element, { [this.columnKey]: 'multiple' });
+    super.attach(element);
+    this.refs[this.columnKey].forEach((column, index) =>
+      this.attachComponents(column, this.columns[index], this.component.columns[index].components)
+    );
+  }
+
   get gridSize() {
     return 12;
   }
 
-  /** @type {number} */
-  get nbVisible() {
-    return _.filter(this.components, 'visible').length;
-  }
-
-  /**
-   * Justify columns width according to `this.gridSize`.
-   * @param {ColumnComponent[]} columns
-   * @return {*}
-   */
   justifyRow(columns) {
     const visible = _.filter(columns, 'visible');
     const nbColumns = columns.length;
@@ -119,21 +136,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   justify() {
-    _.each(this.rows, this.justifyRow.bind(this));
-  }
-
-  addComponents(element, data, options, state) {
-    const container = this.getContainer();
-    container.noDrop = true;
-    _.each(this.component.columns, (column, index) => {
-      column.type = 'column';
-      //fix input: true issue for existent forms
-      column.input = false;
-      column.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
-      const component = this.addComponent(column, container, this.data, null, null, state);
-      component.column = index;
-    });
-    this.rows = this.groupByRow();
+    _.each(this.columns, this.justifyRow.bind(this));
   }
 
   checkConditions(data) {
@@ -149,8 +152,12 @@ export default class ColumnsComponent extends NestedComponent {
     }
   }
 
+  detach(all) {
+    super.detach(all);
+  }
+
   destroy() {
-    this.rows = [];
-    return super.destroy();
+    super.destroy();
+    this.columns = [];
   }
 }
