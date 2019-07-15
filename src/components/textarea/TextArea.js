@@ -226,6 +226,10 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   destroyWysiwyg() {
     if (this.editor) {
+      this.editorReady = new NativePromise((resolve) => {
+        this.editorReadyResolve = resolve;
+      });
+
       this.editor.destroy();
     }
   }
