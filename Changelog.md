@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.23.1
+### Fixed
+ - Fixed usage of destroyed editor on setting value. Fixes WYSIWYG ClearOnHide issues.
+ - Fixed radio component clear when hidden.
+ - FOR-2425: Fix component in datagrid stops working after setSubmission
+ - FOR-2372: Day component accepts decimal values
+
 ## 3.23.0
 ### Fixed
  - FOR-2388: Fixed problems where the password would not have protected set by default.

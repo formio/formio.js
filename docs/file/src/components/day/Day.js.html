@@ -396,6 +396,9 @@ export default class DayComponent extends BaseComponent {
       step: &apos;1&apos;,
       min: &apos;1&apos;,
       max: &apos;31&apos;,
+      oninput: function() {
+        this.value = (parseInt(this.value, 10) || 0);
+      },
       placeholder: _.get(this.component, &apos;fields.day.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Day&apos;) : &apos;&apos;),
       id
     });
@@ -496,6 +499,9 @@ export default class DayComponent extends BaseComponent {
       type: &apos;number&apos;,
       step: &apos;1&apos;,
       min: &apos;1&apos;,
+      oninput: function() {
+        this.value = (parseInt(this.value, 10) || 0);
+      },
       placeholder: _.get(this.component, &apos;fields.year.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Year&apos;) : &apos;&apos;),
       id
     });

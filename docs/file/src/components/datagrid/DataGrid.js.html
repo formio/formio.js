@@ -670,16 +670,18 @@ export default class DataGridComponent extends NestedComponent {
         }
       }
     }
-    this.dataValue = value;
+
     if (shouldBuildRows) {
+      this.dataValue = value;
       this.buildRows();
+      this.rows.forEach((row, index) =&gt; {
+        if (value.length &lt;= index) {
+          return;
+        }
+        _.forIn(row, component =&gt; this.setNestedValue(component, value[index], flags));
+      });
     }
-    this.rows.forEach((row, index) =&gt; {
-      if (value.length &lt;= index) {
-        return;
-      }
-      _.forIn(row, component =&gt; this.setNestedValue(component, value[index], flags));
-    });
+
     return changed;
   }
   /* eslint-enable max-statements */
