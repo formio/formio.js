@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed radio component clear when hidden.
  - FOR-2425: Fix component in datagrid stops working after setSubmission
  - FOR-2372: Day component accepts decimal values
+ - FOR-2432: Fixed issue where checkbox on viewAsHTML was crashing.
 
 ## 3.23.0
 ### Fixed
