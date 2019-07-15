@@ -193,6 +193,11 @@ export default class RadioComponent extends BaseComponent {
     }
   }
 
+  deleteValue() {
+    _.each(this.inputs, (__input, index) => this.setValueAt(index, false));
+    super.deleteValue();
+  }
+
   updateValue(flags, value) {
     const changed = super.updateValue(flags, value);
     if (changed) {
