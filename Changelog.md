@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Fixed
  - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
+ - Loader being oval instead of circle
 
 ## 3.22.6
 ### Fixed
