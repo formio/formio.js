@@ -1194,6 +1194,7 @@ export default class Webform extends NestedComponent {
         userAgent: navigator.userAgent,
         pathName: window.location.pathname,
         onLine: navigator.onLine,
+        trigger: options.component || {}
       });
 
       const submission = _.cloneDeep(this.submission || {});
