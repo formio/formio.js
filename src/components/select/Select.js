@@ -502,17 +502,17 @@ export default class SelectComponent extends Field {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
 
-        if (this.component.findDatabase && this.component.findTable) {
-          const request = window.indexedDB.open(this.component.findDatabase, 3);
+        if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
 
           request.onupgradeneeded = (event) => {
             if (this.component.customOptions) {
               const db = event.target.result;
-              const objectStore = db.createObjectStore(this.component.findTable, { keyPath: 'myKey', autoIncrement: true });
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: 'myKey', autoIncrement: true });
               objectStore.transaction.oncomplete = () => {
-                const transaction = db.transaction(this.component.findTable, 'readwrite');
+                const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
                 this.component.customOptions.forEach((item) => {
-                  transaction.objectStore(this.component.findTable).put(item);
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
                 });
               };
             }
@@ -524,8 +524,8 @@ export default class SelectComponent extends Field {
 
           request.onsuccess = (event) => {
             const db = event.target.result;
-            const transaction = db.transaction(this.component.findTable, 'readwrite');
-            const objectStore = transaction.objectStore(this.component.findTable);
+            const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
             new Promise((resolve) => {
               const responseItems = [];
               objectStore.getAll().onsuccess = (event) => {
@@ -535,6 +535,9 @@ export default class SelectComponent extends Field {
                 resolve(responseItems);
               };
             }).then((items) => {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
               this.setItems(items);
             });
           };

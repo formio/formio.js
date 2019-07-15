@@ -13,23 +13,21 @@ export default [
     data: {
       values: [
         { label: 'Values', value: 'values' },
-        { label: 'Raw JSON', value: 'json' },
         { label: 'URL', value: 'url' },
         { label: 'Resource', value: 'resource' },
         { label: 'Custom', value: 'custom' },
+        { label: 'Raw JSON', value: 'json' },
         { label: 'IndexedDB', value: 'indexeddb' },
       ],
     },
   },
   {
     type: 'textfield',
-    as: 'indexeddb',
-    editor: 'ace',
     weight: 10,
     input: true,
-    key: 'findDatabase',
+    key: 'indexeddb.database',
     label: 'Database name',
-    tooltip: 'The name of the database you want to get data from.',
+    tooltip: 'The name of the indexeddb database.',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
     },
@@ -37,13 +35,27 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: 'findTable',
-    label: 'Datatable name',
+    key: 'indexeddb.table',
+    label: 'Table name',
     weight: 16,
-    tooltip: 'The name of table the from database you want to get data from.',
+    tooltip: 'The name of table in the indexeddb database.',
     conditional: {
       json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
     }
+  },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 18,
+    input: true,
+    key: 'indexeddb.filter',
+    label: 'Row Filter',
+    tooltip: 'Filter table items that match the object.',
+    defaultValue: {},
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'indexeddb'] },
+    },
   },
   {
     type: 'textarea',
