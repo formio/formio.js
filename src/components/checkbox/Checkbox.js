@@ -317,6 +317,10 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   updateValue(flags, value) {
+    if (!this.hasInput) {
+      return false;
+    }
+
     if (this.isRadioCheckbox) {
       if (value === undefined && this.input.checked) {
         // Force all siblings elements in radio group to unchecked
