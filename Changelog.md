@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - FOR-2436: Sketchpad -> Fixed drawing continuing after mouse is un-clicked outside of canvas
+
 ## 3.23.1
 ### Fixed
  - Fixed usage of destroyed editor on setting value. Fixes WYSIWYG ClearOnHide issues.
