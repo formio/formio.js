@@ -407,13 +407,13 @@ export default class DataGridComponent extends NestedComponent {
     return show;
   }
 
-  updateValue(flags, value) {
+  updateValue(value, flags) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, flags, value);
+    return Component.prototype.updateValue.call(this, value, flags);
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     if (!value) {
       this.dataValue = this.defaultValue;
       this.createRows();

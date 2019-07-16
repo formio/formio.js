@@ -41,9 +41,7 @@ export default class HiddenComponent extends Input {
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    this.dataValue = value;
-    return this.updateValue(flags);
+    return this.updateValue(value, flags);
   }
 
   getValue() {

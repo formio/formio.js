@@ -263,7 +263,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   setValue(value) {
-    this.updateValue({}, value);
+    this.updateValue(value);
     this.setRoot();
   }
 
@@ -414,7 +414,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   updateTree() {
-    this.updateValue({}, this.tree.value);
+    this.updateValue(this.tree.value);
     this.redraw();
   }
 
@@ -429,7 +429,7 @@ export default class TreeComponent extends NestedComponent {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     });
 

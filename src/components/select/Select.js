@@ -619,7 +619,7 @@ export default class SelectComponent extends Field {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue({
+    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
       modified: true
     }));
 
@@ -938,7 +938,7 @@ export default class SelectComponent extends Field {
     if (isNumeric(value)) {
       value = +value;
     }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     const previousValue = this.dataValue;
     if (this.component.multiple && !Array.isArray(value)) {
       value = value ? [value] : [];

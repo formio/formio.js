@@ -420,13 +420,13 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(flags, source) {
+  updateValue(value, flags, source) {
     return this.components.reduce((changed, comp) => {
       // Skip over the source if it is provided.
       if (source && source.id === comp.id) {
         return changed;
       }
-      return comp.updateValue(flags) || changed;
+      return comp.updateValue(null, flags) || changed;
     }, false);
   }
 
@@ -449,7 +449,7 @@ export default class NestedComponent extends Field {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     }, source);
 
@@ -618,7 +618,7 @@ export default class NestedComponent extends Field {
     if (!value) {
       return false;
     }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed);
     }, false);

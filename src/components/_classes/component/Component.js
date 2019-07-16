@@ -820,9 +820,6 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
-
-    // this.restoreValue();
-
     this.autofocus();
 
     // Allow global attach.
@@ -1671,21 +1668,16 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    this.dataValue = value;
-
-    // If we aren't connected to the dom yet, skip updating values.
-    if (!this.attached) {
-      return;
-    }
-
-    flags = this.getFlags.apply(this, arguments);
-    if (!this.hasInput) {
-      return false;
-    }
+    flags = flags || {};
     if (this.component.multiple && !Array.isArray(value)) {
       value = value ? [value] : [];
     }
 
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
+    if (!this.hasInput) {
+      return changed;
+    }
     const isArray = Array.isArray(value);
     if (isArray && this.refs.input && this.refs.input.length !== value.length) {
       this.redraw();
@@ -1695,7 +1687,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return this.updateValue(flags);
+    return changed;
   }
 
   /**
@@ -1746,11 +1738,7 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateValue(flags, value) {
-    if (!this.hasInput) {
-      return false;
-    }
-
+  updateValue(value, flags) {
     flags = flags || {};
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
@@ -2017,13 +2005,6 @@ export default class Component extends Element {
     ];
 
     return rules.some(pred => pred());
-  }
-
-  getFlags() {
-    return (typeof arguments[1] === 'boolean') ? {
-      noUpdateEvent: arguments[1],
-      noValidate: arguments[2]
-    } : (arguments[1] || {});
   }
 
   // Maintain reverse compatibility.

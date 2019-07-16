@@ -91,6 +91,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    */
   setValue(value, flags) {
     value = value || {};
+    flags = flags || {};
     if (typeof value !== 'object') {
       if (typeof value === 'string') {
         value = {
@@ -101,21 +102,19 @@ export default class SelectBoxesComponent extends RadioComponent {
         value = {};
       }
     }
-    flags = this.getFlags.apply(this, arguments);
     if (Array.isArray(value)) {
       _.each(value, (val) => {
         value[val] = true;
       });
     }
-
+    const changed = this.updateValue(value, flags);
     _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
     });
-
-    this.updateValue(flags);
+    return changed;
   }
 
   getView(value) {

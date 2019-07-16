@@ -82,7 +82,7 @@ export default class CheckBoxComponent extends Field {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input) {
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue({
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
       this.addShortcut(this.input);
@@ -180,9 +180,9 @@ export default class CheckBoxComponent extends Field {
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     if (this.setCheckedState(value) !== undefined) {
-      return this.updateValue(flags);
+      return this.updateValue(value, flags);
     }
   }
 

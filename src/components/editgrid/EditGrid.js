@@ -210,7 +210,7 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     });
 

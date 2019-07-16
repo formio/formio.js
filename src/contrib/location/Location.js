@@ -133,12 +133,6 @@ export default class LocationComponent extends TextFieldComponent {
     });
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    flags.noValidate = true;
-    super.setValue(value, flags);
-  }
-
   addMarker(latlng, title, element) {
     element.marker = new google.maps.Marker({
       position: latlng,

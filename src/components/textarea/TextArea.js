@@ -121,9 +121,9 @@ export default class TextAreaComponent extends TextFieldComponent {
   updateEditorValue(newValue) {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
     if ((newValue !== this.dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
-      this.updateValue({
+      this.updateValue(newValue, {
         modified: !this.autoModified
-      }, newValue);
+      });
     }
     this.autoModified = false;
   }
@@ -221,9 +221,9 @@ export default class TextAreaComponent extends TextFieldComponent {
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
-          this.updateValue({
+          this.updateValue(null, {
             modified: true
-          }, null, index);
+          }, index);
         });
     }
 
