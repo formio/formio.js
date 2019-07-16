@@ -227,8 +227,9 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     super.attach(element);
-    this.addEventListener(this.refs.day, 'change', () => this.updateValue());
-    this.addEventListener(this.refs.month, 'change', () => this.updateValue());
+    this.addEventListener(this.refs.day, 'change', () => this.updateValue({
+      modified: true
+    }));
     // TODO: Need to rework this to work with day select as well.
     // Change day max input when month changes.
     this.addEventListener(this.refs.month, 'change', () => {
@@ -238,9 +239,16 @@ export default class DayComponent extends Field {
       if (day > maxDay) {
         this.refs.day.value = this.refs.day.max;
       }
+      this.updateValue({
+        modified: true
+      });
     });
-    this.addEventListener(this.refs.year, 'change', () => this.updateValue());
-    this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(this.refs.year, 'change', () => this.updateValue({
+      modified: true
+    }));
+    this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue({
+      modified: true
+    }));
     this.setValue(this.dataValue);
   }
 

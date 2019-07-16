@@ -573,7 +573,9 @@ export default class SelectComponent extends Field {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue({
+      modified: true
+    }));
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();

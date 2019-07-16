@@ -97,7 +97,9 @@ export default class FormComponent extends Component {
     this.subForm.currentForm = this;
     this.subForm.on('change', () => {
       this.dataValue = this.subForm.getValue();
-      this.triggerChange();
+      this.triggerChange({
+        noEmit: true
+      });
     });
     this.loadSubForm().then(this.redraw.bind(this));
     this.subForm.url = this.formSrc;

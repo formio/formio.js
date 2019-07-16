@@ -221,7 +221,9 @@ export default class TextAreaComponent extends TextFieldComponent {
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
-          this.updateValue(null, null, index);
+          this.updateValue({
+            modified: true
+          }, null, index);
         });
     }
 

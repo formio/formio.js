@@ -1393,12 +1393,8 @@ export default class Component extends Element {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (!flags.noValidate) {
-      this.pristine = false;
-    }
-
     if (flags.modified) {
-      // Add a modified class if this element was manually modified.
+      this.pristine = false;
       this.addClass(this.getElement(), 'formio-modified');
     }
 

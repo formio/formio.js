@@ -82,7 +82,9 @@ export default class CheckBoxComponent extends Field {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input) {
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue({
+        modified: true
+      }));
       this.addShortcut(this.input);
     }
     super.attach(element);

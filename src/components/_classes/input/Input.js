@@ -159,7 +159,9 @@ export default class Input extends Multivalue {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
       // Delay update slightly to give input mask a chance to run.
       setTimeout(() => {
-        return this.updateValue(null, null, index);
+        return this.updateValue({
+          modified: true
+        }, null, index);
       }, 1);
     });
 
@@ -227,7 +229,9 @@ export default class Input extends Multivalue {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue(null, widget.getValue(), index), true);
+    widget.on('update', () => this.updateValue({
+      modified: true
+    }, widget.getValue(), index), true);
     widget.on('redraw', () => this.redraw(), true);
     this._widget = widget;
     return widget;
