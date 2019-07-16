@@ -497,6 +497,52 @@ export default class SelectComponent extends Field {
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
+      case 'indexeddb': {
+        if (!window.indexedDB) {
+          window.alert("Your browser doesn't support current version of indexedDB");
+        }
+
+        if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+
+          request.onupgradeneeded = (event) => {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: 'myKey', autoIncrement: true });
+              objectStore.transaction.oncomplete = () => {
+                const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
+                this.component.customOptions.forEach((item) => {
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () => {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
+            new Promise((resolve) => {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) => {
+                event.target.result.forEach((item) => {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) => {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
+              this.setItems(items);
+            });
+          };
+        }
+      }
     }
   }
   /* eslint-enable max-statements */
