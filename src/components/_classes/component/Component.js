@@ -1979,22 +1979,26 @@ export default class Component extends Element {
     if (this.refs.messageContainer) {
       this.empty(this.refs.messageContainer);
     }
-    if (!this.refs.input) {
-      return;
-    }
     if (message) {
       this.error = {
         component: this.component,
         message: message
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty, this.refs.input);
+      if (this.refs.input) {
+        this.addInputError(message, dirty, this.refs.input);
+      }
     }
     else {
-      this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      if (this.refs.input) {
+        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
       this.error = null;
+    }
+    if (!this.refs.input) {
+      return;
     }
     this.refs.input.forEach(input => {
       input = this.performInputMapping(input);
