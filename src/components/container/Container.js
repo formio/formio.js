@@ -49,8 +49,8 @@ export default class ContainerComponent extends NestedComponent {
     return 'container';
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  hasChanged(newValue, oldValue) {
+    return !_.isEqual(newValue, oldValue);
   }
 
   getValue() {
