@@ -88,8 +88,8 @@ export default class DataGridComponent extends NestedComponent {
     return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  hasChanged(newValue, oldValue) {
+    return !_.isEqual(newValue, oldValue);
   }
 
   build() {

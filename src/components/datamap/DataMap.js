@@ -75,8 +75,8 @@ export default class DataMapComponent extends NestedComponent {
       (Object.keys(this.dataValue).length > _.get(this.component, 'validate.minLength', 0));
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  hasChanged(newValue, oldValue) {
+    return !_.isEqual(newValue, oldValue);
   }
 
   get componentComponents() {
