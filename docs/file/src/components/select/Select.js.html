@@ -1150,26 +1150,31 @@ export default class SelectComponent extends Field {
   }
 
   redraw() {
-    super.redraw();
+    const done = super.redraw();
     this.triggerUpdate();
+    return done;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
+      value = +value;
+    }
+    return super.normalizeValue(value);
   }
 
   setValue(value, flags) {
-    const isNumeric = (val) =&gt; {
-      return !isNaN(parseFloat(val)) &amp;&amp; isFinite(val);
-    };
-    if (isNumeric(value)) {
-      value = +value;
-    }
     flags = flags || {};
     const previousValue = this.dataValue;
-    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = this.hasChanged(value, previousValue);
-    this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -1187,7 +1192,7 @@ export default class SelectComponent extends Field {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.dataValue, true);
+      this.triggerUpdate(value, true);
       return changed;
     }
 
@@ -1199,7 +1204,7 @@ export default class SelectComponent extends Field {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don&apos;t already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
         }
@@ -1232,7 +1237,6 @@ export default class SelectComponent extends Field {
       }
     }
 
-    this.updateOnChange(flags, changed);
     return changed;
   }
 

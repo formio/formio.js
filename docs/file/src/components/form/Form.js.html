@@ -439,7 +439,7 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.form = this.component;
     }
-    super.redraw();
+    return super.redraw();
   }
 
   /**
@@ -484,15 +484,17 @@ export default class FormComponent extends Component {
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on(&apos;change&apos;, () =&gt; {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange({
-          noEmit: true
-        });
+        if (this.subForm) {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange({
+            noEmit: true
+          });
+        }
       });
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
-      this.restoreValue();
       this.redraw();
+      this.restoreValue();
       this.subForm.root = this.root;
       return this.subForm;
     });
@@ -724,13 +726,13 @@ export default class FormComponent extends Component {
   }
 
   createEmitter() {
-    const emiter = new EventEmitter({
+    const emitter = new EventEmitter({
       wildcard: false,
       maxListeners: 0
     });
-    const nativeEmit = emiter.emit;
+    const nativeEmit = emitter.emit;
     const that = this;
-    emiter.emit = function(event, ...args) {
+    emitter.emit = function(event, ...args) {
       const eventType = event.replace(`${that.options.namespace}.`, &apos;&apos;);
       nativeEmit.call(this, event, ...args);
       if (!that.isInternalEvent(eventType)) {
@@ -738,7 +740,7 @@ export default class FormComponent extends Component {
       }
     };
 
-    return emiter;
+    return emitter;
   }
 
   deleteValue() {

@@ -1380,8 +1380,7 @@ export default class Component extends Element {
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
-
-    this.attach(this.element);
+    return this.attach(this.element);
   }
 
   rebuild() {
@@ -1892,11 +1891,6 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    flags = flags || {};
-    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
-
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     if (!this.hasInput) {
@@ -1958,19 +1952,29 @@ export default class Component extends Element {
   }
 
   /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
+      value = value ? [value] : [];
+    }
+    return value;
+  }
+
+  /**
    * Update a value of this component.
    *
    * @param flags
    */
   updateValue(value, flags) {
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue() : value;
+    let newValue = value === undefined || value === null ? this.getValue() : value;
+    newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-    if (this.viewOnly) {
-      this.updateViewOnlyValue(newValue);
-    }
-
     this.updateOnChange(flags, changed);
     return changed;
   }
