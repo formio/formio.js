@@ -490,7 +490,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '').trim();
     };
 
     if (Array.isArray(value)) {
@@ -517,7 +517,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   isEmpty(value) {
-    return super.isEmpty(this.removeBlanks((value || '').trim()));
+    return super.isEmpty(this.removeBlanks(value));
   }
 
   get defaultValue() {
