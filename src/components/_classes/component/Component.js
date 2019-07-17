@@ -777,6 +777,7 @@ export default class Component extends Element {
   }
 
   build(element) {
+    element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
     this.attach(element);

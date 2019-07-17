@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
+import EventEmitter from 'eventemitter2';
 import NativePromise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
@@ -28,24 +29,10 @@ export default class FormComponent extends Component {
     };
   }
 
-  /* eslint-disable max-statements */
   init() {
     super.init();
     this.subForm = null;
     this.formSrc = '';
-    this.subFormReady = new NativePromise((resolve, reject) => {
-      this.subFormReadyResolve = resolve;
-      this.subFormReadyReject = reject;
-    });
-    this.subFormLoaded = false;
-    this.subscribe();
-    const srcOptions = this.getSubOptions();
-
-    // Make sure that if reference is provided, the form must submit.
-    if (this.component.reference) {
-      this.component.submit = true;
-    }
-
     if (this.component.src) {
       this.formSrc = this.component.src;
     }
@@ -62,11 +49,11 @@ export default class FormComponent extends Component {
           this.formSrc += '/project';
         }
         this.formSrc += `/${this.component.project}`;
-        srcOptions.project = this.formSrc;
+        this.options.project = this.formSrc;
       }
       else {
         this.formSrc = Formio.getProjectUrl();
-        srcOptions.project = this.formSrc;
+        this.options.project = this.formSrc;
       }
       if (this.component.form) {
         this.formSrc += `/form/${this.component.form}`;
@@ -89,28 +76,14 @@ export default class FormComponent extends Component {
       }
     }
 
-    // Ensure components is set.
-    this.component.components = this.component.components || [];
-
-    this.subForm = new Form(this.component, srcOptions).instance;
-    this.subForm.root = this.root;
-    this.subForm.currentForm = this;
-    this.subForm.on('change', () => {
-      this.dataValue = this.subForm.getValue();
-      this.triggerChange({
-        noEmit: true
-      });
-    });
-    this.loadSubForm().then(this.redraw.bind(this));
-    this.subForm.url = this.formSrc;
-    this.subForm.nosubmit = this.nosubmit;
-    this.subForm.nosubmit = false;
-    this.restoreValue();
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
+    }
   }
-  /* eslint-enable max-statements */
 
   get dataReady() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   get defaultSchema() {
@@ -122,7 +95,7 @@ export default class FormComponent extends Component {
   }
 
   get ready() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   getSubOptions(options = {}) {
@@ -165,6 +138,7 @@ export default class FormComponent extends Component {
     if (this.options.iconset) {
       options.iconset = this.options.iconset;
     }
+    options.events = this.createEmitter();
     return options;
   }
 
@@ -182,9 +156,7 @@ export default class FormComponent extends Component {
     if (this.builderMode) {
       return NativePromise.resolve();
     }
-    if (this.subForm) {
-      return this.subForm.attach(element);
-    }
+    return this.loadSubForm().then(() => this.subForm.attach(element));
   }
 
   detach() {
@@ -231,12 +203,6 @@ export default class FormComponent extends Component {
     });
   }
 
-  subscribe() {
-    this.on('nosubmit', value => {
-      this.nosubmit = value;
-    }, true);
-  }
-
   destroy() {
     if (this.subForm) {
       this.subForm.destroy();
@@ -257,18 +223,27 @@ export default class FormComponent extends Component {
    * @returns {*|void}
    */
   everyComponent(...args) {
-    return this.subForm.everyComponent(...args);
+    if (this.subForm) {
+      this.subForm.everyComponent(...args);
+    }
   }
 
   /**
-   * Filter a subform to ensure all submit button components are hidden.
+   * Render a subform.
    *
    * @param form
    * @param options
    */
-  filterSubForm() {
+  renderSubForm(form) {
+    if (this.options.builder) {
+      this.element.appendChild(this.ce('div', {
+        class: 'text-muted text-center p-2'
+      }, this.text(form.title)));
+      return;
+    }
+
     // Iterate through every component and hide the submit button.
-    eachComponent(this.component.components, (component) => {
+    eachComponent(form.components, (component) => {
       if (
         (component.type === 'button') &&
         ((component.action === 'submit') || !component.action)
@@ -276,54 +251,58 @@ export default class FormComponent extends Component {
         component.hidden = true;
       }
     });
-  }
 
-  show(...args) {
-    const state = super.show(...args);
-    if (state && !this.subFormLoaded) {
-      this.loadSubForm();
-    }
-
-    return state;
+    // Render the form.
+    return (new Form(form, this.getSubOptions())).ready.then((instance) => {
+      this.subForm = instance;
+      this.subForm.currentForm = this;
+      this.subForm.parent = this;
+      this.subForm.parentVisible = this.visible;
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.triggerChange({
+          noEmit: true
+        });
+      });
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = this.nosubmit;
+      if (this.hasSetValue) {
+        // Re-evaluate default values after they have rendered.
+        const defaultValue = this.defaultValue;
+        const dataValue = this.dataValue;
+        this.dataValue = _.assign(dataValue, defaultValue);
+      }
+      this.restoreValue();
+      this.redraw();
+      this.subForm.root = this.root;
+      return this.subForm;
+    });
   }
 
   /**
    * Load the subform.
    */
-  /* eslint-disable max-statements */
   loadSubForm() {
-    // Don't load form in builder mode.
-    if (this.builderMode) {
-      return this.subFormReady;
+    if (this.builderMode || this.isHidden()) {
+      return NativePromise.resolve();
     }
 
-    if (this.subFormLoaded) {
+    if (this.subFormReady) {
       return this.subFormReady;
-    }
-
-    // Add revision version if set.
-    if (this.component.formRevision || this.component.formRevision === 0) {
-      this.formSrc += `/v/${this.component.formRevision}`;
     }
 
     // Determine if we already have a loaded form object.
     if (this.component && this.component.components && Array.isArray(this.component.components) && this.component.components.length) {
-      this.filterSubForm();
-      this.subFormReadyResolve(this.subForm);
-      return this.subFormReady;
+      this.subFormReady = this.renderSubForm(this.component);
     }
     else if (this.formSrc) {
-      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
-        .then((formObj) => {
-          this.component.components = formObj.components;
-          this.filterSubForm();
-          return this.subFormReadyResolve(this.subForm);
-        })
-        .catch((err) => this.subFormReadyReject(err));
+      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) => {
+        this.component.components = formObj.components;
+        return this.renderSubForm(formObj);
+      });
     }
     return this.subFormReady;
   }
-  /* eslint-enable max-statements */
 
   checkValidity(data, dirty) {
     if (this.subForm) {
@@ -335,14 +314,13 @@ export default class FormComponent extends Component {
 
   checkConditions(data) {
     const visible = super.checkConditions(data);
-    const subForm = this.subForm;
 
     // Return if already hidden
     if (!visible) {
       return visible;
     }
 
-    if (subForm && subForm.hasCondition()) {
+    if (this.subForm && this.subForm.hasCondition()) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 
@@ -364,13 +342,17 @@ export default class FormComponent extends Component {
     }
   }
 
+  get shouldSubmit() {
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference);
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
-    if (this.component.submit) {
-      return this.loadSubForm().then(() => {
+    if (this.shouldSubmit) {
+      return this.subFormReady.then(() => {
         return this.subForm.submitForm().then(result => {
           this.dataValue = result.submission;
           return this.dataValue;
@@ -393,7 +375,7 @@ export default class FormComponent extends Component {
 
     // This submission has already been submitted, so just return the reference data.
     if (submission && submission._id && submission.form) {
-      this.dataValue = this.component.reference ? {
+      this.dataValue = this.shouldSubmit ? {
         _id: submission._id,
         form: submission.form
       } : submission;
@@ -401,15 +383,15 @@ export default class FormComponent extends Component {
     }
 
     // This submission has not been submitted yet.
-    if (this.component.submit) {
-      return this.loadSubForm().then(() => {
+    if (this.shouldSubmit) {
+      return this.subFormReady.then(() => {
         return this.subForm.submitForm()
           .then(result => {
             this.subForm.loading = false;
-            this.dataValue = this.component.reference ? {
+            this.dataValue = {
               _id: result.submission._id,
               form: result.submission.form
-            } : result.submission;
+            };
             return this.dataValue;
           })
           .catch(() => {});
@@ -430,18 +412,15 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags) {
     const changed = super.setValue(submission, flags);
-    const hidden = this.isHidden();
-    let subForm;
-
-    if (hidden) {
-      subForm = this.subFormReady;
-    }
-    else {
-      subForm = this.loadSubForm();
-    }
-
-    subForm.then((form) => {
-        if (submission && submission._id && form.formio && !flags.noload && _.isEmpty(submission.data)) {
+    if (this.subFormReady) {
+      this.subFormReady.then((form) => {
+        if (
+          submission &&
+          submission._id &&
+          form.formio &&
+          !flags.noload &&
+          (_.isEmpty(submission.data) || this.shouldSubmit)
+        ) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setUrl(submissionUrl, this.options);
           form.nosubmit = false;
@@ -451,7 +430,7 @@ export default class FormComponent extends Component {
           form.setValue(submission, flags);
         }
       });
-
+    }
     return changed;
   }
 
@@ -481,16 +460,59 @@ export default class FormComponent extends Component {
 
   set visible(value) {
     super.visible = value;
-    this.updateSubFormVisibility();
+    if (value && this.subFormReady) {
+      this.subFormReady.then(() => this.updateSubFormVisibility());
+    }
   }
 
-  get parentVisible() {
-    return super.parentVisible;
+  isInternalEvent(event) {
+    switch (event) {
+      case 'focus':
+      case 'blur':
+      case 'componentChange':
+      case 'componentError':
+      case 'error':
+      case 'formLoad':
+      case 'languageChanged':
+      case 'render':
+      case 'checkValidity':
+      case 'initialized':
+      case 'submit':
+      case 'submitButton':
+      case 'nosubmit':
+      case 'updateComponent':
+      case 'submitDone':
+      case 'submissionDeleted':
+      case 'requestDone':
+      case 'nextPage':
+      case 'prevPage':
+      case 'wizardNavigationClicked':
+      case 'updateWizardNav':
+      case 'restoreDraft':
+      case 'saveDraft':
+      case 'saveComponent':
+        return true;
+      default:
+        return false;
+    }
   }
 
-  set parentVisible(value) {
-    super.parentVisible = value;
-    this.updateSubFormVisibility();
+  createEmitter() {
+    const emiter = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    const nativeEmit = emiter.emit;
+    const that = this;
+    emiter.emit = function(event, ...args) {
+      const eventType = event.replace(`${that.options.namespace}.`, '');
+      nativeEmit.call(this, event, ...args);
+      if (!that.isInternalEvent(eventType)) {
+        that.emit(eventType, ...args);
+      }
+    };
+
+    return emiter;
   }
 
   deleteValue() {
