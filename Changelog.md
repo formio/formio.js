@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.23.2
+### Changed
+ - Upgraded flatpickr@4.6.2, @babel/core@7.5.4, @babel/preset-env@7.5.4, @babel/plugin-proposal-export-default-from@7.5.2, karma@4.2.0, webpack@4.36.1
+
 ### Fixed
  - FOR-2436: Sketchpad -> Fixed drawing continuing after mouse is un-clicked outside of canvas
- 
+ - FOR-2283: Fixed validations on TextArea and TextField by trimming strings before setting them.
+ - Problem with Infinite loop issues by checking previous values as empty when determining changes.
+ - Issue where HTML5 widget with Select dropdowns would throw an error with the honeypot input.
+
 ### Added
  - FOR-2430: Sketchpad -> Ability to set default editor settings (stroke & fill colors, line width, circle size)
 

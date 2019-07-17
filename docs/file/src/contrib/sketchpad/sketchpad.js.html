@@ -269,10 +269,10 @@ export default class Sketchpad extends Base {
     //default state of SVG editor
     this.state = {
       mode: Object.keys(this.modes)[0],
-      stroke: &apos;#333&apos;,
-      fill: &apos;#ccc&apos;,
-      linewidth: 1,
-      circleSize: 10
+      stroke: this.component.defaultStroke || &apos;#333&apos;,
+      fill: this.component.defaultFill || &apos;#ccc&apos;,
+      linewidth: this.component.defaultLineWidth || 1,
+      circleSize: this.component.defaultCircleSize || 10
     };
 
     this.dimensionsMultiplier = 1;
@@ -601,6 +601,7 @@ export default class Sketchpad extends Base {
         property: &apos;stroke&apos;,
         attach: (element) =&gt; {
           const picker = new Picker(element);
+          element.style.color = this.state.stroke;
           picker.setColor(this.state.stroke, true);
           picker.onChange = (color) =&gt; {
             this.state.stroke = color.rgbaString;
@@ -616,6 +617,7 @@ export default class Sketchpad extends Base {
         property: &apos;fill&apos;,
         attach: (element) =&gt; {
           const picker = new Picker(element);
+          element.style.color = this.state.fill;
           picker.setColor(this.state.fill, true);
           picker.onChange = (color) =&gt; {
             this.state.fill = color.rgbaString;
@@ -841,10 +843,9 @@ export default class Sketchpad extends Base {
         const mouseEnd = (e) =&gt; {
           e.preventDefault();
 
-          this.editSketchpad.canvas.svg
-            .removeEventListener(&apos;mousemove&apos;, mouseDrag);
-          this.editSketchpad.canvas.svg
-            .removeEventListener(&apos;mouseup&apos;, mouseEnd);
+          this.editSketchpad.canvas.svg.removeEventListener(&apos;mousemove&apos;, mouseDrag);
+          this.editSketchpad.canvas.svg.removeEventListener(&apos;mouseup&apos;, mouseEnd);
+          document.removeEventListener(&apos;mouseup&apos;, mouseEnd);
           //change cursor
           let cursor = &apos;default&apos;;
           if (this.modes[this.state.mode].cursor) {
@@ -860,11 +861,10 @@ export default class Sketchpad extends Base {
           }
         };
 
-        this.editSketchpad.canvas.svg
-          .addEventListener(&apos;mousemove&apos;, mouseDrag);
-
-        this.editSketchpad.canvas.svg
-          .addEventListener(&apos;mouseup&apos;, mouseEnd);
+        this.editSketchpad.canvas.svg.addEventListener(&apos;mousemove&apos;, mouseDrag);
+        this.editSketchpad.canvas.svg.addEventListener(&apos;mouseup&apos;, mouseEnd);
+        //this is necessary to stop drawing after mouse is up outside of canvas
+        document.addEventListener(&apos;mouseup&apos;, mouseEnd);
 
         return false;
       });
