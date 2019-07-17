@@ -148,7 +148,7 @@ export default class SelectComponent extends BaseComponent {
     });
 
     input.addEventListener('change', (event) => {
-      autofillInput.value = JSON.stringify(event.detail.value);
+      autofillInput.value = JSON.stringify(event.detail ? event.detail.value : event.target.value);
     });
 
     autofillInput.addEventListener('change', (event) => {
@@ -161,7 +161,9 @@ export default class SelectComponent extends BaseComponent {
   createInput(container) {
     this.selectContainer = container;
     this.selectInput = super.createInput(container);
-    this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
+    if (this.component.widget !== 'html5') {
+      this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
+    }
   }
 
   /**

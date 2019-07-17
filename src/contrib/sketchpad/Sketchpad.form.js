@@ -34,6 +34,40 @@ export default function(...extend) {
           placeholder: '100',
           weight: 20
         },
+        {
+          type: 'textfield',
+          label: 'Default Stroke Color',
+          description: 'Start with # sign',
+          input: true,
+          key: 'defaultStroke',
+          placeholder: '#333',
+          weight: 20
+        },
+        {
+          type: 'textfield',
+          label: 'Default Fill Color',
+          description: 'Start with # sign',
+          input: true,
+          key: 'defaultFill',
+          placeholder: '#ccc',
+          weight: 20
+        },
+        {
+          type: 'number',
+          label: 'Default Line Width',
+          input: true,
+          key: 'defaultLineWidth',
+          placeholder: '1',
+          weight: 20
+        },
+        {
+          type: 'number',
+          label: 'Default Circle Size',
+          input: true,
+          key: 'defaultCircleSize',
+          placeholder: '10',
+          weight: 20
+        },
       ]
     }
   ], ...extend);
