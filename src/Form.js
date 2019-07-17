@@ -25,7 +25,7 @@ export default class Form extends Element {
    * form.build();
    */
   constructor(...args) {
-    super(...args);
+    super(args[0] instanceof HTMLElement ? args[2] : args[1]);
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -259,7 +259,7 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (...args) => {
-  return (new Form(...args).ready);
+  return (new Form(...args)).ready;
 };
 
 Formio.Form = Form;
