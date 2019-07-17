@@ -176,14 +176,14 @@ export default class WebformBuilder extends Component {
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
 
-      // If this is an existing datagrid element, don't make it draggable.
-      if (component.type === 'datagrid' && components.length > 0) {
-        return element;
-      }
-
       // Add container to draggable list.
       if (this.dragula) {
         this.dragula.containers.push(containerElement);
+      }
+
+      // If this is an existing datagrid element, don't make it draggable.
+      if (component.type === 'datagrid' && components.length > 0) {
+        return element;
       }
 
       // Since we added a wrapper, need to return the original element so that we can find the components inside it.
