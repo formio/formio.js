@@ -1752,10 +1752,6 @@ export default class Component extends Element {
     newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-    if (this.viewOnly) {
-      this.updateViewOnlyValue(newValue);
-    }
-
     this.updateOnChange(flags, changed);
     return changed;
   }
