@@ -927,8 +927,9 @@ export default class SelectComponent extends Field {
   }
 
   redraw() {
-    super.redraw();
+    const done = super.redraw();
     this.triggerUpdate();
+    return done;
   }
 
   setValue(value, flags) {

@@ -444,7 +444,7 @@ export default class Wizard extends Webform {
       !_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))
     ) {
       // If visible panels changes we need to build this template again.
-      this.build();
+      this.rebuild();
     }
   }
 

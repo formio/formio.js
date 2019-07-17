@@ -886,7 +886,7 @@ export default class Webform extends NestedComponent {
     }
     this.clear();
     this.setContent(this.element, this.render());
-    this.attach(this.element);
+    return this.attach(this.element);
   }
 
   attach(element) {

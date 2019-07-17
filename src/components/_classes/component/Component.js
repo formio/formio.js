@@ -1157,8 +1157,7 @@ export default class Component extends Element {
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
-
-    this.attach(this.element);
+    return this.attach(this.element);
   }
 
   rebuild() {

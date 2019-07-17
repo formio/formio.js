@@ -206,6 +206,8 @@ export default class FormComponent extends Component {
   destroy() {
     if (this.subForm) {
       this.subForm.destroy();
+      this.subForm = null;
+      this.subFormReady = null;
     }
     super.destroy();
   }
@@ -214,7 +216,7 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.form = this.component;
     }
-    super.redraw();
+    return super.redraw();
   }
 
   /**
@@ -259,21 +261,17 @@ export default class FormComponent extends Component {
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
       this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange({
-          noEmit: true
-        });
+        if (this.subForm) {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange({
+            noEmit: true
+          });
+        }
       });
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
-      if (this.hasSetValue) {
-        // Re-evaluate default values after they have rendered.
-        const defaultValue = this.defaultValue;
-        const dataValue = this.dataValue;
-        this.dataValue = _.assign(dataValue, defaultValue);
-      }
-      this.restoreValue();
       this.redraw();
+      this.restoreValue();
       this.subForm.root = this.root;
       return this.subForm;
     });
