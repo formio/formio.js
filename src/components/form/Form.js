@@ -460,9 +460,16 @@ export default class FormComponent extends Component {
 
   set visible(value) {
     super.visible = value;
-    if (value && this.subFormReady) {
-      this.subFormReady.then(() => this.updateSubFormVisibility());
-    }
+    this.updateSubFormVisibility();
+  }
+
+  get parentVisible() {
+    return super.parentVisible;
+  }
+
+  set parentVisible(value) {
+    super.parentVisible = value;
+    this.updateSubFormVisibility();
   }
 
   isInternalEvent(event) {
