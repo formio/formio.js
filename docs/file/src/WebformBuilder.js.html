@@ -244,6 +244,9 @@ export default class WebformBuilder extends Component {
     else {
       options = arguments[0];
     }
+    // Reset skipInit in case PDFBuilder has set it.
+    options.skipInit = false;
+
     super(null, options);
 
     this.element = element;

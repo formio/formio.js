@@ -236,11 +236,48 @@ export default [
     data: {
       values: [
         { label: &apos;Values&apos;, value: &apos;values&apos; },
-        { label: &apos;Raw JSON&apos;, value: &apos;json&apos; },
         { label: &apos;URL&apos;, value: &apos;url&apos; },
         { label: &apos;Resource&apos;, value: &apos;resource&apos; },
         { label: &apos;Custom&apos;, value: &apos;custom&apos; },
+        { label: &apos;Raw JSON&apos;, value: &apos;json&apos; },
+        { label: &apos;IndexedDB&apos;, value: &apos;indexeddb&apos; },
       ],
+    },
+  },
+  {
+    type: &apos;textfield&apos;,
+    weight: 10,
+    input: true,
+    key: &apos;indexeddb.database&apos;,
+    label: &apos;Database name&apos;,
+    tooltip: &apos;The name of the indexeddb database.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
+    },
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;indexeddb.table&apos;,
+    label: &apos;Table name&apos;,
+    weight: 16,
+    tooltip: &apos;The name of table in the indexeddb database.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
+    }
+  },
+  {
+    type: &apos;textarea&apos;,
+    as: &apos;json&apos;,
+    editor: &apos;ace&apos;,
+    weight: 18,
+    input: true,
+    key: &apos;indexeddb.filter&apos;,
+    label: &apos;Row Filter&apos;,
+    tooltip: &apos;Filter table items that match the object.&apos;,
+    defaultValue: {},
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
     },
   },
   {

@@ -345,7 +345,7 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValueAt(flags, value, index) {
+  updateValueAt(value, flags, index) {
     if (_.get(this.component, &apos;showWordCount&apos;, false)) {
       if (this.refs.wordcount &amp;&amp; this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, &apos;validate.maxWords&apos;, 0), 10);
@@ -360,12 +360,12 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValue(flags, value, index) {
+  updateValue(value, flags, index) {
     flags = flags || {};
     value = value === undefined ? this.dataValue : value;
     index = index || 0;
-    this.triggerUpdateValueAt(flags, value, index);
-    return super.updateValue(flags, value);
+    this.triggerUpdateValueAt(value, flags, index);
+    return super.updateValue(value, flags);
   }
 
   attach(element) {
@@ -382,7 +382,9 @@ export default class Input extends Multivalue {
     this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
       // Delay update slightly to give input mask a chance to run.
       setTimeout(() =&gt; {
-        return this.updateValue(null, null, index);
+        return this.updateValue(null, {
+          modified: true
+        }, index);
       }, 1);
     });
 
@@ -450,7 +452,9 @@ export default class Input extends Multivalue {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on(&apos;update&apos;, () =&gt; this.updateValue(null, widget.getValue(), index), true);
+    widget.on(&apos;update&apos;, () =&gt; this.updateValue(widget.getValue(), {
+      modified: true
+    }, index), true);
     widget.on(&apos;redraw&apos;, () =&gt; this.redraw(), true);
     this._widget = widget;
     return widget;

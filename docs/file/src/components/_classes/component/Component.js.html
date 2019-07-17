@@ -1000,6 +1000,7 @@ export default class Component extends Element {
   }
 
   build(element) {
+    element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
     this.attach(element);
@@ -1043,9 +1044,6 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
-
-    // this.restoreValue();
-
     this.autofocus();
 
     // Allow global attach.
@@ -1616,12 +1614,8 @@ export default class Component extends Element {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (!flags.noValidate) {
-      this.pristine = false;
-    }
-
     if (flags.modified) {
-      // Add a modified class if this element was manually modified.
+      this.pristine = false;
       this.addClass(this.getElement(), &apos;formio-modified&apos;);
     }
 
@@ -1898,21 +1892,16 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    this.dataValue = value;
-
-    // If we aren&apos;t connected to the dom yet, skip updating values.
-    if (!this.attached) {
-      return;
-    }
-
-    flags = this.getFlags.apply(this, arguments);
-    if (!this.hasInput) {
-      return false;
-    }
+    flags = flags || {};
     if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
       value = value ? [value] : [];
     }
 
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
+    if (!this.hasInput) {
+      return changed;
+    }
     const isArray = Array.isArray(value);
     if (isArray &amp;&amp; this.refs.input &amp;&amp; this.refs.input.length !== value.length) {
       this.redraw();
@@ -1922,7 +1911,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return this.updateValue(flags);
+    return changed;
   }
 
   /**
@@ -1973,11 +1962,7 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateValue(flags, value) {
-    if (!this.hasInput) {
-      return false;
-    }
-
+  updateValue(value, flags) {
     flags = flags || {};
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
@@ -2010,18 +1995,18 @@ export default class Component extends Element {
   /**
    * Determine if the value of this component has changed.
    *
-   * @param before
-   * @param after
+   * @param newValue
+   * @param oldValue
    * @return {boolean}
    */
-  hasChanged(before, after) {
+  hasChanged(newValue, oldValue) {
     if (
-      ((before === undefined) || (before === null)) &amp;&amp;
-      ((after === undefined) || (after === null))
+      ((newValue === undefined) || (newValue === null)) &amp;&amp;
+      ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
     }
-    return !_.isEqual(before, after);
+    return !_.isEqual(newValue, oldValue);
   }
 
   /**
@@ -2206,22 +2191,26 @@ export default class Component extends Element {
     if (this.refs.messageContainer) {
       this.empty(this.refs.messageContainer);
     }
-    if (!this.refs.input) {
-      return;
-    }
     if (message) {
       this.error = {
         component: this.component,
         message: message
       };
       this.emit(&apos;componentError&apos;, this.error);
-      this.addInputError(message, dirty, this.refs.input);
+      if (this.refs.input) {
+        this.addInputError(message, dirty, this.refs.input);
+      }
     }
     else {
-      this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+      if (this.refs.input) {
+        this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+      }
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
       this.error = null;
+    }
+    if (!this.refs.input) {
+      return;
     }
     this.refs.input.forEach(input =&gt; {
       input = this.performInputMapping(input);
@@ -2240,13 +2229,6 @@ export default class Component extends Element {
     ];
 
     return rules.some(pred =&gt; pred());
-  }
-
-  getFlags() {
-    return (typeof arguments[1] === &apos;boolean&apos;) ? {
-      noUpdateEvent: arguments[1],
-      noValidate: arguments[2]
-    } : (arguments[1] || {});
   }
 
   // Maintain reverse compatibility.

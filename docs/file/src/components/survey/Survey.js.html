@@ -259,13 +259,15 @@ export default class SurveyComponent extends Field {
     this.loadRefs(element, { input: &apos;multiple&apos; });
     super.attach(element);
     this.refs.input.forEach((input) =&gt; {
-      this.addEventListener(input, &apos;change&apos;, () =&gt; this.updateValue());
+      this.addEventListener(input, &apos;change&apos;, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
     });
     this.setValue(this.dataValue);
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     if (!value) {
       return;
     }
@@ -277,7 +279,7 @@ export default class SurveyComponent extends Field {
         }
       });
     });
-    this.updateValue(flags);
+    this.updateValue(value, flags);
   }
 
   get emptyValue() {

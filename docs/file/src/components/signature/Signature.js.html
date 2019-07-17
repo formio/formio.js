@@ -288,7 +288,7 @@ export default class SignatureComponent extends Input {
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     super.setValue(value, flags);
     if (value &amp;&amp; this.refs.signatureImage &amp;&amp; (!flags.noSign || this.options.readOnly)) {
       this.refs.signatureImage.setAttribute(&apos;src&apos;, value);

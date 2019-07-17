@@ -314,6 +314,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    */
   setValue(value, flags) {
     value = value || {};
+    flags = flags || {};
     if (typeof value !== &apos;object&apos;) {
       if (typeof value === &apos;string&apos;) {
         value = {
@@ -324,21 +325,19 @@ export default class SelectBoxesComponent extends RadioComponent {
         value = {};
       }
     }
-    flags = this.getFlags.apply(this, arguments);
     if (Array.isArray(value)) {
       _.each(value, (val) =&gt; {
         value[val] = true;
       });
     }
-
+    const changed = this.updateValue(value, flags);
     _.each(this.refs.input, (input) =&gt; {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
     });
-
-    this.updateValue(flags);
+    return changed;
   }
 
   getView(value) {

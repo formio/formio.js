@@ -229,7 +229,6 @@ import NativePromise from &apos;native-promise-only&apos;;
 import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
-import copy from &apos;shallow-copy&apos;;
 import providers from &apos;./providers&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
@@ -241,6 +240,18 @@ const { fetch, Headers } = fetchPonyfill({
 const isBoolean = (val) =&gt; typeof val === typeof true;
 const isNil = (val) =&gt; val === null || val === undefined;
 const isObject = (val) =&gt; val &amp;&amp; typeof val === &apos;object&apos;;
+
+function cloneResponse(response) {
+  const copy = _cloneDeep(response);
+
+  if (Array.isArray(response)) {
+    copy.skip = response.skip;
+    copy.limit = response.limit;
+    copy.serverCount = response.serverCount;
+  }
+
+  return copy;
+}
 
 /**
  * The Formio interface class.
@@ -927,7 +938,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return NativePromise.resolve(_cloneDeep(Formio.cache[cacheKey]));
+      return NativePromise.resolve(cloneResponse(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -1045,8 +1056,8 @@ export default class Formio {
 
           // Return the result with the headers.
           return {
-            result: result,
-            headers: headers
+            result,
+            headers,
           };
         });
       })
@@ -1060,20 +1071,7 @@ export default class Formio {
           Formio.cache[cacheKey] = result;
         }
 
-        let resultCopy = {};
-
-        // Shallow copy result so modifications don&apos;t end up in cache
-        if (Array.isArray(result)) {
-          resultCopy = result.map(copy);
-          resultCopy.skip = result.skip;
-          resultCopy.limit = result.limit;
-          resultCopy.serverCount = result.serverCount;
-        }
-        else {
-          resultCopy = copy(result);
-        }
-
-        return resultCopy;
+        return cloneResponse(result);
       })
       .catch((err) =&gt; {
         if (err === &apos;Bad Token&apos;) {

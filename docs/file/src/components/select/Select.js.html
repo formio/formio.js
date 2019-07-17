@@ -720,6 +720,52 @@ export default class SelectComponent extends Field {
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
+      case &apos;indexeddb&apos;: {
+        if (!window.indexedDB) {
+          window.alert(&quot;Your browser doesn&apos;t support current version of indexedDB&quot;);
+        }
+
+        if (this.component.indexeddb &amp;&amp; this.component.indexeddb.database &amp;&amp; this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+
+          request.onupgradeneeded = (event) =&gt; {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: &apos;myKey&apos;, autoIncrement: true });
+              objectStore.transaction.oncomplete = () =&gt; {
+                const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+                this.component.customOptions.forEach((item) =&gt; {
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () =&gt; {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) =&gt; {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
+            new Promise((resolve) =&gt; {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) =&gt; {
+                event.target.result.forEach((item) =&gt; {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) =&gt; {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
+              this.setItems(items);
+            });
+          };
+        }
+      }
     }
   }
   /* eslint-enable max-statements */
@@ -796,7 +842,9 @@ export default class SelectComponent extends Field {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue());
+    this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue(null, {
+      modified: true
+    }));
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
@@ -1113,7 +1161,7 @@ export default class SelectComponent extends Field {
     if (isNumeric(value)) {
       value = +value;
     }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     const previousValue = this.dataValue;
     if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
       value = value ? [value] : [];
