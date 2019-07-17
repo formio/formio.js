@@ -503,13 +503,13 @@ export default class FormComponent extends Component {
   }
 
   createEmitter() {
-    const emiter = new EventEmitter({
+    const emitter = new EventEmitter({
       wildcard: false,
       maxListeners: 0
     });
-    const nativeEmit = emiter.emit;
+    const nativeEmit = emitter.emit;
     const that = this;
-    emiter.emit = function(event, ...args) {
+    emitter.emit = function(event, ...args) {
       const eventType = event.replace(`${that.options.namespace}.`, '');
       nativeEmit.call(this, event, ...args);
       if (!that.isInternalEvent(eventType)) {
@@ -517,7 +517,7 @@ export default class FormComponent extends Component {
       }
     };
 
-    return emiter;
+    return emitter;
   }
 
   deleteValue() {
