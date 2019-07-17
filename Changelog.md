@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - FOR-2430: Sketchpad -> Ability to set default editor settings (stroke & fill colors, line width, circle size)
+
 ## 3.23.1
 ### Fixed
  - Fixed usage of destroyed editor on setting value. Fixes WYSIWYG ClearOnHide issues.
