@@ -166,15 +166,7 @@ export default class TabsComponent extends NestedComponent {
     this.empty(this.tabs[index]);
     this.components.map((comp) => comp.destroy());
     this.components = [];
-    const components = this.hook('addComponents', tab.components, this);
-    components.forEach((component) => this.addComponent(
-      component,
-      this.tabs[index],
-      this.data,
-      null,
-      null,
-      state,
-    ));
+
     this.restoreValue();
     if (this.tabLinks.length <= index) {
       return;
@@ -188,6 +180,16 @@ export default class TabsComponent extends NestedComponent {
     this.addClass(this.tabLinks[index], 'active')
       .addClass(this.tabLinks[index].tabLink, 'active')
       .addClass(this.tabs[index], 'active');
+
+    const components = this.hook('addComponents', tab.components, this);
+    components.forEach((component) => this.addComponent(
+      component,
+      this.tabs[index],
+      this.data,
+      null,
+      null,
+      state,
+    ));
 
     this.triggerChange();
   }
