@@ -84,14 +84,13 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   /**
-   * Set the value of this component.
+   * Normalize values coming into updateValue.
    *
    * @param value
-   * @param flags
+   * @return {*}
    */
-  setValue(value, flags) {
+  normalizeValue(value) {
     value = value || {};
-    flags = flags || {};
     if (typeof value !== 'object') {
       if (typeof value === 'string') {
         value = {
@@ -107,7 +106,19 @@ export default class SelectBoxesComponent extends RadioComponent {
         value[val] = true;
       });
     }
+
+    return value;
+  }
+
+  /**
+   * Set the value of this component.
+   *
+   * @param value
+   * @param flags
+   */
+  setValue(value, flags) {
     const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;

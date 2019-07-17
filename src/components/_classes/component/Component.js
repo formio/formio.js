@@ -1668,11 +1668,6 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    flags = flags || {};
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
-
     const changed = this.updateValue(value, flags);
     value = this.dataValue;
     if (!this.hasInput) {
@@ -1734,12 +1729,26 @@ export default class Component extends Element {
   }
 
   /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple && !Array.isArray(value)) {
+      value = value ? [value] : [];
+    }
+    return value;
+  }
+
+  /**
    * Update a value of this component.
    *
    * @param flags
    */
   updateValue(value, flags) {
     flags = flags || {};
+    value = this.normalizeValue(value);
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;

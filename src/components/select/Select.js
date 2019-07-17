@@ -932,22 +932,26 @@ export default class SelectComponent extends Field {
     return done;
   }
 
-  setValue(value, flags) {
-    const isNumeric = (val) => {
-      return !isNaN(parseFloat(val)) && isFinite(val);
-    };
-    if (isNumeric(value)) {
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (!isNaN(parseFloat(value)) && isFinite(value)) {
       value = +value;
     }
+    return super.normalizeValue(value);
+  }
+
+  setValue(value, flags) {
     flags = flags || {};
     const previousValue = this.dataValue;
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = this.hasChanged(value, previousValue);
-    this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -965,7 +969,7 @@ export default class SelectComponent extends Field {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.dataValue, true);
+      this.triggerUpdate(value, true);
       return changed;
     }
 
@@ -977,7 +981,7 @@ export default class SelectComponent extends Field {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
@@ -1010,7 +1014,6 @@ export default class SelectComponent extends Field {
       }
     }
 
-    this.updateOnChange(flags, changed);
     return changed;
   }
 
