@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+ - FOR-2436: Sketchpad -> Fixed drawing continuing after mouse is un-clicked outside of canvas
+ 
 ### Added
  - FOR-2430: Sketchpad -> Ability to set default editor settings (stroke & fill colors, line width, circle size)
 
