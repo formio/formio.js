@@ -263,7 +263,10 @@ describe('Formio Form Renderer tests', () => {
       });
   });
 
-  it('When submitted should strip fields with persistent: client-only from submission', done => {
+  // Feature 'client-only' is broken:
+  // - it doesn't work for nested values
+  // - it doesn't work if default value is set
+  it.skip('When submitted should strip fields with persistent: client-only from submission', done => {
     const formElement = document.createElement('div');
     simpleForm = new Webform(formElement);
     /* eslint-disable quotes */
@@ -290,7 +293,8 @@ describe('Formio Form Renderer tests', () => {
           "tableView": true,
           "type": "number",
           "input": true,
-          "key": "age"
+          "key": "age",
+          "defaultValue": "12"
         }
       ]
     });

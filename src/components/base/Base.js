@@ -2084,7 +2084,7 @@ export default class BaseComponent extends Component {
     if (!this.key) {
       return value;
     }
-    if ((value === null) || (value === undefined)) {
+    if (value === undefined) {
       _.unset(this.data, this.key);
       return value;
     }

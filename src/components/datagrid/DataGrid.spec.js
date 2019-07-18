@@ -54,7 +54,8 @@ describe('DataGrid Component', function() {
         },
         {
           make: '',
-          model: ''
+          model: '',
+          year: null
         }
       ]);
       done();
@@ -87,8 +88,8 @@ describe('DataGrid Component', function() {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '' },
-            { name: '' }
+            { name: '', age: null },
+            { name: '', age: null }
           ]);
           done();
         }, done)
