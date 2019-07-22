@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.23.3
+### Changed
+ - Upgraded lodash@4.17.15, vanilla-picker@2.9.1, @babel/cli@7.5.5, @babel/core@7.5.5, @babel/plugin-proposal-class-properties@7.5.5, @babel/preset-env@7.5.5, mocha@6.2.0
+
+### Fixed
+ - FOR-2451: Fixed problem with PDF rendering and all hidden subforms not resolving correctly.
+ - Problems with npm scripts not executable with other OS platforms.
+
+### Added
+ - FOR-2443: Added the button component to the button emit events.
+
 ## 3.23.2
 ### Changed
  - Upgraded flatpickr@4.6.2, @babel/core@7.5.4, @babel/preset-env@7.5.4, @babel/plugin-proposal-export-default-from@7.5.2, karma@4.2.0, webpack@4.36.1
