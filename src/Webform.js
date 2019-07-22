@@ -1193,7 +1193,7 @@ export default class Webform extends NestedComponent {
         browserName: navigator.appName,
         userAgent: navigator.userAgent,
         pathName: window.location.pathname,
-        onLine: navigator.onLine,
+        onLine: navigator.onLine
       });
 
       const submission = _.cloneDeep(this.submission || {});
