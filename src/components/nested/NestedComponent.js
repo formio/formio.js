@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 
@@ -187,6 +187,10 @@ export default class NestedComponent extends BaseComponent {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
+    if (state && state.persist) {
+      comp.persist = state.persist;
+      delete state.persist;
+    }
     comp.build(state);
     comp.isBuilt = true;
     if (component.internal) {
@@ -254,7 +258,8 @@ export default class NestedComponent extends BaseComponent {
    */
   removeComponent(component, components) {
     components = components || this.components;
-    const state = component.destroy();
+    const state = component.destroy() || {};
+    state.persist = component.persist;
     const element = component.getElement();
     if (element && element.parentNode) {
       this.removeChildFrom(element, element.parentNode);
@@ -450,7 +455,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeNext()));
   }
 
   /**
@@ -459,7 +464,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -560,7 +565,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   get dataReady() {
-    return Promise.all(this.getComponents().map((component) => component.dataReady));
+    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setNestedValue(component, value, flags, changed) {

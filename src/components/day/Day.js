@@ -108,6 +108,15 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
+  /**
+   * The empty value for day component.
+   *
+   * @return {'00/00/0000'}
+   */
+  get emptyValue() {
+    return '00/00/0000';
+  }
+
   getInputValue(input, defaultValue) {
     if (_.isObject(input)) {
       const value = parseInt(input.value, 10);
@@ -173,6 +182,9 @@ export default class DayComponent extends BaseComponent {
       step: '1',
       min: '1',
       max: '31',
+      oninput: function() {
+        this.value = (parseInt(this.value, 10) || 0);
+      },
       placeholder: _.get(this.component, 'fields.day.placeholder') || (this.hideInputLabels ? this.t('Day') : ''),
       id
     });
@@ -273,6 +285,9 @@ export default class DayComponent extends BaseComponent {
       type: 'number',
       step: '1',
       min: '1',
+      oninput: function() {
+        this.value = (parseInt(this.value, 10) || 0);
+      },
       placeholder: _.get(this.component, 'fields.year.placeholder') || (this.hideInputLabels ? this.t('Year') : ''),
       id
     });
@@ -394,22 +409,27 @@ export default class DayComponent extends BaseComponent {
     if (!value || value === 'Invalid date') {
       return null;
     }
+
+    // Calculate the value parts.
     const parts = value.split('/');
-    let day, month, year;
-    if (this.component.dayFirst && this.showDay) {
+    let day;
+    if (this.component.dayFirst) {
       day = parts.shift();
+    }
+    const month = parts.shift();
+    if (!this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const year = parts.shift();
+
+    // Now set the values.
+    if (this.showDay) {
       this.dayInput.value = day === '00' ? undefined : parseInt(day, 10);
     }
     if (this.showMonth) {
-      month = parts.shift();
       this.monthInput.value = month === '00' ? undefined : parseInt(month, 10);
     }
-    if (!this.component.dayFirst && this.showDay) {
-      day = parts.shift();
-      this.dayInput.value = day === '00' ? undefined : parseInt(day, 10);
-    }
     if (this.showYear) {
-      year = parts.shift();
       this.yearInput.value = year === '0000' ? undefined : parseInt(year, 10);
     }
   }

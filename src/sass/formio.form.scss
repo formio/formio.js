@@ -52,9 +52,12 @@
 }
 
 /* Force native + Ace textareas to use pre-wrap whitespace in readonly mode (preserves visual linebreaks) */
-.formio-disabled-input.formio-component-nativeTextArea > .well,
-.formio-disabled-input.formio-component-ace            > .well {
+.formio-disabled-input.formio-component-textarea > .well {
   white-space: pre-wrap;
+}
+
+.formio-disabled-input.formio-component-textarea > .well * {
+  white-space: initial;
 }
 
 /* Force all textareas to break long words when overflowing (if width is set) */
@@ -154,6 +157,14 @@ td > .form-group {
 
 .signature-pad-body {
   overflow: hidden;
+}
+
+.signature-pad-body img {
+  width: unset !important;
+  max-width: 100%;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .signature-pad-canvas {
@@ -906,6 +917,8 @@ body.formio-dialog-open {
 }
 
 .formio-sketchpad-toolbar-button {
+  overflow: visible;
+
   &:hover {
     background: #e6e6e6;
   }
@@ -995,6 +1008,7 @@ body.formio-dialog-open {
 
 .formio-edit-sketchpad-background svg {
   background: #ffffff;
+  border: 1px dashed #999;
 }
 
 .formio-view-sketchpad-canvas,

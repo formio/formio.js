@@ -219,7 +219,7 @@ import Components from &apos;./components/Components&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import { getComponent, bootstrapVersion, eachComponent } from &apos;./utils/utils&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 require(&apos;./components/builder&apos;);
 
@@ -248,7 +248,7 @@ export default class WebformBuilder extends Webform {
       }
     });
 
-    this.builderReady = new Promise((resolve) =&gt; {
+    this.builderReady = new NativePromise((resolve) =&gt; {
       this.builderReadyResolve = resolve;
     });
 
@@ -451,7 +451,7 @@ export default class WebformBuilder extends Webform {
       return;
     }
     let remove = true;
-    if (component.type === &apos;components&apos; &amp;&amp; component.getComponents().length &gt; 0) {
+    if ((typeof component.getComponents === &apos;function&apos;) &amp;&amp; component.getComponents().length &gt; 0) {
       const message = &apos;Removing this component will also remove all of its children. Are you sure you want to do this?&apos;;
       remove = window.confirm(this.t(message));
     }
@@ -508,7 +508,10 @@ export default class WebformBuilder extends Webform {
         &apos;placeholder&apos;,
         &apos;tooltip&apos;,
         &apos;validate&apos;,
-        &apos;disabled&apos;
+        &apos;disabled&apos;,
+        &apos;fields.day.required&apos;,
+        &apos;fields.month.required&apos;,
+        &apos;fields.year.required&apos;,
       ]));
     }
 
@@ -641,7 +644,10 @@ export default class WebformBuilder extends Webform {
       &apos;placeholder&apos;,
       &apos;tooltip&apos;,
       &apos;validate&apos;,
-      &apos;disabled&apos;
+      &apos;disabled&apos;,
+      &apos;fields.day.required&apos;,
+      &apos;fields.month.required&apos;,
+      &apos;fields.year.required&apos;,
     ]));
 
     // Create the form instance.

@@ -4,6 +4,7 @@ import Picker from 'vanilla-picker';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import editForm from './Sketchpad.form';
+import NativePromise from 'native-promise-only';
 
 export default class Sketchpad extends Base {
   static schema(...extend) {
@@ -44,7 +45,7 @@ export default class Sketchpad extends Base {
     //TODO maybe change this criteria to AND instead of OR, use defined dimension and default another missing dimension to value from viewBox (in this case will need to use promise in case of any missing dimension
     this.useBackgroundDimensions = !this.component.width || !this.component.height;
     //initialize backgroundReady promise
-    const backgroundReadyPromise = new Promise((resolve, reject) => {
+    const backgroundReadyPromise = new NativePromise((resolve, reject) => {
       this.backgroundReady = {
         resolve,
         reject
@@ -54,10 +55,10 @@ export default class Sketchpad extends Base {
     //default state of SVG editor
     this.state = {
       mode: Object.keys(this.modes)[0],
-      stroke: '#333',
-      fill: '#ccc',
-      linewidth: 1,
-      circleSize: 10
+      stroke: this.component.defaultStroke || '#333',
+      fill: this.component.defaultFill || '#ccc',
+      linewidth: this.component.defaultLineWidth || 1,
+      circleSize: this.component.defaultCircleSize || 10
     };
 
     this.dimensionsMultiplier = 1;
@@ -386,6 +387,7 @@ export default class Sketchpad extends Base {
         property: 'stroke',
         attach: (element) => {
           const picker = new Picker(element);
+          element.style.color = this.state.stroke;
           picker.setColor(this.state.stroke, true);
           picker.onChange = (color) => {
             this.state.stroke = color.rgbaString;
@@ -401,6 +403,7 @@ export default class Sketchpad extends Base {
         property: 'fill',
         attach: (element) => {
           const picker = new Picker(element);
+          element.style.color = this.state.fill;
           picker.setColor(this.state.fill, true);
           picker.onChange = (color) => {
             this.state.fill = color.rgbaString;
@@ -626,10 +629,9 @@ export default class Sketchpad extends Base {
         const mouseEnd = (e) => {
           e.preventDefault();
 
-          this.editSketchpad.canvas.svg
-            .removeEventListener('mousemove', mouseDrag);
-          this.editSketchpad.canvas.svg
-            .removeEventListener('mouseup', mouseEnd);
+          this.editSketchpad.canvas.svg.removeEventListener('mousemove', mouseDrag);
+          this.editSketchpad.canvas.svg.removeEventListener('mouseup', mouseEnd);
+          document.removeEventListener('mouseup', mouseEnd);
           //change cursor
           let cursor = 'default';
           if (this.modes[this.state.mode].cursor) {
@@ -645,11 +647,10 @@ export default class Sketchpad extends Base {
           }
         };
 
-        this.editSketchpad.canvas.svg
-          .addEventListener('mousemove', mouseDrag);
-
-        this.editSketchpad.canvas.svg
-          .addEventListener('mouseup', mouseEnd);
+        this.editSketchpad.canvas.svg.addEventListener('mousemove', mouseDrag);
+        this.editSketchpad.canvas.svg.addEventListener('mouseup', mouseEnd);
+        //this is necessary to stop drawing after mouse is up outside of canvas
+        document.addEventListener('mouseup', mouseEnd);
 
         return false;
       });
@@ -825,8 +826,8 @@ export default class Sketchpad extends Base {
     //fix weird issue in Chrome when it returned '<svg:svg>...</svg:svg>' string after serialization instead of <svg>...</svg>
     svgMarkup = svgMarkup.replace('<svg:svg', '<svg').replace('</svg:svg>', '</svg>');
 
-    this.editSketchpad.background.container.style['min-width'] = `${this.dimensions.width}px`;
-    this.editSketchpad.background.container.style['min-height'] = `${this.dimensions.height}px`;
+    this.editSketchpad.background.container.style.minWidth = `${this.dimensions.width}px`;
+    this.editSketchpad.background.container.style.minHeight = `${this.dimensions.height}px`;
 
     //set background containers content to SVG markup
     this.viewSketchpad.background.container.innerHTML = svgMarkup;
@@ -1021,7 +1022,7 @@ export default class Sketchpad extends Base {
     //change width of background svg so it matches editor SVG
     this.editSketchpad.background.svg.style.width = width;
     this.editSketchpad.background.svg.style.height = height;
-    this.editSketchpad.background.container.style['min-width'] = width;
-    this.editSketchpad.background.container.style['min-height'] = height;
+    this.editSketchpad.background.container.style.minWidth = `${width}px`;
+    this.editSketchpad.background.container.style.minHeight = `${height}px`;
   }
 }

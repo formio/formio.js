@@ -217,6 +217,7 @@ import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import TextAreaComponent from &apos;../textarea/TextArea&apos;;
 import { withSwitch } from &apos;../../utils/utils.js&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 const EDIT = Symbol(&apos;edit&apos;);
 const VIEW = Symbol(&apos;view&apos;);
@@ -443,7 +444,7 @@ export default class ModalEditComponent extends TextAreaComponent {
     return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;InlineEditor&apos;, CKEDITOR, true)
       .then(() =&gt; {
         if (!element.parentNode) {
-          return Promise.reject();
+          return NativePromise.reject();
         }
         return InlineEditor.create(element, settings).then(editor =&gt; {
           editor.model.document.on(&apos;change&apos;, () =&gt; onChange(editor.data.get()));

@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/xhr.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import _trim from &apos;lodash/trim&apos;;
 const XHR = {
   trim(text) {
@@ -222,7 +222,7 @@ const XHR = {
     return items.filter(item =&gt; !!item).map(XHR.trim).join(&apos;/&apos;);
   },
   upload(formio, type, xhrCb, file, fileName, dir, progressCallback) {
-    return new Promise(((resolve, reject) =&gt; {
+    return new NativePromise(((resolve, reject) =&gt; {
       // Send the pre response to sign the upload.
       const pre = new XMLHttpRequest();
 

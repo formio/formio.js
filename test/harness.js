@@ -234,7 +234,7 @@ const Harness = {
   testComponent(component, test, done) {
     let testBad = true;
     component.on('componentChange', (change) => {
-      const valid = component.checkValidity();
+      const valid = component.checkValidity(null, true);
       if (valid && !testBad) {
         assert.equal(change.value, test.good.value);
         done();

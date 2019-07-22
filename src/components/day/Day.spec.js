@@ -81,7 +81,7 @@ describe('Day Component', () => {
       });
 
       component.on('componentChange', () => {
-        component.checkValidity();
+        component.checkValidity(null, true);
       });
 
       component.setValue('3/40/2017');

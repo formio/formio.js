@@ -63,6 +63,14 @@ export default [
     weight: 20
   },
   {
+    type: 'textfield',
+    input: true,
+    key: 'fileNameTemplate',
+    label: 'File Name Template',
+    tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
+    weight: 25
+  },
+  {
     type: 'checkbox',
     input: true,
     key: 'image',

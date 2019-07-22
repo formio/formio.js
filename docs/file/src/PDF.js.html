@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDF.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 import _ from &apos;lodash&apos;;
 
@@ -224,10 +224,13 @@ export default class PDF extends Webform {
     super(element, options);
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) =&gt; (this.iframeReadyResolve = resolve));
+    this.iframeReady = new NativePromise((resolve) =&gt; (this.iframeReadyResolve = resolve));
   }
 
   postMessage(message) {
+    if (!message || !this.iframeReady) {
+      return;
+    }
     if (!message.type) {
       message.type = &apos;iframe-data&apos;;
     }
@@ -266,6 +269,8 @@ export default class PDF extends Webform {
   }
 
   setForm(form) {
+    const formCopy = _.cloneDeep(form);
+
     return super.setForm(form).then(() =&gt; {
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -273,7 +278,10 @@ export default class PDF extends Webform {
         form.base = this.formio.base;
         this.postMessage({ name: &apos;token&apos;, data: this.formio.getToken() });
       }
-      this.postMessage({ name: &apos;form&apos;, data: form });
+
+      this.postMessage({ name: &apos;form&apos;, data: formCopy });
+
+      return form;
     });
   }
 
@@ -365,7 +373,7 @@ export default class PDF extends Webform {
 
     if (
       !this.options.readOnly &amp;&amp;
-      _.find(this.form.components, (component) =&gt; component.type === &apos;button&apos; &amp;&amp; component.action === &apos;submit&apos;)
+      _.find(this.form.components, (component) =&gt; component.type === &apos;button&apos; &amp;&amp; component.action === &apos;submit&apos; &amp;&amp; !component.hidden)
     ) {
       this.submitButton = this.ce(&apos;button&apos;, {
         type: &apos;button&apos;,
@@ -388,7 +396,7 @@ export default class PDF extends Webform {
 window.addEventListener(&apos;message&apos;, (event) =&gt; {
   let eventData = null;
   try {
-    eventData = JSON.parse(event.data);
+    eventData = typeof event.data === &apos;string&apos; ? JSON.parse(event.data) : event.data;
   }
   catch (err) {
     eventData = null;

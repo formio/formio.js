@@ -225,7 +225,7 @@ export default class TextFieldComponent extends BaseComponent {
 
   isEmpty(value) {
     if (!this.isMultipleMasksField) {
-      return super.isEmpty(value);
+      return super.isEmpty((value || '').toString().trim());
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
   }

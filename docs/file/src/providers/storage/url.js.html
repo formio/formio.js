@@ -212,11 +212,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/url.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 
 const url = (formio) =&gt; {
   const xhrRequest = (url, name, query, data, options, onprogress) =&gt; {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === &apos;string&apos;);
       const fd = new FormData();
@@ -332,7 +332,7 @@ const url = (formio) =&gt; {
       }
 
       // Return the original as there is nothing to do.
-      return Promise.resolve(file);
+      return NativePromise.resolve(file);
     }
   };
 };

@@ -216,6 +216,7 @@
 import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Formio from &apos;../../Formio&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class SelectComponent extends BaseComponent {
   static schema(...extend) {
@@ -277,7 +278,7 @@ export default class SelectComponent extends BaseComponent {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) =&gt; {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
       this.itemsLoadedResolve = resolve;
     });
   }
@@ -353,9 +354,30 @@ export default class SelectComponent extends BaseComponent {
     return data;
   }
 
+  addAutofillHoneyInput(container, input) {
+    const autofillInput = this.ce(&apos;input&apos;, {
+      type: &apos;text&apos;,
+      name: this.info.attr.name,
+      style: &apos;display: none&apos;,
+    });
+
+    input.addEventListener(&apos;change&apos;, (event) =&gt; {
+      autofillInput.value = JSON.stringify(event.detail ? event.detail.value : event.target.value);
+    });
+
+    autofillInput.addEventListener(&apos;change&apos;, (event) =&gt; {
+      this.updateValue({}, JSON.parse(event.target.value));
+    });
+
+    container.appendChild(autofillInput);
+  }
+
   createInput(container) {
     this.selectContainer = container;
     this.selectInput = super.createInput(container);
+    if (this.component.widget !== &apos;html5&apos;) {
+      this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
+    }
   }
 
   /**
@@ -915,7 +937,15 @@ export default class SelectComponent extends BaseComponent {
       this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
         const items = this.choices._store.activeItems;
         if (!items.length) {
-          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
+          this.choices._addItem({
+            value: placeholderValue,
+            label: placeholderValue,
+            choiceId: 0,
+            groupId: -1,
+            customProperties: null,
+            placeholder: true,
+            keyCode: null,
+          });
         }
       });
     }

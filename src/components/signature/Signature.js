@@ -206,6 +206,10 @@ export default class SignatureComponent extends BaseComponent {
     // disable the signature pad if the form in ViewOnly mode
     if (this.shouldDisable || this.viewOnly) {
       this.disabled = true;
+
+      // In view mode, ensure the padBody background color is set
+      // in case the source image is a different aspect ratio
+      this.padBody.style.backgroundColor = this.component.backgroundColor;
     }
 
     this.autofocus();

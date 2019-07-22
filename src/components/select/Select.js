@@ -2,6 +2,7 @@ import Choices from 'choices.js/public/assets/scripts/choices.js';
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
+import NativePromise from 'native-promise-only';
 
 export default class SelectComponent extends BaseComponent {
   static schema(...extend) {
@@ -63,7 +64,7 @@ export default class SelectComponent extends BaseComponent {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) => {
+    this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
   }
@@ -139,9 +140,30 @@ export default class SelectComponent extends BaseComponent {
     return data;
   }
 
+  addAutofillHoneyInput(container, input) {
+    const autofillInput = this.ce('input', {
+      type: 'text',
+      name: this.info.attr.name,
+      style: 'display: none',
+    });
+
+    input.addEventListener('change', (event) => {
+      autofillInput.value = JSON.stringify(event.detail ? event.detail.value : event.target.value);
+    });
+
+    autofillInput.addEventListener('change', (event) => {
+      this.updateValue({}, JSON.parse(event.target.value));
+    });
+
+    container.appendChild(autofillInput);
+  }
+
   createInput(container) {
     this.selectContainer = container;
     this.selectInput = super.createInput(container);
+    if (this.component.widget !== 'html5') {
+      this.addAutofillHoneyInput(this.selectContainer, this.selectInput);
+    }
   }
 
   /**
@@ -701,7 +723,15 @@ export default class SelectComponent extends BaseComponent {
       this.addEventListener(input, 'removeItem', () => {
         const items = this.choices._store.activeItems;
         if (!items.length) {
-          this.choices._addItem(placeholderValue, placeholderValue, 0, -1, null, true, null);
+          this.choices._addItem({
+            value: placeholderValue,
+            label: placeholderValue,
+            choiceId: 0,
+            groupId: -1,
+            customProperties: null,
+            placeholder: true,
+            keyCode: null,
+          });
         }
       });
     }

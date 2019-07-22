@@ -151,10 +151,12 @@ export default class CalendarWidget extends InputWidget {
 
   addSuffix(container) {
     const suffix = this.ce('span', {
-      class: 'input-group-addon',
+      class: 'input-group-addon input-group-append',
       style: 'cursor: pointer'
     });
-    suffix.appendChild(this.getIcon(this.settings.enableDate ? 'calendar' : 'time'));
+    suffix.appendChild(this.ce('span', {
+      class: 'input-group-text'
+    }, this.getIcon(this.settings.enableDate ? 'calendar' : 'time')));
     this.addEventListener(suffix, 'click', () => {
       if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
         this.calendar.open();

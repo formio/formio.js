@@ -6,11 +6,11 @@ import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
-import Promise from 'native-promise-only';
+import NativePromise from 'native-promise-only';
 import { getValue } from './formUtils';
 import stringHash from 'string-hash';
 const { fetch } = fetchPonyfill({
-  Promise: Promise
+  Promise: NativePromise
 });
 
 export * from './formUtils';
@@ -42,6 +42,7 @@ export { jsonLogic, moment };
  * @param args
  * @return {*}
  */
+/* eslint-disable max-statements */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
   args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
@@ -112,6 +113,7 @@ export function evaluate(func, args, ret, tokenize) {
   }
   return returnVal;
 }
+/* eslint-enable max-statements */
 
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
@@ -377,7 +379,7 @@ export function addTemplateHash(template) {
  * @returns {XML|string|*|void}
  */
 export function interpolate(rawTemplate, data) {
-  const template = _.isNumber(rawTemplate)
+  const template = (_.isNumber(rawTemplate) && templateHashCache.hasOwnProperty(rawTemplate))
     ? templateHashCache[rawTemplate]
     : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
   if (typeof template === 'function') {
@@ -394,15 +396,30 @@ export function interpolate(rawTemplate, data) {
 /**
  * Make a filename guaranteed to be unique.
  * @param name
+ * @param template
+ * @param evalContext
  * @returns {string}
  */
-export function uniqueName(name) {
-  const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');
-  const fileName = parts[0];
-  const ext = parts.length > 1
+export function uniqueName(name, template, evalContext) {
+  template = template || '{{fileName}}-{{guid}}';
+  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+  if (!template.includes('{{guid}}')) {
+    template = `${template}-{{guid}}`;
+  }
+  const parts = name.split('.');
+  let fileName = parts.slice(0, parts.length - 1).join('.');
+  const extension = parts.length > 1
     ? `.${_.last(parts)}`
     : '';
-  return `${fileName.substr(0, 10)}-${guid()}${ext}`;
+  //allow only 100 characters from original name to avoid issues with filename length restrictions
+  fileName = fileName.substr(0, 100);
+  evalContext = Object.assign(evalContext || {}, {
+    fileName,
+    guid: guid()
+  });
+  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+  const uniqueName = `${interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  return uniqueName;
 }
 
 export function guid() {
@@ -535,7 +552,7 @@ export function shouldLoadZones(timezone) {
 export function loadZones(timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
-    return new Promise(_.noop);
+    return new NativePromise(_.noop);
   }
 
   if (moment.zonesPromise) {

@@ -39,6 +39,22 @@ export default [
   {
     type: 'checkbox',
     input: true,
+    key: 'autoExpand',
+    label: 'Auto Expand',
+    tooltip: 'This will make the TextArea auto expand it\'s height as the user is typing into the area.',
+    weight: 415,
+    conditional: {
+      json: {
+        '==': [
+          { var: 'data.editor' },
+          ''
+        ]
+      }
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
     key: 'isUploadEnabled',
     label: 'Enable Image Upload',
     weight: 415.1,
@@ -177,12 +193,17 @@ export default [
     label: 'Editor Settings',
     tooltip: 'Enter the WYSIWYG editor JSON configuration.',
     key: 'wysiwyg',
+    clearOnHide: false,
     customDefaultValue(value, component, row, data, instance) {
       return instance.wysiwygDefault;
     },
     conditional: {
       json: {
         or: [
+          { '===': [
+            { var: 'data.editor' },
+            'ckeditor'
+          ] },
           { '===': [
             { var: 'data.editor' },
             'quill'

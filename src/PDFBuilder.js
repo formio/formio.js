@@ -22,7 +22,8 @@ export default class PDFBuilder extends WebformBuilder {
           signature: true,
           select: true,
           textarea: true,
-          datetime: true
+          datetime: true,
+          file: true
         }
       },
       basic: false,
@@ -81,8 +82,8 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
-  addComponentTo(parent, schema, element, sibling) {
-    const comp = super.addComponentTo(parent, schema, element, sibling);
+  addComponentTo(schema, parent, element, sibling) {
+    const comp = super.addComponentTo(schema, parent, element, sibling);
     comp.isNew = true;
     if (this.pdfForm && schema.overlay) {
       this.pdfForm.postMessage({ name: 'addElement', data: schema });
@@ -135,14 +136,19 @@ export default class PDFBuilder extends WebformBuilder {
       return false;
     }
 
+    // Special case for file components - default to image mode when added via PDF builder
+    if (schema.type === 'file') {
+      schema.image = true;
+    }
+
     schema.overlay = {
       top: event.offsetY,
       left: event.offsetX,
-      width: 100,
-      height: 20
+      width: schema.defaultOverlayWidth || 100,
+      height: schema.defaultOverlayHeight || 20
     };
 
-    this.addComponentTo(this, schema, this.getContainer());
+    this.addComponentTo(schema, this, this.getContainer());
     this.disableDropZone();
     return false;
   }
@@ -173,7 +179,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.pdfForm = new PDF(this.element, this.options);
       this.addClass(this.pdfForm.element, 'formio-pdf-builder');
     }
-    this.pdfForm.destroy();
+    this.pdfForm.destroy(true);
     this.pdfForm.on('iframe-elementUpdate', schema => {
       const component = this.getComponentById(schema.id);
       if (component && component.component) {
@@ -200,6 +206,12 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit('updateComponent', component);
+
+        const localComponent = _.find(this.form.components, { id: schema.id });
+        if (localComponent) {
+          localComponent.overlay = _.clone(component.component.overlay);
+        }
+
         this.emit('change', this.form);
       }
       return component;
@@ -217,11 +229,28 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   setForm(form) {
+    // If this is a brand new form, make sure it has a submit button component
+    if (!form.created && !_.find(form.components || [], { type: 'button', key: 'submit' })) {
+      form.components.push({
+        type: 'button',
+        label: this.t('Submit'),
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
+        // Ensure PDFBuilder component IDs are included in form schema to prevent desync with child PDF
+        const formCopy = _.cloneDeep(form);
+        formCopy.components.forEach((c, i) => c.id = this.components[i].id);
+
         if (this.pdfForm) {
-          this.pdfForm.postMessage({ name: 'form', data: form });
-          return this.pdfForm.setForm(form);
+          return this.pdfForm.setForm(formCopy);
         }
         return form;
       });

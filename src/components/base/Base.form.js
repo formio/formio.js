@@ -5,6 +5,7 @@ import BaseEditAPI from './editForm/Base.edit.api';
 import BaseEditDisplay from './editForm/Base.edit.display';
 import BaseEditLogic from './editForm/Base.edit.logic';
 import BaseEditValidation from './editForm/Base.edit.validation';
+import BaseEditLayout from './editForm/Base.edit.layout';
 import EditFormUtils from './editForm/utils';
 
 export default function(...extend) {
@@ -48,6 +49,12 @@ export default function(...extend) {
           key: 'logic',
           weight: 50,
           components: BaseEditLogic
+        },
+        {
+          label: 'Layout',
+          key: 'layout',
+          weight: 60,
+          components: BaseEditLayout
         }
       ]
     }

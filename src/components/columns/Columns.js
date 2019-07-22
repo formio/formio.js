@@ -127,6 +127,8 @@ export default class ColumnsComponent extends NestedComponent {
     container.noDrop = true;
     _.each(this.component.columns, (column, index) => {
       column.type = 'column';
+      //fix input: true issue for existent forms
+      column.input = false;
       column.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
       const component = this.addComponent(column, container, this.data, null, null, state);
       component.column = index;

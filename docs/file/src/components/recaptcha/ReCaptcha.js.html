@@ -216,6 +216,7 @@
 import BaseComponent from &apos;../base/Base&apos;;
 import Formio from &apos;../../Formio&apos;;
 import _get from &apos;lodash/get&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class ReCaptchaComponent extends BaseComponent {
   static schema(...extend) {
@@ -269,7 +270,7 @@ export default class ReCaptchaComponent extends BaseComponent {
       this.recaptchaApiReady = Formio.requireLibrary(&apos;googleRecaptcha&apos;, &apos;grecaptcha&apos;, recaptchaApiScriptUrl, true);
     }
     if (this.recaptchaApiReady) {
-      this.recaptchaVerifiedPromise = new Promise((resolve, reject) =&gt; {
+      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) =&gt; {
         this.recaptchaApiReady
           .then(() =&gt; {
             grecaptcha.ready(() =&gt; {

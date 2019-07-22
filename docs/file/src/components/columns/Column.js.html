@@ -215,9 +215,22 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import NestedComponent from &apos;../nested/NestedComponent&apos;;
 export default class ColumnComponent extends NestedComponent {
+  static schema(...extend) {
+    return NestedComponent.schema({
+      label: &apos;Column&apos;,
+      key: &apos;column&apos;,
+      type: &apos;column&apos;,
+      input: false,
+    }, ...extend);
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.noEdit = true;
+  }
+
+  get defaultSchema() {
+    return ColumnComponent.schema();
   }
 
   conditionallyVisible(data) {

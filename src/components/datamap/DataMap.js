@@ -75,8 +75,8 @@ export default class DataMapComponent extends NestedComponent {
       (Object.keys(this.dataValue).length > _.get(this.component, 'validate.minLength', 0));
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  hasChanged(newValue, oldValue) {
+    return !_.isEqual(newValue, oldValue);
   }
 
   get componentComponents() {
@@ -152,7 +152,7 @@ export default class DataMapComponent extends NestedComponent {
     }
     const keyHeader = this.ce('th', {
       'class': 'col-2 col-sm-3'
-    }, this.text('Key'));
+    }, this.text(this.component.keyLabel || 'Key'));
     this.createTooltip(keyHeader, {
       tooltip: this.t('Enter the map "key" for this value.')
     });
@@ -265,7 +265,9 @@ export default class DataMapComponent extends NestedComponent {
   setValue(value) {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
-    this.buildRows();
+    if (changed) {
+      this.buildRows();
+    }
     return changed;
   }
 

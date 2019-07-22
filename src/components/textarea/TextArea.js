@@ -3,6 +3,7 @@ import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
 import _ from 'lodash';
 import { uniqueName } from '../../utils/utils';
+import NativePromise from 'native-promise-only';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -29,8 +30,10 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-
     this.wysiwygRendered = false;
+    this.editorReady = new NativePromise((resolve) => {
+      this.editorReadyResolve = resolve;
+    });
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
   }
@@ -89,6 +92,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && this.component.wysiwyg;
   }
 
+  get autoExpand() {
+    return this.component.autoExpand;
+  }
+
   /**
    * Updates the editor value.
    *
@@ -100,8 +107,8 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.updateValue({
         modified: !this.autoModified
       }, newValue);
-      this.autoModified = false;
     }
+    this.autoModified = false;
   }
 
   /* eslint-disable max-statements */
@@ -138,11 +145,19 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   enableWysiwyg() {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
+      if (this.autoExpand) {
+        this.element.childNodes.forEach((element) => {
+          if (element.nodeName === 'TEXTAREA') {
+            this.addAutoExpanding(element);
+          }
+        });
+      }
+
       return;
     }
 
     if (this.component.editor === 'ace') {
-      this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
+      Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
         .then(() => {
           const mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
@@ -151,31 +166,32 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
+          this.editorReadyResolve(this.editor);
           return this.editor;
         });
       return this.input;
     }
 
     if (this.component.editor === 'ckeditor') {
-      this.editorReady = this.addCKE(this.input, null, (newValue) => this.updateEditorValue(newValue))
+      const settings = this.component.wysiwyg || {};
+      settings.rows = this.component.rows;
+      this.addCKE(this.input, settings, (newValue) => this.updateEditorValue(newValue))
         .then((editor) => {
           this.editor = editor;
           if (this.options.readOnly || this.component.disabled) {
             this.editor.isReadOnly = true;
           }
-          const numRows = parseInt(this.component.rows, 10);
-          if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-            // Default height is 21px with 10px margin + a 14px top margin.
-            const editorHeight = (numRows * 31) + 14;
-            editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-          }
+          this.editorReadyResolve(this.editor);
           return editor;
         });
       return this.input;
     }
 
     // Normalize the configurations.
-    if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
+    if (
+      this.component.wysiwyg &&
+      (this.component.wysiwyg.hasOwnProperty('toolbarGroups') || this.component.wysiwyg.hasOwnProperty('toolbar'))
+    ) {
       console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
       this.component.wysiwyg = this.wysiwygDefault;
       this.emit('componentEdit', this);
@@ -186,7 +202,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     // Add the quill editor.
-    this.editorReady = this.addQuill(
+    this.addQuill(
       this.input,
       this.component.wysiwyg, () => this.updateEditorValue(this.quill.root.innerHTML)
     ).then((quill) => {
@@ -203,12 +219,17 @@ export default class TextAreaComponent extends TextFieldComponent {
         quill.disable();
       }
 
+      this.editorReadyResolve(quill);
       return quill;
     }).catch(err => console.warn(err));
   }
 
   destroyWysiwyg() {
     if (this.editor) {
+      this.editorReady = new NativePromise((resolve) => {
+        this.editorReadyResolve = resolve;
+      });
+
       this.editor.destroy();
     }
   }
@@ -232,6 +253,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
         quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        let requestData;
         this.root.formio
           .uploadFile(
             uploadStorage,
@@ -243,6 +265,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadOptions
           )
           .then(result => {
+            requestData = result;
             return this.root.formio.downloadFile(result);
           })
           .then(result => {
@@ -251,7 +274,13 @@ export default class TextAreaComponent extends TextFieldComponent {
             quillInstance.quill.updateContents(new Delta()
                 .retain(range.index)
                 .delete(range.length)
-                .insert({ image: result.url })
+                .insert(
+                  {
+                    image: result.url
+                  },
+                  {
+                    alt: JSON.stringify(requestData),
+                  })
               , Quill.sources.USER);
             fileInput.value = '';
           }).catch(error => {
@@ -265,7 +294,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     fileInput.click();
   }
 
-  setWysiwygValue(value) {
+  setWysiwygValue(value, skipSetting) {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
@@ -273,14 +302,24 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.editorReady) {
       this.editorReady.then((editor) => {
         this.autoModified = true;
-        if (this.component.editor === 'ace') {
-          editor.setValue(this.setConvertedValue(value));
-        }
-        else if (this.component.editor === 'ckeditor') {
-          editor.data.set(this.setConvertedValue(value));
-        }
-        else {
-          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+        if (!skipSetting) {
+          if (this.component.editor === 'ace') {
+            editor.setValue(this.setConvertedValue(value));
+          }
+          else if (this.component.editor === 'ckeditor') {
+            editor.data.set(this.setConvertedValue(value));
+          }
+          else {
+            if (this.component.isUploadEnabled) {
+              this.setAsyncConvertedValue(value)
+                .then(result => {
+                  editor.setContents(editor.clipboard.convert(result));
+                });
+            }
+            else {
+              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+            }
+          }
         }
       });
     }
@@ -303,6 +342,136 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
+  setAsyncConvertedValue(value) {
+    if (this.component.as && this.component.as === 'json' && value) {
+      try {
+        value = JSON.stringify(value, null, 2);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    if (!_.isString(value)) {
+      value = '';
+    }
+
+    const htmlDoc = new DOMParser().parseFromString(value,'text/html');
+    const images = htmlDoc.getElementsByTagName('img');
+    if (images.length) {
+      return this.setImagesUrl(images)
+        .then( () => {
+          value = htmlDoc.getElementsByTagName('body')[0].firstElementChild;
+          return new XMLSerializer().serializeToString(value);
+        });
+    }
+    else {
+      return NativePromise.resolve(value);
+    }
+  }
+
+  setImagesUrl(images) {
+    return NativePromise.all(_.map(images, image => {
+      let requestData;
+      try {
+        requestData = JSON.parse(image.getAttribute('alt'));
+      }
+      catch (error) {
+        console.warn(error);
+      }
+
+      return this.root.formio.downloadFile(requestData)
+        .then((result) => {
+          image.setAttribute('src', result.url);
+        });
+    }));
+  }
+
+  addAutoExpanding(textarea) {
+    let heightOffset = null;
+    let previousHeight = null;
+
+    const changeOverflow = (value) => {
+      const width = textarea.style.width;
+
+      textarea.style.width = '0px';
+      textarea.offsetWidth;
+      textarea.style.width = width;
+
+      textarea.style.overflowY = value;
+    };
+
+    const preventParentScroll = (element, changeSize) => {
+      const nodeScrolls = [];
+
+      while (element && element.parentNode && element.parentNode instanceof Element) {
+        if (element.parentNode.scrollTop) {
+          nodeScrolls.push({
+            node: element.parentNode,
+            scrollTop: element.parentNode.scrollTop,
+          });
+        }
+        element = element.parentNode;
+      }
+
+      changeSize();
+
+      nodeScrolls.forEach((nodeScroll) => {
+        nodeScroll.node.scrollTop = nodeScroll.scrollTop;
+      });
+    };
+
+    const resize = () => {
+      if (textarea.scrollHeight === 0) {
+        return;
+      }
+
+      preventParentScroll(textarea, () => {
+        textarea.style.height = '';
+        textarea.style.height = `${textarea.scrollHeight + heightOffset}px`;
+      });
+    };
+
+    const update = () => {
+      resize();
+
+      const styleHeight = Math.round(parseFloat(textarea.style.height));
+      const computed = window.getComputedStyle(textarea, null);
+
+      let currentHeight = textarea.offsetHeight;
+
+      if (currentHeight < styleHeight && computed.overflowY === 'hidden') {
+        changeOverflow('scroll');
+      }
+      else if (computed.overflowY !== 'hidden') {
+        changeOverflow('hidden');
+      }
+
+      resize();
+      currentHeight = textarea.offsetHeight;
+
+      if (previousHeight !== currentHeight) {
+        previousHeight = currentHeight;
+        update();
+      }
+    };
+
+    const computedStyle = window.getComputedStyle(textarea, null);
+
+    textarea.style.resize = 'none';
+    heightOffset = parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
+
+    if (window) {
+      this.addEventListener(window, 'resize', update);
+    }
+
+    this.addEventListener(textarea, 'input', update);
+
+    this.updateSize = update;
+
+    update();
+  }
+
   removeBlanks(value) {
     if (!value) {
       return value;
@@ -311,7 +480,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== 'string') {
         return input;
       }
-      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '');
+      return input.replace(/<p>&nbsp;<\/p>|<p><br><\/p>|<p><br>&nbsp;<\/p>/g, '').trim();
     };
 
     if (Array.isArray(value)) {
@@ -325,8 +494,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  hasChanged(before, after) {
-    return super.hasChanged(this.removeBlanks(before), this.removeBlanks(after));
+  onChange(...args) {
+    super.onChange(...args);
+
+    if (this.updateSize) {
+      this.updateSize();
+    }
+  }
+
+  hasChanged(newValue, oldValue) {
+    return super.hasChanged(this.removeBlanks(newValue), this.removeBlanks(oldValue));
   }
 
   isEmpty(value) {
@@ -342,6 +519,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
     if (this.options.readOnly || this.htmlView) {
       // For readOnly, just view the contents.
@@ -362,7 +540,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Set the value when the editor is ready.
     this.dataValue = value;
 
-    this.setWysiwygValue(value, flags);
+    this.setWysiwygValue(value, skipSetting, flags);
     this.updateValue(flags);
   }
 
@@ -382,6 +560,11 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.editorReady) {
       this.editorReady.then((editor) => editor.destroy());
     }
+
+    if (this.updateSize) {
+      this.removeEventListener(window, 'resize', this.updateSize);
+    }
+
     return super.destroy();
   }
 

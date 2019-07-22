@@ -88,8 +88,8 @@ export default class DataGridComponent extends NestedComponent {
     return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);
   }
 
-  hasChanged(before, after) {
-    return !_.isEqual(before, after);
+  hasChanged(newValue, oldValue) {
+    return !_.isEqual(newValue, oldValue);
   }
 
   build() {
@@ -456,19 +456,26 @@ export default class DataGridComponent extends NestedComponent {
         }
       }
     }
-    this.dataValue = value;
+
     if (shouldBuildRows) {
+      this.dataValue = value;
       this.buildRows();
+      this.rows.forEach((row, index) => {
+        if (value.length <= index) {
+          return;
+        }
+        _.forIn(row, component => this.setNestedValue(component, value[index], flags));
+      });
     }
-    this.rows.forEach((row, index) => {
-      if (value.length <= index) {
-        return;
-      }
-      _.forIn(row, component => this.setNestedValue(component, value[index], flags));
-    });
+
     return changed;
   }
   /* eslint-enable max-statements */
+
+  resetValue() {
+    super.resetValue();
+    this.buildRows();
+  }
 
   /**
    * Get the value of this component.

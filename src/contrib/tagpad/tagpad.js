@@ -6,6 +6,7 @@ import { Components } from '../../formio.form';
 import Formio from '../../Formio';
 import { eachComponent } from '../../utils/utils';
 import editForm from './Tagpad.form';
+import NativePromise from 'native-promise-only';
 
 export default class Tagpad extends NestedComponent {
   static schema(...extend) {
@@ -43,7 +44,7 @@ export default class Tagpad extends NestedComponent {
       dotFillColor: '#ccc'
     });
     //init background ready promise
-    const backgroundReadyPromise = new Promise((resolve, reject) => {
+    const backgroundReadyPromise = new NativePromise((resolve, reject) => {
       this.backgroundReady = { resolve, reject };
     });
     this.backgroundReady.promise = backgroundReadyPromise;
@@ -94,19 +95,30 @@ export default class Tagpad extends NestedComponent {
     this.tagpadContainer.appendChild(this.canvasContainer);
     this.tagpadContainer.appendChild(this.formContainer);
     this.element.appendChild(this.tagpadContainer);
-    this.two = new Two({
-      type: Two.Types.svg
-    }).appendTo(this.canvas);
-    this.canvasSvg = this.two.renderer.domElement;
-    this.addBackground();
-    this.on('initialized', () => {
-      this.backgroundReady.promise.then(() => {
-        //when element is already displayed in browser and background is ready, stretch drawing area to fit background dimensions
+    if (this.hasBackgroundImage) {
+      this.two = new Two({
+        type: Two.Types.svg
+      }).appendTo(this.canvas);
+      this.canvasSvg = this.two.renderer.domElement;
+      this.addBackground();
+
+      // Stretch drawing area on initial rendering of component.
+      // Need a proper moment for that - when background is already displayed in browser so that it already has offsetWidth and offsetHeight
+      // For case when component is built before form is initialized:
+      this.on('initialized', () => {
         this.stretchDrawingArea();
       });
-    });
-    this.attach();
-    this.redrawDots();
+      // For case when component is built after form is initialized (for ex. when it's on inactive tab of Tabs component), so this.on('initialized', ...) won't be fired:
+      this.backgroundReady.promise.then(() => {
+        this.stretchDrawingArea();
+      });
+
+      this.attach();
+      this.redrawDots();
+    }
+    else {
+      this.background.innerHTML = this.t('Background image is not specified. Tagpad doesn\'t work without background image');
+    }
   }
 
   renderForm() {
@@ -119,7 +131,7 @@ export default class Tagpad extends NestedComponent {
       ]
       )
     );
-    eachComponent(this.component.components, (component) => {
+    this.component.components.forEach((component) => {
       //have to avoid using createComponent method as Components there will be empty
       const componentInstance = Components.create(component, this.options, this.data);
       componentInstance.parent = this;
@@ -129,8 +141,9 @@ export default class Tagpad extends NestedComponent {
         oldOnChange.call(componentInstance, flags, fromRoot);
         this.saveSelectedDot();
       };
-      this.components.push(componentInstance);
       this.form.appendChild(componentInstance.getElement());
+      //need to push to this.components all components with input: true so that saving would work properly
+      this.addTagpadComponent(componentInstance);
     });
     this.form.appendChild(this.ce(
       'button',
@@ -146,6 +159,15 @@ export default class Tagpad extends NestedComponent {
       ]
     ));
     this.formRendered = true;
+  }
+
+  addTagpadComponent(componentInstance) {
+    if (componentInstance.component.input) {
+      this.components.push(componentInstance);
+    }
+    else if (componentInstance.components) {
+      componentInstance.components.forEach(this.addTagpadComponent.bind(this));
+    }
   }
 
   attach() {
@@ -172,7 +194,7 @@ export default class Tagpad extends NestedComponent {
     const touchEnd = (e) => {
       e.preventDefault();
       const offset = this.canvasSvg.getBoundingClientRect();
-      const touch = e.originalEvent.changedTouches[0];
+      const touch = e.changedTouches[0];
       this.addDot(this.getActualCoordinate({
         x: touch.pageX - offset.left,
         y: touch.pageY - offset.top
@@ -185,21 +207,28 @@ export default class Tagpad extends NestedComponent {
 
   getActualCoordinate(coordinate) {
     //recalculate coordinate taking into account changed size of drawing area
-    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier);
-    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier);
+    coordinate.x = Math.round(coordinate.x / this.dimensionsMultiplier) + this.dimensions.minX;
+    coordinate.y = Math.round(coordinate.y / this.dimensionsMultiplier) + this.dimensions.minY;
     return coordinate;
   }
 
   stretchDrawingArea() {
     const width = this.background.offsetWidth;
     const height = this.background.offsetHeight;
-    //will need dimensions multiplier for coordinates calculation
-    this.dimensionsMultiplier = width / this.dimensions.width;
-    this.setEditorSize(width, height);
+    //don't stretch if background dimensions are unknown yet
+    if (width && height) {
+      //will need dimensions multiplier for coordinates calculation
+      this.dimensionsMultiplier = width / this.dimensions.width;
+      this.setEditorSize(width, height);
+    }
   }
 
   get dataReady() {
     return this.backgroundReady.promise;
+  }
+
+  get hasBackgroundImage() {
+    return this.component.image || this.component.imageUrl;
   }
 
   addBackground() {
@@ -215,7 +244,7 @@ export default class Tagpad extends NestedComponent {
         })
         .catch(() => {
           //TODO check that component works in this case anyway
-          console.warn(`Tagpad background didn't load for component: ${this.component.key}`);
+          this.background.innerHTML = this.t('Background image failed to load. Tagpad doesn\'t work without background image');
           this.backgroundReady.resolve();
         });
     }
@@ -249,17 +278,14 @@ export default class Tagpad extends NestedComponent {
     //set initial dimensions to width and height from viewBox of background svg
     this.dimensions = {
       width: viewBoxWidth,
-      height: viewBoxHeight
+      height: viewBoxHeight,
+      minX: viewBoxMinX,
+      minY: viewBoxMinY
     };
     //remove width and height attribute for background image to be stretched to available width and preserve aspect ratio
     backgroundSvg.removeAttribute('width');
     backgroundSvg.removeAttribute('height');
-    const viewBox = {
-      width: this.dimensions.width,
-      height: this.dimensions.height,
-      minX: viewBoxMinX,
-      minY: viewBoxMinY
-    };
+    const viewBox = this.dimensions;
     //set background image viewBox
     backgroundSvg.setAttribute('viewBox', `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
     //set canvas image viewBox (necessary for canvas SVG to stretch properly without losing correct aspect ration)
@@ -352,6 +378,7 @@ export default class Tagpad extends NestedComponent {
     if (!dots) {
       return;
     }
+    this.dots = [];
     dots.forEach((dot, index) => {
       const shape = this.drawDot(dot, index);
       this.dots.push({
@@ -360,7 +387,6 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
-    this.selectDot(this.dataValue.length > 0 ? 0 : null);
   }
 
   drawDot(dot, index) {
@@ -392,6 +418,7 @@ export default class Tagpad extends NestedComponent {
   removeSelectedDot() {
     this.dataValue.splice(this.selectedDotIndex, 1);
     this.redrawDots();
+    this.selectDot(0);
   }
 
   redrawDots() {

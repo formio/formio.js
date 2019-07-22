@@ -213,7 +213,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/nested/NestedComponent.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import Promise from &apos;native-promise-only&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Components from &apos;../Components&apos;;
 
@@ -401,6 +401,10 @@ export default class NestedComponent extends BaseComponent {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
+    if (state &amp;&amp; state.persist) {
+      comp.persist = state.persist;
+      delete state.persist;
+    }
     comp.build(state);
     comp.isBuilt = true;
     if (component.internal) {
@@ -468,7 +472,8 @@ export default class NestedComponent extends BaseComponent {
    */
   removeComponent(component, components) {
     components = components || this.components;
-    const state = component.destroy();
+    const state = component.destroy() || {};
+    state.persist = component.persist;
     const element = component.getElement();
     if (element &amp;&amp; element.parentNode) {
       this.removeChildFrom(element, element.parentNode);
@@ -664,7 +669,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
   }
 
   /**
@@ -673,7 +678,7 @@ export default class NestedComponent extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -774,7 +779,7 @@ export default class NestedComponent extends BaseComponent {
   }
 
   get dataReady() {
-    return Promise.all(this.getComponents().map((component) =&gt; component.dataReady));
+    return NativePromise.all(this.getComponents().map((component) =&gt; component.dataReady));
   }
 
   setNestedValue(component, value, flags, changed) {

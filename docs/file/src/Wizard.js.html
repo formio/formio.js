@@ -212,7 +212,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Wizard.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 
 import Webform from &apos;./Webform&apos;;
@@ -290,7 +290,7 @@ export default class Wizard extends Webform {
     else if (this.wizard.full || !this.pages.length) {
       return super.setForm(this.getWizard());
     }
-    return Promise.reject(&apos;Page not found&apos;);
+    return NativePromise.reject(&apos;Page not found&apos;);
   }
 
   getNextPage(data, currentPage) {
@@ -328,14 +328,14 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return Promise.all(this.getPages().map((page) =&gt; {
+    return NativePromise.all(this.getPages().map((page) =&gt; {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
   beforeNext() {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       this.hook(&apos;beforeNext&apos;, this.currentPage(), this.submission, (err) =&gt; {
         if (err) {
           this.showErrors(err, true);
@@ -369,7 +369,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
-      return Promise.reject(this.showErrors(null, true));
+      return NativePromise.reject(this.showErrors(null, true));
     }
   }
 

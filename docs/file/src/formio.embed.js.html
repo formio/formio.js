@@ -234,6 +234,12 @@ if (thisScript) {
     query[item.split(&apos;=&apos;)[0]] = item.split(&apos;=&apos;)[1] &amp;&amp; decodeURIComponent(item.split(&apos;=&apos;)[1]);
   });
   query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
+  if (query.base) {
+    Formio.setBaseUrl(query.base);
+  }
+  if (query.project) {
+    Formio.setProjectUrl(query.project);
+  }
   Form.embed(query).then((instance) =&gt; {
     Formio.events.emit(&apos;formEmbedded&apos;, instance);
     instance.on(&apos;submit&apos;, (submission) =&gt; {
