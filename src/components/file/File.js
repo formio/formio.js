@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import Formio from '../../Formio';
 let Camera;
 const webViewCamera = navigator.camera || Camera;
+import NativePromise from 'native-promise-only';
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -60,7 +61,7 @@ export default class FileComponent extends Field {
       progress: 'upload' in new XMLHttpRequest
     };
     // Called when our files are ready.
-    this.filesReady = new Promise((resolve, reject) => {
+    this.filesReady = new NativePromise((resolve, reject) => {
       this.filesReadyResolve = resolve;
       this.filesReadyReject = reject;
     });
@@ -333,7 +334,7 @@ export default class FileComponent extends Field {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
       if (loadingImages.length) {
-        Promise.all(loadingImages).then(() => {
+        NativePromise.all(loadingImages).then(() => {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }

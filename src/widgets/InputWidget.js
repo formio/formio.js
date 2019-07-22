@@ -53,7 +53,7 @@ export default class InputWidget extends Element {
     return null;
   }
 
-  setValue(value) {
+  setValue() {
     return null;
   }
 }

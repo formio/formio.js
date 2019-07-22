@@ -32,10 +32,7 @@ export default class FormBuilder extends Form {
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.builder = (...args) => {
-  const builder = new FormBuilder(...args);
-  return builder.ready.then(() => {
-    builder.build();
-  });
+  return (new FormBuilder(...args)).ready;
 };
 
 Formio.FormBuilder = FormBuilder;

@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
+import NativePromise from 'native-promise-only';
 
 import {
   comp1,
@@ -41,7 +42,7 @@ describe('Select Component', () => {
         Harness.testCreate(SelectComponent, c3),
       ];
 
-      return Promise
+      return NativePromise
         .all(comps)
         .then(([a, b, c]) => {
           expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
@@ -50,7 +51,7 @@ describe('Select Component', () => {
         });
     }
     catch (error) {
-      return Promise.reject(error);
+      return NativePromise.reject(error);
     }
   });
 

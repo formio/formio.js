@@ -22,6 +22,11 @@ export default class SelectBoxesComponent extends RadioComponent {
     };
   }
 
+  constructor(...args) {
+    super(...args);
+    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount');
+  }
+
   init() {
     super.init();
     this.component.inputType = 'checkbox';
@@ -79,12 +84,12 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   /**
-   * Set the value of this component.
+   * Normalize values coming into updateValue.
    *
    * @param value
-   * @param flags
+   * @return {*}
    */
-  setValue(value, flags) {
+  normalizeValue(value) {
     value = value || {};
     if (typeof value !== 'object') {
       if (typeof value === 'string') {
@@ -96,21 +101,31 @@ export default class SelectBoxesComponent extends RadioComponent {
         value = {};
       }
     }
-    flags = this.getFlags.apply(this, arguments);
     if (Array.isArray(value)) {
       _.each(value, (val) => {
         value[val] = true;
       });
     }
 
+    return value;
+  }
+
+  /**
+   * Set the value of this component.
+   *
+   * @param value
+   * @param flags
+   */
+  setValue(value, flags) {
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
     });
-
-    this.updateValue(flags);
+    return changed;
   }
 
   getView(value) {
@@ -121,5 +136,59 @@ export default class SelectBoxesComponent extends RadioComponent {
       .filter((v) => value[v.value])
       .map('label')
       .join(', ');
+  }
+
+  checkValidity(data, dirty, rowData) {
+    console.log('checkValidity', data, dirty, rowData);
+    const minCount = this.component.validate.minSelectedCount;
+    const maxCount = this.component.validate.maxSelectedCount;
+
+    if (maxCount || minCount) {
+      const count = Object.keys(this.validationValue).reduce((total, key) => {
+        if (this.validationValue[key]) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      if (maxCount && count >= maxCount) {
+        console.log(this.refs);
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            if (!item.checked) {
+              item.disabled = true;
+            }
+          });
+        }
+        if (maxCount && count > maxCount) {
+          const message = this.component.maxSelectedCountMessage
+            ? this.component.maxSelectedCountMessage
+            : `You can only select up to ${maxCount} items.`;
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
+      }
+      else if (minCount && count < minCount) {
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            item.disabled = false;
+          });
+        }
+        const message = this.component.minSelectedCountMessage
+          ? this.component.minSelectedCountMessage
+          : `You must select at least ${minCount} items.`;
+        this.setCustomValidity(message, dirty);
+        return false;
+      }
+      else {
+        if (this.refs.input) {
+          this.refs.input.forEach(item => {
+            item.disabled = false;
+          });
+        }
+      }
+    }
+
+    return super.checkValidity(data, dirty, rowData);
   }
 }

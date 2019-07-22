@@ -1,5 +1,9 @@
 export default [
   {
+    key: 'multiple',
+    ignore: true
+  },
+  {
     weight: 20,
     type: 'textfield',
     input: true,

@@ -36,13 +36,15 @@ export default class SurveyComponent extends Field {
     this.loadRefs(element, { input: 'multiple' });
     super.attach(element);
     this.refs.input.forEach((input) => {
-      this.addEventListener(input, 'change', () => this.updateValue());
+      this.addEventListener(input, 'change', () => this.updateValue(null, {
+        modified: true
+      }));
     });
     this.setValue(this.dataValue);
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     if (!value) {
       return;
     }
@@ -54,7 +56,7 @@ export default class SurveyComponent extends Field {
         }
       });
     });
-    this.updateValue(flags);
+    this.updateValue(value, flags);
   }
 
   get emptyValue() {

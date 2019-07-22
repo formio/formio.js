@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -217,16 +221,19 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/component/Component.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { conformToMask } from &apos;vanilla-text-mask&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals Quill, ClassicEditor */
+import { conformToMask } from &apos;vanilla-text-mask&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import _ from &apos;lodash&apos;;
 import { sanitize } from &apos;dompurify&apos;;
-
+import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
 import Validator from &apos;../../Validator&apos;;
 import Templates from &apos;../../../templates/Templates&apos;;
 import { boolValue } from &apos;../../../utils/utils&apos;;
 import Element from &apos;../../../Element&apos;;
+const CKEDITOR = &apos;https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js&apos;;
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -590,7 +597,7 @@ export default class Component extends Element {
 
   // Allow componets to notify when ready.
   get ready() {
-    return Promise.resolve(this);
+    return NativePromise.resolve(this);
   }
 
   get labelInfo() {
@@ -614,6 +621,8 @@ export default class Component extends Element {
   }
 
   init() {
+    this.disabled = this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty(&apos;disabled&apos;) &amp;&amp; this.options.disabled[this.key]);
+
     // Attach the refresh on events.
     this.attachRefreshOn();
   }
@@ -756,6 +765,9 @@ export default class Component extends Element {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, params) {
+    if (!text) {
+      return &apos;&apos;;
+    }
     params = params || {};
     params.data = this.rootValue;
     params.row = this.data;
@@ -858,6 +870,7 @@ export default class Component extends Element {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
+    data.disabled = this.disabled;
     data.builder = this.builderMode;
 
     // Allow more specific template names
@@ -948,7 +961,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeNext() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -958,7 +971,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -987,6 +1000,7 @@ export default class Component extends Element {
   }
 
   build(element) {
+    element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
     this.attach(element);
@@ -1019,7 +1033,7 @@ export default class Component extends Element {
     });
 
     this.refs.tooltip.forEach((tooltip, index) =&gt; {
-      const title = this.interpolate(tooltip.getAttribute(&apos;data-title&apos;) || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;);
+      const title = this.interpolate(tooltip.getAttribute(&apos;data-title&apos;) || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;);
       this.tooltips[index] = new Tooltip(tooltip, {
         trigger: &apos;hover click&apos;,
         placement: &apos;right&apos;,
@@ -1030,15 +1044,7 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
-
-    // this.restoreValue();
-
     this.autofocus();
-
-    // Disable if needed.
-    if (this.canDisable) {
-      this.disabled = this.options.readOnly || this.component.disabled;
-    }
 
     // Allow global attach.
     this.hook(&apos;attachComponent&apos;, element, this);
@@ -1048,7 +1054,33 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
-    return Promise.resolve();
+    return NativePromise.resolve();
+  }
+
+  addShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.addShortcut(element, shortcut);
+  }
+
+  removeShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.removeShortcut(element, shortcut);
   }
 
   /**
@@ -1348,8 +1380,7 @@ export default class Component extends Element {
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
-
-    this.attach(this.element);
+    return this.attach(this.element);
   }
 
   rebuild() {
@@ -1582,12 +1613,8 @@ export default class Component extends Element {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (!flags.noValidate) {
-      this.pristine = false;
-    }
-
     if (flags.modified) {
-      // Add a modified class if this element was manually modified.
+      this.pristine = false;
       this.addClass(this.getElement(), &apos;formio-modified&apos;);
     }
 
@@ -1615,8 +1642,91 @@ export default class Component extends Element {
     if (this.root &amp;&amp; !fromRoot) {
       this.root.triggerChange(flags, changed);
     }
-
     return changed;
+  }
+
+  get wysiwygDefault() {
+    return {
+      theme: &apos;snow&apos;,
+      placeholder: this.t(this.component.placeholder),
+      modules: {
+        toolbar: [
+          [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
+          [{ &apos;header&apos;: [1, 2, 3, 4, 5, 6, false] }],
+          [{ &apos;font&apos;: [] }],
+          [&apos;bold&apos;, &apos;italic&apos;, &apos;underline&apos;, &apos;strike&apos;, { &apos;script&apos;: &apos;sub&apos; }, { &apos;script&apos;: &apos;super&apos; }, &apos;clean&apos;],
+          [{ &apos;color&apos;: [] }, { &apos;background&apos;: [] }],
+          [{ &apos;list&apos;: &apos;ordered&apos; }, { &apos;list&apos;: &apos;bullet&apos; }, { &apos;indent&apos;: &apos;-1&apos; }, { &apos;indent&apos;: &apos;+1&apos; }, { &apos;align&apos;: [] }],
+          [&apos;blockquote&apos;, &apos;code-block&apos;],
+          [&apos;link&apos;, &apos;image&apos;, &apos;video&apos;, &apos;formula&apos;, &apos;source&apos;]
+        ]
+      }
+    };
+  }
+
+  addCKE(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? {} : settings;
+    settings.base64Upload = true;
+    return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, CKEDITOR, true)
+      .then(() =&gt; {
+        if (!element.parentNode) {
+          return NativePromise.reject();
+        }
+        return ClassicEditor.create(element, settings).then(editor =&gt; {
+          editor.model.document.on(&apos;change&apos;, () =&gt; onChange(editor.data.get()));
+          return editor;
+        });
+      });
+  }
+
+  addQuill(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+
+    // Lazy load the quill css.
+    Formio.requireLibrary(`quill-css-${settings.theme}`, &apos;Quill&apos;, [
+      { type: &apos;styles&apos;, src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
+    ], true);
+
+    // Lazy load the quill library.
+    return Formio.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, &apos;https://cdn.quilljs.com/1.3.6/quill.min.js&apos;, true)
+      .then(() =&gt; {
+        if (!element.parentNode) {
+          return NativePromise.reject();
+        }
+        this.quill = new Quill(element, settings);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        const txtArea = document.createElement(&apos;textarea&apos;);
+        txtArea.setAttribute(&apos;class&apos;, &apos;quill-source-code&apos;);
+        this.quill.addContainer(&apos;ql-custom&apos;).appendChild(txtArea);
+        const qlSource = element.parentNode.querySelector(&apos;.ql-source&apos;);
+        if (qlSource) {
+          this.addEventListener(qlSource, &apos;click&apos;, (event) =&gt; {
+            event.preventDefault();
+            if (txtArea.style.display === &apos;inherit&apos;) {
+              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+            }
+            txtArea.style.display = (txtArea.style.display === &apos;none&apos;) ? &apos;inherit&apos; : &apos;none&apos;;
+          });
+        }
+        /** END CODEBLOCK **/
+
+        // Make sure to select cursor when they click on the element.
+        this.addEventListener(element, &apos;click&apos;, () =&gt; this.quill.focus());
+
+        // Allows users to skip toolbar items when tabbing though form
+        const elm = document.querySelectorAll(&apos;.ql-formats &gt; button&apos;);
+        for (let i = 0; i &lt; elm.length; i++) {
+          elm[i].setAttribute(&apos;tabindex&apos;, &apos;-1&apos;);
+        }
+
+        this.quill.on(&apos;text-change&apos;, () =&gt; {
+          txtArea.value = this.quill.root.innerHTML;
+          onChange(txtArea);
+        });
+
+        return this.quill;
+      });
   }
 
   /**
@@ -1781,21 +1891,11 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    this.dataValue = value;
-
-    // If we aren&apos;t connected to the dom yet, skip updating values.
-    if (!this.attached) {
-      return;
-    }
-
-    flags = this.getFlags.apply(this, arguments);
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     if (!this.hasInput) {
-      return false;
+      return changed;
     }
-    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
-
     const isArray = Array.isArray(value);
     if (isArray &amp;&amp; this.refs.input &amp;&amp; this.refs.input.length !== value.length) {
       this.redraw();
@@ -1805,7 +1905,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return this.updateValue(flags);
+    return changed;
   }
 
   /**
@@ -1852,23 +1952,29 @@ export default class Component extends Element {
   }
 
   /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
+      value = value ? [value] : [];
+    }
+    return value;
+  }
+
+  /**
    * Update a value of this component.
    *
    * @param flags
    */
-  updateValue(flags, value) {
-    if (!this.hasInput) {
-      return false;
-    }
-
+  updateValue(value, flags) {
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue() : value;
+    let newValue = value === undefined || value === null ? this.getValue() : value;
+    newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-    if (this.viewOnly) {
-      this.updateViewOnlyValue(newValue);
-    }
-
     this.updateOnChange(flags, changed);
     return changed;
   }
@@ -1893,18 +1999,18 @@ export default class Component extends Element {
   /**
    * Determine if the value of this component has changed.
    *
-   * @param before
-   * @param after
+   * @param newValue
+   * @param oldValue
    * @return {boolean}
    */
-  hasChanged(before, after) {
+  hasChanged(newValue, oldValue) {
     if (
-      ((before === undefined) || (before === null)) &amp;&amp;
-      ((after === undefined) || (after === null))
+      ((newValue === undefined) || (newValue === null)) &amp;&amp;
+      ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
     }
-    return !_.isEqual(before, after);
+    return !_.isEqual(newValue, oldValue);
   }
 
   /**
@@ -2089,22 +2195,26 @@ export default class Component extends Element {
     if (this.refs.messageContainer) {
       this.empty(this.refs.messageContainer);
     }
-    if (!this.refs.input) {
-      return;
-    }
     if (message) {
       this.error = {
         component: this.component,
         message: message
       };
       this.emit(&apos;componentError&apos;, this.error);
-      this.addInputError(message, dirty, this.refs.input);
+      if (this.refs.input) {
+        this.addInputError(message, dirty, this.refs.input);
+      }
     }
     else {
-      this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+      if (this.refs.input) {
+        this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+      }
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
       this.error = null;
+    }
+    if (!this.refs.input) {
+      return;
     }
     this.refs.input.forEach(input =&gt; {
       input = this.performInputMapping(input);
@@ -2125,13 +2235,6 @@ export default class Component extends Element {
     return rules.some(pred =&gt; pred());
   }
 
-  getFlags() {
-    return (typeof arguments[1] === &apos;boolean&apos;) ? {
-      noUpdateEvent: arguments[1],
-      noValidate: arguments[2]
-    } : (arguments[1] || {});
-  }
-
   // Maintain reverse compatibility.
   whenReady() {
     console.warn(&apos;The whenReady() method has been deprecated. Please use the dataReady property instead.&apos;);
@@ -2139,7 +2242,7 @@ export default class Component extends Element {
   }
 
   get dataReady() {
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**
@@ -2294,6 +2397,8 @@ export default class Component extends Element {
       attributes.disabled = &apos;disabled&apos;;
     }
 
+    _.defaults(attributes, this.component.attributes);
+
     return {
       type: &apos;input&apos;,
       component: this.component,
@@ -2319,7 +2424,7 @@ Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
-    Component.externalLibraries[name].ready = new Promise((resolve, reject) =&gt; {
+    Component.externalLibraries[name].ready = new NativePromise((resolve, reject) =&gt; {
       Component.externalLibraries[name].resolve = resolve;
       Component.externalLibraries[name].reject = reject;
     });
@@ -2400,7 +2505,7 @@ Component.libraryReady = function(name) {
     return Component.externalLibraries[name].ready;
   }
 
-  return Promise.reject(`${name} library was not required.`);
+  return NativePromise.reject(`${name} library was not required.`);
 };
 </code></pre>
 

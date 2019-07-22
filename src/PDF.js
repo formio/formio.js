@@ -1,5 +1,4 @@
-import Promise from 'native-promise-only';
-
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 import Formio from './Formio';
@@ -8,7 +7,6 @@ import Webform from './Webform';
 export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
-
     this.refreshIframeReadyPromise();
 
     this.components = [];
@@ -16,7 +14,7 @@ export default class PDF extends Webform {
 
   refreshIframeReadyPromise() {
     if (this.iframeReadyReject) {
-      this.iframeReady = this.iframeReady.catch(err => {
+      this.iframeReady = this.iframeReady.catch(() => {
         return;
       });
 
@@ -24,7 +22,7 @@ export default class PDF extends Webform {
     }
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve, reject) => {
+    this.iframeReady = new NativePromise((resolve, reject) => {
       this.iframeReadyResolve = resolve;
       this.iframeReadyReject = reject;
     });

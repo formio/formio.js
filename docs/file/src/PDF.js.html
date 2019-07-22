@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -217,8 +221,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDF.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
-
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 
 import Formio from &apos;./Formio&apos;;
@@ -227,7 +230,6 @@ import Webform from &apos;./Webform&apos;;
 export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
-
     this.refreshIframeReadyPromise();
 
     this.components = [];
@@ -235,7 +237,7 @@ export default class PDF extends Webform {
 
   refreshIframeReadyPromise() {
     if (this.iframeReadyReject) {
-      this.iframeReady = this.iframeReady.catch(err =&gt; {
+      this.iframeReady = this.iframeReady.catch(() =&gt; {
         return;
       });
 
@@ -243,7 +245,7 @@ export default class PDF extends Webform {
     }
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve, reject) =&gt; {
+    this.iframeReady = new NativePromise((resolve, reject) =&gt; {
       this.iframeReadyResolve = resolve;
       this.iframeReadyReject = reject;
     });
@@ -372,29 +374,8 @@ export default class PDF extends Webform {
     });
   }
 
-  postMessage(message) {
-    // If we get here before the iframeReady promise is set up, it&apos;s via the superclass constructor
-    if (!this.iframeReady) {
-      return;
-    }
-
-    if (!message.type) {
-      message.type = &apos;iframe-data&apos;;
-    }
-
-    this.iframeReady = this.iframeReady.then(() =&gt; {
-      if (this.iframeElement &amp;&amp; this.iframeElement.contentWindow) {
-        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), &apos;*&apos;);
-      }
-    });
-  }
-
-  // Do not clear the iframe.
-  clear() {}
-
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
-    this.postMessage({ name: &apos;submission&apos;, data: submission });
     return super.setSubmission(submission).then(() =&gt; {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) =&gt; {
@@ -418,8 +399,29 @@ export default class PDF extends Webform {
           }
         });
       }
+      this.postMessage({ name: &apos;submission&apos;, data: submission });
     });
   }
+
+  postMessage(message) {
+    // If we get here before the iframeReady promise is set up, it&apos;s via the superclass constructor
+    if (!this.iframeReady) {
+      return;
+    }
+
+    if (!message.type) {
+      message.type = &apos;iframe-data&apos;;
+    }
+
+    this.iframeReady = this.iframeReady.then(() =&gt; {
+      if (this.iframeElement &amp;&amp; this.iframeElement.contentWindow) {
+        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), &apos;*&apos;);
+      }
+    });
+  }
+
+  // Do not clear the iframe.
+  clear() {}
 }
 
 /**

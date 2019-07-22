@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -248,6 +252,8 @@ export default class Input extends Multivalue {
       attr.disabled = &apos;disabled&apos;;
     }
 
+    _.defaults(attr, this.component.attributes);
+
     return {
       id: this.key,
       type: &apos;input&apos;,
@@ -339,7 +345,7 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValueAt(flags, value, index) {
+  updateValueAt(value, flags, index) {
     if (_.get(this.component, &apos;showWordCount&apos;, false)) {
       if (this.refs.wordcount &amp;&amp; this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, &apos;validate.maxWords&apos;, 0), 10);
@@ -354,12 +360,12 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValue(flags, value, index) {
+  updateValue(value, flags, index) {
     flags = flags || {};
     value = value === undefined ? this.dataValue : value;
     index = index || 0;
-    this.triggerUpdateValueAt(flags, value, index);
-    return super.updateValue(flags, value);
+    this.triggerUpdateValueAt(value, flags, index);
+    return super.updateValue(value, flags);
   }
 
   attach(element) {
@@ -376,7 +382,9 @@ export default class Input extends Multivalue {
     this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
       // Delay update slightly to give input mask a chance to run.
       setTimeout(() =&gt; {
-        return this.updateValue(null, null, index);
+        return this.updateValue(null, {
+          modified: true
+        }, index);
       }, 1);
     });
 
@@ -444,7 +452,9 @@ export default class Input extends Multivalue {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
-    widget.on(&apos;update&apos;, () =&gt; this.updateValue(null, widget.getValue(), index), true);
+    widget.on(&apos;update&apos;, () =&gt; this.updateValue(widget.getValue(), {
+      modified: true
+    }, index), true);
     widget.on(&apos;redraw&apos;, () =&gt; this.redraw(), true);
     this._widget = widget;
     return widget;

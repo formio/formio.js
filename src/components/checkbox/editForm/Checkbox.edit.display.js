@@ -18,10 +18,17 @@ export default [
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
     data: {
-      custom({ instance: { root: { editForm, editComponent } = {} } = {} }) {
+      custom({
+        instance: {
+          root: {
+            editForm,
+            editComponent,
+          } = {},
+        } = {},
+      }) {
         return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
-      }
-    }
+      },
+    },
   },
   {
     type: 'select',
@@ -34,9 +41,9 @@ export default [
     data: {
       values: [
         { label: 'Checkbox', value: 'checkbox' },
-        { label: 'Radio', value: 'radio' }
-      ]
-    }
+        { label: 'Radio', value: 'radio' },
+      ],
+    },
   },
   {
     type: 'textfield',
@@ -46,8 +53,8 @@ export default [
     tooltip: 'The key used to trigger the radio button toggle.',
     weight: 420,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-    }
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+    },
   },
   {
     type: 'textfield',
@@ -57,7 +64,7 @@ export default [
     tooltip: 'The value used with this radio button.',
     weight: 430,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-    }
-  }
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+    },
+  },
 ];

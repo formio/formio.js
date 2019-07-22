@@ -43,5 +43,9 @@ export default [
     tooltip: 'The ink color for the signature area.',
     placeholder: 'Pen Color',
     weight: 53
-  }
+  },
+  {
+    key: 'placeholder',
+    ignore: true,
+  },
 ];

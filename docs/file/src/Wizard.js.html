@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -217,7 +221,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Wizard.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
+import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
 import Component from &apos;./components/_classes/component/Component&apos;;
 import Formio from &apos;./Formio&apos;;
@@ -246,11 +251,12 @@ export default class Wizard extends Webform {
     this.globalComponents = [];
     this.components = [];
     this.page = 0;
+    this.currentNextPage = 0;
     this._seenPages = [0];
   }
 
   isLastPage() {
-    const next = this.getNextPage(this.submission.data, this.page);
+    const next = this.getNextPage();
 
     if (_.isNumber(next)) {
       return 0 &lt; next &amp;&amp; next &gt;= this.pages.length;
@@ -412,7 +418,7 @@ export default class Wizard extends Webform {
 
   setPage(num) {
     if (num === this.page) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
     if (!this.wizard.full &amp;&amp; num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
       this.page = num;
@@ -420,24 +426,25 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
-    return Promise.reject(&apos;Page not found&apos;);
+    return NativePromise.reject(&apos;Page not found&apos;);
   }
 
   get currentPage() {
     return (this.pages &amp;&amp; (this.pages.length &gt;= this.page)) ? this.pages[this.page] : null;
   }
 
-  getNextPage(data, currentPage) {
-    const form = this.pages[currentPage];
+  getNextPage() {
+    const data = this.submission.data;
+    const form = this.panels[this.page];
     // Check conditional nextPage
     if (form) {
-      const page = ++currentPage;
+      const page = this.page + 1;
       if (form.nextPage) {
         const next = this.evaluate(form.nextPage, {
           next: page,
@@ -446,20 +453,25 @@ export default class Wizard extends Webform {
           form
         }, &apos;next&apos;);
         if (next === null) {
+          this.currentNextPage = null;
           return null;
         }
 
         const pageNum = parseInt(next, 10);
         if (!isNaN(parseInt(pageNum, 10)) &amp;&amp; isFinite(pageNum)) {
+          this.currentNextPage = pageNum;
           return pageNum;
         }
 
-        return this.getPageIndexByKey(next);
+        this.currentNextPage = this.getPageIndexByKey(next);
+        return this.currentNextPage;
       }
 
+      this.currentNextPage = page;
       return page;
     }
 
+    this.currentNextPage = null;
     return null;
   }
 
@@ -468,16 +480,35 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return Promise.all(this.getPages().map((page) =&gt; {
+    return NativePromise.all(this.getPages().map((page) =&gt; {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
+  beforeNext() {
+    return new NativePromise((resolve, reject) =&gt; {
+      this.hook(&apos;beforeNext&apos;, this.currentPage, this.submission, (err) =&gt; {
+        if (err) {
+          this.showErrors(err, true);
+          reject(err);
+        }
+
+        const form = this.currentPage;
+        if (form) {
+          NativePromise.all(form.map((comp) =&gt; comp.beforeNext())).then(resolve).catch(reject);
+        }
+        else {
+          resolve();
+        }
+      });
+    });
+  }
+
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
-      return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() =&gt; {
+      return this.setPage(this.getNextPage()).then(() =&gt; {
         this.emit(&apos;nextPage&apos;, { page: this.page, submission: this.submission });
       });
     }
@@ -486,13 +517,13 @@ export default class Wizard extends Webform {
     if (this.checkCurrentPageValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
       return this.beforeNext().then(() =&gt; {
-        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() =&gt; {
+        return this.setPage(this.getNextPage()).then(() =&gt; {
           this.emit(&apos;nextPage&apos;, { page: this.page, submission: this.submission });
         });
       });
     }
     else {
-      return Promise.reject(this.showErrors(null, true));
+      return NativePromise.reject(this.showErrors(null, true));
     }
   }
 
@@ -513,8 +544,8 @@ export default class Wizard extends Webform {
   }
 
   getPageIndexByKey(key) {
-    let pageIndex = 0;
-    this.pages.forEach((page, index) =&gt; {
+    let pageIndex = this.page;
+    this.panels.forEach((page, index) =&gt; {
       if (page.key === key) {
         pageIndex = index;
         return false;
@@ -575,7 +606,7 @@ export default class Wizard extends Webform {
       ]);
       return (this.page &gt; 0) &amp;&amp; show;
     }
-    nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
+    nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
     if (name === &apos;next&apos;) {
       const show = firstNonNil([
         _.get(currentPage, &apos;buttonSettings.next&apos;),
@@ -628,9 +659,14 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed);
 
     // Only rebuild if there is a page visibility change.
+    const currentNextPage = this.currentNextPage;
+    const nextPage = this.getNextPage();
     const panels = this.calculateVisiblePanels();
-    if (!_.isEqual(panels.map(panel =&gt; panel.key), this.panels.map(panel =&gt; panel.key))) {
-      // If visible panels changes we need to completely rebuild to add new pages.
+    if (
+      (nextPage !== currentNextPage) ||
+      !_.isEqual(panels.map(panel =&gt; panel.key), this.panels.map(panel =&gt; panel.key))
+    ) {
+      // If visible panels changes we need to build this template again.
       this.rebuild();
     }
   }

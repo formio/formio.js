@@ -1,3 +1,4 @@
+import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
@@ -27,11 +28,12 @@ export default class Wizard extends Webform {
     this.globalComponents = [];
     this.components = [];
     this.page = 0;
+    this.currentNextPage = 0;
     this._seenPages = [0];
   }
 
   isLastPage() {
-    const next = this.getNextPage(this.submission.data, this.page);
+    const next = this.getNextPage();
 
     if (_.isNumber(next)) {
       return 0 < next && next >= this.pages.length;
@@ -193,7 +195,7 @@ export default class Wizard extends Webform {
 
   setPage(num) {
     if (num === this.page) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
@@ -201,24 +203,25 @@ export default class Wizard extends Webform {
         this._seenPages = this._seenPages.concat(num);
       }
       this.redraw();
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
     else if (this.wizard.full || !this.pages.length) {
       this.redraw();
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
-    return Promise.reject('Page not found');
+    return NativePromise.reject('Page not found');
   }
 
   get currentPage() {
     return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
   }
 
-  getNextPage(data, currentPage) {
-    const form = this.pages[currentPage];
+  getNextPage() {
+    const data = this.submission.data;
+    const form = this.panels[this.page];
     // Check conditional nextPage
     if (form) {
-      const page = ++currentPage;
+      const page = this.page + 1;
       if (form.nextPage) {
         const next = this.evaluate(form.nextPage, {
           next: page,
@@ -227,20 +230,25 @@ export default class Wizard extends Webform {
           form
         }, 'next');
         if (next === null) {
+          this.currentNextPage = null;
           return null;
         }
 
         const pageNum = parseInt(next, 10);
         if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+          this.currentNextPage = pageNum;
           return pageNum;
         }
 
-        return this.getPageIndexByKey(next);
+        this.currentNextPage = this.getPageIndexByKey(next);
+        return this.currentNextPage;
       }
 
+      this.currentNextPage = page;
       return page;
     }
 
+    this.currentNextPage = null;
     return null;
   }
 
@@ -249,16 +257,35 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return Promise.all(this.getPages().map((page) => {
+    return NativePromise.all(this.getPages().map((page) => {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
+  beforeNext() {
+    return new NativePromise((resolve, reject) => {
+      this.hook('beforeNext', this.currentPage, this.submission, (err) => {
+        if (err) {
+          this.showErrors(err, true);
+          reject(err);
+        }
+
+        const form = this.currentPage;
+        if (form) {
+          NativePromise.all(form.map((comp) => comp.beforeNext())).then(resolve).catch(reject);
+        }
+        else {
+          resolve();
+        }
+      });
+    });
+  }
+
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
-      return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
+      return this.setPage(this.getNextPage()).then(() => {
         this.emit('nextPage', { page: this.page, submission: this.submission });
       });
     }
@@ -267,13 +294,13 @@ export default class Wizard extends Webform {
     if (this.checkCurrentPageValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
       return this.beforeNext().then(() => {
-        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
+        return this.setPage(this.getNextPage()).then(() => {
           this.emit('nextPage', { page: this.page, submission: this.submission });
         });
       });
     }
     else {
-      return Promise.reject(this.showErrors(null, true));
+      return NativePromise.reject(this.showErrors(null, true));
     }
   }
 
@@ -294,8 +321,8 @@ export default class Wizard extends Webform {
   }
 
   getPageIndexByKey(key) {
-    let pageIndex = 0;
-    this.pages.forEach((page, index) => {
+    let pageIndex = this.page;
+    this.panels.forEach((page, index) => {
       if (page.key === key) {
         pageIndex = index;
         return false;
@@ -356,7 +383,7 @@ export default class Wizard extends Webform {
       ]);
       return (this.page > 0) && show;
     }
-    nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
+    nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
     if (name === 'next') {
       const show = firstNonNil([
         _.get(currentPage, 'buttonSettings.next'),
@@ -409,9 +436,14 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed);
 
     // Only rebuild if there is a page visibility change.
+    const currentNextPage = this.currentNextPage;
+    const nextPage = this.getNextPage();
     const panels = this.calculateVisiblePanels();
-    if (!_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))) {
-      // If visible panels changes we need to completely rebuild to add new pages.
+    if (
+      (nextPage !== currentNextPage) ||
+      !_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))
+    ) {
+      // If visible panels changes we need to build this template again.
       this.rebuild();
     }
   }

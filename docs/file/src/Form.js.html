@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -224,6 +228,7 @@ import PDF from &apos;./PDF&apos;;
 import Webform from &apos;./Webform&apos;;
 import templates from &apos;./templates&apos;;
 import { sanitize } from &apos;dompurify&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class Form extends Element {
   /**
@@ -243,8 +248,8 @@ export default class Form extends Element {
    * form.build();
    */
   constructor(...args) {
-    super(...args);
-    this.ready = new Promise((resolve, reject) =&gt; {
+    super(args[0] instanceof HTMLElement ? args[2] : args[1]);
+    this.ready = new NativePromise((resolve, reject) =&gt; {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
@@ -268,6 +273,7 @@ export default class Form extends Element {
       this.element = null;
       this.options = null;
     }
+    this.display = &apos;&apos;;
   }
 
   /**
@@ -280,6 +286,7 @@ export default class Form extends Element {
     if (this.options &amp;&amp; this.options.flatten) {
       display = &apos;form&apos;;
     }
+    this.display = display;
     switch (display) {
       case &apos;wizard&apos;:
         return new Wizard(this.element, this.options);
@@ -311,9 +318,9 @@ export default class Form extends Element {
         this._form = this.instance.form = form;
         return this.instance.ready.then(() =&gt; {
           if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission();
+            return this.instance.loadSubmission().then(() =&gt; this.instance);
           }
-          return Promise.resolve();
+          return this.instance;
         });
       });
     }
@@ -326,6 +333,7 @@ export default class Form extends Element {
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() =&gt; {
       this.element = this.instance.element;
+      return this.instance;
     });
   }
 
@@ -345,8 +353,8 @@ export default class Form extends Element {
    * @return {Promise&lt;T&gt;}
    */
   setDisplay(display) {
-    if (this.form.display === display) {
-      return Promise.resolve();
+    if ((this.display === display) &amp;&amp; this.instance) {
+      return NativePromise.resolve(this.instance);
     }
 
     this.form.display = display;
@@ -364,7 +372,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve) =&gt; {
       if (!embed || !embed.src) {
         resolve();
       }
@@ -415,11 +423,11 @@ export default class Form extends Element {
    */
   build() {
     if (!this.instance) {
-      return Promise.reject(&apos;Form not ready. Use form.ready promise&apos;);
+      return NativePromise.reject(&apos;Form not ready. Use form.ready promise&apos;);
     }
 
     if (!this.element) {
-      return Promise.reject(&apos;No DOM element for form.&apos;);
+      return NativePromise.reject(&apos;No DOM element for form.&apos;);
     }
 
     // Add temporary loader.
@@ -439,9 +447,9 @@ export default class Form extends Element {
 
   render() {
     if (!this.instance) {
-      return Promise.reject(&apos;Form not ready. Use form.ready promise&apos;);
+      return NativePromise.reject(&apos;Form not ready. Use form.ready promise&apos;);
     }
-    return Promise.resolve(this.instance.render())
+    return NativePromise.resolve(this.instance.render())
       .then((param) =&gt; {
         this.emit(&apos;render&apos;, param);
         return param;
@@ -450,7 +458,7 @@ export default class Form extends Element {
 
   attach(element) {
     if (!this.instance) {
-      return Promise.reject(&apos;Form not ready. Use form.ready promise&apos;);
+      return NativePromise.reject(&apos;Form not ready. Use form.ready promise&apos;);
     }
     this.element = element;
     return this.instance.attach(this.element)
@@ -474,7 +482,7 @@ Formio.embedForm = (embed) =&gt; Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (...args) =&gt; {
-  return (new Form(...args).ready);
+  return (new Form(...args)).ready;
 };
 
 Formio.Form = Form;

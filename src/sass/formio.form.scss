@@ -169,7 +169,7 @@ td > .form-group {
 
 .formio-loader {
   position: relative;
-  min-height: 80px;
+  min-height: 60px;
 }
 
 .loader-wrapper {
@@ -885,4 +885,10 @@ body.formio-dialog-open {
   &__node-children {
     margin: 0;
   }
+}
+
+.formio-select-autocomplete-input {
+  /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
+  opacity: 0;
+  position: absolute;
 }

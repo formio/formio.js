@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -218,19 +222,36 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Formio.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals OktaAuth */
-import Promise from &apos;native-promise-only&apos;;
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
+import NativePromise from &apos;native-promise-only&apos;;
 import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
-import copy from &apos;shallow-copy&apos;;
 import providers from &apos;./providers&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-const { fetch, Headers } = fetchPonyfill({ Promise });
+import _defaults from &apos;lodash/defaults&apos;;
+const { fetch, Headers } = fetchPonyfill({
+  Promise: NativePromise
+});
 
 const isBoolean = (val) =&gt; typeof val === typeof true;
 const isNil = (val) =&gt; val === null || val === undefined;
 const isObject = (val) =&gt; val &amp;&amp; typeof val === &apos;object&apos;;
+
+function cloneResponse(response) {
+  const copy = _cloneDeep(response);
+
+  if (Array.isArray(response)) {
+    copy.skip = response.skip;
+    copy.limit = response.limit;
+    copy.serverCount = response.serverCount;
+  }
+
+  return copy;
+}
 
 /**
  * The Formio interface class.
@@ -415,7 +436,7 @@ export default class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (!this[_id]) {
-      Promise.reject(&apos;Nothing to delete&apos;);
+      NativePromise.reject(&apos;Nothing to delete&apos;);
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], &apos;delete&apos;, null, opts);
@@ -455,7 +476,7 @@ export default class Formio {
       query = this.query;
     }
     if (!this[_id]) {
-      return Promise.reject(`Missing ${_id}`);
+      return NativePromise.reject(`Missing ${_id}`);
     }
     return this.makeRequest(type, this[_url] + query, &apos;get&apos;, null, opts);
   }
@@ -583,10 +604,10 @@ export default class Formio {
 
   getProjectId() {
     if (!this.projectId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
     if (this.isObjectId(this.projectId)) {
-      return Promise.resolve(this.projectId);
+      return NativePromise.resolve(this.projectId);
     }
     else {
       return this.loadProject().then((project) =&gt; {
@@ -597,10 +618,10 @@ export default class Formio {
 
   getFormId() {
     if (!this.formId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
     if (this.isObjectId(this.formId)) {
-      return Promise.resolve(this.formId);
+      return NativePromise.resolve(this.formId);
     }
     else {
       return this.loadForm().then((form) =&gt; {
@@ -641,7 +662,7 @@ export default class Formio {
   getTempToken(expire, allowed, options) {
     const token = Formio.getToken(options);
     if (!token) {
-      return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
+      return NativePromise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
     }
     return this.makeRequest(&apos;tempToken&apos;, `${this.projectUrl}/token`, &apos;GET&apos;, null, {
       ignoreCache: true,
@@ -659,7 +680,7 @@ export default class Formio {
    */
   getDownloadUrl(form) {
     if (!this.submissionId) {
-      return Promise.resolve(&apos;&apos;);
+      return NativePromise.resolve(&apos;&apos;);
     }
 
     if (!form) {
@@ -678,7 +699,7 @@ export default class Formio {
     apiUrl += &apos;/download&apos;;
 
     let download = this.base + apiUrl;
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       this.getTempToken(3600, `GET:${apiUrl}`).then((tempToken) =&gt; {
         download += `?token=${tempToken.key}`;
         resolve(download);
@@ -745,7 +766,7 @@ export default class Formio {
   // Determine if the user can submit the form.
   canSubmit() {
     /* eslint-disable max-statements, max-depth */
-    return Promise.all([
+    return NativePromise.all([
       this.loadForm(),
       this.currentUser(),
       this.accessInfo()
@@ -899,7 +920,7 @@ export default class Formio {
 
   static request(url, method, data, header, opts) {
     if (!url) {
-      return Promise.reject(&apos;No url provided&apos;);
+      return NativePromise.reject(&apos;No url provided&apos;);
     }
     method = (method || &apos;GET&apos;).toUpperCase();
 
@@ -917,22 +938,28 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(_cloneDeep(Formio.cache[cacheKey]));
+      return NativePromise.resolve(cloneResponse(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
-    const headers = header || new Headers(opts.headers || {
+    const headers = header || new Headers(_defaults(opts.headers, {
       &apos;Accept&apos;: &apos;application/json&apos;,
       &apos;Content-type&apos;: &apos;application/json; charset=UTF-8&apos;
-    });
+    }));
     const token = Formio.getToken(opts);
     if (token &amp;&amp; !opts.noToken) {
       headers.append(&apos;x-jwt-token&apos;, token);
     }
 
+    // The fetch-ponyfill can&apos;t handle a proper Headers class anymore. Change it back to an object.
+    const headerObj = {};
+    headers.forEach(function(value, name) {
+      headerObj[name] = value;
+    });
+
     let options = {
       method: method,
-      headers: headers,
+      headers: headerObj,
       mode: &apos;cors&apos;
     };
     if (data) {
@@ -945,7 +972,7 @@ export default class Formio {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
-    const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
+    const requestToken = options.headers[&apos;x-jwt-token&apos;];
     const result = Formio.fetch(url, options)
       .then((response) =&gt; {
         // Allow plugins to respond.
@@ -964,7 +991,7 @@ export default class Formio {
             ? response.json()
             : response.text())
             .then((error) =&gt; {
-              return Promise.reject(error);
+              return NativePromise.reject(error);
             });
         }
 
@@ -1029,8 +1056,8 @@ export default class Formio {
 
           // Return the result with the headers.
           return {
-            result: result,
-            headers: headers
+            result,
+            headers,
           };
         });
       })
@@ -1044,20 +1071,7 @@ export default class Formio {
           Formio.cache[cacheKey] = result;
         }
 
-        let resultCopy = {};
-
-        // Shallow copy result so modifications don&apos;t end up in cache
-        if (Array.isArray(result)) {
-          resultCopy = result.map(copy);
-          resultCopy.skip = result.skip;
-          resultCopy.limit = result.limit;
-          resultCopy.serverCount = result.serverCount;
-        }
-        else {
-          resultCopy = copy(result);
-        }
-
-        return resultCopy;
+        return cloneResponse(result);
       })
       .catch((err) =&gt; {
         if (err === &apos;Bad Token&apos;) {
@@ -1073,7 +1087,7 @@ export default class Formio {
           delete Formio.cache[cacheKey];
         }
 
-        return Promise.reject(err);
+        return NativePromise.reject(err);
       });
 
     return result;
@@ -1274,7 +1288,7 @@ export default class Formio {
   }
 
   static pluginWait(pluginFn, ...args) {
-    return Promise.all(Formio.plugins.map((plugin) =&gt;
+    return NativePromise.all(Formio.plugins.map((plugin) =&gt;
       (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
   }
 
@@ -1283,10 +1297,10 @@ export default class Formio {
       const plugin = Formio.plugins[index];
 
       if (!plugin) {
-        return Promise.resolve(null);
+        return NativePromise.resolve(null);
       }
 
-      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
+      return NativePromise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
         .then((result) =&gt; {
           if (!isNil(result)) {
             return result;
@@ -1313,7 +1327,7 @@ export default class Formio {
     projectUrl += &apos;/current&apos;;
     const user = Formio.getUser(options);
     if (user) {
-      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(user), {
+      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, NativePromise.resolve(user), {
         url: projectUrl,
         method: &apos;GET&apos;,
         options
@@ -1322,7 +1336,7 @@ export default class Formio {
 
     const token = Formio.getToken(options);
     if ((!options || !options.external) &amp;&amp; !token) {
-      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
+      return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, NativePromise.resolve(null), {
         url: projectUrl,
         method: &apos;GET&apos;,
         options
@@ -1418,9 +1432,9 @@ export default class Formio {
     if (typeof options.OktaAuth === undefined) {
       const errorMessage = &apos;Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.&apos;;
       console.warn(errorMessage);
-      return Promise.reject(errorMessage);
+      return NativePromise.reject(errorMessage);
     }
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
       var authClient = new Okta(options);
@@ -1457,14 +1471,14 @@ export default class Formio {
         return Formio.oktaInit(options);
       default:
         console.warn(&apos;Unknown SSO type&apos;);
-        return Promise.reject(&apos;Unknown SSO type&apos;);
+        return NativePromise.reject(&apos;Unknown SSO type&apos;);
     }
   }
 
   static requireLibrary(name, property, src, polling) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
-      Formio.libraries[name].ready = new Promise((resolve, reject) =&gt; {
+      Formio.libraries[name].ready = new NativePromise((resolve, reject) =&gt; {
         Formio.libraries[name].resolve = resolve;
         Formio.libraries[name].reject = reject;
       });
@@ -1541,13 +1555,13 @@ export default class Formio {
       return Formio.libraries[name].ready;
     }
 
-    return Promise.reject(`${name} library was not required.`);
+    return NativePromise.reject(`${name} library was not required.`);
   }
 }
 
 // Define all the static properties.
 Formio.libraries = {};
-Formio.Promise = Promise;
+Formio.Promise = NativePromise;
 Formio.fetch = fetch;
 Formio.Headers = Headers;
 Formio.baseUrl = &apos;https://api.form.io&apos;;

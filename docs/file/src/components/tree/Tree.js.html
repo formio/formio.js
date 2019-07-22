@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -222,6 +226,7 @@ import Component from &apos;../_classes/component/Component&apos;;
 import Components from &apos;../Components&apos;;
 import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
 import Node from &apos;./Node&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class TreeComponent extends NestedComponent {
   static schema(...extend) {
@@ -359,7 +364,7 @@ export default class TreeComponent extends NestedComponent {
       root: &apos;single&apos;,
     });
 
-    return Promise.all([
+    return NativePromise.all([
       super.attach(element),
       this.attachNode(this.refs.root, this.tree),
     ]);
@@ -367,11 +372,11 @@ export default class TreeComponent extends NestedComponent {
 
   attachNode(element, node) {
     if (!element) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
 
-    let componentsPromise = Promise.resolve();
-    let childrenPromise = Promise.resolve();
+    let componentsPromise = NativePromise.resolve();
+    let childrenPromise = NativePromise.resolve();
 
     node.refs = _.reduce(
       element.children,
@@ -395,7 +400,7 @@ export default class TreeComponent extends NestedComponent {
       childrenPromise = this.attachChildren(node);
     }
 
-    return Promise.all([
+    return NativePromise.all([
       componentsPromise,
       childrenPromise,
     ]);
@@ -466,13 +471,13 @@ export default class TreeComponent extends NestedComponent {
 
     return node.refs.nodeEdit
       ? super.attachComponents(node.refs.nodeEdit, node.components)
-      : Promise.resolve();
+      : NativePromise.resolve();
   }
 
   attachChildren(node) {
     const childElements = node.refs.childNodes.children;
 
-    return Promise.all(
+    return NativePromise.all(
       _.map(
         childElements,
         (childElement, index) =&gt; this.attachNode(childElement, node.children[index]),
@@ -481,7 +486,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   setValue(value) {
-    this.updateValue({}, value);
+    this.updateValue(value);
     this.setRoot();
   }
 
@@ -632,7 +637,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   updateTree() {
-    this.updateValue({}, this.tree.value);
+    this.updateValue(this.tree.value);
     this.redraw();
   }
 
@@ -647,7 +652,7 @@ export default class TreeComponent extends NestedComponent {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     });
 

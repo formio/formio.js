@@ -65,25 +65,19 @@ export default class SignatureComponent extends Input {
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     super.setValue(value, flags);
-    if (this.options.readOnly && this.refs.signatureImage) {
+    if (value && this.refs.signatureImage && (!flags.noSign || this.options.readOnly)) {
       this.refs.signatureImage.setAttribute('src', value);
+      this.showCanvas(false);
     }
-    else if (this.signaturePad) {
-      if (value && !flags.noSign) {
-        this.refs.signatureImage.setAttribute('src', value);
-        this.showCanvas(false);
-      }
+    if (this.signaturePad) {
       if (!value) {
         this.signaturePad.clear();
       }
       else {
         this.triggerChange();
       }
-    }
-    if (!this.pristine) {
-      this.triggerChange();
     }
   }
 

@@ -1,5 +1,3 @@
-/* global $ */
-
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
@@ -23,6 +21,9 @@ export default class WebformBuilder extends Component {
     else {
       options = arguments[0];
     }
+    // Reset skipInit in case PDFBuilder has set it.
+    options.skipInit = false;
+
     super(null, options);
 
     this.element = element;
@@ -175,14 +176,14 @@ export default class WebformBuilder extends Component {
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
 
-      // If this is an existing datagrid element, don't make it draggable.
-      if (component.type === 'datagrid' && components.length > 0) {
-        return element;
-      }
-
       // Add container to draggable list.
       if (this.dragula) {
         this.dragula.containers.push(containerElement);
+      }
+
+      // If this is an existing datagrid element, don't make it draggable.
+      if (component.type === 'datagrid' && components.length > 0) {
+        return element;
       }
 
       // Since we added a wrapper, need to return the original element so that we can find the components inside it.
@@ -235,7 +236,7 @@ export default class WebformBuilder extends Component {
       }
 
       if (component.refs.moveComponent) {
-        const moveToolTip = new Tooltip(component.refs.moveComponent, {
+        new Tooltip(component.refs.moveComponent, {
           trigger: 'hover',
           placement: 'top',
           title: this.t('Move')
@@ -505,6 +506,7 @@ export default class WebformBuilder extends Component {
     super.detach();
   }
 
+  /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
       return;
@@ -520,12 +522,23 @@ export default class WebformBuilder extends Component {
 
     if (type) {
       // This is a new component
-      info = _.cloneDeep(this.schemas[type]);
-      info.key = _.camelCase(
-        info.label ||
-        info.placeholder ||
-        info.type
-      );
+      if (this.schemas.hasOwnProperty(type)) {
+        info = _.cloneDeep(this.schemas[type]);
+        info.key = _.camelCase(
+          info.label ||
+          info.placeholder ||
+          info.type
+        );
+      }
+      else {
+        // This is an existing resource field.
+        const [resource, key] = type.split('_');
+        const resourceGroups = this.groups.resource.subgroups;
+        const resourceGroup = _.find(resourceGroups, { key: resource });
+        if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
+          info = resourceGroup.components[key].schema;
+        }
+      }
 
       isNew = true;
     }
@@ -540,6 +553,11 @@ export default class WebformBuilder extends Component {
         // Since splice returns an array of one object, we need to destructure it.
         info = info[0];
       }
+    }
+
+    // If we haven't found the component, stop.
+    if (!info) {
+      return;
     }
 
     if (target !== source) {
@@ -683,7 +701,7 @@ export default class WebformBuilder extends Component {
     const editFormOptions = _.get(this, 'options.editForm', {});
     this.editForm = new Webform(
       {
-        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']),
+        ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
         language: this.options.language,
         ...editFormOptions
       }
@@ -777,7 +795,7 @@ export default class WebformBuilder extends Component {
 
             if (this.form) {
               // Set a unique key for this component.
-              BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), event.data);
+              BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), event.data);
             }
           }
         }

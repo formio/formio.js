@@ -2,8 +2,11 @@
   {% values.forEach(function(item) { %}
   <div class="{{input.attr.type}}{{inline ? '-inline' : ''}}" ref="wrapper">
     <label class="control-label form-check-label" for="{{id}}{{row}}-{{item.value}}">
-      <{{input.type}} 
-        ref="input" 
+      {% if (component.optionsLabelPosition === 'left' || component.optionsLabelPosition === 'top') { %}
+      <span>{{t(item.label)}}</span>
+      {% } %}
+      <{{input.type}}
+        ref="input"
         {% for (var attr in input.attr) { %}
         {{attr}}="{{input.attr[attr]}}"
         {% } %}
@@ -11,9 +14,11 @@
         {% if (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])) { %}
           checked=true
         {% } %}
-        id="{{id}}{{row}}-{{item.value}}" 
+        id="{{id}}{{row}}-{{item.value}}"
       >
+      {% if (!component.optionsLabelPosition || component.optionsLabelPosition === 'right' || component.optionsLabelPosition === 'bottom') { %}
       <span>{{t(item.label)}}</span>
+      {% } %}
     </label>
   </div>
   {% }) %}

@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -241,6 +245,11 @@ export default class SelectBoxesComponent extends RadioComponent {
     };
   }
 
+  constructor(...args) {
+    super(...args);
+    this.validators = this.validators.concat(&apos;minSelectedCount&apos;, &apos;maxSelectedCount&apos;);
+  }
+
   init() {
     super.init();
     this.component.inputType = &apos;checkbox&apos;;
@@ -298,12 +307,12 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   /**
-   * Set the value of this component.
+   * Normalize values coming into updateValue.
    *
    * @param value
-   * @param flags
+   * @return {*}
    */
-  setValue(value, flags) {
+  normalizeValue(value) {
     value = value || {};
     if (typeof value !== &apos;object&apos;) {
       if (typeof value === &apos;string&apos;) {
@@ -315,21 +324,31 @@ export default class SelectBoxesComponent extends RadioComponent {
         value = {};
       }
     }
-    flags = this.getFlags.apply(this, arguments);
     if (Array.isArray(value)) {
       _.each(value, (val) =&gt; {
         value[val] = true;
       });
     }
 
+    return value;
+  }
+
+  /**
+   * Set the value of this component.
+   *
+   * @param value
+   * @param flags
+   */
+  setValue(value, flags) {
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     _.each(this.refs.input, (input) =&gt; {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
     });
-
-    this.updateValue(flags);
+    return changed;
   }
 
   getView(value) {
@@ -340,6 +359,60 @@ export default class SelectBoxesComponent extends RadioComponent {
       .filter((v) =&gt; value[v.value])
       .map(&apos;label&apos;)
       .join(&apos;, &apos;);
+  }
+
+  checkValidity(data, dirty, rowData) {
+    console.log(&apos;checkValidity&apos;, data, dirty, rowData);
+    const minCount = this.component.validate.minSelectedCount;
+    const maxCount = this.component.validate.maxSelectedCount;
+
+    if (maxCount || minCount) {
+      const count = Object.keys(this.validationValue).reduce((total, key) =&gt; {
+        if (this.validationValue[key]) {
+          total++;
+        }
+        return total;
+      }, 0);
+
+      if (maxCount &amp;&amp; count &gt;= maxCount) {
+        console.log(this.refs);
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            if (!item.checked) {
+              item.disabled = true;
+            }
+          });
+        }
+        if (maxCount &amp;&amp; count &gt; maxCount) {
+          const message = this.component.maxSelectedCountMessage
+            ? this.component.maxSelectedCountMessage
+            : `You can only select up to ${maxCount} items.`;
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
+      }
+      else if (minCount &amp;&amp; count &lt; minCount) {
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            item.disabled = false;
+          });
+        }
+        const message = this.component.minSelectedCountMessage
+          ? this.component.minSelectedCountMessage
+          : `You must select at least ${minCount} items.`;
+        this.setCustomValidity(message, dirty);
+        return false;
+      }
+      else {
+        if (this.refs.input) {
+          this.refs.input.forEach(item =&gt; {
+            item.disabled = false;
+          });
+        }
+      }
+    }
+
+    return super.checkValidity(data, dirty, rowData);
   }
 }
 </code></pre>

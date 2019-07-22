@@ -1,13 +1,16 @@
+/* globals Quill, ClassicEditor */
 import { conformToMask } from 'vanilla-text-mask';
+import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import { sanitize } from 'dompurify';
-
+import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
 import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
+const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -371,7 +374,7 @@ export default class Component extends Element {
 
   // Allow componets to notify when ready.
   get ready() {
-    return Promise.resolve(this);
+    return NativePromise.resolve(this);
   }
 
   get labelInfo() {
@@ -395,6 +398,8 @@ export default class Component extends Element {
   }
 
   init() {
+    this.disabled = this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
+
     // Attach the refresh on events.
     this.attachRefreshOn();
   }
@@ -642,6 +647,7 @@ export default class Component extends Element {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
+    data.disabled = this.disabled;
     data.builder = this.builderMode;
 
     // Allow more specific template names
@@ -732,7 +738,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeNext() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -742,7 +748,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.resolve(true);
+    return NativePromise.resolve(true);
   }
 
   /**
@@ -771,6 +777,7 @@ export default class Component extends Element {
   }
 
   build(element) {
+    element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
     this.attach(element);
@@ -814,15 +821,7 @@ export default class Component extends Element {
 
     // Attach logic.
     this.attachLogic();
-
-    // this.restoreValue();
-
     this.autofocus();
-
-    // Disable if needed.
-    if (this.canDisable) {
-      this.disabled = this.options.readOnly || this.component.disabled;
-    }
 
     // Allow global attach.
     this.hook('attachComponent', element, this);
@@ -832,7 +831,7 @@ export default class Component extends Element {
       this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
     }
 
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   addShortcut(element, shortcut) {
@@ -1158,8 +1157,7 @@ export default class Component extends Element {
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
     this.element = parent.children[index];
-
-    this.attach(this.element);
+    return this.attach(this.element);
   }
 
   rebuild() {
@@ -1392,12 +1390,8 @@ export default class Component extends Element {
 
   onChange(flags, fromRoot) {
     flags = flags || {};
-    if (!flags.noValidate) {
-      this.pristine = false;
-    }
-
     if (flags.modified) {
-      // Add a modified class if this element was manually modified.
+      this.pristine = false;
       this.addClass(this.getElement(), 'formio-modified');
     }
 
@@ -1425,8 +1419,91 @@ export default class Component extends Element {
     if (this.root && !fromRoot) {
       this.root.triggerChange(flags, changed);
     }
-
     return changed;
+  }
+
+  get wysiwygDefault() {
+    return {
+      theme: 'snow',
+      placeholder: this.t(this.component.placeholder),
+      modules: {
+        toolbar: [
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'font': [] }],
+          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+          ['blockquote', 'code-block'],
+          ['link', 'image', 'video', 'formula', 'source']
+        ]
+      }
+    };
+  }
+
+  addCKE(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? {} : settings;
+    settings.base64Upload = true;
+    return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
+      .then(() => {
+        if (!element.parentNode) {
+          return NativePromise.reject();
+        }
+        return ClassicEditor.create(element, settings).then(editor => {
+          editor.model.document.on('change', () => onChange(editor.data.get()));
+          return editor;
+        });
+      });
+  }
+
+  addQuill(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+
+    // Lazy load the quill css.
+    Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
+    ], true);
+
+    // Lazy load the quill library.
+    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+      .then(() => {
+        if (!element.parentNode) {
+          return NativePromise.reject();
+        }
+        this.quill = new Quill(element, settings);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        const txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        this.quill.addContainer('ql-custom').appendChild(txtArea);
+        const qlSource = element.parentNode.querySelector('.ql-source');
+        if (qlSource) {
+          this.addEventListener(qlSource, 'click', (event) => {
+            event.preventDefault();
+            if (txtArea.style.display === 'inherit') {
+              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+            }
+            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+          });
+        }
+        /** END CODEBLOCK **/
+
+        // Make sure to select cursor when they click on the element.
+        this.addEventListener(element, 'click', () => this.quill.focus());
+
+        // Allows users to skip toolbar items when tabbing though form
+        const elm = document.querySelectorAll('.ql-formats > button');
+        for (let i = 0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
+        }
+
+        this.quill.on('text-change', () => {
+          txtArea.value = this.quill.root.innerHTML;
+          onChange(txtArea);
+        });
+
+        return this.quill;
+      });
   }
 
   /**
@@ -1591,21 +1668,11 @@ export default class Component extends Element {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    this.dataValue = value;
-
-    // If we aren't connected to the dom yet, skip updating values.
-    if (!this.attached) {
-      return;
-    }
-
-    flags = this.getFlags.apply(this, arguments);
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     if (!this.hasInput) {
-      return false;
+      return changed;
     }
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
-
     const isArray = Array.isArray(value);
     if (isArray && this.refs.input && this.refs.input.length !== value.length) {
       this.redraw();
@@ -1615,7 +1682,7 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    return this.updateValue(flags);
+    return changed;
   }
 
   /**
@@ -1662,23 +1729,29 @@ export default class Component extends Element {
   }
 
   /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple && !Array.isArray(value)) {
+      value = value ? [value] : [];
+    }
+    return value;
+  }
+
+  /**
    * Update a value of this component.
    *
    * @param flags
    */
-  updateValue(flags, value) {
-    if (!this.hasInput) {
-      return false;
-    }
-
+  updateValue(value, flags) {
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue() : value;
+    let newValue = value === undefined || value === null ? this.getValue() : value;
+    newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-    if (this.viewOnly) {
-      this.updateViewOnlyValue(newValue);
-    }
-
     this.updateOnChange(flags, changed);
     return changed;
   }
@@ -1703,18 +1776,18 @@ export default class Component extends Element {
   /**
    * Determine if the value of this component has changed.
    *
-   * @param before
-   * @param after
+   * @param newValue
+   * @param oldValue
    * @return {boolean}
    */
-  hasChanged(before, after) {
+  hasChanged(newValue, oldValue) {
     if (
-      ((before === undefined) || (before === null)) &&
-      ((after === undefined) || (after === null))
+      ((newValue === undefined) || (newValue === null)) &&
+      ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
     }
-    return !_.isEqual(before, after);
+    return !_.isEqual(newValue, oldValue);
   }
 
   /**
@@ -1899,22 +1972,26 @@ export default class Component extends Element {
     if (this.refs.messageContainer) {
       this.empty(this.refs.messageContainer);
     }
-    if (!this.refs.input) {
-      return;
-    }
     if (message) {
       this.error = {
         component: this.component,
         message: message
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty, this.refs.input);
+      if (this.refs.input) {
+        this.addInputError(message, dirty, this.refs.input);
+      }
     }
     else {
-      this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      if (this.refs.input) {
+        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
       this.error = null;
+    }
+    if (!this.refs.input) {
+      return;
     }
     this.refs.input.forEach(input => {
       input = this.performInputMapping(input);
@@ -1935,13 +2012,6 @@ export default class Component extends Element {
     return rules.some(pred => pred());
   }
 
-  getFlags() {
-    return (typeof arguments[1] === 'boolean') ? {
-      noUpdateEvent: arguments[1],
-      noValidate: arguments[2]
-    } : (arguments[1] || {});
-  }
-
   // Maintain reverse compatibility.
   whenReady() {
     console.warn('The whenReady() method has been deprecated. Please use the dataReady property instead.');
@@ -1949,7 +2019,7 @@ export default class Component extends Element {
   }
 
   get dataReady() {
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**
@@ -2104,6 +2174,8 @@ export default class Component extends Element {
       attributes.disabled = 'disabled';
     }
 
+    _.defaults(attributes, this.component.attributes);
+
     return {
       type: 'input',
       component: this.component,
@@ -2129,7 +2201,7 @@ Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
-    Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
+    Component.externalLibraries[name].ready = new NativePromise((resolve, reject) => {
       Component.externalLibraries[name].resolve = resolve;
       Component.externalLibraries[name].reject = reject;
     });
@@ -2210,5 +2282,5 @@ Component.libraryReady = function(name) {
     return Component.externalLibraries[name].ready;
   }
 
-  return Promise.reject(`${name} library was not required.`);
+  return NativePromise.reject(`${name} library was not required.`);
 };

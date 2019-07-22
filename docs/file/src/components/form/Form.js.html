@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -219,6 +223,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
+import EventEmitter from &apos;eventemitter2&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import { isMongoId, eachComponent } from &apos;../../utils/utils&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Form from &apos;../../Form&apos;;
@@ -246,25 +252,10 @@ export default class FormComponent extends Component {
     };
   }
 
-  /* eslint-disable max-statements */
   init() {
     super.init();
     this.subForm = null;
     this.formSrc = &apos;&apos;;
-
-    this.subFormReady = new Promise((resolve, reject) =&gt; {
-      this.subFormReadyResolve = resolve;
-      this.subFormReadyReject = reject;
-    });
-    this.subFormLoaded = false;
-    this.subscribe();
-    const srcOptions = this.getSubOptions();
-
-    // Make sure that if reference is provided, the form must submit.
-    if (this.component.reference) {
-      this.component.submit = true;
-    }
-
     if (this.component.src) {
       this.formSrc = this.component.src;
     }
@@ -281,11 +272,11 @@ export default class FormComponent extends Component {
           this.formSrc += &apos;/project&apos;;
         }
         this.formSrc += `/${this.component.project}`;
-        srcOptions.project = this.formSrc;
+        this.options.project = this.formSrc;
       }
       else {
         this.formSrc = Formio.getProjectUrl();
-        srcOptions.project = this.formSrc;
+        this.options.project = this.formSrc;
       }
       if (this.component.form) {
         this.formSrc += `/form/${this.component.form}`;
@@ -308,26 +299,14 @@ export default class FormComponent extends Component {
       }
     }
 
-    // Ensure components is set.
-    this.component.components = this.component.components || [];
-
-    this.subForm = new Form(this.component, srcOptions).instance;
-    this.subForm.root = this.root;
-    this.subForm.currentForm = this;
-    this.subForm.on(&apos;change&apos;, () =&gt; {
-      this.dataValue = this.subForm.getValue();
-      this.triggerChange();
-    });
-    this.loadSubForm().then(this.redraw.bind(this));
-    this.subForm.url = this.formSrc;
-    this.subForm.nosubmit = this.nosubmit;
-    this.subForm.nosubmit = false;
-    this.restoreValue();
+    // Add revision version if set.
+    if (this.component.formRevision || this.component.formRevision === 0) {
+      this.formSrc += `/v/${this.component.formRevision}`;
+    }
   }
-  /* eslint-enable max-statements */
 
   get dataReady() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   get defaultSchema() {
@@ -339,7 +318,7 @@ export default class FormComponent extends Component {
   }
 
   get ready() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   getSubOptions(options = {}) {
@@ -382,6 +361,7 @@ export default class FormComponent extends Component {
     if (this.options.iconset) {
       options.iconset = this.options.iconset;
     }
+    options.events = this.createEmitter();
     return options;
   }
 
@@ -397,11 +377,9 @@ export default class FormComponent extends Component {
     super.attach(element);
     // Don&apos;t attach in builder.
     if (this.builderMode) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
-    if (this.subForm) {
-      return this.subForm.attach(element);
-    }
+    return this.loadSubForm().then(() =&gt; this.subForm.attach(element));
   }
 
   detach() {
@@ -448,15 +426,11 @@ export default class FormComponent extends Component {
     });
   }
 
-  subscribe() {
-    this.on(&apos;nosubmit&apos;, value =&gt; {
-      this.nosubmit = value;
-    }, true);
-  }
-
   destroy() {
     if (this.subForm) {
       this.subForm.destroy();
+      this.subForm = null;
+      this.subFormReady = null;
     }
     super.destroy();
   }
@@ -465,7 +439,7 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       this.subForm.form = this.component;
     }
-    super.redraw();
+    return super.redraw();
   }
 
   /**
@@ -474,18 +448,27 @@ export default class FormComponent extends Component {
    * @returns {*|void}
    */
   everyComponent(...args) {
-    return this.subForm.everyComponent(...args);
+    if (this.subForm) {
+      this.subForm.everyComponent(...args);
+    }
   }
 
   /**
-   * Filter a subform to ensure all submit button components are hidden.
+   * Render a subform.
    *
    * @param form
    * @param options
    */
-  filterSubForm() {
+  renderSubForm(form) {
+    if (this.options.builder) {
+      this.element.appendChild(this.ce(&apos;div&apos;, {
+        class: &apos;text-muted text-center p-2&apos;
+      }, this.text(form.title)));
+      return;
+    }
+
     // Iterate through every component and hide the submit button.
-    eachComponent(this.component.components, (component) =&gt; {
+    eachComponent(form.components, (component) =&gt; {
       if (
         (component.type === &apos;button&apos;) &amp;&amp;
         ((component.action === &apos;submit&apos;) || !component.action)
@@ -493,54 +476,54 @@ export default class FormComponent extends Component {
         component.hidden = true;
       }
     });
-  }
 
-  show(...args) {
-    const state = super.show(...args);
-    if (state &amp;&amp; !this.subFormLoaded) {
-      this.loadSubForm();
-    }
-
-    return state;
+    // Render the form.
+    return (new Form(form, this.getSubOptions())).ready.then((instance) =&gt; {
+      this.subForm = instance;
+      this.subForm.currentForm = this;
+      this.subForm.parent = this;
+      this.subForm.parentVisible = this.visible;
+      this.subForm.on(&apos;change&apos;, () =&gt; {
+        if (this.subForm) {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange({
+            noEmit: true
+          });
+        }
+      });
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = this.nosubmit;
+      this.redraw();
+      this.restoreValue();
+      this.subForm.root = this.root;
+      return this.subForm;
+    });
   }
 
   /**
    * Load the subform.
    */
-  /* eslint-disable max-statements */
   loadSubForm() {
-    // Don&apos;t load form in builder mode.
-    if (this.builderMode) {
-      return this.subFormReady;
+    if (this.builderMode || this.isHidden()) {
+      return NativePromise.resolve();
     }
 
-    if (this.subFormLoaded) {
+    if (this.subFormReady) {
       return this.subFormReady;
-    }
-
-    // Add revision version if set.
-    if (this.component.formRevision || this.component.formRevision === 0) {
-      this.formSrc += `/v/${this.component.formRevision}`;
     }
 
     // Determine if we already have a loaded form object.
     if (this.component &amp;&amp; this.component.components &amp;&amp; Array.isArray(this.component.components) &amp;&amp; this.component.components.length) {
-      this.filterSubForm();
-      this.subFormReadyResolve(this.subForm);
-      return this.subFormReady;
+      this.subFormReady = this.renderSubForm(this.component);
     }
     else if (this.formSrc) {
-      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
-        .then((formObj) =&gt; {
-          this.component.components = formObj.components;
-          this.filterSubForm();
-          return this.subFormReadyResolve(this.subForm);
-        })
-        .catch((err) =&gt; this.subFormReadyReject(err));
+      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) =&gt; {
+        this.component.components = formObj.components;
+        return this.renderSubForm(formObj);
+      });
     }
     return this.subFormReady;
   }
-  /* eslint-enable max-statements */
 
   checkValidity(data, dirty) {
     if (this.subForm) {
@@ -552,14 +535,13 @@ export default class FormComponent extends Component {
 
   checkConditions(data) {
     const visible = super.checkConditions(data);
-    const subForm = this.subForm;
 
     // Return if already hidden
     if (!visible) {
       return visible;
     }
 
-    if (subForm &amp;&amp; subForm.hasCondition()) {
+    if (this.subForm &amp;&amp; this.subForm.hasCondition()) {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 
@@ -581,19 +563,23 @@ export default class FormComponent extends Component {
     }
   }
 
+  get shouldSubmit() {
+    return this.subFormReady &amp;&amp; (!this.component.hasOwnProperty(&apos;reference&apos;) || this.component.reference);
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
-    if (this.component.submit) {
-      return this.loadSubForm().then(() =&gt; {
+    if (this.shouldSubmit) {
+      return this.subFormReady.then(() =&gt; {
         return this.subForm.submitForm().then(result =&gt; {
           this.dataValue = result.submission;
           return this.dataValue;
         }).catch(err =&gt; {
           this.subForm.onSubmissionError(err);
-          return Promise.reject(err);
+          return NativePromise.reject(err);
         });
       });
     }
@@ -610,23 +596,23 @@ export default class FormComponent extends Component {
 
     // This submission has already been submitted, so just return the reference data.
     if (submission &amp;&amp; submission._id &amp;&amp; submission.form) {
-      this.dataValue = this.component.reference ? {
+      this.dataValue = this.shouldSubmit ? {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return Promise.resolve(this.dataValue);
+      return NativePromise.resolve(this.dataValue);
     }
 
     // This submission has not been submitted yet.
-    if (this.component.submit) {
-      return this.loadSubForm().then(() =&gt; {
+    if (this.shouldSubmit) {
+      return this.subFormReady.then(() =&gt; {
         return this.subForm.submitForm()
           .then(result =&gt; {
             this.subForm.loading = false;
-            this.dataValue = this.component.reference ? {
+            this.dataValue = {
               _id: result.submission._id,
               form: result.submission.form
-            } : result.submission;
+            };
             return this.dataValue;
           })
           .catch(() =&gt; {});
@@ -647,18 +633,15 @@ export default class FormComponent extends Component {
 
   setValue(submission, flags) {
     const changed = super.setValue(submission, flags);
-    const hidden = this.isHidden();
-    let subForm;
-
-    if (hidden) {
-      subForm = this.subFormReady;
-    }
-    else {
-      subForm = this.loadSubForm();
-    }
-
-    subForm.then((form) =&gt; {
-        if (submission &amp;&amp; submission._id &amp;&amp; form.formio &amp;&amp; !flags.noload &amp;&amp; _.isEmpty(submission.data)) {
+    if (this.subFormReady) {
+      this.subFormReady.then((form) =&gt; {
+        if (
+          submission &amp;&amp;
+          submission._id &amp;&amp;
+          form.formio &amp;&amp;
+          !flags.noload &amp;&amp;
+          (_.isEmpty(submission.data) || this.shouldSubmit)
+        ) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setUrl(submissionUrl, this.options);
           form.nosubmit = false;
@@ -668,7 +651,7 @@ export default class FormComponent extends Component {
           form.setValue(submission, flags);
         }
       });
-
+    }
     return changed;
   }
 
@@ -708,6 +691,56 @@ export default class FormComponent extends Component {
   set parentVisible(value) {
     super.parentVisible = value;
     this.updateSubFormVisibility();
+  }
+
+  isInternalEvent(event) {
+    switch (event) {
+      case &apos;focus&apos;:
+      case &apos;blur&apos;:
+      case &apos;componentChange&apos;:
+      case &apos;componentError&apos;:
+      case &apos;error&apos;:
+      case &apos;formLoad&apos;:
+      case &apos;languageChanged&apos;:
+      case &apos;render&apos;:
+      case &apos;checkValidity&apos;:
+      case &apos;initialized&apos;:
+      case &apos;submit&apos;:
+      case &apos;submitButton&apos;:
+      case &apos;nosubmit&apos;:
+      case &apos;updateComponent&apos;:
+      case &apos;submitDone&apos;:
+      case &apos;submissionDeleted&apos;:
+      case &apos;requestDone&apos;:
+      case &apos;nextPage&apos;:
+      case &apos;prevPage&apos;:
+      case &apos;wizardNavigationClicked&apos;:
+      case &apos;updateWizardNav&apos;:
+      case &apos;restoreDraft&apos;:
+      case &apos;saveDraft&apos;:
+      case &apos;saveComponent&apos;:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  createEmitter() {
+    const emitter = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+    const nativeEmit = emitter.emit;
+    const that = this;
+    emitter.emit = function(event, ...args) {
+      const eventType = event.replace(`${that.options.namespace}.`, &apos;&apos;);
+      nativeEmit.call(this, event, ...args);
+      if (!that.isInternalEvent(eventType)) {
+        that.emit(eventType, ...args);
+      }
+    };
+
+    return emitter;
   }
 
   deleteValue() {

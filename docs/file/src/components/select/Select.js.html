@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -222,6 +226,7 @@ import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 import Form from &apos;../../Form&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -289,7 +294,7 @@ export default class SelectComponent extends Field {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) =&gt; {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
       this.itemsLoadedResolve = resolve;
     });
   }
@@ -303,10 +308,14 @@ export default class SelectComponent extends Field {
   }
 
   get emptyValue() {
-    if (this.component.valueProperty) {
+    if (this.valueProperty) {
       return &apos;&apos;;
     }
     return {};
+  }
+
+  get valueProperty() {
+    return this.component.valueProperty || &apos;value&apos;;
   }
 
   get inputInfo() {
@@ -356,8 +365,8 @@ export default class SelectComponent extends Field {
    */
   itemValue(data, forceUseValue = false) {
     if (_.isObject(data)) {
-      if (this.component.valueProperty) {
-        return _.get(data, this.component.valueProperty);
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
       }
 
       if (forceUseValue) {
@@ -384,11 +393,7 @@ export default class SelectComponent extends Field {
       this.selectOptions.push(option);
     }
 
-    if (this.choices || !this.element) {
-      return;
-    }
-
-    if (this.refs.selectContainer) {
+    if (this.refs.selectContainer &amp;&amp; (this.component.widget === &apos;html5&apos;)) {
       this.refs.selectContainer.insertAdjacentHTML(&apos;beforeend&apos;, this.sanitize(this.renderTemplate(&apos;selectOption&apos;, {
         selected: this.dataValue === option.value,
         option,
@@ -622,7 +627,7 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh(value) {
+  refresh() {
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
@@ -655,7 +660,6 @@ export default class SelectComponent extends Field {
 
     switch (this.component.dataSrc) {
       case &apos;values&apos;:
-        this.component.valueProperty = &apos;value&apos;;
         this.setItems(this.component.data.values);
         break;
       case &apos;json&apos;:
@@ -715,6 +719,52 @@ export default class SelectComponent extends Field {
         const options = this.component.authenticate ? {} : { noToken: true };
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
+      }
+      case &apos;indexeddb&apos;: {
+        if (!window.indexedDB) {
+          window.alert(&quot;Your browser doesn&apos;t support current version of indexedDB&quot;);
+        }
+
+        if (this.component.indexeddb &amp;&amp; this.component.indexeddb.database &amp;&amp; this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+
+          request.onupgradeneeded = (event) =&gt; {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: &apos;myKey&apos;, autoIncrement: true });
+              objectStore.transaction.oncomplete = () =&gt; {
+                const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+                this.component.customOptions.forEach((item) =&gt; {
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () =&gt; {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) =&gt; {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
+            new Promise((resolve) =&gt; {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) =&gt; {
+                event.target.result.forEach((item) =&gt; {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) =&gt; {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
+              this.setItems(items);
+            });
+          };
+        }
       }
     }
   }
@@ -779,12 +829,22 @@ export default class SelectComponent extends Field {
     this.loadRefs(element, {
       selectContainer: &apos;single&apos;,
       addResource: &apos;single&apos;,
+      autocompleteInput: &apos;single&apos;
     });
+    //enable autocomplete for select
+    const autocompleteInput = this.refs.autocompleteInput;
+    if (autocompleteInput) {
+      this.addEventListener(autocompleteInput, &apos;change&apos;, (event) =&gt; {
+        this.setValue(event.target.value);
+      });
+    }
     const input = this.refs.selectContainer;
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue());
+    this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue(null, {
+      modified: true
+    }));
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
@@ -977,6 +1037,10 @@ export default class SelectComponent extends Field {
     }
   }
 
+  get disabled() {
+    return super.disabled;
+  }
+
   set visible(value) {
     // If we go from hidden to visible, trigger a refresh.
     if (value &amp;&amp; (!this._visible !== !value)) {
@@ -999,7 +1063,7 @@ export default class SelectComponent extends Field {
     }
     const notFoundValuesToAdd = [];
     const added = values.reduce((defaultAdded, value) =&gt; {
-      if (!value) {
+      if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
       let found = false;
@@ -1054,9 +1118,11 @@ export default class SelectComponent extends Field {
   }
 
   getValue() {
-    if (this.viewOnly || this.loading || !this.selectOptions.length) {
+    // If the widget isn&apos;t active.
+    if (this.viewOnly || this.loading || !this.selectOptions.length || !this.element) {
       return this.dataValue;
     }
+
     let value = this.emptyValue;
     if (this.choices) {
       value = this.choices.getValue(true);
@@ -1070,37 +1136,45 @@ export default class SelectComponent extends Field {
         value = this.emptyValue;
       }
     }
+    else if (this.refs.selectContainer) {
+      value = this.refs.selectContainer.value;
+    }
     else {
-      const values = [];
-      _.each(this.selectOptions, (selectOption) =&gt; {
-        if (selectOption.element &amp;&amp; selectOption.element.selected) {
-          values.push(selectOption.value);
-        }
-      });
-      value = this.component.multiple ? values : values.shift();
+      value = this.dataValue;
     }
     // Choices will return undefined if nothing is selected. We really want &apos;&apos; to be empty.
-    if (value === undefined || value === null || value === &apos;&apos;) {
-      value = this.dataValue;
+    if (value === undefined || value === null) {
+      value = &apos;&apos;;
     }
     return value;
   }
 
   redraw() {
-    super.redraw();
+    const done = super.redraw();
     this.triggerUpdate();
+    return done;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
+      value = +value;
+    }
+    return super.normalizeValue(value);
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     const previousValue = this.dataValue;
-    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
-    const hasValue = Array.isArray(value) ? value.length : typeof value === &apos;object&apos; ? Object.keys(value).length : value;
-    const changed = this.hasChanged(value, previousValue);
-    this.dataValue = value;
+    const hasValue = Array.isArray(value) ? value.length : value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -1118,7 +1192,7 @@ export default class SelectComponent extends Field {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.dataValue, true);
+      this.triggerUpdate(value, true);
       return changed;
     }
 
@@ -1130,7 +1204,7 @@ export default class SelectComponent extends Field {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don&apos;t already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
         }
@@ -1163,7 +1237,6 @@ export default class SelectComponent extends Field {
       }
     }
 
-    this.updateOnChange(flags, changed);
     return changed;
   }
 
@@ -1205,7 +1278,7 @@ export default class SelectComponent extends Field {
         }
         : {
           items: this.getCustomItems(),
-          valueProperty: this.component.valueProperty,
+          valueProperty: this.valueProperty,
         };
 
       value = (this.component.multiple &amp;&amp; Array.isArray(value))

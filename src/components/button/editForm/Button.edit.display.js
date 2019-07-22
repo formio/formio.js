@@ -3,15 +3,15 @@ import BuilderUtils from '../../../utils/builder';
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'select',
@@ -29,9 +29,9 @@ export default [
         { label: 'Custom', value: 'custom' },
         { label: 'Reset', value: 'reset' },
         { label: 'OAuth', value: 'oauth' },
-        { label: 'POST to URL', value: 'url' }
-      ]
-    }
+        { label: 'POST to URL', value: 'url' },
+      ],
+    },
   },
   {
     type: 'textfield',
@@ -42,8 +42,8 @@ export default [
     placeholder: 'submitted',
     input: true,
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'saveState'] }
-    }
+      json: { '===': [{ var: 'data.action' }, 'saveState'] },
+    },
   },
   {
     type: 'checkbox',
@@ -54,8 +54,8 @@ export default [
     weight: 115,
     tooltip: 'When the button is pressed, show any validation errors on the form.',
     conditional: {
-      json: { '!==': [{ var: 'data.action' }, 'submit'] }
-    }
+      json: { '!==': [{ var: 'data.action' }, 'submit'] },
+    },
   },
   {
     type: 'textfield',
@@ -65,8 +65,8 @@ export default [
     weight: 120,
     tooltip: 'The event to fire when the button is clicked.',
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'event'] }
-    }
+      json: { '===': [{ var: 'data.action' }, 'event'] },
+    },
   },
   {
     type: 'textfield',
@@ -78,8 +78,8 @@ export default [
     tooltip: 'The URL where the submission will be sent.',
     placeholder: 'https://example.form.io',
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.action' }, 'url'] },
+    },
   },
   {
     type: 'datagrid',
@@ -94,18 +94,18 @@ export default [
         key: 'header',
         label: 'Header',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         key: 'value',
         label: 'Value',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       }
     ],
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.action' }, 'url'] },
+    },
   },
   {
     type: 'textarea',
@@ -118,8 +118,8 @@ export default [
     weight: 120,
     placeholder: "data['mykey'] = data['anotherKey'];",
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'custom'] }
-    }
+      json: { '===': [{ var: 'data.action' }, 'custom'] },
+    },
   },
   {
     type: 'select',
@@ -136,9 +136,9 @@ export default [
         { label: 'Info', value: 'info' },
         { label: 'Success', value: 'success' },
         { label: 'Danger', value: 'danger' },
-        { label: 'Warning', value: 'warning' }
-      ]
-    }
+        { label: 'Warning', value: 'warning' },
+      ],
+    },
   },
   {
     type: 'select',
@@ -153,9 +153,9 @@ export default [
         { label: 'Extra Small', value: 'xs' },
         { label: 'Small', value: 'sm' },
         { label: 'Medium', value: 'md' },
-        { label: 'Large', value: 'lg' }
-      ]
-    }
+        { label: 'Large', value: 'lg' },
+      ],
+    },
   },
   {
     type: 'textfield',
@@ -164,7 +164,7 @@ export default [
     input: true,
     placeholder: 'Enter icon classes',
     tooltip: "This is the full icon class string to show the icon. Example: 'fa fa-plus'",
-    weight: 160
+    weight: 160,
   },
   {
     type: 'textfield',
@@ -173,7 +173,7 @@ export default [
     input: true,
     placeholder: 'Enter icon classes',
     tooltip: "This is the full icon class string to show the icon. Example: 'fa fa-plus'",
-    weight: 170
+    weight: 170,
   },
   {
     type: 'select',
@@ -184,10 +184,17 @@ export default [
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
     data: {
-      custom({ instance: { root: { editForm, editComponent } = {} } = {} }) {
+      custom({
+        instance: {
+          root: {
+            editForm,
+            editComponent,
+          } = {},
+        } = {},
+      }) {
         return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
-      }
-    }
+      },
+    },
   },
   {
     type: 'checkbox',
@@ -195,7 +202,7 @@ export default [
     label: 'Block Button',
     input: true,
     weight: 155,
-    tooltip: 'This control should span the full width of the bounding container.'
+    tooltip: 'This control should span the full width of the bounding container.',
   },
   {
     type: 'checkbox',
@@ -203,6 +210,6 @@ export default [
     label: 'Disable on Form Invalid',
     tooltip: 'This will disable this field if the form is invalid.',
     input: true,
-    weight: 620
-  }
+    weight: 620,
+  },
 ];

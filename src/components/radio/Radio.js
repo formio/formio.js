@@ -54,7 +54,9 @@ export default class RadioComponent extends Field {
   attach(element) {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach((input, index) => {
-      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
+      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
+        modified: true
+      }));
       this.addShortcut(input, this.component.values[index].shortcut);
     });
     super.attach(element);
@@ -113,8 +115,8 @@ export default class RadioComponent extends Field {
     }
   }
 
-  updateValue(flags, value) {
-    const changed = super.updateValue(flags, value);
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
     if (changed && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;

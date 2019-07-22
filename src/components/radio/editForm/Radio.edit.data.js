@@ -3,7 +3,7 @@ import BuilderUtils from '../../../utils/builder';
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'datagrid',
@@ -19,7 +19,7 @@ export default [
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
@@ -27,7 +27,7 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
       },
       {
         type: 'select',
@@ -38,11 +38,18 @@ export default [
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
         data: {
-          custom({ instance: { root: { editForm, editComponent } = {} } = {} }) {
+          custom({
+            instance: {
+              root: {
+                editForm,
+                editComponent,
+              } = {},
+            } = {},
+          }) {
             return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
-          }
-        }
-      }
-    ]
+          },
+        },
+      },
+    ],
   },
 ];

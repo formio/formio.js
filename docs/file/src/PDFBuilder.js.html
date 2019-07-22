@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -218,11 +222,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDFBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
+import Formio from &apos;./Formio&apos;;
 
 import WebformBuilder from &apos;./WebformBuilder&apos;;
 import { getElementRect } from &apos;./utils/utils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import PDF from &apos;./PDF&apos;;
+const { fetch, Headers } = fetchPonyfill({
+  Promise: NativePromise
+});
 
 export default class PDFBuilder extends WebformBuilder {
   constructor() {
@@ -277,6 +287,14 @@ export default class PDFBuilder extends WebformBuilder {
     };
   }
 
+  get hasPDF() {
+    return _.has(this.webform.form, &apos;settings.pdf&apos;);
+  }
+
+  get projectUrl() {
+    return this.options.projectUrl || Formio.getProjectUrl();
+  }
+
   // 888      d8b  .d888                                    888
   // 888      Y8P d88P&quot;                                     888
   // 888          888                                       888
@@ -313,15 +331,79 @@ export default class PDFBuilder extends WebformBuilder {
           })),
         })),
       }),
-      form: this.webform.render()
+      form: this.hasPDF ?
+        this.webform.render() :
+        this.renderTemplate(&apos;pdfBuilderUpload&apos;, {})
     });
 
     return result;
   }
 
   attach(element) {
+    // PDF Upload
+    if (!this.hasPDF) {
+      this.loadRefs(element, {
+        &apos;fileDrop&apos;: &apos;single&apos;,
+        &apos;fileBrowse&apos;: &apos;single&apos;,
+        &apos;hiddenFileInputElement&apos;: &apos;single&apos;,
+        &apos;uploadError&apos;: &apos;single&apos;,
+      });
+      this.addEventListener(this.refs[&apos;pdf-upload-button&apos;], &apos;click&apos;,(event) =&gt; {
+        event.preventDefault();
+      });
+
+      // Init the upload error.
+      if (!this.projectUrl) {
+        this.setUploadError(&apos;Form options.projectUrl not set. Please set the &quot;projectUrl&quot; property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.&apos;);
+      }
+      else {
+        this.setUploadError();
+      }
+
+      if (this.refs.fileDrop) {
+        const element = this;
+        this.addEventListener(this.refs.fileDrop, &apos;dragover&apos;, function(event) {
+          this.className = &apos;fileSelector fileDragOver&apos;;
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, &apos;dragleave&apos;, function(event) {
+          this.className = &apos;fileSelector&apos;;
+          event.preventDefault();
+        });
+        this.addEventListener(this.refs.fileDrop, &apos;drop&apos;, function(event) {
+          this.className = &apos;fileSelector&apos;;
+          event.preventDefault();
+          element.upload(event.dataTransfer.files[0]);
+          return false;
+        });
+      }
+
+      if (this.refs.fileBrowse &amp;&amp; this.refs.hiddenFileInputElement) {
+        this.addEventListener(this.refs.fileBrowse, &apos;click&apos;, (event) =&gt; {
+          event.preventDefault();
+          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+          // a click event on it.
+          if (typeof this.refs.hiddenFileInputElement.trigger === &apos;function&apos;) {
+            this.refs.hiddenFileInputElement.trigger(&apos;click&apos;);
+          }
+          else {
+            this.refs.hiddenFileInputElement.click();
+          }
+        });
+        this.addEventListener(this.refs.hiddenFileInputElement, &apos;change&apos;, () =&gt; {
+          this.upload(this.refs.hiddenFileInputElement.files[0]);
+          this.refs.hiddenFileInputElement.value = &apos;&apos;;
+        });
+      }
+
+      return NativePromise.resolve();
+    }
+
+    // Normal PDF Builder
     return super.attach(element).then(() =&gt; {
-      this.loadRefs(this.element, { iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;single&apos; });
+      this.loadRefs(this.element, {
+        iframeDropzone: &apos;single&apos;, &apos;sidebar-container&apos;: &apos;single&apos;
+      });
 
       if (this.refs.iframeDropzone) {
         this.initIframeEvents();
@@ -335,6 +417,50 @@ export default class PDFBuilder extends WebformBuilder {
 
       return this.element;
     });
+  }
+
+  upload(file) {
+    const headers = new Headers({
+      &apos;Accept&apos;: &apos;application/json, text/plain, */*&apos;,
+      &apos;x-jwt-token&apos;: Formio.getToken(),
+    });
+
+    const formData = new FormData();
+    formData.append(&apos;file&apos;, file);
+
+    fetch(`${this.projectUrl}/upload`, {
+      method: &apos;POST&apos;,
+      headers,
+      body: formData
+    })
+      .then(response =&gt; {
+        if (response.status !== 200) {
+          response.text().then(info =&gt; {
+            this.setUploadError(`${response.statusText} - ${info}`);
+          });
+        }
+        else {
+          response.json().then(data =&gt; {
+            this.webform.form.settings.pdf = {
+              id: data.file,
+              src: `${this.projectUrl}${data.path}`
+            };
+            // Now that the settings are set, redraw to show the builder.
+            this.redraw();
+          });
+        }
+      })
+      .catch(() =&gt; {
+        this.setUploadError(&apos;Upload failed.&apos;);
+      });
+  }
+
+  setUploadError(message) {
+    if (!this.refs.uploadError) {
+      return;
+    }
+    this.refs.uploadError.style.display = message ? &apos;&apos; : &apos;none&apos;;
+    this.refs.uploadError.innerHTML = message;
   }
 
   createForm(options) {

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';
 import Form from '../../Form';
+import NativePromise from 'native-promise-only';
 
 export default class SelectComponent extends Field {
   static schema(...extend) {
@@ -70,7 +71,7 @@ export default class SelectComponent extends Field {
     this.activated = false;
 
     // Determine when the items have been loaded.
-    this.itemsLoaded = new Promise((resolve) => {
+    this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
   }
@@ -169,11 +170,7 @@ export default class SelectComponent extends Field {
       this.selectOptions.push(option);
     }
 
-    if (this.choices || !this.element) {
-      return;
-    }
-
-    if (this.refs.selectContainer) {
+    if (this.refs.selectContainer && (this.component.widget === 'html5')) {
       this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
         selected: this.dataValue === option.value,
         option,
@@ -407,7 +404,7 @@ export default class SelectComponent extends Field {
     this.setItems(this.getCustomItems() || []);
   }
 
-  refresh(value) {
+  refresh() {
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
@@ -500,6 +497,52 @@ export default class SelectComponent extends Field {
         this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
         break;
       }
+      case 'indexeddb': {
+        if (!window.indexedDB) {
+          window.alert("Your browser doesn't support current version of indexedDB");
+        }
+
+        if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+
+          request.onupgradeneeded = (event) => {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: 'myKey', autoIncrement: true });
+              objectStore.transaction.oncomplete = () => {
+                const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
+                this.component.customOptions.forEach((item) => {
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () => {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
+            new Promise((resolve) => {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) => {
+                event.target.result.forEach((item) => {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) => {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
+              this.setItems(items);
+            });
+          };
+        }
+      }
     }
   }
   /* eslint-enable max-statements */
@@ -563,12 +606,22 @@ export default class SelectComponent extends Field {
     this.loadRefs(element, {
       selectContainer: 'single',
       addResource: 'single',
+      autocompleteInput: 'single'
     });
+    //enable autocomplete for select
+    const autocompleteInput = this.refs.autocompleteInput;
+    if (autocompleteInput) {
+      this.addEventListener(autocompleteInput, 'change', (event) => {
+        this.setValue(event.target.value);
+      });
+    }
     const input = this.refs.selectContainer;
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
+      modified: true
+    }));
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
@@ -874,26 +927,31 @@ export default class SelectComponent extends Field {
   }
 
   redraw() {
-    super.redraw();
+    const done = super.redraw();
     this.triggerUpdate();
+    return done;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
+    }
+    return super.normalizeValue(value);
   }
 
   setValue(value, flags) {
-    const isNumeric = (val) => {
-      return !isNaN(parseFloat(val)) && isFinite(val);
-    };
-    if (isNumeric(value)) {
-      value = +value;
-    }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     const previousValue = this.dataValue;
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = this.hasChanged(value, previousValue);
-    this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -911,7 +969,7 @@ export default class SelectComponent extends Field {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.dataValue, true);
+      this.triggerUpdate(value, true);
       return changed;
     }
 
@@ -923,7 +981,7 @@ export default class SelectComponent extends Field {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        const currentChoices = Array.isArray(value) ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
@@ -956,7 +1014,6 @@ export default class SelectComponent extends Field {
       }
     }
 
-    this.updateOnChange(flags, changed);
     return changed;
   }
 

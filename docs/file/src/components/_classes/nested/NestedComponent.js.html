@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -221,6 +225,7 @@
 import _ from &apos;lodash&apos;;
 import Field from &apos;../field/Field&apos;;
 import Components from &apos;../../Components&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -292,7 +297,7 @@ export default class NestedComponent extends Field {
   }
 
   get ready() {
-    return Promise.all(this.getComponents().map(component =&gt; component.ready));
+    return NativePromise.all(this.getComponents().map(component =&gt; component.ready));
   }
 
   get currentForm() {
@@ -303,6 +308,17 @@ export default class NestedComponent extends Field {
     super.currentForm = instance;
     this.getComponents().forEach(component =&gt; {
       component.currentForm = instance;
+    });
+  }
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+    this.eachComponent(component =&gt; {
+      component.data = this._data;
     });
   }
 
@@ -535,7 +551,7 @@ export default class NestedComponent extends Field {
       [this.nestedKey]: &apos;single&apos;,
     });
 
-    let childPromise = Promise.resolve();
+    let childPromise = NativePromise.resolve();
     if (this.refs[this.nestedKey]) {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
@@ -546,7 +562,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return Promise.all([
+    return NativePromise.all([
       superPromise,
       childPromise,
     ]);
@@ -569,7 +585,7 @@ export default class NestedComponent extends Field {
         index++;
       }
     });
-    return Promise.all(promises);
+    return NativePromise.all(promises);
   }
 
   /**
@@ -627,13 +643,13 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(flags, source) {
+  updateValue(value, flags, source) {
     return this.components.reduce((changed, comp) =&gt; {
       // Skip over the source if it is provided.
       if (source &amp;&amp; source.id === comp.id) {
         return changed;
       }
-      return comp.updateValue(flags) || changed;
+      return comp.updateValue(null, flags) || changed;
     }, false);
   }
 
@@ -656,12 +672,16 @@ export default class NestedComponent extends Field {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     }, source);
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) =&gt; {
+      // If a source is provided and is the same as the source, then skip.
+      if (source &amp;&amp; source.id === comp.id) {
+        return;
+      }
       if (comp.checkData) {
         valid &amp;= comp.checkData(data, flags);
       }
@@ -706,7 +726,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
   }
 
   /**
@@ -715,7 +735,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -797,6 +817,10 @@ export default class NestedComponent extends Field {
     this.setPristine(true);
   }
 
+  get dataReady() {
+    return NativePromise.all(this.getComponents().map((component) =&gt; component.dataReady));
+  }
+
   setNestedValue(component, value, flags, changed) {
     if (component.type === &apos;button&apos;) {
       return false;
@@ -817,7 +841,7 @@ export default class NestedComponent extends Field {
     if (!value) {
       return false;
     }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     return this.getComponents().reduce((changed, component) =&gt; {
       return this.setNestedValue(component, value, flags, changed);
     }, false);

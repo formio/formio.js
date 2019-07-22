@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -217,10 +221,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global ace, Quill */
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global Quill */
 import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import Formio from &apos;../../Formio&apos;;
 import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 import { uniqueName } from &apos;../../utils/utils&apos;;
 
 export default class TextAreaComponent extends TextFieldComponent {
@@ -253,6 +258,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   init() {
     super.init();
+    this.editorReady = new NativePromise((resolve) =&gt; {
+      this.editorReadyResolve = resolve;
+    });
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
@@ -269,25 +277,6 @@ export default class TextAreaComponent extends TextFieldComponent {
       info.attr.rows = this.component.rows;
     }
     return info;
-  }
-
-  get wysiwygDefault() {
-    return {
-      theme: &apos;snow&apos;,
-      placeholder: this.t(this.component.placeholder),
-      modules: {
-        toolbar: [
-          [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
-          [{ &apos;header&apos;: [1, 2, 3, 4, 5, 6, false] }],
-          [{ &apos;font&apos;: [] }],
-          [&apos;bold&apos;, &apos;italic&apos;, &apos;underline&apos;, &apos;strike&apos;, { &apos;script&apos;: &apos;sub&apos; }, { &apos;script&apos;: &apos;super&apos; }, &apos;clean&apos;],
-          [{ &apos;color&apos;: [] }, { &apos;background&apos;: [] }],
-          [{ &apos;list&apos;: &apos;ordered&apos; }, { &apos;list&apos;: &apos;bullet&apos; }, { &apos;indent&apos;: &apos;-1&apos; }, { &apos;indent&apos;: &apos;+1&apos; }, { &apos;align&apos;: [] }],
-          [&apos;blockquote&apos;, &apos;code-block&apos;],
-          [&apos;link&apos;, &apos;image&apos;, &apos;video&apos;, &apos;formula&apos;, &apos;source&apos;]
-        ]
-      }
-    };
   }
 
   setupValueElement(element) {
@@ -343,117 +332,129 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
   }
 
+  get autoExpand() {
+    return this.component.autoExpand;
+  }
+
+  /**
+   * Updates the editor value.
+   *
+   * @param newValue
+   */
+  updateEditorValue(newValue) {
+    newValue = this.getConvertedValue(this.removeBlanks(newValue));
+    if ((newValue !== this.dataValue) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+      this.updateValue(newValue, {
+        modified: !this.autoModified
+      });
+    }
+    this.autoModified = false;
+  }
+
   attachElement(element, index) {
+    if (this.autoExpand &amp;&amp; (this.isPlain || this.options.readOnly || this.options.htmlView)) {
+      element.childNodes.forEach((element) =&gt; {
+        if (element.nodeName === &apos;TEXTAREA&apos;) {
+          this.addAutoExpanding(element);
+        }
+      });
+    }
+
     if (this.options.readOnly) {
       return element;
-    }
-    // Normalize the configurations.
-    if (this.component.wysiwyg &amp;&amp; this.component.wysiwyg.toolbarGroups) {
-      console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
-      this.component.wysiwyg = this.wysiwygDefault;
     }
 
     if (this.component.wysiwyg &amp;&amp; !this.component.editor) {
       this.component.editor = &apos;ckeditor&apos;;
     }
 
-    const settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
+    let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
     const mode = this.component.as || &apos;javascript&apos;;
 
     // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
     switch (this.component.editor) {
       case &apos;ace&apos;:
-        this.editorReady = Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, &apos;https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js&apos;, true)
+        Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, &apos;https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js&apos;, true)
           .then((editor) =&gt; {
             this.editor = editor.edit(element);
             this.editor.setOptions({
               maxLines: 12,
               minLines: 12
             });
-            this.editor.on(&apos;change&apos;, () =&gt; {
-              const newValue = this.getConvertedValue(this.editor.getValue());
-              // Do not bother to update if they are both empty.
-              if (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue)) {
-                this.updateValue(null, newValue, index);
-              }
-            });
+            this.editor.on(&apos;change&apos;, () =&gt; this.updateEditorValue(this.editor.getValue()));
             this.editor.getSession().setTabSize(2);
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
             setTimeout(() =&gt; this.acePlaceholder(), 100);
             this.editor.setValue(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
             return this.editor;
           });
         break;
       case &apos;quill&apos;:
-        Formio.requireLibrary(`quill-css-${settings.theme}`, &apos;Quill&apos;, [
-          { type: &apos;styles&apos;, src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
-        ], true);
+        // Normalize the configurations for quill.
+        if (settings.hasOwnProperty(&apos;toolbarGroups&apos;) || settings.hasOwnProperty(&apos;toolbar&apos;)) {
+          console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
+          settings = this.wysiwygDefault;
+        }
 
-        this.editorReady = Formio.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, &apos;https://cdn.quilljs.com/1.3.6/quill.min.js&apos;, true)
-          .then((Editor) =&gt; {
-            this.editor = new Editor(element, settings);
-            this.editor.root.spellcheck = this.component.spellcheck;
-            if (this.component.isUploadEnabled) {
-              this.editor.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, () =&gt; this.imageHandler());
-            }
+        // Add the quill editor.
+        this.addQuill(
+          element,
+          settings, () =&gt; this.updateEditorValue(this.editor.root.innerHTML)
+        ).then((quill) =&gt; {
+          this.editor = quill;
+          if (this.component.isUploadEnabled) {
+            const _this = this;
+            quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, function() {
+              //we need initial &apos;this&apos; because quill calls this method with its own context and we need some inner quill methods exposed in it
+              //we also need current component instance as we use some fields and methods from it as well
+              _this.imageHandler.call(_this, this);
+            } );
+          }
+          quill.root.spellcheck = this.component.spellcheck;
+          if (this.options.readOnly || this.component.disabled) {
+            this.editor.disable();
+          }
 
-            /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-            // const txtArea = document.createElement(&apos;textarea&apos;);
-            // txtArea.setAttribute(&apos;class&apos;, &apos;quill-source-code&apos;);
-            // this.editor.addContainer(&apos;ql-custom&apos;).appendChild(txtArea);
-            // const qlSource = element.parentNode.querySelector(&apos;.ql-source&apos;);
-            // if (qlSource) {
-            //   this.addEventListener(qlSource, &apos;click&apos;, (event) =&gt; {
-            //     event.preventDefault();
-            //     if (txtArea.style.display === &apos;inherit&apos;) {
-            //       this.editor.setContents(this.editor.clipboard.convert(txtArea.value));
-            //     }
-            //     txtArea.style.display = (txtArea.style.display === &apos;none&apos;) ? &apos;inherit&apos; : &apos;none&apos;;
-            //   });
-            // }
-            /** END CODEBLOCK **/
-
-            // Allows users to skip toolbar items when tabbing though form
-            const elm = document.querySelectorAll(&apos;.ql-formats &gt; button&apos;);
-            for (let i = 0; i &lt; elm.length; i++) {
-              elm[i].setAttribute(&apos;tabindex&apos;, &apos;-1&apos;);
-            }
-
-            if (this.options.readOnly || this.disabled) {
-              this.editor.disable();
-            }
-
-            this.editor.on(&apos;text-change&apos;, () =&gt; {
-              this.updateValue(null, this.getConvertedValue(this.sanitize(this.editor.root.innerHTML)));
-            });
-
-            this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
-            return this.editor;
-          });
+          this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
+          this.editorReadyResolve(this.editor);
+          return quill;
+        }).catch(err =&gt; console.warn(err));
         break;
       case &apos;ckeditor&apos;:
-        this.editorReady = Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, &apos;https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js&apos;, true)
-          .then((ClassicEditor) =&gt; {
-            return ClassicEditor.create(element, settings).then(editor =&gt; {
-              editor.model.document.on(&apos;change&apos;, () =&gt; this.updateValue(null, editor.data.get()));
-              this.editor = editor;
-              this.editor.data.set(this.setConvertedValue(this.dataValue));
-              return this.editor;
-            });
+        settings = settings || {};
+        settings.rows = this.component.rows;
+        this.addCKE(element, settings, (newValue) =&gt; this.updateEditorValue(newValue))
+          .then((editor) =&gt; {
+            this.editor = editor;
+            if (this.options.readOnly || this.component.disabled) {
+              this.editor.isReadOnly = true;
+            }
+            const numRows = parseInt(this.component.rows, 10);
+            if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
+              // Default height is 21px with 10px margin + a 14px top margin.
+              const editorHeight = (numRows * 31) + 14;
+              editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+            }
+            editor.data.set(this.setConvertedValue(this.dataValue));
+            this.editorReadyResolve(this.editor);
+            return editor;
           });
         break;
       default:
         this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
-          this.updateValue(null, null, index);
+          this.updateValue(null, {
+            modified: true
+          }, index);
         });
     }
 
     return element;
   }
 
-  imageHandler() {
-    let fileInput = this.container.querySelector(&apos;input.ql-image[type=file]&apos;);
+  imageHandler(quillInstance) {
+    let fileInput = quillInstance.container.querySelector(&apos;input.ql-image[type=file]&apos;);
     if (fileInput == null) {
       fileInput = document.createElement(&apos;input&apos;);
       fileInput.setAttribute(&apos;type&apos;, &apos;file&apos;);
@@ -461,15 +462,16 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.classList.add(&apos;ql-image&apos;);
       fileInput.addEventListener(&apos;change&apos;, () =&gt; {
         const files = fileInput.files;
-        const range = this.editor.getSelection(true);
+        const range = quillInstance.quill.getSelection(true);
 
         if (!files || !files.length) {
           console.warn(&apos;No files selected&apos;);
           return;
         }
 
-        this.editor.enable(false);
+        quillInstance.quill.enable(false);
         const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        let requestData;
         this.root.formio
           .uploadFile(
             uploadStorage,
@@ -480,25 +482,32 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadUrl,
             uploadOptions
           )
-          .then((result) =&gt; {
+          .then(result =&gt; {
+            requestData = result;
             return this.root.formio.downloadFile(result);
           })
           .then(result =&gt; {
-            this.editor.enable(true);
+            quillInstance.quill.enable(true);
             const Delta = Quill.import(&apos;delta&apos;);
-            this.editor.updateContents(new Delta()
-              .retain(range.index)
-              .delete(range.length)
-              .insert({ image: result.url })
+            quillInstance.quill.updateContents(new Delta()
+                .retain(range.index)
+                .delete(range.length)
+                .insert(
+                  {
+                    image: result.url
+                  },
+                  {
+                    alt: JSON.stringify(requestData),
+                  })
               , Quill.sources.USER);
             fileInput.value = &apos;&apos;;
           }).catch(error =&gt; {
-            console.warn(&apos;Quill image upload failed&apos;);
-            console.warn(error);
-            this.editor.enable(true);
-          });
+          console.warn(&apos;Quill image upload failed&apos;);
+          console.warn(error);
+          quillInstance.quill.enable(true);
+        });
       });
-      this.container.appendChild(fileInput);
+      quillInstance.container.appendChild(fileInput);
     }
     fileInput.click();
   }
@@ -510,6 +519,44 @@ export default class TextAreaComponent extends TextFieldComponent {
   get htmlView() {
     return this.options.readOnly &amp;&amp; this.component.wysiwyg;
   }
+  /* eslint-enable max-statements */
+
+  setWysiwygValue(value, skipSetting) {
+    if (this.htmlView) {
+      // For HTML view, just view the contents.
+      if (this.input) {
+        this.setContent(this.input, this.interpolate(value));
+      }
+    }
+    else if (this.editorReady) {
+      return this.editorReady.then((editor) =&gt; {
+        this.autoModified = true;
+        if (!skipSetting) {
+          switch (this.component.editor) {
+            case &apos;ace&apos;:
+              editor.setValue(this.setConvertedValue(value));
+              break;
+            case &apos;quill&apos;:
+              if (this.component.isUploadEnabled) {
+                this.setAsyncConvertedValue(value)
+                  .then(result =&gt; {
+                    editor.setContents(editor.clipboard.convert(result));
+                  });
+              }
+              else {
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+              }
+              break;
+            case &apos;ckeditor&apos;:
+              editor.data.set(this.setConvertedValue(value));
+              break;
+          }
+        }
+      });
+    }
+
+    return NativePromise.resolve();
+  }
 
   setConvertedValue(value) {
     if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; !_.isNil(value)) {
@@ -520,7 +567,142 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(err);
       }
     }
+
+    if (!_.isString(value)) {
+      value = &apos;&apos;;
+    }
+
     return value;
+  }
+
+  setAsyncConvertedValue(value) {
+    if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
+      try {
+        value = JSON.stringify(value, null, 2);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+
+    if (!_.isString(value)) {
+      value = &apos;&apos;;
+    }
+
+    const htmlDoc = new DOMParser().parseFromString(value,&apos;text/html&apos;);
+    const images = htmlDoc.getElementsByTagName(&apos;img&apos;);
+    if (images.length) {
+      return this.setImagesUrl(images)
+        .then( () =&gt; {
+          value = htmlDoc.getElementsByTagName(&apos;body&apos;)[0].firstElementChild;
+          return new XMLSerializer().serializeToString(value);
+        });
+    }
+    else {
+      return NativePromise.resolve(value);
+    }
+  }
+
+  setImagesUrl(images) {
+    return NativePromise.all(_.map(images, image =&gt; {
+      let requestData;
+      try {
+        requestData = JSON.parse(image.getAttribute(&apos;alt&apos;));
+      }
+      catch (error) {
+        console.warn(error);
+      }
+
+      return this.root.formio.downloadFile(requestData)
+        .then((result) =&gt; {
+          image.setAttribute(&apos;src&apos;, result.url);
+        });
+    }));
+  }
+
+  addAutoExpanding(textarea) {
+    let heightOffset = null;
+    let previousHeight = null;
+
+    const changeOverflow = (value) =&gt; {
+      const width = textarea.style.width;
+
+      textarea.style.width = &apos;0px&apos;;
+      textarea.offsetWidth;
+      textarea.style.width = width;
+
+      textarea.style.overflowY = value;
+    };
+
+    const preventParentScroll = (element, changeSize) =&gt; {
+      const nodeScrolls = [];
+
+      while (element &amp;&amp; element.parentNode &amp;&amp; element.parentNode instanceof Element) {
+        if (element.parentNode.scrollTop) {
+          nodeScrolls.push({
+            node: element.parentNode,
+            scrollTop: element.parentNode.scrollTop,
+          });
+        }
+        element = element.parentNode;
+      }
+
+      changeSize();
+
+      nodeScrolls.forEach((nodeScroll) =&gt; {
+        nodeScroll.node.scrollTop = nodeScroll.scrollTop;
+      });
+    };
+
+    const resize = () =&gt; {
+      if (textarea.scrollHeight === 0) {
+        return;
+      }
+
+      preventParentScroll(textarea, () =&gt; {
+        textarea.style.height = &apos;&apos;;
+        textarea.style.height = `${textarea.scrollHeight + heightOffset}px`;
+      });
+    };
+
+    const update = () =&gt; {
+      resize();
+
+      const styleHeight = Math.round(parseFloat(textarea.style.height));
+      const computed = window.getComputedStyle(textarea, null);
+
+      let currentHeight = textarea.offsetHeight;
+
+      if (currentHeight &lt; styleHeight &amp;&amp; computed.overflowY === &apos;hidden&apos;) {
+        changeOverflow(&apos;scroll&apos;);
+      }
+      else if (computed.overflowY !== &apos;hidden&apos;) {
+        changeOverflow(&apos;hidden&apos;);
+      }
+
+      resize();
+      currentHeight = textarea.offsetHeight;
+
+      if (previousHeight !== currentHeight) {
+        previousHeight = currentHeight;
+        update();
+      }
+    };
+
+    const computedStyle = window.getComputedStyle(textarea, null);
+
+    textarea.style.resize = &apos;none&apos;;
+    heightOffset = parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
+
+    if (window) {
+      this.addEventListener(window, &apos;resize&apos;, update);
+    }
+
+    this.addEventListener(textarea, &apos;input&apos;, update);
+
+    this.updateSize = update;
+
+    update();
   }
 
   removeBlanks(value) {
@@ -531,7 +713,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       if (typeof input !== &apos;string&apos;) {
         return input;
       }
-      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).replace(/&lt;p&gt;&lt;br&gt;&lt;\/p&gt;/g, &apos;&apos;);
+      return input.replace(/&lt;p&gt;&amp;nbsp;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&lt;\/p&gt;|&lt;p&gt;&lt;br&gt;&amp;nbsp;&lt;\/p&gt;/g, &apos;&apos;).trim();
     };
 
     if (Array.isArray(value)) {
@@ -545,8 +727,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  hasChanged(before, after) {
-    return super.hasChanged(this.removeBlanks(before), this.removeBlanks(after));
+  onChange(flags, fromRoot) {
+    const changed = super.onChange(flags, fromRoot);
+    if (this.updateSize) {
+      this.updateSize();
+    }
+    return changed;
+  }
+
+  hasChanged(newValue, oldValue) {
+    return super.hasChanged(this.removeBlanks(newValue), this.removeBlanks(oldValue));
   }
 
   isEmpty(value) {
@@ -562,53 +752,18 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    const shouldSetValue = !_.isEqual(value, this.getValue());
+    const skipSetting = _.isEqual(value, this.getValue());
     value = value || &apos;&apos;;
     if (this.isPlain) {
-      return super.setValue(this.setConvertedValue(value), flags);
-    }
-
-    if (!this.editorReady) {
-      return false;
+      value = Array.isArray(value) ? value.map((val) =&gt; this.setConvertedValue(val)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
-
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
-      this.editorReady.then((editor) =&gt; {
-        switch (this.component.editor) {
-          case &apos;ace&apos;:
-            if (shouldSetValue) {
-              editor.setValue(this.setConvertedValue(value));
-            }
-            break;
-          case &apos;quill&apos;:
-            if (shouldSetValue) {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
-            break;
-          case &apos;ckeditor&apos;:
-            if (shouldSetValue) {
-              editor.data.set(this.setConvertedValue(value));
-            }
-            break;
-        }
-      });
-    }
-
-    // Update on change.
-    this.updateOnChange(flags, changed);
-
-    // Return if the value has changed.
+    this.setWysiwygValue(newValue, skipSetting, () =&gt; this.updateOnChange(flags, changed));
     return changed;
   }
 
@@ -624,20 +779,24 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  getValue() {
-    if (this.viewOnly || this.htmlView || this.options.readOnly) {
-      return this.dataValue;
+  destroy() {
+    if (this.editorReady) {
+      this.editorReady.then((editor) =&gt; editor.destroy());
     }
 
+    if (this.updateSize) {
+      this.removeEventListener(window, &apos;resize&apos;, this.updateSize);
+    }
+
+    return super.destroy();
+  }
+
+  getValue() {
     if (this.isPlain) {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.editor) {
-      return this.dataValue;
-    }
-
-    return this.component.multiple ? [] : &apos;&apos;;
+    return this.dataValue;
   }
 }
 </code></pre>

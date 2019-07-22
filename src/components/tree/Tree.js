@@ -3,6 +3,7 @@ import Component from '../_classes/component/Component';
 import Components from '../Components';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Node from './Node';
+import NativePromise from 'native-promise-only';
 
 export default class TreeComponent extends NestedComponent {
   static schema(...extend) {
@@ -140,7 +141,7 @@ export default class TreeComponent extends NestedComponent {
       root: 'single',
     });
 
-    return Promise.all([
+    return NativePromise.all([
       super.attach(element),
       this.attachNode(this.refs.root, this.tree),
     ]);
@@ -148,11 +149,11 @@ export default class TreeComponent extends NestedComponent {
 
   attachNode(element, node) {
     if (!element) {
-      return Promise.resolve();
+      return NativePromise.resolve();
     }
 
-    let componentsPromise = Promise.resolve();
-    let childrenPromise = Promise.resolve();
+    let componentsPromise = NativePromise.resolve();
+    let childrenPromise = NativePromise.resolve();
 
     node.refs = _.reduce(
       element.children,
@@ -176,7 +177,7 @@ export default class TreeComponent extends NestedComponent {
       childrenPromise = this.attachChildren(node);
     }
 
-    return Promise.all([
+    return NativePromise.all([
       componentsPromise,
       childrenPromise,
     ]);
@@ -247,13 +248,13 @@ export default class TreeComponent extends NestedComponent {
 
     return node.refs.nodeEdit
       ? super.attachComponents(node.refs.nodeEdit, node.components)
-      : Promise.resolve();
+      : NativePromise.resolve();
   }
 
   attachChildren(node) {
     const childElements = node.refs.childNodes.children;
 
-    return Promise.all(
+    return NativePromise.all(
       _.map(
         childElements,
         (childElement, index) => this.attachNode(childElement, node.children[index]),
@@ -262,7 +263,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   setValue(value) {
-    this.updateValue({}, value);
+    this.updateValue(value);
     this.setRoot();
   }
 
@@ -413,7 +414,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   updateTree() {
-    this.updateValue({}, this.tree.value);
+    this.updateValue(this.tree.value);
     this.redraw();
   }
 
@@ -428,7 +429,7 @@ export default class TreeComponent extends NestedComponent {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     });
 

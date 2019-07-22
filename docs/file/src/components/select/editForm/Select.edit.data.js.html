@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -232,11 +236,48 @@ export default [
     data: {
       values: [
         { label: &apos;Values&apos;, value: &apos;values&apos; },
-        { label: &apos;Raw JSON&apos;, value: &apos;json&apos; },
         { label: &apos;URL&apos;, value: &apos;url&apos; },
         { label: &apos;Resource&apos;, value: &apos;resource&apos; },
         { label: &apos;Custom&apos;, value: &apos;custom&apos; },
+        { label: &apos;Raw JSON&apos;, value: &apos;json&apos; },
+        { label: &apos;IndexedDB&apos;, value: &apos;indexeddb&apos; },
       ],
+    },
+  },
+  {
+    type: &apos;textfield&apos;,
+    weight: 10,
+    input: true,
+    key: &apos;indexeddb.database&apos;,
+    label: &apos;Database name&apos;,
+    tooltip: &apos;The name of the indexeddb database.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
+    },
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;indexeddb.table&apos;,
+    label: &apos;Table name&apos;,
+    weight: 16,
+    tooltip: &apos;The name of table in the indexeddb database.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
+    }
+  },
+  {
+    type: &apos;textarea&apos;,
+    as: &apos;json&apos;,
+    editor: &apos;ace&apos;,
+    weight: 18,
+    input: true,
+    key: &apos;indexeddb.filter&apos;,
+    label: &apos;Row Filter&apos;,
+    tooltip: &apos;Filter table items that match the object.&apos;,
+    defaultValue: {},
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;indexeddb&apos;] },
     },
   },
   {
@@ -357,6 +398,18 @@ export default [
     },
   },
   {
+    type: &apos;textfield&apos;,
+    input: true,
+    label: &apos;Data Path&apos;,
+    key: &apos;selectValues&apos;,
+    weight: 12,
+    description: &apos;The object path to the iterable items.&apos;,
+    tooltip: &apos;The property within the source data, where iterable items reside. For example: results.items or results[0].items&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
+    },
+  },
+  {
     type: &apos;select&apos;,
     input: true,
     label: &apos;Value Property&apos;,
@@ -394,18 +447,6 @@ export default [
           { var: &apos;data.data.resource&apos; },
         ],
       },
-    },
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    label: &apos;Data Path&apos;,
-    key: &apos;selectValues&apos;,
-    weight: 12,
-    description: &apos;The object path to the iterable items.&apos;,
-    tooltip: &apos;The property within the source data, where iterable items reside. For example: results.items or results[0].items&apos;,
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
     },
   },
   {

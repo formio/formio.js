@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
+import NativePromise from 'native-promise-only';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -73,7 +74,7 @@ export default class NestedComponent extends Field {
   }
 
   get ready() {
-    return Promise.all(this.getComponents().map(component => component.ready));
+    return NativePromise.all(this.getComponents().map(component => component.ready));
   }
 
   get currentForm() {
@@ -327,7 +328,7 @@ export default class NestedComponent extends Field {
       [this.nestedKey]: 'single',
     });
 
-    let childPromise = Promise.resolve();
+    let childPromise = NativePromise.resolve();
     if (this.refs[this.nestedKey]) {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
@@ -338,7 +339,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return Promise.all([
+    return NativePromise.all([
       superPromise,
       childPromise,
     ]);
@@ -361,7 +362,7 @@ export default class NestedComponent extends Field {
         index++;
       }
     });
-    return Promise.all(promises);
+    return NativePromise.all(promises);
   }
 
   /**
@@ -419,13 +420,13 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(flags, source) {
+  updateValue(value, flags, source) {
     return this.components.reduce((changed, comp) => {
       // Skip over the source if it is provided.
       if (source && source.id === comp.id) {
         return changed;
       }
-      return comp.updateValue(flags) || changed;
+      return comp.updateValue(null, flags) || changed;
     }, false);
   }
 
@@ -448,12 +449,16 @@ export default class NestedComponent extends Field {
     }
 
     // Update the value.
-    let changed = this.updateValue({
+    let changed = this.updateValue(null, {
       noUpdateEvent: true
     }, source);
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
+      // If a source is provided and is the same as the source, then skip.
+      if (source && source.id === comp.id) {
+        return;
+      }
       if (comp.checkData) {
         valid &= comp.checkData(data, flags);
       }
@@ -498,7 +503,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeNext() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeNext()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeNext()));
   }
 
   /**
@@ -507,7 +512,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
@@ -589,6 +594,10 @@ export default class NestedComponent extends Field {
     this.setPristine(true);
   }
 
+  get dataReady() {
+    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
+  }
+
   setNestedValue(component, value, flags, changed) {
     if (component.type === 'button') {
       return false;
@@ -609,7 +618,7 @@ export default class NestedComponent extends Field {
     if (!value) {
       return false;
     }
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed);
     }, false);

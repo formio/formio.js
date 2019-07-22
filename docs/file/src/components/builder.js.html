@@ -104,12 +104,16 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -219,82 +223,86 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/builder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Components from &apos;.&apos;;
 import AddressForm from &apos;./address/Address.form&apos;;
-import ContentForm from &apos;./content/Content.form&apos;;
+import ButtonForm from &apos;./button/Button.form&apos;;
+import CheckboxForm from &apos;./checkbox/Checkbox.form&apos;;
+import ColumnsForm from &apos;./columns/Columns.form&apos;;
 import ContainerForm from &apos;./container/Container.form&apos;;
+import ContentForm from &apos;./content/Content.form&apos;;
+import CurrencyForm from &apos;./currency/Currency.form&apos;;
 import DataGridForm from &apos;./datagrid/DataGrid.form&apos;;
 import DataMapForm from &apos;./datamap/DataMap.form&apos;;
 import DateTimeForm from &apos;./datetime/DateTime.form&apos;;
 import DayForm from &apos;./day/Day.form&apos;;
-import HtmlElementForm from &apos;./html/HTML.form&apos;;
-import HiddenForm from &apos;./hidden/Hidden.form&apos;;
 import EditGridForm from &apos;./editgrid/EditGrid.form&apos;;
-import FormForm from &apos;./form/Form.form&apos;;
-import TextfieldForm from &apos;./textfield/TextField.form&apos;;
-import PhoneNumberForm from &apos;./phonenumber/PhoneNumber.form&apos;;
 import EmailForm from &apos;./email/Email.form&apos;;
-import TimeForm from &apos;./time/Time.form&apos;;
-import CheckboxForm from &apos;./checkbox/Checkbox.form&apos;;
-import CurrencyForm from &apos;./currency/Currency.form&apos;;
 import FieldsetForm from &apos;./fieldset/Fieldset.form&apos;;
-import SignatureForm from &apos;./signature/Signature.form&apos;;
-import SelectForm from &apos;./select/Select.form&apos;;
-import ResourceForm from &apos;./resource/Resource.form&apos;;
-import TextAreaForm from &apos;./textarea/TextArea.form&apos;;
-import TagsForm from &apos;./tags/Tags.form&apos;;
-import ButtonForm from &apos;./button/Button.form&apos;;
-import NumberForm from &apos;./number/Number.form&apos;;
-import PasswordForm from &apos;./password/Password.form&apos;;
-import PanelForm from &apos;./panel/Panel.form&apos;;
-import TabsForm from &apos;./tabs/Tabs.form&apos;;
-import ColumnsForm from &apos;./columns/Columns.form&apos;;
-import TableForm from &apos;./table/Table.form&apos;;
-import RadioForm from &apos;./radio/Radio.form&apos;;
-import SelectboxesForm from &apos;./selectboxes/SelectBoxes.form&apos;;
-import SurveyForm from &apos;./survey/Survey.form&apos;;
-import TreeForm from &apos;./tree/Tree.form&apos;;
-import WellForm from &apos;./well/Well.form&apos;;
 import FileForm from &apos;./file/File.form&apos;;
-import UnknownForm from &apos;./unknown/Unknown.form&apos;;
+import FormForm from &apos;./form/Form.form&apos;;
+import HiddenForm from &apos;./hidden/Hidden.form&apos;;
+import HtmlElementForm from &apos;./html/HTML.form&apos;;
+import NumberForm from &apos;./number/Number.form&apos;;
+import PanelForm from &apos;./panel/Panel.form&apos;;
+import PasswordForm from &apos;./password/Password.form&apos;;
+import PhoneNumberForm from &apos;./phonenumber/PhoneNumber.form&apos;;
+import RadioForm from &apos;./radio/Radio.form&apos;;
 import ReCaptchaForm from &apos;./recaptcha/ReCaptcha.form&apos;;
+import ResourceForm from &apos;./resource/Resource.form&apos;;
+import SelectboxesForm from &apos;./selectboxes/SelectBoxes.form&apos;;
+import SelectForm from &apos;./select/Select.form&apos;;
+import SignatureForm from &apos;./signature/Signature.form&apos;;
+import SketchPadForm from &apos;./sketchpad/Sketchpad.form&apos;;
+import SurveyForm from &apos;./survey/Survey.form&apos;;
+import TableForm from &apos;./table/Table.form&apos;;
+import TabsForm from &apos;./tabs/Tabs.form&apos;;
+import TagPadForm from &apos;./tagpad/Tagpad.form&apos;;
+import TagsForm from &apos;./tags/Tags.form&apos;;
+import TextAreaForm from &apos;./textarea/TextArea.form&apos;;
+import TextfieldForm from &apos;./textfield/TextField.form&apos;;
+import TimeForm from &apos;./time/Time.form&apos;;
+import TreeForm from &apos;./tree/Tree.form&apos;;
+import UnknownForm from &apos;./unknown/Unknown.form&apos;;
+import WellForm from &apos;./well/Well.form&apos;;
 
 Components.address.editForm = AddressForm;
-Components.content.editForm = ContentForm;
+Components.button.editForm = ButtonForm;
+Components.checkbox.editForm = CheckboxForm;
+Components.columns.editForm = ColumnsForm;
 Components.container.editForm = ContainerForm;
+Components.content.editForm = ContentForm;
+Components.currency.editForm = CurrencyForm;
 Components.datagrid.editForm = DataGridForm;
 Components.datamap.editForm = DataMapForm;
 Components.datetime.editForm = DateTimeForm;
 Components.day.editForm = DayForm;
-Components.htmlelement.editForm = HtmlElementForm;
-Components.hidden.editForm = HiddenForm;
 Components.editgrid.editForm = EditGridForm;
-Components.form.editForm = FormForm;
-Components.textfield.editForm = TextfieldForm;
-Components.phoneNumber.editForm = PhoneNumberForm;
 Components.email.editForm = EmailForm;
-Components.time.editForm = TimeForm;
-Components.checkbox.editForm = CheckboxForm;
-Components.currency.editForm = CurrencyForm;
 Components.fieldset.editForm = FieldsetForm;
-Components.signature.editForm = SignatureForm;
-Components.select.editForm = SelectForm;
-Components.resource.editForm = ResourceForm;
-Components.textarea.editForm = TextAreaForm;
-Components.tags.editForm = TagsForm;
-Components.button.editForm = ButtonForm;
-Components.number.editForm = NumberForm;
-Components.password.editForm = PasswordForm;
-Components.panel.editForm = PanelForm;
-Components.tabs.editForm = TabsForm;
-Components.columns.editForm = ColumnsForm;
-Components.table.editForm = TableForm;
-Components.radio.editForm = RadioForm;
-Components.selectboxes.editForm = SelectboxesForm;
-Components.survey.editForm = SurveyForm;
-Components.tree.editForm = TreeForm;
-Components.well.editForm = WellForm;
 Components.file.editForm = FileForm;
-Components.unknown.editForm = UnknownForm;
+Components.form.editForm = FormForm;
+Components.hidden.editForm = HiddenForm;
+Components.htmlelement.editForm = HtmlElementForm;
+Components.number.editForm = NumberForm;
+Components.panel.editForm = PanelForm;
+Components.password.editForm = PasswordForm;
+Components.phoneNumber.editForm = PhoneNumberForm;
+Components.radio.editForm = RadioForm;
 Components.recaptcha.editForm = ReCaptchaForm;
+Components.resource.editForm = ResourceForm;
+Components.select.editForm = SelectForm;
+Components.selectboxes.editForm = SelectboxesForm;
+Components.signature.editForm = SignatureForm;
+Components.sketchpad.editForm = SketchPadForm;
+Components.survey.editForm = SurveyForm;
+Components.table.editForm = TableForm;
+Components.tabs.editForm = TabsForm;
+Components.tagpad.editForm = TagPadForm;
+Components.tags.editForm = TagsForm;
+Components.textarea.editForm = TextAreaForm;
+Components.textfield.editForm = TextfieldForm;
+Components.time.editForm = TimeForm;
+Components.tree.editForm = TreeForm;
+Components.unknown.editForm = UnknownForm;
+Components.well.editForm = WellForm;
 
 export default Components;
 </code></pre>

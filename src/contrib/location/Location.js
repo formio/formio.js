@@ -22,7 +22,7 @@ export default class LocationComponent extends TextFieldComponent {
       title: 'Location',
       group: 'advanced',
       icon: 'map',
-      weight: 500,
+      weight: 36,
       schema: LocationComponent.schema()
     };
   }
@@ -131,12 +131,6 @@ export default class LocationComponent extends TextFieldComponent {
         this.setValue(place.name);
       });
     });
-  }
-
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    flags.noValidate = true;
-    super.setValue(value, flags);
   }
 
   addMarker(latlng, title, element) {

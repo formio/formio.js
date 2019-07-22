@@ -11,6 +11,10 @@ export default [
     ignore: true
   },
   {
+    key: 'mask',
+    ignore: true
+  },
+  {
     type: 'number',
     input: true,
     key: 'rows',
@@ -31,10 +35,26 @@ export default [
         { label: 'None', value: '' },
         { label: 'CKEditor', value: 'ckeditor' },
         { label: 'ACE', value: 'ace' },
-        { label: 'Quill', value: 'quill' },
+        { label: 'Quill', value: 'quill' }
       ]
     },
     weight: 415
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    key: 'autoExpand',
+    label: 'Auto Expand',
+    tooltip: 'This will make the TextArea auto expand it\'s height as the user is typing into the area.',
+    weight: 415,
+    conditional: {
+      json: {
+        '==': [
+          { var: 'data.editor' },
+          ''
+        ]
+      }
+    }
   },
   {
     type: 'checkbox',
@@ -177,6 +197,10 @@ export default [
     conditional: {
       json: {
         or: [
+          { '===': [
+            { var: 'data.editor' },
+            'ckeditor'
+          ] },
           { '===': [
             { var: 'data.editor' },
             'quill'

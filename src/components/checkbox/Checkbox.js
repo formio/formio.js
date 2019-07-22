@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 
-export default class CheckBoxComponent extends Component {
+export default class CheckBoxComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'checkbox',
       inputType: 'checkbox',
       label: 'Checkbox',
@@ -64,6 +64,12 @@ export default class CheckBoxComponent extends Component {
     return info;
   }
 
+  get labelInfo() {
+    return {
+      hidden: true
+    };
+  }
+
   render() {
     return super.render(this.renderTemplate('checkbox', {
       input: this.inputInfo,
@@ -76,7 +82,9 @@ export default class CheckBoxComponent extends Component {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input) {
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
+        modified: true
+      }));
       this.addShortcut(this.input);
     }
     super.attach(element);
@@ -172,9 +180,9 @@ export default class CheckBoxComponent extends Component {
   }
 
   setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+    flags = flags || {};
     if (this.setCheckedState(value) !== undefined) {
-      return this.updateValue(flags);
+      return this.updateValue(value, flags);
     }
   }
 
