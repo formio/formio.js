@@ -14,6 +14,13 @@ export default class Multivalue extends Field {
     super.dataValue = value;
   }
 
+  get defaultValue() {
+    if (this.component.multiple) {
+      return [super.defaultValue];
+    }
+    return super.defaultValue;
+  }
+
   get addAnother() {
     return this.t(this.component.addAnother || ' Add Another');
   }
