@@ -580,7 +580,23 @@ export default class WebformBuilder extends Component {
       target.formioContainer.push(info);
     }
 
-    this.emit('addComponent', info);
+    const parent = target.formioComponent;
+    // Get path to the component in the parent component.
+    let path = 'components';
+    switch (parent.type) {
+      case 'table':
+        path = `rows[${info.tableRow}][${info.tableColumn}].components`;
+        break;
+      case 'columns':
+        path = `columns[${info.column}].components`;
+        break;
+      case 'tabs':
+        path = `components[${info.tab}].components`;
+        break;
+    }
+    // Index within container
+    const index = _.findIndex(_.get(parent.schema, path), { key: info.key }) || 0;
+    this.emit('addComponent', info, parent, path, index);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
