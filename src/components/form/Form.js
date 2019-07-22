@@ -156,9 +156,9 @@ export default class FormComponent extends BaseComponent {
       if (state) {
         this.loadSubForm();
       }
-      // If our parent is no longer loading and we still haven't been asked to load a subform,
-      // consider our subform loading promise resolved
-      else if (!this.parent.loading) {
+      // If our parent is read-only and is done loading, and we were never asked
+      // to load a subform, consider our subform loading promise resolved
+      else if (this.parent.options.readOnly && !this.parent.loading) {
         this.subFormReadyResolve(this.subForm);
       }
     }
