@@ -310,7 +310,7 @@ export default class FormComponent extends BaseComponent {
   }
 
   get shouldSubmit() {
-    return !this.component.hasOwnProperty('reference') || this.component.reference;
+    return !this.isHidden() && (!this.component.hasOwnProperty('reference') || this.component.reference);
   }
 
   /**
