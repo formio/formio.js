@@ -526,7 +526,7 @@ export default class SelectComponent extends Field {
             const db = event.target.result;
             const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
             const objectStore = transaction.objectStore(this.component.indexeddb.table);
-            new Promise((resolve) => {
+            new NativePromise((resolve) => {
               const responseItems = [];
               objectStore.getAll().onsuccess = (event) => {
                 event.target.result.forEach((item) => {
