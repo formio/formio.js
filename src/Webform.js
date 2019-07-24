@@ -759,7 +759,8 @@ export default class Webform extends NestedComponent {
         if (
           submission._fvid &&
           this._form.revisions === 'original' &&
-          submission._fvid !== this._form._vid
+          submission._fvid !== this._form._vid &&
+          this.formio
         ) {
           return this.formio.loadFormRevision(submission._fvid).then((revision) => {
             this._form._vid = submission._fvid;
