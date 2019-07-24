@@ -525,6 +525,7 @@ export default class WebformBuilder extends Component {
       if (this.schemas.hasOwnProperty(type)) {
         info = _.cloneDeep(this.schemas[type]);
         info.key = _.camelCase(
+          info.title ||
           info.label ||
           info.placeholder ||
           info.type
@@ -793,13 +794,14 @@ export default class WebformBuilder extends Component {
           componentCopy.keyModified = true;
         }
 
-        if (event.changed.component && (event.changed.component.key === 'label')) {
+        if (event.changed.component && (['label', 'title'].includes(event.changed.component.key))) {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
               this.editForm.everyComponent(component => {
                 if (component.key === 'key' && component.parent.component.key === 'tabs') {
                   component.setValue(_.camelCase(
+                    event.data.title ||
                     event.data.label ||
                     event.data.placeholder ||
                     event.data.type
