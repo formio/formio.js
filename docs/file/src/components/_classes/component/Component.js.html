@@ -1849,10 +1849,7 @@ export default class Component extends Element {
    * @return {*}
    */
   getValue() {
-    if (!this.hasInput) {
-      return;
-    }
-    if (this.viewOnly) {
+    if (!this.hasInput || this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
     const values = [];
