@@ -277,6 +277,7 @@ export default class Wizard extends Webform {
     this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
+      showSubmit: true,
       showCancel: !this.options.readOnly
     });
 
@@ -302,7 +303,11 @@ export default class Wizard extends Webform {
       ]);
     }
     if (name === 'submit') {
-      return !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
+      const show = firstNonNil([
+        _.get(currentPage, 'buttonSettings.submit'),
+        this.options.buttonSettings.showSubmit
+      ]);
+      return show && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
     }
     return true;
   }
