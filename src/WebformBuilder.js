@@ -435,6 +435,14 @@ export default class WebformBuilder extends Component {
         Templates.current.handleBuilderSidebarScroll.call(this, this);
       }
 
+      // Add the paste status in form
+      if (window.sessionStorage) {
+        const data = window.sessionStorage.getItem('formio.clipboard');
+        if (data) {
+          this.addClass(this.refs.form, 'builder-paste-mode');
+        }
+      }
+
       if (!bootstrapVersion(this.options)) {
         // Initialize
         this.refs['sidebar-group'].forEach((group) => {
@@ -901,10 +909,11 @@ export default class WebformBuilder extends Component {
       const data = window.sessionStorage.getItem('formio.clipboard');
       if (data) {
         const schema = JSON.parse(data);
-        window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), schema);
-        component.parent.addComponent(schema, false, component.element.nextElementSibling ? component.element.nextElementSibling.lastElementChild : null);
-        this.form = this.schema;
+        const parent = this.getParentElement(component.element);
+        BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
+        const index = parent.formioContainer.indexOf(component.component);
+        parent.formioContainer.splice(index + 1, 0, schema);
+        parent.formioComponent.rebuild();
         this.emit('saveComponent');
       }
     }
