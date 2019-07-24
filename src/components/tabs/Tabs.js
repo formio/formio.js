@@ -167,7 +167,6 @@ export default class TabsComponent extends NestedComponent {
     this.components.map((comp) => comp.destroy());
     this.components = [];
 
-    this.restoreValue();
     if (this.tabLinks.length <= index) {
       return;
     }
@@ -191,6 +190,7 @@ export default class TabsComponent extends NestedComponent {
       state,
     ));
 
+    this.restoreValue();
     this.triggerChange();
   }
 
