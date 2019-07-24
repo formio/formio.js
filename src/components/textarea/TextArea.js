@@ -467,6 +467,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     this.addEventListener(textarea, 'input', update);
 
+    this.on('initialized', update);
+
     this.updateSize = update;
 
     update();
