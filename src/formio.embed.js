@@ -1,3 +1,7 @@
+// Keep lodash off the global scope.
+import _ from 'lodash';
+_.noConflict();
+
 /*global Formio*/
 const scripts = document.getElementsByTagName('script');
 let thisScript = null;
