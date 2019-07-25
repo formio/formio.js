@@ -503,7 +503,7 @@ export default class SelectComponent extends Field {
         }
 
         if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
-          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+          const request = window.indexedDB.open(this.component.indexeddb.database);
 
           request.onupgradeneeded = (event) => {
             if (this.component.customOptions) {
