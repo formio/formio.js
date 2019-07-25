@@ -1198,8 +1198,9 @@ export default class Webform extends NestedComponent {
       });
 
       const submission = _.cloneDeep(this.submission || {});
-
       submission.state = options.state || 'submitted';
+      submission.component = options.component || null;
+
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
