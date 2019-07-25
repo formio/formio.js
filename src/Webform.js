@@ -1199,10 +1199,9 @@ export default class Webform extends NestedComponent {
 
       const submission = _.cloneDeep(this.submission || {});
       submission.state = options.state || 'submitted';
-      submission.component = options.component || null;
 
       const isDraft = (submission.state === 'draft');
-      this.hook('beforeSubmit', submission, (err) => {
+      this.hook('beforeSubmit', { ...submission, component: options.component }, (err) => {
         if (err) {
           return reject(err);
         }
@@ -1222,7 +1221,7 @@ export default class Webform extends NestedComponent {
           }
         });
 
-        this.hook('customValidation', submission, (err) => {
+        this.hook('customValidation', { ...submission, component: options.component }, (err) => {
           if (err) {
             // If string is returned, cast to object.
             if (typeof err === 'string') {
