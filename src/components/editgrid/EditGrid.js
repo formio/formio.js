@@ -200,6 +200,7 @@ export default class EditGridComponent extends NestedComponent {
     row.components = [];
 
     if (wrapper.rowOpen) {
+      const dialog = this.component.modal ? this.createModal(this.component.addAnother || 'Add Another') : undefined;
       const editForm = this.component.components.map(comp => {
         const component = _.cloneDeep(comp);
         const options = _.clone(this.options);
@@ -215,7 +216,7 @@ export default class EditGridComponent extends NestedComponent {
           [
             this.ce('button', {
               class: 'btn btn-primary',
-              onClick: this.saveRow.bind(this, rowIndex)
+              onClick: this.saveRow.bind(this, rowIndex, dialog)
             }, this.component.saveRow || 'Save'),
             ' ',
             this.component.removeRow ?
@@ -227,11 +228,19 @@ export default class EditGridComponent extends NestedComponent {
           ]
         ));
       }
-      wrapper.appendChild(
-        this.ce('div', { class: 'editgrid-edit' },
+      if (!this.component.modal) {
+        wrapper.appendChild(
+          this.ce('div', { class: 'editgrid-edit' },
+            this.ce('div', { class: 'editgrid-body' }, editForm)
+          )
+        );
+      }
+      else {
+        const formComponents =  this.ce('div', { class: 'editgrid-edit' },
           this.ce('div', { class: 'editgrid-body' }, editForm)
-        )
-      );
+        );
+        dialog.body.appendChild(formComponents);
+      }
     }
     else {
       const rowMarkup = this.renderTemplate(rowTemplate,
@@ -433,7 +442,7 @@ export default class EditGridComponent extends NestedComponent {
     this.updateGrid();
   }
 
-  saveRow(rowIndex) {
+  saveRow(rowIndex, modal) {
     const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
       editRow.dirty = false;
@@ -462,6 +471,9 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     this.updateGrid();
+    if (this.component.modal) {
+      modal.close();
+    }
   }
 
   removeRow(rowIndex) {
