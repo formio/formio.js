@@ -510,7 +510,8 @@ export default class Component {
       util: FormioUtils,
       user: Formio.getUser(),
       moment,
-      instance: this
+      instance: this,
+      config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
     }, additional);
   }
 
