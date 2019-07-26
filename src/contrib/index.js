@@ -1,3 +1,7 @@
+// Keep lodash off the global scope.
+import _ from 'lodash';
+_.noConflict();
+
 import StripeComponent from './stripe/stripe/Stripe';
 import StripeCheckoutComponent from './stripe/checkout/StripeCheckout';
 import SketchPad from './sketchpad/sketchpad';
