@@ -973,7 +973,8 @@ export default class Webform extends NestedComponent {
         if (
           submission._fvid &amp;&amp;
           this._form.revisions === &apos;original&apos; &amp;&amp;
-          submission._fvid !== this._form._vid
+          submission._fvid !== this._form._vid &amp;&amp;
+          this.formio
         ) {
           return this.formio.loadFormRevision(submission._fvid).then((revision) =&gt; {
             this._form._vid = submission._fvid;
@@ -1411,10 +1412,10 @@ export default class Webform extends NestedComponent {
       });
 
       const submission = _.cloneDeep(this.submission || {});
-
       submission.state = options.state || &apos;submitted&apos;;
+
       const isDraft = (submission.state === &apos;draft&apos;);
-      this.hook(&apos;beforeSubmit&apos;, submission, (err) =&gt; {
+      this.hook(&apos;beforeSubmit&apos;, { ...submission, component: options.component }, (err) =&gt; {
         if (err) {
           return reject(err);
         }
@@ -1434,7 +1435,7 @@ export default class Webform extends NestedComponent {
           }
         });
 
-        this.hook(&apos;customValidation&apos;, submission, (err) =&gt; {
+        this.hook(&apos;customValidation&apos;, { ...submission, component: options.component }, (err) =&gt; {
           if (err) {
             // If string is returned, cast to object.
             if (typeof err === &apos;string&apos;) {

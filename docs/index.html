@@ -221,8 +221,9 @@
 </ul>
 <h2 id="examples-and-demonstration">Examples and Demonstration</h2><p>To find out more about this library as well as see a demonstration of what you can do with this library, go to the Examples and Demo site @ <a href="https://formio.github.io/formio.js">https://formio.github.io/formio.js</a></p>
 <h2 id="installation">Installation</h2><p>To install this SDK into your project, you can use the following command within your terminal.</p>
-<pre><code><code class="source-code prettyprint">npm install --save formiojs</code>
-</code></pre><h2 id="form-building">Form Building</h2><p>This library has a very powerful JSON form builder, and can be used like the following.</p>
+<pre><code class="lang-console"><code class="source-code prettyprint">npm install --save formiojs</code>
+</code></pre>
+<h2 id="form-building">Form Building</h2><p>This library has a very powerful JSON form builder, and can be used like the following.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
@@ -258,7 +259,7 @@
 &lt;/html&gt;</code>
 </code></pre>
 <p>This will render the following form within your application.</p>
-<p><img src="https://api.monosnap.com/file/download?id=iOZ1yB0wPntJLWQwyhdt7ucToLHEfF" alt="Alt text"></p>
+<p><img src="https://api.monosnap.com/file/download?id=iOZ1yB0wPntJLWQwyhdt7ucToLHEfF" alt="Image of Form.io Example Form"></p>
 <p>You can also render JSON directly instead of referencing the embed URL from Form.io.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">Formio.createForm(document.getElementById(&apos;formio&apos;), {
   components: [
@@ -289,8 +290,7 @@
 <h2 id="jsfiddle">JSFiddle</h2><p>A great way to play around with this renderer is to use JSFiddle, which serves as a good sandbox environment. Here is an example that you can fork and make your own!</p>
 <p><a href="http://jsfiddle.net/travistidwell/v38du9y1/">http://jsfiddle.net/travistidwell/v38du9y1/</a></p>
 <h2 id="wizard-rendering">Wizard Rendering</h2><p>This library can also be used to render a form wizard within your application using the same method as rendering a form.
-The determiniation on whether it should render as a wizard or not is based on the <strong>display</strong> property of the form schema 
-being set to <code>wizard</code>.</p>
+The determiniation on whether it should render as a wizard or not is based on the <strong>display</strong> property of the form schema being set to <code>wizard</code>.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
@@ -312,7 +312,7 @@ being set to <code>wizard</code>.</p>
 </code></pre>
 <p>For an example of how this looks and works, check out the following <a href="http://codepen.io/travist/pen/ggQOBa">Form.io Form Embedding CodePen</a></p>
 <h2 id="full-form-renderer-documentation">Full Form Renderer Documentation</h2><p>For a more complete documentation of how to utilize this library within your application go to the <a href="https://github.com/formio/formio.js/wiki/Form-Renderer">Form Renderer</a> documentation within the <a href="https://github.com/formio/formio.js/wiki">Wiki</a></p>
-<h1 id="javascript-sdk">JavaScript SDK</h1><p>In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.</p>
+<h2 id="javascript-sdk">JavaScript SDK</h2><p>In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.min.js&apos;&gt;&lt;/script&gt;
@@ -351,7 +351,7 @@ formio.loadForm((form) =&gt; {
   });
 });</code>
 </code></pre>
-<h2 id="javascript-sdk-documentation-">JavaScript SDK Documentation.</h2><p>For more complete documentation over the JavaScript SDK, please take a look at the <a href="https://github.com/formio/formio.js/wiki/JavaScript-API">JavaScript SDK</a> within the <a href="https://github.com/formio/formio.js/wiki">wiki</a>.</p>
+<h2 id="javascript-sdk-documentation">JavaScript SDK Documentation</h2><p>For more complete documentation over the JavaScript SDK, please take a look at the <a href="https://github.com/formio/formio.js/wiki/JavaScript-API">JavaScript SDK</a> within the <a href="https://github.com/formio/formio.js/wiki">wiki</a>.</p>
 <h2 id="full-developer-api-documentation">Full Developer API Documentation</h2><p>To view the full SDK Documentation, go to <a href="https://formio.github.io/formio.js/docs/">Developer SDK Documentation</a></p>
 </div>
 </div>

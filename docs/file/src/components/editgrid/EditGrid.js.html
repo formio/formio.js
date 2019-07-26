@@ -414,6 +414,7 @@ export default class EditGridComponent extends NestedComponent {
     row.components = [];
 
     if (wrapper.rowOpen) {
+      const dialog = this.component.modal ? this.createModal(this.component.addAnother || &apos;Add Another&apos;) : undefined;
       const editForm = this.component.components.map(comp =&gt; {
         const component = _.cloneDeep(comp);
         const options = _.clone(this.options);
@@ -429,7 +430,7 @@ export default class EditGridComponent extends NestedComponent {
           [
             this.ce(&apos;button&apos;, {
               class: &apos;btn btn-primary&apos;,
-              onClick: this.saveRow.bind(this, rowIndex)
+              onClick: this.saveRow.bind(this, rowIndex, dialog)
             }, this.component.saveRow || &apos;Save&apos;),
             &apos; &apos;,
             this.component.removeRow ?
@@ -441,11 +442,19 @@ export default class EditGridComponent extends NestedComponent {
           ]
         ));
       }
-      wrapper.appendChild(
-        this.ce(&apos;div&apos;, { class: &apos;editgrid-edit&apos; },
+      if (!this.component.modal) {
+        wrapper.appendChild(
+          this.ce(&apos;div&apos;, { class: &apos;editgrid-edit&apos; },
+            this.ce(&apos;div&apos;, { class: &apos;editgrid-body&apos; }, editForm)
+          )
+        );
+      }
+      else {
+        const formComponents =  this.ce(&apos;div&apos;, { class: &apos;editgrid-edit&apos; },
           this.ce(&apos;div&apos;, { class: &apos;editgrid-body&apos; }, editForm)
-        )
-      );
+        );
+        dialog.body.appendChild(formComponents);
+      }
     }
     else {
       const rowMarkup = this.renderTemplate(rowTemplate,
@@ -647,7 +656,7 @@ export default class EditGridComponent extends NestedComponent {
     this.updateGrid();
   }
 
-  saveRow(rowIndex) {
+  saveRow(rowIndex, modal) {
     const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
       editRow.dirty = false;
@@ -676,6 +685,9 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     this.updateGrid();
+    if (this.component.modal) {
+      modal.close();
+    }
   }
 
   removeRow(rowIndex) {

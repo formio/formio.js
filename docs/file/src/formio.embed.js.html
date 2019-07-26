@@ -212,7 +212,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.embed.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*global Formio*/
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// Keep lodash off the global scope.
+import _ from &apos;lodash&apos;;
+_.noConflict();
+
+/*global Formio*/
 const scripts = document.getElementsByTagName(&apos;script&apos;);
 let thisScript = null;
 let i = scripts.length;

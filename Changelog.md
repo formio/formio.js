@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.24.0
+### Added
+ - Option to show EditGrid forms as modals.
+ - Make form config available to eval context. 
+ - Pass component to beforeSubmit hook
+ - Adding a custom wizard example to the docs and added showSubmit flag.
+
+### Changed
+ - Upgraded vanilla-picker@2.9.2, webpack@4.38.0
+
+### Fixed
+ - Add _.noConflict() to build scripts to prevent lodash leaking on global scope.
+ - Check for existence of this.formio before invoking to resolve some PDF form crashes.
+ - Fixed issues with subform submissions during nextPage to keep it from evaluating all nested forms on beforeNext.
+
 ## 3.23.3
 ### Changed
  - Upgraded lodash@4.17.15, vanilla-picker@2.9.1, @babel/cli@7.5.5, @babel/core@7.5.5, @babel/plugin-proposal-class-properties@7.5.5, @babel/preset-env@7.5.5, mocha@6.2.0

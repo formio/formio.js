@@ -212,7 +212,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.form.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import AllComponents from &apos;./components&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// Keep lodash off the global scope.
+import _ from &apos;lodash&apos;;
+_.noConflict();
+
+import AllComponents from &apos;./components&apos;;
 import Components from &apos;./components/Components&apos;;
 import Formio from &apos;./Formio&apos;;
 Components.setComponents(AllComponents);
