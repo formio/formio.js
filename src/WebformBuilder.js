@@ -209,7 +209,8 @@ export default class WebformBuilder extends Component {
         editComponent: 'single',
         moveComponent: 'single',
         copyComponent: 'single',
-        pasteComponent: 'single'
+        pasteComponent: 'single',
+        editJson: 'single'
       });
 
       if (component.refs.copyComponent) {
@@ -255,6 +256,17 @@ export default class WebformBuilder extends Component {
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
           this.editComponent(component.component, parent));
+      }
+
+      if (component.refs.editJson) {
+        new Tooltip(component.refs.editJson, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit JSON')
+        });
+
+        component.addEventListener(component.refs.editJson, 'click', () =>
+          this.editComponent(component.component, parent, false, true));
       }
 
       if (component.refs.removeComponent) {
@@ -724,7 +736,8 @@ export default class WebformBuilder extends Component {
     this.dialog.close();
     if (index !== -1) {
       const originalComponent = parentContainer[index];
-      parentContainer[index] = this.editForm.submission.data;
+      const submissionData = this.editForm.submission.data;
+      parentContainer[index] = submissionData.componentJson || submissionData;
       return parentComponent.rebuild().then(() => {
         this.emit('saveComponent', parentContainer[index], originalComponent);
       });
@@ -732,7 +745,7 @@ export default class WebformBuilder extends Component {
     return NativePromise.resolve();
   }
 
-  editComponent(component, parent, isNew) {
+  editComponent(component, parent, isNew, isJsonEdit) {
     if (!component.key) {
       return;
     }
@@ -740,6 +753,7 @@ export default class WebformBuilder extends Component {
     const componentCopy = _.cloneDeep(component);
     let componentClass = Components.components[componentCopy.type];
     const isCustom = componentClass === undefined;
+    isJsonEdit = isJsonEdit || isCustom;
     componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
@@ -748,6 +762,9 @@ export default class WebformBuilder extends Component {
 
     // This is the render step.
     const editFormOptions = _.get(this, 'options.editForm', {});
+    if (this.editForm) {
+      this.editForm.destroy();
+    }
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
@@ -759,14 +776,32 @@ export default class WebformBuilder extends Component {
     // Allow editForm overrides per component.
     const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
 
-    // Get the editform for this component.
-    this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
+    if (isJsonEdit && !isCustom) {
+      this.editForm.form = {
+        components: [
+          {
+            type: 'textarea',
+            as: 'json',
+            editor: 'ace',
+            weight: 10,
+            input: true,
+            key: 'componentJson',
+            label: 'Component JSON',
+            tooltip: 'Edit the JSON for this component.'
+          }
+        ]
+      };
+    }
+    else {
+      // Get the editform for this component.
+      this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
+    }
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
     this.editForm.editComponent = component;
 
-    if (isCustom) {
+    if (isJsonEdit) {
       this.editForm.submission = {
         data: {
           componentJson: componentCopy
@@ -809,20 +844,8 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
-        // Set the component to the componentJson if this is a custom component.
-        if (isCustom && event.data.componentJson) {
-          const componentJson = event.data.componentJson;
-          // First empty the existing data object.
-          for (const prop in event.data) {
-            if (event.data.hasOwnProperty(prop)) {
-              delete event.data[prop];
-            }
-          }
-          _.merge(event.data, componentJson);
-        }
-
         // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
+        if ((event.changed.component && (event.changed.component.key === 'key')) || isJsonEdit) {
           componentCopy.keyModified = true;
         }
 
@@ -851,7 +874,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data);
+        this.updateComponent(event.data.componentJson || event.data);
       }
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
@@ -880,7 +903,7 @@ export default class WebformBuilder extends Component {
     });
 
     this.addEventListener(this.dialog, 'close', () => {
-      this.editForm.detach();
+      this.editForm.destroy();
       this.preview.destroy();
       if (isNew && !saved) {
         this.removeComponent(component, parent);
