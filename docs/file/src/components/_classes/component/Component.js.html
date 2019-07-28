@@ -1372,7 +1372,8 @@ export default class Component extends Element {
   redraw() {
     // Don&apos;t bother if we have not built yet.
     if (!this.element || !this.element.parentNode) {
-      return;
+      // Return a non-resolving promise.
+      return NativePromise.resolve();
     }
     this.clear();
     // Since we are going to replace the element, we need to know it&apos;s position so we can find it in the parent&apos;s children.
@@ -1386,7 +1387,7 @@ export default class Component extends Element {
   rebuild() {
     this.destroy();
     this.init();
-    this.redraw();
+    return this.redraw();
   }
 
   removeEventListeners() {

@@ -230,25 +230,7 @@ import Webform from &apos;./Webform&apos;;
 export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
-    this.refreshIframeReadyPromise();
-
     this.components = [];
-  }
-
-  refreshIframeReadyPromise() {
-    if (this.iframeReadyReject) {
-      this.iframeReady = this.iframeReady.catch(() =&gt; {
-        return;
-      });
-
-      this.iframeReadyReject();
-    }
-
-    // Resolve when the iframe is ready.
-    this.iframeReady = new NativePromise((resolve, reject) =&gt; {
-      this.iframeReadyResolve = resolve;
-      this.iframeReadyReject = reject;
-    });
   }
 
   init() {
@@ -283,20 +265,25 @@ export default class PDF extends Webform {
         iframeContainer: &apos;single&apos;
       });
 
+      // Reset the iframeReady promise.
+      this.iframeReady = new NativePromise((resolve, reject) =&gt; {
+        this.iframeReadyResolve = resolve;
+        this.iframeReadyReject = reject;
+      });
+
       // iframes cannot be in the template so manually create it
-      this.iframeElement = this.iframeElement || this.ce(&apos;iframe&apos;, {
+      this.iframeElement = this.ce(&apos;iframe&apos;, {
         src: this.getSrc(),
         id: `iframe-${this.id}`,
         seamless: true,
         class: &apos;formio-iframe&apos;
       });
 
-      this.refreshIframeReadyPromise();
-
       this.iframeElement.formioContainer = this.component.components;
       this.iframeElement.formioComponent = this;
 
       // Append the iframe to the iframeContainer in the template
+      this.empty(this.refs.iframeContainer);
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
@@ -413,7 +400,7 @@ export default class PDF extends Webform {
       message.type = &apos;iframe-data&apos;;
     }
 
-    this.iframeReady = this.iframeReady.then(() =&gt; {
+    this.iframeReady.then(() =&gt; {
       if (this.iframeElement &amp;&amp; this.iframeElement.contentWindow) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), &apos;*&apos;);
       }
