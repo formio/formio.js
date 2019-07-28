@@ -456,7 +456,7 @@ export default class Wizard extends Webform {
   rebuild() {
     this.destroyComponents();
     this.addComponents();
-    this.redraw();
+    return this.redraw();
   }
 
   checkCurrentPageValidity(...args) {

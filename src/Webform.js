@@ -627,11 +627,12 @@ export default class Webform extends NestedComponent {
     }
 
     this.initialized = false;
-    this.formReadyResolve();
-    this.rebuild();
-    this.emit('formLoad', form);
-    this.triggerRecaptcha();
-    return this.formReady;
+    return this.rebuild().then(() => {
+      this.formReadyResolve();
+      this.emit('formLoad', form);
+      this.triggerRecaptcha();
+      return this.formReady;
+    });
   }
 
   /**
@@ -882,7 +883,7 @@ export default class Webform extends NestedComponent {
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
-      return;
+      return NativePromise.resolve();
     }
     this.clear();
     this.setContent(this.element, this.render());

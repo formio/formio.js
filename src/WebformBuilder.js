@@ -2,6 +2,7 @@ import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
+import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { bootstrapVersion } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
@@ -708,6 +709,29 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
+  /**
+   * Called when a new component is saved.
+   *
+   * @param parent
+   * @param component
+   * @return {boolean}
+   */
+  saveComponent(component, parent) {
+    this.editForm.detach();
+    const parentContainer = parent ? parent.formioContainer : this.container;
+    const parentComponent = parent ? parent.formioComponent : this;
+    const index = parentContainer.indexOf(component);
+    this.dialog.close();
+    if (index !== -1) {
+      const originalComponent = parentContainer[index];
+      parentContainer[index] = this.editForm.submission.data;
+      return parentComponent.rebuild().then(() => {
+        this.emit('saveComponent', parentContainer[index], originalComponent);
+      });
+    }
+    return NativePromise.resolve();
+  }
+
   editComponent(component, parent, isNew) {
     if (!component.key) {
       return;
@@ -847,23 +871,12 @@ export default class WebformBuilder extends Component {
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
-        return;
-      }
       event.preventDefault();
-      saved = true;
-      this.editForm.detach();
-      const parentContainer = parent ? parent.formioContainer : this.container;
-      const parentComponent = parent ? parent.formioComponent : this;
-      const index = parentContainer.indexOf(component);
-      this.dialog.close();
-      if (index !== -1) {
-        const originalComponent = parentContainer[index];
-        parentContainer[index] = this.editForm.submission.data;
-        parentComponent.rebuild();
-        // Should we be passing the instance or the definition here as the component? See WizardBuilder.
-        this.emit('saveComponent', parentContainer[index], originalComponent);
+      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        return false;
       }
+      saved = true;
+      this.saveComponent(component, parent);
     });
 
     this.addEventListener(this.dialog, 'close', () => {

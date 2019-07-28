@@ -146,7 +146,7 @@ export default class WizardBuilder extends WebformBuilder {
       type: 'form',
       components: page ? [page] : [],
     };
-    this.redraw();
+    return this.redraw();
   }
 
   addPage() {
@@ -154,7 +154,7 @@ export default class WizardBuilder extends WebformBuilder {
     const newPage = this.getPageConfig(pageNum);
     this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
-    this.rebuild();
+    return this.rebuild();
   }
 
   removePage(pageIndex, componentIndex) {
@@ -164,14 +164,14 @@ export default class WizardBuilder extends WebformBuilder {
       // If the last page is removed.
       if (pageIndex === 0) {
         this._form.components.push(this.getPageConfig(1));
-        this.rebuild();
+        return this.rebuild();
       }
       else {
-        this.setPage(pageIndex - 1);
+        return this.setPage(pageIndex - 1);
       }
     }
     else {
-      this.rebuild();
+      return this.rebuild();
     }
   }
 
@@ -180,7 +180,7 @@ export default class WizardBuilder extends WebformBuilder {
       return;
     }
     this.page = index;
-    this.rebuild();
+    return this.rebuild();
   }
 
   getPageConfig(index, components = []) {
