@@ -1376,10 +1376,10 @@ export default class Webform extends NestedComponent {
       });
 
       const submission = _.cloneDeep(this.submission || {});
-
       submission.state = options.state || &apos;submitted&apos;;
+
       const isDraft = (submission.state === &apos;draft&apos;);
-      this.hook(&apos;beforeSubmit&apos;, submission, (err) =&gt; {
+      this.hook(&apos;beforeSubmit&apos;, { ...submission, component: options.component }, (err) =&gt; {
         if (err) {
           return reject(err);
         }
@@ -1399,7 +1399,7 @@ export default class Webform extends NestedComponent {
           }
         });
 
-        this.hook(&apos;customValidation&apos;, submission, (err) =&gt; {
+        this.hook(&apos;customValidation&apos;, { ...submission, component: options.component }, (err) =&gt; {
           if (err) {
             // If string is returned, cast to object.
             if (typeof err === &apos;string&apos;) {
