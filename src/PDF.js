@@ -7,25 +7,7 @@ import Webform from './Webform';
 export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
-    this.refreshIframeReadyPromise();
-
     this.components = [];
-  }
-
-  refreshIframeReadyPromise() {
-    if (this.iframeReadyReject) {
-      this.iframeReady = this.iframeReady.catch(() => {
-        return;
-      });
-
-      this.iframeReadyReject();
-    }
-
-    // Resolve when the iframe is ready.
-    this.iframeReady = new NativePromise((resolve, reject) => {
-      this.iframeReadyResolve = resolve;
-      this.iframeReadyReject = reject;
-    });
   }
 
   init() {
@@ -60,20 +42,25 @@ export default class PDF extends Webform {
         iframeContainer: 'single'
       });
 
+      // Reset the iframeReady promise.
+      this.iframeReady = new NativePromise((resolve, reject) => {
+        this.iframeReadyResolve = resolve;
+        this.iframeReadyReject = reject;
+      });
+
       // iframes cannot be in the template so manually create it
-      this.iframeElement = this.iframeElement || this.ce('iframe', {
+      this.iframeElement = this.ce('iframe', {
         src: this.getSrc(),
         id: `iframe-${this.id}`,
         seamless: true,
         class: 'formio-iframe'
       });
 
-      this.refreshIframeReadyPromise();
-
       this.iframeElement.formioContainer = this.component.components;
       this.iframeElement.formioComponent = this;
 
       // Append the iframe to the iframeContainer in the template
+      this.empty(this.refs.iframeContainer);
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       // Post the form to the iframe
@@ -190,7 +177,7 @@ export default class PDF extends Webform {
       message.type = 'iframe-data';
     }
 
-    this.iframeReady = this.iframeReady.then(() => {
+    this.iframeReady.then(() => {
       if (this.iframeElement && this.iframeElement.contentWindow) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
       }

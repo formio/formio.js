@@ -62,9 +62,15 @@ export default class SelectComponent extends Field {
     this.selectOptions = [];
 
     if (this.isSelectResource) {
-      this.serverCount = null;
+      this.isFromSearch = false;
+
+      this.searchServerCount = null;
+      this.defaultServerCount = null;
+
       this.isScrollLoading = false;
-      this.downloadedResources = [];
+
+      this.searchDownloadedResources = [];
+      this.defaultDownloadedResources = [];
     }
 
     // If this component has been activated.
@@ -228,13 +234,13 @@ export default class SelectComponent extends Field {
       items = _.get(items, this.component.selectValues);
     }
 
-    if (this.isSelectResource) {
+    if (this.isSelectResource && items.serverCount) {
       this.serverCount = items.serverCount;
     }
 
     if (this.isScrollLoading) {
       this.downloadedResources = this.downloadedResources.concat(items);
-      this.downloadedResources.serverCount = items.serverCount;
+      this.downloadedResources.serverCount = items.serverCount || this.downloadedResources.serverCount;
     }
     else {
       this.downloadedResources = items;
@@ -353,12 +359,19 @@ export default class SelectComponent extends Field {
     // Make the request.
     options.header = headers;
     this.loading = true;
+
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
         this.setItems(response, !!search);
       })
       .catch((err) => {
+        if (this.isSelectResource) {
+          this.downloadedResources.serverCount = this.downloadedResources.length;
+          this.serverCount = this.downloadedResources.length;
+          this.setItems([]);
+        }
+
         this.isScrollLoading = false;
         this.loading = false;
         this.itemsLoadedResolve();
@@ -419,6 +432,40 @@ export default class SelectComponent extends Field {
 
   get additionalResourcesAvailable() {
     return _.isNil(this.serverCount) || (this.serverCount > this.downloadedResources.length);
+  }
+
+  get serverCount() {
+    if (this.isFromSearch) {
+      return this.searchServerCount;
+    }
+
+    return this.defaultServerCount;
+  }
+
+  set serverCount(value) {
+    if (this.isFromSearch) {
+      this.searchServerCount = value;
+    }
+    else {
+      this.defaultServerCount = value;
+    }
+  }
+
+  get downloadedResources() {
+    if (this.isFromSearch) {
+      return this.searchDownloadedResources;
+    }
+
+    return this.defaultDownloadedResources;
+  }
+
+  set downloadedResources(value) {
+    if (this.isFromSearch) {
+      this.searchDownloadedResources = value;
+    }
+    else {
+      this.defaultDownloadedResources = value;
+    }
   }
 
   /* eslint-disable max-statements */
@@ -503,7 +550,7 @@ export default class SelectComponent extends Field {
         }
 
         if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
-          const request = window.indexedDB.open(this.component.indexeddb.database, 1);
+          const request = window.indexedDB.open(this.component.indexeddb.database);
 
           request.onupgradeneeded = (event) => {
             if (this.component.customOptions) {
@@ -526,7 +573,7 @@ export default class SelectComponent extends Field {
             const db = event.target.result;
             const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
             const objectStore = transaction.objectStore(this.component.indexeddb.table);
-            new Promise((resolve) => {
+            new NativePromise((resolve) => {
               const responseItems = [];
               objectStore.getAll().onsuccess = (event) => {
                 event.target.result.forEach((item) => {
@@ -697,11 +744,11 @@ export default class SelectComponent extends Field {
     if (this.isSelectResource) {
       this.scrollList = this.choices.choiceList.element;
       this.onScroll = () => {
-        if (
-          !this.isScrollLoading &&
-          this.additionalResourcesAvailable &&
-          ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)
-        ) {
+        const isLoadingAvailable = !this.isScrollLoading
+          && this.additionalResourcesAvailable
+          && ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight);
+
+        if (isLoadingAvailable) {
           this.isScrollLoading = true;
           this.choices.setChoices([{
             value: `${this.id}-loading`,
@@ -721,8 +768,14 @@ export default class SelectComponent extends Field {
       // Make sure to clear the search when no value is provided.
       if (this.choices && this.choices.input && this.choices.input.element) {
         this.addEventListener(this.choices.input.element, 'input', (event) => {
+          this.isFromSearch = !!event.target.value;
+
           if (!event.target.value) {
             this.triggerUpdate();
+          }
+          else {
+            this.serverCount = null;
+            this.downloadedResources = [];
           }
         });
       }

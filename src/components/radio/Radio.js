@@ -71,13 +71,10 @@ export default class RadioComponent extends Field {
   }
 
   getValue() {
-    if (this.viewOnly) {
+    if (this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
     let value = this.dataValue;
-    if (!this.refs.input) {
-      return value;
-    }
     this.refs.input.forEach((input) => {
       if (input.checked) {
         value = input.value;

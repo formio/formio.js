@@ -52,7 +52,8 @@ export default class PDFBuilder extends WebformBuilder {
           signature: true,
           select: true,
           textarea: true,
-          datetime: true
+          datetime: true,
+          file: true
         }
       },
       basic: false,
@@ -182,18 +183,16 @@ export default class PDFBuilder extends WebformBuilder {
         iframeDropzone: 'single', 'sidebar-container': 'single'
       });
 
-      if (this.refs.iframeDropzone) {
-        this.initIframeEvents();
-        this.updateDropzoneDimensions();
-        this.initDropzoneEvents();
-      }
-
-      if (this.refs['sidebar-container']) {
-        this.prepSidebarComponentsForDrag();
-      }
-
+      this.afterAttach();
       return this.element;
     });
+  }
+
+  afterAttach() {
+    this.initIframeEvents();
+    this.updateDropzoneDimensions();
+    this.initDropzoneEvents();
+    this.prepSidebarComponentsForDrag();
   }
 
   upload(file) {
@@ -244,9 +243,12 @@ export default class PDFBuilder extends WebformBuilder {
     // Instantiate the webform from the PDF class instead of Webform
     options.skipInit = false;
     this.webform = new PDF(this.element, options);
-
-    this.webform.on('attach', this.onPdfAttach.bind(this));
-
+    this.webform.on('attach', () => {
+      // If the dropzone exists but has been removed in a PDF rebuild, reinstate it
+      if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {
+        this.prependTo(this.refs.iframeDropzone, this.refs.form);
+      }
+    });
     return this.webform;
   }
 
@@ -262,16 +264,12 @@ export default class PDFBuilder extends WebformBuilder {
     });
   }
 
-  onPdfAttach() {
-    // If the dropzone exists but has been removed in a PDF rebuild, reinstate it
-    if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {
-      this.prependTo(this.refs.iframeDropzone, this.refs.form);
-    }
+  saveComponent(...args) {
+    return super.saveComponent(...args).then(() => this.afterAttach());
   }
 
   destroy() {
     super.destroy();
-
     this.webform.destroy();
   }
 
@@ -285,6 +283,12 @@ export default class PDFBuilder extends WebformBuilder {
   // 888 888     888    "Y888888 888  888  888  "Y8888        "Y8888    Y88P    "Y8888  888  888  "Y888  88888P'
 
   initIframeEvents() {
+    if (!this.webform.iframeElement) {
+      return;
+    }
+    this.webform.off('iframe-elementUpdate');
+    this.webform.off('iframe-componentUpdate');
+    this.webform.off('iframe-componentClick');
     this.webform.on('iframe-elementUpdate', schema => {
       const component = this.webform.getComponentById(schema.id);
       if (component && component.component) {
@@ -312,6 +316,12 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.overlay.width
         };
         this.emit('updateComponent', component);
+
+        const localComponent = _.find(this.form.components, { id: schema.id });
+        if (localComponent) {
+          localComponent.overlay = _.clone(component.component.overlay);
+        }
+
         this.emit('change', this.form);
       }
       return component;
@@ -338,7 +348,12 @@ export default class PDFBuilder extends WebformBuilder {
   //                            888                                                            "Y88P"
 
   initDropzoneEvents() {
+    if (!this.refs.iframeDropzone) {
+      return;
+    }
     // This is required per HTML spec in order for the drop event to fire
+    this.removeEventListener(this.refs.iframeDropzone, 'dragover');
+    this.removeEventListener(this.refs.iframeDropzone, 'drop');
     this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {
       e.preventDefault();
       return false;
@@ -348,10 +363,14 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   prepSidebarComponentsForDrag() {
+    if (!this.refs['sidebar-container']) {
+      return;
+    }
     [...this.refs['sidebar-container'].children].forEach(el => {
       el.draggable = true;
       el.setAttribute('draggable', true);
-
+      this.removeEventListener(el, 'dragstart');
+      this.removeEventListener(el, 'dragend');
       this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);
       this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);
     });
@@ -369,7 +388,6 @@ export default class PDFBuilder extends WebformBuilder {
 
   onDragStart(e) {
     e.dataTransfer.setData('text/html', null);
-
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
   }

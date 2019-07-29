@@ -70,10 +70,7 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    if (!this.refs.input || !this.refs.input.length) {
+    if (this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
     const value = {};

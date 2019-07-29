@@ -1149,7 +1149,8 @@ export default class Component extends Element {
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode) {
-      return;
+      // Return a non-resolving promise.
+      return NativePromise.resolve();
     }
     this.clear();
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
@@ -1163,7 +1164,7 @@ export default class Component extends Element {
   rebuild() {
     this.destroy();
     this.init();
-    this.redraw();
+    return this.redraw();
   }
 
   removeEventListeners() {
@@ -1626,10 +1627,7 @@ export default class Component extends Element {
    * @return {*}
    */
   getValue() {
-    if (!this.hasInput) {
-      return;
-    }
-    if (this.viewOnly) {
+    if (!this.hasInput || this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
     const values = [];
@@ -1748,7 +1746,7 @@ export default class Component extends Element {
    */
   updateValue(value, flags) {
     flags = flags || {};
-    let newValue = value === undefined || value === null ? this.getValue() : value;
+    let newValue = (value === undefined || value === null) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = newValue;
