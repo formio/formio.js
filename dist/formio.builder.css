@@ -380,7 +380,8 @@ td > .form-group {
   -webkit-backface-visibility: hidden;
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
-  pointer-events: all; }
+  pointer-events: all;
+  overflow: auto; }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
   -webkit-backface-visibility: hidden;
