@@ -627,11 +627,12 @@ export default class Webform extends NestedComponent {
     }
 
     this.initialized = false;
-    this.formReadyResolve();
-    this.rebuild();
-    this.emit('formLoad', form);
-    this.triggerRecaptcha();
-    return this.formReady;
+    return this.rebuild().then(() => {
+      this.formReadyResolve();
+      this.emit('formLoad', form);
+      this.triggerRecaptcha();
+      return this.formReady;
+    });
   }
 
   /**
@@ -882,7 +883,7 @@ export default class Webform extends NestedComponent {
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
-      return;
+      return NativePromise.resolve();
     }
     this.clear();
     this.setContent(this.element, this.render());
@@ -1148,14 +1149,14 @@ export default class Webform extends NestedComponent {
         browserName: navigator.appName,
         userAgent: navigator.userAgent,
         pathName: window.location.pathname,
-        onLine: navigator.onLine,
+        onLine: navigator.onLine
       });
 
       const submission = _.cloneDeep(this.submission || {});
-
       submission.state = options.state || 'submitted';
+
       const isDraft = (submission.state === 'draft');
-      this.hook('beforeSubmit', submission, (err) => {
+      this.hook('beforeSubmit', { ...submission, component: options.component }, (err) => {
         if (err) {
           return reject(err);
         }
@@ -1175,7 +1176,7 @@ export default class Webform extends NestedComponent {
           }
         });
 
-        this.hook('customValidation', submission, (err) => {
+        this.hook('customValidation', { ...submission, component: options.component }, (err) => {
           if (err) {
             // If string is returned, cast to object.
             if (typeof err === 'string') {

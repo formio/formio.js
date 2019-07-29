@@ -3128,7 +3128,13 @@ body.formio-dialog-open {
   margin-top: -2px; }
 
 .builder-component {
-  position: relative; }
+  position: relative;
+  min-height: 15px; }
+  .builder-component .formio-component-htmlelement {
+    border: dotted 2px #e8e8e8; }
+    .builder-component .formio-component-htmlelement [ref=html]:empty:before {
+      content: 'HTML Content';
+      color: #aaa; }
 
 .builder-component:not(:hover) .component-btn-group {
   display: none; }

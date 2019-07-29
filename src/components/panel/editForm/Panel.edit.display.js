@@ -27,7 +27,6 @@ export default [
   {
     key: 'tabindex',
     hidden: true,
-    calculateValue: 'value = data.title'
   },
   {
     weight: 1,

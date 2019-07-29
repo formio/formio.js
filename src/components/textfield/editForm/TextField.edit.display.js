@@ -1,3 +1,4 @@
+import Widgets from '../../../widgets';
 import _ from 'lodash';
 export default [
   {
@@ -21,6 +22,29 @@ export default [
     },
     conditional: {
       json: { '===': [{ var: 'data.type' }, 'textfield'] }
+    }
+  },
+  {
+    weight: 405,
+    type: 'textarea',
+    key: 'widget',
+    label: 'Widget Settings',
+    calculateValue: (context) => {
+      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
+        let settings = {};
+        if (context.data.widget && context.data.widget.type) {
+          settings = Widgets[context.data.widget.type].defaultSettings;
+        }
+        return settings;
+      }
+      return context.data.widget;
+    },
+    input: true,
+    rows: 5,
+    editor: 'ace',
+    as: 'json',
+    conditional: {
+      json: { '!!': { var: 'data.widget.type' } }
     }
   },
   {

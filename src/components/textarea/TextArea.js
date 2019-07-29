@@ -154,17 +154,20 @@ export default class TextAreaComponent extends TextFieldComponent {
         Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
           .then((editor) => {
             this.editor = editor.edit(element);
+            this.editor.removeAllListeners('change');
             this.editor.setOptions({
               maxLines: 12,
               minLines: 12
             });
-            this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
             this.editor.getSession().setTabSize(2);
             this.editor.getSession().setMode(`ace/mode/${mode}`);
             this.editor.on('input', () => this.acePlaceholder());
-            setTimeout(() => this.acePlaceholder(), 100);
             this.editor.setValue(this.setConvertedValue(this.dataValue));
             this.editorReadyResolve(this.editor);
+            setTimeout(() => {
+              this.acePlaceholder();
+              this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
+            }, 100);
             return this.editor;
           });
         break;

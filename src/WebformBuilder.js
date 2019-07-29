@@ -2,6 +2,7 @@ import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
+import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { bootstrapVersion } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
@@ -208,7 +209,8 @@ export default class WebformBuilder extends Component {
         editComponent: 'single',
         moveComponent: 'single',
         copyComponent: 'single',
-        pasteComponent: 'single'
+        pasteComponent: 'single',
+        editJson: 'single'
       });
 
       if (component.refs.copyComponent) {
@@ -254,6 +256,17 @@ export default class WebformBuilder extends Component {
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
           this.editComponent(component.component, parent));
+      }
+
+      if (component.refs.editJson) {
+        new Tooltip(component.refs.editJson, {
+          trigger: 'hover',
+          placement: 'top',
+          title: this.t('Edit JSON')
+        });
+
+        component.addEventListener(component.refs.editJson, 'click', () =>
+          this.editComponent(component.component, parent, false, true));
       }
 
       if (component.refs.removeComponent) {
@@ -435,6 +448,14 @@ export default class WebformBuilder extends Component {
         Templates.current.handleBuilderSidebarScroll.call(this, this);
       }
 
+      // Add the paste status in form
+      if (window.sessionStorage) {
+        const data = window.sessionStorage.getItem('formio.clipboard');
+        if (data) {
+          this.addClass(this.refs.form, 'builder-paste-mode');
+        }
+      }
+
       if (!bootstrapVersion(this.options)) {
         // Initialize
         this.refs['sidebar-group'].forEach((group) => {
@@ -525,6 +546,7 @@ export default class WebformBuilder extends Component {
       if (this.schemas.hasOwnProperty(type)) {
         info = _.cloneDeep(this.schemas[type]);
         info.key = _.camelCase(
+          info.title ||
           info.label ||
           info.placeholder ||
           info.type
@@ -580,7 +602,23 @@ export default class WebformBuilder extends Component {
       target.formioContainer.push(info);
     }
 
-    this.emit('addComponent', info);
+    const parent = target.formioComponent;
+    // Get path to the component in the parent component.
+    let path = 'components';
+    switch (parent.type) {
+      case 'table':
+        path = `rows[${info.tableRow}][${info.tableColumn}].components`;
+        break;
+      case 'columns':
+        path = `columns[${info.column}].components`;
+        break;
+      case 'tabs':
+        path = `components[${info.tab}].components`;
+        break;
+    }
+    // Index within container
+    const index = _.findIndex(_.get(parent.schema, path), { key: info.key }) || 0;
+    this.emit('addComponent', info, parent, path, index);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
@@ -683,7 +721,31 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  editComponent(component, parent, isNew) {
+  /**
+   * Called when a new component is saved.
+   *
+   * @param parent
+   * @param component
+   * @return {boolean}
+   */
+  saveComponent(component, parent) {
+    this.editForm.detach();
+    const parentContainer = parent ? parent.formioContainer : this.container;
+    const parentComponent = parent ? parent.formioComponent : this;
+    const index = parentContainer.indexOf(component);
+    this.dialog.close();
+    if (index !== -1) {
+      const originalComponent = parentContainer[index];
+      const submissionData = this.editForm.submission.data;
+      parentContainer[index] = submissionData.componentJson || submissionData;
+      return parentComponent.rebuild().then(() => {
+        this.emit('saveComponent', parentContainer[index], originalComponent);
+      });
+    }
+    return NativePromise.resolve();
+  }
+
+  editComponent(component, parent, isNew, isJsonEdit) {
     if (!component.key) {
       return;
     }
@@ -691,6 +753,7 @@ export default class WebformBuilder extends Component {
     const componentCopy = _.cloneDeep(component);
     let componentClass = Components.components[componentCopy.type];
     const isCustom = componentClass === undefined;
+    isJsonEdit = isJsonEdit || isCustom;
     componentClass = isCustom ? Components.components.unknown : componentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
@@ -699,6 +762,9 @@ export default class WebformBuilder extends Component {
 
     // This is the render step.
     const editFormOptions = _.get(this, 'options.editForm', {});
+    if (this.editForm) {
+      this.editForm.destroy();
+    }
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
@@ -710,14 +776,32 @@ export default class WebformBuilder extends Component {
     // Allow editForm overrides per component.
     const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
 
-    // Get the editform for this component.
-    this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
+    if (isJsonEdit && !isCustom) {
+      this.editForm.form = {
+        components: [
+          {
+            type: 'textarea',
+            as: 'json',
+            editor: 'ace',
+            weight: 10,
+            input: true,
+            key: 'componentJson',
+            label: 'Component JSON',
+            tooltip: 'Edit the JSON for this component.'
+          }
+        ]
+      };
+    }
+    else {
+      // Get the editform for this component.
+      this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
+    }
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
     this.editForm.editComponent = component;
 
-    if (isCustom) {
+    if (isJsonEdit) {
       this.editForm.submission = {
         data: {
           componentJson: componentCopy
@@ -760,30 +844,19 @@ export default class WebformBuilder extends Component {
 
     this.editForm.on('change', (event) => {
       if (event.changed) {
-        // Set the component to the componentJson if this is a custom component.
-        if (isCustom && event.data.componentJson) {
-          const componentJson = event.data.componentJson;
-          // First empty the existing data object.
-          for (const prop in event.data) {
-            if (event.data.hasOwnProperty(prop)) {
-              delete event.data[prop];
-            }
-          }
-          _.merge(event.data, componentJson);
-        }
-
         // See if this is a manually modified key. Treat custom component keys as manually modified
-        if ((event.changed.component && (event.changed.component.key === 'key')) || isCustom) {
+        if ((event.changed.component && (event.changed.component.key === 'key')) || isJsonEdit) {
           componentCopy.keyModified = true;
         }
 
-        if (event.changed.component && (event.changed.component.key === 'label')) {
+        if (event.changed.component && (['label', 'title'].includes(event.changed.component.key))) {
           // Ensure this component has a key.
           if (isNew) {
             if (!event.data.keyModified) {
               this.editForm.everyComponent(component => {
                 if (component.key === 'key' && component.parent.component.key === 'tabs') {
                   component.setValue(_.camelCase(
+                    event.data.title ||
                     event.data.label ||
                     event.data.placeholder ||
                     event.data.type
@@ -801,7 +874,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data);
+        this.updateComponent(event.data.componentJson || event.data);
       }
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
@@ -821,27 +894,16 @@ export default class WebformBuilder extends Component {
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
-        return;
-      }
       event.preventDefault();
-      saved = true;
-      this.editForm.detach();
-      const parentContainer = parent ? parent.formioContainer : this.container;
-      const parentComponent = parent ? parent.formioComponent : this;
-      const index = parentContainer.indexOf(component);
-      this.dialog.close();
-      if (index !== -1) {
-        const originalComponent = parentContainer[index];
-        parentContainer[index] = this.editForm.submission.data;
-        parentComponent.rebuild();
-        // Should we be passing the instance or the definition here as the component? See WizardBuilder.
-        this.emit('saveComponent', parentContainer[index], originalComponent);
+      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        return false;
       }
+      saved = true;
+      this.saveComponent(component, parent);
     });
 
     this.addEventListener(this.dialog, 'close', () => {
-      this.editForm.detach();
+      this.editForm.destroy();
       this.preview.destroy();
       if (isNew && !saved) {
         this.removeComponent(component, parent);
@@ -883,10 +945,11 @@ export default class WebformBuilder extends Component {
       const data = window.sessionStorage.getItem('formio.clipboard');
       if (data) {
         const schema = JSON.parse(data);
-        window.sessionStorage.removeItem('formio.clipboard');
-        BuilderUtils.uniquify(this.findNamespaceRoot(component.parent.component), schema);
-        component.parent.addComponent(schema, false, component.element.nextElementSibling ? component.element.nextElementSibling.lastElementChild : null);
-        this.form = this.schema;
+        const parent = this.getParentElement(component.element);
+        BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
+        const index = parent.formioContainer.indexOf(component.component);
+        parent.formioContainer.splice(index + 1, 0, schema);
+        parent.formioComponent.rebuild();
         this.emit('saveComponent');
       }
     }

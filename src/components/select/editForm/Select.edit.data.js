@@ -162,6 +162,7 @@ export default [
     data: {
       url: '/form?type=resource&limit=4294967295&select=_id,title',
     },
+    authenticate: true,
     template: '<span>{{ item.title }}</span>',
     valueProperty: '_id',
     clearOnHide: false,

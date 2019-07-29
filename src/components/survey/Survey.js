@@ -64,10 +64,7 @@ export default class SurveyComponent extends Field {
   }
 
   getValue() {
-    if (this.viewOnly) {
-      return this.dataValue;
-    }
-    if (!this.refs.input) {
+    if (this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
     const value = {};
