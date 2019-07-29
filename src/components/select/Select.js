@@ -329,10 +329,10 @@ export default class SelectComponent extends Field {
     // Add search capability.
     if (this.component.searchField && search) {
       if (Array.isArray(search)) {
-        query[`${this.component.searchField}__in`] = search.join(',');
+        query[`${this.component.searchField}`] = search.join(',');
       }
       else {
-        query[`${this.component.searchField}__regex`] = search;
+        query[`${this.component.searchField}`] = search;
       }
     }
 
