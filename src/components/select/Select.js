@@ -738,12 +738,20 @@ export default class SelectComponent extends BaseComponent {
 
     // Add value options.
     if (this.addValueOptions()) {
-      this.choices.setChoiceByValue(this.dataValue);
+      this.restoreValue();
     }
 
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
+  }
+
+  restoreValue() {
+    super.restoreValue();
+
+    if (this.choices) {
+      this.choices.setChoiceByValue(this.dataValue);
+    }
   }
 
   /* eslint-enable max-statements */
