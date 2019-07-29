@@ -1004,8 +1004,12 @@ export default class Component extends Element {
 
     dialog.refs.dialogContents.appendChild(element);
     document.body.appendChild(dialog);
+    document.body.classList.add('modal-open');
 
-    dialog.close = () => dialog.dispatchEvent(new CustomEvent('close'));
+    dialog.close = () => {
+      document.body.classList.remove('modal-open');
+      dialog.dispatchEvent(new CustomEvent('close'));
+    };
     this.addEventListener(dialog, 'close', () => this.removeChildFrom(dialog, document.body));
 
     const close = (event) => {
