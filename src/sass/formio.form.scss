@@ -405,6 +405,7 @@ td > .form-group {
   -webkit-animation: formio-dialog-fadein 0.5s;
   animation: formio-dialog-fadein 0.5s;
   pointer-events: all;
+  overflow: auto;
 }
 
 .formio-dialog.formio-dialog-closing .formio-dialog-content {
