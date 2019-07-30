@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.24.1
+### Fixed
+ - Changed all CDN references to point to https://cdn.form.io to control the uptime.
+
 ## 3.24.0
 ### Added
  - Option to show EditGrid forms as modals.
