@@ -177,12 +177,26 @@ export default class Form extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    return sanitize(dirty, {
+    // Dompurify configuration
+    const sanitizeOptions = {
       ADD_ATTR: ['ref'],
       USE_PROFILES: {
         html: true
       }
-    });
+    };
+    // Allow tags
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
+      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
+    }
+    // Allow attributes
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttr) && this.options.sanitizeConfig.allowedAttr.length > 0) {
+      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedTags;
+    }
+    // Allowd URI Regex
+    if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
+      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
+    }
+    return sanitize(dirty, sanitizeOptions);
   }
 
   setContent(element, content) {
