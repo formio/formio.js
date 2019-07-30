@@ -41,7 +41,7 @@ export default class HTMLComponent extends BaseComponent {
     });
     _.each(this.component.attrs, (attr) => {
       if (attr.attr) {
-        this.htmlElement.setAttribute(attr.attr, attr.value);
+        this.htmlElement.setAttribute(attr.attr, this.interpolate(attr.value));
       }
     });
     if (this.component.content) {
