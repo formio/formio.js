@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.24.3
+### Fixed
+ - Performance issues with the auto-expanding TextArea components.
+
 ## 3.24.2
 ### Fixed
  - FOR-2459: Fix competing scroll behavior between body and modals

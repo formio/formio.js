@@ -646,14 +646,11 @@ export default class TextAreaComponent extends TextFieldComponent {
       });
     };
 
-    const update = () =&gt; {
+    const update = _.debounce(() =&gt; {
       resize();
-
       const styleHeight = Math.round(parseFloat(textarea.style.height));
       const computed = window.getComputedStyle(textarea, null);
-
       let currentHeight = textarea.offsetHeight;
-
       if (currentHeight &lt; styleHeight &amp;&amp; computed.overflowY === &apos;hidden&apos;) {
         changeOverflow(&apos;scroll&apos;);
       }
@@ -663,13 +660,11 @@ export default class TextAreaComponent extends TextFieldComponent {
 
       resize();
       currentHeight = textarea.offsetHeight;
-
       if (previousHeight !== currentHeight) {
         previousHeight = currentHeight;
         update();
       }
-    };
-
+    }, 200);
     const computedStyle = window.getComputedStyle(textarea, null);
 
     textarea.style.resize = &apos;none&apos;;
@@ -680,11 +675,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     this.addEventListener(textarea, &apos;input&apos;, update);
-
     this.on(&apos;initialized&apos;, update);
-
     this.updateSize = update;
-
     update();
   }
 
