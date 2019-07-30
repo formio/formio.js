@@ -432,14 +432,11 @@ export default class TextAreaComponent extends TextFieldComponent {
       });
     };
 
-    const update = () => {
+    const update = _.debounce(() => {
       resize();
-
       const styleHeight = Math.round(parseFloat(textarea.style.height));
       const computed = window.getComputedStyle(textarea, null);
-
       let currentHeight = textarea.offsetHeight;
-
       if (currentHeight < styleHeight && computed.overflowY === 'hidden') {
         changeOverflow('scroll');
       }
@@ -449,13 +446,11 @@ export default class TextAreaComponent extends TextFieldComponent {
 
       resize();
       currentHeight = textarea.offsetHeight;
-
       if (previousHeight !== currentHeight) {
         previousHeight = currentHeight;
         update();
       }
-    };
-
+    }, 200);
     const computedStyle = window.getComputedStyle(textarea, null);
 
     textarea.style.resize = 'none';
@@ -466,11 +461,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     this.addEventListener(textarea, 'input', update);
-
     this.on('initialized', update);
-
     this.updateSize = update;
-
     update();
   }
 
