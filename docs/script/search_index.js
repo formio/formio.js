@@ -2095,13 +2095,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2581,13 +2581,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2611,13 +2611,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2779,13 +2779,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
+    "class/src/Webform.js~Webform.html#instance-set-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-set-submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3469,13 +3469,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -8779,13 +8779,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -8887,13 +8887,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
@@ -9756,6 +9756,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#additionalresourcesavailable",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-additionalResourcesAvailable",
+    "src/components/select/Select.js~SelectComponent#additionalResourcesAvailable",
+    "member"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#asstring",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-asString",
     "src/components/select/Select.js~SelectComponent#asString",
@@ -9786,12 +9792,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#currentitems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-currentItems",
-    "src/components/select/Select.js~SelectComponent#currentItems",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#dataready",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-dataReady",
     "src/components/select/Select.js~SelectComponent#dataReady",
@@ -9804,9 +9804,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#defaultdownloadedresources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-defaultDownloadedResources",
+    "src/components/select/Select.js~SelectComponent#defaultDownloadedResources",
+    "member"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#defaultschema",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-defaultSchema",
     "src/components/select/Select.js~SelectComponent#defaultSchema",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#defaultservercount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-defaultServerCount",
+    "src/components/select/Select.js~SelectComponent#defaultServerCount",
     "member"
   ],
   [
@@ -9825,6 +9837,18 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#disabled",
     "class/src/components/select/Select.js~SelectComponent.html#instance-set-disabled",
     "src/components/select/Select.js~SelectComponent#disabled",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#downloadedresources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
+    "src/components/select/Select.js~SelectComponent#downloadedResources",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#downloadedresources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-downloadedResources",
+    "src/components/select/Select.js~SelectComponent#downloadedResources",
     "member"
   ],
   [
@@ -9870,9 +9894,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#isfromsearch",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-isFromSearch",
+    "src/components/select/Select.js~SelectComponent#isFromSearch",
+    "member"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#isscrollloading",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-isScrollLoading",
     "src/components/select/Select.js~SelectComponent#isScrollLoading",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#isselectresource",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-isSelectResource",
+    "src/components/select/Select.js~SelectComponent#isSelectResource",
     "member"
   ],
   [
@@ -9912,12 +9948,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#loadeditems",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-loadedItems",
-    "src/components/select/Select.js~SelectComponent#loadedItems",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#loading",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-loading",
     "src/components/select/Select.js~SelectComponent#loading",
@@ -9942,27 +9972,27 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#restorevalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-restoreValue",
+    "src/components/select/Select.js~SelectComponent#restoreValue",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#scrolllist",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-scrollList",
     "src/components/select/Select.js~SelectComponent#scrollList",
     "member"
   ],
   [
-    "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-scrollLoading",
-    "src/components/select/Select.js~SelectComponent#scrollLoading",
+    "src/components/select/select.js~selectcomponent#searchdownloadedresources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-searchDownloadedResources",
+    "src/components/select/Select.js~SelectComponent#searchDownloadedResources",
     "member"
   ],
   [
-    "src/components/select/select.js~selectcomponent#scrollloading",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-scrollLoading",
-    "src/components/select/Select.js~SelectComponent#scrollLoading",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#scrolltop",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-scrollTop",
-    "src/components/select/Select.js~SelectComponent#scrollTop",
+    "src/components/select/select.js~selectcomponent#searchservercount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-searchServerCount",
+    "src/components/select/Select.js~SelectComponent#searchServerCount",
     "member"
   ],
   [
@@ -9981,6 +10011,18 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#selectoptions",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-selectOptions",
     "src/components/select/Select.js~SelectComponent#selectOptions",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#servercount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
+    "src/components/select/Select.js~SelectComponent#serverCount",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#servercount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
+    "src/components/select/Select.js~SelectComponent#serverCount",
     "member"
   ],
   [
@@ -10005,12 +10047,6 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#show",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-show",
     "src/components/select/Select.js~SelectComponent#show",
-    "method"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#stopinfinitescroll",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-stopInfiniteScroll",
-    "src/components/select/Select.js~SelectComponent#stopInfiniteScroll",
     "method"
   ],
   [

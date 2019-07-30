@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.24.2
+### Fixed
+ - FOR-2459: Fix competing scroll behavior between body and modals
+ - Fixed issues with search and infinite scroll in select component.
+
+### Added
+ - Interpolation for the attribute values of html component.
+
 ## 3.24.1
 ### Fixed
  - Changed all CDN references to point to https://cdn.form.io to control the uptime.

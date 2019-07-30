@@ -910,9 +910,11 @@ export default class BaseComponent extends Component {
       this.removeChildFrom(dialog, document.body);
     });
     document.body.appendChild(dialog);
+    document.body.classList.add(&apos;modal-open&apos;);
     dialog.body = modalBody;
     dialog.bodyContainer = modalBodyContainer;
     dialog.close = () =&gt; {
+      document.body.classList.remove(&apos;modal-open&apos;);
       dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
       this.removeChildFrom(dialog, document.body);
     };
