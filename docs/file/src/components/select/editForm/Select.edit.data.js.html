@@ -358,24 +358,22 @@ export default [
       const newItems = [];
 
       eachComponent(form.components, (component, path) =&gt; {
-        if (component.input) {
-          newItems.push({
-            label: component.label || component.key,
-            key: `data.${path}`
-          });
-        }
+        newItems.push({
+          label: component.label || component.key,
+          key: path
+        });
       });
 
       return newItems;
     },
     data: {
-      url: &apos;/form/{{ data.data.resource }}&apos;
+      url: &apos;/form/{{ data.resource }}&apos;
     },
     conditional: {
       json: {
         and: [
           { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;resource&apos;] },
-          { var: &apos;data.data.resource&apos; }
+          { var: &apos;data.resource&apos; }
         ]
       }
     }
@@ -408,7 +406,7 @@ export default [
           { &apos;!==&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;values&apos;] },
           { &apos;!==&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;resource&apos;] },
           { &apos;!==&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;custom&apos;] }
-        ],
+        ]
       }
     }
   },
@@ -600,7 +598,7 @@ export default [
     key: &apos;customOptions&apos;,
     label: &apos;Custom default options&apos;,
     tooltip: &apos;A raw JSON object to use as default options for the Select component (Choices JS).&apos;,
-    defaultValue: {}
+	defaultValue: {}
   },
   {
     label: &apos;Search Threshold&apos;,
