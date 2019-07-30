@@ -54,17 +54,11 @@ export default class SelectComponent extends BaseComponent {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    if (this.isSelectResource) {
-      this.isFromSearch = false;
-
-      this.searchServerCount = null;
-      this.defaultServerCount = null;
-
-      this.isScrollLoading = false;
-
-      this.searchDownloadedResources = [];
-      this.defaultDownloadedResources = [];
-    }
+    // Keep track of the last batch of items loaded.
+    this.currentItems = [];
+    this.loadedItems = 0;
+    this.isScrollLoading = false;
+    this.scrollTop = 0;
 
     // If this component has been activated.
     this.activated = false;
@@ -96,10 +90,6 @@ export default class SelectComponent extends BaseComponent {
 
   createWrapper() {
     return false;
-  }
-
-  get isSelectResource() {
-    return this.component.dataSrc === 'resource';
   }
 
   itemTemplate(data) {
@@ -224,6 +214,53 @@ export default class SelectComponent extends BaseComponent {
     return false;
   }
 
+  /**
+   * Return if the list is loading from scroll. or not.
+   *
+   * @return {boolean|*}
+   */
+  get scrollLoading() {
+    return this.isScrollLoading;
+  }
+
+  /**
+   * Sets the scroll loading state.
+   *
+   * @param isScrolling
+   * @return {*}
+   */
+  set scrollLoading(isScrolling) {
+    // Only continue if they are different.
+    if (this.isScrollLoading === isScrolling) {
+      return;
+    }
+    if (isScrolling) {
+      this.choices.setChoices([...this.selectOptions, {
+        value: '',
+        label: 'Loading...',
+        disabled: true,
+      }], 'value', 'label', true);
+    }
+    else if (this.scrollList) {
+      const loadingItem = this.scrollList.querySelector('.choices__item--disabled');
+      if (loadingItem) {
+        // Remove the loading text.
+        this.scrollList.removeChild(loadingItem);
+      }
+    }
+    this.scrollList.scrollTo(0, this.scrollTop);
+    this.isScrollLoading = isScrolling;
+    return isScrolling;
+  }
+
+  stopInfiniteScroll() {
+    // Remove the infinite scroll listener.
+    this.scrollLoading = false;
+    if (this.scrollList) {
+      this.scrollList.removeEventListener('scroll', this.onScroll);
+    }
+  }
+
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
@@ -246,6 +283,10 @@ export default class SelectComponent extends BaseComponent {
     }
 
     if (!this.choices && this.selectInput) {
+      if (this.loading) {
+        this.removeChildFrom(this.selectInput, this.selectContainer);
+      }
+
       this.selectInput.innerHTML = '';
     }
 
@@ -254,18 +295,34 @@ export default class SelectComponent extends BaseComponent {
       items = _.get(items, this.component.selectValues);
     }
 
-    if (this.isSelectResource && items.serverCount) {
-      this.serverCount = items.serverCount;
-    }
+    if (this.scrollLoading) {
+      // Check if the first two items are equal, and if so, then we can assume that this is the same list
+      // and we should skip over the loading.
+      if (
+        this.currentItems.length &&
+        items.length &&
+        _.isEqual(this.currentItems[0], items[0]) &&
+        _.isEqual(this.currentItems[1], items[1])
+      ) {
+        this.stopInfiniteScroll();
+        this.loading = false;
+        return;
+      }
 
-    if (this.isScrollLoading) {
-      this.downloadedResources = this.downloadedResources.concat(items);
-      this.downloadedResources.serverCount =  items.serverCount || this.downloadedResources.serverCount;
+      // If we have gone beyond our limit, then stop.
+      if (items.limit && (items.length < items.limit)) {
+        this.stopInfiniteScroll();
+      }
+
+      // Increment the loadedItems.
+      this.loadedItems += items.length;
     }
     else {
-      this.downloadedResources = items;
       this.selectOptions = [];
+      this.loadedItems = items.length;
     }
+
+    this.currentItems = items;
 
     // Add the value options.
     if (!fromSearch) {
@@ -284,9 +341,13 @@ export default class SelectComponent extends BaseComponent {
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
     }
+    else if (this.loading) {
+      // Re-attach select input.
+      this.appendTo(this.selectInput, this.selectContainer);
+    }
 
     // We are no longer loading.
-    this.isScrollLoading = false;
+    this.scrollLoading = false;
     this.loading = false;
 
     // If a value is provided, then select it.
@@ -327,7 +388,7 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const limit = this.component.limit || 100;
-    const skip = this.isScrollLoading ? this.selectOptions.length : 0;
+    const skip = this.loadedItems || 0;
     const query = (this.component.dataSrc === 'url') ? {} : {
       limit: limit,
       skip: skip
@@ -375,20 +436,17 @@ export default class SelectComponent extends BaseComponent {
     // Make the request.
     options.header = headers;
     this.loading = true;
-
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
+        const scrollTop = !this.scrollLoading && (this.currentItems.length === 0);
         this.setItems(response, !!search);
+        if (scrollTop && this.choices) {
+          this.choices.choiceList.scrollToTop();
+        }
       })
       .catch((err) => {
-        if (this.isSelectResource) {
-          this.downloadedResources.serverCount = this.downloadedResources.length;
-          this.serverCount = this.downloadedResources.length;
-          this.setItems([]);
-        }
-
-        this.isScrollLoading = false;
+        this.stopInfiniteScroll();
         this.loading = false;
         this.itemsLoadedResolve();
         this.emit('componentError', {
@@ -433,44 +491,6 @@ export default class SelectComponent extends BaseComponent {
     this.setItems(this.getCustomItems() || []);
   }
 
-  get additionalResourcesAvailable() {
-    return _.isNil(this.serverCount) || (this.serverCount > this.downloadedResources.length);
-  }
-
-  get serverCount() {
-    if (this.isFromSearch) {
-      return this.searchServerCount;
-    }
-
-    return this.defaultServerCount;
-  }
-
-  set serverCount(value) {
-    if (this.isFromSearch) {
-      this.searchServerCount = value;
-    }
-    else {
-      this.defaultServerCount = value;
-    }
-  }
-
-  get downloadedResources() {
-    if (this.isFromSearch) {
-      return this.searchDownloadedResources;
-    }
-
-    return this.defaultDownloadedResources;
-  }
-
-  set downloadedResources(value) {
-    if (this.isFromSearch) {
-      this.searchDownloadedResources = value;
-    }
-    else {
-      this.defaultDownloadedResources = value;
-    }
-  }
-
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
@@ -504,18 +524,12 @@ export default class SelectComponent extends BaseComponent {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (this.additionalResourcesAvailable) {
-          try {
-            this.loadItems(resourceUrl, searchInput, this.requestHeaders);
-          }
-          catch (err) {
-            console.warn(`Unable to load resources for ${this.key}`);
-          }
+        try {
+          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
-        else {
-          this.setItems(this.downloadedResources);
+        catch (err) {
+          console.warn(`Unable to load resources for ${this.key}`);
         }
-
         break;
       }
       case 'url': {
@@ -648,7 +662,6 @@ export default class SelectComponent extends BaseComponent {
         threshold: _.get(this, 'component.searchThreshold', 0.3),
       }, _.get(this, 'component.fuseOptions', {})),
       itemComparer: _.isEqual,
-      resetScrollPosition: false,
       ...customOptions,
     };
 
@@ -668,25 +681,18 @@ export default class SelectComponent extends BaseComponent {
       }
     }
 
-    if (this.isSelectResource) {
-      this.scrollList = this.choices.choiceList.element;
-      this.onScroll = () => {
-        const isLoadingAvailable = !this.isScrollLoading
-          && this.additionalResourcesAvailable
-          && ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight);
-
-        if (isLoadingAvailable) {
-          this.isScrollLoading = true;
-          this.choices.setChoices([{
-            value: `${this.id}-loading`,
-            label: 'Loading...',
-            disabled: true,
-          }], 'value', 'label');
-          this.triggerUpdate(this.choices.input.element.value);
-        }
-      };
-      this.scrollList.addEventListener('scroll', this.onScroll);
-    }
+    this.scrollList = this.choices.choiceList.element;
+    this.onScroll = () => {
+      if (
+        !this.scrollLoading &&
+        ((this.scrollList.scrollTop + this.scrollList.clientHeight) >= this.scrollList.scrollHeight)
+      ) {
+        this.scrollTop = this.scrollList.scrollTop;
+        this.scrollLoading = true;
+        this.triggerUpdate(this.choices.input.element.value);
+      }
+    };
+    this.scrollList.addEventListener('scroll', this.onScroll);
 
     this.addFocusBlurEvents(this.focusableElement);
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -698,14 +704,8 @@ export default class SelectComponent extends BaseComponent {
       // Make sure to clear the search when no value is provided.
       if (this.choices && this.choices.input && this.choices.input.element) {
         this.addEventListener(this.choices.input.element, 'input', (event) => {
-          this.isFromSearch = !!event.target.value;
-
           if (!event.target.value) {
             this.triggerUpdate();
-          }
-          else {
-            this.serverCount = null;
-            this.downloadedResources = [];
           }
         });
       }
@@ -744,14 +744,6 @@ export default class SelectComponent extends BaseComponent {
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
-  }
-
-  restoreValue() {
-    super.restoreValue();
-
-    if (this.choices) {
-      this.choices.setChoiceByValue(this.dataValue);
-    }
   }
 
   /* eslint-enable max-statements */
@@ -870,7 +862,7 @@ export default class SelectComponent extends BaseComponent {
         this.component.placeholder &&
         (value === this.t(this.component.placeholder))
       ) {
-        value = this.emptyValue;
+        value = '';
       }
     }
     else {
@@ -884,7 +876,7 @@ export default class SelectComponent extends BaseComponent {
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
     if (value === undefined || value === null) {
-      value = this.emptyValue;
+      value = '';
     }
     return value;
   }
