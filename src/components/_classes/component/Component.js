@@ -10,7 +10,7 @@ import Validator from '../../Validator';
 import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
-const CKEDITOR = 'https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js';
+const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
