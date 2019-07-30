@@ -696,9 +696,11 @@ export default class BaseComponent extends Component {
       this.removeChildFrom(dialog, document.body);
     });
     document.body.appendChild(dialog);
+    document.body.classList.add('modal-open');
     dialog.body = modalBody;
     dialog.bodyContainer = modalBodyContainer;
     dialog.close = () => {
+      document.body.classList.remove('modal-open');
       dialog.dispatchEvent(new CustomEvent('close'));
       this.removeChildFrom(dialog, document.body);
     };
