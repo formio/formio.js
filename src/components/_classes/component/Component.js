@@ -1449,6 +1449,10 @@ export default class Component extends Element {
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
+    settings.image = {
+      toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:full', 'imageStyle:alignRight'],
+      styles: ['full', 'side', 'alignLeft', 'alignCenter', 'alignRight']
+    };
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
         if (!element.parentNode) {
