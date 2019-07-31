@@ -189,8 +189,8 @@ export default class Form extends Element {
       sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
     }
     // Allow attributes
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttr) && this.options.sanitizeConfig.allowedAttr.length > 0) {
-      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedTags;
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttrs) && this.options.sanitizeConfig.allowedAttrs.length > 0) {
+      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
     }
     // Allowd URI Regex
     if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
