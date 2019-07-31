@@ -154,11 +154,4 @@ export default [
     key: 'showCharCount',
     input: true
   },
-  {
-    weight: 1202,
-    type: 'checkbox',
-    label: 'Make all letters capital',
-    key: 'toUpperCase',
-    input: true
-  },
 ];

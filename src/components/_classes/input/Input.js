@@ -156,9 +156,13 @@ export default class Input extends Multivalue {
   attachElement(element, index) {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
       // Delay update slightly to give input mask a chance to run.
-      if (_.get(this.component, 'toUpperCase', false)) {
-        if (element.value) {
+      const textCase = _.get(this.component, 'case', 'mixed');
+      if (textCase !== 'mixed') {
+        if (textCase === 'uppercase' && element.value) {
           element.value = element.value.toUpperCase();
+        }
+        if (textCase === 'lowercase' && element.value) {
+          element.value = element.value.toLowerCase();
         }
       }
       setTimeout(() => {
