@@ -233,7 +233,7 @@ import Validator from &apos;../../Validator&apos;;
 import Templates from &apos;../../../templates/Templates&apos;;
 import { boolValue } from &apos;../../../utils/utils&apos;;
 import Element from &apos;../../../Element&apos;;
-const CKEDITOR = &apos;https://cdn.staticaly.com/gh/formio/ckeditor5-build-classic/v12.2.0-formio.2/build/ckeditor.js&apos;;
+const CKEDITOR = &apos;https://cdn.form.io/ckeditor/12.2.0/ckeditor.js&apos;;
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -1227,8 +1227,12 @@ export default class Component extends Element {
 
     dialog.refs.dialogContents.appendChild(element);
     document.body.appendChild(dialog);
+    document.body.classList.add(&apos;modal-open&apos;);
 
-    dialog.close = () =&gt; dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
+    dialog.close = () =&gt; {
+      document.body.classList.remove(&apos;modal-open&apos;);
+      dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
+    };
     this.addEventListener(dialog, &apos;close&apos;, () =&gt; this.removeChildFrom(dialog, document.body));
 
     const close = (event) =&gt; {
