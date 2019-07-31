@@ -1097,6 +1097,13 @@ export default class Webform extends NestedComponent {
 
     this.submitting = false;
     this.setPristine(false);
+
+    // Allow for silent cancellations (no error message, no submit button error state)
+    if (error && error.silent) {
+      this.emit('change', { isValid: true });
+      return;
+    }
+
     return this.showErrors(error, true);
   }
 
