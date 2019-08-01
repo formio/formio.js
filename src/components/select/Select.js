@@ -233,6 +233,10 @@ export default class SelectComponent extends BaseComponent {
   }
 
   disableInfiniteScroll() {
+    if (!this.downloadedResources) {
+      return;
+    }
+
     this.downloadedResources.serverCount = this.downloadedResources.length;
     this.serverCount = this.downloadedResources.length;
   }
@@ -273,7 +277,9 @@ export default class SelectComponent extends BaseComponent {
       areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
 
       const areItemsEnded = this.component.limit > items.length;
-      const areItemsDownloaded = areItemsEqual && this.downloadedResources.length === items.length;
+      const areItemsDownloaded = areItemsEqual
+        && this.downloadedResources
+        && this.downloadedResources.length === items.length;
 
       if (areItemsEnded) {
         this.disableInfiniteScroll();
@@ -288,7 +294,9 @@ export default class SelectComponent extends BaseComponent {
 
     if (this.isScrollLoading && items) {
       if (!areItemsEqual) {
-        this.downloadedResources = this.downloadedResources.concat(items);
+        this.downloadedResources = this.downloadedResources
+          ? this.downloadedResources.concat(items)
+          : items;
       }
 
       this.downloadedResources.serverCount = items.serverCount || this.downloadedResources.serverCount;
