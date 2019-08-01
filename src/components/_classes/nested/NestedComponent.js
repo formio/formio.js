@@ -265,6 +265,7 @@ export default class NestedComponent extends Field {
   init() {
     this.components = this.components || [];
     this.addComponents();
+    return super.init();
   }
 
   /**
