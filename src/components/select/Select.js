@@ -54,7 +54,7 @@ export default class SelectComponent extends BaseComponent {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    if (this.isSelectResource) {
+    if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
       this.searchServerCount = null;
@@ -100,6 +100,14 @@ export default class SelectComponent extends BaseComponent {
 
   get isSelectResource() {
     return this.component.dataSrc === 'resource';
+  }
+
+  get isSelectURL() {
+    return this.component.dataSrc === 'url';
+  }
+
+  get isInfiniteScrollProvided() {
+    return this.isSelectResource || this.isSelectURL;
   }
 
   itemTemplate(data) {
@@ -224,6 +232,11 @@ export default class SelectComponent extends BaseComponent {
     return false;
   }
 
+  disableInfiniteScroll() {
+    this.downloadedResources.serverCount = this.downloadedResources.length;
+    this.serverCount = this.downloadedResources.length;
+  }
+
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
@@ -254,16 +267,34 @@ export default class SelectComponent extends BaseComponent {
       items = _.get(items, this.component.selectValues);
     }
 
-    if (this.isSelectResource && items.serverCount) {
-      this.serverCount = items.serverCount;
+    let areItemsEqual;
+
+    if (this.isInfiniteScrollProvided) {
+      areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
+
+      const areItemsEnded = this.component.limit > items.length;
+      const areItemsDownloaded = areItemsEqual && this.downloadedResources.length === items.length;
+
+      if (areItemsEnded) {
+        this.disableInfiniteScroll();
+      }
+      else if (areItemsDownloaded) {
+        this.selectOptions = [];
+      }
+      else {
+        this.serverCount = items.serverCount;
+      }
     }
 
-    if (this.isScrollLoading) {
-      this.downloadedResources = this.downloadedResources.concat(items);
-      this.downloadedResources.serverCount =  items.serverCount || this.downloadedResources.serverCount;
+    if (this.isScrollLoading && items) {
+      if (!areItemsEqual) {
+        this.downloadedResources = this.downloadedResources.concat(items);
+      }
+
+      this.downloadedResources.serverCount = items.serverCount || this.downloadedResources.serverCount;
     }
     else {
-      this.downloadedResources = items;
+      this.downloadedResources = items || [];
       this.selectOptions = [];
     }
 
@@ -382,10 +413,9 @@ export default class SelectComponent extends BaseComponent {
         this.setItems(response, !!search);
       })
       .catch((err) => {
-        if (this.isSelectResource) {
-          this.downloadedResources.serverCount = this.downloadedResources.length;
-          this.serverCount = this.downloadedResources.length;
+        if (this.isInfiniteScrollProvided) {
           this.setItems([]);
+          this.disableInfiniteScroll();
         }
 
         this.isScrollLoading = false;
@@ -668,7 +698,7 @@ export default class SelectComponent extends BaseComponent {
       }
     }
 
-    if (this.isSelectResource) {
+    if (this.isInfiniteScrollProvided) {
       this.scrollList = this.choices.choiceList.element;
       this.onScroll = () => {
         const isLoadingAvailable = !this.isScrollLoading
