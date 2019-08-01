@@ -843,7 +843,10 @@ export default class Webform extends NestedComponent {
     this.addComponents();
     this.isBuilt = true;
 
-    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('submitButton', options => {
+      this.submit(false, options).catch(e => e !== false && console.log(e));
+    }, true);
+
     this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
@@ -1058,7 +1061,7 @@ export default class Webform extends NestedComponent {
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
       this.emit('change', { isValid: true });
-      return;
+      return false;
     }
 
     return this.showErrors(error, true);
