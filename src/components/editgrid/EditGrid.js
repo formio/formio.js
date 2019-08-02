@@ -171,7 +171,7 @@ export default class EditGridComponent extends NestedComponent {
       this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
     }
 
-    super.attach(element);
+    return super.attach(element);
   }
 
   renderRow(row, rowIndex) {

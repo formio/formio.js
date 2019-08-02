@@ -208,7 +208,7 @@ export default class FileComponent extends Field {
       fileStatusRemove: 'multiple',
       fileImage: 'multiple',
     });
-    super.attach(element);
+    const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
       const element = this;
@@ -339,6 +339,7 @@ export default class FileComponent extends Field {
         }).catch(() => this.filesReadyReject());
       }
     }
+    return superAttach;
   }
 
   /* eslint-disable max-len */

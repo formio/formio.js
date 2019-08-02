@@ -33,7 +33,7 @@ export default class ModalEditComponent extends TextAreaComponent {
       container: 'single',
       edit: 'single'
     });
-    super.attach(element);
+    return super.attach(element);
   }
 
   /** @override **/

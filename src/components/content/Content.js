@@ -47,7 +47,7 @@ export default class ContentComponent extends Component {
         }
       }, true);
     }
-    super.attach(element);
+    return super.attach(element);
   }
 
   get emptyValue() {

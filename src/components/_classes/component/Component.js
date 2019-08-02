@@ -780,7 +780,7 @@ export default class Component extends Element {
     element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
-    this.attach(element);
+    return this.attach(element);
   }
 
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {

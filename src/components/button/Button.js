@@ -112,7 +112,7 @@ export default class ButtonComponent extends Field {
       buttonMessage: 'single'
     });
 
-    super.attach(element);
+    const superAttach = super.attach(element);
 
     if (!this.refs.button) {
       return;
@@ -209,6 +209,7 @@ export default class ButtonComponent extends Field {
         this.openOauth();
       }
     }
+    return superAttach;
   }
   /* eslint-enable max-statements */
 

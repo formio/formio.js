@@ -87,7 +87,7 @@ export default class CheckBoxComponent extends Field {
       }));
       this.addShortcut(this.input);
     }
-    super.attach(element);
+    return super.attach(element);
   }
 
   detach(element) {

@@ -304,7 +304,7 @@ export default class DataGridComponent extends NestedComponent {
         }
       });
     });
-    super.attach(element);
+    return super.attach(element);
   }
 
   onReorder(element, _target, _source, sibling) {

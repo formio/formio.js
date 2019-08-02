@@ -143,7 +143,7 @@ export default class SignatureComponent extends Input {
 
   attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
-    super.attach(element);
+    const superAttach = super.attach(element);
 
     // Create the signature pad.
     if (this.refs.canvas) {
@@ -179,6 +179,7 @@ export default class SignatureComponent extends Input {
       this.setValue(this.defaultValue);
     });
     this.setValue(this.dataValue);
+    return superAttach;
   }
   /* eslint-enable max-statements */
 

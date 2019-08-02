@@ -126,12 +126,13 @@ export default class TableComponent extends NestedComponent {
       return prev;
     }, {});
     this.loadRefs(element, keys);
-    super.attach(element);
+    const superAttach = super.attach(element);
     this.table.forEach((row, rowIndex) => {
       row.forEach((column, columnIndex) => {
         this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
       });
     });
+    return superAttach;
   }
 
   destroy(all) {

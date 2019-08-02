@@ -50,6 +50,6 @@ export default class HTMLComponent extends Component {
         }
       }, true);
     }
-    super.attach(element);
+    return super.attach(element);
   }
 }

@@ -649,7 +649,7 @@ export default class SelectComponent extends Field {
 
   /* eslint-disable max-statements */
   attach(element) {
-    super.attach(element);
+    const superAttach = super.attach(element);
     this.loadRefs(element, {
       selectContainer: 'single',
       addResource: 'single',
@@ -837,6 +837,7 @@ export default class SelectComponent extends Field {
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
+    return superAttach;
   }
 
   /* eslint-enable max-statements */

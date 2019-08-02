@@ -78,10 +78,11 @@ export default class ColumnsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
-    super.attach(element);
+    const superAttach = super.attach(element);
     this.refs[this.columnKey].forEach((column, index) =>
       this.attachComponents(column, this.columns[index], this.component.columns[index].components)
     );
+    return superAttach;
   }
 
   get gridSize() {

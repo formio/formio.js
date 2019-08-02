@@ -91,7 +91,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
-    super.attach(element);
+    const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();
@@ -101,6 +101,7 @@ export default class TabsComponent extends NestedComponent {
     this.refs[this.tabKey].forEach((tab, index) => {
       this.attachComponents(tab, this.tabs[index], this.component.components[index].components);
     });
+    return superAttach;
   }
 
   detach(all) {
