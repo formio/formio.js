@@ -28,7 +28,7 @@
   </div>
   {% } %}
 </div>
-{% if (!readOnly) { %}
+{% if (!readOnly && hasAddButton) { %}
 <button class="ui button primary" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>

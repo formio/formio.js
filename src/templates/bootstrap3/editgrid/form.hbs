@@ -33,7 +33,7 @@
   </li>
   {% } %}
 </ul>
-{% if (!readOnly) { %}
+{% if (!readOnly && hasAddButton) { %}
 <button class="btn btn-primary formio-button-add-another" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
