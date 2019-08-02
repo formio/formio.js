@@ -864,6 +864,7 @@ export default class Component extends Element {
    * Remove all event handlers.
    */
   detach() {
+    this.refs = {};
     this.removeEventListeners();
     if (this.tooltip) {
       this.tooltip.dispose();
@@ -2123,7 +2124,6 @@ export default class Component extends Element {
 
   clear() {
     this.detach();
-    this.refs = {};
     this.empty(this.getElement());
   }
 
