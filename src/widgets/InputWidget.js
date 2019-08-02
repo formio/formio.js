@@ -1,6 +1,13 @@
 import _ from 'lodash';
 import Element from '../Element';
+import NativePromise from 'native-promise-only';
 export default class InputWidget extends Element {
+  static get defaultSettings() {
+    return {
+      type: 'input'
+    };
+  }
+
   constructor(settings, component) {
     super(settings);
     this.namespace = 'formio.widget';
@@ -10,6 +17,7 @@ export default class InputWidget extends Element {
 
   attach(input) {
     this._input = input;
+    return NativePromise.resolve();
   }
 
   get defaultSettings() {

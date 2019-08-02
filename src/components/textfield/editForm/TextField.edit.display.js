@@ -29,13 +29,17 @@ export default [
     type: 'textarea',
     key: 'widget',
     label: 'Widget Settings',
+    clearOnHide: false,
+    refreshOn: 'widget.type',
     calculateValue: (context) => {
       if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
         let settings = {};
         if (context.data.widget && context.data.widget.type) {
           settings = Widgets[context.data.widget.type].defaultSettings;
         }
-        return settings;
+        if (settings) {
+          return settings;
+        }
       }
       return context.data.widget;
     },
@@ -44,7 +48,7 @@ export default [
     editor: 'ace',
     as: 'json',
     conditional: {
-      json: { '!!': { var: 'data.widget.type' } }
+      json: { '===': [{ var: 'data.widget.type' }, 'calendar'] }
     }
   },
   {
