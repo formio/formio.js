@@ -35,7 +35,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   static get defaultHeaderTemplate() {
-    return  `<div class="row">
+    return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
     <div class="col-sm-2">{{ component.label }}</div>
   {% }) %}
@@ -49,11 +49,14 @@ export default class EditGridComponent extends NestedComponent {
       {{ getView(component, row[component.key]) }}
     </div>
   {% }) %}
-  {% if (!instance.options.readOnly) { %}
+
+  {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
         <button class="btn btn-default btn-sm editRow">Edit</button>
-        <button class="btn btn-danger btn-sm removeRow">Delete</button>
+        {% if (instance.hasRemoveButtons()) { %}
+          <button class="btn btn-danger btn-sm removeRow">Delete</button>
+        {% } %}
       </div>
     </div>
   {% } %}
@@ -72,10 +75,31 @@ export default class EditGridComponent extends NestedComponent {
     return `editgrid-${this.key}`;
   }
 
+  get minLength() {
+    return _.get(this.component, 'validate.minLength', 0);
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';
-    this.editRows = [];
+    // this.editRows = [];
+  }
+
+  hasAddButton() {
+    const maxLength = _.get(this.component, 'validate.maxLength');
+
+    return !this.component.disableAddingRemovingRows &&
+      !this.disabled &&
+      this.fullMode &&
+      !this.options.preview &&
+      (!maxLength || (this.editRows.length < maxLength));
+  }
+
+  hasRemoveButtons() {
+    return !this.component.disableAddingRemovingRows &&
+      !this.disabled &&
+      this.fullMode &&
+      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
   init() {
@@ -112,7 +136,9 @@ export default class EditGridComponent extends NestedComponent {
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map(row => row.isOpen),
-      errors: this.editRows.map(row => row.error)
+      errors: this.editRows.map(row => row.error),
+      hasAddButton: this.hasAddButton(),
+      hasRemoveButtons: this.hasRemoveButtons()
     }));
   }
 
@@ -507,11 +533,18 @@ export default class EditGridComponent extends NestedComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
-    return Array.isArray(value) ? value : [];
+    const defaultValue = Array.isArray(value) ? value : [];
+
+    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
+      defaultValue.push({});
+    }
+
+    return defaultValue;
   }
 
   setValue(value, flags) {
     if (!value) {
+      this.dataValue = this.defaultValue;
       return;
     }
     if (!Array.isArray(value)) {
