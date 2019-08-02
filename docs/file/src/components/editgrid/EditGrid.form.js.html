@@ -226,6 +226,7 @@
 import EditGridEditData from &apos;./editForm/EditGrid.edit.data&apos;;
 import EditGridEditDisplay from &apos;./editForm/EditGrid.edit.display&apos;;
 import EditGridEditTemplates from &apos;./editForm/EditGrid.edit.templates&apos;;
+import EditGridEditValidation from &apos;./editForm/EditGrid.edit.validation&apos;;
 
 export default function(...extend) {
   return baseEditForm([
@@ -243,6 +244,10 @@ export default function(...extend) {
       key: &apos;data&apos;,
       components: EditGridEditData,
     },
+    {
+      key: &apos;validation&apos;,
+      components: EditGridEditValidation
+    }
   ], ...extend);
 }
 </code></pre>

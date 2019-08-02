@@ -258,7 +258,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   static get defaultHeaderTemplate() {
-    return  `&lt;div class=&quot;row&quot;&gt;
+    return `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
     &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
   {% }) %}
@@ -272,11 +272,14 @@ export default class EditGridComponent extends NestedComponent {
       {{ getView(component, row[component.key]) }}
     &lt;/div&gt;
   {% }) %}
-  {% if (!instance.options.readOnly) { %}
+
+  {% if (!instance.options.readOnly &amp;&amp; !instance.originalComponent.disabled) { %}
     &lt;div class=&quot;col-sm-2&quot;&gt;
       &lt;div class=&quot;btn-group pull-right&quot;&gt;
         &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;Edit&lt;/button&gt;
-        &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
+        {% if (instance.hasRemoveButtons()) { %}
+          &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
+        {% } %}
       &lt;/div&gt;
     &lt;/div&gt;
   {% } %}
@@ -295,10 +298,31 @@ export default class EditGridComponent extends NestedComponent {
     return `editgrid-${this.key}`;
   }
 
+  get minLength() {
+    return _.get(this.component, &apos;validate.minLength&apos;, 0);
+  }
+
   constructor(...args) {
     super(...args);
     this.type = &apos;editgrid&apos;;
-    this.editRows = [];
+    // this.editRows = [];
+  }
+
+  hasAddButton() {
+    const maxLength = _.get(this.component, &apos;validate.maxLength&apos;);
+
+    return !this.component.disableAddingRemovingRows &amp;&amp;
+      !this.disabled &amp;&amp;
+      this.fullMode &amp;&amp;
+      !this.options.preview &amp;&amp;
+      (!maxLength || (this.editRows.length &lt; maxLength));
+  }
+
+  hasRemoveButtons() {
+    return !this.component.disableAddingRemovingRows &amp;&amp;
+      !this.disabled &amp;&amp;
+      this.fullMode &amp;&amp;
+      (this.dataValue.length &gt; _.get(this.component, &apos;validate.minLength&apos;, 0));
   }
 
   init() {
@@ -335,7 +359,9 @@ export default class EditGridComponent extends NestedComponent {
       }),
       rows: this.editRows.map(this.renderRow.bind(this)),
       openRows: this.editRows.map(row =&gt; row.isOpen),
-      errors: this.editRows.map(row =&gt; row.error)
+      errors: this.editRows.map(row =&gt; row.error),
+      hasAddButton: this.hasAddButton(),
+      hasRemoveButtons: this.hasRemoveButtons()
     }));
   }
 
@@ -730,11 +756,18 @@ export default class EditGridComponent extends NestedComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
-    return Array.isArray(value) ? value : [];
+    const defaultValue = Array.isArray(value) ? value : [];
+
+    for (let dIndex = defaultValue.length; dIndex &lt; this.minLength; dIndex++) {
+      defaultValue.push({});
+    }
+
+    return defaultValue;
   }
 
   setValue(value, flags) {
     if (!value) {
+      this.dataValue = this.defaultValue;
       return;
     }
     if (!Array.isArray(value)) {

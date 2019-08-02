@@ -221,39 +221,24 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/editForm/EditGrid.edit.validation.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import EditFormUtils from &apos;../../_classes/component/editForm/utils&apos;;
-
-export default [
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
   {
-    type: &apos;panel&apos;,
-    title: &apos;Row View Validation&apos;,
-    collapsible: true,
-    collapsed: true,
-    style: { &apos;margin-bottom&apos;: &apos;10px&apos; },
-    key: &apos;custom-validation-row&apos;,
-    weight: 250,
-    components: [
-      EditFormUtils.logicVariablesTable(&apos;&lt;tr&gt;&lt;th&gt;input&lt;/th&gt;&lt;td&gt;The value that was input into this component&lt;/td&gt;&lt;/tr&gt;&apos;),
-      {
-        type: &apos;textarea&apos;,
-        key: &apos;validate.row&apos;,
-        rows: 5,
-        editor: &apos;ace&apos;,
-        hideLabel: true,
-        input: true
-      },
-      {
-        type: &apos;htmlelement&apos;,
-        tag: &apos;div&apos;,
-        content: `
-          &lt;small&gt;
-            &lt;p&gt;Enter custom validation code.&lt;/p&gt;
-            &lt;p&gt;You must assign the &lt;strong&gt;valid&lt;/strong&gt; variable as either &lt;strong&gt;true&lt;/strong&gt; or an error message if validation fails.&lt;/p&gt;
-            &lt;h5&gt;Example:&lt;/h5&gt;
-            &lt;pre&gt;valid = (row.myfield === &apos;Joe&apos;) ? true : &apos;Your name must be &quot;Joe&quot;&apos;;&lt;/pre&gt;
-          &lt;/small&gt;`
-      }
-    ]
+    weight: 110,
+    key: &apos;validate.minLength&apos;,
+    label: &apos;Minimum Length&apos;,
+    placeholder: &apos;Minimum Length&apos;,
+    type: &apos;number&apos;,
+    tooltip: &apos;The minimum length requirement this field must meet.&apos;,
+    input: true
+  },
+  {
+    weight: 120,
+    key: &apos;validate.maxLength&apos;,
+    label: &apos;Maximum Length&apos;,
+    placeholder: &apos;Maximum Length&apos;,
+    type: &apos;number&apos;,
+    tooltip: &apos;The maximum length requirement this field must meet.&apos;,
+    input: true
   }
 ];
 </code></pre>
