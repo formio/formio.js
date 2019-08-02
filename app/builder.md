@@ -91,23 +91,23 @@ var onForm = function(form) {
   });
 };
 
-var setDisplay = function(display) {
-  builder.setDisplay(display).then(function(instance) {
-    var onBuild = function(build) {
-      jsonElement.innerHTML = '';
-      formElement.innerHTML = '';
-      jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
-      Formio.createForm(formElement, instance.form).then(onForm);
-    }
+var onBuild = function(build) {
+  jsonElement.innerHTML = '';
+  formElement.innerHTML = '';
+  jsonElement.appendChild(document.createTextNode(JSON.stringify(builder.instance.schema, null, 4)));
+  Formio.createForm(formElement, builder.instance.form).then(onForm);
+};
 
-     var jsonElement = document.getElementById('json');
-     var formElement = document.getElementById('formio');
-     instance.on('saveComponent', onBuild);
-   
-     instance.on('editComponent', onBuild);
-     
-     instance.on('updateComponent', onBuild);
-   });
+var onReady = function() {
+  var jsonElement = document.getElementById('json');
+  var formElement = document.getElementById('formio');
+  builder.instance.on('saveComponent', onBuild);
+  builder.instance.on('editComponent', onBuild);
+  builder.instance.on('updateComponent', onBuild);
+};
+
+var setDisplay = function(display) {
+  builder.setDisplay(display).then(onReady);
 };
 
 // Handle the form selection.
@@ -116,5 +116,5 @@ formSelect.addEventListener("change", function() {
   setDisplay(this.value);
 });
 
-setDisplay('form');
+builder.instance.ready.then(onReady);
 </script>
