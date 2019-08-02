@@ -36,7 +36,9 @@ export default class TabsComponent extends NestedComponent {
 
   get schema() {
     const schema = super.schema;
-    schema.components = this.component.components.map((tab, index) => {
+    // We need to clone this because the builder uses the "components" reference and this would reset that reference.
+    const components = _.cloneDeep(this.component.components);
+    schema.components = components.map((tab, index) => {
       if (index === this.currentTab) {
         tab.components = this.getComponents().map((component) => component.schema);
       }
