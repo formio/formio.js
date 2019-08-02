@@ -449,7 +449,7 @@ export default class DayComponent extends Field {
 
   attach(element) {
     this.loadRefs(element, { day: &apos;single&apos;, month: &apos;single&apos;, year: &apos;single&apos;, input: &apos;multiple&apos; });
-    super.attach(element);
+    const superAttach = super.attach(element);
     this.addEventListener(this.refs.day, &apos;change&apos;, () =&gt; this.updateValue(null, {
       modified: true
     }));
@@ -473,6 +473,7 @@ export default class DayComponent extends Field {
       modified: true
     }));
     this.setValue(this.dataValue);
+    return superAttach;
   }
 
   validateRequired(setting, value) {

@@ -282,7 +282,7 @@ export default class RadioComponent extends Field {
       }));
       this.addShortcut(input, this.component.values[index].shortcut);
     });
-    super.attach(element);
+    return super.attach(element);
   }
 
   detach(element) {

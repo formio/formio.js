@@ -247,7 +247,28 @@
     },
     defaultValue: &apos;plain&apos;,
     input: true
-  }
+  },
+  {
+    weight: 200,
+    type: &apos;radio&apos;,
+    label: &apos;Text Case&apos;,
+    key: &apos;case&apos;,
+    tooltip: &apos;When data is entered, you can change the case of the value.&apos;,
+    input: true,
+    values: [
+      {
+        value: &apos;mixed&apos;,
+        label: &apos;Mixed (Allow upper and lower case)&apos;
+      },
+      {
+        value: &apos;uppercase&apos;,
+        label: &apos;Uppercase&apos;
+      },{
+        value: &apos;lowercase&apos;,
+        label: &apos;Lowercase&apos;
+      }
+    ]
+  },
 ];
 </code></pre>
 

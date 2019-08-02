@@ -1003,7 +1003,7 @@ export default class Component extends Element {
     element = element || this.element;
     this.empty(element);
     this.setContent(element, this.render());
-    this.attach(element);
+    return this.attach(element);
   }
 
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
@@ -1672,6 +1672,10 @@ export default class Component extends Element {
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
+    settings.image = {
+      toolbar: [&apos;imageTextAlternative&apos;, &apos;|&apos;, &apos;imageStyle:alignLeft&apos;, &apos;imageStyle:alignCenter&apos;, &apos;imageStyle:full&apos;, &apos;imageStyle:alignRight&apos;],
+      styles: [&apos;full&apos;, &apos;side&apos;, &apos;alignLeft&apos;, &apos;alignCenter&apos;, &apos;alignRight&apos;]
+    };
     return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, CKEDITOR, true)
       .then(() =&gt; {
         if (!element.parentNode) {

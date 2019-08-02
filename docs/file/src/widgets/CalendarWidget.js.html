@@ -304,7 +304,7 @@ export default class CalendarWidget extends InputWidget {
   }
 
   attach(input) {
-    super.attach(input);
+    const superAttach = super.attach(input);
     if (input &amp;&amp; !input.getAttribute(&apos;placeholder&apos;)) {
       input.setAttribute(&apos;placeholder&apos;, this.settings.format);
     }
@@ -350,6 +350,7 @@ export default class CalendarWidget extends InputWidget {
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       );
     }
+    return superAttach;
   }
 
   get timezone() {

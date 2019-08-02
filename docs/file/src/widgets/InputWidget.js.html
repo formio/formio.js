@@ -223,7 +223,14 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/widgets/InputWidget.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Element from &apos;../Element&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 export default class InputWidget extends Element {
+  static get defaultSettings() {
+    return {
+      type: &apos;input&apos;
+    };
+  }
+
   constructor(settings, component) {
     super(settings);
     this.namespace = &apos;formio.widget&apos;;
@@ -233,6 +240,7 @@ export default class InputWidget extends Element {
 
   attach(input) {
     this._input = input;
+    return NativePromise.resolve();
   }
 
   get defaultSettings() {

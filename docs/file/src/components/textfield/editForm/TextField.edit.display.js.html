@@ -252,13 +252,17 @@ export default [
     type: &apos;textarea&apos;,
     key: &apos;widget&apos;,
     label: &apos;Widget Settings&apos;,
+    clearOnHide: false,
+    refreshOn: &apos;widget.type&apos;,
     calculateValue: (context) =&gt; {
       if (_.isEmpty(_.omit(context.data.widget, &apos;type&apos;))) {
         let settings = {};
         if (context.data.widget &amp;&amp; context.data.widget.type) {
           settings = Widgets[context.data.widget.type].defaultSettings;
         }
-        return settings;
+        if (settings) {
+          return settings;
+        }
       }
       return context.data.widget;
     },
@@ -267,7 +271,7 @@ export default [
     editor: &apos;ace&apos;,
     as: &apos;json&apos;,
     conditional: {
-      json: { &apos;!!&apos;: { var: &apos;data.widget.type&apos; } }
+      json: { &apos;===&apos;: [{ var: &apos;data.widget.type&apos; }, &apos;calendar&apos;] }
     }
   },
   {

@@ -275,7 +275,7 @@ export default class Multivalue extends Field {
   }
 
   attach(dom) {
-    super.attach(dom);
+    const superAttach = super.attach(dom);
     this.loadRefs(dom, { addButton: &apos;multiple&apos;, input: &apos;multiple&apos;, removeRow: &apos;multiple&apos; });
 
     this.refs.input.forEach(this.attachElement.bind(this));
@@ -297,6 +297,7 @@ export default class Multivalue extends Field {
         this.addValue();
       });
     });
+    return superAttach;
   }
 
   /**
