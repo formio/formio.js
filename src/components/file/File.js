@@ -239,7 +239,7 @@ export default class FileComponent extends BaseComponent {
 
   buildHiddenFileInput() {
     // Input needs to be in DOM and "visible" (opacity 0 is fine) for IE to display file dialog.
-    return this.ce('input', {
+    let inputFile = {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
       tabindex: -1, // prevent focus
@@ -247,7 +247,11 @@ export default class FileComponent extends BaseComponent {
         this.upload(this.hiddenFileInputElement.files);
         this.hiddenFileInputElement.value = '';
       }
-    });
+    }
+    if (this.component.multiple) {
+      inputFile.multiple = true;
+    }
+    return this.ce('input', inputFile);
   }
 
   createFileListItem(fileInfo, index) {
