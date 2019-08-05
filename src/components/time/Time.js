@@ -1,6 +1,8 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
 
+const defaultDataFormat = 'HH:mm:ss';
+
 export default class TimeComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
@@ -8,7 +10,8 @@ export default class TimeComponent extends TextFieldComponent {
       label: 'Time',
       key: 'time',
       inputType: 'time',
-      format: 'HH:mm'
+      format: 'HH:mm',
+      dataFormat: defaultDataFormat,
     }, ...extend);
   }
 
@@ -29,8 +32,12 @@ export default class TimeComponent extends TextFieldComponent {
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#time',
       weight: 55,
-      schema: TimeComponent.schema()
+      schema: TimeComponent.schema(),
     };
+  }
+
+  get dataFormat() {
+    return this.component.dataFormat || defaultDataFormat;
   }
 
   get defaultSchema() {
@@ -56,6 +63,10 @@ export default class TimeComponent extends TextFieldComponent {
     return info;
   }
 
+  get skipMaskValidation() {
+    return true;
+  }
+
   getValueAt(index) {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return this.emptyValue;
@@ -65,10 +76,14 @@ export default class TimeComponent extends TextFieldComponent {
       return this.emptyValue;
     }
 
-    return moment(val, this.component.format).format('HH:mm:ss');
+    return moment(val, this.component.format).format(this.dataFormat);
   }
 
   setValueAt(index, value) {
-    this.refs.input[index].value = value ? moment(value, 'HH:mm:ss').format(this.component.format) : value;
+    this.refs.input[index].value = value ? this.getView(value) : value;
+  }
+
+  getView(value) {
+    return moment(value, this.dataFormat).format(this.component.format);
   }
 }

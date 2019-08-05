@@ -5,7 +5,7 @@ export default [
     key: 'format',
     label: 'Format',
     placeholder: 'Format',
-    tooltip: 'The moment.js format for saving the value of this field.',
-    weight: 50
+    tooltip: 'The moment.js format for showing the value of this field.',
+    weight: 50,
   }
 ];

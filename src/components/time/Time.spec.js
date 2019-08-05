@@ -1,8 +1,9 @@
 import Harness from '../../../test/harness';
+
 import TimeComponent from './Time';
 
 import {
-  comp1
+  comp1,
 } from './fixtures';
 
 describe('Time Component', () => {

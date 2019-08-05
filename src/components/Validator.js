@@ -333,6 +333,10 @@ export default {
         });
       },
       check(component, setting, value) {
+        if (component.skipMaskValidation) {
+          return true;
+        }
+
         let inputMask;
         if (component.isMultipleMasksField) {
           const maskName = value ? value.maskName : undefined;
