@@ -136,7 +136,6 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   checkValidity(data, dirty, rowData) {
-    console.log('checkValidity', data, dirty, rowData);
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
 
@@ -149,7 +148,6 @@ export default class SelectBoxesComponent extends RadioComponent {
       }, 0);
 
       if (maxCount && count >= maxCount) {
-        console.log(this.refs);
         if (this.refs.input) {
           this.refs.input.forEach(item => {
             if (!item.checked) {
