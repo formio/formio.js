@@ -1758,8 +1758,10 @@ export default class Component extends Element {
     let newValue = (value === undefined || value === null) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
-    this.dataValue = newValue;
-    this.updateOnChange(flags, changed);
+    if (changed) {
+      this.dataValue = newValue;
+      this.updateOnChange(flags, changed);
+    }
     return changed;
   }
 
