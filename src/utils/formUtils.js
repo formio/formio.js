@@ -10,7 +10,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import round from 'lodash/round';
 import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
-import jsonpatch from 'fast-json-patch';
+import { compare, applyPatch } from 'fast-json-patch';
 
 /**
  * Determine if a component is a layout component or not.
@@ -277,7 +277,7 @@ export function generateFormChange(type, data) {
       change = {
         op: 'edit',
         key: data.originalComponent.key,
-        patches: jsonpatch.compare(data.originalComponent, data.component)
+        patches: compare(data.originalComponent, data.component)
       };
 
       // Don't save if nothing changed.
@@ -332,7 +332,7 @@ export function applyFormChanges(form, changes) {
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
           try {
-            set(form.components, path, jsonpatch.applyPatch(component, change.patches).newDocument);
+            set(form.components, path, applyPatch(component, change.patches).newDocument);
           }
           catch (err) {
             failed.push(change);
