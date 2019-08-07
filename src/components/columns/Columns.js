@@ -57,9 +57,11 @@ export default class ColumnsComponent extends NestedComponent {
       if (!Array.isArray(column.components)) {
         column.components = [];
       }
-      _.each(column.components, (component) => {
-        component.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
-        this.columns[index].push(this.createComponent(component));
+      _.each(column.components, (comp) => {
+        comp.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
+        const component = this.createComponent(comp);
+        component.column = index;
+        this.columns[index].push(component);
       });
     });
     this.rows = this.groupByRow();

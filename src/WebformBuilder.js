@@ -738,7 +738,8 @@ export default class WebformBuilder extends Component {
       const originalComponent = parentContainer[index];
       const submissionData = this.editForm.submission.data;
       parentContainer[index] = submissionData.componentJson || submissionData;
-      return parentComponent.rebuild().then(() => {
+      const rebuild = parentComponent.rebuild() || NativePromise.resolve();
+      return rebuild.then(() => {
         this.emit('saveComponent', parentContainer[index], originalComponent);
       });
     }

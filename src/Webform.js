@@ -627,7 +627,8 @@ export default class Webform extends NestedComponent {
     }
 
     this.initialized = false;
-    return this.rebuild().then(() => {
+    const rebuild = this.rebuild() || NativePromise.resolve();
+    return rebuild.then(() => {
       this.formReadyResolve();
       this.emit('formLoad', form);
       this.triggerRecaptcha();
