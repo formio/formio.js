@@ -1880,17 +1880,21 @@ export default class Component extends Element {
       this.addInputError(message, dirty, this.refs.input);
     }
     else {
-      this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      if (this.refs.input.length > 0) {
+        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
-      }
-    });
+    if (this.refs.input.length > 0) {
+      this.refs.input.forEach(input => {
+        input = this.performInputMapping(input);
+        if (typeof input.setCustomValidity === 'function') {
+          input.setCustomValidity(message, dirty);
+        }
+      });
+    }
   }
 
   shouldSkipValidation(data, dirty, rowData) {
