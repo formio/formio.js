@@ -536,8 +536,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
-    this.dataValue = newValue;
-    this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
+    if (changed) {
+      this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
+    }
     return changed;
   }
 
