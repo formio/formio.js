@@ -1993,7 +1993,9 @@ export default class Component extends Element {
     }
     else {
       if (this.refs.input) {
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+        if (this.refs.input.length > 0) {
+          this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+        }
       }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
@@ -2002,12 +2004,16 @@ export default class Component extends Element {
     if (!this.refs.input) {
       return;
     }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
+    if (this.refs.input) {
+      if (this.refs.input.length > 0) {
+        this.refs.input.forEach(input => {
+          input = this.performInputMapping(input);
+          if (typeof input.setCustomValidity === 'function') {
+            input.setCustomValidity(message, dirty);
+          }
+        });
       }
-    });
+    }
   }
 
   shouldSkipValidation(data, dirty, rowData) {
