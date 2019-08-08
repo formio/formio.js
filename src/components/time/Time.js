@@ -47,11 +47,11 @@ export default class TimeComponent extends TextFieldComponent {
   get defaultValue() {
     let value = super.defaultValue;
     if (this.component.multiple && Array.isArray(value)) {
-      value = value.map(item => item ? moment(item).format(this.component.format) : item);
+      value = value.map(item => item ? this.getValueFromView(item) : item);
     }
     else {
       if (value) {
-        value = moment(value).format(this.component.format);
+        value = this.getValueFromView(value);
       }
     }
     return value;
@@ -71,16 +71,20 @@ export default class TimeComponent extends TextFieldComponent {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return this.emptyValue;
     }
-    const val = this.refs.input[index].value;
-    if (!val) {
+    const { value } = this.refs.input[index];
+    if (!value) {
       return this.emptyValue;
     }
 
-    return moment(val, this.component.format).format(this.dataFormat);
+    return this.getValueFromView(value);
   }
 
   setValueAt(index, value) {
     this.refs.input[index].value = value ? this.getView(value) : value;
+  }
+
+  getValueFromView(view) {
+    return moment(view, this.component.format).format(this.dataFormat);
   }
 
   getView(value) {
