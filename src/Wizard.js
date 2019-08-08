@@ -200,6 +200,7 @@ export default class Wizard extends Webform {
     }
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
+      this.getNextPage();
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
