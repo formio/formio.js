@@ -531,9 +531,6 @@ export default class TextAreaComponent extends TextFieldComponent {
       return super.setValue(value, flags);
     }
 
-    // Set the value when the editor is ready.
-    this.dataValue = value;
-
     this.setWysiwygValue(value, skipSetting, flags);
     this.updateValue(flags);
   }
