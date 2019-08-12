@@ -268,7 +268,7 @@ export default class SelectComponent extends BaseComponent {
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
-      items = _.get(items, this.component.selectValues, items || []);
+      items = _.get(items, this.component.selectValues, items) || [];
     }
 
     let areItemsEqual;
