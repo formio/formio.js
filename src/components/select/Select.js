@@ -254,7 +254,7 @@ export default class SelectComponent extends Field {
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
-      items = _.get(items, this.component.selectValues);
+      items = _.get(items, this.component.selectValues, items) || [];
     }
 
     let areItemsEqual;

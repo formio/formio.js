@@ -206,22 +206,21 @@ export default class EditGridComponent extends NestedComponent {
       return this.renderComponents(row.components);
     }
     else {
-      return this.renderString(_.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate),
+      const flattenedComponents = this.flattenComponents(rowIndex);
+      return this.renderString(
+        _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate),
         {
           row: dataValue[rowIndex],
+          data: this.data,
           rowIndex,
           components: this.component.components,
-          flattenedComponents: this.flattenComponents(rowIndex),
+          flattenedComponents,
           getView: (component, data) => {
-            console.log('getView() method is depricated, consider usage of flattenedComponents[componentKey].getView(data)');
-            const builtComponent = Components.create(component, this.options, data, true);
-            const result = builtComponent.getView(data);
-
-            builtComponent.destroy();
-
-            return result;
+            const instance = flattenedComponents[component.key];
+            return instance ? instance.getView(data) : '';
           },
-        });
+        },
+      );
     }
   }
 
