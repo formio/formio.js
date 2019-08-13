@@ -1196,7 +1196,10 @@ export default class Webform extends NestedComponent {
     // Clear any existing event handlers in case this is a rebuild
     this.eventHandlers.forEach(h =&gt; this.removeEventListener(h.obj, h.type));
 
-    this.on(&apos;submitButton&apos;, (options) =&gt; this.submit(false, options), true);
+    this.on(&apos;submitButton&apos;, options =&gt; {
+      this.submit(false, options).catch(e =&gt; e !== false &amp;&amp; console.log(e));
+    }, true);
+
     this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(null, true, data), true);
     this.addComponents(null, null, null, state);
     this.currentForm = this;
@@ -1311,6 +1314,13 @@ export default class Webform extends NestedComponent {
 
     this.submitting = false;
     this.setPristine(false);
+
+    // Allow for silent cancellations (no error message, no submit button error state)
+    if (error &amp;&amp; error.silent) {
+      this.emit(&apos;change&apos;, { isValid: true });
+      return false;
+    }
+
     return this.showErrors(error, true);
   }
 
