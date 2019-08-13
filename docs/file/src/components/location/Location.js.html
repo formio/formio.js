@@ -283,7 +283,7 @@ export default class LocationComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     flags.noValidate = true;
-    super.setValue(value, flags);
+    return super.setValue(value, flags);
   }
 
   addInput(input, container) {
