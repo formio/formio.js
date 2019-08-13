@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with TextArea getting into an infinite update loop.
  - Select component infinite scroll fix
+ - Problem where Checkbox was not checking if input was set in updateValue method.
+ - Potential problems where changed status was not getting returned in setValue for some components.
  
 ### Added
  - Add silent:true option on submission errors to fail silently
