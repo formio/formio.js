@@ -98,7 +98,7 @@ export default class SurveyComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
-      return;
+      return false;
     }
 
     _.each(this.component.questions, (question) => {
@@ -108,7 +108,7 @@ export default class SurveyComponent extends BaseComponent {
         }
       });
     });
-    this.updateValue(flags);
+    return this.updateValue(flags);
   }
 
   get emptyValue() {

@@ -532,7 +532,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     this.setWysiwygValue(value, skipSetting, flags);
-    this.updateValue(flags);
+    return this.updateValue(flags);
   }
 
   getConvertedValue(value) {

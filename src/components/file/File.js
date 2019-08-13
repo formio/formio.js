@@ -100,6 +100,7 @@ export default class FileComponent extends BaseComponent {
 
   setValue(value) {
     const newValue = value || [];
+    const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.component.image) {
       this.loadingImages = [];
@@ -122,6 +123,7 @@ export default class FileComponent extends BaseComponent {
       this.refreshDOM();
       this.filesReadyResolve();
     }
+    return changed;
   }
 
   get defaultValue() {

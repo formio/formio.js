@@ -92,7 +92,9 @@ export default class ReCaptchaComponent extends BaseComponent {
   }
 
   setValue(value) {
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
+    return changed;
   }
 
   getValue() {

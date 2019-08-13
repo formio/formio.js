@@ -109,7 +109,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       input.checked = !!value[input.value];
     });
 
-    this.updateValue(flags);
+    return this.updateValue(flags);
   }
 
   checkValidity(data, dirty, rowData) {
