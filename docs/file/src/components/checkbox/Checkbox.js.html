@@ -553,13 +553,15 @@ export default class CheckBoxComponent extends BaseComponent {
     }
 
     const changed = super.updateValue(flags, value);
-    if (this.input.checked) {
-      this.input.setAttribute(&apos;checked&apos;, true);
-      this.addClass(this.element, &apos;checkbox-checked&apos;);
-    }
-    else {
-      this.input.removeAttribute(&apos;checked&apos;);
-      this.removeClass(this.element, &apos;checkbox-checked&apos;);
+    if (this.input) {
+      if (this.input.checked) {
+        this.input.setAttribute(&apos;checked&apos;, true);
+        this.addClass(this.element, &apos;checkbox-checked&apos;);
+      }
+      else {
+        this.input.removeAttribute(&apos;checked&apos;);
+        this.removeClass(this.element, &apos;checkbox-checked&apos;);
+      }
     }
     return changed;
   }
