@@ -11,8 +11,12 @@ export default [
     weight: 405,
     input: true,
     clearOnHide: false,
-    customConditional: 'show = !data.enableRowGroups',
-    calculateValue: 'value = data.enableRowGroups ? true : data.disableAddingRemovingRows;',
+    customConditional(context) {
+      return !context.data.enableRowGroups;
+    },
+    calculateValue(context) {
+      return context.data.enableRowGroups ? true : context.data.disableAddingRemovingRows;
+    },
   },
   {
     type: 'checkbox',
@@ -29,7 +33,9 @@ export default [
     placeholder: 'Add Another',
     weight: 410,
     input: true,
-    customConditional: 'show = !data.disableAddingRemovingRows'
+    customConditional(context) {
+      return !context.data.disableAddingRemovingRows;
+    }
   },
   {
     type: 'select',
@@ -47,7 +53,9 @@ export default [
       ]
     },
     weight: 411,
-    customConditional: 'show = !data.disableAddingRemovingRows'
+    customConditional(context) {
+      return !context.data.disableAddingRemovingRows;
+    }
   },
   {
     type: 'checkbox',

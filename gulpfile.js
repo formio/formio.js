@@ -10,6 +10,8 @@ const replace = require('gulp-replace');
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
 const eslint = require('gulp-eslint');
+const insert = require('gulp-insert');
+const template = require('gulp-template');
 
 // Clean lib folder.
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
@@ -35,6 +37,21 @@ gulp.task('babel-nolint', gulp.series(function babelTask() {
     .pipe(babel())
     .pipe(gulp.dest('lib'));
 }));
+
+// Compile all *.ejs files to pre-compiled templates and append *.js to the filename.
+gulp.task('templates', () =>
+  gulp.src('./src/**/*.ejs')
+    .pipe(template.precompile({
+      evaluate: /\{%([\s\S]+?)%\}/g,
+      interpolate: /\{\{([\s\S]+?)\}\}/g,
+      escape: /\{\{\{([\s\S]+?)\}\}\}/g
+    }))
+    .pipe(insert.prepend('exports.default='))
+    .pipe(rename({
+      extname: '.ejs.js'
+    }))
+    .pipe(gulp.dest('lib'))
+);
 
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {
@@ -142,6 +159,7 @@ gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packe
 gulp.task('build', gulp.series(
   'clean',
   'babel',
+  'templates',
   'package-version',
   gulp.parallel(
     'jquery',
