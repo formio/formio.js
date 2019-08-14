@@ -417,7 +417,7 @@ export default class DataGridComponent extends NestedComponent {
     if (!value) {
       this.dataValue = this.defaultValue;
       this.createRows();
-      return;
+      return false;
     }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {

@@ -545,14 +545,14 @@ export default class EditGridComponent extends NestedComponent {
   setValue(value, flags) {
     if (!value) {
       this.dataValue = this.defaultValue;
-      return;
+      return false;
     }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
       }
       else {
-        return;
+        return false;
       }
     }
 

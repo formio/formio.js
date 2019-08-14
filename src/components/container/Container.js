@@ -65,7 +65,7 @@ export default class ContainerComponent extends NestedComponent {
   setValue(value, flags) {
     flags = flags || {};
     if (!value || !_.isObject(value)) {
-      return;
+      return false;
     }
     const hasValue = this.hasValue();
     if (hasValue && _.isEmpty(this.dataValue)) {
