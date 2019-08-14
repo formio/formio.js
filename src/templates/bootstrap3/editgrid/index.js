@@ -1,4 +1,4 @@
-import form from './form.hbs';
-import html from './html.hbs';
+import form from './form.ejs';
+import html from './html.ejs';
 
 export default { form, html };

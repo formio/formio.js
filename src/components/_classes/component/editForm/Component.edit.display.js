@@ -104,7 +104,9 @@ export default [
     tooltip: 'Show the label when in a Datagrid.',
     key: 'dataGridLabel',
     input: true,
-    customConditional: 'show = instance.root.editComponent.inDataGrid'
+    customConditional(context) {
+      return context.instance.root.editComponent.inDataGrid;
+    }
   },
   {
     weight: 1400,
