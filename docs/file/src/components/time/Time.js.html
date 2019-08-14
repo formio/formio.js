@@ -168,7 +168,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -196,7 +195,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -212,7 +210,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -224,6 +224,8 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import moment from &apos;moment&apos;;
 import TextFieldComponent from &apos;../textfield/TextField&apos;;
 
+const defaultDataFormat = &apos;HH:mm:ss&apos;;
+
 export default class TimeComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
@@ -231,7 +233,8 @@ export default class TimeComponent extends TextFieldComponent {
       label: &apos;Time&apos;,
       key: &apos;time&apos;,
       inputType: &apos;time&apos;,
-      format: &apos;HH:mm&apos;
+      format: &apos;HH:mm&apos;,
+      dataFormat: defaultDataFormat,
     }, ...extend);
   }
 
@@ -252,8 +255,12 @@ export default class TimeComponent extends TextFieldComponent {
       group: &apos;advanced&apos;,
       documentation: &apos;http://help.form.io/userguide/#time&apos;,
       weight: 55,
-      schema: TimeComponent.schema()
+      schema: TimeComponent.schema(),
     };
+  }
+
+  get dataFormat() {
+    return this.component.dataFormat || defaultDataFormat;
   }
 
   get defaultSchema() {
@@ -263,11 +270,11 @@ export default class TimeComponent extends TextFieldComponent {
   get defaultValue() {
     let value = super.defaultValue;
     if (this.component.multiple &amp;&amp; Array.isArray(value)) {
-      value = value.map(item =&gt; item ? moment(item).format(this.component.format) : item);
+      value = value.map(item =&gt; item ? this.getValueFromView(item) : item);
     }
     else {
       if (value) {
-        value = moment(value).format(this.component.format);
+        value = this.getValueFromView(value);
       }
     }
     return value;
@@ -279,20 +286,32 @@ export default class TimeComponent extends TextFieldComponent {
     return info;
   }
 
+  get skipMaskValidation() {
+    return true;
+  }
+
   getValueAt(index) {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return this.emptyValue;
     }
-    const val = this.refs.input[index].value;
-    if (!val) {
+    const { value } = this.refs.input[index];
+    if (!value) {
       return this.emptyValue;
     }
 
-    return moment(val, this.component.format).format(&apos;HH:mm:ss&apos;);
+    return this.getValueFromView(value);
   }
 
   setValueAt(index, value) {
-    this.refs.input[index].value = value ? moment(value, &apos;HH:mm:ss&apos;).format(this.component.format) : value;
+    this.refs.input[index].value = value ? this.getView(value) : value;
+  }
+
+  getValueFromView(view) {
+    return moment(view, this.component.format).format(this.dataFormat);
+  }
+
+  getView(value) {
+    return moment(value, this.dataFormat).format(this.component.format);
   }
 }
 </code></pre>
