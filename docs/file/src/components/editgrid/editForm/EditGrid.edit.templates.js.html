@@ -159,7 +159,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -187,7 +186,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -203,7 +201,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -212,7 +212,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/editForm/EditGrid.edit.templates.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Evaluator from &apos;../../../utils/Evaluator&apos;;
+export default [
   {
     type: &apos;textarea&apos;,
     label: &apos;Header Template&apos;,
@@ -223,7 +224,10 @@
     input: true,
     placeholder: &apos;/*** Lodash Template Code ***/&apos;,
     description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
-    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the header of the Edit grid.&apos;
+    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the header of the Edit grid.&apos;,
+    customConditional() {
+      return !Evaluator.noeval;
+    }
   },
   {
     type: &apos;textarea&apos;,
@@ -235,7 +239,10 @@
     input: true,
     placeholder: &apos;/*** Lodash Template Code ***/&apos;,
     description: &apos;Two available variables. &quot;row&quot; is an object of one row\&apos;s data and &quot;components&quot; is the array of components in the grid. To add click events, add the classes &quot;editRow&quot; and &quot;removeRow&quot; to elements.&apos;,
-    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render each row of the Edit grid.&apos;
+    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render each row of the Edit grid.&apos;,
+    customConditional() {
+      return !Evaluator.noeval;
+    }
   },
   {
     type: &apos;textarea&apos;,
@@ -247,7 +254,10 @@
     input: true,
     placeholder: &apos;/*** Lodash Template Code ***/&apos;,
     description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
-    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the footer of the Edit grid.&apos;
+    tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the footer of the Edit grid.&apos;,
+    customConditional() {
+      return !Evaluator.noeval;
+    }
   },
   {
     type: &apos;textfield&apos;,

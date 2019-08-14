@@ -159,7 +159,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -187,7 +186,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -203,7 +201,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -222,7 +222,8 @@ import jtz from &apos;jstimezonedetect&apos;;
 import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { getValue } from &apos;./formUtils&apos;;
-import stringHash from &apos;string-hash&apos;;
+import Evaluator from &apos;./Evaluator&apos;;
+const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -295,7 +296,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = new Function(...params, func);
+      func = Evaluator.evaluator(func, ...params);
       args = _.values(args);
     }
     catch (err) {
@@ -552,7 +553,7 @@ export function setActionProperty(component, action, row, data, result, instance
       const textValue = action.property.component ? action[action.property.component] : action.text;
       const newValue = (instance &amp;&amp; instance.interpolate) ?
         instance.interpolate(textValue, evalData) :
-        interpolate(textValue, evalData);
+        Evaluator.interpolate(textValue, evalData);
       if (newValue !== _.get(component, action.property.value, &apos;&apos;)) {
         _.set(component, action.property.value, newValue);
       }
@@ -560,51 +561,6 @@ export function setActionProperty(component, action, row, data, result, instance
     }
   }
   return component;
-}
-
-const templateCache = {};
-const templateHashCache = {};
-
-function interpolateTemplate(template) {
-  const templateSettings = {
-    evaluate: /\{%([\s\S]+?)%\}/g,
-    interpolate: /\{\{([\s\S]+?)\}\}/g,
-    escape: /\{\{\{([\s\S]+?)\}\}\}/g
-  };
-  try {
-    return _.template(template, templateSettings);
-  }
-  catch (err) {
-    console.warn(&apos;Error while processing template&apos;, err, template);
-  }
-}
-
-export function addTemplateHash(template) {
-  const hash = stringHash(template);
-  templateHashCache[hash] = interpolateTemplate(template);
-  return hash;
-}
-
-/**
- * Interpolate a string and add data replacements.
- *
- * @param string
- * @param data
- * @returns {XML|string|*|void}
- */
-export function interpolate(rawTemplate, data) {
-  const template = (_.isNumber(rawTemplate) &amp;&amp; templateHashCache.hasOwnProperty(rawTemplate))
-    ? templateHashCache[rawTemplate]
-    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
-  if (typeof template === &apos;function&apos;) {
-    try {
-      return template(data);
-    }
-    catch (err) {
-      console.warn(&apos;Error interpolating template&apos;, err, rawTemplate, data);
-    }
-  }
-  return template;
 }
 
 /**
@@ -632,7 +588,7 @@ export function uniqueName(name, template, evalContext) {
     guid: guid()
   });
   //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-  const uniqueName = `${interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, &apos;-&apos;);
+  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, &apos;-&apos;);
   return uniqueName;
 }
 
@@ -671,7 +627,7 @@ export function getDateSetting(date) {
 
   dateSetting = null;
   try {
-    const value = (new Function(&apos;moment&apos;, `return ${date};`))(moment);
+    const value = Evaluator.evaluator(`return ${date};`, &apos;moment&apos;)(moment);
     if (typeof value === &apos;string&apos;) {
       dateSetting = moment(value);
     }
@@ -1255,6 +1211,8 @@ export function observeOverload(callback, options = {}) {
     }
   };
 }
+
+export { Evaluator, interpolate };
 </code></pre>
 
 </div>
