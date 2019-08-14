@@ -30,7 +30,7 @@ export default [
         data: {
           custom(context) {
             var values = [];
-            context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
+            context.utils.eachComponent(context.instance.root.editForm.components, function(component) {
               if (component.key !== context.data.key) {
                 values.push({
                   label: component.label || component.key,
