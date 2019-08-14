@@ -1,3 +1,3 @@
-import form from './form.hbs';
+import form from './form.ejs';
 
 export default { form };
