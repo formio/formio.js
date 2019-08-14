@@ -164,7 +164,7 @@ export default class SignatureComponent extends Input {
       if (this.refs.padBody) {
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
         setTimeout(function checkWidth() {
-          if (this.refs.padBody.offsetWidth) {
+          if (this.refs.padBody && this.refs.padBody.offsetWidth) {
             this.checkSize();
           }
           else {

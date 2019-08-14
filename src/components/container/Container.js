@@ -49,6 +49,17 @@ export default class ContainerComponent extends NestedComponent {
     return 'container';
   }
 
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+    this.eachComponent(component => {
+      component.data = this.dataValue;
+    });
+  }
+
   hasChanged(newValue, oldValue) {
     return !_.isEqual(newValue, oldValue);
   }

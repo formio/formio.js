@@ -73,6 +73,26 @@ export default class NestedComponent extends Field {
     return super.parentVisible;
   }
 
+  get disabled() {
+    return super.disabled;
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    this.components.forEach((component) => component.parentDisabled = disabled);
+  }
+
+  set parentDisabled(value) {
+    super.parentDisabled = value;
+    this.components.forEach(component => {
+      component.parentDisabled = this.disabled;
+    });
+  }
+
+  get parentDisabled() {
+    return super.parentDisabled;
+  }
+
   get ready() {
     return NativePromise.all(this.getComponents().map(component => component.ready));
   }
@@ -456,10 +476,6 @@ export default class NestedComponent extends Field {
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
-      // If a source is provided and is the same as the source, then skip.
-      if (source && source.id === comp.id) {
-        return;
-      }
       if (comp.checkData) {
         valid &= comp.checkData(data, flags);
       }
@@ -575,10 +591,6 @@ export default class NestedComponent extends Field {
     const components = this.getComponents().slice();
     components.forEach((comp) => this.removeComponent(comp, this.components));
     this.components = [];
-  }
-
-  set disabled(disabled) {
-    this.components.forEach((component) => component.disabled = disabled);
   }
 
   get errors() {

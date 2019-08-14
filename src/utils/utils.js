@@ -396,6 +396,7 @@ export function interpolate(rawTemplate, data) {
     }
     catch (err) {
       console.warn('Error interpolating template', err, rawTemplate, data);
+      return '';
     }
   }
   return template;

@@ -61,6 +61,12 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
+    this._valueProperty = this.component.valueProperty;
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === 'values') {
+      this._valueProperty = 'value';
+    }
+
     if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
@@ -98,7 +104,7 @@ export default class SelectComponent extends Field {
   }
 
   get valueProperty() {
-    return this.component.valueProperty || 'value';
+    return this._valueProperty;
   }
 
   get inputInfo() {
@@ -248,7 +254,7 @@ export default class SelectComponent extends Field {
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
-      items = _.get(items, this.component.selectValues);
+      items = _.get(items, this.component.selectValues, items) || [];
     }
 
     let areItemsEqual;

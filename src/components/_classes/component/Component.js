@@ -263,6 +263,7 @@ export default class Component extends Element {
      */
     this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
     this._parentVisible = true;
+    this._parentDisabled = false;
 
     /**
      * If this input has been input and provided value.
@@ -435,6 +436,18 @@ export default class Component extends Element {
 
   get parentVisible() {
     return this._parentVisible;
+  }
+
+  set parentDisabled(value) {
+    if (this._parentDisabled !== value) {
+      this._parentDisabled = value;
+      this.clearOnHide();
+      this.redraw();
+    }
+  }
+
+  get parentDisabled() {
+    return this._parentDisabled;
   }
 
   /**
@@ -2044,7 +2057,7 @@ export default class Component extends Element {
    * @return {boolean}
    */
   get disabled() {
-    return this._disabled;
+    return this._disabled || this.parentDisabled;
   }
 
   /**
