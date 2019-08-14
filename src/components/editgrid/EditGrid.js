@@ -13,6 +13,7 @@ export default class EditGridComponent extends NestedComponent {
       clearOnHide: true,
       input: true,
       tree: true,
+      removeRow: 'Cancel',
       defaultOpen: false,
       components: [],
       inlineEdit: false,
