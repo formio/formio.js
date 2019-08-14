@@ -159,7 +159,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -187,7 +186,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -203,7 +201,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -244,16 +244,19 @@ export default [
         key: &apos;triggerPanel&apos;,
         input: false,
         title: &apos;Trigger&apos;,
+        tableView: false,
         components: [
           {
             weight: 0,
             input: true,
+            tableView: false,
             components: [
               {
                 weight: 0,
                 input: true,
                 label: &apos;Type&apos;,
                 key: &apos;type&apos;,
+                tableView: false,
                 data: {
                   values: [
                     {
@@ -283,13 +286,17 @@ export default [
                 label: &apos;&apos;,
                 key: &apos;simple&apos;,
                 type: &apos;container&apos;,
-                customConditional: &apos;show = row.type === &quot;simple&quot;;&apos;,
+                tableView: false,
+                customConditional(context) {
+                  return context.row.type === &apos;simple&apos;;
+                },
                 components: [
                   {
                     input: true,
                     key: &apos;show&apos;,
                     label: &apos;Show&apos;,
                     type: &apos;hidden&apos;,
+                    tableView: false,
                     defaultValue: true
                   },
                   {
@@ -299,24 +306,28 @@ export default [
                     key: &apos;when&apos;,
                     dataSrc: &apos;custom&apos;,
                     valueProperty: &apos;value&apos;,
+                    tableView: false,
                     data: {
-                      custom: `
-                        utils.eachComponent(instance.root.editForm.components, function(component, path) {
-                          if (component.key !== data.key) {
+                      custom(context) {
+                        var values = [];
+                        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
+                          if (component.key !== context.data.key) {
                             values.push({
                               label: component.label || component.key,
                               value: path
                             });
                           }
                         });
-                      `
+                        return values;
+                      }
                     }
                   },
                   {
                     type: &apos;textfield&apos;,
                     input: true,
                     label: &apos;Has the value:&apos;,
-                    key: &apos;eq&apos;
+                    key: &apos;eq&apos;,
+                    tableView: false
                   }
                 ]
               },
@@ -327,9 +338,12 @@ export default [
                 rows: 5,
                 editor: &apos;ace&apos;,
                 input: true,
+                tableView: false,
                 placeholder: `result = (data[&apos;mykey&apos;] &gt; 1);`,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, and &quot;component&quot; variables are available. Return &quot;result&quot;.&apos;,
-                customConditional: &apos;show = row.type === &quot;javascript&quot;;&apos;
+                customConditional(context) {
+                  return context.row.type === &apos;javascript&apos;;
+                }
               },
               {
                 weight: 10,
@@ -340,9 +354,12 @@ export default [
                 label: &apos;JSON Logic&apos;,
                 as: &apos;json&apos;,
                 input: true,
+                tableView: false,
                 placeholder: `{ ... }`,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, &quot;component&quot; and &quot;_&quot; variables are available. Return the result to be passed to the action if truthy.&apos;,
-                customConditional: &apos;show = row.type === &quot;json&quot;;&apos;,
+                customConditional(context) {
+                  return context.row.type === &apos;json&apos;;
+                }
               },
               {
                 weight: 10,
@@ -351,7 +368,10 @@ export default [
                 label: &apos;Event Name&apos;,
                 placeholder: &apos;event&apos;,
                 description: &apos;The event that will trigger this logic. You can trigger events externally or via a button.&apos;,
-                customConditional: &apos;show = row.type === &quot;event&quot;;&apos;,
+                tableView: false,
+                customConditional(context) {
+                  return context.row.type === &apos;event&apos;;
+                }
               }
             ],
             key: &apos;trigger&apos;,
@@ -365,6 +385,7 @@ export default [
         input: true,
         label: &apos;Actions&apos;,
         key: &apos;actions&apos;,
+        tableView: false,
         templates: {
           header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;&lt;strong&gt;{{ value.length }} actions&lt;/strong&gt;&lt;/div&gt;\n&lt;/div&gt;&apos;,
           row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
@@ -422,6 +443,7 @@ export default [
                 type: &apos;select&apos;,
                 template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
                 dataSrc: &apos;json&apos;,
+                tableView: false,
                 data: {
                   json: [
                     {
@@ -480,13 +502,16 @@ export default [
                 key: &apos;property&apos;,
                 label: &apos;Component Property&apos;,
                 input: true,
-                customConditional: &apos;show = row.type === &quot;property&quot;;&apos;,
+                customConditional(context) {
+                  return context.row.type === &apos;property&apos;;
+                }
               },
               {
                 weight: 30,
                 input: true,
                 label: &apos;Set State&apos;,
                 key: &apos;state&apos;,
+                tableView: false,
                 data: {
                   values: [
                     {
@@ -502,7 +527,11 @@ export default [
                 dataSrc: &apos;values&apos;,
                 template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
                 type: &apos;select&apos;,
-                customConditional: &apos;show = row.type === &quot;property&quot; &amp;&amp; row.hasOwnProperty(&quot;property&quot;) &amp;&amp; row.property.type === &quot;boolean&quot;;&apos;,
+                customConditional(context) {
+                  return context.row.type === &apos;property&apos; &amp;&amp;
+                    context.row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
+                    context.row.property.type === &apos;boolean&apos;;
+                }
               },
               {
                 weight: 30,
@@ -511,8 +540,14 @@ export default [
                 label: &apos;Text&apos;,
                 inputType: &apos;text&apos;,
                 input: true,
+                tableView: false,
                 description: &apos;Can use templating with {{ data.myfield }}. &quot;data&quot;, &quot;row&quot;, &quot;component&quot; and &quot;result&quot; variables are available.&apos;,
-                customConditional: &apos;show = row.type === &quot;property&quot; &amp;&amp; row.hasOwnProperty(&quot;property&quot;) &amp;&amp; row.property.type === &quot;string&quot; &amp;&amp; !row.property.component;&apos;,
+                customConditional(context) {
+                  return context.row.type === &apos;property&apos; &amp;&amp;
+                    context.row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
+                    context.row.property.type === &apos;string&apos; &amp;&amp;
+                    !context.row.property.component;
+                }
               },
               {
                 weight: 20,
@@ -523,8 +558,11 @@ export default [
                 rows: 5,
                 placeholder: `value = data.myfield;`,
                 type: &apos;textarea&apos;,
+                tableView: false,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, &quot;component&quot;, and &quot;result&quot; variables are available. Return the value.&apos;,
-                customConditional: &apos;show = row.type === &quot;value&quot;;&apos;,
+                customConditional(context) {
+                  return context.row.type === &apos;value&apos;;
+                }
               }
             ],
           }

@@ -159,7 +159,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -187,7 +186,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -203,7 +201,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -216,6 +216,8 @@
 import NestedComponent from &apos;../nested/NestedComponent&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Components from &apos;../Components&apos;;
+import { Evaluator } from &apos;../../utils/utils&apos;;
+import templates from &apos;./templates&apos;;
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -227,7 +229,7 @@ export default class EditGridComponent extends NestedComponent {
       input: true,
       tree: true,
       defaultOpen: false,
-      removeRow: &apos;&apos;,
+      removeRow: &apos;Cancel&apos;,
       components: [],
       inlineEdit: false,
       templates: {
@@ -252,7 +254,9 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return  `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
-    &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
+    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) %}
+      &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
+    {% } %}
   {% }) %}
 &lt;/div&gt;`;
   }
@@ -260,15 +264,17 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
-    &lt;div class=&quot;col-sm-2&quot;&gt;
-      {{ getView(component, row[component.key]) }}
-    &lt;/div&gt;
+    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) { %}
+      &lt;div class=&quot;col-sm-2&quot;&gt;
+        {{ getView(component, row[component.key]) }}
+      &lt;/div&gt;
+    {% } %}
   {% }) %}
   {% if (!instance.options.readOnly) { %}
     &lt;div class=&quot;col-sm-2&quot;&gt;
       &lt;div class=&quot;btn-group pull-right&quot;&gt;
-        &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;Edit&lt;/button&gt;
-        &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;Delete&lt;/button&gt;
+        &lt;button class=&quot;btn btn-default btn-sm editRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;edit&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;trash&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   {% } %}
@@ -374,7 +380,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   createHeader() {
-    const templateHeader = _.get(this.component, &apos;templates.header&apos;);
+    const templateHeader = Evaluator.noeval ? templates.header : _.get(this.component, &apos;templates.header&apos;);
     if (!templateHeader) {
       return this.text(&apos;&apos;);
     }
@@ -405,7 +411,9 @@ export default class EditGridComponent extends NestedComponent {
 
   createRow(row, rowIndex) {
     const wrapper = this.ce(&apos;li&apos;, { class: &apos;list-group-item&apos; });
-    const rowTemplate = _.get(this.component, &apos;templates.row&apos;, EditGridComponent.defaultRowTemplate);
+    const rowTemplate = Evaluator.noeval ?
+      templates.row :
+      _.get(this.component, &apos;templates.row&apos;, EditGridComponent.defaultRowTemplate);
 
     // Store info so we can detect changes later.
     wrapper.rowData = row.data;
@@ -431,13 +439,13 @@ export default class EditGridComponent extends NestedComponent {
             this.ce(&apos;button&apos;, {
               class: &apos;btn btn-primary&apos;,
               onClick: this.saveRow.bind(this, rowIndex, dialog)
-            }, this.component.saveRow || &apos;Save&apos;),
+            }, this.t(this.component.saveRow || &apos;Save&apos;)),
             &apos; &apos;,
             this.component.removeRow ?
               this.ce(&apos;button&apos;, {
                 class: &apos;btn btn-danger&apos;,
                 onClick: this.cancelRow.bind(this, rowIndex)
-              }, this.component.removeRow || &apos;Cancel&apos;)
+              }, this.t(this.component.removeRow || &apos;Cancel&apos;))
               : null
           ]
         ));

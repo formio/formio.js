@@ -1103,11 +1103,11 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 44,
+        "lineNumber": 45,
         "line": "/* eslint-disable max-statements */"
       },
       {
-        "lineNumber": 45,
+        "lineNumber": 46,
         "line": "export function evaluate(func, args, ret, tokenize) {"
       }
     ],
@@ -1127,47 +1127,47 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 177,
+        "lineNumber": 178,
         "line": "/**"
       },
       {
-        "lineNumber": 178,
+        "lineNumber": 179,
         "line": " * Checks the calculated value for a provided component and data."
       },
       {
-        "lineNumber": 179,
+        "lineNumber": 180,
         "line": " *"
       },
       {
-        "lineNumber": 180,
+        "lineNumber": 181,
         "line": " * @param {Object} component"
       },
       {
-        "lineNumber": 181,
+        "lineNumber": 182,
         "line": " *   The component to check for the calculated value."
       },
       {
-        "lineNumber": 182,
+        "lineNumber": 183,
         "line": " * @param {Object} submission"
       },
       {
-        "lineNumber": 183,
+        "lineNumber": 184,
         "line": " *   A submission object."
       },
       {
-        "lineNumber": 184,
+        "lineNumber": 185,
         "line": " * @param data"
       },
       {
-        "lineNumber": 185,
+        "lineNumber": 186,
         "line": " *   The full submission data."
       },
       {
-        "lineNumber": 186,
+        "lineNumber": 187,
         "line": " */"
       },
       {
-        "lineNumber": 187,
+        "lineNumber": 188,
         "line": "export function checkCalculated(component, submission, rowData) {"
       }
     ],
@@ -1187,20 +1187,16 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 200,
+        "lineNumber": 201,
         "line": "/**"
       },
       {
-        "lineNumber": 201,
+        "lineNumber": 202,
         "line": " * Check if a simple conditional evaluates to true."
       },
       {
-        "lineNumber": 202,
-        "line": " *"
-      },
-      {
         "lineNumber": 203,
-        "line": " * @param condition"
+        "line": " *"
       },
       {
         "lineNumber": 204,
@@ -1208,22 +1204,26 @@
       },
       {
         "lineNumber": 205,
-        "line": " * @param row"
+        "line": " * @param condition"
       },
       {
         "lineNumber": 206,
-        "line": " * @param data"
+        "line": " * @param row"
       },
       {
         "lineNumber": 207,
-        "line": " * @returns {boolean}"
+        "line": " * @param data"
       },
       {
         "lineNumber": 208,
-        "line": " */"
+        "line": " * @returns {boolean}"
       },
       {
         "lineNumber": 209,
+        "line": " */"
+      },
+      {
+        "lineNumber": 210,
         "line": "export function checkSimpleConditional(component, condition, row, data) {"
       }
     ],
@@ -1245,43 +1245,43 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 237,
+        "lineNumber": 238,
         "line": "/**"
       },
       {
-        "lineNumber": 238,
+        "lineNumber": 239,
         "line": " * Check custom javascript conditional."
       },
       {
-        "lineNumber": 239,
+        "lineNumber": 240,
         "line": " *"
       },
       {
-        "lineNumber": 240,
+        "lineNumber": 241,
         "line": " * @param component"
       },
       {
-        "lineNumber": 241,
+        "lineNumber": 242,
         "line": " * @param custom"
       },
       {
-        "lineNumber": 242,
+        "lineNumber": 243,
         "line": " * @param row"
       },
       {
-        "lineNumber": 243,
+        "lineNumber": 244,
         "line": " * @param data"
       },
       {
-        "lineNumber": 244,
+        "lineNumber": 245,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 245,
+        "lineNumber": 246,
         "line": " */"
       },
       {
-        "lineNumber": 246,
+        "lineNumber": 247,
         "line": "export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {"
       }
     ],
@@ -1307,55 +1307,55 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 274,
+        "lineNumber": 275,
         "line": "/**"
       },
       {
-        "lineNumber": 275,
+        "lineNumber": 276,
         "line": " * Checks the conditions for a provided component and data."
       },
       {
-        "lineNumber": 276,
-        "line": " *"
-      },
-      {
         "lineNumber": 277,
-        "line": " * @param component"
+        "line": " *"
       },
       {
         "lineNumber": 278,
-        "line": " *   The component to check for the condition."
+        "line": " * @param component"
       },
       {
         "lineNumber": 279,
-        "line": " * @param row"
+        "line": " *   The component to check for the condition."
       },
       {
         "lineNumber": 280,
-        "line": " *   The data within a row"
+        "line": " * @param row"
       },
       {
         "lineNumber": 281,
-        "line": " * @param data"
+        "line": " *   The data within a row"
       },
       {
         "lineNumber": 282,
-        "line": " *   The full submission data."
+        "line": " * @param data"
       },
       {
         "lineNumber": 283,
-        "line": " *"
+        "line": " *   The full submission data."
       },
       {
         "lineNumber": 284,
-        "line": " * @returns {boolean}"
+        "line": " *"
       },
       {
         "lineNumber": 285,
-        "line": " */"
+        "line": " * @returns {boolean}"
       },
       {
         "lineNumber": 286,
+        "line": " */"
+      },
+      {
+        "lineNumber": 287,
         "line": "export function checkCondition(component, row, data, form, instance) {"
       }
     ],
@@ -1377,43 +1377,43 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 301,
+        "lineNumber": 302,
         "line": "/**"
       },
       {
-        "lineNumber": 302,
+        "lineNumber": 303,
         "line": " * Test a trigger on a component."
       },
       {
-        "lineNumber": 303,
+        "lineNumber": 304,
         "line": " *"
       },
       {
-        "lineNumber": 304,
+        "lineNumber": 305,
         "line": " * @param component"
       },
       {
-        "lineNumber": 305,
+        "lineNumber": 306,
         "line": " * @param action"
       },
       {
-        "lineNumber": 306,
+        "lineNumber": 307,
         "line": " * @param data"
       },
       {
-        "lineNumber": 307,
+        "lineNumber": 308,
         "line": " * @param row"
       },
       {
-        "lineNumber": 308,
+        "lineNumber": 309,
         "line": " * @returns {mixed}"
       },
       {
-        "lineNumber": 309,
+        "lineNumber": 310,
         "line": " */"
       },
       {
-        "lineNumber": 310,
+        "lineNumber": 311,
         "line": "export function checkTrigger(component, trigger, row, data, form, instance) {"
       }
     ],
@@ -1433,85 +1433,39 @@
     ]
   },
   {
-    "name": "interpolate",
-    "filePath": "src/utils/utils.js",
-    "lines": [
-      {
-        "lineNumber": 373,
-        "line": "/**"
-      },
-      {
-        "lineNumber": 374,
-        "line": " * Interpolate a string and add data replacements."
-      },
-      {
-        "lineNumber": 375,
-        "line": " *"
-      },
-      {
-        "lineNumber": 376,
-        "line": " * @param string"
-      },
-      {
-        "lineNumber": 377,
-        "line": " * @param data"
-      },
-      {
-        "lineNumber": 378,
-        "line": " * @returns {XML|string|*|void}"
-      },
-      {
-        "lineNumber": 379,
-        "line": " */"
-      },
-      {
-        "lineNumber": 380,
-        "line": "export function interpolate(rawTemplate, data) {"
-      }
-    ],
-    "codeParams": [
-      "rawTemplate",
-      "data"
-    ],
-    "docParams": [
-      "string",
-      "data"
-    ]
-  },
-  {
     "name": "delay",
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 895,
+        "lineNumber": 851,
         "line": "/**"
       },
       {
-        "lineNumber": 896,
+        "lineNumber": 852,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 897,
+        "lineNumber": 853,
         "line": " *"
       },
       {
-        "lineNumber": 898,
+        "lineNumber": 854,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 899,
+        "lineNumber": 855,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 900,
+        "lineNumber": 856,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 901,
+        "lineNumber": 857,
         "line": " */"
       },
       {
-        "lineNumber": 902,
+        "lineNumber": 858,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1530,35 +1484,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 969,
+        "lineNumber": 925,
         "line": "/**"
       },
       {
-        "lineNumber": 970,
+        "lineNumber": 926,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 971,
+        "lineNumber": 927,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 972,
+        "lineNumber": 928,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 973,
+        "lineNumber": 929,
         "line": " *"
       },
       {
-        "lineNumber": 974,
+        "lineNumber": 930,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 975,
+        "lineNumber": 931,
         "line": " */"
       },
       {
-        "lineNumber": 976,
+        "lineNumber": 932,
         "line": "export function unfold(e) {"
       }
     ],

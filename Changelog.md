@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.25.0
+### Added
+ - A way to turn off eval by setting "FormioUtils.Evaluator.noeval = true".
+ 
+### Changed
+ - Default EditGrid templates to look better and also respect "tableView" property.
+
 ## 3.24.4
 ### Fixed
  - Issues with TextArea getting into an infinite update loop.

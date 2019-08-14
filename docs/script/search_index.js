@@ -210,6 +210,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/utils/evaluator.js~evaluator",
+    "variable/index.html#static-variable-Evaluator",
+    "<span>Evaluator</span> <span class=\"search-result-import-path\">formiojs/src/utils/Evaluator.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/eventemitter.js~eventemitter",
     "class/src/EventEmitter.js~EventEmitter.html",
     "<span>EventEmitter</span> <span class=\"search-result-import-path\">formiojs/src/EventEmitter.js</span>",
@@ -660,12 +666,6 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
-    "formiojs/src/utils/utils.js~addtemplatehash",
-    "function/index.html#static-function-addTemplateHash",
-    "<span>addTemplateHash</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~applyformchanges",
     "function/index.html#static-function-applyFormChanges",
     "<span>applyFormChanges</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -925,9 +925,9 @@ window.esdocSearchIndex = [
   ],
   [
     "formiojs/src/utils/utils.js~interpolate",
-    "function/index.html#static-function-interpolate",
+    "variable/index.html#static-variable-interpolate",
     "<span>interpolate</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
-    "function"
+    "variable"
   ],
   [
     "formiojs/src/utils/formutils.js~islayoutcomponent",
@@ -2767,13 +2767,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -4117,13 +4117,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#currentform",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-currentForm",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-currentForm",
     "src/components/base/Base.js~BaseComponent#currentForm",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#currentform",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-currentForm",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-currentForm",
     "src/components/base/Base.js~BaseComponent#currentForm",
     "member"
   ],
@@ -4201,13 +4201,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -4537,13 +4537,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -4891,13 +4891,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -6001,13 +6001,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -7113,6 +7113,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/index.js",
     "file/src/components/editgrid/fixtures/index.js.html",
     "src/components/editgrid/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/templates/index.js",
+    "file/src/components/editgrid/templates/index.js.html",
+    "src/components/editgrid/templates/index.js",
     "file"
   ],
   [
@@ -10033,13 +10039,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
     "src/components/select/Select.js~SelectComponent#serverCount",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
     "src/components/select/Select.js~SelectComponent#serverCount",
     "member"
   ],
@@ -11490,6 +11496,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/tree/templates/index.js",
+    "file/src/components/tree/templates/index.js.html",
+    "src/components/tree/templates/index.js",
+    "file"
+  ],
+  [
     "src/components/unknown/unknown.form.js",
     "file/src/components/unknown/Unknown.form.js.html",
     "src/components/unknown/Unknown.form.js",
@@ -12687,6 +12699,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/xhr.js",
     "file/src/providers/storage/xhr.js.html",
     "src/providers/storage/xhr.js",
+    "file"
+  ],
+  [
+    "src/utils/evaluator.js",
+    "file/src/utils/Evaluator.js.html",
+    "src/utils/Evaluator.js",
     "file"
   ],
   [
