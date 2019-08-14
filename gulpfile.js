@@ -29,6 +29,9 @@ gulp.task('babel', gulp.series('eslint', function babelTask() {
     .pipe(gulp.dest('lib'));
 }));
 
+// Move ejs files into the lib folder.
+gulp.task('ejs', () => gulp.src('./src/**/*.ejs').pipe(gulp.dest('lib')));
+
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {
   return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
@@ -135,6 +138,7 @@ gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packe
 gulp.task('build', gulp.series(
   'clean',
   'babel',
+  'ejs',
   'package-version',
   gulp.parallel(
     'jquery',

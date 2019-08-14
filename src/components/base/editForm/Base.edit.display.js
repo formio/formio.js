@@ -168,7 +168,9 @@ export default [
     label: 'Allow Reordering',
     tooltip: 'Allows changing order of multiple values using drag and drop',
     key: 'reorder',
-    customConditional: 'show = !!data.multiple || data.type === "datagrid" || data.type === "editgrid"',
+    customConditional(context) {
+      return !!context.data.multiple || context.data.type === 'datagrid' || context.data.type === 'editgrid';
+    },
     input: true
   },
   {
@@ -210,7 +212,9 @@ export default [
     tooltip: 'Show the label when in a Datagrid.',
     key: 'dataGridLabel',
     input: true,
-    customConditional: 'show = instance.root.editComponent.inDataGrid'
+    customConditional(context) {
+      return context.instance.root.editComponent.inDataGrid;
+    }
   },
   {
     weight: 1400,

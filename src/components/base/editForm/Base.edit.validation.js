@@ -1,4 +1,6 @@
 import EditFormUtils from './utils';
+import Evaluator from '../../../utils/Evaluator';
+
 /* eslint-disable quotes, max-len */
 export default [
   {
@@ -50,6 +52,9 @@ export default [
     style: { 'margin-bottom': '10px' },
     key: 'custom-validation-js',
     weight: 300,
+    customConditional() {
+      return !Evaluator.noeval;
+    },
     components: [
       EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
       {

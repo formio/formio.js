@@ -1523,7 +1523,7 @@ export default class BaseComponent extends Component {
   }
 
   renderTemplateToElement(element, template, data, actions = []) {
-    element.innerHTML = this.interpolate(template, data).trim();
+    element.innerHTML = this.interpolate(template, data);
     this.attachActions(element, actions);
     return element;
   }

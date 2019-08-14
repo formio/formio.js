@@ -285,7 +285,9 @@ describe('checkCondition', () => {
   it('should be able to calculate condition based on javascript code', () => {
     const component = {
       key: 'sum',
-      customConditional: 'show = data.test === 3'
+      customConditional(context) {
+        return context.data.test === 3;
+      }
     };
     const data1 = { test: 3 };
     const data2 = { test: 5 };
