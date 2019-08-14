@@ -47,7 +47,7 @@ export default class SurveyComponent extends Field {
   setValue(value, flags) {
     flags = flags || {};
     if (!value) {
-      return;
+      return false;
     }
 
     _.each(this.component.questions, (question) => {
@@ -57,7 +57,7 @@ export default class SurveyComponent extends Field {
         }
       });
     });
-    this.updateValue(value, flags);
+    return this.updateValue(value, flags);
   }
 
   get emptyValue() {

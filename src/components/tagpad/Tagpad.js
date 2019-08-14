@@ -379,6 +379,7 @@ export default class Tagpad extends NestedComponent {
   }
 
   setValue(dots) {
+    const changed = this.hasChanged(dots, this.dataValue);
     this.dataValue = dots;
     if (!dots) {
       return;
@@ -392,6 +393,7 @@ export default class Tagpad extends NestedComponent {
         shape
       });
     });
+    return changed;
   }
 
   drawDot(dot, index) {

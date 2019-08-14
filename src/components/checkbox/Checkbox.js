@@ -184,6 +184,7 @@ export default class CheckBoxComponent extends Field {
     if (this.setCheckedState(value) !== undefined) {
       return this.updateValue(value, flags);
     }
+    return false;
   }
 
   getView(value) {
