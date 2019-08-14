@@ -18,6 +18,17 @@ module.exports = function(config) {
               loader: 'babel-loader',
               options: require('./babel.config.js')
             }
+          },
+          {
+            test: /\.ejs$/,
+            use: [{
+              loader: 'ejs-loader',
+              options: {
+                evaluate: /\{%([\s\S]+?)%\}/g,
+                interpolate: /\{\{([\s\S]+?)\}\}/g,
+                escape: /\{\{\{([\s\S]+?)\}\}\}/g
+              }
+            }]
           }
         ]
       }
