@@ -39,7 +39,10 @@ gulp.task('templates', () =>
       interpolate: /\{\{([\s\S]+?)\}\}/g,
       escape: /\{\{\{([\s\S]+?)\}\}\}/g
     }))
-    .pipe(insert.prepend('exports.default='))
+    .pipe(insert.prepend('Object.defineProperty(exports, "__esModule", {\n' +
+      '  value: true\n' +
+      '});\n' +
+      'exports.default='))
     .pipe(rename({
       extname: '.ejs.js'
     }))
