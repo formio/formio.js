@@ -50,7 +50,7 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty('tableView') || component.tableView) %}
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
       <div class="col-sm-2">
         {{ getView(component, row[component.key]) }}
       </div>
