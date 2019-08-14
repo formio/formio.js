@@ -254,7 +254,7 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return  `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) %}
+    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) { %}
       &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
     {% } %}
   {% }) %}
