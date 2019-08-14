@@ -7,6 +7,7 @@ export default (iconset, name, spinning) => {
     'new-window': 'external alternate',
     'files-o': 'file outline',
     'move': 'arrows alternate',
+    'link' : 'linkify'
   };
   if (icons.hasOwnProperty(name)) {
     name = icons[name];
