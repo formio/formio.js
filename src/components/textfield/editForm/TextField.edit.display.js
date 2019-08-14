@@ -52,7 +52,9 @@ export default [
     key: 'inputMask',
     label: 'Input Mask',
     tooltip: 'An input mask helps the user with input by ensuring a predefined format.<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target=\'_blank\' href=\'https://github.com/RobinHerbots/jquery.inputmask\'>jquery.inputmask documentation</a> for more information.</a>',
-    customConditional: 'show = !data.allowMultipleMasks;'
+    customConditional(context) {
+      return !context.data.allowMultipleMasks;
+    }
   },
   {
     weight: 413,
@@ -67,7 +69,9 @@ export default [
     input: true,
     key: 'inputMasks',
     label: 'Input Masks',
-    customConditional: 'show = data.allowMultipleMasks === true;',
+    customConditional(context) {
+      return context.data.allowMultipleMasks === true;
+    },
     reorder: true,
     components: [
       {

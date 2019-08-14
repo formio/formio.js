@@ -31,6 +31,8 @@ export default [
     placeholder: 'Add Another',
     weight: 410,
     input: true,
-    customConditional: 'show = !data.disableAddingRemovingRows'
+    customConditional(context) {
+      return !context.data.disableAddingRemovingRows;
+    }
   }
 ];

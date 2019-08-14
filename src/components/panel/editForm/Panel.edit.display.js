@@ -2,7 +2,9 @@ export default [
   {
     key: 'label',
     hidden: true,
-    calculateValue: 'value = data.title'
+    calculateValue(context) {
+      return context.data.title;
+    }
   },
   {
     weight: 1,
@@ -99,7 +101,9 @@ export default [
         },
       }
     ],
-    customConditional: 'show = instance.root.editForm.display === "wizard"',
+    customConditional(context) {
+      return context.instance.root.editForm.display === 'wizard';
+    }
   },
   {
     weight: 650,

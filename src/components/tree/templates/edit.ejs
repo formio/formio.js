@@ -1,0 +1,19 @@
+{% if (!node.isRoot) { %}
+  <div class="list-group-item">
+{% } else { %}
+  <li class="list-group-item">
+{% } %}
+    <div class="node-edit">
+      <div node-edit-form></div>
+      {% if (!instance.options.readOnly) { %}
+      <div class="node-actions">
+        <button class="btn btn-primary saveNode">Save</button>
+        <button class="btn btn-danger cancelNode">Cancel</button>
+      </div>
+      {% } %}
+    </div>
+{% if (!node.isRoot) { %}
+  </div>
+{% } else { %}
+  </li>
+{% } %}

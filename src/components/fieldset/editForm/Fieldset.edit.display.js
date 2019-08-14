@@ -2,7 +2,9 @@ export default [
   {
     key: 'label',
     hidden: true,
-    calculateValue: 'value = data.legend'
+    calculateValue(context) {
+      return context.data.legend;
+    }
   },
   {
     weight: 1,

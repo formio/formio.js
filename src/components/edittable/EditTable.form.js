@@ -20,7 +20,9 @@ export default function(...extend) {
         type: 'hidden',
         input: true,
         key: 'disableAddingRemovingRows',
-        calculateValue: 'value = data.enableRowGroups',
+        calculateValue(context) {
+          return context.instance.data.enableRowGroups;
+        },
         encrypted: false
       }, {
         key: 'enableRowGroups',

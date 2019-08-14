@@ -30,16 +30,19 @@ export default [
         key: 'triggerPanel',
         input: false,
         title: 'Trigger',
+        tableView: false,
         components: [
           {
             weight: 0,
             input: true,
+            tableView: false,
             components: [
               {
                 weight: 0,
                 input: true,
                 label: 'Type',
                 key: 'type',
+                tableView: false,
                 data: {
                   values: [
                     {
@@ -69,13 +72,17 @@ export default [
                 label: '',
                 key: 'simple',
                 type: 'container',
-                customConditional: 'show = row.type === "simple";',
+                tableView: false,
+                customConditional(context) {
+                  return context.row.type === 'simple';
+                },
                 components: [
                   {
                     input: true,
                     key: 'show',
                     label: 'Show',
                     type: 'hidden',
+                    tableView: false,
                     defaultValue: true
                   },
                   {
@@ -85,24 +92,28 @@ export default [
                     key: 'when',
                     dataSrc: 'custom',
                     valueProperty: 'value',
+                    tableView: false,
                     data: {
-                      custom: `
-                        utils.eachComponent(instance.root.editForm.components, function(component, path) {
-                          if (component.key !== data.key) {
+                      custom(context) {
+                        var values = [];
+                        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
+                          if (component.key !== context.data.key) {
                             values.push({
                               label: component.label || component.key,
                               value: path
                             });
                           }
                         });
-                      `
+                        return values;
+                      }
                     }
                   },
                   {
                     type: 'textfield',
                     input: true,
                     label: 'Has the value:',
-                    key: 'eq'
+                    key: 'eq',
+                    tableView: false
                   }
                 ]
               },
@@ -113,9 +124,12 @@ export default [
                 rows: 5,
                 editor: 'ace',
                 input: true,
+                tableView: false,
                 placeholder: `result = (data['mykey'] > 1);`,
                 description: '"row", "data", and "component" variables are available. Return "result".',
-                customConditional: 'show = row.type === "javascript";'
+                customConditional(context) {
+                  return context.row.type === 'javascript';
+                }
               },
               {
                 weight: 10,
@@ -126,9 +140,12 @@ export default [
                 label: 'JSON Logic',
                 as: 'json',
                 input: true,
+                tableView: false,
                 placeholder: `{ ... }`,
                 description: '"row", "data", "component" and "_" variables are available. Return the result to be passed to the action if truthy.',
-                customConditional: 'show = row.type === "json";',
+                customConditional(context) {
+                  return context.row.type === 'json';
+                }
               },
               {
                 weight: 10,
@@ -137,7 +154,10 @@ export default [
                 label: 'Event Name',
                 placeholder: 'event',
                 description: 'The event that will trigger this logic. You can trigger events externally or via a button.',
-                customConditional: 'show = row.type === "event";',
+                tableView: false,
+                customConditional(context) {
+                  return context.row.type === 'event';
+                }
               }
             ],
             key: 'trigger',
@@ -151,6 +171,7 @@ export default [
         input: true,
         label: 'Actions',
         key: 'actions',
+        tableView: false,
         templates: {
           header: '<div class="row"> \n  <div class="col-sm-6"><strong>{{ value.length }} actions</strong></div>\n</div>',
           row: '<div class="row"> \n  <div class="col-sm-6">\n    <div>{{ row.name }} </div>\n  </div>\n  <div class="col-sm-2"> \n    <div class="btn-group pull-right"> \n      <div class="btn btn-default editRow">Edit</div> \n      <div class="btn btn-danger removeRow">Delete</div> \n    </div> \n  </div> \n</div>',
@@ -208,6 +229,7 @@ export default [
                 type: 'select',
                 template: '<span>{{ item.label }}</span>',
                 dataSrc: 'json',
+                tableView: false,
                 data: {
                   json: [
                     {
@@ -266,13 +288,16 @@ export default [
                 key: 'property',
                 label: 'Component Property',
                 input: true,
-                customConditional: 'show = row.type === "property";',
+                customConditional(context) {
+                  return context.row.type === 'property';
+                }
               },
               {
                 weight: 30,
                 input: true,
                 label: 'Set State',
                 key: 'state',
+                tableView: false,
                 data: {
                   values: [
                     {
@@ -288,7 +313,11 @@ export default [
                 dataSrc: 'values',
                 template: '<span>{{ item.label }}</span>',
                 type: 'select',
-                customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "boolean";',
+                customConditional(context) {
+                  return context.row.type === 'property' &&
+                    context.row.hasOwnProperty('property') &&
+                    context.row.property.type === 'boolean';
+                }
               },
               {
                 weight: 30,
@@ -297,8 +326,14 @@ export default [
                 label: 'Text',
                 inputType: 'text',
                 input: true,
+                tableView: false,
                 description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
-                customConditional: 'show = row.type === "property" && row.hasOwnProperty("property") && row.property.type === "string" && !row.property.component;',
+                customConditional(context) {
+                  return context.row.type === 'property' &&
+                    context.row.hasOwnProperty('property') &&
+                    context.row.property.type === 'string' &&
+                    !context.row.property.component;
+                }
               },
               {
                 weight: 20,
@@ -309,8 +344,11 @@ export default [
                 rows: 5,
                 placeholder: `value = data.myfield;`,
                 type: 'textarea',
+                tableView: false,
                 description: '"row", "data", "component", and "result" variables are available. Return the value.',
-                customConditional: 'show = row.type === "value";',
+                customConditional(context) {
+                  return context.row.type === 'value';
+                }
               }
             ],
           }

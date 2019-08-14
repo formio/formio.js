@@ -2,6 +2,8 @@ import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
+import { Evaluator } from '../../utils/utils';
+import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -13,7 +15,7 @@ export default class EditGridComponent extends NestedComponent {
       input: true,
       tree: true,
       defaultOpen: false,
-      removeRow: '',
+      removeRow: 'Cancel',
       components: [],
       inlineEdit: false,
       templates: {
@@ -38,7 +40,9 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return  `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    <div class="col-sm-2">{{ component.label }}</div>
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) %}
+      <div class="col-sm-2">{{ component.label }}</div>
+    {% } %}
   {% }) %}
 </div>`;
   }
@@ -46,15 +50,17 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    <div class="col-sm-2">
-      {{ getView(component, row[component.key]) }}
-    </div>
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) %}
+      <div class="col-sm-2">
+        {{ getView(component, row[component.key]) }}
+      </div>
+    {% } %}
   {% }) %}
   {% if (!instance.options.readOnly) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
-        <button class="btn btn-default btn-sm editRow">Edit</button>
-        <button class="btn btn-danger btn-sm removeRow">Delete</button>
+        <button class="btn btn-default btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
+        <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
       </div>
     </div>
   {% } %}
@@ -160,7 +166,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   createHeader() {
-    const templateHeader = _.get(this.component, 'templates.header');
+    const templateHeader = Evaluator.noeval ? templates.header : _.get(this.component, 'templates.header');
     if (!templateHeader) {
       return this.text('');
     }
@@ -191,7 +197,9 @@ export default class EditGridComponent extends NestedComponent {
 
   createRow(row, rowIndex) {
     const wrapper = this.ce('li', { class: 'list-group-item' });
-    const rowTemplate = _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
+    const rowTemplate = Evaluator.noeval ?
+      templates.row :
+      _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
     // Store info so we can detect changes later.
     wrapper.rowData = row.data;
@@ -217,13 +225,13 @@ export default class EditGridComponent extends NestedComponent {
             this.ce('button', {
               class: 'btn btn-primary',
               onClick: this.saveRow.bind(this, rowIndex, dialog)
-            }, this.component.saveRow || 'Save'),
+            }, this.t(this.component.saveRow || 'Save')),
             ' ',
             this.component.removeRow ?
               this.ce('button', {
                 class: 'btn btn-danger',
                 onClick: this.cancelRow.bind(this, rowIndex)
-              }, this.component.removeRow || 'Cancel')
+              }, this.t(this.component.removeRow || 'Cancel'))
               : null
           ]
         ));
