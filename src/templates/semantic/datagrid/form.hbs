@@ -12,7 +12,9 @@
       {% if (visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
         {{ col.hideLabel ? '' : t(col.label || col.title) }}
-        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
+        {% if (col.tooltip) { %} <span data-tooltip="{{col.tooltip}}" data-position="right center">
+                    <i class="{{iconClass('question-sign')}}"></i>
+          </span>{% } %}
       </th>
       {% } %}
       {% }) %}
@@ -41,7 +43,7 @@
     <tr ref="{{datagridKey}}-row">
       {% if (component.reorder) { %}
         <td>
-          <button type="button" class="formio-drag-button fa fa-bars"></button>
+          <button type="button" class="formio-drag-button ui icon button"><i aria-hidden="true" class="bars icon"></i></button>
         </td>
       {% } %}
       {% columns.forEach(function(col) { %}
