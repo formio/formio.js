@@ -3,7 +3,8 @@ import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 import NestedComponent from '../nested/NestedComponent';
-import Utils from '../../utils';
+import Evaluator from '../../utils/Evaluator';
+import templates from './templates';
 
 class Node {
   constructor(
@@ -239,12 +240,11 @@ export default class TreeComponent extends NestedComponent {
     super(component, options, data);
     this.type = 'tree';
     this.changingNodeClassName = 'formio-component-tree-node-changing';
-
-    this.templateHash = {
-      edit: Utils.addTemplateHash(this.component.template?.edit || TreeComponent.defaultEditTemplate),
-      view: Utils.addTemplateHash(this.component.template?.view || TreeComponent.defaultViewTemplate),
-      child: Utils.addTemplateHash(this.component.template?.child || TreeComponent.defaultChildTemplate),
-      children: Utils.addTemplateHash(this.component.template?.children || TreeComponent.defaultChildrenTemplate),
+    this.templates = {
+      edit: Evaluator.noeval ? templates.edit : Evaluator.template(this.component.template?.edit || templates.edit),
+      view: Evaluator.noeval ? templates.view : Evaluator.template(this.component.template?.view || templates.view),
+      child: Evaluator.noeval ? templates.child : Evaluator.template(this.component.template?.child || templates.child),
+      children: Evaluator.noeval ? templates.children : Evaluator.template(this.component.template?.children || templates.children),
     };
   }
 
@@ -258,6 +258,10 @@ export default class TreeComponent extends NestedComponent {
 
   get emptyValue() {
     return {};
+  }
+
+  collapseText(node) {
+    return node.collapsed ? this.t('Expand') : this.t('Collapse');
   }
 
   build(state) {
@@ -292,7 +296,7 @@ export default class TreeComponent extends NestedComponent {
 
   buildNodes(parent) {
     const childNodes = parent.children.map(this.buildNode.bind(this));
-    const element = this.renderElement(this.templateHash.children, {
+    const element = this.renderElement(this.templates.children, {
       node: parent,
       nodeData: parent.persistentData,
       data: this.data,
@@ -314,7 +318,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   buildNode(node) {
-    const element = this.renderElement(this.templateHash.child, {
+    const element = this.renderElement(this.templates.child, {
       node,
       nodeData: node.persistentData,
       data: this.data,
@@ -336,7 +340,7 @@ export default class TreeComponent extends NestedComponent {
 
       this.renderTemplateToElement(
         element,
-        this.templateHash.edit,
+        this.templates.edit,
         {
           node,
           nodeData: node.data,
@@ -364,7 +368,7 @@ export default class TreeComponent extends NestedComponent {
     else {
       this.renderTemplateToElement(
         element,
-        this.templateHash.view,
+        this.templates.view,
         {
           node,
           nodeData: node.persistentData,

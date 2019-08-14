@@ -20,17 +20,19 @@ export default [
     dataSrc: 'custom',
     valueProperty: 'value',
     data: {
-      custom: `
-        values.push({label: 'Any Change', value: 'data'});
-        utils.eachComponent(instance.root.editForm.components, function(component, path) {
-          if (component.key !== data.key) {
+      custom(context) {
+        var values = [];
+        values.push({ label: 'Any Change', value: 'data' });
+        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
             values.push({
               label: component.label || component.key,
               value: path
             });
           }
         });
-      `
+        return values;
+      }
     }
   },
   {
