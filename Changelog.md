@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.25.2
+### Fixed
+ - Issue with submit button not disabling when disableOnInvalid is set.
+
 ## 3.25.1
 ### Fixed
  - The build script to make the templates usable in other frameworks (like angular).

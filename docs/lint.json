@@ -164,87 +164,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1285,
+        "lineNumber": 1288,
         "line": "  /**"
       },
       {
-        "lineNumber": 1286,
+        "lineNumber": 1289,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1287,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1288,
-        "line": "   * @example"
-      },
-      {
-        "lineNumber": 1289,
-        "line": "   * import Webform from 'formiojs/Webform';"
-      },
-      {
         "lineNumber": 1290,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
+        "line": "   *"
       },
       {
         "lineNumber": 1291,
-        "line": "   * form.src = 'https://examples.form.io/example';"
+        "line": "   * @example"
       },
       {
         "lineNumber": 1292,
-        "line": "   * form.submission = {data: {"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 1293,
-        "line": "   *   firstName: 'Joe',"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 1294,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1295,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1296,
-        "line": "   * }};"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1297,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1298,
-        "line": "   *   console.log(submission);"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1299,
-        "line": "   * });"
+        "line": "   * }};"
       },
       {
         "lineNumber": 1300,
-        "line": "   *"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1301,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+        "line": "   *   console.log(submission);"
       },
       {
         "lineNumber": 1302,
-        "line": "   *"
+        "line": "   * });"
       },
       {
         "lineNumber": 1303,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   *"
       },
       {
         "lineNumber": 1304,
-        "line": "   */"
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
         "lineNumber": 1305,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1306,
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+      },
+      {
+        "lineNumber": 1307,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1308,
         "line": "  submit(before, options) {"
       }
     ],
@@ -508,31 +508,31 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2461,
+        "lineNumber": 2464,
         "line": "  /**"
       },
       {
-        "lineNumber": 2462,
+        "lineNumber": 2465,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2463,
+        "lineNumber": 2466,
         "line": "   *"
       },
       {
-        "lineNumber": 2464,
+        "lineNumber": 2467,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2465,
+        "lineNumber": 2468,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2466,
+        "lineNumber": 2469,
         "line": "   */"
       },
       {
-        "lineNumber": 2467,
+        "lineNumber": 2470,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
