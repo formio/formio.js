@@ -325,25 +325,29 @@ export default class WebformBuilder extends Component {
   addExistingResourceFields(resources) {
     _.each(resources, (resource, index) => {
       const resourceKey = resource.name;
-      this.groups.resource.subgroups.push({
+      const subgroup = {
         key: resource.name,
         title: resource.title,
         components: [],
         componentOrder: [],
-        default: !index,
-      });
+        default: index === 0,
+      };
 
       eachComponent(resource.components, (component) => {
         if (component.type === 'button') return;
-        if (this.options && this.options.resourceFilter && (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)) return;
+        if (
+          this.options &&
+          this.options.resourceFilter &&
+          (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)
+        ) return;
 
         let componentName = component.label;
         if (!componentName && component.key) {
           componentName = _.upperFirst(component.key);
         }
 
-        this.groups.resource.subgroups[this.groups.resource.subgroups.length-1].componentOrder.push(component.type);
-        this.groups.resource.subgroups[this.groups.resource.subgroups.length-1].components[component.type] = _.merge(
+        subgroup.componentOrder.push(component.type);
+        subgroup.components[component.type] = _.merge(
           _.cloneDeep(Components.components[component.type].builderInfo, true),
           {
             key: component.key,
@@ -362,6 +366,8 @@ export default class WebformBuilder extends Component {
           }
         );
       }, true);
+
+      this.groups.resource.subgroups.push(subgroup);
     });
 
     this.triggerRedraw();
@@ -544,13 +550,13 @@ export default class WebformBuilder extends Component {
         // Click event
         this.refs['sidebar-anchor'].forEach((anchor, index) => {
           this.addEventListener(anchor, 'click', () => {
-            const clickedParentId = anchor.getAttribute('data-parent').replace('#builder-sidebar-', '');
-            const clickedId = anchor.getAttribute('data-target').replace('#group-', '');
+            const clickedParentId = anchor.getAttribute('data-parent').slice('#builder-sidebar-'.length);
+            const clickedId = anchor.getAttribute('data-target').slice('#group-'.length);
 
             this.refs['sidebar-group'].forEach((group, groupIndex) => {
               const openByDefault = group.getAttribute('data-default') === 'true';
-              const groupId = group.getAttribute('id').replace('group-', '');
-              const groupParent = group.getAttribute('data-parent').replace('#builder-sidebar-', '');
+              const groupId = group.getAttribute('id').slice('group-'.length);
+              const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
 
               group.style.display =
                 (
