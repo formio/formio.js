@@ -295,25 +295,27 @@ export default class WebformBuilder extends Component {
     };
     const formio = new Formio(Formio.projectUrl);
 
-    formio.loadForms(query)
-      .then((resources) => {
-        if (resources.length) {
-          this.builder.resource = {
-            title: 'Existing Resource Fields',
-            weight: 50,
-            panelClass: 'subgroup-accordion-container',
-            subgroups: []
-          };
-          this.groups.resource = {
-            title: 'Existing Resource Fields',
-            weight: 50,
-            panelClass: 'subgroup-accordion-container',
-            subgroups: []
-          };
-          this.groupOrder.push('resource');
-          this.addExistingResourceFields(resources);
-        }
-      });
+    if (!formio.noProject) {
+      formio.loadForms(query)
+        .then((resources) => {
+          if (resources.length) {
+            this.builder.resource = {
+              title: 'Existing Resource Fields',
+              weight: 50,
+              panelClass: 'subgroup-accordion-container',
+              subgroups: []
+            };
+            this.groups.resource = {
+              title: 'Existing Resource Fields',
+              weight: 50,
+              panelClass: 'subgroup-accordion-container',
+              subgroups: []
+            };
+            this.groupOrder.push('resource');
+            this.addExistingResourceFields(resources);
+          }
+        });
+    }
 
     // Notify components if they need to modify their render.
     this.options.attachMode = 'builder';
