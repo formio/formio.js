@@ -1,5 +1,5 @@
-import edit from './edit.hbs';
-import view from './view.hbs';
+import edit from './edit.ejs';
+import view from './view.ejs';
 
 export default {
   treeView: {

@@ -168,7 +168,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addTemplateHash">addTemplateHash</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
@@ -196,7 +195,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -212,7 +210,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
@@ -824,35 +824,6 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">get</span>
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-disabled">disabled</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        <div data-ice="description"><p>Return if the component is disabled.</p>
-</div>
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
       <span class="kind" data-ice="kind">set</span>
       
       <span class="override" data-ice="override"></span>
@@ -870,6 +841,35 @@
         
         
         <div data-ice="description"><p>Disable this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-disabled">disabled</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Return if the component is disabled.</p>
 </div>
       </div>
     </td>
@@ -1467,6 +1467,62 @@
         
         <div data-ice="description"><p>Points to the parent component.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-parentDisabled">parentDisabled</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">set</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-set-parentDisabled">parentDisabled</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -2134,7 +2190,7 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">set</span>
+      <span class="kind" data-ice="kind">get</span>
       
       <span class="override" data-ice="override"></span>
     </td>
@@ -2144,7 +2200,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-set-visible">visible</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-visible">visible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2162,7 +2218,7 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">get</span>
+      <span class="kind" data-ice="kind">set</span>
       
       <span class="override" data-ice="override"></span>
     </td>
@@ -2172,7 +2228,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-visible">visible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-set-visible">visible</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -2299,6 +2355,34 @@
         
         <div data-ice="description"><p>Determines if this component has a condition assigned to it.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentDisabled">_parentDisabled</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -5244,7 +5328,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber489">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber502">source</a></span></span>
     </span>
   </h3>
 
@@ -5287,7 +5371,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1839">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1854">source</a></span></span>
     </span>
   </h3>
 
@@ -5330,7 +5414,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber764">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber777">source</a></span></span>
     </span>
   </h3>
 
@@ -5373,7 +5457,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1031">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1044">source</a></span></span>
     </span>
   </h3>
 
@@ -5474,7 +5558,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber481">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber494">source</a></span></span>
     </span>
   </h3>
 
@@ -5517,7 +5601,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber477">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber490">source</a></span></span>
     </span>
   </h3>
 
@@ -5560,7 +5644,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1056">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1069">source</a></span></span>
     </span>
   </h3>
 
@@ -5661,7 +5745,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2028">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2043">source</a></span></span>
     </span>
   </h3>
 
@@ -5704,7 +5788,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1567">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1580">source</a></span></span>
     </span>
   </h3>
 
@@ -5748,7 +5832,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1549">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1562">source</a></span></span>
     </span>
   </h3>
 
@@ -5804,7 +5888,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber420">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber421">source</a></span></span>
     </span>
   </h3>
 
@@ -5847,7 +5931,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1609">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1622">source</a></span></span>
     </span>
   </h3>
 
@@ -5890,7 +5974,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber971">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber984">source</a></span></span>
     </span>
   </h3>
 
@@ -5898,6 +5982,50 @@ method of your instance.</p>
   
   
   
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-disabled">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    
+    <span class="code" data-ice="name">disabled</span><span class="code" data-ice="signature">(disabled: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2068">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Disable this component.</p>
+</div>
 
   
 
@@ -5933,7 +6061,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2044">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2059">source</a></span></span>
     </span>
   </h3>
 
@@ -5978,50 +6106,6 @@ method of your instance.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-set-disabled">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">set</span>
-    
-    
-    
-    <span class="code" data-ice="name">disabled</span><span class="code" data-ice="signature">(disabled: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2053">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Disable this component.</p>
-</div>
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-element">
     <span class="access" data-ice="access">public</span>
     
@@ -6033,7 +6117,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber799">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber812">source</a></span></span>
     </span>
   </h3>
 
@@ -6076,7 +6160,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1524">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1537">source</a></span></span>
     </span>
   </h3>
 
@@ -6176,7 +6260,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1130">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1143">source</a></span></span>
     </span>
   </h3>
 
@@ -6232,7 +6316,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1974">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1989">source</a></span></span>
     </span>
   </h3>
 
@@ -6275,7 +6359,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber485">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber498">source</a></span></span>
     </span>
   </h3>
 
@@ -6318,7 +6402,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber416">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber417">source</a></span></span>
     </span>
   </h3>
 
@@ -6361,7 +6445,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1715">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1728">source</a></span></span>
     </span>
   </h3>
 
@@ -6404,7 +6488,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber804">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber817">source</a></span></span>
     </span>
   </h3>
 
@@ -6447,7 +6531,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber363">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber364">source</a></span></span>
     </span>
   </h3>
 
@@ -6491,7 +6575,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber338">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber339">source</a></span></span>
     </span>
   </h3>
 
@@ -6534,7 +6618,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber341">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber342">source</a></span></span>
     </span>
   </h3>
 
@@ -6577,7 +6661,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber412">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber413">source</a></span></span>
     </span>
   </h3>
 
@@ -6620,7 +6704,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber424">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber425">source</a></span></span>
     </span>
   </h3>
 
@@ -6663,7 +6747,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1880">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1895">source</a></span></span>
     </span>
   </h3>
 
@@ -6707,7 +6791,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1889">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1904">source</a></span></span>
     </span>
   </h3>
 
@@ -6751,7 +6835,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber380">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber381">source</a></span></span>
     </span>
   </h3>
 
@@ -6794,7 +6878,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1271">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1284">source</a></span></span>
     </span>
   </h3>
 
@@ -6837,7 +6921,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1135">source</a></span></span>
     </span>
   </h3>
 
@@ -6937,7 +7021,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber279">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber280">source</a></span></span>
     </span>
   </h3>
 
@@ -6946,6 +7030,92 @@ method of your instance.</p>
   
   <div data-ice="description"><p>Points to the parent component.</p>
 </div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-parentDisabled">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    
+    <span class="code" data-ice="name">parentDisabled</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber449">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-parentDisabled">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    
+    <span class="code" data-ice="name">parentDisabled</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber441">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
 
   
 
@@ -6981,7 +7151,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber436">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber437">source</a></span></span>
     </span>
   </h3>
 
@@ -7024,7 +7194,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber428">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber429">source</a></span></span>
     </span>
   </h3>
 
@@ -7067,7 +7237,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber272">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber273">source</a></span></span>
     </span>
   </h3>
 
@@ -7111,7 +7281,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1483">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1496">source</a></span></span>
     </span>
   </h3>
 
@@ -7154,7 +7324,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber376">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber377">source</a></span></span>
     </span>
   </h3>
 
@@ -7197,7 +7367,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber916">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber929">source</a></span></span>
     </span>
   </h3>
 
@@ -7240,7 +7410,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber921">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber934">source</a></span></span>
     </span>
   </h3>
 
@@ -7371,7 +7541,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber286">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber287">source</a></span></span>
     </span>
   </h3>
 
@@ -7415,7 +7585,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1541">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1554">source</a></span></span>
     </span>
   </h3>
 
@@ -7515,7 +7685,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber534">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber547">source</a></span></span>
     </span>
   </h3>
 
@@ -7559,7 +7729,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber759">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber772">source</a></span></span>
     </span>
   </h3>
 
@@ -7659,7 +7829,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber335">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber336">source</a></span></span>
     </span>
   </h3>
 
@@ -7703,7 +7873,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber567">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber580">source</a></span></span>
     </span>
   </h3>
 
@@ -7746,7 +7916,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber312">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber313">source</a></span></span>
     </span>
   </h3>
 
@@ -7789,7 +7959,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber329">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber330">source</a></span></span>
     </span>
   </h3>
 
@@ -7833,7 +8003,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber344">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber345">source</a></span></span>
     </span>
   </h3>
 
@@ -7876,7 +8046,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1957">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1972">source</a></span></span>
     </span>
   </h3>
 
@@ -7919,7 +8089,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber294">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber295">source</a></span></span>
     </span>
   </h3>
 
@@ -7963,50 +8133,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber954">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-set-visible">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">set</span>
-    
-    
-    
-    <span class="code" data-ice="name">visible</span><span class="code" data-ice="signature">(value: <span>*</span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber444">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber967">source</a></span></span>
     </span>
   </h3>
 
@@ -8049,7 +8176,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber456">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber469">source</a></span></span>
     </span>
   </h3>
 
@@ -8093,6 +8220,49 @@ method of your instance.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-visible">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    
+    <span class="code" data-ice="name">visible</span><span class="code" data-ice="signature">(value: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber457">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-wysiwygDefault">
     <span class="access" data-ice="access">public</span>
     
@@ -8104,7 +8274,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1431">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1444">source</a></span></span>
     </span>
   </h3>
 
@@ -8149,7 +8319,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber482">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber495">source</a></span></span>
     </span>
   </h3>
 
@@ -8245,6 +8415,49 @@ method of your instance.</p>
   
   <div data-ice="description"><p>Determines if this component has a condition assigned to it.</p>
 </div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-_parentDisabled">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">_parentDisabled</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber266">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
 
   
 
@@ -8370,7 +8583,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1450">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1463">source</a></span></span>
     </span>
   </h3>
 
@@ -8453,7 +8666,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1190">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1203">source</a></span></span>
     </span>
   </h3>
 
@@ -8530,7 +8743,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1354">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1367">source</a></span></span>
     </span>
   </h3>
 
@@ -8596,7 +8809,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1469">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1482">source</a></span></span>
     </span>
   </h3>
 
@@ -8679,7 +8892,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber837">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber850">source</a></span></span>
     </span>
   </h3>
 
@@ -8744,7 +8957,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2130">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2145">source</a></span></span>
     </span>
   </h3>
 
@@ -8803,7 +9016,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1316">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1329">source</a></span></span>
     </span>
   </h3>
 
@@ -8892,7 +9105,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2035">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2050">source</a></span></span>
     </span>
   </h3>
 
@@ -8964,7 +9177,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber797">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber810">source</a></span></span>
     </span>
   </h3>
 
@@ -9035,7 +9248,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2157">source</a></span></span>
     </span>
   </h3>
 
@@ -9078,7 +9291,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber874">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber887">source</a></span></span>
     </span>
   </h3>
 
@@ -9137,7 +9350,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber895">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber908">source</a></span></span>
     </span>
   </h3>
 
@@ -9180,7 +9393,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2193">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2208">source</a></span></span>
     </span>
   </h3>
 
@@ -9223,7 +9436,7 @@ method of your instance.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber740">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber753">source</a></span></span>
     </span>
   </h3>
 
@@ -9280,7 +9493,7 @@ to perform special functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber750">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber763">source</a></span></span>
     </span>
   </h3>
 
@@ -9337,7 +9550,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber779">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber792">source</a></span></span>
     </span>
   </h3>
 
@@ -9408,7 +9621,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1821">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1836">source</a></span></span>
     </span>
   </h3>
 
@@ -9482,7 +9695,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1242">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1255">source</a></span></span>
     </span>
   </h3>
 
@@ -9563,7 +9776,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1255">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1268">source</a></span></span>
     </span>
   </h3>
 
@@ -9635,7 +9848,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber609">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber622">source</a></span></span>
     </span>
   </h3>
 
@@ -9718,7 +9931,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber624">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber637">source</a></span></span>
     </span>
   </h3>
 
@@ -9795,7 +10008,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1940">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1955">source</a></span></span>
     </span>
   </h3>
 
@@ -9878,7 +10091,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2125">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2140">source</a></span></span>
     </span>
   </h3>
 
@@ -9921,7 +10134,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1382">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1395">source</a></span></span>
     </span>
   </h3>
 
@@ -9964,7 +10177,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1226">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1239">source</a></span></span>
     </span>
   </h3>
 
@@ -10036,7 +10249,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber994">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1007">source</a></span></span>
     </span>
   </h3>
 
@@ -10107,7 +10320,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber958">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber971">source</a></span></span>
     </span>
   </h3>
 
@@ -10162,7 +10375,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1601">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1614">source</a></span></span>
     </span>
   </h3>
 
@@ -10206,7 +10419,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber407">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber408">source</a></span></span>
     </span>
   </h3>
 
@@ -10249,7 +10462,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber866">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber879">source</a></span></span>
     </span>
   </h3>
 
@@ -10293,7 +10506,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2163">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2178">source</a></span></span>
     </span>
   </h3>
 
@@ -10349,7 +10562,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1155">source</a></span></span>
     </span>
   </h3>
 
@@ -10421,7 +10634,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1080">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1093">source</a></span></span>
     </span>
   </h3>
 
@@ -10493,7 +10706,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1280">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1293">source</a></span></span>
     </span>
   </h3>
 
@@ -10565,7 +10778,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2199">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2214">source</a></span></span>
     </span>
   </h3>
 
@@ -10608,7 +10821,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber708">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber721">source</a></span></span>
     </span>
   </h3>
 
@@ -10663,7 +10876,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1070">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1083">source</a></span></span>
     </span>
   </h3>
 
@@ -10719,7 +10932,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1766">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1781">source</a></span></span>
     </span>
   </h3>
 
@@ -10809,7 +11022,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber499">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber512">source</a></span></span>
     </span>
   </h3>
 
@@ -10887,7 +11100,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1900">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1915">source</a></span></span>
     </span>
   </h3>
 
@@ -10943,7 +11156,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber571">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber584">source</a></span></span>
     </span>
   </h3>
 
@@ -11020,7 +11233,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1638">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1651">source</a></span></span>
     </span>
   </h3>
 
@@ -11076,7 +11289,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1664">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1677">source</a></span></span>
     </span>
   </h3>
 
@@ -11148,7 +11361,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber975">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber988">source</a></span></span>
     </span>
   </h3>
 
@@ -11219,7 +11432,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1790">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1805">source</a></span></span>
     </span>
   </h3>
 
@@ -11297,7 +11510,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1182">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1195">source</a></span></span>
     </span>
   </h3>
 
@@ -11374,7 +11587,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1211">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1224">source</a></span></span>
     </span>
   </h3>
 
@@ -11430,7 +11643,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1532">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1545">source</a></span></span>
     </span>
   </h3>
 
@@ -11502,7 +11715,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1113">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1126">source</a></span></span>
     </span>
   </h3>
 
@@ -11579,7 +11792,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber939">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber952">source</a></span></span>
     </span>
   </h3>
 
@@ -11654,7 +11867,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber400">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber401">source</a></span></span>
     </span>
   </h3>
 
@@ -11697,7 +11910,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1911">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1926">source</a></span></span>
     </span>
   </h3>
 
@@ -11775,7 +11988,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1961">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1976">source</a></span></span>
     </span>
   </h3>
 
@@ -11846,7 +12059,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1936">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1951">source</a></span></span>
     </span>
   </h3>
 
@@ -11924,7 +12137,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber560">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber573">source</a></span></span>
     </span>
   </h3>
 
@@ -11979,7 +12192,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber768">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber781">source</a></span></span>
     </span>
   </h3>
 
@@ -12044,7 +12257,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1744">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1757">source</a></span></span>
     </span>
   </h3>
 
@@ -12116,7 +12329,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1397">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1410">source</a></span></span>
     </span>
   </h3>
 
@@ -12193,7 +12406,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber704">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber717">source</a></span></span>
     </span>
   </h3>
 
@@ -12264,7 +12477,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2134">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2149">source</a></span></span>
     </span>
   </h3>
 
@@ -12323,7 +12536,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1169">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1182">source</a></span></span>
     </span>
   </h3>
 
@@ -12378,7 +12591,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1154">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1167">source</a></span></span>
     </span>
   </h3>
 
@@ -12433,7 +12646,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber914">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber927">source</a></span></span>
     </span>
   </h3>
 
@@ -12493,7 +12706,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2138">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2153">source</a></span></span>
     </span>
   </h3>
 
@@ -12552,7 +12765,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1198">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1211">source</a></span></span>
     </span>
   </h3>
 
@@ -12629,7 +12842,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1175">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1188">source</a></span></span>
     </span>
   </h3>
 
@@ -12672,7 +12885,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber850">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber863">source</a></span></span>
     </span>
   </h3>
 
@@ -12737,7 +12950,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1104">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1117">source</a></span></span>
     </span>
   </h3>
 
@@ -12798,7 +13011,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber786">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber799">source</a></span></span>
     </span>
   </h3>
 
@@ -12877,7 +13090,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber695">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber708">source</a></span></span>
     </span>
   </h3>
 
@@ -12962,7 +13175,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber636">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber649">source</a></span></span>
     </span>
   </h3>
 
@@ -13046,7 +13259,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1778">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1793">source</a></span></span>
     </span>
   </h3>
 
@@ -13090,7 +13303,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1722">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1735">source</a></span></span>
     </span>
   </h3>
 
@@ -13134,7 +13347,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber677">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber690">source</a></span></span>
     </span>
   </h3>
 
@@ -13206,7 +13419,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2093">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2108">source</a></span></span>
     </span>
   </h3>
 
@@ -13283,7 +13496,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1146">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1159">source</a></span></span>
     </span>
   </h3>
 
@@ -13360,7 +13573,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1978">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1993">source</a></span></span>
     </span>
   </h3>
 
@@ -13425,7 +13638,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2062">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2077">source</a></span></span>
     </span>
   </h3>
 
@@ -13490,7 +13703,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2072">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2087">source</a></span></span>
     </span>
   </h3>
 
@@ -13555,7 +13768,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1096">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1109">source</a></span></span>
     </span>
   </h3>
 
@@ -13616,7 +13829,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2107">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2122">source</a></span></span>
     </span>
   </h3>
 
@@ -13681,7 +13894,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1677">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1690">source</a></span></span>
     </span>
   </h3>
 
@@ -13760,7 +13973,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1701">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1714">source</a></span></span>
     </span>
   </h3>
 
@@ -13826,7 +14039,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2011">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2026">source</a></span></span>
     </span>
   </h3>
 
@@ -13909,7 +14122,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1587">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1600">source</a></span></span>
     </span>
   </h3>
 
@@ -13969,7 +14182,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber544">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber557">source</a></span></span>
     </span>
   </h3>
 
@@ -14049,7 +14262,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber989">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1002">source</a></span></span>
     </span>
   </h3>
 
@@ -14108,7 +14321,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1806">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1821">source</a></span></span>
     </span>
   </h3>
 
@@ -14186,7 +14399,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1756">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1769">source</a></span></span>
     </span>
   </h3>
 
@@ -14258,7 +14471,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1970">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber1985">source</a></span></span>
     </span>
   </h3>
 
@@ -14330,7 +14543,7 @@ with the components data and returns true if they are in the same context.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2023">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/component/Component.js.html#lineNumber2038">source</a></span></span>
     </span>
   </h3>
 

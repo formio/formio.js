@@ -1,4 +1,4 @@
-import form from './form.hbs';
-import builder from './builder.hbs';
+import form from './form.ejs';
+import builder from './builder.ejs';
 
 export default { form, builder };

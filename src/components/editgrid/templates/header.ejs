@@ -1,0 +1,7 @@
+<div class="row">
+  {% util.eachComponent(components, function(component) { %}
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+      <div class="col-sm-2">{{ component.label }}</div>
+    {% } %}
+  {% }) %}
+</div>

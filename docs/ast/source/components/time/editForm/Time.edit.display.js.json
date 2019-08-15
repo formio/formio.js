@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 223,
+  "end": 225,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 223,
+    "end": 225,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 222,
+        "end": 224,
         "loc": {
           "start": {
             "line": 1,
@@ -45,7 +45,7 @@
         "declaration": {
           "type": "ArrayExpression",
           "start": 15,
-          "end": 221,
+          "end": 223,
           "loc": {
             "start": {
               "line": 1,
@@ -60,7 +60,7 @@
             {
               "type": "ObjectExpression",
               "start": 19,
-              "end": 219,
+              "end": 221,
               "loc": {
                 "start": {
                   "line": 2,
@@ -346,7 +346,7 @@
                 {
                   "type": "ObjectProperty",
                   "start": 132,
-                  "end": 199,
+                  "end": 200,
                   "loc": {
                     "start": {
                       "line": 8,
@@ -354,7 +354,7 @@
                     },
                     "end": {
                       "line": 8,
-                      "column": 71
+                      "column": 72
                     }
                   },
                   "method": false,
@@ -380,7 +380,7 @@
                   "value": {
                     "type": "StringLiteral",
                     "start": 141,
-                    "end": 199,
+                    "end": 200,
                     "loc": {
                       "start": {
                         "line": 8,
@@ -388,20 +388,20 @@
                       },
                       "end": {
                         "line": 8,
-                        "column": 71
+                        "column": 72
                       }
                     },
                     "extra": {
-                      "rawValue": "The moment.js format for saving the value of this field.",
-                      "raw": "'The moment.js format for saving the value of this field.'"
+                      "rawValue": "The moment.js format for showing the value of this field.",
+                      "raw": "'The moment.js format for showing the value of this field.'"
                     },
-                    "value": "The moment.js format for saving the value of this field."
+                    "value": "The moment.js format for showing the value of this field."
                   }
                 },
                 {
                   "type": "ObjectProperty",
-                  "start": 205,
-                  "end": 215,
+                  "start": 206,
+                  "end": 216,
                   "loc": {
                     "start": {
                       "line": 9,
@@ -417,8 +417,8 @@
                   "computed": false,
                   "key": {
                     "type": "Identifier",
-                    "start": 205,
-                    "end": 211,
+                    "start": 206,
+                    "end": 212,
                     "loc": {
                       "start": {
                         "line": 9,
@@ -434,8 +434,8 @@
                   },
                   "value": {
                     "type": "NumericLiteral",
-                    "start": 213,
-                    "end": 215,
+                    "start": 214,
+                    "end": 216,
                     "loc": {
                       "start": {
                         "line": 9,
@@ -1163,9 +1163,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "The moment.js format for saving the value of this field.",
+      "value": "The moment.js format for showing the value of this field.",
       "start": 141,
-      "end": 199,
+      "end": 200,
       "loc": {
         "start": {
           "line": 8,
@@ -1173,7 +1173,7 @@
         },
         "end": {
           "line": 8,
-          "column": 71
+          "column": 72
         }
       }
     },
@@ -1190,16 +1190,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 199,
-      "end": 200,
+      "start": 200,
+      "end": 201,
       "loc": {
         "start": {
           "line": 8,
-          "column": 71
+          "column": 72
         },
         "end": {
           "line": 8,
-          "column": 72
+          "column": 73
         }
       }
     },
@@ -1216,8 +1216,8 @@
         "binop": null
       },
       "value": "weight",
-      "start": 205,
-      "end": 211,
+      "start": 206,
+      "end": 212,
       "loc": {
         "start": {
           "line": 9,
@@ -1242,8 +1242,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 211,
-      "end": 212,
+      "start": 212,
+      "end": 213,
       "loc": {
         "start": {
           "line": 9,
@@ -1269,8 +1269,8 @@
         "updateContext": null
       },
       "value": 50,
-      "start": 213,
-      "end": 215,
+      "start": 214,
+      "end": 216,
       "loc": {
         "start": {
           "line": 9,
@@ -1279,6 +1279,32 @@
         "end": {
           "line": 9,
           "column": 14
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 216,
+      "end": 217,
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 14
+        },
+        "end": {
+          "line": 9,
+          "column": 15
         }
       }
     },
@@ -1294,8 +1320,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 218,
-      "end": 219,
+      "start": 220,
+      "end": 221,
       "loc": {
         "start": {
           "line": 10,
@@ -1320,8 +1346,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 220,
-      "end": 221,
+      "start": 222,
+      "end": 223,
       "loc": {
         "start": {
           "line": 11,
@@ -1346,8 +1372,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 221,
-      "end": 222,
+      "start": 223,
+      "end": 224,
       "loc": {
         "start": {
           "line": 11,
@@ -1372,8 +1398,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 223,
-      "end": 223,
+      "start": 225,
+      "end": 225,
       "loc": {
         "start": {
           "line": 12,

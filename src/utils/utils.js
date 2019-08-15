@@ -8,7 +8,8 @@ import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import NativePromise from 'native-promise-only';
 import { getValue } from './formUtils';
-import stringHash from 'string-hash';
+import Evaluator from './Evaluator';
+const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -90,7 +91,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = new Function(...params, func);
+      func = Evaluator.evaluator(func, ...params);
       args = _.values(args);
     }
     catch (err) {
@@ -346,7 +347,7 @@ export function setActionProperty(component, action, row, data, result, instance
       const textValue = action.property.component ? action[action.property.component] : action.text;
       const newValue = (instance && instance.interpolate) ?
         instance.interpolate(textValue, evalData) :
-        interpolate(textValue, evalData);
+        Evaluator.interpolate(textValue, evalData);
       if (newValue !== _.get(component, action.property.value, '')) {
         _.set(component, action.property.value, newValue);
       }
@@ -354,52 +355,6 @@ export function setActionProperty(component, action, row, data, result, instance
     }
   }
   return component;
-}
-
-const templateCache = {};
-const templateHashCache = {};
-
-function interpolateTemplate(template) {
-  const templateSettings = {
-    evaluate: /\{%([\s\S]+?)%\}/g,
-    interpolate: /\{\{([\s\S]+?)\}\}/g,
-    escape: /\{\{\{([\s\S]+?)\}\}\}/g
-  };
-  try {
-    return _.template(template, templateSettings);
-  }
-  catch (err) {
-    console.warn('Error while processing template', err, template);
-  }
-}
-
-export function addTemplateHash(template) {
-  const hash = stringHash(template);
-  templateHashCache[hash] = interpolateTemplate(template);
-  return hash;
-}
-
-/**
- * Interpolate a string and add data replacements.
- *
- * @param string
- * @param data
- * @returns {XML|string|*|void}
- */
-export function interpolate(rawTemplate, data) {
-  const template = (_.isNumber(rawTemplate) && templateHashCache.hasOwnProperty(rawTemplate))
-    ? templateHashCache[rawTemplate]
-    : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
-  if (typeof template === 'function') {
-    try {
-      return template(data);
-    }
-    catch (err) {
-      console.warn('Error interpolating template', err, rawTemplate, data);
-      return '';
-    }
-  }
-  return template;
 }
 
 /**
@@ -427,7 +382,7 @@ export function uniqueName(name, template, evalContext) {
     guid: guid()
   });
   //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-  const uniqueName = `${interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
   return uniqueName;
 }
 
@@ -466,7 +421,7 @@ export function getDateSetting(date) {
 
   dateSetting = null;
   try {
-    const value = (new Function('moment', `return ${date};`))(moment);
+    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
     if (typeof value === 'string') {
       dateSetting = moment(value);
     }
@@ -1050,3 +1005,5 @@ export function observeOverload(callback, options = {}) {
     }
   };
 }
+
+export { Evaluator, interpolate };

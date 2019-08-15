@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
-import Components from '../Components';
+import { Evaluator } from '../../utils/utils';
+import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -12,6 +13,7 @@ export default class EditGridComponent extends NestedComponent {
       clearOnHide: true,
       input: true,
       tree: true,
+      removeRow: 'Cancel',
       defaultOpen: false,
       components: [],
       inlineEdit: false,
@@ -37,7 +39,9 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    <div class="col-sm-2">{{ component.label }}</div>
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+      <div class="col-sm-2">{{ component.label }}</div>
+    {% } %}
   {% }) %}
 </div>`;
   }
@@ -45,18 +49,20 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    <div class="col-sm-2">
-      {{ getView(component, row[component.key]) }}
-    </div>
+    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
+      <div class="col-sm-2">
+        {{ getView(component, row[component.key]) }}
+      </div>
+    {% } %}
   {% }) %}
 
   {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
-        <button class="btn btn-default btn-sm editRow">Edit</button>
+        <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
         {% if (instance.hasRemoveButtons()) { %}
-          <button class="btn btn-danger btn-sm removeRow">Delete</button>
-        {% } %}
+          <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
+        {% } %} 
       </div>
     </div>
   {% } %}
@@ -124,9 +130,10 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     const dataValue = this.dataValue || [];
+    const headerTemplate = Evaluator.noeval ? templates.header : _.get(this.component, 'templates.header');
     return super.render(children || this.renderTemplate('editgrid', {
       editgridKey: this.editgridKey,
-      header: this.renderString(_.get(this.component, 'templates.header'), {
+      header: this.renderString(headerTemplate, {
         components: this.component.components,
         value: dataValue
       }),
@@ -207,8 +214,9 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       const flattenedComponents = this.flattenComponents(rowIndex);
+      const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
       return this.renderString(
-        _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate),
+        rowTemplate,
         {
           row: dataValue[rowIndex],
           data: this.data,
@@ -544,14 +552,14 @@ export default class EditGridComponent extends NestedComponent {
   setValue(value, flags) {
     if (!value) {
       this.dataValue = this.defaultValue;
-      return;
+      return false;
     }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
       }
       else {
-        return;
+        return false;
       }
     }
 

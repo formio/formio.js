@@ -25,7 +25,9 @@ const settingComponent = EditFormUtils.javaScriptValue(
 export default [
   {
     ...settingComponent,
-    customConditional: 'show = instance.root.editForm.display === "wizard"',
+    customConditional(context) {
+      return context.instance.root.editForm.display === 'wizard';
+    }
   }
 ];
 /* eslint-enable quotes, max-len */

@@ -34,19 +34,34 @@ export default [
     ]
   },
   {
-    weight: 40,
+    key: 'refreshOn',
+    label: 'Refresh On',
+    weight: 110,
+    tooltip: 'Refresh data when another field changes.',
+    dataSrc: 'custom',
+    valueProperty: 'value',
+    data: {
+      custom(context) {
+        var values = [];
+        values.push({ label: 'Any Change', value: 'data' });
+        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+        return values;
+      }
+    }
+  },
+  {
+    weight: 150,
     type: 'checkbox',
     label: 'Protected',
     tooltip: 'A protected field will not be returned when queried via API.',
     key: 'protected',
-    input: true
-  },
-  {
-    weight: 400,
-    type: 'checkbox',
-    label: 'Encrypted (Enterprise Only)',
-    tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
-    key: 'encrypted',
     input: true
   },
   {
@@ -56,6 +71,14 @@ export default [
     key: 'dbIndex',
     label: 'Database Index',
     tooltip: 'Set this field as an index within the database. Increases performance for submission queries.'
+  },
+  {
+    weight: 400,
+    type: 'checkbox',
+    label: 'Encrypted (Enterprise Only)',
+    tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
+    key: 'encrypted',
+    input: true
   },
   {
     weight: 700,

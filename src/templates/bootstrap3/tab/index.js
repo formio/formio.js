@@ -1,4 +1,4 @@
-import flat from './flat.hbs';
-import form from './form.hbs';
+import flat from './flat.ejs';
+import form from './form.ejs';
 
 export default { flat, form };

@@ -109,7 +109,7 @@ export default class DateTimeComponent extends Input {
     if (this.widget) {
       this.widget.setValue(value);
     }
-    super.setValue(value, flags);
+    return super.setValue(value, flags);
   }
 
   get emptyValue() {
