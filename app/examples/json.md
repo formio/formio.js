@@ -132,7 +132,7 @@ Formio.createForm(document.getElementById('formio'), {
       datepickerMode: 'day',
       enableDate: true,
       enableTime: true,
-      format: 'yyyy-MM-dd hh:mm a"', 
+      format: 'yyyy-MM-dd hh:mm a', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
       description: 'Enter <strong>Due Date</strong>',
@@ -174,7 +174,8 @@ Formio.createForm(document.getElementById('formio'), {
       type: 'button',
       action: 'reset',
       label: 'Reset Form',
-      theme: 'success'
+      theme: 'success',
+      disableOnInvalid: true
     }
   ]
 });
@@ -302,7 +303,7 @@ Formio.createForm(document.getElementById('formio'), {
       datepickerMode: 'day',
       enableDate: true,
       enableTime: true,
-      format: 'yyyy-MM-dd hh:mm a"', 
+      format: 'yyyy-MM-dd hh:mm a', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
       description: 'Enter <strong>Due Date</strong>',
@@ -344,7 +345,8 @@ Formio.createForm(document.getElementById('formio'), {
        type: 'button',
        action: 'reset',
        label: 'Reset Form',
-       theme: 'success'
+       theme: 'success',
+       disableOnInvalid: true
      }
   ]
 }).then(function(form) {
