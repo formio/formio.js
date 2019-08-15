@@ -57,12 +57,8 @@ export default class ButtonComponent extends BaseComponent {
     this.setLoading(this.buttonElement, loading);
   }
 
-  set disabled(disabled) {
-    // Do not allow a component to be disabled if it should be always...
-    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
-      return;
-    }
-    super.disabled = disabled;
+  set forceDisabled(disabled) {
+    super.forceDisabled = disabled;
     this.setDisabled(this.buttonElement, disabled);
   }
 
@@ -143,11 +139,11 @@ export default class ButtonComponent extends BaseComponent {
       const message = this.ce('div');
       this.on('submitButton', () => {
         this.loading = true;
-        this.disabled = true;
+        this.forceDisabled = true;
       }, true);
       this.on('submitDone', () => {
         this.loading = false;
-        this.disabled = false;
+        this.forceDisabled = false;
         this.empty(message);
         this.addClass(this.buttonElement, 'btn-success submit-success');
         this.removeClass(this.buttonElement, 'btn-danger submit-fail');
@@ -180,17 +176,28 @@ export default class ButtonComponent extends BaseComponent {
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
-        this.disabled = true;
+        this.forceDisabled = true;
       }, true);
       this.on('requestDone', () => {
         this.loading = false;
-        this.disabled = false;
+        this.forceDisabled = false;
       }, true);
+    }
+
+    if (this.component.disableOnInvalid && this.root && this.root.ready) {
+      this.root.ready.then(() => {
+        const isValid = this.root.checkValidity(this.root.getValue());
+        if (!isValid) {
+          this.forceDisabled = true;
+        }
+      });
     }
 
     this.on('change', (value) => {
       this.loading = false;
-      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
+      if (this.component.disableOnInvalid && value.hasOwnProperty('isValid')) {
+        this.forceDisabled = !value.isValid;
+      }
       if (onChange) {
         onChange(value, value.isValid);
       }
@@ -288,7 +295,7 @@ export default class ButtonComponent extends BaseComponent {
     });
 
     if (this.shouldDisable) {
-      this.disabled = true;
+      this.forceDisabled = true;
     }
 
     function getUrlParameter(name) {

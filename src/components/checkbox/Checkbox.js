@@ -96,7 +96,7 @@ export default class CheckBoxComponent extends BaseComponent {
     this.createDescription(this.element);
     this.restoreValue();
     if (this.shouldDisable) {
-      this.disabled = true;
+      this.forceDisabled = true;
     }
     this.autofocus();
     this.attachLogic();

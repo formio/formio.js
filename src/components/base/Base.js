@@ -2356,7 +2356,7 @@ export default class BaseComponent extends Component {
     }
 
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.hasInput || (!dirty && this.pristine)) {
+    if (!this.hasInput) {
       return '';
     }
 
@@ -2422,6 +2422,9 @@ export default class BaseComponent extends Component {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       this.removeChildFrom(this.errorElement, this.errorContainer);
+    }
+    if ((!dirty && this.pristine)) {
+      message = '';
     }
     if (message) {
       this.error = {
@@ -2571,16 +2574,11 @@ export default class BaseComponent extends Component {
   }
 
   /**
-   * Disable this component.
+   * Force a component to be disabled regardless if it should or not.
    *
-   * @param {boolean} disabled
+   * @param disabled
    */
-  set disabled(disabled) {
-    // Do not allow a component to be disabled if it should be always...
-    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
-      return;
-    }
-
+  set forceDisabled(disabled) {
     this._disabled = disabled;
 
     // Add/remove the disabled class from the element.
@@ -2593,6 +2591,20 @@ export default class BaseComponent extends Component {
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
+  }
+
+  /**
+   * Disable this component.
+   *
+   * @param {boolean} disabled
+   */
+  set disabled(disabled) {
+    // Do not allow a component to be disabled if it should be always...
+    if ((!disabled && this.shouldDisable) || (disabled && !this.shouldDisable)) {
+      return;
+    }
+
+    this.forceDisabled = disabled;
   }
 
   setDisabled(element, disabled) {
