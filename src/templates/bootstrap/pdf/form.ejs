@@ -1,9 +1,9 @@
 <div class="{{ctx.classes}}" ref="webform">
 	<span ref="zoomIn" style="position:absolute;right:10px;top:10px;cursor:pointer;" class="btn btn-default btn-secondary no-disable">
-		<i class="glyphicon glyphicon-zoom-in"></i>
+		<i class="{{ ctx.iconClass('zoom-in') }}"></i>
 	</span>
 	<span ref="zoomOut" style="position:absolute;right:10px;top:60px;cursor:pointer;" class="btn btn-default btn-secondary no-disable">
-		<i class="glyphicon glyphicon-zoom-out"></i>
+		<i class="{{ ctx.iconClass('zoom-out') }}"></i>
 	</span>
   <div ref="iframeContainer"></div>
   <button type="button" class="btn btn-primary" ref="submitButton">Submit</button>
