@@ -17,12 +17,9 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    //check if <input type="time" /> is supported to fallback to input with mask (for Safari and IE)
-    const input = this.ce('time');
-    this.timeInputSupported = (input.type === 'time');
-    if (!this.timeInputSupported) {
-      this.component.inputMask = '99:99';
-    }
+
+    this.component.inputMask = '99:99';
+    this.component.inputType = this.component.inputType || 'time';
   }
 
   static get builderInfo() {
@@ -59,7 +56,7 @@ export default class TimeComponent extends TextFieldComponent {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.attr.type = 'time';
+    info.attr.type = this.component.inputType;
     return info;
   }
 

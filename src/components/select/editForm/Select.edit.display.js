@@ -3,7 +3,7 @@ export default [
     type: 'select',
     input: true,
     weight: 20,
-    tooltip: 'Select the type of widget you\'d like to use',
+    tooltip: 'Select the type of widget you\'d like to use.',
     key: 'widget',
     defaultValue: 'choicesjs',
     label: 'Widget Type',
