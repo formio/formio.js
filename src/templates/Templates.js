@@ -9,6 +9,14 @@ export default class Templates {
     return Templates._templates;
   }
 
+  static addTemplate(name, template) {
+    Templates.templates[name] = template;
+  }
+
+  static setTemplate(name, template) {
+    Templates.addTemplate(name, template);
+  }
+
   static set current(templates) {
     const defaultTemplates = Templates.current;
     Templates._current = _.merge(defaultTemplates, templates);
