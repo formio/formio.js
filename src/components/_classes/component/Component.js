@@ -111,6 +111,11 @@ export default class Component extends Element {
       widget: null,
 
       /**
+       * Attributes that will be assigned to the input elements of this component.
+       */
+      attributes: {},
+
+      /**
        * This will perform the validation on either "change" or "blur" of the input element.
        */
       validateOn: 'change',
@@ -509,14 +514,14 @@ export default class Component extends Element {
    * @param schema
    * @param defaultSchema
    */
-  getModifiedSchema(schema, defaultSchema) {
+  getModifiedSchema(schema, defaultSchema, recursion) {
     const modified = {};
     if (!defaultSchema) {
       return schema;
     }
     _.each(schema, (val, key) => {
       if (!_.isArray(val) && _.isObject(val) && defaultSchema.hasOwnProperty(key)) {
-        const subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        const subModified = this.getModifiedSchema(val, defaultSchema[key], true);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
         }
@@ -527,11 +532,10 @@ export default class Component extends Element {
         }
       }
       else if (
-        (key === 'type') ||
-        (key === 'key') ||
-        (key === 'label') ||
-        (key === 'input') ||
-        (key === 'tableView') ||
+        (!recursion && (key === 'type')) ||
+        (!recursion && (key === 'key')) ||
+        (!recursion && (key === 'label')) ||
+        (!recursion && (key === 'input')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
         (val !== '' && val !== defaultSchema[key])
       ) {

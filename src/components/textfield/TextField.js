@@ -15,10 +15,7 @@ export default class TextFieldComponent extends Input {
         minLength: '',
         maxLength: '',
         pattern: ''
-      },
-      widget: {
-        type: 'input'
-      },
+      }
     }, ...extend);
   }
 

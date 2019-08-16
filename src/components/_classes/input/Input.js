@@ -9,6 +9,14 @@ export default class Input extends Multivalue {
     this.triggerUpdateValueAt = _.debounce(this.updateValueAt.bind(this), 100);
   }
 
+  static schema(...extend) {
+    return Multivalue.schema({
+      widget: {
+        type: 'input'
+      }
+    }, ...extend);
+  }
+
   get inputInfo() {
     const attr = {
       name: this.options.name,
