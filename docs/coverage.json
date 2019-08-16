@@ -1,6 +1,6 @@
 {
-  "coverage": "15.06%",
-  "expectCount": 1852,
+  "coverage": "15.05%",
+  "expectCount": 1853,
   "actualCount": 279,
   "files": {
     "src/EventEmitter.js": {
@@ -153,7 +153,7 @@
       ]
     },
     "src/PDF.js": {
-      "expectCount": 19,
+      "expectCount": 17,
       "actualCount": 0,
       "undocumentLines": [
         7,
@@ -163,18 +163,16 @@
         27,
         34,
         38,
-        46,
-        47,
         48,
-        52,
-        85,
-        93,
-        102,
-        129,
-        141,
-        154,
-        170,
-        188
+        49,
+        50,
+        54,
+        97,
+        124,
+        136,
+        149,
+        165,
+        183
       ]
     },
     "src/PDFBuilder.js": {
@@ -258,45 +256,46 @@
       ]
     },
     "src/WebformBuilder.js": {
-      "expectCount": 41,
+      "expectCount": 42,
       "actualCount": 5,
       "undocumentLines": [
-        14,
-        16,
-        30,
-        32,
+        15,
+        17,
+        31,
         33,
-        35,
+        34,
         36,
-        47,
-        50,
-        60,
+        37,
+        48,
+        51,
         61,
-        288,
-        291,
-        313,
-        339,
-        343,
-        347,
-        370,
+        62,
+        322,
+        325,
+        377,
         399,
-        414,
-        436,
+        425,
+        429,
+        433,
+        456,
         485,
-        492,
-        518,
-        531,
-        648,
-        675,
-        697,
-        749,
-        769,
-        821,
-        829,
-        836,
-        842,
-        959,
-        967
+        500,
+        522,
+        584,
+        595,
+        621,
+        634,
+        752,
+        779,
+        801,
+        853,
+        873,
+        925,
+        933,
+        940,
+        946,
+        1063,
+        1071
       ]
     },
     "src/Wizard.js": {
@@ -2245,16 +2244,18 @@
       ]
     },
     "src/templates/Templates.js": {
-      "expectCount": 7,
+      "expectCount": 9,
       "actualCount": 0,
       "undocumentLines": [
         4,
         5,
         12,
-        17,
+        16,
+        20,
         25,
-        29,
-        36
+        33,
+        37,
+        44
       ]
     },
     "src/templates/bootstrap/iconClass.js": {

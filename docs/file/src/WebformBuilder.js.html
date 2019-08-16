@@ -227,6 +227,7 @@ import dragula from &apos;dragula&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
+import Formio from &apos;./Formio&apos;;
 import { bootstrapVersion } from &apos;./utils/utils&apos;;
 import { eachComponent, getComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
@@ -506,9 +507,94 @@ export default class WebformBuilder extends Component {
       return element;
     };
 
+    // Load resources tagged as &apos;builder&apos;
+    const query = {
+      params: {
+        type: &apos;resource&apos;,
+        limit: 4294967295,
+        select: &apos;_id,title,name,components&apos;,
+        tags: [&apos;builder&apos;]
+      }
+    };
+    const formio = new Formio(Formio.projectUrl);
+
+    if (!formio.noProject) {
+      formio.loadForms(query)
+        .then((resources) =&gt; {
+          if (resources.length) {
+            this.builder.resource = {
+              title: &apos;Existing Resource Fields&apos;,
+              key: &apos;resource&apos;,
+              weight: 50,
+              subgroups: []
+            };
+            this.groups.resource = {
+              title: &apos;Existing Resource Fields&apos;,
+              key: &apos;resource&apos;,
+              weight: 50,
+              subgroups: []
+            };
+            this.groupOrder.push(&apos;resource&apos;);
+            this.addExistingResourceFields(resources);
+          }
+        });
+    }
+
     // Notify components if they need to modify their render.
     this.options.attachMode = &apos;builder&apos;;
     this.webform = this.webform || this.createForm(this.options);
+  }
+
+  addExistingResourceFields(resources) {
+    _.each(resources, (resource, index) =&gt; {
+      const resourceKey = resource.name;
+      const subgroup = {
+        key: resource.name,
+        title: resource.title,
+        components: [],
+        componentOrder: [],
+        default: index === 0,
+      };
+
+      eachComponent(resource.components, (component) =&gt; {
+        if (component.type === &apos;button&apos;) return;
+        if (
+          this.options &amp;&amp;
+          this.options.resourceFilter &amp;&amp;
+          (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)
+        ) return;
+
+        let componentName = component.label;
+        if (!componentName &amp;&amp; component.key) {
+          componentName = _.upperFirst(component.key);
+        }
+
+        subgroup.componentOrder.push(component.key);
+        subgroup.components[component.key] = _.merge(
+          _.cloneDeep(Components.components[component.type].builderInfo, true),
+          {
+            key: component.key,
+            title: componentName,
+            group: &apos;resource&apos;,
+            subgroup: resourceKey,
+          },
+          {
+            schema: {
+              ...component,
+              label: component.label,
+              key: component.key,
+              lockKey: true,
+              source: (!this.options.noSource ? resource._id : undefined),
+              isNew: true
+            }
+          }
+        );
+      }, true);
+
+      this.groups.resource.subgroups.push(subgroup);
+    });
+
+    this.triggerRedraw();
   }
 
   createForm(options) {
@@ -688,8 +774,21 @@ export default class WebformBuilder extends Component {
         // Click event
         this.refs[&apos;sidebar-anchor&apos;].forEach((anchor, index) =&gt; {
           this.addEventListener(anchor, &apos;click&apos;, () =&gt; {
+            const clickedParentId = anchor.getAttribute(&apos;data-parent&apos;).slice(&apos;#builder-sidebar-&apos;.length);
+            const clickedId = anchor.getAttribute(&apos;data-target&apos;).slice(&apos;#group-&apos;.length);
+
             this.refs[&apos;sidebar-group&apos;].forEach((group, groupIndex) =&gt; {
-              group.style.display = (groupIndex === index) ? &apos;inherit&apos; : &apos;none&apos;;
+              const openByDefault = group.getAttribute(&apos;data-default&apos;) === &apos;true&apos;;
+              const groupId = group.getAttribute(&apos;id&apos;).slice(&apos;group-&apos;.length);
+              const groupParent = group.getAttribute(&apos;data-parent&apos;).slice(&apos;#builder-sidebar-&apos;.length);
+
+              group.style.display =
+                (
+                  (openByDefault &amp;&amp; groupParent === clickedId) ||
+                  groupId === clickedParentId ||
+                  groupIndex === index
+                )
+                ? &apos;inherit&apos; : &apos;none&apos;;
             });
           }, true);
         });
@@ -712,7 +811,11 @@ export default class WebformBuilder extends Component {
       this.dragula.destroy();
     }
 
-    this.dragula = dragula(Array.prototype.slice.call(this.refs[&apos;sidebar-container&apos;]), {
+    const containersArray = Array.prototype.slice.call(this.refs[&apos;sidebar-container&apos;]).filter(item =&gt; {
+      return item.id !== &apos;group-container-resource&apos;;
+    });
+
+    this.dragula = dragula(containersArray, {
       moves(el) {
         let moves = true;
 
@@ -761,12 +864,13 @@ export default class WebformBuilder extends Component {
       return;
     }
 
+    const key = element.getAttribute(&apos;data-key&apos;);
     const type = element.getAttribute(&apos;data-type&apos;);
     let info, isNew;
 
-    if (type) {
+    if (key) {
       // This is a new component
-      if (this.schemas.hasOwnProperty(type)) {
+      if (this.schemas.hasOwnProperty(key)) {
         info = _.cloneDeep(this.schemas[type]);
         info.key = _.camelCase(
           info.title ||
@@ -777,7 +881,7 @@ export default class WebformBuilder extends Component {
       }
       else {
         // This is an existing resource field.
-        const [resource, key] = type.split(&apos;_&apos;);
+        const resource = element.getAttribute(&apos;data-group&apos;);
         const resourceGroups = this.groups.resource.subgroups;
         const resourceGroup = _.find(resourceGroups, { key: resource });
         if (resourceGroup &amp;&amp; resourceGroup.components.hasOwnProperty(key)) {
