@@ -19,6 +19,6 @@ module.exports = {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-optional-chaining',
-    ['babel-plugin-inline-import', { extensions: ['.hbs'] }]
+    ['babel-plugin-inline-import', { extensions: ['.ejs'] }]
   ],
 };
