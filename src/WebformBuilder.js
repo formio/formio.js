@@ -301,14 +301,14 @@ export default class WebformBuilder extends Component {
           if (resources.length) {
             this.builder.resource = {
               title: 'Existing Resource Fields',
+              key: 'resource',
               weight: 50,
-              panelClass: 'subgroup-accordion-container',
               subgroups: []
             };
             this.groups.resource = {
               title: 'Existing Resource Fields',
+              key: 'resource',
               weight: 50,
-              panelClass: 'subgroup-accordion-container',
               subgroups: []
             };
             this.groupOrder.push('resource');
@@ -346,8 +346,8 @@ export default class WebformBuilder extends Component {
           componentName = _.upperFirst(component.key);
         }
 
-        subgroup.componentOrder.push(component.type);
-        subgroup.components[component.type] = _.merge(
+        subgroup.componentOrder.push(component.key);
+        subgroup.components[component.key] = _.merge(
           _.cloneDeep(Components.components[component.type].builderInfo, true),
           {
             key: component.key,
@@ -357,6 +357,7 @@ export default class WebformBuilder extends Component {
           },
           {
             schema: {
+              ...component,
               label: component.label,
               key: component.key,
               lockKey: true,
@@ -587,7 +588,11 @@ export default class WebformBuilder extends Component {
       this.dragula.destroy();
     }
 
-    this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
+    const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => {
+      return item.id !== 'group-container-resource';
+    });
+
+    this.dragula = dragula(containersArray, {
       moves(el) {
         let moves = true;
 
@@ -642,7 +647,7 @@ export default class WebformBuilder extends Component {
 
     if (key) {
       // This is a new component
-      if (this.schemas.hasOwnProperty(type)) {
+      if (this.schemas.hasOwnProperty(key)) {
         info = _.cloneDeep(this.schemas[type]);
         info.key = _.camelCase(
           info.title ||
@@ -656,7 +661,7 @@ export default class WebformBuilder extends Component {
         const resource = element.getAttribute('data-group');
         const resourceGroups = this.groups.resource.subgroups;
         const resourceGroup = _.find(resourceGroups, { key: resource });
-        if (resourceGroup && resourceGroup.components.hasOwnProperty(type)) {
+        if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
           info = resourceGroup.components[key].schema;
         }
       }
