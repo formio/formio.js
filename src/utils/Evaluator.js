@@ -23,6 +23,8 @@ const Evaluator = {
     }
     hash = hash || stringHash(template);
     try {
+      // Ensure we handle copied templates from the ejs files.
+      template = template.replace(/ctx\./g, '');
       return (Evaluator.cache[hash] = _.template(template, Evaluator.templateSettings));
     }
     catch (err) {
