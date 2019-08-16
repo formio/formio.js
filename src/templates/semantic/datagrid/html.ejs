@@ -1,17 +1,17 @@
 <table class="ui table datagrid-table
-    {{ component.striped ? 'striped' : ''}}
-    {{ component.bordered ? 'celled' : ''}}
-    {{ component.hover ? 'selectable' : ''}}
-    {{ component.condensed ? 'compact' : 'padded'}}
+    {{ ctx.component.striped ? 'striped' : ''}}
+    {{ ctx.component.bordered ? 'celled' : ''}}
+    {{ ctx.component.hover ? 'selectable' : ''}}
+    {{ ctx.component.condensed ? 'compact' : 'padded'}}
     ">
-  {% if (hasHeader) { %}
+  {% if (ctx.hasHeader) { %}
   <thead>
     <tr>
-      {% columns.forEach(function(col) { %}
-      {% if (visibleColumns[col.key]) { %}
+      {% ctx.columns.forEach(function(col) { %}
+      {% if (ctx.visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-        {{ col.hideLabel ? '' : t(col.label || col.title) }}
-        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
+        {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
+        {% if (col.tooltip) { %} <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
       </th>
       {% } %}
       {% }) %}
@@ -19,11 +19,11 @@
   </thead>
   {% } %}
   <tbody>
-    {% rows.forEach(function(row) { %}
+    {% ctx.rows.forEach(function(row) { %}
     <tr>
-      {% columns.forEach(function(col) { %}
-      {% if (visibleColumns[col.key]) { %}
-      <td ref="{{datagridKey}}">
+      {% ctx.columns.forEach(function(col) { %}
+      {% if (ctx.visibleColumns[col.key]) { %}
+      <td ref="{{ctx.datagridKey}}">
         {{row[col.key]}}
       </td>
       {% } %}

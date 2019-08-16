@@ -1,24 +1,24 @@
 <div class="table-responsive">
   <table class="table
-      {{ component.striped ? 'table-striped' : ''}}
-      {{ component.bordered ? 'table-bordered' : ''}}
-      {{ component.hover ? 'table-hover' : ''}}
-      {{ component.condensed ? 'table-sm' : ''}}
+      {{ ctx.component.striped ? 'table-striped' : ''}}
+      {{ ctx.component.bordered ? 'table-bordered' : ''}}
+      {{ ctx.component.hover ? 'table-hover' : ''}}
+      {{ ctx.component.condensed ? 'table-sm' : ''}}
     ">
-    {% if (component.header && component.header.length > 0) { %}
+    {% if (ctx.component.header && ctx.component.header.length > 0) { %}
     <thead>
       <tr>
-        {% component.header.forEach(function(header) { %}
-        <th>{{t(header)}}</th>
+        {% ctx.component.header.forEach(function(header) { %}
+        <th>{{ctx.t(header)}}</th>
         {% }) %}
       </tr>
     </thead>
     {% } %}
     <tbody>
-      {% tableComponents.forEach(function(row, rowIndex) { %}
-      <tr ref="row-{{id}}">
+      {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
+      <tr ref="row-{{ctx.id}}">
         {% row.forEach(function(column, colIndex) { %}
-        <td ref="{{tableKey}}-{{rowIndex}}">{{column}}</td>
+        <td ref="{{ctx.tableKey}}-{{rowIndex}}">{{column}}</td>
         {% }) %}
       </tr>
       {% }) %}

@@ -1,17 +1,17 @@
 <div class="form-check checkbox">
-  <label class="{{input.labelClass}} form-check-label">
-    <{{input.type}}
+  <label class="{{ctx.input.labelClass}} form-check-label">
+    <{{ctx.input.type}}
       ref="input"
-      {% for (var attr in input.attr) { %}
-      {{attr}}="{{input.attr[attr]}}"
+      {% for (var attr in ctx.input.attr) { %}
+      {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
-      {% if (checked) { %}checked=true{% } %}
+      {% if (ctx.checked) { %}checked=true{% } %}
       >
-    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
-    {% if (component.tooltip) { %}
-      <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
+    {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
+    {% if (ctx.component.tooltip) { %}
+      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
     {% } %}
-    {{input.content}}
-    </{{input.type}}>
+    {{ctx.input.content}}
+    </{{ctx.input.type}}>
   </label>
 </div>

@@ -1,11 +1,11 @@
 <tr ref="row">
   <td>
-    {{element}}
+    {{ctx.element}}
   </td>
-  {% if (!disabled) { %}
+  {% if (!ctx.disabled) { %}
   <td>
     <button type="button" class="btn btn-secondary" ref="removeRow">
-      <i class="{{iconClass('remove-circle')}}"></i>
+      <i class="{{ctx.iconClass('remove-circle')}}"></i>
     </button>
   </td>
   {% } %}

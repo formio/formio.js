@@ -1,23 +1,23 @@
 <div class="form-radio radio">
-  {% values.forEach(function(item) { %}
-  <div class="form-check{{inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="form-check-label" for="{{id}}{{row}}-{{item.value}}">
-      {% if (component.optionsLabelPosition === 'left' || component.optionsLabelPosition === 'top') { %}
-      <span>{{t(item.label)}}</span>
+  {% ctx.values.forEach(function(item) { %}
+  <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
+    <label class="form-check-label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+      {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
+      <span>{{ctx.t(item.label)}}</span>
       {% } %}
-      <{{input.type}}
+      <{{ctx.input.type}}
         ref="input"
-        {% for (var attr in input.attr) { %}
-        {{attr}}="{{input.attr[attr]}}"
+        {% for (var attr in ctx.input.attr) { %}
+        {{attr}}="{{ctx.input.attr[attr]}}"
         {% } %}
         value="{{item.value}}"
-        {% if (value && (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value]))) { %}
+        {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
           checked=true
         {% } %}
-        id="{{id}}{{row}}-{{item.value}}"
+        id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
       >
-      {% if (!component.optionsLabelPosition || component.optionsLabelPosition === 'right' || component.optionsLabelPosition === 'bottom') { %}
-      <span>{{t(item.label)}}</span>
+      {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
+      <span>{{ctx.t(item.label)}}</span>
       {% } %}
     </label>
   </div>

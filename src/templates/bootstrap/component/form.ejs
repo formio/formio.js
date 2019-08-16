@@ -1,6 +1,6 @@
-<div id="{{id}}" class="{{classes}} form-group"{% if (styles) { %} styles="{{styles}}"{% } %} ref="component">
-  {% if (visible) { %}
-  {{children}}
+<div id="{{ctx.id}}" class="{{ctx.classes}} form-group"{% if (ctx.styles) { %} styles="{{ctx.styles}}"{% } %} ref="component">
+  {% if (ctx.visible) { %}
+  {{ctx.children}}
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
   {% } %}
 </div>
