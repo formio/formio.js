@@ -4,6 +4,7 @@ import dragula from 'dragula';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
+import Formio from './Formio';
 import { bootstrapVersion } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
@@ -283,9 +284,94 @@ export default class WebformBuilder extends Component {
       return element;
     };
 
+    // Load resources tagged as 'builder'
+    const query = {
+      params: {
+        type: 'resource',
+        limit: 4294967295,
+        select: '_id,title,name,components',
+        tags: ['builder']
+      }
+    };
+    const formio = new Formio(Formio.projectUrl);
+
+    if (!formio.noProject) {
+      formio.loadForms(query)
+        .then((resources) => {
+          if (resources.length) {
+            this.builder.resource = {
+              title: 'Existing Resource Fields',
+              key: 'resource',
+              weight: 50,
+              subgroups: []
+            };
+            this.groups.resource = {
+              title: 'Existing Resource Fields',
+              key: 'resource',
+              weight: 50,
+              subgroups: []
+            };
+            this.groupOrder.push('resource');
+            this.addExistingResourceFields(resources);
+          }
+        });
+    }
+
     // Notify components if they need to modify their render.
     this.options.attachMode = 'builder';
     this.webform = this.webform || this.createForm(this.options);
+  }
+
+  addExistingResourceFields(resources) {
+    _.each(resources, (resource, index) => {
+      const resourceKey = resource.name;
+      const subgroup = {
+        key: resource.name,
+        title: resource.title,
+        components: [],
+        componentOrder: [],
+        default: index === 0,
+      };
+
+      eachComponent(resource.components, (component) => {
+        if (component.type === 'button') return;
+        if (
+          this.options &&
+          this.options.resourceFilter &&
+          (!component.tags || component.tags.indexOf(this.options.resourceFilter) === -1)
+        ) return;
+
+        let componentName = component.label;
+        if (!componentName && component.key) {
+          componentName = _.upperFirst(component.key);
+        }
+
+        subgroup.componentOrder.push(component.key);
+        subgroup.components[component.key] = _.merge(
+          _.cloneDeep(Components.components[component.type].builderInfo, true),
+          {
+            key: component.key,
+            title: componentName,
+            group: 'resource',
+            subgroup: resourceKey,
+          },
+          {
+            schema: {
+              ...component,
+              label: component.label,
+              key: component.key,
+              lockKey: true,
+              source: (!this.options.noSource ? resource._id : undefined),
+              isNew: true
+            }
+          }
+        );
+      }, true);
+
+      this.groups.resource.subgroups.push(subgroup);
+    });
+
+    this.triggerRedraw();
   }
 
   createForm(options) {
@@ -465,8 +551,21 @@ export default class WebformBuilder extends Component {
         // Click event
         this.refs['sidebar-anchor'].forEach((anchor, index) => {
           this.addEventListener(anchor, 'click', () => {
+            const clickedParentId = anchor.getAttribute('data-parent').slice('#builder-sidebar-'.length);
+            const clickedId = anchor.getAttribute('data-target').slice('#group-'.length);
+
             this.refs['sidebar-group'].forEach((group, groupIndex) => {
-              group.style.display = (groupIndex === index) ? 'inherit' : 'none';
+              const openByDefault = group.getAttribute('data-default') === 'true';
+              const groupId = group.getAttribute('id').slice('group-'.length);
+              const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
+
+              group.style.display =
+                (
+                  (openByDefault && groupParent === clickedId) ||
+                  groupId === clickedParentId ||
+                  groupIndex === index
+                )
+                ? 'inherit' : 'none';
             });
           }, true);
         });
@@ -489,7 +588,11 @@ export default class WebformBuilder extends Component {
       this.dragula.destroy();
     }
 
-    this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
+    const containersArray = Array.prototype.slice.call(this.refs['sidebar-container']).filter(item => {
+      return item.id !== 'group-container-resource';
+    });
+
+    this.dragula = dragula(containersArray, {
       moves(el) {
         let moves = true;
 
@@ -538,12 +641,13 @@ export default class WebformBuilder extends Component {
       return;
     }
 
+    const key = element.getAttribute('data-key');
     const type = element.getAttribute('data-type');
     let info, isNew;
 
-    if (type) {
+    if (key) {
       // This is a new component
-      if (this.schemas.hasOwnProperty(type)) {
+      if (this.schemas.hasOwnProperty(key)) {
         info = _.cloneDeep(this.schemas[type]);
         info.key = _.camelCase(
           info.title ||
@@ -554,7 +658,7 @@ export default class WebformBuilder extends Component {
       }
       else {
         // This is an existing resource field.
-        const [resource, key] = type.split('_');
+        const resource = element.getAttribute('data-group');
         const resourceGroups = this.groups.resource.subgroups;
         const resourceGroup = _.find(resourceGroups, { key: resource });
         if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {

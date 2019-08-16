@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
  - Loader being oval instead of circle
+ - Mutating passed component JSON when calling component constructor
 
 ## 3.22.6
 ### Fixed

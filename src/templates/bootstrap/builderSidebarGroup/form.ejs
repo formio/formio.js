@@ -6,6 +6,7 @@
         type="button"
         data-toggle="collapse"
         data-target="#group-{{ctx.groupKey}}"
+        data-parent="#{{ctx.groupId}}"
         aria-expanded="{{ctx.group.default}}"
         aria-controls="group-{{ctx.groupKey}}"
         ref="sidebar-anchor"
@@ -23,8 +24,13 @@
     ref="sidebar-group"
   >
     <div id="group-container-{{ctx.groupKey}}" class="card-body no-drop p-2" ref="sidebar-container">
-      {% ctx.group.componentOrder.forEach(function(componentKey) { %}
-      <span data-type="{{ctx.group.components[componentKey].key}}" class="btn btn-primary btn-sm btn-block formcomponent drag-copy">
+      {% !ctx.group.componentOrder || ctx.group.componentOrder.forEach(function(componentKey) { %}
+      <span
+        data-group="{{ctx.groupKey}}"
+        data-key="{{ctx.group.components[componentKey].key}}"
+        data-type="{{ctx.group.components[componentKey].schema.type}}"
+        class="btn btn-primary btn-sm btn-block formcomponent drag-copy"
+      >
         {% if (ctx.group.components[componentKey].icon) { %}
           <i class="{{ctx.iconClass(ctx.group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>
         {% } %}
