@@ -1,23 +1,23 @@
 <table class="ui table
-    {{ component.striped ? 'striped' : ''}}
-    {{ component.bordered ? 'celled' : ''}}
-    {{ component.hover ? 'selectable' : ''}}
-    {{ component.condensed ? 'compact' : 'padded'}}
+    {{ ctx.component.striped ? 'striped' : ''}}
+    {{ ctx.component.bordered ? 'celled' : ''}}
+    {{ ctx.component.hover ? 'selectable' : ''}}
+    {{ ctx.component.condensed ? 'compact' : 'padded'}}
   ">
-  {% if (component.header && component.header.length > 0) { %}
+  {% if (ctx.component.header && ctx.component.header.length > 0) { %}
   <thead>
     <tr>
-      {% component.header.forEach(function(header) { %}
-      <th>{{t(header)}}</th>
+      {% ctx.component.header.forEach(function(header) { %}
+      <th>{{ctx.t(header)}}</th>
       {% }) %}
     </tr>
   </thead>
   {% } %}
   <tbody>
-    {% tableComponents.forEach(function(row, rowIndex) { %}
+    {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
     <tr ref="row-{{id}}">
       {% row.forEach(function(column, colIndex) { %}
-      <td ref="{{tableKey}}-{{rowIndex}}">{{column}}</td>
+      <td ref="{{ctx.tableKey}}-{{ctx.rowIndex}}">{{column}}</td>
       {% }) %}
     </tr>
     {% }) %}

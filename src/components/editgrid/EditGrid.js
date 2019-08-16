@@ -56,11 +56,11 @@ export default class EditGridComponent extends NestedComponent {
     {% } %}
   {% }) %}
 
-  {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
+  {% if (!self.options.readOnly && !self.originalComponent.disabled) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
         <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
-        {% if (instance.hasRemoveButtons()) { %}
+        {% if (self.hasRemoveButtons()) { %}
           <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
         {% } %} 
       </div>

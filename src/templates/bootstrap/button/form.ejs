@@ -1,16 +1,16 @@
-<{{input.type}}
+<{{ctx.input.type}}
   ref="button"
-  {% for (var attr in input.attr) { %}
-  {{attr}}="{{input.attr[attr]}}"
+  {% for (var attr in ctx.input.attr) { %}
+  {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
 >
-{% if (component.leftIcon) { %}<span class="{{component.leftIcon}}"></span>&nbsp;{% } %}
-{{input.content}}
-{% if (component.tooltip) { %}
-  <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
+{% if (ctx.component.leftIcon) { %}<span class="{{ctx.component.leftIcon}}"></span>&nbsp;{% } %}
+{{ctx.input.content}}
+{% if (ctx.component.tooltip) { %}
+  <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
 {% } %}
-{% if (component.rightIcon) { %}&nbsp;<span class="{{component.rightIcon}}"></span>{% } %}
-</{{input.type}}>
+{% if (ctx.component.rightIcon) { %}&nbsp;<span class="{{ctx.component.rightIcon}}"></span>{% } %}
+</{{ctx.input.type}}>
 <div ref="buttonMessageContainer">
   <span class="help-block" ref="buttonMessage"></span>
 </div>

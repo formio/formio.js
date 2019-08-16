@@ -31,7 +31,13 @@ const Evaluator = {
   },
   interpolate(rawTemplate, data) {
     if (typeof rawTemplate === 'function') {
-      return rawTemplate(data);
+      try {
+        return rawTemplate(data);
+      }
+      catch (err) {
+        console.warn('Error interpolating template', err, data);
+        return err.message;
+      }
     }
 
     const hash = _.isNumber(rawTemplate) ? rawTemplate : stringHash(rawTemplate);
@@ -52,6 +58,7 @@ const Evaluator = {
       }
       catch (err) {
         console.warn('Error interpolating template', err, rawTemplate, data);
+        return err.message;
       }
     }
     return template;
