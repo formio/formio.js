@@ -1,22 +1,22 @@
-{% if (!label.hidden && label.labelPosition !== 'bottom') { %}
-  <label class="control-label {{label.className}}">
-    {% if (!label.hidden) { %}
-      {{ t(component.label) }}
-      {% if (component.tooltip) { %}
-        <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
+{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { %}
+  <label class="control-label {{ctx.label.className}}">
+    {% if (!ctx.label.hidden) { %}
+      {{ ctx.t(ctx.component.label) }}
+      {% if (ctx.component.tooltip) { %}
+        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
       {% } %}
     {% } %}
   </label>
 {% } %}
-{{element}}
-{% if (!label.hidden && label.labelPosition === 'bottom') { %}
-  <label class="control-label {{label.className}}">
-  {{t(component.label)}}
-  {% if (component.tooltip) { %}
-    <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
+{{ctx.element}}
+{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}
+  <label class="control-label {{ctx.label.className}}">
+  {{ctx.t(ctx.component.label)}}
+  {% if (ctx.component.tooltip) { %}
+    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
   {% } %}
   </label>
 {% } %}
-{% if (component.description) { %}
-  <div class="help-block">{{t(component.description)}}</div>
+{% if (ctx.component.description) { %}
+  <div class="help-block">{{ctx.t(ctx.component.description)}}</div>
 {% } %}

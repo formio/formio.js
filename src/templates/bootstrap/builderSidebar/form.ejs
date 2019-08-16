@@ -1,5 +1,5 @@
-<div id="{{groupId}}" class="accordion builder-sidebar{{scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
-  {% groups.forEach(function(group) { %}
-  {{ group }}
+<div id="{{ctx.groupId}}" class="accordion builder-sidebar{{ctx.scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
+  {% ctx.groups.forEach(function(group) { %}
+    {{ group }}
   {% }) %}
 </div>

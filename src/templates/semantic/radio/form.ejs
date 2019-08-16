@@ -1,20 +1,20 @@
-<div class="fields {{inline ? 'inline' : 'grouped'}}">
-  {% values.forEach(function(item) { %}
+<div class="fields {{ctx.inline ? 'inline' : 'grouped'}}">
+  {% ctx.values.forEach(function(item) { %}
   <div class="field">
-    <div class="ui {{input.attr.type==='radio' ? 'radio' : ''}} checkbox" ref="wrapper">
-      <{{input.type}} 
-        ref="input" 
-        {% for (var attr in input.attr) { %}
-        {{attr}}="{{input.attr[attr]}}"
+    <div class="ui {{ctx.input.attr.type==='radio' ? 'radio' : ''}} checkbox" ref="wrapper">
+      <{{ctx.input.type}}
+        ref="input"
+        {% for (var attr in ctx.input.attr) { %}
+        {{attr}}="{{ctx.input.attr[attr]}}"
         {% } %}
         value="{{item.value}}"
-        {% if (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])) { %}
+        {% if (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])) { %}
           checked=true
         {% } %}
-        id="{{id}}{{row}}-{{item.value}}" 
+        id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
       >
-      <label class="" for="{{id}}{{row}}-{{item.value}}">
-        <span>{{t(item.label)}}</span>
+      <label class="" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+        <span>{{ctx.t(item.label)}}</span>
       </label>
     </div>
   </div>

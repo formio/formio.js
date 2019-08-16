@@ -44,7 +44,8 @@ gulp.task('templates', () =>
     .pipe(template.precompile({
       evaluate: /\{%([\s\S]+?)%\}/g,
       interpolate: /\{\{([\s\S]+?)\}\}/g,
-      escape: /\{\{\{([\s\S]+?)\}\}\}/g
+      escape: /\{\{\{([\s\S]+?)\}\}\}/g,
+      variable: 'ctx'
     }))
     .pipe(insert.prepend('Object.defineProperty(exports, "__esModule", {\n' +
       '  value: true\n' +

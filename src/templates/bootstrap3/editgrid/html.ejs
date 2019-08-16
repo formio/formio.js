@@ -1,35 +1,35 @@
 <ul class="editgrid-listgroup list-group
-    {{ component.striped ? 'table-striped' : ''}}
-    {{ component.bordered ? 'table-bordered' : ''}}
-    {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-sm' : ''}}
+    {{ ctx.component.striped ? 'table-striped' : ''}}
+    {{ ctx.component.bordered ? 'table-bordered' : ''}}
+    {{ ctx.component.hover ? 'table-hover' : ''}}
+    {{ ctx.component.condensed ? 'table-sm' : ''}}
     ">
-  {% if (header) { %}
+  {% if (ctx.header) { %}
   <li class="list-group-item list-group-header">
-    {{header}}
+    {{ctx.header}}
   </li>
   {% } %}
-  {% rows.forEach(function(row, rowIndex) { %}
-  <li class="list-group-item" ref="{{editgridKey}}">
+  {% ctx.rows.forEach(function(row, rowIndex) { %}
+  <li class="list-group-item" ref="{{ctx.editgridKey}}">
     {{row}}
-    {% if (openRows[rowIndex] && !readOnly) { %}
+    {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
     <div class="editgrid-actions">
-      <button class="btn btn-primary" ref="{{editgridKey}}-saveRow">{{t(component.saveRow || 'Save')}}</button>
-      {% if (component.removeRow) { %}
-      <button class="btn btn-danger" ref="{{editgridKey}}-cancelRow">{{t(component.removeRow || 'Cancel')}}</button>
+      <button class="btn btn-primary" ref="{{ctx.editgridKey}}-saveRow">{{ctx.t(ctx.component.saveRow || 'Save')}}</button>
+      {% if (ctx.component.removeRow) { %}
+      <button class="btn btn-danger" ref="{{ctx.editgridKey}}-cancelRow">{{ctx.t(ctx.component.removeRow || 'Cancel')}}</button>
       {% } %}
     </div>
     {% } %}
     <div class="has-error">
       <div class="editgrid-row-error help-block">
-        {{errors[rowIndex]}}
+        {{ctx.errors[rowIndex]}}
       </div>
     </div>
   </li>
   {% }) %}
-  {% if (footer) { %}
+  {% if (ctx.footer) { %}
   <li class="list-group-item list-group-footer">
-    {{footer}}
+    {{ctx.footer}}
   </li>
   {% } %}
 </ul>

@@ -1,5 +1,5 @@
-<label class="{{input.labelClass}}">
-    {{input.content}}
-    {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
+<label class="{{ctx.input.labelClass}}">
+    {{ctx.input.content}}
+    {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
 </label>
-<div ref="value">{% if (checked) { %}True{% } else { %}False{% } %}</div>
+<div ref="value">{% if (ctx.checked) { %}True{% } else { %}False{% } %}</div>
