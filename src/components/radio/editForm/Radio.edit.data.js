@@ -37,6 +37,9 @@ export default [
         key: 'shortcut',
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
+        valueProperty: 'value',
+        customDefaultValue: () => '',
+        template: '{{ item.label }}',
         data: {
           custom({
             instance: {
