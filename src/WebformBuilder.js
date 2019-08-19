@@ -794,6 +794,7 @@ export default class WebformBuilder extends Component {
       this.emit('removeComponent', component);
       parent.formioContainer.splice(index, 1);
       parent.formioComponent.rebuild();
+      this.emit('change', this.form);
     }
     return remove;
   }
@@ -845,6 +846,7 @@ export default class WebformBuilder extends Component {
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         this.emit('saveComponent', parentContainer[index], originalComponent);
+        this.emit('change', this.form);
       });
     }
     return NativePromise.resolve();
@@ -1056,6 +1058,7 @@ export default class WebformBuilder extends Component {
         parent.formioContainer.splice(index + 1, 0, schema);
         parent.formioComponent.rebuild();
         this.emit('saveComponent');
+        this.emit('change', this.form);
       }
     }
   }
