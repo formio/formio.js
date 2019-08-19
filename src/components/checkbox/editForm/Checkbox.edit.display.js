@@ -17,6 +17,9 @@ export default [
     key: 'shortcut',
     tooltip: 'Shortcut for this component.',
     dataSrc: 'custom',
+    valueProperty: 'value',
+    customDefaultValue: () => '',
+    template: '{{ item.label }}',
     data: {
       custom({
         instance: {

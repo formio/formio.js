@@ -77,6 +77,9 @@ export default {
     return [''].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
       this.getBindedShortcuts(form.components, component)),
-    );
+    ).map((shortcut) => ({
+      label: shortcut,
+      value: shortcut,
+    }));
   }
 };
