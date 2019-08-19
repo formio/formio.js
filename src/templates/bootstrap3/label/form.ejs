@@ -1,0 +1,8 @@
+<label class="control-label {{ctx.label.className}}">
+  {% if (!ctx.label.hidden) { %}
+    {{ ctx.t(ctx.component.label) }}
+    {% if (ctx.component.tooltip) { %}
+      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+    {% } %}
+  {% } %}
+</label>
