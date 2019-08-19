@@ -666,6 +666,7 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
+    data.render = this.renderTemplate.bind(this);
 
     // Allow more specific template names
     const names = [
