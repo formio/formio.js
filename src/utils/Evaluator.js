@@ -23,6 +23,8 @@ const Evaluator = {
     }
     hash = hash || stringHash(template);
     try {
+      // Ensure we handle copied templates from the ejs files.
+      template = template.replace(/ctx\./g, '');
       return (Evaluator.cache[hash] = _.template(template, Evaluator.templateSettings));
     }
     catch (err) {
@@ -31,7 +33,13 @@ const Evaluator = {
   },
   interpolate(rawTemplate, data) {
     if (typeof rawTemplate === 'function') {
-      return rawTemplate(data);
+      try {
+        return rawTemplate(data);
+      }
+      catch (err) {
+        console.warn('Error interpolating template', err, data);
+        return err.message;
+      }
     }
 
     const hash = _.isNumber(rawTemplate) ? rawTemplate : stringHash(rawTemplate);
@@ -52,6 +60,7 @@ const Evaluator = {
       }
       catch (err) {
         console.warn('Error interpolating template', err, rawTemplate, data);
+        return err.message;
       }
     }
     return template;

@@ -1,10 +1,10 @@
-{% component.columns.forEach(function(column, index) { %}
-<div class="col 
-    col-sm-{{column.width}}
-    col-sm-offset-{{column.offset}}
-    col-sm-push-{{column.push}}
-    col-sm-pull-{{column.pull}}
-  " ref="{{columnKey}}">
-  {{columnComponents[index]}}
+{% ctx.component.columns.forEach(function(column, index) { %}
+<div class="col
+    col-sm-{{ctx.column.width}}
+    col-sm-offset-{{ctx.column.offset}}
+    col-sm-push-{{ctx.column.push}}
+    col-sm-pull-{{ctx.column.pull}}
+  " ref="{{ctx.columnKey}}">
+  {{ctx.columnComponents[index]}}
 </div>
 {% }) %}

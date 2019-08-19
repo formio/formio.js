@@ -1,26 +1,26 @@
 <div class="ui grid">
-  {% if (dayFirst && showDay) { %}
+  {% if (ctx.dayFirst && ctx.showDay) { %}
   <div class="four wide column">
-    <label for="{{component.key}}-day" class="">{{t('Day')}}</label>
-    {{day}}
+    <label for="{{ctx.component.key}}-day" class="">{{ctx.t('Day')}}</label>
+    {{ctx.day}}
   </div>
   {% } %}
-  {% if (showMonth) { %}
+  {% if (ctx.showMonth) { %}
   <div class="five wide column">
-    <label for="{{component.key}}-month" class="">{{t('Month')}}</label>
-    {{month}}
+    <label for="{{ctx.component.key}}-month" class="">{{ctx.t('Month')}}</label>
+    {{ctx.month}}
   </div>
   {% } %}
-  {% if (!dayFirst && showDay) { %}
+  {% if (!ctx.dayFirst && ctx.showDay) { %}
   <div class="four wide column">
-    <label for="{{component.key}}-day" class="">{{t('Day')}}</label>
-    {{day}}
+    <label for="{{ctx.component.key}}-day" class="">{{ctx.t('Day')}}</label>
+    {{ctx.day}}
   </div>
   {% } %}
-  {% if (showYear) { %}
+  {% if (ctx.showYear) { %}
   <div class="seven wide column">
-    <label for="{{component.key}}-year" class="">{{t('Year')}}</label>
-    {{year}}
+    <label for="{{ctx.component.key}}-year" class="">{{ctx.t('Year')}}</label>
+    {{ctx.year}}
   </div>
   {% } %}
 </div>

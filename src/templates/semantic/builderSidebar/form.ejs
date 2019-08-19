@@ -1,5 +1,5 @@
-<div id="builder-sidebar-{{id}}" class="ui segments" ref="sidebar">
-  {% groups.forEach(function(group) { %}
+<div id="builder-sidebar-{{ctx.id}}" class="ui segments" ref="sidebar">
+  {% ctx.groups.forEach(function(group) { %}
     {{ group }}
   {% }) %}
 </div>

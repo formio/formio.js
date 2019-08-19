@@ -1,10 +1,10 @@
 <table class="ui celled table">
   <tbody>
-  {{rows}}
-  {% if (!disabled) { %}
+  {{ctx.rows}}
+  {% if (!ctx.disabled) { %}
   <tr>
     <td colspan="2">
-      <button class="ui button primary" ref="addButton"><i class="{{iconClass('plus')}}"></i> {{addAnother}}</button>
+      <button class="ui button primary" ref="addButton"><i class="{{ctx.iconClass('plus')}}"></i> {{ctx.addAnother}}</button>
     </td>
   </tr>
   {% } %}

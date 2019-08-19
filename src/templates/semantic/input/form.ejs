@@ -1,20 +1,20 @@
-<div class="ui {{component.editor ? '' : 'input'}} fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}">
-{% if (component.prefix) { %}
-<label class="ui label" ref="prefix">{{component.prefix}}</label>
+<div class="ui {{ctx.component.editor ? '' : 'input'}} fluid {{ ctx.component.suffix ? ' right' : '' }}{{ (ctx.component.prefix || ctx.component.suffix) ? ' labeled' : '' }}">
+{% if (ctx.component.prefix) { %}
+<label class="ui label" ref="prefix">{{ctx.component.prefix}}</label>
 {% } %}
-<{{input.type}}
-  ref="{{input.ref ? input.ref : 'input'}}"
-  {% for (var attr in input.attr) { %}
-  {{attr}}="{{input.attr[attr]}}"
+<{{ctx.input.type}}
+  ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+  {% for (var attr in ctx.input.attr) { %}
+  {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
->{{input.content}}</{{input.type}}>
-{% if (component.showCharCount) { %}
+>{{ctx.input.content}}</{{ctx.input.type}}>
+{% if (ctx.component.showCharCount) { %}
 <span class="ui right floated" ref="charcount"></span>
 {% } %}
-{% if (component.showWordCount) { %}
+{% if (ctx.component.showWordCount) { %}
 <span class="ui right floated" ref="wordcount"></span>
 {% } %}
-{% if (component.suffix) { %}
-<div class="ui label" ref="suffix">{{component.suffix}}</div>
+{% if (ctx.component.suffix) { %}
+<div class="ui label" ref="suffix">{{ctx.component.suffix}}</div>
 {% } %}
 </div>

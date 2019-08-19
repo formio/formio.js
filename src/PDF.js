@@ -39,6 +39,8 @@ export default class PDF extends Webform {
     return super.attach(element).then(() => {
       this.loadRefs(element, {
         submitButton: 'single',
+        zoomIn: 'single',
+        zoomOut: 'single',
         iframeContainer: 'single'
       });
 
@@ -70,6 +72,16 @@ export default class PDF extends Webform {
         this.postMessage({ name: 'getSubmission' });
       });
 
+      this.addEventListener(this.refs.zoomIn, 'click', (event) => {
+        event.preventDefault();
+        this.postMessage({ name: 'zoomIn' });
+      });
+
+      this.addEventListener(this.refs.zoomOut, 'click', (event) => {
+        event.preventDefault();
+        this.postMessage({ name: 'zoomOut' });
+      });
+
       const form = _.cloneDeep(this.form);
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
@@ -80,23 +92,6 @@ export default class PDF extends Webform {
 
       this.emit('attach');
     });
-  }
-
-  detach() {
-    this.removeEventListener(this.refs.submitButton, 'click');
-
-    const result = super.detach();
-
-    return result;
-  }
-
-  destroy() {
-    this.off('iframe-submission');
-    this.off('iframe-ready');
-
-    const result = super.destroy();
-
-    return result;
   }
 
   getSrc() {
