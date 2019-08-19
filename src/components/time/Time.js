@@ -81,10 +81,10 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getValueFromView(view) {
-    return moment(view, this.component.format).format(this.dataFormat);
+    return view ? moment(view, this.component.format).format(this.dataFormat) : view;
   }
 
   getView(value) {
-    return moment(value, this.dataFormat).format(this.component.format);
+    return value ? moment(value, this.dataFormat).format(this.component.format) : value;
   }
 }
