@@ -104,7 +104,15 @@ export default class Formio {
 
     const hostparts = this.getUrlParts(path);
     let parts = [];
-    const hostName = hostparts[1] + hostparts[2];
+    let hostName = '';
+    if (hostparts && hostparts.length >= 2) {
+      hostName = hostparts[1] + hostparts[2];
+    }
+    else {
+      console.log('Ambiguous letter in url\'s might fail, please make sure setBaseUrl and ' +
+        'setProjectUrl are configured properly. Reference: https://github.com/formio/formio.js/issues/1573');
+      throw new Error('Failed to parse Url. Please make sure you have no ambiguous letters in url\'s');
+    }
     path = hostparts.length > 3 ? hostparts[3] : '';
     const queryparts = path.split('?');
     if (queryparts.length > 1) {
@@ -642,7 +650,10 @@ export default class Formio {
   }
 
   static getUrlParts(url, formio) {
-    const base = (formio && formio.base) ? formio.base : Formio.baseUrl;
+    let base = (formio && formio.base) ? formio.base : Formio.baseUrl;
+    if (base.charAt(base.length - 1) === '/' || base.charAt(base.length - 1) === '?') {
+      base = base.substring(0, base.length - 1);
+    }
     let regex = '^(http[s]?:\\/\\/)';
     if (base && url.indexOf(base) === 0) {
       regex += `(${base.replace(/^http[s]?:\/\//, '')})`;
