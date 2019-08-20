@@ -211,8 +211,6 @@ export default class Webform extends NestedComponent {
       this.formReadyReject = reject;
     });
 
-    this.submission = this._submission;
-
     /**
      * Promise that executes when the submission is ready and rendered.
      * @type {Promise}
