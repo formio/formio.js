@@ -222,6 +222,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/multivalue/Multivalue.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../field/Field&apos;;
+import _ from &apos;lodash&apos;;
 
 export default class Multivalue extends Field {
   get dataValue() {
@@ -298,6 +299,42 @@ export default class Multivalue extends Field {
       });
     });
     return superAttach;
+  }
+
+  /**
+   * Attach inputs to the element.
+   *
+   * @param element
+   * @param index
+   */
+  attachElement(element, index) {
+    this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
+      // Delay update slightly to give input mask a chance to run.
+      const textCase = _.get(this.component, &apos;case&apos;, &apos;mixed&apos;);
+      if (textCase !== &apos;mixed&apos;) {
+        const {
+          selectionStart,
+          selectionEnd,
+        } = element;
+
+        if (textCase === &apos;uppercase&apos; &amp;&amp; element.value) {
+          element.value = element.value.toUpperCase();
+        }
+        if (textCase === &apos;lowercase&apos; &amp;&amp; element.value) {
+          element.value = element.value.toLowerCase();
+        }
+
+        element.selectionStart = selectionStart;
+        element.selectionEnd = selectionEnd;
+      }
+      setTimeout(() =&gt; {
+        return this.updateValue(null, {
+          modified: true
+        }, index);
+      }, 1);
+    });
+
+    this.setInputMask(this.refs.input[index]);
   }
 
   /**

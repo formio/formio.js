@@ -232,6 +232,14 @@ export default class Input extends Multivalue {
     this.triggerUpdateValueAt = _.debounce(this.updateValueAt.bind(this), 100);
   }
 
+  static schema(...extend) {
+    return Multivalue.schema({
+      widget: {
+        type: &apos;input&apos;
+      }
+    }, ...extend);
+  }
+
   get inputInfo() {
     const attr = {
       name: this.options.name,
@@ -308,7 +316,7 @@ export default class Input extends Multivalue {
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = value;
+    info.attr.value = this.getView(value);
     // This should be in the calendar widget but it doesn&apos;t have access to renderTemplate.
     if (this.component.widget &amp;&amp; this.component.widget.type === &apos;calendar&apos;) {
       this.component.suffix = this.renderTemplate(&apos;icon&apos;, {
@@ -377,31 +385,7 @@ export default class Input extends Multivalue {
   }
 
   attachElement(element, index) {
-    this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
-      // Delay update slightly to give input mask a chance to run.
-      const textCase = _.get(this.component, &apos;case&apos;, &apos;mixed&apos;);
-      if (textCase !== &apos;mixed&apos;) {
-        const {
-          selectionStart,
-          selectionEnd,
-        } = element;
-
-        if (textCase === &apos;uppercase&apos; &amp;&amp; element.value) {
-          element.value = element.value.toUpperCase();
-        }
-        if (textCase === &apos;lowercase&apos; &amp;&amp; element.value) {
-          element.value = element.value.toLowerCase();
-        }
-
-        element.selectionStart = selectionStart;
-        element.selectionEnd = selectionEnd;
-      }
-      setTimeout(() =&gt; {
-        return this.updateValue(null, {
-          modified: true
-        }, index);
-      }, 1);
-    });
+    super.attachElement(element, index);
 
     // Attach the widget.
     element.widget = this.createWidget(index);
@@ -428,8 +412,6 @@ export default class Input extends Multivalue {
         }
       });
     }
-
-    this.setInputMask(this.refs.input[index]);
   }
 
   /**

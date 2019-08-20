@@ -1012,11 +1012,12 @@ export default class WebformBuilder extends Component {
       const message = &apos;Removing this component will also remove all of its children. Are you sure you want to do this?&apos;;
       remove = window.confirm(this.t(message));
     }
-    const index = parent.formioContainer.indexOf(component);
+    const index = parent.formioContainer.findIndex(comp =&gt; (comp.key === component.key));
     if (remove &amp;&amp; index !== -1) {
       this.emit(&apos;removeComponent&apos;, component);
       parent.formioContainer.splice(index, 1);
       parent.formioComponent.rebuild();
+      this.emit(&apos;change&apos;, this.form);
     }
     return remove;
   }
@@ -1059,7 +1060,7 @@ export default class WebformBuilder extends Component {
     this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
-    const index = parentContainer.indexOf(component);
+    const index = parentContainer.findIndex(comp =&gt; (comp.key === component.key));
     this.dialog.close();
     if (index !== -1) {
       const originalComponent = parentContainer[index];
@@ -1068,6 +1069,7 @@ export default class WebformBuilder extends Component {
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() =&gt; {
         this.emit(&apos;saveComponent&apos;, parentContainer[index], originalComponent);
+        this.emit(&apos;change&apos;, this.form);
       });
     }
     return NativePromise.resolve();
@@ -1275,10 +1277,11 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
         BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
-        const index = parent.formioContainer.indexOf(component.component);
+        const index = parent.formioContainer.findIndex(comp =&gt; (comp.key === component.component.key));
         parent.formioContainer.splice(index + 1, 0, schema);
         parent.formioComponent.rebuild();
         this.emit(&apos;saveComponent&apos;);
+        this.emit(&apos;change&apos;, this.form);
       }
     }
   }

@@ -223,6 +223,22 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/time/editForm/Time.edit.display.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
   {
+    type: &apos;select&apos;,
+    input: true,
+    weight: 40,
+    tooltip: &apos;Select the type of widget you\&apos;d like to use.&apos;,
+    key: &apos;inputType&apos;,
+    defaultValue: &apos;time&apos;,
+    label: &apos;Input Type&apos;,
+    dataSrc: &apos;values&apos;,
+    data: {
+      values: [
+        { label: &apos;HTML5 Time Input&apos;, value: &apos;time&apos; },
+        { label: &apos;Text Input with Mask&apos;, value: &apos;text&apos; },
+      ],
+    },
+  },
+  {
     type: &apos;textfield&apos;,
     input: true,
     key: &apos;format&apos;,
@@ -230,7 +246,16 @@
     placeholder: &apos;Format&apos;,
     tooltip: &apos;The moment.js format for showing the value of this field.&apos;,
     weight: 50,
-  }
+    defaultValue: &apos;HH:mm&apos;,
+    conditional: {
+      json: {
+        &apos;===&apos;: [
+          { var: &apos;data.inputType&apos; },
+          &apos;text&apos;,
+        ],
+      },
+    },
+  },
 ];
 </code></pre>
 

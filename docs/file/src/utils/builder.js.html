@@ -300,7 +300,10 @@ export default {
     return [&apos;&apos;].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
       this.getBindedShortcuts(form.components, component)),
-    );
+    ).map((shortcut) =&gt; ({
+      label: shortcut,
+      value: shortcut,
+    }));
   }
 };
 </code></pre>

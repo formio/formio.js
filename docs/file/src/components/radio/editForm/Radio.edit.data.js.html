@@ -260,6 +260,9 @@ export default [
         key: &apos;shortcut&apos;,
         tooltip: &apos;The shortcut key for this option.&apos;,
         dataSrc: &apos;custom&apos;,
+        valueProperty: &apos;value&apos;,
+        customDefaultValue: () =&gt; &apos;&apos;,
+        template: &apos;{{ item.label }}&apos;,
         data: {
           custom({
             instance: {
