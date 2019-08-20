@@ -14,6 +14,13 @@ export default class NestedComponent extends Field {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
+    if (this.component && this.componentRef) {
+      if (!this.componentRef.components) {
+        this.componentRef.components = [];
+      }
+      // Ensure the components point to the same reference as the componentRef.components.
+      this.component.components = this.componentRef.components;
+    }
     this._collapsed = !!this.component.collapsed;
   }
 
