@@ -191,6 +191,7 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
+    this.componentRef = component;
     this.originalComponent = _.cloneDeep(component);
 
     /**
