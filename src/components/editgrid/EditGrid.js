@@ -339,7 +339,23 @@ export default class EditGridComponent extends NestedComponent {
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
     this.checkRow(this.data, editRow);
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
+  }
+
+  addRowModal(rowIndex) {
+    const formComponents =  this.ce('div');
+    formComponents.innerHTML = this.renderComponents(this.editRows[rowIndex].components);
+    const dialog = this.component.modal ? this.createModal(formComponents) : undefined;
+    dialog.refs.dialogContents.appendChild( this.ce('button', {
+      class: 'btn btn-primary',
+      onClick: this.saveRow.bind(this, rowIndex, dialog),
+    }, this.component.saveRow || 'Save'));
+    this.attachComponents(dialog, this.editRows[rowIndex].components);
   }
 
   editRow(rowIndex) {
@@ -356,7 +372,12 @@ export default class EditGridComponent extends NestedComponent {
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
   }
 
   clearErrors(rowIndex) {
@@ -402,7 +423,7 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
-  saveRow(rowIndex) {
+  saveRow(rowIndex, dialog) {
     const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
       editRow.dirty = false;
@@ -434,6 +455,9 @@ export default class EditGridComponent extends NestedComponent {
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);
+    if (this.component.modal && dialog) {
+      dialog.close();
+    }
     this.redraw();
   }
 
