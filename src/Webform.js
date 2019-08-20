@@ -261,6 +261,9 @@ export default class Webform extends NestedComponent {
     }
 
     this.component.clearOnHide = false;
+
+    // Ensure the root is set to this component.
+    this.root = this;
   }
   /* eslint-enable max-statements */
 
