@@ -256,7 +256,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.component, parent));
+          this.editComponent(component.componentRef, parent));
       }
 
       if (component.refs.editJson) {
@@ -267,7 +267,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.component, parent, false, true));
+          this.editComponent(component.componentRef, parent, false, true));
       }
 
       if (component.refs.removeComponent) {
@@ -278,7 +278,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.component, parent));
+          this.removeComponent(component.componentRef, parent));
       }
 
       return element;
@@ -789,7 +789,7 @@ export default class WebformBuilder extends Component {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
-    const index = parent.formioContainer.findIndex(comp => (comp.key === component.key));
+    const index = parent.formioContainer.indexOf(component);
     if (remove && index !== -1) {
       this.emit('removeComponent', component);
       parent.formioContainer.splice(index, 1);
@@ -837,7 +837,7 @@ export default class WebformBuilder extends Component {
     this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
-    const index = parentContainer.findIndex(comp => (comp.key === component.key));
+    const index = parentContainer.indexOf(component);
     this.dialog.close();
     if (index !== -1) {
       const originalComponent = parentContainer[index];
@@ -1054,7 +1054,7 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
         BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
-        const index = parent.formioContainer.findIndex(comp => (comp.key === component.component.key));
+        const index = parent.formioContainer.indexOf(component.componentRef);
         parent.formioContainer.splice(index + 1, 0, schema);
         parent.formioComponent.rebuild();
         this.emit('saveComponent');
