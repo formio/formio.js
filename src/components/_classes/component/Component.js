@@ -191,7 +191,6 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.componentRef = component;
     this.originalComponent = _.cloneDeep(component);
 
     /**
@@ -234,7 +233,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(_.cloneDeep(component || {}) , this.defaultSchema);
+    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
 
     // Add the id to the component.
     this.component.id = this.id;

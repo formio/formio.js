@@ -256,7 +256,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.componentRef, parent));
+          this.editComponent(component.component, parent));
       }
 
       if (component.refs.editJson) {
@@ -267,7 +267,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.componentRef, parent, false, true));
+          this.editComponent(component.component, parent, false, true));
       }
 
       if (component.refs.removeComponent) {
@@ -278,7 +278,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.componentRef, parent));
+          this.removeComponent(component.component, parent));
       }
 
       return element;
@@ -1054,7 +1054,7 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
         BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
-        const index = parent.formioContainer.indexOf(component.componentRef);
+        const index = parent.formioContainer.indexOf(component.component);
         parent.formioContainer.splice(index + 1, 0, schema);
         parent.formioComponent.rebuild();
         this.emit('saveComponent');
