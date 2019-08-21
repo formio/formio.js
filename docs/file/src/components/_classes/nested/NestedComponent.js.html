@@ -239,6 +239,21 @@ export default class NestedComponent extends Field {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = &apos;components&apos;;
+    if (
+      this.component &amp;&amp;
+      this.componentRef
+    ) {
+      // Make sure that we make the &quot;components&quot; referenced so that builder works as it should.
+      if (this.componentRef.hasOwnProperty(&apos;components&apos;) &amp;&amp; _.isArray(this.componentRef.components)) {
+        this.component.components = this.componentRef.components;
+      }
+      else if (this.componentRef.hasOwnProperty(&apos;rows&apos;) &amp;&amp; _.isArray(this.componentRef.rows)) {
+        this.component.rows = this.componentRef.rows;
+      }
+      else if (this.componentRef.hasOwnProperty(&apos;columns&apos;) &amp;&amp; _.isArray(this.componentRef.columns)) {
+        this.component.columns = this.componentRef.columns;
+      }
+    }
     this._collapsed = !!this.component.collapsed;
   }
 

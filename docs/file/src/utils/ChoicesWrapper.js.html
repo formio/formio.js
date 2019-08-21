@@ -357,7 +357,8 @@ class ChoicesWrapper extends Choices {
   onSelectValue({ event, activeItems, hasActiveDropdown }) {
     if (hasActiveDropdown) {
      this._selectHighlightedChoice(activeItems);
-    } else if (this._isSelectOneElement) {
+    }
+    else if (this._isSelectOneElement) {
       this.showDropdown();
       event.preventDefault();
     }
