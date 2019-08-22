@@ -23,6 +23,10 @@ class ChoicesWrapper extends Choices {
   }
 
   _handleButtonAction(activeItems, element) {
+    if (!this._isSelectOneElement) {
+      return super._handleButtonAction(activeItems, element);
+    }
+
     if (
       !activeItems ||
       !element ||
@@ -37,6 +41,10 @@ class ChoicesWrapper extends Choices {
   }
 
   _onDirectionKey(...args) {
+    if (!this._isSelectOneElement) {
+      return super._onDirectionKey(...args);
+    }
+
     this.isDirectionUsing = true;
 
     super._onDirectionKey(...args);
@@ -65,6 +73,10 @@ class ChoicesWrapper extends Choices {
   }
 
   _onKeyDown(event) {
+    if (!this._isSelectOneElement) {
+      return super._onKeyDown(event);
+    }
+
     const { target, keyCode, ctrlKey, metaKey } = event;
 
     if (
