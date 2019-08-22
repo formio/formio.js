@@ -432,6 +432,7 @@ export default class Component extends Element {
 
     // Allow global override for any component JSON.
     if (
+      component &amp;&amp;
       this.options.components &amp;&amp;
       this.options.components[component.type]
     ) {
@@ -919,7 +920,7 @@ export default class Component extends Element {
    */
   sanitize(dirty) {
     return sanitize(dirty, {
-      ADD_ATTR: [&apos;ref&apos;],
+      ADD_ATTR: [&apos;ref&apos;, &apos;target&apos;],
       USE_PROFILES: {
         html: true
       }

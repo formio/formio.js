@@ -224,6 +224,8 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/EditGrid.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import equal from &apos;fast-deep-equal&apos;;
+
 import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
 import { Evaluator } from &apos;../../utils/utils&apos;;
@@ -287,7 +289,7 @@ export default class EditGridComponent extends NestedComponent {
         &lt;button class=&quot;btn btn-default btn-light btn-sm editRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;edit&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
         {% if (self.hasRemoveButtons()) { %}
           &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;trash&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-        {% } %} 
+        {% } %}
       &lt;/div&gt;
     &lt;/div&gt;
   {% } %}
@@ -690,6 +692,12 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
+  updateRowsComponents(rowIndex) {
+    for (let i = rowIndex; i &lt; this.editRows.length; i++) {
+      this.updateComponentsRowIndex(this.editRows[i].components, i);
+    }
+  }
+
   removeRow(rowIndex) {
     if (this.options.readOnly) {
       return;
@@ -697,10 +705,19 @@ export default class EditGridComponent extends NestedComponent {
     this.destroyComponents(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
+    this.updateRowsComponents(rowIndex);
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);
+    this.checkData(this.data);
     this.redraw();
+  }
+
+  updateComponentsRowIndex(components, rowIndex) {
+    components.forEach((component, colIndex) =&gt; {
+      component.rowIndex = rowIndex;
+      component.row = `${rowIndex}-${colIndex}`;
+    });
   }
 
   createRowComponents(row, rowIndex) {
@@ -803,6 +820,10 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   setValue(value, flags) {
+    if (equal(this.defaultValue, value)) {
+      return false;
+    }
+
     if (!value) {
       this.dataValue = this.defaultValue;
       return false;
