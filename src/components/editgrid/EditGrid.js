@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import equal from 'fast-deep-equal';
+
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
 import { Evaluator } from '../../utils/utils';
@@ -62,7 +64,7 @@ export default class EditGridComponent extends NestedComponent {
         <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
         {% if (self.hasRemoveButtons()) { %}
           <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
-        {% } %} 
+        {% } %}
       </div>
     </div>
   {% } %}
@@ -437,6 +439,12 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
+  updateRowsComponents(rowIndex) {
+    for (let i = rowIndex; i < this.editRows.length; i++) {
+      this.updateComponentsRowIndex(this.editRows[i].components, i);
+    }
+  }
+
   removeRow(rowIndex) {
     if (this.options.readOnly) {
       return;
@@ -444,10 +452,19 @@ export default class EditGridComponent extends NestedComponent {
     this.destroyComponents(rowIndex);
     this.splice(rowIndex);
     this.editRows.splice(rowIndex, 1);
+    this.updateRowsComponents(rowIndex);
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);
+    this.checkData(this.data);
     this.redraw();
+  }
+
+  updateComponentsRowIndex(components, rowIndex) {
+    components.forEach((component, colIndex) => {
+      component.rowIndex = rowIndex;
+      component.row = `${rowIndex}-${colIndex}`;
+    });
   }
 
   createRowComponents(row, rowIndex) {
@@ -550,6 +567,10 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   setValue(value, flags) {
+    if (equal(this.defaultValue, value)) {
+      return false;
+    }
+
     if (!value) {
       this.dataValue = this.defaultValue;
       return false;
