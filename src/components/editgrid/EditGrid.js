@@ -170,8 +170,12 @@ export default class EditGridComponent extends NestedComponent {
     this.refs[this.editgridKey].forEach((row, rowIndex) => {
       if (this.editRows[rowIndex].isOpen) {
         this.attachComponents(row, this.editRows[rowIndex].components);
-        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', this.saveRow.bind(this, rowIndex));
-        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', this.cancelRow.bind(this, rowIndex));
+        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', () =>
+          this.saveRow(rowIndex)
+        );
+        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', () =>
+          this.cancelRow(rowIndex)
+        );
         openRowCount++;
       }
       else {
@@ -353,9 +357,12 @@ export default class EditGridComponent extends NestedComponent {
     const dialog = this.component.modal ? this.createModal(formComponents) : undefined;
     dialog.refs.dialogContents.appendChild( this.ce('button', {
       class: 'btn btn-primary',
-      onClick: this.saveRow.bind(this, rowIndex, dialog),
+      onClick: () => {
+        dialog.close();
+        this.saveRow(rowIndex);
+      }
     }, this.component.saveRow || 'Save'));
-    this.attachComponents(dialog, this.editRows[rowIndex].components);
+    this.attachComponents(formComponents, this.editRows[rowIndex].components);
   }
 
   editRow(rowIndex) {
@@ -423,7 +430,7 @@ export default class EditGridComponent extends NestedComponent {
     this.redraw();
   }
 
-  saveRow(rowIndex, dialog) {
+  saveRow(rowIndex) {
     const editRow = this.editRows[rowIndex];
     if (this.options.readOnly) {
       editRow.dirty = false;
@@ -455,9 +462,6 @@ export default class EditGridComponent extends NestedComponent {
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);
-    if (this.component.modal && dialog) {
-      dialog.close();
-    }
     this.redraw();
   }
 
