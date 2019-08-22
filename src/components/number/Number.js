@@ -123,12 +123,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-
-    if (!val) {
-      return undefined;
-    }
-
-    return this.parseNumber(val);
+    return val ? this.parseNumber(val) : null;
   }
 
   clearInput(input) {
@@ -169,14 +164,6 @@ export default class NumberComponent extends Input {
 
   getMaskedValue(value) {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
-  }
-
-  getValue() {
-    const value = super.getValue();
-    if (value === '') {
-      return undefined;
-    }
-    return value;
   }
 
   getView(value) {
