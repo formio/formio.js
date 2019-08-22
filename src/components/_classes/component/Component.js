@@ -695,7 +695,7 @@ export default class Component extends Element {
    */
   sanitize(dirty) {
     return sanitize(dirty, {
-      ADD_ATTR: ['ref'],
+      ADD_ATTR: ['ref', 'target'],
       USE_PROFILES: {
         html: true
       }
