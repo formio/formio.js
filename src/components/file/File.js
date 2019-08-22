@@ -89,7 +89,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? 'Yes' : 'No';
+    return value ? value.originalName : '';
   }
 
   loadImage(fileInfo) {
