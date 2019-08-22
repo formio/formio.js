@@ -7,5 +7,5 @@ export default [
     placeholder: 'HH:mm:ss',
     tooltip: 'The moment.js format for saving the value of this field.',
     weight: 25,
-  }
+  },
 ];

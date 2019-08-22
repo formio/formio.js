@@ -151,7 +151,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -210,6 +211,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
@@ -240,12 +242,9 @@ export default class TimeComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    //check if &lt;input type=&quot;time&quot; /&gt; is supported to fallback to input with mask (for Safari and IE)
-    const input = this.ce(&apos;time&apos;);
-    this.timeInputSupported = (input.type === &apos;time&apos;);
-    if (!this.timeInputSupported) {
-      this.component.inputMask = &apos;99:99&apos;;
-    }
+
+    this.component.inputMask = &apos;99:99&apos;;
+    this.component.inputType = this.component.inputType || &apos;time&apos;;
   }
 
   static get builderInfo() {
@@ -282,7 +281,7 @@ export default class TimeComponent extends TextFieldComponent {
 
   get inputInfo() {
     const info = super.inputInfo;
-    info.attr.type = &apos;time&apos;;
+    info.attr.type = this.component.inputType;
     return info;
   }
 
@@ -307,11 +306,11 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getValueFromView(view) {
-    return moment(view, this.component.format).format(this.dataFormat);
+    return view ? moment(view, this.component.format).format(this.dataFormat) : view;
   }
 
   getView(value) {
-    return moment(value, this.dataFormat).format(this.component.format);
+    return value ? moment(value, this.dataFormat).format(this.component.format) : value;
   }
 }
 </code></pre>

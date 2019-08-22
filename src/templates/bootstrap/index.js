@@ -23,6 +23,7 @@ import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import label from './label';
 import loader from './loader';
 import loading from './loading';
 import map from './map';
@@ -87,6 +88,7 @@ export default {
   html,
   icon,
   input,
+  label,
   loader,
   loading,
   map,

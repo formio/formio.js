@@ -151,7 +151,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -210,6 +211,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
@@ -393,8 +395,12 @@ export default class EditGridComponent extends NestedComponent {
     this.refs[this.editgridKey].forEach((row, rowIndex) =&gt; {
       if (this.editRows[rowIndex].isOpen) {
         this.attachComponents(row, this.editRows[rowIndex].components);
-        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], &apos;click&apos;, this.saveRow.bind(this, rowIndex));
-        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], &apos;click&apos;, this.cancelRow.bind(this, rowIndex));
+        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], &apos;click&apos;, () =&gt;
+          this.saveRow(rowIndex)
+        );
+        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], &apos;click&apos;, () =&gt;
+          this.cancelRow(rowIndex)
+        );
         openRowCount++;
       }
       else {
@@ -562,7 +568,26 @@ export default class EditGridComponent extends NestedComponent {
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
     this.checkRow(this.data, editRow);
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
+  }
+
+  addRowModal(rowIndex) {
+    const formComponents =  this.ce(&apos;div&apos;);
+    formComponents.innerHTML = this.renderComponents(this.editRows[rowIndex].components);
+    const dialog = this.component.modal ? this.createModal(formComponents) : undefined;
+    dialog.refs.dialogContents.appendChild( this.ce(&apos;button&apos;, {
+      class: &apos;btn btn-primary&apos;,
+      onClick: () =&gt; {
+        dialog.close();
+        this.saveRow(rowIndex);
+      }
+    }, this.component.saveRow || &apos;Save&apos;));
+    this.attachComponents(formComponents, this.editRows[rowIndex].components);
   }
 
   editRow(rowIndex) {
@@ -579,7 +604,12 @@ export default class EditGridComponent extends NestedComponent {
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
   }
 
   clearErrors(rowIndex) {

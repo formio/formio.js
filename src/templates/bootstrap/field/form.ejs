@@ -1,10 +1,5 @@
 {% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { %}
-  <label class="col-form-label {{ctx.label.className}}">
-    {{ ctx.t(ctx.component.label) }}
-    {% if (ctx.component.tooltip) { %}
-      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
-    {% } %}
-  </label>
+  {{ ctx.render('label', ctx) }}
 {% } %}
 {{ctx.element}}
 {% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}

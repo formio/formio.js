@@ -233,7 +233,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(_.cloneDeep(component || {}) , this.defaultSchema);
+    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -666,6 +666,7 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
+    data.render = this.renderTemplate.bind(this);
 
     // Allow more specific template names
     const names = [

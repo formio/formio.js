@@ -1,0 +1,10 @@
+<label class="{{ctx.label.className}}">
+  {% if (!ctx.label.hidden) { %}
+    {{ ctx.t(ctx.component.label) }}
+    {% if (ctx.tooltip) { %}
+      <span data-tooltip="{{ctx.tooltip}}" data-position="right center">
+        <i class="{{ctx.iconClass('question-sign')}}"></i>
+      </span>
+    {% } %}
+  {% } %}
+</label>

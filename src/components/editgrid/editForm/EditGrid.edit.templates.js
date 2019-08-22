@@ -62,6 +62,14 @@ export default [
     tooltip: 'Set the text of the Add Another button.'
   },
   {
+    weight: 70,
+    type: 'checkbox',
+    label: 'Display as Modal',
+    tooltip: 'Display a modal to add or edit entries in the table',
+    key: 'modal',
+    input: true
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'saveRow',
