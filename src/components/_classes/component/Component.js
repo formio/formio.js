@@ -207,6 +207,7 @@ export default class Component extends Element {
 
     // Allow global override for any component JSON.
     if (
+      component &&
       this.options.components &&
       this.options.components[component.type]
     ) {
