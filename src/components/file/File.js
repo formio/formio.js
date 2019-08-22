@@ -88,6 +88,14 @@ export default class FileComponent extends Field {
     return [];
   }
 
+  getView(value) {
+    if (this.component.protected) {
+      return '--- PROTECTED ---';
+    }
+
+    return value ? value.originalName : '';
+  }
+
   getValue() {
     return this.dataValue;
   }
