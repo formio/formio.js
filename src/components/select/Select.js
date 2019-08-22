@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from '../../utils/ChoicesWrapper';
 import _ from 'lodash';
 import Formio from '../../Formio';
 import Field from '../_classes/field/Field';

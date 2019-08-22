@@ -13,9 +13,9 @@ The Form.io renderer allows for the creation of Custom components. These can be 
 <script type="text/javascript">
 {% raw %}
 /**
- * Get the base component class by referencing Formio.Components.components map.
+ * Get the input component class by referencing Formio.Components.components map.
  */
-var BaseComponent = Formio.Components.components.base;
+var InputComponent = Formio.Components.components.input;
 
 /**
  * Create a new CheckMatrixComponent "class" using ES5 class inheritance notation. 
@@ -29,20 +29,20 @@ var BaseComponent = Formio.Components.components.base;
  * @constructor
  */
 function CheckMatrixComponent(component, options, data) {
-  BaseComponent.prototype.constructor.call(this, component, options, data);
+  InputComponent.prototype.constructor.call(this, component, options, data);
 }
 
 // Perform typical ES5 inheritance
-CheckMatrixComponent.prototype = Object.create(BaseComponent.prototype);
+CheckMatrixComponent.prototype = Object.create(InputComponent.prototype);
 CheckMatrixComponent.prototype.constructor = CheckMatrixComponent;
 
 /**
- * Define what the default JSON schema for this component is. We will derive from the BaseComponent
+ * Define what the default JSON schema for this component is. We will derive from the InputComponent
  * schema and provide our overrides to that.
  * @return {*}
  */
 CheckMatrixComponent.schema = function() {
-  return BaseComponent.schema({
+  return InputComponent.schema({
     type: 'checkmatrix',
     numRows: 3,
     numCols: 3
@@ -64,54 +64,49 @@ CheckMatrixComponent.builderInfo = {
 };
 
 /**
- *  Tell the renderer how to build this component using DOM manipulation. 
+ *  Tell the renderer how to render this component.
  */
-CheckMatrixComponent.prototype.build = function() {
-  this.element = this.ce('div', {
-    class: 'table-responsive'
+CheckMatrixComponent.prototype.render = function(element) {
+  var tpl = '<div class="table-responsive">';
+  tpl += this.renderTemplate('label', {
+    label: this.labelInfo,
+    component: this.component,
+    element: element,
+    tooltip: this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />'),
   });
-  this.createLabel(this.element);
-
-  var tableClass = 'table ';
-  ['striped', 'bordered', 'hover', 'condensed'].forEach(function(prop) {
-    if (this.component[prop]) {
-      tableClass += `table-${prop} `;
-    }
-  }.bind(this));
-  
-  var table = this.ce('table', {
-    class: tableClass
-  });
-
-  // Build the body.
-  var tbody = this.ce('tbody');
-  this.inputs = [];
-  this.checks = [];
+  tpl += '<table class="table">';
+  tpl += '<tbody>';
   for (let i = 0; i < this.component.numRows; i++) {
-    var tr = this.ce('tr');
-    this.checks.push([]);
+    tpl += '<tr>';
     for (let j = 0; j < this.component.numCols; j++) {
-      var td = this.ce('td');
-      this.checks[i][j] = this.ce('input', {
-        type: 'checkbox'
+      tpl += '<td>';        
+      tpl += this.renderTemplate('input', {
+        input: {
+          type: 'input',
+          attr: {
+            type: 'checkbox'
+          },
+          id: 'check-' + i + '-' + j
+        }
       });
-      this.addInput(this.checks[i][j], td);
-      tr.appendChild(td);
+      tpl += '</td>';
     }
-    tbody.appendChild(tr);
+    tpl += '</tr>';
   }
-  table.appendChild(tbody);
-  this.element.appendChild(table);
+  tpl += '</tbody>';
+  tpl += '</table>';
+  tpl += '</div>';
+  return tpl;
 };
 
 /**
  * Provide the input element information. Because we are using checkboxes, the change event needs to be 
- * 'click' instead of the default 'change' from the BaseComponent.
+ * 'click' instead of the default 'change' from the InputComponent.
  * 
  * @return {{type, component, changeEvent, attr}}
  */
 CheckMatrixComponent.prototype.elementInfo = function() {
-  const info = BaseComponent.prototype.elementInfo.call(this);
+  const info = InputComponent.prototype.elementInfo.call(this);
   info.changeEvent = 'click';
   return info;
 };
@@ -123,12 +118,16 @@ CheckMatrixComponent.prototype.elementInfo = function() {
  */
 CheckMatrixComponent.prototype.getValue = function() {
   var value = [];
-  for (var rowIndex in this.checks) {
-    var row = this.checks[rowIndex];
-    value[rowIndex] = [];
-    for (var colIndex in row) {
-      var col = row[colIndex];
-      value[rowIndex][colIndex] = !!col.checked;
+  if (!this.refs.input || !this.refs.input.length) {
+    return value;
+  }
+  for (let i = 0; i < this.component.numRows; i++) {
+    value[i] = [];
+    for (let j = 0; j < this.component.numCols; j++) {
+      var index = (i * this.component.numCols) + j;
+      if (this.refs.input[index]) {
+        value[i][j] = !!this.refs.input[index].checked;
+      }
     }
   }
   return value;
@@ -141,24 +140,25 @@ CheckMatrixComponent.prototype.getValue = function() {
  * @return {boolean}
  */
 CheckMatrixComponent.prototype.setValue = function(value) {
+  var changed = InputComponent.prototype.updateValue.call(this, value);
   if (!value) {
-    return;
+    return changed;
   }
-  for (var rowIndex in this.checks) {
-    var row = this.checks[rowIndex];
-    if (!value[rowIndex]) {
+  for (let i = 0; i < this.component.numRows; i++) {
+    if (!value[i]) {
       break;
     }
-    for (var colIndex in row) {
-      var col = row[colIndex];
-      if (!value[rowIndex][colIndex]) {
+    for (let j = 0; j < this.component.numCols; j++) {
+      if (!value[i][j]) {
         return false;
       }
-      let checked = value[rowIndex][colIndex] ? 1 : 0;
-      col.value = checked;
-      col.checked = checked;
+      let checked = value[i][j] ? 1 : 0;
+      var index = (i * this.component.numCols) + j;
+      this.refs.input[index].value = checked;
+      this.refs.input[index].checked = checked;
     }
   }
+  return changed;
 };
 
 // Use the table component edit form.
@@ -217,17 +217,17 @@ Formio.Components.addComponent('checkmatrix', CheckMatrixComponent);
 
 <h3>Result</h3>
 <script type="text/javascript">
-var BaseComponent = Formio.Components.components.base;
+var InputComponent = Formio.Components.components.input;
 
 function CheckMatrixComponent(component, options, data) {
-  BaseComponent.prototype.constructor.call(this, component, options, data);
+  InputComponent.prototype.constructor.call(this, component, options, data);
 }
 
-CheckMatrixComponent.prototype = Object.create(BaseComponent.prototype);
+CheckMatrixComponent.prototype = Object.create(InputComponent.prototype);
 CheckMatrixComponent.prototype.constructor = CheckMatrixComponent;
 
 CheckMatrixComponent.schema = function() {
-  return BaseComponent.schema({
+  return InputComponent.schema({
     type: 'checkmatrix',
     input: true,
     persistent: true
@@ -243,82 +243,82 @@ CheckMatrixComponent.builderInfo = {
   schema: CheckMatrixComponent.schema()
 };
 
-CheckMatrixComponent.prototype.build = function() {
-  this.element = this.ce('div', {
-    class: 'table-responsive'
+CheckMatrixComponent.prototype.render = function(element) {
+  var tpl = '<div class="table-responsive">';
+  tpl += this.renderTemplate('label', {
+    label: this.labelInfo,
+    component: this.component,
+    element: element,
+    tooltip: this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />'),
   });
-  this.createLabel(this.element);
-
-  var tableClass = 'table ';
-  ['striped', 'bordered', 'hover', 'condensed'].forEach(function(prop) {
-    if (this.component[prop]) {
-      tableClass += `table-${prop} `;
-    }
-  }.bind(this));
-  
-  var table = this.ce('table', {
-    class: tableClass
-  });
-
-  // Build the body.
-  var tbody = this.ce('tbody');
-  this.inputs = [];
-  this.checks = [];
+  tpl += '<table class="table">';
+  tpl += '<tbody>';
   for (let i = 0; i < this.component.numRows; i++) {
-    var tr = this.ce('tr');
-    this.checks.push([]);
+    tpl += '<tr>';
     for (let j = 0; j < this.component.numCols; j++) {
-      var td = this.ce('td');
-      this.checks[i][j] = this.ce('input', {
-        type: 'checkbox'
+      tpl += '<td>';        
+      tpl += this.renderTemplate('input', {
+        input: {
+          type: 'input',
+          attr: {
+            type: 'checkbox'
+          },
+          id: 'check-' + i + '-' + j
+        }
       });
-      this.addInput(this.checks[i][j], td);
-      tr.appendChild(td);
+      tpl += '</td>';
     }
-    tbody.appendChild(tr);
+    tpl += '</tr>';
   }
-  table.appendChild(tbody);
-  this.element.appendChild(table);
+  tpl += '</tbody>';
+  tpl += '</table>';
+  tpl += '</div>';
+  return tpl;
 };
 
 CheckMatrixComponent.prototype.elementInfo = function() {
-  const info = BaseComponent.prototype.elementInfo.call(this);
+  const info = InputComponent.prototype.elementInfo.call(this);
   info.changeEvent = 'click';
   return info;
 };
 
 CheckMatrixComponent.prototype.getValue = function() {
   var value = [];
-  for (var rowIndex in this.checks) {
-    var row = this.checks[rowIndex];
-    value[rowIndex] = [];
-    for (var colIndex in row) {
-      var col = row[colIndex];
-      value[rowIndex][colIndex] = !!col.checked;
+  if (!this.refs.input || !this.refs.input.length) {
+    return value;
+  }
+  for (let i = 0; i < this.component.numRows; i++) {
+    value[i] = [];
+    for (let j = 0; j < this.component.numCols; j++) {
+      var index = (i * this.component.numCols) + j;
+      if (this.refs.input[index]) {
+        value[i][j] = !!this.refs.input[index].checked;
+      }
     }
   }
   return value;
 };
 
 CheckMatrixComponent.prototype.setValue = function(value) {
+  var changed = InputComponent.prototype.updateValue.call(this, value);
   if (!value) {
-    return;
+    return changed;
   }
-  for (var rowIndex in this.checks) {
-    var row = this.checks[rowIndex];
-    if (!value[rowIndex]) {
+  for (let i = 0; i < this.component.numRows; i++) {
+    if (!value[i]) {
       break;
     }
-    for (var colIndex in row) {
-      var col = row[colIndex];
-      if (!value[rowIndex][colIndex]) {
+    for (let j = 0; j < this.component.numCols; j++) {
+      if (!value[i][j]) {
         return false;
       }
-      let checked = value[rowIndex][colIndex] ? 1 : 0;
-      col.value = checked;
-      col.checked = checked;
+      let checked = value[i][j] ? 1 : 0;
+      var index = (i * this.component.numCols) + j;
+      this.refs.input[index].value = checked;
+      this.refs.input[index].checked = checked;
     }
   }
+  return changed;
 };
 
 // Use the table component edit form.
@@ -327,6 +327,15 @@ Formio.Components.addComponent('checkmatrix', CheckMatrixComponent);
 </script>
 <div class="card card-body bg-light">
 <div id="builder"></div>
+</div>
+<h4>Rendered Form</h4>
+<div class="card card-body bg-light">
+  <div id="formio"></div>
+</div>
+<h4>Submission Data</h4>
+<div class="card card-body bg-light jsonviewer">
+  <pre id="json"></pre>
+</div>
 <script type="text/javascript">
 Formio.builder(document.getElementById('builder'), {}, {
   builder: {
@@ -358,12 +367,3 @@ Formio.builder(document.getElementById('builder'), {}, {
   });
 });
 </script>
-</div>
-<h4>Rendered Form</h4>
-<div class="card card-body bg-light">
-  <div id="formio"></div>
-</div>
-<h4>Submission Data</h4>
-<div class="card card-body bg-light jsonviewer">
-  <pre id="json"></pre>
-</div>

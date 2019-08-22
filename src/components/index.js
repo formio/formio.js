@@ -16,6 +16,9 @@ import FieldsetComponent from './fieldset/Fieldset';
 import FileComponent from './file/File';
 import FormComponent from './form/Form';
 import HiddenComponent from './hidden/Hidden';
+import Input from './_classes/input/Input';
+import Multivalue from './_classes/multivalue/Multivalue';
+import Field from './_classes/field/Field';
 import HTMLComponent from './html/HTML';
 import NestedComponent from './_classes/nested/NestedComponent';
 import NumberComponent from './number/Number';
@@ -57,6 +60,9 @@ export default {
   day: DayComponent,
   editgrid: EditGridComponent,
   email: EmailComponent,
+  input: Input,
+  field: Field,
+  multivalue: Multivalue,
   fieldset: FieldsetComponent,
   file: FileComponent,
   form: FormComponent,

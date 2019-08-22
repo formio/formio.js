@@ -211,8 +211,6 @@ export default class Webform extends NestedComponent {
       this.formReadyReject = reject;
     });
 
-    this.submission = this._submission;
-
     /**
      * Promise that executes when the submission is ready and rendered.
      * @type {Promise}
@@ -261,6 +259,9 @@ export default class Webform extends NestedComponent {
     }
 
     this.component.clearOnHide = false;
+
+    // Ensure the root is set to this component.
+    this.root = this;
   }
   /* eslint-enable max-statements */
 

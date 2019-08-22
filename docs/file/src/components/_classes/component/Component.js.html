@@ -151,7 +151,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -210,6 +211,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
@@ -334,6 +336,11 @@ export default class Component extends Element {
       widget: null,
 
       /**
+       * Attributes that will be assigned to the input elements of this component.
+       */
+      attributes: {},
+
+      /**
        * This will perform the validation on either &quot;change&quot; or &quot;blur&quot; of the input element.
        */
       validateOn: &apos;change&apos;,
@@ -451,7 +458,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(_.cloneDeep(component || {}) , this.defaultSchema);
+    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -732,14 +739,14 @@ export default class Component extends Element {
    * @param schema
    * @param defaultSchema
    */
-  getModifiedSchema(schema, defaultSchema) {
+  getModifiedSchema(schema, defaultSchema, recursion) {
     const modified = {};
     if (!defaultSchema) {
       return schema;
     }
     _.each(schema, (val, key) =&gt; {
       if (!_.isArray(val) &amp;&amp; _.isObject(val) &amp;&amp; defaultSchema.hasOwnProperty(key)) {
-        const subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        const subModified = this.getModifiedSchema(val, defaultSchema[key], true);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
         }
@@ -750,11 +757,10 @@ export default class Component extends Element {
         }
       }
       else if (
-        (key === &apos;type&apos;) ||
-        (key === &apos;key&apos;) ||
-        (key === &apos;label&apos;) ||
-        (key === &apos;input&apos;) ||
-        (key === &apos;tableView&apos;) ||
+        (!recursion &amp;&amp; (key === &apos;type&apos;)) ||
+        (!recursion &amp;&amp; (key === &apos;key&apos;)) ||
+        (!recursion &amp;&amp; (key === &apos;label&apos;)) ||
+        (!recursion &amp;&amp; (key === &apos;input&apos;)) ||
         (val !== &apos;&apos; &amp;&amp; !defaultSchema.hasOwnProperty(key)) ||
         (val !== &apos;&apos; &amp;&amp; val !== defaultSchema[key])
       ) {
@@ -885,6 +891,7 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
+    data.render = this.renderTemplate.bind(this);
 
     // Allow more specific template names
     const names = [

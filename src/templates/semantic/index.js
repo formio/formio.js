@@ -19,6 +19,7 @@ import file from './file';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import label from './label';
 import loader from './loader';
 import loading from './loading';
 import message from './message';
@@ -94,6 +95,7 @@ export default {
   file,
   icon,
   input,
+  label,
   loader,
   loading,
   message,

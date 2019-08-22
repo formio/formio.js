@@ -442,9 +442,9 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed);
 
     // Only rebuild if there is a page visibility change.
+    const panels = this.calculateVisiblePanels();
     const currentNextPage = this.currentNextPage;
     const nextPage = this.getNextPage();
-    const panels = this.calculateVisiblePanels();
     if (
       (nextPage !== currentNextPage) ||
       !_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))

@@ -170,8 +170,12 @@ export default class EditGridComponent extends NestedComponent {
     this.refs[this.editgridKey].forEach((row, rowIndex) => {
       if (this.editRows[rowIndex].isOpen) {
         this.attachComponents(row, this.editRows[rowIndex].components);
-        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', this.saveRow.bind(this, rowIndex));
-        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', this.cancelRow.bind(this, rowIndex));
+        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', () =>
+          this.saveRow(rowIndex)
+        );
+        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', () =>
+          this.cancelRow(rowIndex)
+        );
         openRowCount++;
       }
       else {
@@ -339,7 +343,26 @@ export default class EditGridComponent extends NestedComponent {
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
     this.checkRow(this.data, editRow);
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
+  }
+
+  addRowModal(rowIndex) {
+    const formComponents =  this.ce('div');
+    formComponents.innerHTML = this.renderComponents(this.editRows[rowIndex].components);
+    const dialog = this.component.modal ? this.createModal(formComponents) : undefined;
+    dialog.refs.dialogContents.appendChild( this.ce('button', {
+      class: 'btn btn-primary',
+      onClick: () => {
+        dialog.close();
+        this.saveRow(rowIndex);
+      }
+    }, this.component.saveRow || 'Save'));
+    this.attachComponents(formComponents, this.editRows[rowIndex].components);
   }
 
   editRow(rowIndex) {
@@ -356,7 +379,12 @@ export default class EditGridComponent extends NestedComponent {
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
-    this.redraw();
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
   }
 
   clearErrors(rowIndex) {
