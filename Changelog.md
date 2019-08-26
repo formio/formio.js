@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 3.25.4
+## 3.26.0
+### Changed
+ - FOR-2492: Nicer file component behavior in submission list UI
+
 ### Fixed
  - FOR-2487: Add Component.once(), PDF.requestUpdatedSubmission(), wizard beforeNext logic update
- - FOR-2492: Nicer file component behavior in submission list UI
 
 ## 3.25.3
 ### Fixed
