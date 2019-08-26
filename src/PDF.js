@@ -97,6 +97,8 @@ export default class PDF extends Webform {
           }
         });
       }
+
+      this.emit('set-submission', this.submission);
     });
   }
 
@@ -145,7 +147,12 @@ export default class PDF extends Webform {
 
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => {
-      this.setSubmission(submission).then(() => this.submit());
+      this.setSubmission(submission).then(() => {
+        if (this.submitOnNextSubmissionMessage) {
+          this.submitOnNextSubmissionMessage = false;
+          this.submit();
+        }
+      });
     }, true);
 
     // Trigger when this form is ready.
@@ -166,13 +173,19 @@ export default class PDF extends Webform {
         class: 'btn btn-primary'
       }, 'Submit');
 
-      this.addEventListener(this.submitButton, 'click', () => {
-        this.postMessage({ name: 'getSubmission' });
-      });
+      this.addEventListener(this.submitButton, 'click', () => this.requestUpdatedSubmission(true));
       this.appendChild(this.element, this.submitButton);
     }
 
     this.addComponents();
+  }
+
+  requestUpdatedSubmission(submitOnReceipt = true) {
+    return new Promise((resolve, reject) => {
+      this.once('set-submission', resolve);
+      this.submitOnNextSubmissionMessage = submitOnReceipt === true;
+      this.postMessage({ name: 'getSubmission' });
+    });
   }
 }
 
