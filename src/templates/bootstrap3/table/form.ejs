@@ -15,7 +15,7 @@
   {% } %}
   <tbody>
     {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
-    <tr ref="row-{{id}}">
+    <tr ref="row-{{ctx.id}}">
       {% row.forEach(function(column, colIndex) { %}
       <td ref="{{ctx.tableKey}}-{{rowIndex}}">{{column}}</td>
       {% }) %}
