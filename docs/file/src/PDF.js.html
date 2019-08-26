@@ -311,6 +311,8 @@ export default class PDF extends Webform {
           }
         });
       }
+
+      this.emit(&apos;set-submission&apos;, this.submission);
     });
   }
 
@@ -359,7 +361,12 @@ export default class PDF extends Webform {
 
     // Handle an iframe submission.
     this.on(&apos;iframe-submission&apos;, (submission) =&gt; {
-      this.setSubmission(submission).then(() =&gt; this.submit());
+      this.setSubmission(submission).then(() =&gt; {
+        if (this.submitOnNextSubmissionMessage) {
+          this.submitOnNextSubmissionMessage = false;
+          this.submit();
+        }
+      });
     }, true);
 
     // Trigger when this form is ready.
@@ -380,13 +387,19 @@ export default class PDF extends Webform {
         class: &apos;btn btn-primary&apos;
       }, &apos;Submit&apos;);
 
-      this.addEventListener(this.submitButton, &apos;click&apos;, () =&gt; {
-        this.postMessage({ name: &apos;getSubmission&apos; });
-      });
+      this.addEventListener(this.submitButton, &apos;click&apos;, () =&gt; this.requestUpdatedSubmission(true));
       this.appendChild(this.element, this.submitButton);
     }
 
     this.addComponents();
+  }
+
+  requestUpdatedSubmission(submitOnReceipt = true) {
+    return new Promise((resolve, reject) =&gt; {
+      this.once(&apos;set-submission&apos;, resolve);
+      this.submitOnNextSubmissionMessage = submitOnReceipt === true;
+      this.postMessage({ name: &apos;getSubmission&apos; });
+    });
   }
 }
 
