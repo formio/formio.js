@@ -75,7 +75,7 @@ export default class Component {
    *   This parameter is necessary because any external "on" bindings should be persistent even through internal
    *   redraw events which will call the "destroy" methods.
    */
-  on(event, cb, internal) {
+  on(event, cb, internal, once = false) {
     if (!this.events) {
       return;
     }
@@ -86,7 +86,20 @@ export default class Component {
     cb.internal = internal;
 
     // Register for this event.
-    return this.events.on(type, cb);
+    return this.events[once ? 'once' : 'on'](type, cb);
+  }
+
+  /**
+   * Register for a new single-fire event within this component.
+   *
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function} cb - The callback handler to handle this event.
+   * @param {boolean} internal - If this event is an "internal" event and should get removed when destroyed.
+   *   This parameter is necessary because any external "on" bindings should be persistent even through internal
+   *   redraw events which will call the "destroy" methods.
+   */
+  once(event, cb, internal) {
+    return this.on(event, cb, internal, true);
   }
 
   /**

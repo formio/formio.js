@@ -7,7 +7,8 @@ import Formio from './Formio';
 import {
   checkCondition,
   hasCondition,
-  firstNonNil
+  firstNonNil,
+  flattenComponents
 } from './utils/utils';
 
 export default class Wizard extends Webform {
@@ -120,16 +121,33 @@ export default class Wizard extends Webform {
     }));
   }
 
+  populateNestedPdfSubmissionData() {
+    const promises = _.chain(flattenComponents(this.components))
+      .values()
+      .filter(c => _.get(c, 'subForm.form.display') === 'pdf')
+      .map(c => c.subForm.requestUpdatedSubmission(false))
+      .value();
+
+    return NativePromise.all(promises);
+  }
+
   beforeNext() {
     return new NativePromise((resolve, reject) => {
-      this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
-        if (err) {
+      this.populateNestedPdfSubmissionData()
+        .then(() => {
+          this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
+            if (err) {
+              this.showErrors(err, true);
+              reject(err);
+            }
+
+            super.beforeNext().then(resolve).catch(reject);
+          });
+        })
+        .catch(err => {
           this.showErrors(err, true);
           reject(err);
-        }
-
-        super.beforeNext().then(resolve).catch(reject);
-      });
+        });
     });
   }
 
