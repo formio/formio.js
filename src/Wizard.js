@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import Formio from './Formio';
-import { checkCondition, firstNonNil } from './utils/utils';
+import { checkCondition, firstNonNil, flattenComponents } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -265,22 +265,39 @@ export default class Wizard extends Webform {
     }));
   }
 
+  populateNestedPdfSubmissionData() {
+    const promises = _.chain(flattenComponents(this.components))
+      .values()
+      .filter(c => _.get(c, 'subForm.form.display') === 'pdf')
+      .map(c => c.subForm.requestUpdatedSubmission(false))
+      .value();
+
+    return NativePromise.all(promises);
+  }
+
   beforeNext() {
     return new NativePromise((resolve, reject) => {
-      this.hook('beforeNext', this.currentPage, this.submission, (err) => {
-        if (err) {
+      this.populateNestedPdfSubmissionData()
+        .then(() => {
+          this.hook('beforeNext', this.currentPage, this.submission, (err) => {
+            if (err) {
+              this.showErrors(err, true);
+              reject(err);
+            }
+
+            const form = this.currentPage;
+            if (form) {
+              NativePromise.all(form.map((comp) => comp.beforeNext())).then(resolve).catch(reject);
+            }
+            else {
+              resolve();
+            }
+          });
+        })
+        .catch(err => {
           this.showErrors(err, true);
           reject(err);
-        }
-
-        const form = this.currentPage;
-        if (form) {
-          NativePromise.all(form.map((comp) => comp.beforeNext())).then(resolve).catch(reject);
-        }
-        else {
-          resolve();
-        }
-      });
+        });
     });
   }
 

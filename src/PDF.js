@@ -15,7 +15,12 @@ export default class PDF extends Webform {
 
     // Handle an iframe submission.
     this.on('iframe-submission', (submission) => {
-      this.setSubmission(submission).then(() => this.submit());
+      this.setSubmission(submission).then(() => {
+        if (this.submitOnNextSubmissionMessage) {
+          this.submitOnNextSubmissionMessage = false;
+          this.submit();
+        }
+      });
     }, true);
 
     // Trigger when this form is ready.
@@ -69,7 +74,7 @@ export default class PDF extends Webform {
       this.postMessage({ name: 'form', data: this.form });
 
       this.addEventListener(this.refs.submitButton, 'click', () => {
-        this.postMessage({ name: 'getSubmission' });
+        this.requestUpdatedSubmission(true);
       });
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
@@ -91,6 +96,14 @@ export default class PDF extends Webform {
       }
 
       this.emit('attach');
+    });
+  }
+
+  requestUpdatedSubmission(submitOnReceipt = true) {
+    return new Promise((resolve, reject) => {
+      this.once('set-submission', resolve);
+      this.submitOnNextSubmissionMessage = submitOnReceipt === true;
+      this.postMessage({ name: 'getSubmission' });
     });
   }
 
@@ -159,6 +172,7 @@ export default class PDF extends Webform {
         });
       }
       this.postMessage({ name: 'submission', data: submission });
+      this.emit('set-submission', submission);
     });
   }
 

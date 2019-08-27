@@ -68,7 +68,7 @@ export default class Element {
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
    */
-  on(event, cb, internal) {
+  on(event, cb, internal, once = false) {
     if (!this.events) {
       return;
     }
@@ -79,7 +79,17 @@ export default class Element {
     cb.internal = internal;
 
     // Register for this event.
-    return this.events.on(type, cb);
+    return this.events[once ? 'once' : 'on'](type, cb);
+  }
+
+  /**
+   * Register for a new single-fire event within this component.
+   *
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function} cb - The callback handler to handle this event.
+   */
+  once(event, cb, internal) {
+    return this.on(event, cb, internal, true);
   }
 
   /**
