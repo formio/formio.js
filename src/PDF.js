@@ -14,19 +14,12 @@ export default class PDF extends Webform {
     super.init();
 
     // Handle an iframe submission.
-    this.on('iframe-submission', (submission) => {
-      this.setSubmission(submission).then(() => {
-        if (this.submitOnNextSubmissionMessage) {
-          this.submitOnNextSubmissionMessage = false;
-          this.submit();
-        }
-      });
-    }, true);
+    this.on('iframe-submission', (submission) => this.setValue(submission, {
+      fromIframe: true
+    }), true);
 
     // Trigger when this form is ready.
-    this.on('iframe-ready', () => {
-      return this.iframeReadyResolve();
-    }, true);
+    this.on('iframe-ready', () => this.iframeReadyResolve(), true);
   }
 
   render() {
@@ -73,9 +66,8 @@ export default class PDF extends Webform {
       // Post the form to the iframe
       this.postMessage({ name: 'form', data: this.form });
 
-      this.addEventListener(this.refs.submitButton, 'click', () => {
-        this.requestUpdatedSubmission(true);
-      });
+      // Submit the form if they click the submit button.
+      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());
 
       this.addEventListener(this.refs.zoomIn, 'click', (event) => {
         event.preventDefault();
@@ -99,12 +91,26 @@ export default class PDF extends Webform {
     });
   }
 
-  requestUpdatedSubmission(submitOnReceipt = true) {
-    return new Promise((resolve, reject) => {
-      this.once('set-submission', resolve);
-      this.submitOnNextSubmissionMessage = submitOnReceipt === true;
+  /**
+   * Get the submission from the iframe.
+   *
+   * @return {Promise<any>}
+   */
+  getSubmission() {
+    return new Promise((resolve) => {
+      this.once('iframe-submission', resolve);
       this.postMessage({ name: 'getSubmission' });
     });
+  }
+
+  /**
+   * Ensure we have the submission from the iframe before we submit the form.
+   *
+   * @param options
+   * @return {*}
+   */
+  submitForm(options = {}) {
+    return this.getSubmission().then(() => super.submitForm(options));
   }
 
   getSrc() {
@@ -146,6 +152,22 @@ export default class PDF extends Webform {
     });
   }
 
+  /**
+   * Set's the value of this form component.
+   *
+   * @param submission
+   * @param flags
+   */
+  setValue(submission, flags) {
+    const changed = super.setValue(submission, flags);
+    if (!flags.fromIframe) {
+      this.once('iframe-ready', () => {
+        this.postMessage({ name: 'submission', data: submission });
+      });
+    }
+    return changed;
+  }
+
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() => {
@@ -171,8 +193,6 @@ export default class PDF extends Webform {
           }
         });
       }
-      this.postMessage({ name: 'submission', data: submission });
-      this.emit('set-submission', submission);
     });
   }
 
