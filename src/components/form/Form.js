@@ -135,12 +135,14 @@ export default class FormComponent extends BaseComponent {
       this.subForm.currentForm = this;
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
-      this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange({
-          noEmit: true
+      if (!this.options.temporary) {
+        this.subForm.on('change', () => {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange({
+            noEmit: true
+          });
         });
-      });
+      }
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
       this.restoreValue();
@@ -390,9 +392,7 @@ export default class FormComponent extends BaseComponent {
 
   build() {
     this.createElement();
-
-    // Do not restore the value when building before submission.
-    if (!this.options.beforeSubmit) {
+    if (!this.options.temporary) {
       this.restoreValue();
     }
     this.attachLogic();

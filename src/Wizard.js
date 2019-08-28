@@ -41,6 +41,7 @@ export default class Wizard extends Webform {
   getPages(args = {}) {
     const { all = false } = args;
     const pageOptions = _.clone(this.options);
+    pageOptions.temporary = true;
     const components = _.clone(this.components);
     const pages = this.pages
           .filter(all ? _.identity : (p, index) => this._seenPages.includes(index))
@@ -114,10 +115,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return NativePromise.all(this.getPages().map((page) => {
-      page.options.beforeSubmit = true;
-      return page.beforeSubmit();
-    }));
+    return NativePromise.all(this.getPages().map((page) =>page.beforeSubmit()));
   }
 
   beforePage(next) {
