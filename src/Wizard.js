@@ -120,15 +120,15 @@ export default class Wizard extends Webform {
     }));
   }
 
-  beforeNext() {
+  beforePage(next) {
     return new NativePromise((resolve, reject) => {
-      this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
+      this.hook(next ? 'beforeNext' : 'beforePrev', this.currentPage(), this.submission, (err) => {
         if (err) {
           this.showErrors(err, true);
           reject(err);
         }
 
-        super.beforeNext().then(resolve).catch(reject);
+        super.beforePage(next).then(resolve).catch(reject);
       });
     });
   }
@@ -147,7 +147,7 @@ export default class Wizard extends Webform {
       this.checkData(this.submission.data, {
         noValidate: true
       });
-      return this.beforeNext().then(() => {
+      return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
           this._nextPage = this.getNextPage(this.submission.data, this.page);
           this.emit('nextPage', { page: this.page, submission: this.submission });
@@ -160,9 +160,10 @@ export default class Wizard extends Webform {
   }
 
   prevPage() {
-    const prevPage = this.getPreviousPage();
-    return this.setPage(prevPage).then(() => {
-      this.emit('prevPage', { page: this.page, submission: this.submission });
+    return this.beforePage(false).then(() => {
+      return this.setPage(this.getPreviousPage()).then(() => {
+        this.emit('prevPage', { page: this.page, submission: this.submission });
+      });
     });
   }
 

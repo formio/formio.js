@@ -357,8 +357,8 @@ export default class FormComponent extends BaseComponent {
   /**
    * Submit the form before the next page is triggered.
    */
-  beforeNext() {
-    return this.submitSubForm(true).then(() => super.beforeNext());
+  beforePage(next) {
+    return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
   /**

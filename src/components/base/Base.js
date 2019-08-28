@@ -483,8 +483,20 @@ export default class BaseComponent extends Component {
    *
    * @return {*}
    */
-  beforeNext() {
+  beforePage(next) {
     return NativePromise.resolve(true);
+  }
+
+  /**
+   * To maintain reverse compatibility, this is an alias for beforePage(true);
+   * @return {*}
+   */
+  beforeNext() {
+    return this.beforePage(true);
+  }
+
+  beforePrev() {
+    return this.beforePage(false);
   }
 
   /**
