@@ -633,6 +633,7 @@ export default class Webform extends NestedComponent {
       this.formReadyResolve();
       this.emit('formLoad', form);
       this.triggerRecaptcha();
+      this.onChange();
       return this.formReady;
     });
   }
@@ -826,7 +827,8 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   init() {
-    this._submission = this._submission || {};
+    this._submission = this._submission || { data: {} };
+
     // Remove any existing components.
     if (this.components && this.components.length) {
       this.destroyComponents();
@@ -1083,7 +1085,7 @@ export default class Webform extends NestedComponent {
     }
 
     super.onChange(flags, true);
-    const value = _.clone(this._submission);
+    const value = _.clone(this.submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
     this.loading = false;
