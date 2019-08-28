@@ -556,7 +556,11 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   destroy() {
     if (this.editorReady) {
-      this.editorReady.then((editor) => editor.destroy());
+      this.editorReady.then((editor) => {
+        if (editor.destroy) {
+          return editor.destroy();
+        }
+      });
     }
 
     if (this.updateSize) {
