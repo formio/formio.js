@@ -221,8 +221,7 @@ import Formio from &apos;./Formio&apos;;
 import {
   checkCondition,
   hasCondition,
-  firstNonNil,
-  flattenComponents
+  firstNonNil
 } from &apos;./utils/utils&apos;;
 
 export default class Wizard extends Webform {
@@ -256,6 +255,7 @@ export default class Wizard extends Webform {
   getPages(args = {}) {
     const { all = false } = args;
     const pageOptions = _.clone(this.options);
+    pageOptions.temporary = true;
     const components = _.clone(this.components);
     const pages = this.pages
           .filter(all ? _.identity : (p, index) =&gt; this._seenPages.includes(index))
@@ -329,39 +329,19 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return NativePromise.all(this.getPages().map((page) =&gt; {
-      page.options.beforeSubmit = true;
-      return page.beforeSubmit();
-    }));
+    return NativePromise.all(this.getPages().map((page) =&gt;page.beforeSubmit()));
   }
 
-  populateNestedPdfSubmissionData() {
-    const promises = _.chain(flattenComponents(this.components))
-      .values()
-      .filter(c =&gt; _.get(c, &apos;subForm.form.display&apos;) === &apos;pdf&apos;)
-      .map(c =&gt; c.subForm.requestUpdatedSubmission(false))
-      .value();
-
-    return NativePromise.all(promises);
-  }
-
-  beforeNext() {
+  beforePage(next) {
     return new NativePromise((resolve, reject) =&gt; {
-      this.populateNestedPdfSubmissionData()
-        .then(() =&gt; {
-          this.hook(&apos;beforeNext&apos;, this.currentPage(), this.submission, (err) =&gt; {
-            if (err) {
-              this.showErrors(err, true);
-              reject(err);
-            }
-
-            super.beforeNext().then(resolve).catch(reject);
-          });
-        })
-        .catch(err =&gt; {
+      this.hook(next ? &apos;beforeNext&apos; : &apos;beforePrev&apos;, this.currentPage(), this.submission, (err) =&gt; {
+        if (err) {
           this.showErrors(err, true);
           reject(err);
-        });
+        }
+
+        super.beforePage(next).then(resolve).catch(reject);
+      });
     });
   }
 
@@ -379,7 +359,7 @@ export default class Wizard extends Webform {
       this.checkData(this.submission.data, {
         noValidate: true
       });
-      return this.beforeNext().then(() =&gt; {
+      return this.beforePage(true).then(() =&gt; {
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() =&gt; {
           this._nextPage = this.getNextPage(this.submission.data, this.page);
           this.emit(&apos;nextPage&apos;, { page: this.page, submission: this.submission });
@@ -392,9 +372,10 @@ export default class Wizard extends Webform {
   }
 
   prevPage() {
-    const prevPage = this.getPreviousPage();
-    return this.setPage(prevPage).then(() =&gt; {
-      this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
+    return this.beforePage(false).then(() =&gt; {
+      return this.setPage(this.getPreviousPage()).then(() =&gt; {
+        this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
+      });
     });
   }
 

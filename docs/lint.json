@@ -261,23 +261,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1277,
+        "lineNumber": 1290,
         "line": "  /**"
       },
       {
-        "lineNumber": 1278,
+        "lineNumber": 1291,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 1279,
+        "lineNumber": 1292,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 1280,
+        "lineNumber": 1293,
         "line": "   */"
       },
       {
-        "lineNumber": 1281,
+        "lineNumber": 1294,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -295,27 +295,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1728,
+        "lineNumber": 1741,
         "line": "  /**"
       },
       {
-        "lineNumber": 1729,
+        "lineNumber": 1742,
         "line": "   * Hide or Show an element."
       },
       {
-        "lineNumber": 1730,
+        "lineNumber": 1743,
         "line": "   *"
       },
       {
-        "lineNumber": 1731,
+        "lineNumber": 1744,
         "line": "   * @param show"
       },
       {
-        "lineNumber": 1732,
+        "lineNumber": 1745,
         "line": "   */"
       },
       {
-        "lineNumber": 1733,
+        "lineNumber": 1746,
         "line": "  show(show, noClear) {"
       }
     ],
@@ -332,35 +332,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1893,
+        "lineNumber": 1906,
         "line": "  /**"
       },
       {
-        "lineNumber": 1894,
+        "lineNumber": 1907,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1895,
+        "lineNumber": 1908,
         "line": "   *"
       },
       {
-        "lineNumber": 1896,
+        "lineNumber": 1909,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1897,
+        "lineNumber": 1910,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1898,
+        "lineNumber": 1911,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1899,
+        "lineNumber": 1912,
         "line": "   */"
       },
       {
-        "lineNumber": 1900,
+        "lineNumber": 1913,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -379,27 +379,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2198,
+        "lineNumber": 2211,
         "line": "  /**"
       },
       {
-        "lineNumber": 2199,
+        "lineNumber": 2212,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2200,
+        "lineNumber": 2213,
         "line": "   *"
       },
       {
-        "lineNumber": 2201,
+        "lineNumber": 2214,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2202,
+        "lineNumber": 2215,
         "line": "   */"
       },
       {
-        "lineNumber": 2203,
+        "lineNumber": 2216,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -416,35 +416,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2249,
+        "lineNumber": 2262,
         "line": "  /**"
       },
       {
-        "lineNumber": 2250,
+        "lineNumber": 2263,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2251,
+        "lineNumber": 2264,
         "line": "   *"
       },
       {
-        "lineNumber": 2252,
+        "lineNumber": 2265,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2253,
+        "lineNumber": 2266,
         "line": "   *"
       },
       {
-        "lineNumber": 2254,
+        "lineNumber": 2267,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2255,
+        "lineNumber": 2268,
         "line": "   */"
       },
       {
-        "lineNumber": 2256,
+        "lineNumber": 2269,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -461,35 +461,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2339,
+        "lineNumber": 2352,
         "line": "  /**"
       },
       {
-        "lineNumber": 2340,
+        "lineNumber": 2353,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2341,
+        "lineNumber": 2354,
         "line": "   *"
       },
       {
-        "lineNumber": 2342,
+        "lineNumber": 2355,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2343,
+        "lineNumber": 2356,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2344,
+        "lineNumber": 2357,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2345,
+        "lineNumber": 2358,
         "line": "   */"
       },
       {
-        "lineNumber": 2346,
+        "lineNumber": 2359,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -508,31 +508,31 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2464,
+        "lineNumber": 2477,
         "line": "  /**"
       },
       {
-        "lineNumber": 2465,
+        "lineNumber": 2478,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 2466,
+        "lineNumber": 2479,
         "line": "   *"
       },
       {
-        "lineNumber": 2467,
+        "lineNumber": 2480,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 2468,
+        "lineNumber": 2481,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 2469,
+        "lineNumber": 2482,
         "line": "   */"
       },
       {
-        "lineNumber": 2470,
+        "lineNumber": 2483,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],

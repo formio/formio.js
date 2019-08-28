@@ -213,7 +213,8 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/WebformBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Webform from &apos;./Webform&apos;;
-import dragula from &apos;dragula&apos;;
+// Import from dist because dragula requires &quot;global&quot; to be defined which messes up Angular.
+import dragula from &apos;dragula/dist/dragula&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import Components from &apos;./components/Components&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;

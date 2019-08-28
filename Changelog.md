@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.27.0
+### Added
+ - beforePrev hook for wizards.
+
+### Fixed
+ - Problem where Promise was getting overridden messing up Angular builds.
+ - Issue where dragular was using "global" which was causing issues with Angular builds.
+ - Ensure that subforms are submitted and fetch PDF form submissions before moving onto the next wizard pages.
+ - Problems where nested forms could get into an infinite refresh loop when an error occurs
+
 ## 3.26.0
 ### Changed
  - FOR-2492: Nicer file component behavior in submission list UI

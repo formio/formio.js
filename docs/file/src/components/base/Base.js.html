@@ -222,7 +222,8 @@ import Formio from &apos;../../Formio&apos;;
 import Validator from &apos;../Validator&apos;;
 import Widgets from &apos;../../widgets&apos;;
 import Component from &apos;../../Component&apos;;
-import dragula from &apos;dragula&apos;;
+// Import from dist because dragula requires &quot;global&quot; to be defined which messes up Angular.
+import dragula from &apos;dragula/dist/dragula&apos;;
 const CKEDITOR = &apos;https://cdn.form.io/ckeditor/12.2.0/ckeditor.js&apos;;
 
 /**
@@ -696,8 +697,20 @@ export default class BaseComponent extends Component {
    *
    * @return {*}
    */
-  beforeNext() {
+  beforePage(next) {
     return NativePromise.resolve(true);
+  }
+
+  /**
+   * To maintain reverse compatibility, this is an alias for beforePage(true);
+   * @return {*}
+   */
+  beforeNext() {
+    return this.beforePage(true);
+  }
+
+  beforePrev() {
+    return this.beforePage(false);
   }
 
   /**

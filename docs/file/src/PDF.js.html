@@ -285,9 +285,21 @@ export default class PDF extends Webform {
     });
   }
 
+  /**
+   * Set&apos;s the value of this form component.
+   *
+   * @param submission
+   * @param flags
+   */
+  setValue(submission, flags) {
+    if (!flags.fromIframe &amp;&amp; this.iframeReady) {
+      this.iframeReady.then(() =&gt; this.postMessage({ name: &apos;submission&apos;, data: submission }));
+    }
+    return super.setValue(submission, flags);
+  }
+
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
-    this.postMessage({ name: &apos;submission&apos;, data: submission });
     return super.setSubmission(submission).then(() =&gt; {
       if (this.formio) {
         this.formio.getDownloadUrl().then((url) =&gt; {
@@ -311,8 +323,6 @@ export default class PDF extends Webform {
           }
         });
       }
-
-      this.emit(&apos;set-submission&apos;, this.submission);
     });
   }
 
@@ -360,14 +370,9 @@ export default class PDF extends Webform {
     });
 
     // Handle an iframe submission.
-    this.on(&apos;iframe-submission&apos;, (submission) =&gt; {
-      this.setSubmission(submission).then(() =&gt; {
-        if (this.submitOnNextSubmissionMessage) {
-          this.submitOnNextSubmissionMessage = false;
-          this.submit();
-        }
-      });
-    }, true);
+    this.on(&apos;iframe-submission&apos;, (submission) =&gt; this.setValue(submission, {
+      fromIframe: true
+    }), true);
 
     // Trigger when this form is ready.
     this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
@@ -387,19 +392,28 @@ export default class PDF extends Webform {
         class: &apos;btn btn-primary&apos;
       }, &apos;Submit&apos;);
 
-      this.addEventListener(this.submitButton, &apos;click&apos;, () =&gt; this.requestUpdatedSubmission(true));
+      this.addEventListener(this.submitButton, &apos;click&apos;, () =&gt; this.submit());
       this.appendChild(this.element, this.submitButton);
     }
 
     this.addComponents();
   }
 
-  requestUpdatedSubmission(submitOnReceipt = true) {
-    return new Promise((resolve, reject) =&gt; {
-      this.once(&apos;set-submission&apos;, resolve);
-      this.submitOnNextSubmissionMessage = submitOnReceipt === true;
+  getSubmission() {
+    return new NativePromise((resolve) =&gt; {
+      this.once(&apos;iframe-submission&apos;, resolve);
       this.postMessage({ name: &apos;getSubmission&apos; });
     });
+  }
+
+  /**
+   * Ensure we have the submission from the iframe before we submit the form.
+   *
+   * @param options
+   * @return {*}
+   */
+  submitForm(options = {}) {
+    return this.getSubmission().then(() =&gt; super.submitForm(options));
   }
 }
 
