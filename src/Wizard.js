@@ -7,8 +7,7 @@ import Formio from './Formio';
 import {
   checkCondition,
   hasCondition,
-  firstNonNil,
-  flattenComponents
+  firstNonNil
 } from './utils/utils';
 
 export default class Wizard extends Webform {
@@ -42,6 +41,7 @@ export default class Wizard extends Webform {
   getPages(args = {}) {
     const { all = false } = args;
     const pageOptions = _.clone(this.options);
+    pageOptions.temporary = true;
     const components = _.clone(this.components);
     const pages = this.pages
           .filter(all ? _.identity : (p, index) => this._seenPages.includes(index))
@@ -115,39 +115,19 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    return NativePromise.all(this.getPages().map((page) => {
-      page.options.beforeSubmit = true;
-      return page.beforeSubmit();
-    }));
+    return NativePromise.all(this.getPages().map((page) =>page.beforeSubmit()));
   }
 
-  populateNestedPdfSubmissionData() {
-    const promises = _.chain(flattenComponents(this.components))
-      .values()
-      .filter(c => _.get(c, 'subForm.form.display') === 'pdf')
-      .map(c => c.subForm.requestUpdatedSubmission(false))
-      .value();
-
-    return NativePromise.all(promises);
-  }
-
-  beforeNext() {
+  beforePage(next) {
     return new NativePromise((resolve, reject) => {
-      this.populateNestedPdfSubmissionData()
-        .then(() => {
-          this.hook('beforeNext', this.currentPage(), this.submission, (err) => {
-            if (err) {
-              this.showErrors(err, true);
-              reject(err);
-            }
-
-            super.beforeNext().then(resolve).catch(reject);
-          });
-        })
-        .catch(err => {
+      this.hook(next ? 'beforeNext' : 'beforePrev', this.currentPage(), this.submission, (err) => {
+        if (err) {
           this.showErrors(err, true);
           reject(err);
-        });
+        }
+
+        super.beforePage(next).then(resolve).catch(reject);
+      });
     });
   }
 
@@ -165,7 +145,7 @@ export default class Wizard extends Webform {
       this.checkData(this.submission.data, {
         noValidate: true
       });
-      return this.beforeNext().then(() => {
+      return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
           this._nextPage = this.getNextPage(this.submission.data, this.page);
           this.emit('nextPage', { page: this.page, submission: this.submission });
@@ -178,9 +158,10 @@ export default class Wizard extends Webform {
   }
 
   prevPage() {
-    const prevPage = this.getPreviousPage();
-    return this.setPage(prevPage).then(() => {
-      this.emit('prevPage', { page: this.page, submission: this.submission });
+    return this.beforePage(false).then(() => {
+      return this.setPage(this.getPreviousPage()).then(() => {
+        this.emit('prevPage', { page: this.page, submission: this.submission });
+      });
     });
   }
 

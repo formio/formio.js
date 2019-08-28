@@ -454,8 +454,8 @@ export default class NestedComponent extends BaseComponent {
    *
    * @return {*}
    */
-  beforeNext() {
-    return NativePromise.all(this.getComponents().map((comp) => comp.beforeNext()));
+  beforePage(next) {
+    return NativePromise.all(this.getComponents().map((comp) => comp.beforePage(next)));
   }
 
   /**

@@ -135,12 +135,14 @@ export default class FormComponent extends BaseComponent {
       this.subForm.currentForm = this;
       this.subForm.parent = this;
       this.subForm.parentVisible = this.visible;
-      this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.triggerChange({
-          noEmit: true
+      if (!this.options.temporary) {
+        this.subForm.on('change', () => {
+          this.dataValue = this.subForm.getValue();
+          this.triggerChange({
+            noEmit: true
+          });
         });
-      });
+      }
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
       this.restoreValue();
@@ -314,24 +316,51 @@ export default class FormComponent extends BaseComponent {
   }
 
   /**
-   * Submit the form before the next page is triggered.
+   * Returns the data for the subform.
+   *
+   * @return {*}
    */
-  beforeNext() {
+  getSubFormData() {
+    if (_.get(this.subForm, 'form.display') === 'pdf') {
+      return this.subForm.getSubmission();
+    }
+    else {
+      return NativePromise.resolve(this.dataValue);
+    }
+  }
+
+  /**
+   * Submit the subform if configured to do so.
+   *
+   * @return {*}
+   */
+  submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
+          this.subForm.loading = false;
           this.dataValue = result.submission;
           return this.dataValue;
         }).catch(err => {
-          this.subForm.onSubmissionError(err);
-          return NativePromise.reject(err);
+          if (rejectOnError) {
+            this.subForm.onSubmissionError(err);
+            return NativePromise.reject(err);
+          }
+          else {
+            return {};
+          }
         });
       });
     }
-    else {
-      return super.beforeNext();
-    }
+    return this.getSubFormData();
+  }
+
+  /**
+   * Submit the form before the next page is triggered.
+   */
+  beforePage(next) {
+    return this.submitSubForm(true).then(() => super.beforePage(next));
   }
 
   /**
@@ -348,32 +377,22 @@ export default class FormComponent extends BaseComponent {
       } : submission;
       return NativePromise.resolve(this.dataValue);
     }
-
-    // This submission has not been submitted yet.
-    if (this.shouldSubmit) {
-      return this.loadSubForm().then(() => {
-        return this.subForm.submitForm()
-          .then(result => {
-            this.subForm.loading = false;
-            this.dataValue = {
-              _id: result.submission._id,
-              form: result.submission.form
-            };
-            return this.dataValue;
-          })
-          .catch(() => {});
-      });
-    }
-    else {
-      return super.beforeSubmit();
-    }
+    return this.submitSubForm(false)
+      .then((data) => {
+        if (data._id) {
+          this.dataValue = {
+            _id: data._id,
+            form: data.form
+          };
+        }
+        return this.dataValue;
+      })
+      .then(() => super.beforeSubmit());
   }
 
   build() {
     this.createElement();
-
-    // Do not restore the value when building before submission.
-    if (!this.options.beforeSubmit) {
+    if (!this.options.temporary) {
       this.restoreValue();
     }
     this.attachLogic();
