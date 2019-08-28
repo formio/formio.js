@@ -271,7 +271,6 @@ export default class FormComponent extends Component {
       this.subForm.url = this.formSrc;
       this.subForm.nosubmit = this.nosubmit;
       this.redraw();
-      this.restoreValue();
       this.subForm.root = this.root;
       return this.subForm;
     });
@@ -286,7 +285,7 @@ export default class FormComponent extends Component {
     }
 
     if (this.subFormReady) {
-      return this.subFormReady;
+      return this.subFormReady.then(() => this.restoreValue());
     }
 
     // Determine if we already have a loaded form object.
@@ -296,10 +295,12 @@ export default class FormComponent extends Component {
     else if (this.formSrc) {
       this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) => {
         this.component.components = formObj.components;
+        this.component.settings = formObj.settings;
+        this.component.display = formObj.display;
         return this.renderSubForm(formObj);
       });
     }
-    return this.subFormReady;
+    return this.subFormReady.then(() => this.restoreValue());
   }
 
   checkValidity(data, dirty) {
@@ -340,29 +341,51 @@ export default class FormComponent extends Component {
     }
   }
 
+  /**
+   * Determine if the subform should be submitted.
+   * @return {*|boolean}
+   */
   get shouldSubmit() {
     return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference);
   }
 
   /**
-   * Submit the form before the next page is triggered.
+   * Returns the data for the subform.
+   *
+   * @return {*}
    */
-  beforeNext() {
-    // If we wish to submit the form on next page, then do that here.
-    if (this.shouldSubmit) {
-      return this.subFormReady.then(() => {
-        return this.subForm.submitForm().then(result => {
-          this.dataValue = result.submission;
-          return this.dataValue;
-        }).catch(err => {
-          this.subForm.onSubmissionError(err);
-          return NativePromise.reject(err);
-        });
-      });
+  getSubFormData() {
+    if (_.get(this.subForm, 'form.display') === 'pdf') {
+      return this.subForm.getSubmission();
     }
     else {
-      return super.beforeNext();
+      return NativePromise.resolve(this.dataValue);
     }
+  }
+
+  /**
+   * Submit the subform if configured to do so.
+   *
+   * @return {*}
+   */
+  submitSubForm() {
+    if (this.shouldSubmit) {
+      return this.subFormReady.then(() => this.subForm.submitForm().then(result => {
+        this.dataValue = result.submission;
+        return this.dataValue;
+      }).catch(err => {
+        this.subForm.onSubmissionError(err);
+        return NativePromise.reject(err);
+      }));
+    }
+    return this.getSubFormData();
+  }
+
+  /**
+   * Submit the form before the next page is triggered.
+   */
+  beforePage(next) {
+    return this.submitSubForm().then(() => super.beforePage(next));
   }
 
   /**

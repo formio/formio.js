@@ -751,13 +751,17 @@ export default class Component extends Element {
   }
 
   /**
-   * Called before a next page is triggered allowing the components
+   * Called before a next and previous page is triggered allowing the components
    * to perform special functions.
    *
    * @return {*}
    */
-  beforeNext() {
+  beforePage() {
     return NativePromise.resolve(true);
+  }
+
+  beforeNext() {
+    return this.beforePage(true);
   }
 
   /**

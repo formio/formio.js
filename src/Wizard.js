@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import Formio from './Formio';
-import { checkCondition, firstNonNil, flattenComponents } from './utils/utils';
+import { checkCondition, firstNonNil } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -265,39 +265,22 @@ export default class Wizard extends Webform {
     }));
   }
 
-  populateNestedPdfSubmissionData() {
-    const promises = _.chain(flattenComponents(this.components))
-      .values()
-      .filter(c => _.get(c, 'subForm.form.display') === 'pdf')
-      .map(c => c.subForm.requestUpdatedSubmission(false))
-      .value();
-
-    return NativePromise.all(promises);
-  }
-
-  beforeNext() {
+  beforePage(next) {
     return new NativePromise((resolve, reject) => {
-      this.populateNestedPdfSubmissionData()
-        .then(() => {
-          this.hook('beforeNext', this.currentPage, this.submission, (err) => {
-            if (err) {
-              this.showErrors(err, true);
-              reject(err);
-            }
-
-            const form = this.currentPage;
-            if (form) {
-              NativePromise.all(form.map((comp) => comp.beforeNext())).then(resolve).catch(reject);
-            }
-            else {
-              resolve();
-            }
-          });
-        })
-        .catch(err => {
+      this.hook(next ? 'beforeNext' : 'beforePrev', this.currentPage, this.submission, (err) => {
+        if (err) {
           this.showErrors(err, true);
           reject(err);
-        });
+        }
+
+        const form = this.currentPage;
+        if (form) {
+          NativePromise.all(form.map((comp) => comp.beforePage(next))).then(resolve).catch(reject);
+        }
+        else {
+          resolve();
+        }
+      });
     });
   }
 
@@ -309,10 +292,10 @@ export default class Wizard extends Webform {
       });
     }
 
-    // Validate the form builed, before go to the next page
+    // Validate the form, before go to the next page
     if (this.checkCurrentPageValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
-      return this.beforeNext().then(() => {
+      return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
           this.emit('nextPage', { page: this.page, submission: this.submission });
         });
@@ -324,9 +307,10 @@ export default class Wizard extends Webform {
   }
 
   prevPage() {
-    const prevPage = this.getPreviousPage();
-    return this.setPage(prevPage).then(() => {
-      this.emit('prevPage', { page: this.page, submission: this.submission });
+    return this.beforePage().then(() => {
+      return this.setPage(this.getPreviousPage()).then(() => {
+        this.emit('prevPage', { page: this.page, submission: this.submission });
+      });
     });
   }
 
