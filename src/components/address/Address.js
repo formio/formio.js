@@ -491,7 +491,7 @@ export default class AddressComponent extends TextFieldComponent {
     });
   }
 
-  getView(value) {
+  getValueAsString(value) {
     return _.get(value, 'formatted_address', '');
   }
 }

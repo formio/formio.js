@@ -93,7 +93,7 @@ export default class Input extends Multivalue {
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getView(value);
+    info.attr.value = this.getValueAsString(value);
     // This should be in the calendar widget but it doesn't have access to renderTemplate.
     if (this.component.widget && this.component.widget.type === 'calendar') {
       this.component.suffix = this.renderTemplate('icon', {

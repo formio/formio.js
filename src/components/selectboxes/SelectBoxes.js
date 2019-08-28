@@ -125,7 +125,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     return changed;
   }
 
-  getView(value) {
+  getValueAsString(value) {
     if (!value) {
       return '';
     }

@@ -192,7 +192,7 @@ export default class SignatureComponent extends Input {
     super.detach();
   }
 
-  getView(value) {
+  getValueAsString(value) {
     return value ? 'Yes' : 'No';
   }
 

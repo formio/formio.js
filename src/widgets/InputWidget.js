@@ -45,7 +45,7 @@ export default class InputWidget extends Element {
     return this._input.value;
   }
 
-  getView(value) {
+  getValueAsString(value) {
     return value;
   }
 

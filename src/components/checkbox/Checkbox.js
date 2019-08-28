@@ -187,7 +187,7 @@ export default class CheckBoxComponent extends Field {
     return false;
   }
 
-  getView(value) {
+  getValueAsString(value) {
     return value ? 'Yes' : 'No';
   }
 }

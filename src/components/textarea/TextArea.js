@@ -58,7 +58,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setupValueElement(element) {
     let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
+    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
     if (this.component.wysiwyg) {
       value = this.interpolate(value);
     }

@@ -166,13 +166,13 @@ export default class NumberComponent extends Input {
     return conformToMask(value.toString(), this.numberMask).conformedValue;
   }
 
-  getView(value) {
+  getValueAsString(value) {
     if (!value && value !== 0) {
       return '';
     }
     const widget = this.widget;
-    if (widget && widget.getView) {
-      return widget.getView(value);
+    if (widget && widget.getValueAsString) {
+      return widget.getValueAsString(value);
     }
 
     if (Array.isArray(value)) {

@@ -995,18 +995,24 @@ export default class Component extends Element {
     return '-';
   }
 
-  getView(value) {
-    if (this.component.protected) {
-      return ' --- PROTECTED ---';
-    }
+  getValueAsString(value) {
     if (!value) {
       return '';
     }
     if (Array.isArray(value)) {
       return value.join(', ');
     }
-
+    if (_.isPlainObject(value)) {
+      return JSON.stringify(value);
+    }
     return value.toString();
+  }
+
+  getView(value) {
+    if (this.component.protected) {
+      return '--- PROTECTED ---';
+    }
+    return this.getValueAsString(value);
   }
 
   updateItems(...args) {

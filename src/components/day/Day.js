@@ -472,12 +472,12 @@ export default class DayComponent extends Field {
   }
 
   /**
-   * Get the view of the date.
+   * Get the input value of the date.
    *
    * @param value
    * @return {null}
    */
-  getView(value) {
+  getValueAsString(value) {
     return this.getDate(value);
   }
 

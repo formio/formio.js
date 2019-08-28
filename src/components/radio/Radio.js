@@ -92,7 +92,7 @@ export default class RadioComponent extends Field {
     return value;
   }
 
-  getView(value) {
+  getValueAsString(value) {
     if (!value) {
       return '';
     }
