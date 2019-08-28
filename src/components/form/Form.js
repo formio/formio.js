@@ -314,9 +314,25 @@ export default class FormComponent extends BaseComponent {
   }
 
   /**
-   * Submit the form before the next page is triggered.
+   * Returns the data for the subform.
+   *
+   * @return {*}
    */
-  beforeNext() {
+  getSubFormData() {
+    if (_.get(this.subForm, 'form.display') === 'pdf') {
+      return this.subForm.getSubmission();
+    }
+    else {
+      return NativePromise.resolve(this.dataValue);
+    }
+  }
+
+  /**
+   * Submit the subform if configured to do so.
+   *
+   * @return {*}
+   */
+  submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.loadSubForm().then(() => {
@@ -329,9 +345,14 @@ export default class FormComponent extends BaseComponent {
         });
       });
     }
-    else {
-      return super.beforeNext();
-    }
+    return this.getSubFormData();
+  }
+
+  /**
+   * Submit the form before the next page is triggered.
+   */
+  beforeNext() {
+    return this.submitSubForm().then(() => super.beforeNext());
   }
 
   /**
@@ -348,25 +369,18 @@ export default class FormComponent extends BaseComponent {
       } : submission;
       return NativePromise.resolve(this.dataValue);
     }
-
-    // This submission has not been submitted yet.
-    if (this.shouldSubmit) {
-      return this.loadSubForm().then(() => {
-        return this.subForm.submitForm()
-          .then(result => {
-            this.subForm.loading = false;
-            this.dataValue = {
-              _id: result.submission._id,
-              form: result.submission.form
-            };
-            return this.dataValue;
-          })
-          .catch(() => {});
-      });
-    }
-    else {
-      return super.beforeSubmit();
-    }
+    return this.submitSubForm()
+      .then((data) => {
+        this.subForm.loading = false;
+        if (data._id) {
+          this.dataValue = {
+            _id: data._id,
+            form: data.form
+          };
+        }
+        return this.dataValue;
+      })
+      .then(() => super.beforeSubmit());
   }
 
   build() {

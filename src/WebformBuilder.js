@@ -1,5 +1,6 @@
 import Webform from './Webform';
-import dragula from 'dragula';
+// Import from dist because dragula requires "global" to be defined which messes up Angular.
+import dragula from 'dragula/dist/dragula';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
