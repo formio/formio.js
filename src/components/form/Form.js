@@ -332,16 +332,22 @@ export default class FormComponent extends BaseComponent {
    *
    * @return {*}
    */
-  submitSubForm() {
+  submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
+          this.subForm.loading = false;
           this.dataValue = result.submission;
           return this.dataValue;
         }).catch(err => {
-          this.subForm.onSubmissionError(err);
-          return NativePromise.reject(err);
+          if (rejectOnError) {
+            this.subForm.onSubmissionError(err);
+            return NativePromise.reject(err);
+          }
+          else {
+            return {};
+          }
         });
       });
     }
@@ -352,7 +358,7 @@ export default class FormComponent extends BaseComponent {
    * Submit the form before the next page is triggered.
    */
   beforeNext() {
-    return this.submitSubForm().then(() => super.beforeNext());
+    return this.submitSubForm(true).then(() => super.beforeNext());
   }
 
   /**
@@ -369,9 +375,8 @@ export default class FormComponent extends BaseComponent {
       } : submission;
       return NativePromise.resolve(this.dataValue);
     }
-    return this.submitSubForm()
+    return this.submitSubForm(false)
       .then((data) => {
-        this.subForm.loading = false;
         if (data._id) {
           this.dataValue = {
             _id: data._id,
