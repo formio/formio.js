@@ -313,11 +313,7 @@ export default class FileComponent extends Field {
     return [];
   }
 
-  getView(value) {
-    if (this.component.protected) {
-      return &apos;--- PROTECTED ---&apos;;
-    }
-
+  getValueAsString(value) {
     return value ? value.originalName : &apos;&apos;;
   }
 

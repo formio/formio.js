@@ -239,14 +239,12 @@ export default class PDF extends Webform {
     super.init();
 
     // Handle an iframe submission.
-    this.on(&apos;iframe-submission&apos;, (submission) =&gt; {
-      this.setSubmission(submission).then(() =&gt; this.submit());
-    }, true);
+    this.on(&apos;iframe-submission&apos;, (submission) =&gt; this.setValue(submission, {
+      fromIframe: true
+    }), true);
 
     // Trigger when this form is ready.
-    this.on(&apos;iframe-ready&apos;, () =&gt; {
-      return this.iframeReadyResolve();
-    }, true);
+    this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
   }
 
   render() {
@@ -293,9 +291,8 @@ export default class PDF extends Webform {
       // Post the form to the iframe
       this.postMessage({ name: &apos;form&apos;, data: this.form });
 
-      this.addEventListener(this.refs.submitButton, &apos;click&apos;, () =&gt; {
-        this.postMessage({ name: &apos;getSubmission&apos; });
-      });
+      // Submit the form if they click the submit button.
+      this.addEventListener(this.refs.submitButton, &apos;click&apos;, () =&gt; this.submit());
 
       this.addEventListener(this.refs.zoomIn, &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
@@ -317,6 +314,28 @@ export default class PDF extends Webform {
 
       this.emit(&apos;attach&apos;);
     });
+  }
+
+  /**
+   * Get the submission from the iframe.
+   *
+   * @return {Promise&lt;any&gt;}
+   */
+  getSubmission() {
+    return new Promise((resolve) =&gt; {
+      this.once(&apos;iframe-submission&apos;, resolve);
+      this.postMessage({ name: &apos;getSubmission&apos; });
+    });
+  }
+
+  /**
+   * Ensure we have the submission from the iframe before we submit the form.
+   *
+   * @param options
+   * @return {*}
+   */
+  submitForm(options = {}) {
+    return this.getSubmission().then(() =&gt; super.submitForm(options));
   }
 
   getSrc() {
@@ -358,6 +377,22 @@ export default class PDF extends Webform {
     });
   }
 
+  /**
+   * Set&apos;s the value of this form component.
+   *
+   * @param submission
+   * @param flags
+   */
+  setValue(submission, flags) {
+    const changed = super.setValue(submission, flags);
+    if (!flags.fromIframe) {
+      this.once(&apos;iframe-ready&apos;, () =&gt; {
+        this.postMessage({ name: &apos;submission&apos;, data: submission });
+      });
+    }
+    return changed;
+  }
+
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() =&gt; {
@@ -383,7 +418,6 @@ export default class PDF extends Webform {
           }
         });
       }
-      this.postMessage({ name: &apos;submission&apos;, data: submission });
     });
   }
 

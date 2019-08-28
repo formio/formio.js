@@ -1204,7 +1204,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-beforeNext">beforeNext</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-beforePage">beforePage</a></span></span><span class="code" data-ice="signature">(next: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4710,7 +4710,35 @@ within other container based components.</p>
       <div>
         
         
-        <div data-ice="description"><p>Called before a next page is triggered allowing the components
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-beforePage">beforePage</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Called before a next and previous page is triggered allowing the components
 to perform special functions.</p>
 </div>
       </div>
@@ -5513,6 +5541,34 @@ to perform special async functions.</p>
         
         <div data-ice="description"><p>Get the input value of this component.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAsString">getValueAsString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -7435,7 +7491,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber610">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber611">source</a></span></span>
     </span>
   </h3>
 
@@ -7609,7 +7665,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber596">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber597">source</a></span></span>
     </span>
   </h3>
 
@@ -8512,18 +8568,18 @@ to perform special async functions.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-beforeNext">
+  <h3 data-ice="anchor" id="instance-method-beforePage">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">beforeNext</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="code" data-ice="name">beforePage</span><span class="code" data-ice="signature">(next: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber522">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber523">source</a></span></span>
     </span>
   </h3>
 
@@ -8533,9 +8589,25 @@ to perform special async functions.</p>
   <div data-ice="description"><p>Allow components to hook into the next page trigger to perform their own logic.</p>
 </div>
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-beforeNext">Component#beforeNext</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-beforePage">Component#beforePage</a></span></div>
 
-  <div data-ice="properties">
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">next</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
 </div>
 
   <div class="return-params" data-ice="returnParams">
@@ -8579,7 +8651,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber531">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber532">source</a></span></span>
     </span>
   </h3>
 
@@ -8635,7 +8707,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber535">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber536">source</a></span></span>
     </span>
   </h3>
 
@@ -8713,7 +8785,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber500">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber501">source</a></span></span>
     </span>
   </h3>
 
@@ -8785,7 +8857,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber465">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber466">source</a></span></span>
     </span>
   </h3>
 
@@ -8864,7 +8936,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber557">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber558">source</a></span></span>
     </span>
   </h3>
 
@@ -8941,7 +9013,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber505">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber506">source</a></span></span>
     </span>
   </h3>
 
@@ -9078,7 +9150,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber585">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber586">source</a></span></span>
     </span>
   </h3>
 
@@ -9121,7 +9193,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber590">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber591">source</a></span></span>
     </span>
   </h3>
 
@@ -9164,7 +9236,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber578">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber579">source</a></span></span>
     </span>
   </h3>
 
@@ -9714,7 +9786,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber600">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber601">source</a></span></span>
     </span>
   </h3>
 
@@ -9770,7 +9842,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber454">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber455">source</a></span></span>
     </span>
   </h3>
 
@@ -9881,7 +9953,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber546">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber547">source</a></span></span>
     </span>
   </h3>
 
@@ -9936,7 +10008,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber550">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber551">source</a></span></span>
     </span>
   </h3>
 
@@ -10014,7 +10086,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber395">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber396">source</a></span></span>
     </span>
   </h3>
 
@@ -10082,7 +10154,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber429">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber430">source</a></span></span>
     </span>
   </h3>
 
@@ -10162,7 +10234,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber407">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber408">source</a></span></span>
     </span>
   </h3>
 
@@ -10384,7 +10456,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber604">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber605">source</a></span></span>
     </span>
   </h3>
 
@@ -10428,7 +10500,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber513">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber514">source</a></span></span>
     </span>
   </h3>
 
@@ -10471,7 +10543,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber614">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber615">source</a></span></span>
     </span>
   </h3>
 
@@ -10560,7 +10632,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber573">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber574">source</a></span></span>
     </span>
   </h3>
 
@@ -10620,7 +10692,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber630">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber631">source</a></span></span>
     </span>
   </h3>
 
@@ -10698,7 +10770,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber444">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber445">source</a></span></span>
     </span>
   </h3>
 

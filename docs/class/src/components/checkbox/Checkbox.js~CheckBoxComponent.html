@@ -749,7 +749,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getValueAt">getValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getValueAsString">getValueAsString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -777,7 +777,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getView">getView</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getValueAt">getValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3430,7 +3430,35 @@
       <div>
         
         
-        <div data-ice="description"><p>Called before a next page is triggered allowing the components
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-beforePage">beforePage</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Called before a next and previous page is triggered allowing the components
 to perform special functions.</p>
 </div>
       </div>
@@ -4233,6 +4261,34 @@ to perform special async functions.</p>
         
         <div data-ice="description"><p>Get the input value of this component.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAsString">getValueAsString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -6475,28 +6531,27 @@ to perform special async functions.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-getValueAt">
+  <h3 data-ice="anchor" id="instance-method-getValueAsString">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">getValueAt</span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">getValueAsString</span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/checkbox/Checkbox.js.html#lineNumber132">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/checkbox/Checkbox.js.html#lineNumber190">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Get the value at a specific index.</p>
-</div>
+  
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAt">Component#getValueAt</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAsString">Component#getValueAsString</a></span></div>
 
   <div data-ice="properties"><div data-ice="properties">
   <h4 data-ice="title">Params:</h4>
@@ -6507,7 +6562,7 @@ to perform special async functions.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">index</td>
+      <td data-ice="name" class="code" data-depth="0">value</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -6547,27 +6602,28 @@ to perform special async functions.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-getView">
+  <h3 data-ice="anchor" id="instance-method-getValueAt">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">getView</span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">getValueAt</span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/checkbox/Checkbox.js.html#lineNumber190">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/checkbox/Checkbox.js.html#lineNumber132">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Get the value at a specific index.</p>
+</div>
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getView">Component#getView</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAt">Component#getValueAt</a></span></div>
 
   <div data-ice="properties"><div data-ice="properties">
   <h4 data-ice="title">Params:</h4>
@@ -6578,7 +6634,7 @@ to perform special async functions.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">value</td>
+      <td data-ice="name" class="code" data-depth="0">index</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>

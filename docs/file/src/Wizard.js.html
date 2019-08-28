@@ -490,9 +490,9 @@ export default class Wizard extends Webform {
     }));
   }
 
-  beforeNext() {
+  beforePage(next) {
     return new NativePromise((resolve, reject) =&gt; {
-      this.hook(&apos;beforeNext&apos;, this.currentPage, this.submission, (err) =&gt; {
+      this.hook(next ? &apos;beforeNext&apos; : &apos;beforePrev&apos;, this.currentPage, this.submission, (err) =&gt; {
         if (err) {
           this.showErrors(err, true);
           reject(err);
@@ -500,7 +500,7 @@ export default class Wizard extends Webform {
 
         const form = this.currentPage;
         if (form) {
-          NativePromise.all(form.map((comp) =&gt; comp.beforeNext())).then(resolve).catch(reject);
+          NativePromise.all(form.map((comp) =&gt; comp.beforePage(next))).then(resolve).catch(reject);
         }
         else {
           resolve();
@@ -517,10 +517,10 @@ export default class Wizard extends Webform {
       });
     }
 
-    // Validate the form builed, before go to the next page
+    // Validate the form, before go to the next page
     if (this.checkCurrentPageValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
-      return this.beforeNext().then(() =&gt; {
+      return this.beforePage(true).then(() =&gt; {
         return this.setPage(this.getNextPage()).then(() =&gt; {
           this.emit(&apos;nextPage&apos;, { page: this.page, submission: this.submission });
         });
@@ -532,9 +532,10 @@ export default class Wizard extends Webform {
   }
 
   prevPage() {
-    const prevPage = this.getPreviousPage();
-    return this.setPage(prevPage).then(() =&gt; {
-      this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
+    return this.beforePage().then(() =&gt; {
+      return this.setPage(this.getPreviousPage()).then(() =&gt; {
+        this.emit(&apos;prevPage&apos;, { page: this.page, submission: this.submission });
+      });
     });
   }
 

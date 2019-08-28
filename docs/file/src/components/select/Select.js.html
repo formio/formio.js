@@ -1211,7 +1211,7 @@ export default class SelectComponent extends Field {
     return added;
   }
 
-  getView(data) {
+  getValueAsString(data) {
     return (this.component.multiple &amp;&amp; Array.isArray(data))
       ? data.map(this.asString.bind(this)).join(&apos;, &apos;)
       : this.asString(data);

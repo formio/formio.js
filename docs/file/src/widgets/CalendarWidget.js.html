@@ -485,7 +485,7 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  getView(value, format) {
+  getValueAsString(value, format) {
     format = format || this.dateFormat;
     if (this.settings.saveAs === &apos;text&apos;) {
       return this.getDateValue(value, format);

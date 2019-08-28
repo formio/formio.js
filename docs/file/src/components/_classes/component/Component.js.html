@@ -976,13 +976,17 @@ export default class Component extends Element {
   }
 
   /**
-   * Called before a next page is triggered allowing the components
+   * Called before a next and previous page is triggered allowing the components
    * to perform special functions.
    *
    * @return {*}
    */
-  beforeNext() {
+  beforePage() {
     return NativePromise.resolve(true);
+  }
+
+  beforeNext() {
+    return this.beforePage(true);
   }
 
   /**
@@ -1216,18 +1220,24 @@ export default class Component extends Element {
     return &apos;-&apos;;
   }
 
-  getView(value) {
-    if (this.component.protected) {
-      return &apos; --- PROTECTED ---&apos;;
-    }
+  getValueAsString(value) {
     if (!value) {
       return &apos;&apos;;
     }
     if (Array.isArray(value)) {
       return value.join(&apos;, &apos;);
     }
-
+    if (_.isPlainObject(value)) {
+      return JSON.stringify(value);
+    }
     return value.toString();
+  }
+
+  getView(value) {
+    if (this.component.protected) {
+      return &apos;--- PROTECTED ---&apos;;
+    }
+    return this.getValueAsString(value);
   }
 
   updateItems(...args) {

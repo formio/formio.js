@@ -259,29 +259,6 @@ export default [
     ]
   },
   {
-    key: &apos;refreshOn&apos;,
-    label: &apos;Refresh On&apos;,
-    weight: 110,
-    tooltip: &apos;Refresh data when another field changes.&apos;,
-    dataSrc: &apos;custom&apos;,
-    valueProperty: &apos;value&apos;,
-    data: {
-      custom(context) {
-        var values = [];
-        values.push({ label: &apos;Any Change&apos;, value: &apos;data&apos; });
-        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
-          if (component.key !== context.data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
-        return values;
-      }
-    }
-  },
-  {
     weight: 150,
     type: &apos;checkbox&apos;,
     label: &apos;Protected&apos;,

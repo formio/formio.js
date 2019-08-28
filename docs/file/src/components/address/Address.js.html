@@ -716,7 +716,7 @@ export default class AddressComponent extends TextFieldComponent {
     });
   }
 
-  getView(value) {
+  getValueAsString(value) {
     return _.get(value, &apos;formatted_address&apos;, &apos;&apos;);
   }
 }

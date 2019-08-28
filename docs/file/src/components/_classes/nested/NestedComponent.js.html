@@ -597,7 +597,8 @@ export default class NestedComponent extends Field {
 
     element = this.hook(&apos;attachComponents&apos;, element, components, container, this);
     if (!element) {
-      return;
+      // Return a non-resolving promise.
+      return (new NativePromise(() =&gt; {}));
     }
 
     let index = 0;
@@ -744,8 +745,8 @@ export default class NestedComponent extends Field {
    *
    * @return {*}
    */
-  beforeNext() {
-    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeNext()));
+  beforePage(next) {
+    return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforePage(next)));
   }
 
   /**

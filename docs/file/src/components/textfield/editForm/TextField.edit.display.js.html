@@ -320,36 +320,6 @@ export default [
     ]
   },
   {
-    weight: 413,
-    type: &apos;checkbox&apos;,
-    input: true,
-    key: &apos;allowMultipleMasks&apos;,
-    label: &apos;Allow Multiple Masks&apos;
-  },
-  {
-    weight: 417,
-    type: &apos;datagrid&apos;,
-    input: true,
-    key: &apos;inputMasks&apos;,
-    label: &apos;Input Masks&apos;,
-    customConditional: &apos;show = data.allowMultipleMasks === true;&apos;,
-    reorder: true,
-    components: [
-      {
-        type: &apos;textfield&apos;,
-        key: &apos;label&apos;,
-        label: &apos;Label&apos;,
-        input: true
-      },
-      {
-        type: &apos;textfield&apos;,
-        key: &apos;mask&apos;,
-        label: &apos;Mask&apos;,
-        input: true
-      }
-    ]
-  },
-  {
     weight: 320,
     type: &apos;textfield&apos;,
     input: true,
