@@ -1,6 +1,7 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
-import dragula from 'dragula';
+// Import from "dist" because it would require and "global" would not be defined in Angular apps.
+import dragula from 'dragula/dist/dragula';
 import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';

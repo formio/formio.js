@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import dragula from 'dragula';
+// Import from "dist" because it would require and "global" would not be defined in Angular apps.
+import dragula from 'dragula/dist/dragula';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
 

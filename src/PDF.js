@@ -97,7 +97,7 @@ export default class PDF extends Webform {
    * @return {Promise<any>}
    */
   getSubmission() {
-    return new Promise((resolve) => {
+    return new NativePromise((resolve) => {
       this.once('iframe-submission', resolve);
       this.postMessage({ name: 'getSubmission' });
     });
