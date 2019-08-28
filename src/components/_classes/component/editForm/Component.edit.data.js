@@ -34,29 +34,6 @@ export default [
     ]
   },
   {
-    key: 'refreshOn',
-    label: 'Refresh On',
-    weight: 110,
-    tooltip: 'Refresh data when another field changes.',
-    dataSrc: 'custom',
-    valueProperty: 'value',
-    data: {
-      custom(context) {
-        var values = [];
-        values.push({ label: 'Any Change', value: 'data' });
-        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
-          if (component.key !== context.data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
-        return values;
-      }
-    }
-  },
-  {
     weight: 150,
     type: 'checkbox',
     label: 'Protected',
