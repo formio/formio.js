@@ -555,11 +555,13 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance) {
+export function setActionProperty(component, action, row, data, result, instance, context) {
   switch (action.property.type) {
     case &apos;boolean&apos;:
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
+      if (_.get(component, action.property.value, false).toString() !== action.state.toString() ||
+          _.get(context.component, action.property.value, false).toString() !== action.state.toString()) {
         _.set(component, action.property.value, action.state.toString() === &apos;true&apos;);
+        _.set(context, action.property.value, action.state.toString() === &apos;true&apos;);
       }
       break;
     case &apos;string&apos;: {
@@ -748,7 +750,7 @@ export function loadZones(timezone) {
     return moment.zonesPromise;
   }
   return moment.zonesPromise = fetch(
-    &apos;https://formio.github.io/formio.js/resources/latest.json&apos;,
+    &apos;https://cdn.form.io/moment-timezone/data/packed/latest.json&apos;,
   ).then(resp =&gt; resp.json().then(zones =&gt; {
     moment.tz.load(zones);
     moment.zonesLoaded = true;
@@ -917,11 +919,15 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-  // Short and long month replacement.
-    .replace(/(MMM|MMMM)/g, &apos;MM&apos;)
-    // Year conversion
+    // Long month replacement.
+    .replace(/M{4}/g, &apos;MM&apos;)
+    // Initial short month conversion.
+    .replace(/M{3}/g, &apos;***&apos;)
+    // Short month conversion if input as text.
+    .replace(/e/g, &apos;AAA&apos;)
+    // Year conversion.
     .replace(/[ydhmsHMG]/g, &apos;9&apos;)
-    // AM/PM conversion
+    // AM/PM conversion.
     .replace(/a/g, &apos;AA&apos;);
 }
 

@@ -225,7 +225,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/WebformBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Webform from &apos;./Webform&apos;;
 import Component from &apos;./components/_classes/component/Component&apos;;
-import dragula from &apos;dragula&apos;;
+// Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
+import dragula from &apos;dragula/dist/dragula&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;

@@ -224,7 +224,8 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import dragula from &apos;dragula&apos;;
+// Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
+import dragula from &apos;dragula/dist/dragula&apos;;
 import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
 
