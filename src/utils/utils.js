@@ -525,7 +525,7 @@ export function loadZones(timezone) {
     return moment.zonesPromise;
   }
   return moment.zonesPromise = fetch(
-    'https://formio.github.io/formio.js/resources/latest.json',
+    'https://cdn.form.io/moment-timezone/data/packed/latest.json',
   ).then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
     moment.zonesLoaded = true;
