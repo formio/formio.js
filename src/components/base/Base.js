@@ -2373,7 +2373,7 @@ export default class BaseComponent extends Component {
       return '';
     }
 
-    return Validator.check(this, data);
+    return _.map(Validator.check(this, data), 'message').join('\n\n');
   }
 
   /**

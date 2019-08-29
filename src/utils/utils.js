@@ -59,6 +59,8 @@ export function evaluate(func, args, ret, tokenize) {
     delete args.form;
   }
 
+  const originalArgs = args;
+
   const componentKey = args.component.key;
   if (typeof func === 'string') {
     if (ret) {
@@ -91,9 +93,23 @@ export function evaluate(func, args, ret, tokenize) {
       func = false;
     }
   }
+
   if (typeof func === 'function') {
     try {
-      returnVal = Array.isArray(args) ? func(...args) : func(args);
+      if (process) {
+        // Need to assume we're server side and limit ourselves to a sandbox VM
+        const vm = require('vm');
+        const sandbox = vm.createContext({ ...originalArgs, result: null });
+
+        // Execute the script
+        const script = new vm.Script(`result = ${func.toString()}(${_.keys(originalArgs).join()});`);
+        script.runInContext(sandbox, { timeout: 250 });
+
+        returnVal = sandbox.result;
+      }
+      else {
+        returnVal = Array.isArray(args) ? func(...args) : func(args);
+      }
     }
     catch (err) {
       returnVal = null;
