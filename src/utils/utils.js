@@ -333,10 +333,8 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
 export function setActionProperty(component, action, row, data, result, instance, context) {
   switch (action.property.type) {
     case 'boolean':
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString() ||
-          _.get(context.component, action.property.value, false).toString() !== action.state.toString()) {
+      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
         _.set(component, action.property.value, action.state.toString() === 'true');
-        _.set(context, action.property.value, action.state.toString() === 'true');
       }
       break;
     case 'string': {

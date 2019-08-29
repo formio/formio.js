@@ -405,7 +405,7 @@ export default class Component extends Element {
   }
 
   init() {
-    this.disabled = this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
+    this.disabled = this.shouldDisabled;
 
     // Attach the refresh on events.
     this.attachRefreshOn();
@@ -414,6 +414,10 @@ export default class Component extends Element {
   destroy() {
     super.destroy();
     this.detach();
+  }
+
+  get shouldDisabled() {
+    return this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
   }
 
   get isInputComponent() {
@@ -1187,6 +1191,7 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.clear();
+    this.disabled = this.shouldDisabled;
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
