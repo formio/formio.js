@@ -29,7 +29,7 @@ export default [
     valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://formio.github.io/formio.js/resources/timezones.json'
+      url: 'https://cdn.form.io/timezones.json'
     },
     template: '<span>{{ item.label }}</span>',
     conditional: {

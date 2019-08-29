@@ -11,6 +11,8 @@ import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
+const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -1499,12 +1501,15 @@ export default class Component extends Element {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
+    if (!settings.theme) {
+      settings.theme = 'snow';
+    }
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
+      { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+    return Formio.requireLibrary('quill', 'Quill', `${QUILL_URL}/quill.min.js`, true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1542,6 +1547,22 @@ export default class Component extends Element {
         });
 
         return this.quill;
+      });
+  }
+
+  addAce(element, settings, onChange) {
+    return Formio.requireLibrary('ace', 'ace', ACE_URL, true)
+      .then((editor) => {
+        editor = editor.edit(element);
+        editor.removeAllListeners('change');
+        editor.setOptions({
+          maxLines: 12,
+          minLines: 12
+        });
+        editor.getSession().setTabSize(2);
+        editor.getSession().setMode(`ace/mode/${settings.mode}`);
+        editor.on('change', () => onChange(editor.getValue()));
+        return editor;
       });
   }
 

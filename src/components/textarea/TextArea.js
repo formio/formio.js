@@ -1,6 +1,5 @@
 /* global Quill */
 import TextFieldComponent from '../textfield/TextField';
-import Formio from '../../Formio';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
@@ -146,30 +145,23 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
-    const mode = this.component.as || 'javascript';
 
     // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
     switch (this.component.editor) {
       case 'ace':
-        Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js', true)
-          .then((editor) => {
-            this.editor = editor.edit(element);
-            this.editor.removeAllListeners('change');
-            this.editor.setOptions({
-              maxLines: 12,
-              minLines: 12
-            });
-            this.editor.getSession().setTabSize(2);
-            this.editor.getSession().setMode(`ace/mode/${mode}`);
-            this.editor.on('input', () => this.acePlaceholder());
-            this.editor.setValue(this.setConvertedValue(this.dataValue));
-            this.editorReadyResolve(this.editor);
-            setTimeout(() => {
-              this.acePlaceholder();
-              this.editor.on('change', () => this.updateEditorValue(this.editor.getValue()));
-            }, 100);
-            return this.editor;
-          });
+        if (!settings) {
+          settings = {};
+        }
+        settings.mode = this.component.as || 'javascript';
+        this.addAce(element, settings, (newValue) => this.updateEditorValue(newValue)).then((ace) => {
+          this.editor = ace;
+          this.editor.on('input', () => this.acePlaceholder());
+          this.editor.setValue(this.setConvertedValue(this.dataValue));
+          setTimeout(() => {
+            this.acePlaceholder();
+          }, 100);
+          return ace;
+        }).catch(err => console.warn(err));
         break;
       case 'quill':
         // Normalize the configurations for quill.
