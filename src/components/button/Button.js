@@ -143,7 +143,7 @@ export default class ButtonComponent extends BaseComponent {
       }, true);
       this.on('submitDone', () => {
         this.loading = false;
-        this.forceDisabled = false;
+        this.forceEnabled = this.canEnable;
         this.empty(message);
         this.addClass(this.buttonElement, 'btn-success submit-success');
         this.removeClass(this.buttonElement, 'btn-danger submit-fail');
@@ -180,7 +180,7 @@ export default class ButtonComponent extends BaseComponent {
       }, true);
       this.on('requestDone', () => {
         this.loading = false;
-        this.forceDisabled = false;
+        this.forceEnabled = this.canEnable;
       }, true);
     }
 
@@ -195,11 +195,13 @@ export default class ButtonComponent extends BaseComponent {
 
     this.on('change', (value) => {
       this.loading = false;
-      if (
-        this.component.disableOnInvalid &&
-        value.hasOwnProperty('isValid')
-      ) {
-        this.forceDisabled = value.isValid ? false : !this.shouldDisable;
+      if (value && value.hasOwnProperty('isValid')) {
+        if (value.isValid) {
+          this.forceEnabled = this.canEnable;
+        }
+        else if (this.component.disableOnInvalid) {
+          this.forceDisabled = true;
+        }
       }
       if (onChange) {
         onChange(value, value.isValid);

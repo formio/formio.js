@@ -524,6 +524,14 @@ export default class BaseComponent extends Component {
   }
 
   /**
+   * Helps keep the logic blocks simple to ready.
+   * @return {boolean}
+   */
+  get canEnable() {
+    return !this.shouldDisable;
+  }
+
+  /**
    * Builds the component.
    */
   build(state) {
@@ -2604,6 +2612,14 @@ export default class BaseComponent extends Component {
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
+  }
+
+  /**
+   * Helps keep the logic blocks easy to read.
+   * @param enabled
+   */
+  set forceEnabled(enabled) {
+    this.forceDisabled = !enabled;
   }
 
   /**
