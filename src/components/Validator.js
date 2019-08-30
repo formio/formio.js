@@ -461,7 +461,9 @@ class ValidationChecker {
     } : false;
   }
 
-  checkComponent(component, data = component.data, includeWarnings = false) {
+  checkComponent(component, data, includeWarnings = false) {
+    data = data || component.data;
+
     const values = component.multiple ? component.validationValue : [component.validationValue];
 
     const validateCustom     = _.get(component, 'component.validate.custom');
