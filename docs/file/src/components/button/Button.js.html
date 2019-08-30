@@ -409,8 +409,11 @@ export default class ButtonComponent extends BaseComponent {
 
     this.on(&apos;change&apos;, (value) =&gt; {
       this.loading = false;
-      if (this.component.disableOnInvalid &amp;&amp; value.hasOwnProperty(&apos;isValid&apos;)) {
-        this.forceDisabled = !value.isValid;
+      if (
+        this.component.disableOnInvalid &amp;&amp;
+        value.hasOwnProperty(&apos;isValid&apos;)
+      ) {
+        this.forceDisabled = value.isValid ? false : !this.shouldDisable;
       }
       if (onChange) {
         onChange(value, value.isValid);
