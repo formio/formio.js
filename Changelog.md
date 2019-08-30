@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.27.1
+### Fixed
+ - Problem with PDF where flags may not be set causing a crash in the renderer.
+
 ## 3.27.0
 ### Added
  - beforePrev hook for wizards.
