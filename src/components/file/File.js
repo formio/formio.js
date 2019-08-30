@@ -1,6 +1,7 @@
 import Field from '../_classes/field/Field';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
+import _ from 'lodash';
 import Formio from '../../Formio';
 let Camera;
 const webViewCamera = navigator.camera || Camera;
@@ -89,7 +90,11 @@ export default class FileComponent extends Field {
   }
 
   getValueAsString(value) {
-    return value ? value.originalName : '';
+    if (_.isArray(value)) {
+      return _.map(value, 'originalName').join(', ');
+    }
+
+    return _.get(value, 'originalName', '');
   }
 
   getValue() {
