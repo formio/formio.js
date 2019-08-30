@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues where the submit button disableOnInvalid would not properly re-enable or work with readOnly mode set.
 
+### Changed
+ - Upgrade i18next@17.0.13
+
 ## 3.27.1
 ### Fixed
  - Problem with PDF where flags may not be set causing a crash in the renderer.
