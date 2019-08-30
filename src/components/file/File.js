@@ -68,7 +68,7 @@ export default class FileComponent extends BaseComponent {
       filereader: typeof FileReader != 'undefined',
       dnd: 'draggable' in document.createElement('span'),
       formdata: !!window.FormData,
-      progress: 'upload' in new XMLHttpRequest
+      progress: window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false
     };
   }
 

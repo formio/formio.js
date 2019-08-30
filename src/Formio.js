@@ -1368,10 +1368,16 @@ export default class Formio {
 
           // Add the script to the top page.
           const script = document.createElement(elementType);
-          for (const attr in attrs) {
-            script.setAttribute(attr, attrs[attr]);
+          if (script.setAttribute) {
+            for (const attr in attrs) {
+              script.setAttribute(attr, attrs[attr]);
+            }
           }
-          document.getElementsByTagName('head')[0].appendChild(script);
+
+          const head = document.getElementsByTagName('head')[0];
+          if (head) {
+            head.appendChild(script);
+          }
         });
 
         // if no callback is provided, then check periodically for the script.
