@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.27.3
+### Fixed
+ - Fix issue with single-value File component Data tab rendering
+
+### Changed
+ - Upgraded cross-env@5.2.1, chance@1.1.0
+
 ## 3.27.2
 ### Fixed
  - Issues where the submit button disableOnInvalid would not properly re-enable or work with readOnly mode set.

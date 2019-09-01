@@ -303,7 +303,11 @@ export default class FileComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? value.originalName : &apos;&apos;;
+    if (_.isArray(value)) {
+      return _.map(value, &apos;originalName&apos;).join(&apos;, &apos;);
+    }
+
+    return _.get(value, &apos;originalName&apos;, &apos;&apos;);
   }
 
   loadImage(fileInfo) {
