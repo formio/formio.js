@@ -1,3 +1,5 @@
+import { getContextComponents } from '../../../../utils/utils';
+
 /* eslint-disable quotes, max-len */
 export default [
   {
@@ -95,16 +97,7 @@ export default [
                     tableView: false,
                     data: {
                       custom(context) {
-                        var values = [];
-                        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
-                          if (component.key !== context.data.key) {
-                            values.push({
-                              label: component.label || component.key,
-                              value: path
-                            });
-                          }
-                        });
-                        return values;
+                        return getContextComponents(context);
                       }
                     }
                   },

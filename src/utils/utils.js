@@ -330,7 +330,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance, context) {
+export function setActionProperty(component, action, row, data, result, instance) {
   switch (action.property.type) {
     case 'boolean':
       if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
@@ -1008,6 +1008,20 @@ export function observeOverload(callback, options = {}) {
       return callback();
     }
   };
+}
+
+export function getContextComponents(context) {
+  var values = [];
+
+  context.utils.eachComponent(context.instance.root.editForm.components, (component) => {
+    if (component.key !== context.data.key) {
+      values.push({
+        label: component.label || component.key,
+        value: component.key
+      });
+    }
+  });
+  return values;
 }
 
 export { Evaluator, interpolate };

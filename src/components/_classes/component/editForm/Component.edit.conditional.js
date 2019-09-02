@@ -1,4 +1,5 @@
 import EditFormUtils from './utils';
+import { getContextComponents } from '../../../../utils/utils';
 /* eslint-disable quotes, max-len */
 export default [
   {
@@ -29,16 +30,7 @@ export default [
         valueProperty: 'value',
         data: {
           custom(context) {
-            var values = [];
-            context.utils.eachComponent(context.instance.root.editForm.components, function(component) {
-              if (component.key !== context.data.key) {
-                values.push({
-                  label: component.label || component.key,
-                  value: component.key
-                });
-              }
-            });
-            return values;
+            return getContextComponents(context);
           }
         }
       },
