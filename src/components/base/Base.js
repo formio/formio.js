@@ -1482,6 +1482,11 @@ export default class BaseComponent extends Component {
     settings.i18n = this.options.i18n;
     settings.language = this.options.language;
 
+    // Add validity method for widget
+    settings.checkDataValidity = () => this.checkValidity(this.dataValue, true);
+
+    settings.type === 'calendar' && this.validators.push('calendar');
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(), true);
@@ -2400,10 +2405,15 @@ export default class BaseComponent extends Component {
       this.setCustomValidity('');
       return true;
     }
-
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    else {
+      this.setCustomValidity('');
+    }
+    return !error;
   }
 
   /* eslint-disable max-len */
@@ -2583,7 +2593,7 @@ export default class BaseComponent extends Component {
    */
   asString(value) {
     value = value || this.getValue();
-    return Array.isArray(value) ? value.join(', ') : value.toString();
+    return Array.isArray(value) ? value.join(', ') : value ? value.toString() : null;
   }
 
   /**

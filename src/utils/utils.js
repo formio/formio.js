@@ -659,7 +659,7 @@ export function convertFormatToFlatpickr(format) {
 
     // Hours, minutes, seconds
     .replace('HH', 'H')
-    .replace('hh', 'h')
+    .replace('hh', 'G')
     .replace('mm', 'i')
     .replace('ss', 'S')
     .replace(/a/g, 'K');
@@ -684,8 +684,12 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-    // Short and long month replacement.
-    .replace(/(MMM|MMMM)/g, 'MM')
+    // Long month replacement.
+    .replace(/M{4}/g, 'MM')
+    // Initial short month conversion.
+    .replace(/M{3}/g, '***')
+    // Short month conversion if input as text.
+    .replace(/e/g, 'AAA')
     // Year conversion
     .replace(/[ydhmsHM]/g, '9')
     // AM/PM conversion

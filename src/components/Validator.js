@@ -3,7 +3,8 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting
+  getDateSetting,
+  convertFormatToMoment
 } from '../utils/utils';
 import moment from 'moment';
 
@@ -477,7 +478,143 @@ export default {
         }
 
         return date.isAfter(minDate) || date.isSame(minDate);
-      }
-    }
-  }
+      },
+    },
+    calendar: {
+      key: 'validate.calendar',
+      messageText: '',
+      message(component) {
+        return component.t(component.errorMessage(this.validators.calendar.messageText), {
+          field: component.errorLabel,
+          maxDate: moment(component.dataValue).format(component.format),
+        });
+      },
+      check(component, setting, value) {
+        this.validators.calendar.messageText = '';
+
+        const momentFormat = [convertFormatToMoment(component._widget.settings.format)];
+
+        if (momentFormat[0].match(/M{3,}/g)) {
+          momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
+        }
+
+        if (!value && component._widget.enteredDate) {
+          const date = moment(component._widget.enteredDate, momentFormat, true);
+          const isValidDate = date.isValid();
+
+          if (!isValidDate) {
+            return this.validators.invalidDate.check.call(this, component, momentFormat);
+          }
+          else if (isValidDate && component._widget.enteredDate.indexOf('_') === -1) {
+            if (!this.validators.ltOrGt.check.call(this, component, date)) {
+              return false;
+            }
+          }
+        }
+
+        if (value && component._widget.enteredDate) {
+          if (moment(value).format() !== moment(component._widget.enteredDate, momentFormat, true).format()) {
+            this.validators.calendar.messageText = 'You entered an incomplete date.';
+            return false;
+          }
+          else {
+            component._widget.enteredDate = '';
+            return true;
+          }
+        }
+      },
+    },
+    ltOrGt: {
+      key: 'calendar.ltOrGt',
+      message(component) {
+        return component.t(component.errorMessage(this.validators.calendar.messageText), {
+          field: component.errorLabel,
+        });
+      },
+      check(component, value) {
+        const momentFormat = convertFormatToMoment(component._widget.settings.format);
+
+        if (component._widget.settings.maxDate && value.isValid()) {
+          const maxDate = moment(component._widget.settings.maxDate, momentFormat, true);
+
+          if (value > maxDate) {
+            this.validators.calendar.messageText = `The entered date is greater than ${moment(
+              component._widget.settings.maxDate
+            ).format(momentFormat)}`;
+            return false;
+          }
+        }
+
+        if (component._widget.settings.minDate && value.isValid()) {
+          const minDate = moment(component._widget.settings.minDate, momentFormat, true);
+
+          if (value < minDate) {
+            this.validators.calendar.messageText = `The entered date is less than ${moment(
+              component._widget.settings.minDate
+            ).format(momentFormat)}`;
+            return false;
+          }
+        }
+
+        return true;
+      },
+    },
+    invalidDate: {
+      key: 'calendar.invalidDate',
+      message(component) {
+        return component.t(component.errorMessage(this.validators.calendar.messageText), {
+          field: component.errorLabel,
+        });
+      },
+      check(component, momentFormat) {
+        const delimeters = component._widget.enteredDate.match(/[^a-z0-9_]/gi);
+        const delimetersRegEx = new RegExp(delimeters.join('|'), 'gi');
+        const inputParts = component._widget.enteredDate.replace(/_/g, '').split(delimetersRegEx);
+        const formatParts = momentFormat[1] ? momentFormat[1].split(delimetersRegEx) : momentFormat[0].split(delimetersRegEx);
+        const timeIndex = _.findIndex(formatParts, (part, index) => part.length === 1 && index === formatParts.length - 1);
+        const yearIndex = _.findIndex(formatParts, part => part.match(/yyyy/gi));
+
+        if (inputParts[yearIndex] / 1000 < 1) {
+          this.validators.calendar.messageText = 'You entered the Invalid Date';
+          return false;
+        }
+
+        if (inputParts[0].length === formatParts[0].length) {
+          const modifiedParts = inputParts.map((part, index) => {
+            let value = part;
+            if (!part && index === timeIndex) {
+              value = 'AM';
+            }
+            else if (!part) {
+              value = '01';
+            }
+            if (delimeters[index]) {
+              value = `${value}${delimeters[index]}`;
+            }
+
+            return value;
+          });
+
+          const problemDate = moment(modifiedParts.join(''), momentFormat, true);
+
+          if (problemDate.isValid()) {
+            if (!this.validators.ltOrGt.check.call(this, component, problemDate)) {
+              return false;
+            }
+
+            this.validators.calendar.messageText = 'You entered an incomplete date.';
+            return false;
+          }
+          else {
+            this.validators.calendar.messageText = 'You entered the Invalid Date';
+            return false;
+          }
+        }
+        else {
+          this.validators.calendar.messageText = 'You entered the Invalid Date';
+          return false;
+        }
+      },
+    },
+  },
 };
