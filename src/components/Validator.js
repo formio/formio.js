@@ -449,15 +449,17 @@ export default {
           momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
         }
 
-        if (component._widget.enteredDate) {
+        if (!value && component._widget.enteredDate) {
           const date = moment(component._widget.enteredDate, momentFormat, true);
           const isValidDate = date.isValid();
 
           if (!isValidDate) {
-            const inputParts = component._widget.enteredDate.replace(/_*/gi, '').split(/\s|-/gi);
-            const formatParts = momentFormat[1] ? momentFormat[1].split(/\s|-/gi) : momentFormat[0].split(/\s|-/gi);
+            const delimeters = component._widget.enteredDate.match(/[^a-z0-9_]/gi);
+            const delimetersRegEx = new RegExp(delimeters.join('|'), 'gi');
+            const inputParts = component._widget.enteredDate.replace(/_*/gi, '').split(delimetersRegEx);
+            const formatParts = momentFormat[1] ? momentFormat[1].split(delimetersRegEx) : momentFormat[0].split(delimetersRegEx);
             const timeIndex = _.findIndex(formatParts, (part, index) => part.length === 1 && index === formatParts.length - 1);
-            const yearIndex = _.findIndex(formatParts, part => part.match(/yyyy/i));
+            const yearIndex = _.findIndex(formatParts, part => part.match(/yyyy/gi));
 
             if (inputParts[yearIndex]/ 1000 < 1) {
               this.validators.calendar.messageText = 'You entered the Invalid Date';
@@ -466,24 +468,18 @@ export default {
 
             if (inputParts[0].length === formatParts[0].length) {
               const modifiedParts = inputParts.map((part, index) => {
+                let value = part;
                 if (!part && index === timeIndex) {
-                  return ' AM';
+                  value = 'AM';
                 }
-                if (!part) {
-                  return '-01';
+                else if (!part) {
+                  value = '01';
                 }
-                if (part === ':') {
-                  return ' 01:01';
+                if (delimeters[index]) {
+                  value = `${value}${delimeters[index]}`;
                 }
-                if (part && index === 0) {
-                  return part;
-                }
-                if (part && !part.match(/:|[a-z]/gi)) {
-                  return `-${part}`;
-                }
-                else {
-                  return ` ${part}`;
-                }
+
+                return value;
               });
 
               const problemDate = moment(modifiedParts.join(''), momentFormat, true);

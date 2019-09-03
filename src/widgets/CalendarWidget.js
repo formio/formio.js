@@ -154,7 +154,7 @@ export default class CalendarWidget extends InputWidget {
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       );
       // Makes it possible to enter the month as text.
-      if (this.settings.format.match(/M{3}/g)) {
+      if (this.settings.format.match(/[^M]M{3}[^M]/gi)) {
         this.addEventListener(this.calendar._input, 'keyup', (e) => {
           let format = this.settings.format;
           const value = e.target.value;
