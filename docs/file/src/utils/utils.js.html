@@ -918,15 +918,11 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-    // Long month replacement.
-    .replace(/M{4}/g, &apos;MM&apos;)
-    // Initial short month conversion.
-    .replace(/M{3}/g, &apos;***&apos;)
-    // Short month conversion if input as text.
-    .replace(/e/g, &apos;AAA&apos;)
-    // Year conversion.
+  // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, &apos;MM&apos;)
+    // Year conversion
     .replace(/[ydhmsHMG]/g, &apos;9&apos;)
-    // AM/PM conversion.
+    // AM/PM conversion
     .replace(/a/g, &apos;AA&apos;);
 }
 

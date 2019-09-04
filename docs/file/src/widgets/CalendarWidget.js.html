@@ -328,7 +328,6 @@ export default class CalendarWidget extends InputWidget {
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () =&gt; this.emit(&apos;update&apos;);
     this.settings.onClose = () =&gt; (this.closedOn = Date.now());
-    this.settings.errorHandler = () =&gt; null;
     this.settings.formatDate = (date, format) =&gt; {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly &amp;&amp; (format === this.settings.altFormat)) {
@@ -342,32 +341,6 @@ export default class CalendarWidget extends InputWidget {
       return Flatpickr.formatDate(date, format);
     };
 
-    // Extension of the parseDate method for validating input data.
-    this.settings.parseDate = (inputDate, format) =&gt; {
-        this.enteredDate = inputDate;
-        this.calendar.clear();
-
-      // Check for validation errors.
-      if (this.component.widget.checkDataValidity()) {
-        // Solving the problem with parsing dates with MMM or MMMM format.
-        if (!inputDate.match(/[a-z]{3,}/gi)) {
-          if (format.indexOf(&apos;M&apos;) !== -1) {
-            format = format.replace(&apos;M&apos;, &apos;m&apos;);
-          }
-          else if (format.indexOf(&apos;F&apos;) !== -1) {
-            format = format.replace(&apos;F&apos;, &apos;m&apos;);
-          }
-        }
-        else {
-          const match = inputDate.match(/([a-z]{3})/gi);
-          inputDate = _.replace(inputDate, match, _.capitalize(match));
-        }
-
-        return Flatpickr.parseDate(inputDate, format);
-      }
-      return undefined;
-    };
-
     if (this._input) {
       // Create a new flatpickr.
       this.calendar = new Flatpickr(this._input, this.settings);
@@ -379,26 +352,6 @@ export default class CalendarWidget extends InputWidget {
       this.addEventListener(this.calendar._input, &apos;blur&apos;, () =&gt;
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       );
-      // Makes it possible to enter the month as text.
-      if (this.settings.format.match(/M{3}/g)) {
-        this.addEventListener(this.calendar._input, &apos;keyup&apos;, (e) =&gt; {
-          let format = this.settings.format;
-          const value = e.target.value;
-
-          if (value &amp;&amp; value[format.indexOf(&apos;M&apos;)].match(/\d/)) {
-            format = format.replace(&apos;MMM&apos;, &apos;MM&apos;);
-          }
-          else if (value &amp;&amp; value[format.indexOf(&apos;M&apos;)].match(/[a-z]/i)) {
-            format = format.replace(&apos;MMM&apos;, &apos;e&apos;);
-          }
-          if (this.inputMasks[0]) {
-            this.inputMasks[0].destroy();
-            this.inputMasks = [];
-          }
-
-          this.setInputMask(this.calendar._input, convertFormatToMask(format));
-        });
-      }
     }
     return superAttach;
   }
