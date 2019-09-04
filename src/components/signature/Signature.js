@@ -189,6 +189,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.off();
     }
     this.signaturePad = null;
+    this.currentWidth = 0;
     super.detach();
   }
 
