@@ -334,7 +334,17 @@ export default class WebformBuilder extends Component {
         default: index === 0,
       };
 
-      eachComponent(resource.components, (component) => {
+      let { components } = resource;
+      if (!Array.isArray(components)) {
+        try {
+          components = JSON.parse(components);
+        }
+        catch (e) {
+          console.warn(e);
+        }
+      }
+
+      eachComponent(components, (component) => {
         if (component.type === 'button') return;
         if (
           this.options &&
