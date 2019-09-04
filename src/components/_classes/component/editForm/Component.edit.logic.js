@@ -1,4 +1,4 @@
-import { getContextComponents } from '../../../../utils/utils';
+import { getContextComponents } from '../../../../utils';
 
 /* eslint-disable quotes, max-len */
 export default [
