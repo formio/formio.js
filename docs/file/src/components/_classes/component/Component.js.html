@@ -186,6 +186,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
@@ -632,7 +633,7 @@ export default class Component extends Element {
   }
 
   init() {
-    this.disabled = this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty(&apos;disabled&apos;) &amp;&amp; this.options.disabled[this.key]);
+    this.disabled = this.shouldDisabled;
 
     // Attach the refresh on events.
     this.attachRefreshOn();
@@ -641,6 +642,10 @@ export default class Component extends Element {
   destroy() {
     super.destroy();
     this.detach();
+  }
+
+  get shouldDisabled() {
+    return this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty(&apos;disabled&apos;) &amp;&amp; this.options.disabled[this.key]);
   }
 
   get isInputComponent() {
@@ -1414,6 +1419,7 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.clear();
+    this.disabled = this.shouldDisabled;
     // Since we are going to replace the element, we need to know it&apos;s position so we can find it in the parent&apos;s children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);

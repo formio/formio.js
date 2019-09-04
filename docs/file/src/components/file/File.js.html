@@ -186,6 +186,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
@@ -226,6 +227,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../_classes/field/Field&apos;;
 import { uniqueName } from &apos;../../utils/utils&apos;;
 import download from &apos;downloadjs&apos;;
+import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
 let Camera;
 const webViewCamera = navigator.camera || Camera;
@@ -314,7 +316,11 @@ export default class FileComponent extends Field {
   }
 
   getValueAsString(value) {
-    return value ? value.originalName : &apos;&apos;;
+    if (_.isArray(value)) {
+      return _.map(value, &apos;originalName&apos;).join(&apos;, &apos;);
+    }
+
+    return _.get(value, &apos;originalName&apos;, &apos;&apos;);
   }
 
   getValue() {

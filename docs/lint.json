@@ -306,31 +306,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 513,
+        "lineNumber": 517,
         "line": "  /**"
       },
       {
-        "lineNumber": 514,
+        "lineNumber": 518,
         "line": "   * Returns only the schema that is different from the default."
       },
       {
-        "lineNumber": 515,
+        "lineNumber": 519,
         "line": "   *"
       },
       {
-        "lineNumber": 516,
+        "lineNumber": 520,
         "line": "   * @param schema"
       },
       {
-        "lineNumber": 517,
+        "lineNumber": 521,
         "line": "   * @param defaultSchema"
       },
       {
-        "lineNumber": 518,
+        "lineNumber": 522,
         "line": "   */"
       },
       {
-        "lineNumber": 519,
+        "lineNumber": 523,
         "line": "  getModifiedSchema(schema, defaultSchema, recursion) {"
       }
     ],
@@ -349,31 +349,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 691,
+        "lineNumber": 695,
         "line": "  /**"
       },
       {
-        "lineNumber": 692,
+        "lineNumber": 696,
         "line": "   * Sanitize an html string."
       },
       {
-        "lineNumber": 693,
+        "lineNumber": 697,
         "line": "   *"
       },
       {
-        "lineNumber": 694,
+        "lineNumber": 698,
         "line": "   * @param string"
       },
       {
-        "lineNumber": 695,
+        "lineNumber": 699,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 696,
+        "lineNumber": 700,
         "line": "   */"
       },
       {
-        "lineNumber": 697,
+        "lineNumber": 701,
         "line": "  sanitize(dirty) {"
       }
     ],
@@ -389,28 +389,12 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 706,
+        "lineNumber": 710,
         "line": "  /**"
       },
       {
-        "lineNumber": 707,
-        "line": "   * Render a template string into html."
-      },
-      {
-        "lineNumber": 708,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 709,
-        "line": "   * @param template"
-      },
-      {
-        "lineNumber": 710,
-        "line": "   * @param data"
-      },
-      {
         "lineNumber": 711,
-        "line": "   * @param actions"
+        "line": "   * Render a template string into html."
       },
       {
         "lineNumber": 712,
@@ -418,14 +402,30 @@
       },
       {
         "lineNumber": 713,
-        "line": "   * @return {HTMLElement} - The created element."
+        "line": "   * @param template"
       },
       {
         "lineNumber": 714,
-        "line": "   */"
+        "line": "   * @param data"
       },
       {
         "lineNumber": 715,
+        "line": "   * @param actions"
+      },
+      {
+        "lineNumber": 716,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 717,
+        "line": "   * @return {HTMLElement} - The created element."
+      },
+      {
+        "lineNumber": 718,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 719,
         "line": "  renderString(template, data) {"
       }
     ],
@@ -444,31 +444,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1378,
+        "lineNumber": 1383,
         "line": "  /**"
       },
       {
-        "lineNumber": 1379,
+        "lineNumber": 1384,
         "line": "   * Add a new input error to this element."
       },
       {
-        "lineNumber": 1380,
+        "lineNumber": 1385,
         "line": "   *"
       },
       {
-        "lineNumber": 1381,
+        "lineNumber": 1386,
         "line": "   * @param message"
       },
       {
-        "lineNumber": 1382,
+        "lineNumber": 1387,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 1383,
+        "lineNumber": 1388,
         "line": "   */"
       },
       {
-        "lineNumber": 1384,
+        "lineNumber": 1389,
         "line": "  addInputError(message, dirty, elements) {"
       }
     ],
@@ -487,31 +487,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1744,
+        "lineNumber": 1749,
         "line": "  /**"
       },
       {
-        "lineNumber": 1745,
+        "lineNumber": 1750,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 1746,
+        "lineNumber": 1751,
         "line": "   *"
       },
       {
-        "lineNumber": 1747,
+        "lineNumber": 1752,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 1748,
+        "lineNumber": 1753,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 1749,
+        "lineNumber": 1754,
         "line": "   */"
       },
       {
-        "lineNumber": 1750,
+        "lineNumber": 1755,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
@@ -530,27 +530,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1800,
+        "lineNumber": 1805,
         "line": "  /**"
       },
       {
-        "lineNumber": 1801,
+        "lineNumber": 1806,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 1802,
+        "lineNumber": 1807,
         "line": "   *"
       },
       {
-        "lineNumber": 1803,
+        "lineNumber": 1808,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1804,
+        "lineNumber": 1809,
         "line": "   */"
       },
       {
-        "lineNumber": 1805,
+        "lineNumber": 1810,
         "line": "  updateValue(value, flags) {"
       }
     ],
@@ -567,35 +567,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1865,
+        "lineNumber": 1870,
         "line": "  /**"
       },
       {
-        "lineNumber": 1866,
+        "lineNumber": 1871,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 1867,
+        "lineNumber": 1872,
         "line": "   *"
       },
       {
-        "lineNumber": 1868,
+        "lineNumber": 1873,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 1869,
+        "lineNumber": 1874,
         "line": "   *"
       },
       {
-        "lineNumber": 1870,
+        "lineNumber": 1875,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 1871,
+        "lineNumber": 1876,
         "line": "   */"
       },
       {
-        "lineNumber": 1872,
+        "lineNumber": 1877,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -612,35 +612,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1955,
+        "lineNumber": 1960,
         "line": "  /**"
       },
       {
-        "lineNumber": 1956,
+        "lineNumber": 1961,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 1957,
+        "lineNumber": 1962,
         "line": "   *"
       },
       {
-        "lineNumber": 1958,
+        "lineNumber": 1963,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 1959,
+        "lineNumber": 1964,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 1960,
+        "lineNumber": 1965,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 1961,
+        "lineNumber": 1966,
         "line": "   */"
       },
       {
-        "lineNumber": 1962,
+        "lineNumber": 1967,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -1489,35 +1489,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 865,
+        "lineNumber": 863,
         "line": "/**"
       },
       {
-        "lineNumber": 866,
+        "lineNumber": 864,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 867,
+        "lineNumber": 865,
         "line": " *"
       },
       {
-        "lineNumber": 868,
+        "lineNumber": 866,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 869,
+        "lineNumber": 867,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 870,
+        "lineNumber": 868,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 871,
+        "lineNumber": 869,
         "line": " */"
       },
       {
-        "lineNumber": 872,
+        "lineNumber": 870,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1536,35 +1536,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 939,
+        "lineNumber": 937,
         "line": "/**"
       },
       {
-        "lineNumber": 940,
+        "lineNumber": 938,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 941,
+        "lineNumber": 939,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 942,
+        "lineNumber": 940,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 943,
+        "lineNumber": 941,
         "line": " *"
       },
       {
-        "lineNumber": 944,
+        "lineNumber": 942,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 945,
+        "lineNumber": 943,
         "line": " */"
       },
       {
-        "lineNumber": 946,
+        "lineNumber": 944,
         "line": "export function unfold(e) {"
       }
     ],

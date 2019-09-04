@@ -186,6 +186,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
@@ -555,13 +556,11 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance, context) {
+export function setActionProperty(component, action, row, data, result, instance) {
   switch (action.property.type) {
     case &apos;boolean&apos;:
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString() ||
-          _.get(context.component, action.property.value, false).toString() !== action.state.toString()) {
+      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
         _.set(component, action.property.value, action.state.toString() === &apos;true&apos;);
-        _.set(context, action.property.value, action.state.toString() === &apos;true&apos;);
       }
       break;
     case &apos;string&apos;: {
@@ -1235,6 +1234,20 @@ export function observeOverload(callback, options = {}) {
       return callback();
     }
   };
+}
+
+export function getContextComponents(context) {
+  var values = [];
+
+  context.utils.eachComponent(context.instance.root.editForm.components, (component) =&gt; {
+    if (component.key !== context.data.key) {
+      values.push({
+        label: component.label || component.key,
+        value: component.key
+      });
+    }
+  });
+  return values;
 }
 
 export { Evaluator, interpolate };

@@ -186,6 +186,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
@@ -223,7 +224,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/component/editForm/Component.edit.logic.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable quotes, max-len */
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { getContextComponents } from &apos;../../../../utils&apos;;
+
+/* eslint-disable quotes, max-len */
 export default [
   {
     weight: 0,
@@ -320,16 +323,7 @@ export default [
                     tableView: false,
                     data: {
                       custom(context) {
-                        var values = [];
-                        context.utils.eachComponent(context.instance.root.editForm.components, function(component, path) {
-                          if (component.key !== context.data.key) {
-                            values.push({
-                              label: component.label || component.key,
-                              value: path
-                            });
-                          }
-                        });
-                        return values;
+                        return getContextComponents(context);
                       }
                     }
                   },
