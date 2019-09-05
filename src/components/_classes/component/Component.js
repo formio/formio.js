@@ -479,6 +479,11 @@ export default class Component extends Element {
    * @returns {boolean}
    */
   get visible() {
+    if (!this.rendered) {
+      // Keeps conditionally invisible fields from "flashing" when form is initially rendered.
+      this._visible = this.conditionallyVisible(this.data);
+    }
+
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (this.builderMode || this.options.showHiddenFields) {
       return true;
@@ -813,9 +818,10 @@ export default class Component extends Element {
   }
 
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
+    const isVisible = this.visible;
     this.rendered = true;
     return this.renderTemplate('component', {
-      visible: this.visible,
+      visible: isVisible,
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
