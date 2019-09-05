@@ -526,6 +526,9 @@ export default class FormComponent extends Component {
         return this.renderSubForm(formObj);
       });
     }
+    if (!this.subFormReady) {
+      return new NativePromise(() =&gt; {});
+    }
     return this.subFormReady.then(() =&gt; this.restoreValue());
   }
 

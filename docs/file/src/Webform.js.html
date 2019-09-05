@@ -500,6 +500,9 @@ export default class Webform extends NestedComponent {
   set language(lang) {
     return new NativePromise((resolve, reject) =&gt; {
       this.options.language = lang;
+      if (i18next.language === lang) {
+        return resolve();
+      }
       try {
         i18next.changeLanguage(lang, (err) =&gt; {
           if (err) {
@@ -856,10 +859,13 @@ export default class Webform extends NestedComponent {
     this.initialized = false;
     const rebuild = this.rebuild() || NativePromise.resolve();
     return rebuild.then(() =&gt; {
-      this.formReadyResolve();
       this.emit(&apos;formLoad&apos;, form);
       this.triggerRecaptcha();
-      this.onChange();
+      // Make sure to trigger onChange after a render event occurs to speed up form rendering.
+      setTimeout(() =&gt; {
+        this.onChange();
+        this.formReadyResolve();
+      }, 0);
       return this.formReady;
     });
   }
