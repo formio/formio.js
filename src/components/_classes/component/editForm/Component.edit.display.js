@@ -105,7 +105,7 @@ export default [
     key: 'dataGridLabel',
     input: true,
     customConditional(context) {
-      return context.instance.root.editComponent.inDataGrid;
+      return context.instance.options.editComponent.inDataGrid;
     }
   },
   {

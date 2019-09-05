@@ -1008,8 +1008,7 @@ export function observeOverload(callback, options = {}) {
 
 export function getContextComponents(context) {
   var values = [];
-
-  context.utils.eachComponent(context.instance.root.editForm.components, (component) => {
+  context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
     if (component.key !== context.data.key) {
       values.push({
         label: component.label || component.key,

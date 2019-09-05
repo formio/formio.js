@@ -807,7 +807,9 @@ export default class WebformBuilder extends Component {
         'hidden',
         'calculatedValue'
       ])] };
-      this.setContent(this.componentEdit.querySelector('[ref="preview"]'), this.preview.render());
+      const previewElement = this.componentEdit.querySelector('[ref="preview"]');
+      this.setContent(previewElement, this.preview.render());
+      this.preview.attach(previewElement);
     }
 
     // Change the "default value" field to be reflective of this component.
@@ -869,10 +871,17 @@ export default class WebformBuilder extends Component {
     }
 
     // This is the render step.
-    const editFormOptions = _.get(this, 'options.editForm', {});
+    const editFormOptions = _.clone(_.get(this, 'options.editForm', {}));
     if (this.editForm) {
       this.editForm.destroy();
     }
+
+    // Allow editForm overrides per component.
+    const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
+
+    // Pass along the form being edited.
+    editFormOptions.editForm = this.form;
+    editFormOptions.editComponent = component;
     this.editForm = new Webform(
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
@@ -881,46 +890,27 @@ export default class WebformBuilder extends Component {
       }
     );
 
-    // Allow editForm overrides per component.
-    const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
-
-    if (isJsonEdit && !isCustom) {
-      this.editForm.form = {
-        components: [
-          {
-            type: 'textarea',
-            as: 'json',
-            editor: 'ace',
-            weight: 10,
-            input: true,
-            key: 'componentJson',
-            label: 'Component JSON',
-            tooltip: 'Edit the JSON for this component.'
-          }
-        ]
-      };
-    }
-    else {
-      // Get the editform for this component.
-      this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
-    }
-
-    // Pass along the form being edited.
-    this.editForm.editForm = this.form;
-    this.editForm.editComponent = component;
-
-    if (isJsonEdit) {
-      this.editForm.submission = {
-        data: {
-          componentJson: componentCopy
-        },
-      };
-    }
-    else {
-      this.editForm.submission = {
-        data: componentCopy,
-      };
-    }
+    this.editForm.form = (isJsonEdit && !isCustom) ? {
+      components: [
+        {
+          type: 'textarea',
+          as: 'json',
+          editor: 'ace',
+          weight: 10,
+          input: true,
+          key: 'componentJson',
+          label: 'Component JSON',
+          tooltip: 'Edit the JSON for this component.'
+        }
+      ]
+    } : componentClass.editForm(_.cloneDeep(overrides));
+    this.editForm.submission = isJsonEdit ? {
+      data: {
+        componentJson: componentCopy
+      },
+    } : {
+      data: componentCopy,
+    };
 
     if (this.preview) {
       this.preview.destroy();
@@ -943,8 +933,7 @@ export default class WebformBuilder extends Component {
     this.dialog = this.createModal(this.componentEdit);
 
     // This is the attach step.
-    const editForm = this.componentEdit.querySelector('[ref="editForm"]');
-    this.editForm.attach(editForm);
+    this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
 
     this.defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
 

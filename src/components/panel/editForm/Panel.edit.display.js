@@ -126,7 +126,7 @@ export default [
       }
     ],
     customConditional(context) {
-      return context.instance.root.editForm.display === 'wizard';
+      return context.instance.options.editForm.display === 'wizard';
     }
   },
   {
