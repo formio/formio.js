@@ -156,7 +156,11 @@ export default class FormComponent extends Component {
     if (this.builderMode) {
       return NativePromise.resolve();
     }
-    return this.loadSubForm().then(() => this.subForm.attach(element));
+    return this.loadSubForm().then(() => {
+      if (this.subForm) {
+        this.subForm.attach(element);
+      }
+    });
   }
 
   detach() {
