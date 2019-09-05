@@ -26868,7 +26868,7 @@
     "__docId__": 1387,
     "kind": "file",
     "name": "src/components/form/Form.js",
-    "content": "import _ from 'lodash';\nimport Component from '../_classes/component/Component';\nimport EventEmitter from 'eventemitter2';\nimport NativePromise from 'native-promise-only';\nimport { isMongoId, eachComponent } from '../../utils/utils';\nimport Formio from '../../Formio';\nimport Form from '../../Form';\n\nexport default class FormComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'form',\n      key: 'form',\n      src: '',\n      reference: true,\n      form: '',\n      path: ''\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Nested Form',\n      icon: 'wpforms',\n      group: 'premium',\n      documentation: 'http://help.form.io/userguide/#form',\n      weight: 110,\n      schema: FormComponent.schema()\n    };\n  }\n\n  init() {\n    super.init();\n    this.subForm = null;\n    this.formSrc = '';\n    if (this.component.src) {\n      this.formSrc = this.component.src;\n    }\n\n    if (\n      !this.component.src &&\n      !this.options.formio &&\n      (this.component.form || this.component.path)\n    ) {\n      if (this.component.project) {\n        this.formSrc = Formio.getBaseUrl();\n        // Check to see if it is a MongoID.\n        if (isMongoId(this.component.project)) {\n          this.formSrc += '/project';\n        }\n        this.formSrc += `/${this.component.project}`;\n        this.options.project = this.formSrc;\n      }\n      else {\n        this.formSrc = Formio.getProjectUrl();\n        this.options.project = this.formSrc;\n      }\n      if (this.component.form) {\n        this.formSrc += `/form/${this.component.form}`;\n      }\n      else if (this.component.path) {\n        this.formSrc += `/${this.component.path}`;\n      }\n    }\n\n    // Build the source based on the root src path.\n    if (!this.formSrc && this.options.formio) {\n      const rootSrc = this.options.formio.formsUrl;\n      if (this.component.path) {\n        const parts = rootSrc.split('/');\n        parts.pop();\n        this.formSrc = `${parts.join('/')}/${this.component.path}`;\n      }\n      if (this.component.form) {\n        this.formSrc = `${rootSrc}/${this.component.form}`;\n      }\n    }\n\n    // Add revision version if set.\n    if (this.component.formRevision || this.component.formRevision === 0) {\n      this.formSrc += `/v/${this.component.formRevision}`;\n    }\n  }\n\n  get dataReady() {\n    return this.subFormReady || NativePromise.resolve();\n  }\n\n  get defaultSchema() {\n    return FormComponent.schema();\n  }\n\n  get emptyValue() {\n    return { data: {} };\n  }\n\n  get ready() {\n    return this.subFormReady || NativePromise.resolve();\n  }\n\n  getSubOptions(options = {}) {\n    if (!this.options) {\n      return options;\n    }\n    if (this.options.base) {\n      options.base = this.options.base;\n    }\n    if (this.options.project) {\n      options.project = this.options.project;\n    }\n    if (this.options.readOnly) {\n      options.readOnly = this.options.readOnly;\n    }\n    if (this.options.breadcrumbSettings) {\n      options.breadcrumbSettings = this.options.breadcrumbSettings;\n    }\n    if (this.options.buttonSettings) {\n      options.buttonSettings = this.options.buttonSettings;\n    }\n    if (this.options.viewAsHtml) {\n      options.viewAsHtml = this.options.viewAsHtml;\n    }\n    if (this.options.language) {\n      options.language = this.options.language;\n    }\n    if (this.options.template) {\n      options.template = this.options.template;\n    }\n    if (this.options.templates) {\n      options.templates = this.options.templates;\n    }\n    if (this.options.renderMode) {\n      options.renderMode = this.options.renderMode;\n    }\n    if (this.options.attachMode) {\n      options.attachMode = this.options.attachMode;\n    }\n    if (this.options.iconset) {\n      options.iconset = this.options.iconset;\n    }\n    options.events = this.createEmitter();\n    return options;\n  }\n\n  render() {\n    if (this.builderMode) {\n      return super.render(this.component.label || 'Nested form');\n    }\n    const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');\n    return super.render(subform);\n  }\n\n  attach(element) {\n    super.attach(element);\n    // Don't attach in builder.\n    if (this.builderMode) {\n      return NativePromise.resolve();\n    }\n    return this.loadSubForm().then(() => this.subForm.attach(element));\n  }\n\n  detach() {\n    if (this.subForm) {\n      this.subForm.detach();\n    }\n    super.detach();\n  }\n\n  set root(inst) {\n    if (!inst) {\n      return;\n    }\n    this._root = inst;\n    this.nosubmit = inst.nosubmit;\n  }\n\n  get root() {\n    return this._root;\n  }\n\n  set nosubmit(value) {\n    this._nosubmit = !!value;\n    if (this.subForm) {\n      this.subForm.nosubmit = this._nosubmit;\n    }\n  }\n\n  get nosubmit() {\n    return this._nosubmit || false;\n  }\n\n  get currentForm() {\n    return this._currentForm;\n  }\n\n  set currentForm(instance) {\n    this._currentForm = instance;\n    if (!this.subForm) {\n      return;\n    }\n    this.subForm.getComponents().forEach(component => {\n      component.currentForm = this;\n    });\n  }\n\n  destroy() {\n    if (this.subForm) {\n      this.subForm.destroy();\n      this.subForm = null;\n      this.subFormReady = null;\n    }\n    super.destroy();\n  }\n\n  redraw() {\n    if (this.subForm) {\n      this.subForm.form = this.component;\n    }\n    return super.redraw();\n  }\n\n  /**\n   * Pass everyComponent to subform.\n   * @param args\n   * @returns {*|void}\n   */\n  everyComponent(...args) {\n    if (this.subForm) {\n      this.subForm.everyComponent(...args);\n    }\n  }\n\n  /**\n   * Render a subform.\n   *\n   * @param form\n   * @param options\n   */\n  renderSubForm(form) {\n    if (this.options.builder) {\n      this.element.appendChild(this.ce('div', {\n        class: 'text-muted text-center p-2'\n      }, this.text(form.title)));\n      return;\n    }\n\n    // Iterate through every component and hide the submit button.\n    eachComponent(form.components, (component) => {\n      if (\n        (component.type === 'button') &&\n        ((component.action === 'submit') || !component.action)\n      ) {\n        component.hidden = true;\n      }\n    });\n\n    // Render the form.\n    return (new Form(form, this.getSubOptions())).ready.then((instance) => {\n      this.subForm = instance;\n      this.subForm.currentForm = this;\n      this.subForm.parent = this;\n      this.subForm.parentVisible = this.visible;\n      this.subForm.on('change', () => {\n        if (this.subForm) {\n          this.dataValue = this.subForm.getValue();\n          this.triggerChange({\n            noEmit: true\n          });\n        }\n      });\n      this.subForm.url = this.formSrc;\n      this.subForm.nosubmit = this.nosubmit;\n      this.redraw();\n      this.subForm.root = this.root;\n      return this.subForm;\n    });\n  }\n\n  /**\n   * Load the subform.\n   */\n  loadSubForm() {\n    if (this.builderMode || this.isHidden()) {\n      return NativePromise.resolve();\n    }\n\n    if (this.subFormReady) {\n      return this.subFormReady.then(() => this.restoreValue());\n    }\n\n    // Determine if we already have a loaded form object.\n    if (this.component && this.component.components && Array.isArray(this.component.components) && this.component.components.length) {\n      this.subFormReady = this.renderSubForm(this.component);\n    }\n    else if (this.formSrc) {\n      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) => {\n        this.component.components = formObj.components;\n        this.component.settings = formObj.settings;\n        this.component.display = formObj.display;\n        return this.renderSubForm(formObj);\n      });\n    }\n    if (!this.subFormReady) {\n      return new NativePromise(() => {});\n    }\n    return this.subFormReady.then(() => this.restoreValue());\n  }\n\n  checkValidity(data, dirty) {\n    if (this.subForm) {\n      return this.subForm.checkValidity(this.dataValue.data, dirty);\n    }\n\n    return super.checkValidity(data, dirty);\n  }\n\n  checkConditions(data) {\n    const visible = super.checkConditions(data);\n\n    // Return if already hidden\n    if (!visible) {\n      return visible;\n    }\n\n    if (this.subForm && this.subForm.hasCondition()) {\n      return this.subForm.checkConditions(this.dataValue.data);\n    }\n\n    return visible;\n  }\n\n  calculateValue(data, flags) {\n    if (this.subForm) {\n      return this.subForm.calculateValue(this.dataValue.data, flags);\n    }\n\n    return super.calculateValue(data, flags);\n  }\n\n  setPristine(pristine) {\n    super.setPristine(pristine);\n    if (this.subForm) {\n      this.subForm.setPristine(pristine);\n    }\n  }\n\n  /**\n   * Determine if the subform should be submitted.\n   * @return {*|boolean}\n   */\n  get shouldSubmit() {\n    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference);\n  }\n\n  /**\n   * Returns the data for the subform.\n   *\n   * @return {*}\n   */\n  getSubFormData() {\n    if (_.get(this.subForm, 'form.display') === 'pdf') {\n      return this.subForm.getSubmission();\n    }\n    else {\n      return NativePromise.resolve(this.dataValue);\n    }\n  }\n\n  /**\n   * Submit the subform if configured to do so.\n   *\n   * @return {*}\n   */\n  submitSubForm() {\n    if (this.shouldSubmit) {\n      return this.subFormReady.then(() => this.subForm.submitForm().then(result => {\n        this.dataValue = result.submission;\n        return this.dataValue;\n      }).catch(err => {\n        this.subForm.onSubmissionError(err);\n        return NativePromise.reject(err);\n      }));\n    }\n    return this.getSubFormData();\n  }\n\n  /**\n   * Submit the form before the next page is triggered.\n   */\n  beforePage(next) {\n    return this.submitSubForm().then(() => super.beforePage(next));\n  }\n\n  /**\n   * Submit the form before the whole form is triggered.\n   */\n  beforeSubmit() {\n    const submission = this.dataValue;\n\n    // This submission has already been submitted, so just return the reference data.\n    if (submission && submission._id && submission.form) {\n      this.dataValue = this.shouldSubmit ? {\n        _id: submission._id,\n        form: submission.form\n      } : submission;\n      return NativePromise.resolve(this.dataValue);\n    }\n\n    // This submission has not been submitted yet.\n    if (this.shouldSubmit) {\n      return this.subFormReady.then(() => {\n        return this.subForm.submitForm()\n          .then(result => {\n            this.subForm.loading = false;\n            this.dataValue = {\n              _id: result.submission._id,\n              form: result.submission.form\n            };\n            return this.dataValue;\n          })\n          .catch(() => {});\n      });\n    }\n    else {\n      return super.beforeSubmit();\n    }\n  }\n\n  isHidden() {\n    if (!this.visible) {\n      return true;\n    }\n\n    return !super.checkConditions(this.rootValue);\n  }\n\n  setValue(submission, flags) {\n    const changed = super.setValue(submission, flags);\n    if (this.subFormReady) {\n      this.subFormReady.then((form) => {\n        if (\n          submission &&\n          submission._id &&\n          form.formio &&\n          !flags.noload &&\n          (_.isEmpty(submission.data) || this.shouldSubmit)\n        ) {\n          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;\n          form.setUrl(submissionUrl, this.options);\n          form.nosubmit = false;\n          form.loadSubmission();\n        }\n        else {\n          form.setValue(submission, flags);\n        }\n      });\n    }\n    return changed;\n  }\n\n  getValue() {\n    if (this.subForm) {\n      return this.subForm.getValue();\n    }\n    return this.dataValue;\n  }\n\n  getAllComponents() {\n    if (!this.subForm) {\n      return [];\n    }\n    return this.subForm.getAllComponents();\n  }\n\n  updateSubFormVisibility() {\n    if (this.subForm) {\n      this.subForm.parentVisible = this.visible;\n    }\n  }\n\n  get visible() {\n    return super.visible;\n  }\n\n  set visible(value) {\n    super.visible = value;\n    this.updateSubFormVisibility();\n  }\n\n  get parentVisible() {\n    return super.parentVisible;\n  }\n\n  set parentVisible(value) {\n    super.parentVisible = value;\n    this.updateSubFormVisibility();\n  }\n\n  isInternalEvent(event) {\n    switch (event) {\n      case 'focus':\n      case 'blur':\n      case 'componentChange':\n      case 'componentError':\n      case 'error':\n      case 'formLoad':\n      case 'languageChanged':\n      case 'render':\n      case 'checkValidity':\n      case 'initialized':\n      case 'submit':\n      case 'submitButton':\n      case 'nosubmit':\n      case 'updateComponent':\n      case 'submitDone':\n      case 'submissionDeleted':\n      case 'requestDone':\n      case 'nextPage':\n      case 'prevPage':\n      case 'wizardNavigationClicked':\n      case 'updateWizardNav':\n      case 'restoreDraft':\n      case 'saveDraft':\n      case 'saveComponent':\n        return true;\n      default:\n        return false;\n    }\n  }\n\n  createEmitter() {\n    const emitter = new EventEmitter({\n      wildcard: false,\n      maxListeners: 0\n    });\n    const nativeEmit = emitter.emit;\n    const that = this;\n    emitter.emit = function(event, ...args) {\n      const eventType = event.replace(`${that.options.namespace}.`, '');\n      nativeEmit.call(this, event, ...args);\n      if (!that.isInternalEvent(eventType)) {\n        that.emit(eventType, ...args);\n      }\n    };\n\n    return emitter;\n  }\n\n  deleteValue() {\n    super.setValue(null, {\n      noUpdateEvent: true,\n      noDefault: true\n    });\n    _.unset(this.data, this.key);\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport Component from '../_classes/component/Component';\nimport EventEmitter from 'eventemitter2';\nimport NativePromise from 'native-promise-only';\nimport { isMongoId, eachComponent } from '../../utils/utils';\nimport Formio from '../../Formio';\nimport Form from '../../Form';\n\nexport default class FormComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'form',\n      key: 'form',\n      src: '',\n      reference: true,\n      form: '',\n      path: ''\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Nested Form',\n      icon: 'wpforms',\n      group: 'premium',\n      documentation: 'http://help.form.io/userguide/#form',\n      weight: 110,\n      schema: FormComponent.schema()\n    };\n  }\n\n  init() {\n    super.init();\n    this.subForm = null;\n    this.formSrc = '';\n    if (this.component.src) {\n      this.formSrc = this.component.src;\n    }\n\n    if (\n      !this.component.src &&\n      !this.options.formio &&\n      (this.component.form || this.component.path)\n    ) {\n      if (this.component.project) {\n        this.formSrc = Formio.getBaseUrl();\n        // Check to see if it is a MongoID.\n        if (isMongoId(this.component.project)) {\n          this.formSrc += '/project';\n        }\n        this.formSrc += `/${this.component.project}`;\n        this.options.project = this.formSrc;\n      }\n      else {\n        this.formSrc = Formio.getProjectUrl();\n        this.options.project = this.formSrc;\n      }\n      if (this.component.form) {\n        this.formSrc += `/form/${this.component.form}`;\n      }\n      else if (this.component.path) {\n        this.formSrc += `/${this.component.path}`;\n      }\n    }\n\n    // Build the source based on the root src path.\n    if (!this.formSrc && this.options.formio) {\n      const rootSrc = this.options.formio.formsUrl;\n      if (this.component.path) {\n        const parts = rootSrc.split('/');\n        parts.pop();\n        this.formSrc = `${parts.join('/')}/${this.component.path}`;\n      }\n      if (this.component.form) {\n        this.formSrc = `${rootSrc}/${this.component.form}`;\n      }\n    }\n\n    // Add revision version if set.\n    if (this.component.formRevision || this.component.formRevision === 0) {\n      this.formSrc += `/v/${this.component.formRevision}`;\n    }\n  }\n\n  get dataReady() {\n    return this.subFormReady || NativePromise.resolve();\n  }\n\n  get defaultSchema() {\n    return FormComponent.schema();\n  }\n\n  get emptyValue() {\n    return { data: {} };\n  }\n\n  get ready() {\n    return this.subFormReady || NativePromise.resolve();\n  }\n\n  getSubOptions(options = {}) {\n    if (!this.options) {\n      return options;\n    }\n    if (this.options.base) {\n      options.base = this.options.base;\n    }\n    if (this.options.project) {\n      options.project = this.options.project;\n    }\n    if (this.options.readOnly) {\n      options.readOnly = this.options.readOnly;\n    }\n    if (this.options.breadcrumbSettings) {\n      options.breadcrumbSettings = this.options.breadcrumbSettings;\n    }\n    if (this.options.buttonSettings) {\n      options.buttonSettings = this.options.buttonSettings;\n    }\n    if (this.options.viewAsHtml) {\n      options.viewAsHtml = this.options.viewAsHtml;\n    }\n    if (this.options.language) {\n      options.language = this.options.language;\n    }\n    if (this.options.template) {\n      options.template = this.options.template;\n    }\n    if (this.options.templates) {\n      options.templates = this.options.templates;\n    }\n    if (this.options.renderMode) {\n      options.renderMode = this.options.renderMode;\n    }\n    if (this.options.attachMode) {\n      options.attachMode = this.options.attachMode;\n    }\n    if (this.options.iconset) {\n      options.iconset = this.options.iconset;\n    }\n    options.events = this.createEmitter();\n    return options;\n  }\n\n  render() {\n    if (this.builderMode) {\n      return super.render(this.component.label || 'Nested form');\n    }\n    const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');\n    return super.render(subform);\n  }\n\n  attach(element) {\n    super.attach(element);\n    // Don't attach in builder.\n    if (this.builderMode) {\n      return NativePromise.resolve();\n    }\n    return this.loadSubForm().then(() => {\n      if (this.subForm) {\n        this.subForm.attach(element);\n      }\n    });\n  }\n\n  detach() {\n    if (this.subForm) {\n      this.subForm.detach();\n    }\n    super.detach();\n  }\n\n  set root(inst) {\n    if (!inst) {\n      return;\n    }\n    this._root = inst;\n    this.nosubmit = inst.nosubmit;\n  }\n\n  get root() {\n    return this._root;\n  }\n\n  set nosubmit(value) {\n    this._nosubmit = !!value;\n    if (this.subForm) {\n      this.subForm.nosubmit = this._nosubmit;\n    }\n  }\n\n  get nosubmit() {\n    return this._nosubmit || false;\n  }\n\n  get currentForm() {\n    return this._currentForm;\n  }\n\n  set currentForm(instance) {\n    this._currentForm = instance;\n    if (!this.subForm) {\n      return;\n    }\n    this.subForm.getComponents().forEach(component => {\n      component.currentForm = this;\n    });\n  }\n\n  destroy() {\n    if (this.subForm) {\n      this.subForm.destroy();\n      this.subForm = null;\n      this.subFormReady = null;\n    }\n    super.destroy();\n  }\n\n  redraw() {\n    if (this.subForm) {\n      this.subForm.form = this.component;\n    }\n    return super.redraw();\n  }\n\n  /**\n   * Pass everyComponent to subform.\n   * @param args\n   * @returns {*|void}\n   */\n  everyComponent(...args) {\n    if (this.subForm) {\n      this.subForm.everyComponent(...args);\n    }\n  }\n\n  /**\n   * Render a subform.\n   *\n   * @param form\n   * @param options\n   */\n  renderSubForm(form) {\n    if (this.options.builder) {\n      this.element.appendChild(this.ce('div', {\n        class: 'text-muted text-center p-2'\n      }, this.text(form.title)));\n      return;\n    }\n\n    // Iterate through every component and hide the submit button.\n    eachComponent(form.components, (component) => {\n      if (\n        (component.type === 'button') &&\n        ((component.action === 'submit') || !component.action)\n      ) {\n        component.hidden = true;\n      }\n    });\n\n    // Render the form.\n    return (new Form(form, this.getSubOptions())).ready.then((instance) => {\n      this.subForm = instance;\n      this.subForm.currentForm = this;\n      this.subForm.parent = this;\n      this.subForm.parentVisible = this.visible;\n      this.subForm.on('change', () => {\n        if (this.subForm) {\n          this.dataValue = this.subForm.getValue();\n          this.triggerChange({\n            noEmit: true\n          });\n        }\n      });\n      this.subForm.url = this.formSrc;\n      this.subForm.nosubmit = this.nosubmit;\n      this.redraw();\n      this.subForm.root = this.root;\n      return this.subForm;\n    });\n  }\n\n  /**\n   * Load the subform.\n   */\n  loadSubForm() {\n    if (this.builderMode || this.isHidden()) {\n      return NativePromise.resolve();\n    }\n\n    if (this.subFormReady) {\n      return this.subFormReady.then(() => this.restoreValue());\n    }\n\n    // Determine if we already have a loaded form object.\n    if (this.component && this.component.components && Array.isArray(this.component.components) && this.component.components.length) {\n      this.subFormReady = this.renderSubForm(this.component);\n    }\n    else if (this.formSrc) {\n      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) => {\n        this.component.components = formObj.components;\n        this.component.settings = formObj.settings;\n        this.component.display = formObj.display;\n        return this.renderSubForm(formObj);\n      });\n    }\n    if (!this.subFormReady) {\n      return new NativePromise(() => {});\n    }\n    return this.subFormReady.then(() => this.restoreValue());\n  }\n\n  checkValidity(data, dirty) {\n    if (this.subForm) {\n      return this.subForm.checkValidity(this.dataValue.data, dirty);\n    }\n\n    return super.checkValidity(data, dirty);\n  }\n\n  checkConditions(data) {\n    const visible = super.checkConditions(data);\n\n    // Return if already hidden\n    if (!visible) {\n      return visible;\n    }\n\n    if (this.subForm && this.subForm.hasCondition()) {\n      return this.subForm.checkConditions(this.dataValue.data);\n    }\n\n    return visible;\n  }\n\n  calculateValue(data, flags) {\n    if (this.subForm) {\n      return this.subForm.calculateValue(this.dataValue.data, flags);\n    }\n\n    return super.calculateValue(data, flags);\n  }\n\n  setPristine(pristine) {\n    super.setPristine(pristine);\n    if (this.subForm) {\n      this.subForm.setPristine(pristine);\n    }\n  }\n\n  /**\n   * Determine if the subform should be submitted.\n   * @return {*|boolean}\n   */\n  get shouldSubmit() {\n    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference);\n  }\n\n  /**\n   * Returns the data for the subform.\n   *\n   * @return {*}\n   */\n  getSubFormData() {\n    if (_.get(this.subForm, 'form.display') === 'pdf') {\n      return this.subForm.getSubmission();\n    }\n    else {\n      return NativePromise.resolve(this.dataValue);\n    }\n  }\n\n  /**\n   * Submit the subform if configured to do so.\n   *\n   * @return {*}\n   */\n  submitSubForm() {\n    if (this.shouldSubmit) {\n      return this.subFormReady.then(() => this.subForm.submitForm().then(result => {\n        this.dataValue = result.submission;\n        return this.dataValue;\n      }).catch(err => {\n        this.subForm.onSubmissionError(err);\n        return NativePromise.reject(err);\n      }));\n    }\n    return this.getSubFormData();\n  }\n\n  /**\n   * Submit the form before the next page is triggered.\n   */\n  beforePage(next) {\n    return this.submitSubForm().then(() => super.beforePage(next));\n  }\n\n  /**\n   * Submit the form before the whole form is triggered.\n   */\n  beforeSubmit() {\n    const submission = this.dataValue;\n\n    // This submission has already been submitted, so just return the reference data.\n    if (submission && submission._id && submission.form) {\n      this.dataValue = this.shouldSubmit ? {\n        _id: submission._id,\n        form: submission.form\n      } : submission;\n      return NativePromise.resolve(this.dataValue);\n    }\n\n    // This submission has not been submitted yet.\n    if (this.shouldSubmit) {\n      return this.subFormReady.then(() => {\n        return this.subForm.submitForm()\n          .then(result => {\n            this.subForm.loading = false;\n            this.dataValue = {\n              _id: result.submission._id,\n              form: result.submission.form\n            };\n            return this.dataValue;\n          })\n          .catch(() => {});\n      });\n    }\n    else {\n      return super.beforeSubmit();\n    }\n  }\n\n  isHidden() {\n    if (!this.visible) {\n      return true;\n    }\n\n    return !super.checkConditions(this.rootValue);\n  }\n\n  setValue(submission, flags) {\n    const changed = super.setValue(submission, flags);\n    if (this.subFormReady) {\n      this.subFormReady.then((form) => {\n        if (\n          submission &&\n          submission._id &&\n          form.formio &&\n          !flags.noload &&\n          (_.isEmpty(submission.data) || this.shouldSubmit)\n        ) {\n          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;\n          form.setUrl(submissionUrl, this.options);\n          form.nosubmit = false;\n          form.loadSubmission();\n        }\n        else {\n          form.setValue(submission, flags);\n        }\n      });\n    }\n    return changed;\n  }\n\n  getValue() {\n    if (this.subForm) {\n      return this.subForm.getValue();\n    }\n    return this.dataValue;\n  }\n\n  getAllComponents() {\n    if (!this.subForm) {\n      return [];\n    }\n    return this.subForm.getAllComponents();\n  }\n\n  updateSubFormVisibility() {\n    if (this.subForm) {\n      this.subForm.parentVisible = this.visible;\n    }\n  }\n\n  get visible() {\n    return super.visible;\n  }\n\n  set visible(value) {\n    super.visible = value;\n    this.updateSubFormVisibility();\n  }\n\n  get parentVisible() {\n    return super.parentVisible;\n  }\n\n  set parentVisible(value) {\n    super.parentVisible = value;\n    this.updateSubFormVisibility();\n  }\n\n  isInternalEvent(event) {\n    switch (event) {\n      case 'focus':\n      case 'blur':\n      case 'componentChange':\n      case 'componentError':\n      case 'error':\n      case 'formLoad':\n      case 'languageChanged':\n      case 'render':\n      case 'checkValidity':\n      case 'initialized':\n      case 'submit':\n      case 'submitButton':\n      case 'nosubmit':\n      case 'updateComponent':\n      case 'submitDone':\n      case 'submissionDeleted':\n      case 'requestDone':\n      case 'nextPage':\n      case 'prevPage':\n      case 'wizardNavigationClicked':\n      case 'updateWizardNav':\n      case 'restoreDraft':\n      case 'saveDraft':\n      case 'saveComponent':\n        return true;\n      default:\n        return false;\n    }\n  }\n\n  createEmitter() {\n    const emitter = new EventEmitter({\n      wildcard: false,\n      maxListeners: 0\n    });\n    const nativeEmit = emitter.emit;\n    const that = this;\n    emitter.emit = function(event, ...args) {\n      const eventType = event.replace(`${that.options.namespace}.`, '');\n      nativeEmit.call(this, event, ...args);\n      if (!that.isInternalEvent(eventType)) {\n        that.emit(eventType, ...args);\n      }\n    };\n\n    return emitter;\n  }\n\n  deleteValue() {\n    super.setValue(null, {\n      noUpdateEvent: true,\n      noDefault: true\n    });\n    _.unset(this.data, this.key);\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/form/Form.js",
     "access": "public",
@@ -27155,7 +27155,7 @@
     "longname": "src/components/form/Form.js~FormComponent#detach",
     "access": "public",
     "description": null,
-    "lineNumber": 162,
+    "lineNumber": 166,
     "undocument": true,
     "params": [],
     "return": null
@@ -27171,7 +27171,7 @@
     "longname": "src/components/form/Form.js~FormComponent#root",
     "access": "public",
     "description": null,
-    "lineNumber": 169,
+    "lineNumber": 173,
     "undocument": true
   },
   {
@@ -27183,7 +27183,7 @@
     "longname": "src/components/form/Form.js~FormComponent#_root",
     "access": "private",
     "description": null,
-    "lineNumber": 173,
+    "lineNumber": 177,
     "undocument": true,
     "type": {
       "types": [
@@ -27202,7 +27202,7 @@
     "longname": "src/components/form/Form.js~FormComponent#root",
     "access": "public",
     "description": null,
-    "lineNumber": 177,
+    "lineNumber": 181,
     "undocument": true,
     "type": {
       "types": [
@@ -27221,7 +27221,7 @@
     "longname": "src/components/form/Form.js~FormComponent#nosubmit",
     "access": "public",
     "description": null,
-    "lineNumber": 181,
+    "lineNumber": 185,
     "undocument": true
   },
   {
@@ -27233,7 +27233,7 @@
     "longname": "src/components/form/Form.js~FormComponent#_nosubmit",
     "access": "private",
     "description": null,
-    "lineNumber": 182,
+    "lineNumber": 186,
     "undocument": true,
     "type": {
       "types": [
@@ -27252,7 +27252,7 @@
     "longname": "src/components/form/Form.js~FormComponent#nosubmit",
     "access": "public",
     "description": null,
-    "lineNumber": 188,
+    "lineNumber": 192,
     "undocument": true,
     "type": {
       "types": [
@@ -27271,7 +27271,7 @@
     "longname": "src/components/form/Form.js~FormComponent#currentForm",
     "access": "public",
     "description": null,
-    "lineNumber": 192,
+    "lineNumber": 196,
     "undocument": true,
     "type": {
       "types": [
@@ -27290,7 +27290,7 @@
     "longname": "src/components/form/Form.js~FormComponent#currentForm",
     "access": "public",
     "description": null,
-    "lineNumber": 196,
+    "lineNumber": 200,
     "undocument": true
   },
   {
@@ -27302,7 +27302,7 @@
     "longname": "src/components/form/Form.js~FormComponent#_currentForm",
     "access": "private",
     "description": null,
-    "lineNumber": 197,
+    "lineNumber": 201,
     "undocument": true,
     "type": {
       "types": [
@@ -27321,7 +27321,7 @@
     "longname": "src/components/form/Form.js~FormComponent#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 206,
+    "lineNumber": 210,
     "undocument": true,
     "params": [],
     "return": null
@@ -27335,7 +27335,7 @@
     "longname": "src/components/form/Form.js~FormComponent#subFormReady",
     "access": "public",
     "description": null,
-    "lineNumber": 210,
+    "lineNumber": 214,
     "undocument": true,
     "type": {
       "types": [
@@ -27354,7 +27354,7 @@
     "longname": "src/components/form/Form.js~FormComponent#redraw",
     "access": "public",
     "description": null,
-    "lineNumber": 215,
+    "lineNumber": 219,
     "undocument": true,
     "params": [],
     "return": {
@@ -27374,7 +27374,7 @@
     "longname": "src/components/form/Form.js~FormComponent#everyComponent",
     "access": "public",
     "description": "Pass everyComponent to subform.",
-    "lineNumber": 227,
+    "lineNumber": 231,
     "unknown": [
       {
         "tagName": "@returns",
@@ -27414,7 +27414,7 @@
     "longname": "src/components/form/Form.js~FormComponent#renderSubForm",
     "access": "public",
     "description": "Render a subform.",
-    "lineNumber": 239,
+    "lineNumber": 243,
     "params": [
       {
         "nullable": null,
@@ -27452,7 +27452,7 @@
     "longname": "src/components/form/Form.js~FormComponent#dataValue",
     "access": "public",
     "description": null,
-    "lineNumber": 265,
+    "lineNumber": 269,
     "undocument": true,
     "type": {
       "types": [
@@ -27471,7 +27471,7 @@
     "longname": "src/components/form/Form.js~FormComponent#loadSubForm",
     "access": "public",
     "description": "Load the subform.",
-    "lineNumber": 282,
+    "lineNumber": 286,
     "params": [],
     "return": {
       "types": [
@@ -27490,7 +27490,7 @@
     "longname": "src/components/form/Form.js~FormComponent#checkValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 309,
+    "lineNumber": 313,
     "undocument": true,
     "params": [
       {
@@ -27523,7 +27523,7 @@
     "longname": "src/components/form/Form.js~FormComponent#checkConditions",
     "access": "public",
     "description": null,
-    "lineNumber": 317,
+    "lineNumber": 321,
     "undocument": true,
     "params": [
       {
@@ -27550,7 +27550,7 @@
     "longname": "src/components/form/Form.js~FormComponent#calculateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 332,
+    "lineNumber": 336,
     "undocument": true,
     "params": [
       {
@@ -27583,7 +27583,7 @@
     "longname": "src/components/form/Form.js~FormComponent#setPristine",
     "access": "public",
     "description": null,
-    "lineNumber": 340,
+    "lineNumber": 344,
     "undocument": true,
     "params": [
       {
@@ -27606,7 +27606,7 @@
     "longname": "src/components/form/Form.js~FormComponent#shouldSubmit",
     "access": "public",
     "description": "Determine if the subform should be submitted.",
-    "lineNumber": 351,
+    "lineNumber": 355,
     "return": {
       "nullable": null,
       "types": [
@@ -27633,7 +27633,7 @@
     "longname": "src/components/form/Form.js~FormComponent#getSubFormData",
     "access": "public",
     "description": "Returns the data for the subform.",
-    "lineNumber": 360,
+    "lineNumber": 364,
     "return": {
       "nullable": null,
       "types": [
@@ -27655,7 +27655,7 @@
     "longname": "src/components/form/Form.js~FormComponent#submitSubForm",
     "access": "public",
     "description": "Submit the subform if configured to do so.",
-    "lineNumber": 374,
+    "lineNumber": 378,
     "return": {
       "nullable": null,
       "types": [
@@ -27677,7 +27677,7 @@
     "longname": "src/components/form/Form.js~FormComponent#beforePage",
     "access": "public",
     "description": "Submit the form before the next page is triggered.",
-    "lineNumber": 390,
+    "lineNumber": 394,
     "params": [
       {
         "name": "next",
@@ -27703,7 +27703,7 @@
     "longname": "src/components/form/Form.js~FormComponent#beforeSubmit",
     "access": "public",
     "description": "Submit the form before the whole form is triggered.",
-    "lineNumber": 397,
+    "lineNumber": 401,
     "params": [],
     "return": {
       "types": [
@@ -27722,7 +27722,7 @@
     "longname": "src/components/form/Form.js~FormComponent#isHidden",
     "access": "public",
     "description": null,
-    "lineNumber": 429,
+    "lineNumber": 433,
     "undocument": true,
     "params": [],
     "return": {
@@ -27742,7 +27742,7 @@
     "longname": "src/components/form/Form.js~FormComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 437,
+    "lineNumber": 441,
     "undocument": true,
     "params": [
       {
@@ -27775,7 +27775,7 @@
     "longname": "src/components/form/Form.js~FormComponent#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 461,
+    "lineNumber": 465,
     "undocument": true,
     "params": [],
     "return": {
@@ -27795,7 +27795,7 @@
     "longname": "src/components/form/Form.js~FormComponent#getAllComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 468,
+    "lineNumber": 472,
     "undocument": true,
     "params": [],
     "return": {
@@ -27815,7 +27815,7 @@
     "longname": "src/components/form/Form.js~FormComponent#updateSubFormVisibility",
     "access": "public",
     "description": null,
-    "lineNumber": 475,
+    "lineNumber": 479,
     "undocument": true,
     "params": [],
     "return": null
@@ -27831,7 +27831,7 @@
     "longname": "src/components/form/Form.js~FormComponent#visible",
     "access": "public",
     "description": null,
-    "lineNumber": 481,
+    "lineNumber": 485,
     "undocument": true,
     "type": {
       "types": [
@@ -27850,7 +27850,7 @@
     "longname": "src/components/form/Form.js~FormComponent#visible",
     "access": "public",
     "description": null,
-    "lineNumber": 485,
+    "lineNumber": 489,
     "undocument": true
   },
   {
@@ -27864,7 +27864,7 @@
     "longname": "src/components/form/Form.js~FormComponent#parentVisible",
     "access": "public",
     "description": null,
-    "lineNumber": 490,
+    "lineNumber": 494,
     "undocument": true,
     "type": {
       "types": [
@@ -27883,7 +27883,7 @@
     "longname": "src/components/form/Form.js~FormComponent#parentVisible",
     "access": "public",
     "description": null,
-    "lineNumber": 494,
+    "lineNumber": 498,
     "undocument": true
   },
   {
@@ -27897,7 +27897,7 @@
     "longname": "src/components/form/Form.js~FormComponent#isInternalEvent",
     "access": "public",
     "description": null,
-    "lineNumber": 499,
+    "lineNumber": 503,
     "undocument": true,
     "params": [
       {
@@ -27924,7 +27924,7 @@
     "longname": "src/components/form/Form.js~FormComponent#createEmitter",
     "access": "public",
     "description": null,
-    "lineNumber": 531,
+    "lineNumber": 535,
     "undocument": true,
     "params": [],
     "return": {
@@ -27944,7 +27944,7 @@
     "longname": "src/components/form/Form.js~FormComponent#deleteValue",
     "access": "public",
     "description": null,
-    "lineNumber": 549,
+    "lineNumber": 553,
     "undocument": true,
     "params": [],
     "return": null
