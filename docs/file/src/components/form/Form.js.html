@@ -382,7 +382,11 @@ export default class FormComponent extends Component {
     if (this.builderMode) {
       return NativePromise.resolve();
     }
-    return this.loadSubForm().then(() =&gt; this.subForm.attach(element));
+    return this.loadSubForm().then(() =&gt; {
+      if (this.subForm) {
+        this.subForm.attach(element);
+      }
+    });
   }
 
   detach() {
@@ -525,6 +529,9 @@ export default class FormComponent extends Component {
         this.component.display = formObj.display;
         return this.renderSubForm(formObj);
       });
+    }
+    if (!this.subFormReady) {
+      return new NativePromise(() =&gt; {});
     }
     return this.subFormReady.then(() =&gt; this.restoreValue());
   }

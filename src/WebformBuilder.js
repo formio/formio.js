@@ -631,6 +631,29 @@ export default class WebformBuilder extends Component {
     super.detach();
   }
 
+  getComponentInfo(key, group) {
+    let info;
+    // This is a new component
+    if (this.schemas.hasOwnProperty(key)) {
+      info = _.cloneDeep(this.schemas[key]);
+      info.key = _.camelCase(
+        info.title ||
+        info.label ||
+        info.placeholder ||
+        info.type
+      );
+    }
+    else {
+      // This is an existing resource field.
+      const resourceGroups = this.groups.resource.subgroups;
+      const resourceGroup = _.find(resourceGroups, { key: group });
+      if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
+        info = resourceGroup.components[key].schema;
+      }
+    }
+    return info;
+  }
+
   /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
@@ -644,29 +667,15 @@ export default class WebformBuilder extends Component {
 
     const key = element.getAttribute('data-key');
     const type = element.getAttribute('data-type');
+    const group = element.getAttribute('data-group');
     let info, isNew;
 
     if (key) {
-      // This is a new component
-      if (this.schemas.hasOwnProperty(key)) {
-        info = _.cloneDeep(this.schemas[type]);
-        info.key = _.camelCase(
-          info.title ||
-          info.label ||
-          info.placeholder ||
-          info.type
-        );
+      // This is a new component.
+      info = this.getComponentInfo(key, group);
+      if (!info && type) {
+        info = this.getComponentInfo(type, group);
       }
-      else {
-        // This is an existing resource field.
-        const resource = element.getAttribute('data-group');
-        const resourceGroups = this.groups.resource.subgroups;
-        const resourceGroup = _.find(resourceGroups, { key: resource });
-        if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
-          info = resourceGroup.components[key].schema;
-        }
-      }
-
       isNew = true;
     }
     else {

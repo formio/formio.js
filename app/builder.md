@@ -103,7 +103,6 @@ var onReady = function() {
   var formElement = document.getElementById('formio');
   builder.instance.on('saveComponent', onBuild);
   builder.instance.on('editComponent', onBuild);
-  builder.instance.on('updateComponent', onBuild);
 };
 
 var setDisplay = function(display) {

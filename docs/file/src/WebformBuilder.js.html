@@ -857,6 +857,29 @@ export default class WebformBuilder extends Component {
     super.detach();
   }
 
+  getComponentInfo(key, group) {
+    let info;
+    // This is a new component
+    if (this.schemas.hasOwnProperty(key)) {
+      info = _.cloneDeep(this.schemas[key]);
+      info.key = _.camelCase(
+        info.title ||
+        info.label ||
+        info.placeholder ||
+        info.type
+      );
+    }
+    else {
+      // This is an existing resource field.
+      const resourceGroups = this.groups.resource.subgroups;
+      const resourceGroup = _.find(resourceGroups, { key: group });
+      if (resourceGroup &amp;&amp; resourceGroup.components.hasOwnProperty(key)) {
+        info = resourceGroup.components[key].schema;
+      }
+    }
+    return info;
+  }
+
   /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
@@ -870,29 +893,15 @@ export default class WebformBuilder extends Component {
 
     const key = element.getAttribute(&apos;data-key&apos;);
     const type = element.getAttribute(&apos;data-type&apos;);
+    const group = element.getAttribute(&apos;data-group&apos;);
     let info, isNew;
 
     if (key) {
-      // This is a new component
-      if (this.schemas.hasOwnProperty(key)) {
-        info = _.cloneDeep(this.schemas[type]);
-        info.key = _.camelCase(
-          info.title ||
-          info.label ||
-          info.placeholder ||
-          info.type
-        );
+      // This is a new component.
+      info = this.getComponentInfo(key, group);
+      if (!info &amp;&amp; type) {
+        info = this.getComponentInfo(type, group);
       }
-      else {
-        // This is an existing resource field.
-        const resource = element.getAttribute(&apos;data-group&apos;);
-        const resourceGroups = this.groups.resource.subgroups;
-        const resourceGroup = _.find(resourceGroups, { key: resource });
-        if (resourceGroup &amp;&amp; resourceGroup.components.hasOwnProperty(key)) {
-          info = resourceGroup.components[key].schema;
-        }
-      }
-
       isNew = true;
     }
     else {
@@ -1033,7 +1042,9 @@ export default class WebformBuilder extends Component {
         &apos;hidden&apos;,
         &apos;calculatedValue&apos;
       ])] };
-      this.setContent(this.componentEdit.querySelector(&apos;[ref=&quot;preview&quot;]&apos;), this.preview.render());
+      const previewElement = this.componentEdit.querySelector(&apos;[ref=&quot;preview&quot;]&apos;);
+      this.setContent(previewElement, this.preview.render());
+      this.preview.attach(previewElement);
     }
 
     // Change the &quot;default value&quot; field to be reflective of this component.
@@ -1095,10 +1106,17 @@ export default class WebformBuilder extends Component {
     }
 
     // This is the render step.
-    const editFormOptions = _.get(this, &apos;options.editForm&apos;, {});
+    const editFormOptions = _.clone(_.get(this, &apos;options.editForm&apos;, {}));
     if (this.editForm) {
       this.editForm.destroy();
     }
+
+    // Allow editForm overrides per component.
+    const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
+
+    // Pass along the form being edited.
+    editFormOptions.editForm = this.form;
+    editFormOptions.editComponent = component;
     this.editForm = new Webform(
       {
         ..._.omit(this.options, [&apos;hooks&apos;, &apos;builder&apos;, &apos;events&apos;, &apos;attachMode&apos;, &apos;skipInit&apos;]),
@@ -1107,46 +1125,27 @@ export default class WebformBuilder extends Component {
       }
     );
 
-    // Allow editForm overrides per component.
-    const overrides = _.get(this.options, `editForm.${componentCopy.type}`, {});
-
-    if (isJsonEdit &amp;&amp; !isCustom) {
-      this.editForm.form = {
-        components: [
-          {
-            type: &apos;textarea&apos;,
-            as: &apos;json&apos;,
-            editor: &apos;ace&apos;,
-            weight: 10,
-            input: true,
-            key: &apos;componentJson&apos;,
-            label: &apos;Component JSON&apos;,
-            tooltip: &apos;Edit the JSON for this component.&apos;
-          }
-        ]
-      };
-    }
-    else {
-      // Get the editform for this component.
-      this.editForm.form = componentClass.editForm(_.cloneDeep(overrides));
-    }
-
-    // Pass along the form being edited.
-    this.editForm.editForm = this.form;
-    this.editForm.editComponent = component;
-
-    if (isJsonEdit) {
-      this.editForm.submission = {
-        data: {
-          componentJson: componentCopy
-        },
-      };
-    }
-    else {
-      this.editForm.submission = {
-        data: componentCopy,
-      };
-    }
+    this.editForm.form = (isJsonEdit &amp;&amp; !isCustom) ? {
+      components: [
+        {
+          type: &apos;textarea&apos;,
+          as: &apos;json&apos;,
+          editor: &apos;ace&apos;,
+          weight: 10,
+          input: true,
+          key: &apos;componentJson&apos;,
+          label: &apos;Component JSON&apos;,
+          tooltip: &apos;Edit the JSON for this component.&apos;
+        }
+      ]
+    } : componentClass.editForm(_.cloneDeep(overrides));
+    this.editForm.submission = isJsonEdit ? {
+      data: {
+        componentJson: componentCopy
+      },
+    } : {
+      data: componentCopy,
+    };
 
     if (this.preview) {
       this.preview.destroy();
@@ -1169,8 +1168,7 @@ export default class WebformBuilder extends Component {
     this.dialog = this.createModal(this.componentEdit);
 
     // This is the attach step.
-    const editForm = this.componentEdit.querySelector(&apos;[ref=&quot;editForm&quot;]&apos;);
-    this.editForm.attach(editForm);
+    this.editForm.attach(this.componentEdit.querySelector(&apos;[ref=&quot;editForm&quot;]&apos;));
 
     this.defaultValueComponent = getComponent(this.editForm.components, &apos;defaultValue&apos;);
 

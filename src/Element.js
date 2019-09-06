@@ -200,10 +200,10 @@ export default class Element {
     this.inputMasks = [];
   }
 
-  removeAllEvents() {
+  removeAllEvents(includeExternal) {
     _.each(this.events._events, (events, type) => {
       _.each(events, (listener) => {
-        if (listener && (this.id === listener.id)) {
+        if (listener && (this.id === listener.id) && (includeExternal || listener.internal)) {
           this.events.off(type, listener);
         }
       });
