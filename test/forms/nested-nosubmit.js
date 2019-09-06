@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import FormComponent from '../../src/components/form/Form';
-import Webform from '../../src/Webform.js';
+import FormComponent from '../../lib/components/form/Form';
+import Webform from '../../lib/Webform.js';
 
 export default {
   title: 'Nested Form nosubmit flag',

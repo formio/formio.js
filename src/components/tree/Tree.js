@@ -71,7 +71,7 @@ export default class TreeComponent extends NestedComponent {
   }
 
   createComponents(data, node) {
-    const components = this.component.components.map(
+    const components = this.componentComponents.map(
       (component) => Components.create(component, this.componentOptions, data),
     );
 

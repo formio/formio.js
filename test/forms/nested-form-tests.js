@@ -1,5 +1,5 @@
-import { comp1 as nestedForm } from '../../src/components/form/fixtures';
-import { Components } from '../../src/formio.form.js';
+import { comp1 as nestedForm } from '../../lib/components/form/fixtures';
+import { Components } from '../../lib/formio.form.js';
 import sinon from 'sinon';
 import { expect } from 'chai';
 

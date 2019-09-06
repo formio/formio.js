@@ -12,8 +12,8 @@ module.exports = {
     ],
   ],
   ignore: [
-    '**/*.spec.js',
-    '**/*.unit.js'
+    // '**/*.spec.js',
+    // '**/*.unit.js'
   ],
   plugins: [
     '@babel/plugin-proposal-class-properties',

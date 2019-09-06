@@ -23,7 +23,7 @@ const fixComponent = (instance, index = 0) => {
   index++;
   if (instance.type === 'form') {
     instance.everyComponent(component => fixComponent(component, index));
-    if (instance.hasOwnProperty('subForm')) {
+    if (instance.hasOwnProperty('subForm') && instance.subForm) {
       instance.subForm.id = instance.key;
     }
   }

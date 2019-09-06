@@ -4,11 +4,11 @@ const pretty = require('pretty');
 import assert from 'power-assert';
 import i18next from 'i18next';
 
-const i18Defaults = require('../lib/i18n');
-const AllComponents = require('../lib/components').default;
-const Components = require('../lib/components/Components').default;
-const templates = require('../lib/templates').default;
-const Form = require('../lib/Form').default;
+const i18Defaults = require('./i18n');
+const AllComponents = require('./components').default;
+const Components = require('./components/Components').default;
+const templates = require('./templates').default;
+const Form = require('./Form').default;
 Components.setComponents(AllComponents);
 
 const fixComponent = (instance, index = 0) => {

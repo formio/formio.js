@@ -1,21 +1,23 @@
 <div id="dataGrid" class="form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid  form-group" ref="component">
-  <label class="control-label" style="">Data Grid</label>
+  <label class="col-form-label ">
+    Data Grid
+  </label>
   <table class="table datagrid-table table-bordered
     ">
-    <tbody>
-      <tr>
+    <tbody ref="datagrid-dataGrid-tbody">
+      <tr ref="datagrid-dataGrid-row">
         <td>
-          <button type="button" class="btn btn-default formio-button-remove-row" ref="datagrid-dataGrid-removeRow">
-            <i class="glyphicons glyphicons-remove-circle"></i>
+          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow">
+            <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="1">
+        <td colspan="2">
           <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataGrid-addRow">
-            <i class="glyphicons glyphicons-plus"></i> Add Another
+            <i class="fa fa-plus"></i> Add Another
           </button>
         </td>
       </tr>
