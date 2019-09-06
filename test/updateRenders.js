@@ -14,7 +14,7 @@ const forms = require('./formtest');
 Components.setComponents(AllComponents);
 
 const dir = './test/renders';
-if (!fs.existsSync(dir)){
+if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
@@ -23,9 +23,9 @@ const fixComponent = (instance, index = 0) => {
   index++;
   if (instance.type === 'form') {
     instance.everyComponent(component => fixComponent(component, index));
-    if (instance.hasOwnProperty('subForm') && instance.subForm) {
-      instance.subForm.id = instance.key;
-    }
+    // if (instance.hasOwnProperty('subForm') && instance.subForm) {
+    //   instance.subForm.id = instance.key;
+    // }
   }
 };
 
@@ -80,13 +80,13 @@ Object.keys(templates).forEach(framework => {
 });
 
 // Build index.js for loading all renders.
-const index = fs.createWriteStream(`${dir}/index.js`);
+// const index = fs.createWriteStream(`${dir}/index.js`);
 
-renders.forEach(key => {
-  index.write(`exports['${key}'] = require('./${key}.html');\n`);
-});
-
-index.end();
+// renders.forEach(key => {
+//   index.write(`exports['${key}'] = require('./${key}.html');\n`);
+// });
+//
+// index.end();
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
