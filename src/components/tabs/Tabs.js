@@ -87,9 +87,7 @@ export default class TabsComponent extends NestedComponent {
       tabLikey: this.tabLikey,
       tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
-      tabComponents: this.tabs.map(tab => {
-        return this.options.flatten ? this.renderComponents(tab) : this.renderTemplate('loading');
-      })
+      tabComponents: this.tabs.map(tab => this.renderComponents(tab))
     }, (this.options.flatten ? 'flat' : 'form')));
   }
 
@@ -104,7 +102,7 @@ export default class TabsComponent extends NestedComponent {
     });
 
     // Set the tab to the first index.
-    this.setTab(0);
+    this.setTab(0, true);
     return superAttach;
   }
 
@@ -117,22 +115,20 @@ export default class TabsComponent extends NestedComponent {
    *
    * @param index
    */
-  setTab(index) {
+  setTab(index, force) {
     if (
       !this.tabs ||
       !this.tabs[index] ||
       !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index]
+      !this.refs[this.tabKey][index] ||
+      (!force && (this.currentTab === index))
     ) {
       return;
     }
 
     // Detach current components, empty and rebuild comps for the new tab.
-    if (this.currentTab !== index) {
-      this.tabs[this.currentTab].forEach(tabComp => tabComp.detach());
-      this.empty(this.refs[this.tabKey][this.currentTab]);
-      this.currentTab = index;
-    }
+    this.tabs[this.currentTab].forEach(tabComp => tabComp.detach());
+    this.currentTab = index;
 
     _.each(this.refs[this.tabKey], (tab) => {
       this.removeClass(tab, 'formio-tab-panel-active');
@@ -156,8 +152,7 @@ export default class TabsComponent extends NestedComponent {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
 
-    // Add content to the new tab.
-    this.setContent(this.refs[this.tabKey][index], this.renderComponents(this.tabs[index]));
+    // Attach components to this tab.
     this.attachComponents(this.refs[this.tabKey][index], this.tabs[index], this.component.components[index].components);
     this.triggerChange();
   }
