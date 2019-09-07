@@ -126,7 +126,6 @@ export default class ButtonComponent extends Field {
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
-        this.redraw();
       }, true);
       this.on('submitDone', () => {
         this.loading = false;
