@@ -11,11 +11,19 @@
   </div>
 </div>
 <div class="ui grid">
-  <div class="eight wide column">
+  <div class="{% if (ctx.preview) { %}eight{% } else { %}sixteen{% } %} wide column">
     <div ref="editForm">
         {{ctx.editForm}}
     </div>
+    {% if (!ctx.preview) { %}
+    <div style="margin-top: 10px;">
+      <button class="ui button primary" style="margin-right: 10px;" ref="saveButton">{{ctx.t('Save')}}</button>
+      <button class="ui button default" style="margin-right: 10px;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
+      <button class="ui button negative" ref="removeButton">{{ctx.t('Remove')}}</button>
+    </div>
+    {% } %}
   </div>
+  {% if (ctx.preview) { %}
   <div class="eight wide column">
     <div class="ui top attached block header">
       {{ctx.t('Preview')}}
@@ -29,4 +37,5 @@
       <button class="ui button negative" ref="removeButton">{{ctx.t('Remove')}}</button>
     </div>
   </div>
+  {% } %}
 </div>

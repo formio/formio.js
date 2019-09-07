@@ -924,19 +924,21 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    this.preview = new Webform(_.omit(this.options, [
-      'hooks',
-      'builder',
-      'events',
-      'attachMode',
-      'calculatedValue'
-    ]));
+    if (!componentClass.builderInfo.hasOwnProperty('preview') || componentClass.builderInfo.preview) {
+      this.preview = new Webform(_.omit(this.options, [
+        'hooks',
+        'builder',
+        'events',
+        'attachMode',
+        'calculatedValue'
+      ]));
+    }
 
     this.componentEdit = this.ce('div');
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: componentClass.builderInfo,
       editForm: this.editForm.render(),
-      preview: this.preview.render(),
+      preview: this.preview ? this.preview.render() : false,
     }));
 
     this.dialog = this.createModal(this.componentEdit);
@@ -1012,7 +1014,9 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.destroy();
-      this.preview.destroy();
+      if (this.preview) {
+        this.preview.destroy();
+      }
       if (isNew && !saved) {
         this.removeComponent(component, parent);
       }
