@@ -235,6 +235,7 @@ import Form from &apos;../../Form&apos;;
 export default class FormComponent extends Component {
   static schema(...extend) {
     return Component.schema({
+      label: &apos;Form&apos;,
       type: &apos;form&apos;,
       key: &apos;form&apos;,
       src: &apos;&apos;,
@@ -257,6 +258,11 @@ export default class FormComponent extends Component {
 
   init() {
     super.init();
+    this.formObj = {
+      display: this.component.display,
+      settings: this.component.settings,
+      components: this.component.components
+    };
     this.subForm = null;
     this.formSrc = &apos;&apos;;
     if (this.component.src) {
@@ -444,7 +450,7 @@ export default class FormComponent extends Component {
 
   redraw() {
     if (this.subForm) {
-      this.subForm.form = this.component;
+      this.subForm.form = this.formObj;
     }
     return super.redraw();
   }
@@ -519,14 +525,17 @@ export default class FormComponent extends Component {
     }
 
     // Determine if we already have a loaded form object.
-    if (this.component &amp;&amp; this.component.components &amp;&amp; Array.isArray(this.component.components) &amp;&amp; this.component.components.length) {
-      this.subFormReady = this.renderSubForm(this.component);
+    if (
+      this.formObj &amp;&amp;
+      this.formObj.components &amp;&amp;
+      Array.isArray(this.formObj.components) &amp;&amp;
+      this.formObj.components.length
+    ) {
+      this.subFormReady = this.renderSubForm(this.formObj);
     }
     else if (this.formSrc) {
       this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) =&gt; {
-        this.component.components = formObj.components;
-        this.component.settings = formObj.settings;
-        this.component.display = formObj.display;
+        this.formObj = formObj;
         return this.renderSubForm(formObj);
       });
     }
