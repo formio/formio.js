@@ -58,6 +58,41 @@ export default [
     input: true
   },
   {
+    type: 'select',
+    input: true,
+    key: 'refreshOn',
+    label: 'Redraw On',
+    weight: 600,
+    tooltip: 'Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.',
+    dataSrc: 'custom',
+    valueProperty: 'value',
+    data: {
+      custom(context) {
+        var values = [];
+        values.push({ label: 'Any Change', value: 'data' });
+        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+        return values;
+      }
+    },
+    conditional: {
+      json: {
+        nin: [
+          { var: 'data.type' },
+          [
+            'select',
+          ],
+        ],
+      },
+    },
+  },
+  {
     weight: 700,
     type: 'checkbox',
     label: 'Clear Value When Hidden',
