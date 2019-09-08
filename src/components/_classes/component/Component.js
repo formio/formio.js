@@ -1199,7 +1199,6 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.clear();
-    this.disabled = this.shouldDisabled;
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -1349,6 +1348,8 @@ export default class Component extends Element {
     // If component definition changed, replace and mark as changed.
     if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
+      // If disabled changed, be sure to distribute the setting.
+      this.disabled = this.shouldDisabled;
       changed = true;
     }
 
