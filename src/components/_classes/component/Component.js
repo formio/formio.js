@@ -355,7 +355,7 @@ export default class Component extends Element {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
-          if (!this.data.hasOwnProperty(this.key)) {
+          if (!this.hasValue()) {
             this.dataValue = this.defaultValue;
           }
           else {
