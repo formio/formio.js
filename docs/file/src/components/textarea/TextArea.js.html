@@ -386,6 +386,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           setTimeout(() =&gt; {
             this.acePlaceholder();
           }, 100);
+          this.editorReadyResolve(ace);
           return ace;
         }).catch(err =&gt; console.warn(err));
         break;

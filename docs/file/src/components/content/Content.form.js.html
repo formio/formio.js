@@ -230,7 +230,7 @@ import ContentEditDisplay from &apos;./editForm/Content.edit.display&apos;;
 import ContentEditLogic from &apos;./editForm/Content.edit.logic&apos;;
 
 export default function(...extend) {
-  return baseEditForm([
+  const editForm = baseEditForm([
     {
       key: &apos;display&apos;,
       components: ContentEditDisplay,
@@ -248,6 +248,20 @@ export default function(...extend) {
       components: ContentEditLogic,
     },
   ], ...extend);
+  // Add content as full width above the settings.
+  editForm.components = [{
+    weight: 0,
+    type: &apos;textarea&apos;,
+    editor: &apos;ckeditor&apos;,
+    label: &apos;Content&apos;,
+    hideLabel: true,
+    input: true,
+    key: &apos;html&apos;,
+    as: &apos;html&apos;,
+    rows: 3,
+    tooltip: &apos;The HTML template for the result data items.&apos;
+  }].concat(editForm.components);
+  return editForm;
 }
 </code></pre>
 
