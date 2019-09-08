@@ -290,12 +290,16 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 4294967295,
-        select: '_id,title,name,components',
-        tags: ['builder']
+        select: '_id,title,name,components'
       }
     };
+    if (this.options && this.options.resourceTag) {
+      query.tags = [this.options.resourceTag];
+    }
+    else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
+      query.tags = ['builder'];
+    }
     const formio = new Formio(Formio.projectUrl);
-
     if (!formio.noProject) {
       formio.loadForms(query)
         .then((resources) => {
@@ -304,13 +308,17 @@ export default class WebformBuilder extends Component {
               title: 'Existing Resource Fields',
               key: 'resource',
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groups.resource = {
               title: 'Existing Resource Fields',
               key: 'resource',
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groupOrder.push('resource');
             this.addExistingResourceFields(resources);
