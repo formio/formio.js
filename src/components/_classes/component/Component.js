@@ -1687,7 +1687,8 @@ export default class Component extends Element {
         if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
           defaultValue = '';
         }
-      } else {
+      }
+      else {
         defaultValue = '';
       }
     }
