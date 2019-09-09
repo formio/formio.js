@@ -642,7 +642,10 @@ export default class FormComponent extends Component {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return NativePromise.resolve(this.dataValue);
+
+      if (!this.shouldSubmit) {
+        return NativePromise.resolve(this.dataValue);
+      }
     }
 
     // This submission has not been submitted yet.

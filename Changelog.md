@@ -4,12 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
- - Loader being oval instead of circle
- - Mutating passed component JSON when calling component constructor
- - ```submissionReady``` being called with empty submission when submission will be set later after ```loadSubmission```
+## 4.0.0
+### Breaking Changes
+ - Refactored the build methods for all components, and broke that apart to be 3 separate methods:
+   - init: Initialize the render component.
+   - render: Renders the component as a string.
+   - attach: Looks up references in the template, and then binds events and attaches component logic to the template.
+ - Component class replaces the BaseCompoennt class.
+ - Added more OOP heirarchy to components including.
+   - Field
+   - Input
+   - MultiValue
+ - Directory structure:
+   - Base classes are now stored in the "components/_classes" folder including
+     - Component - Base component for most components.
+     - Field
+     - Input - All input element derive from this class.
+     - MultiValue - Handles multiple valued components
+     - Nested - Handles all nested components.
+ - Introducing Templates
+   - You can now create your own templates that can override all aspects of the UI/UX for the rendered forms. See https://github.com/formio/formio.js/wiki/Form-Templating
 
 ## 3.22.6
 ### Fixed

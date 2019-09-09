@@ -1908,8 +1908,13 @@ export default class Component extends Element {
     }
 
     if (this.defaultMask) {
-      defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-      if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
+      if (typeof defaultValue === &apos;string&apos;) {
+        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
+        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
+          defaultValue = &apos;&apos;;
+        }
+      }
+      else {
         defaultValue = &apos;&apos;;
       }
     }

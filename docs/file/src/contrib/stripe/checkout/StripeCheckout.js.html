@@ -252,6 +252,13 @@ export default class StripeCheckoutComponent extends ButtonComponent {
     this.component.action = &apos;event&apos;;
   }
 
+  static get builderInfo() {
+    return {
+      group: false,
+      schema: ButtonComponent.schema()
+    };
+  }
+
   getValue() {
     return this.dataValue;
   }

@@ -226,6 +226,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textfield/TextField.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
+import { conformToMask } from &apos;vanilla-text-mask&apos;;
+import * as FormioUtils from &apos;../../utils/utils&apos;;
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -306,14 +308,12 @@ export default class TextFieldComponent extends Input {
         maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
       };
     }
-    const maskName = value.maskName || &apos;&apos;;
     const textValue = value.value || &apos;&apos;;
-    const textInput = this.refs.input[index] ? this.refs.input[index].text : undefined;
-    const maskInput = this.refs.input[index] ? this.refs.input[index].mask : undefined;
+    const textInput = this.refs.mask[index];
+    const maskInput = this.refs.select[index];
     if (textInput &amp;&amp; maskInput) {
-      maskInput.value = maskName;
-      textInput.value = textValue;
-      this.updateMask(textInput, maskName);
+      const mask = FormioUtils.getInputMask(this.activeMask);
+      textInput.value = conformToMask(textValue, mask).conformedValue;
     }
   }
 
