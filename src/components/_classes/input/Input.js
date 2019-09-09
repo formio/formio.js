@@ -225,7 +225,7 @@ export default class Input extends Multivalue {
     }
 
     if (settings.type === 'calendar') {
-      settings.checkDataValidity = () => this.checkValidity(this.dataValue, true);
+      settings.checkDataValidity = () => this.checkValidity(this.data, true);
       this.validators.push('calendar');
     }
 
