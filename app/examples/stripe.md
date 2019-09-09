@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 150
 contrib: true
+disabled: true
 ---
 Stripe securely collect card information from your customers and create a card payment.
 This component provides a card input field created by [Stripe](https://stripe.com/docs/stripe-js) library.

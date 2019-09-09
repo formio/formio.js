@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 100
 template: paper
+disabled: true
 ---
 You can combine these forms with the amazing [Bootswatch](https://bootswatch.com) templating system to create amazing looking forms. Check out this one which uses the Paper design.
 
