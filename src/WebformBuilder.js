@@ -1024,6 +1024,7 @@ export default class WebformBuilder extends Component {
       this.editForm.destroy();
       if (this.preview) {
         this.preview.destroy();
+        this.preview = null;
       }
       if (isNew && !saved) {
         this.removeComponent(component, parent);
