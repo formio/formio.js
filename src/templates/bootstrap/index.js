@@ -28,6 +28,7 @@ import loader from './loader';
 import loading from './loading';
 import map from './map';
 import message from './message';
+import multipleMasksInput from './multipleMasksInput';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
@@ -93,6 +94,7 @@ export default {
   loading,
   map,
   message,
+  multipleMasksInput,
   multiValueRow,
   multiValueTable,
   panel,

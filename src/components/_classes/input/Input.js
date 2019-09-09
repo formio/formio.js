@@ -48,18 +48,6 @@ export default class Input extends Multivalue {
     };
   }
 
-  updateMask(textInput, newMaskName) {
-    const newMask = this.getMaskByName(newMaskName);
-    //destroy previous mask
-    if (textInput.mask) {
-      textInput.mask.destroy();
-    }
-    //set new text field mask
-    this.setInputMask(textInput, newMask);
-    //update text field value after new mask is applied
-    this.updateValue();
-  }
-
   get maskOptions() {
     return _.map(this.component.inputMasks, mask => {
       return {
@@ -84,6 +72,14 @@ export default class Input extends Multivalue {
     return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
+  getMaskOptions() {
+    return this.component.inputMasks
+      .map(mask => ({
+        label: mask.label,
+        value: mask.label,
+      }));
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
     const wordCount = _.words(this.dataValue).length;
@@ -94,6 +90,9 @@ export default class Input extends Multivalue {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.attr.value = this.getValueAsString(value);
+    if (this.isMultipleMasksField) {
+      info.attr.class += ' formio-multiple-mask-input';
+    }
     // This should be in the calendar widget but it doesn't have access to renderTemplate.
     if (this.component.widget && this.component.widget.type === 'calendar') {
       this.component.suffix = this.renderTemplate('icon', {
@@ -103,11 +102,19 @@ export default class Input extends Multivalue {
         content: ''
       });
     }
-    return this.renderTemplate('input', {
-      input: info,
-      value,
-      index
-    });
+
+    return this.isMultipleMasksField
+      ? this.renderTemplate('multipleMasksInput', {
+        input: info,
+        value,
+        index,
+        selectOptions: this.getMaskOptions() || [],
+      })
+      : this.renderTemplate('input', {
+        input: info,
+        value,
+        index
+      });
   }
 
   setCounter(type, element, count, max) {
