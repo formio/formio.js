@@ -375,14 +375,18 @@ export default class FormComponent extends BaseComponent {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return NativePromise.resolve(this.dataValue);
+
+      if (!this.shouldSubmit) {
+        return NativePromise.resolve(this.dataValue);
+      }
     }
+
     return this.submitSubForm(false)
       .then((data) => {
         if (data._id) {
           this.dataValue = {
             _id: data._id,
-            form: data.form
+            form: data.form,
           };
         }
         return this.dataValue;
