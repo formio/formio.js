@@ -657,7 +657,8 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       this.choices.setChoices([{
         value: '',
-        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`
+        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
+        disabled: true,
       }], 'value', 'label', true);
     }
     else {
@@ -1136,7 +1137,7 @@ export default class SelectComponent extends Field {
   }
 
   /**
-   * Ouput this select dropdown as a string value.
+   * Output this select dropdown as a string value.
    * @return {*}
    */
   asString(value) {
