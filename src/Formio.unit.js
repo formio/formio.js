@@ -3,7 +3,7 @@ import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import Chance from 'chance';
-import fetchMock from 'fetch-mock/es5/client';
+import fetchMock from 'fetch-mock/es5/server';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
