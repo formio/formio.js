@@ -1,8 +1,9 @@
-<div id="dataMap" class="form-group has-feedback formio-component formio-component-datamap formio-component-dataMap formio-component-multiple  form-group" ref="component">
-  <label class="col-form-label ">
+<div id="dataMap" class="field form-group has-feedback formio-component formio-component-datamap formio-component-dataMap formio-component-multiple " ref="component">
+  <label class="">
     Data Map
   </label>
-  <table class="table datagrid-table table-bordered
+  <table class="ui table datagrid-table
+    padded
     ">
     <thead>
       <tr>
@@ -21,12 +22,12 @@
     <tfoot>
       <tr>
         <td colspan="4">
-          <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataMap-addRow">
+          <button class="ui button primary" ref="datagrid-dataMap-addRow">
             <i class="fa fa-plus"></i> Add Another
           </button>
         </td>
       </tr>
     </tfoot>
   </table>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

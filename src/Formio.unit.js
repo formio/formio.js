@@ -1685,7 +1685,7 @@ describe('Formio.js Tests', () => {
         test() {
           return Formio.logout()
             .then(() => {
-              assert.equal(Formio.getToken(), '', 'Logged out');
+              assert.equal(Formio.getToken(), null, 'Logged out');
             });
         },
         mock() {

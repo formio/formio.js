@@ -1,7 +1,7 @@
 <div id="" class="formio-component formio-component-form  formio-component-label-hidden form-group" ref="component">
   <div class="formio-form" ref="webform" novalidate>
     <div id="email" class="form-group has-feedback formio-component formio-component-email formio-component-email  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Email
       </label>
       <div ref="element">
@@ -10,7 +10,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="phoneNumber" class="form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumber  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Phone Number
       </label>
       <div ref="element">
@@ -19,7 +19,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="address" class="form-group has-feedback formio-component formio-component-address formio-component-address  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Address
       </label>
       <div ref="element">
@@ -28,27 +28,24 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Date Time
       </label>
       <div ref="element">
         <div class="input-group">
           <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
-          <div class="input-group-append" ref="suffix">
-            <span class="input-group-text">
-    <i ref="icon" class="fa fa-calendar" style=""></i>
-  </span>
+          <div class="input-group-addon"><i ref="icon" class="fa fa-calendar" style=""></i>
           </div>
         </div>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="day" class="form-group has-feedback formio-component formio-component-day formio-component-day  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Day
       </label>
       <div class="row">
-        <div class="col col-xs-4">
+        <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
           <div><select ref="month" class="form-control" name="month" lang="en">
               <option value="">
@@ -93,24 +90,24 @@
             <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
           </div>
         </div>
-        <div class="col col-xs-3">
+        <div class="form-group col col-xs-3">
           <label for="day-day" class="">Day</label>
           <div>
             <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31"></input>
           </div>
         </div>
-        <div class="col col-xs-5">
+        <div class="form-group col col-xs-5">
           <label for="day-year" class="">Year</label>
           <div>
             <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030"></input>
           </div>
         </div>
       </div>
-      <input name="ctx.data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+      <input name="data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="time" class="form-group has-feedback formio-component formio-component-time formio-component-time  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Time
       </label>
       <div ref="element">
@@ -119,7 +116,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="currency" class="form-group has-feedback formio-component formio-component-currency formio-component-currency  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Currency
       </label>
       <div ref="element">
@@ -128,7 +125,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="resource" class="form-group has-feedback formio-component formio-component-resource formio-component-resource  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Resource
       </label>
       <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en"></select>
@@ -136,7 +133,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="resourceAdd" class="form-group has-feedback formio-component formio-component-resource formio-component-resourceAdd formio-component-multiple  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Resource Add
       </label>
       <table class="table table-bordered">
@@ -163,7 +160,7 @@
       <div ref="element">
         <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No"></input>
         <div class="signature-pad-body" style="width: 100%;height: 150px;padding:0;margin:0;" tabindex="0" ref="padBody">
-          <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
+          <a class="btn btn-sm btn-default signature-pad-refresh" ref="refresh">
             <i class="fa fa-refresh"></i>
           </a>
           <canvas class="signature-pad-canvas" height="150px" ref="canvas"></canvas>
@@ -179,7 +176,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="tags" class="form-group has-feedback formio-component formio-component-tags formio-component-tags  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Tags
       </label>
       <div ref="element">
@@ -188,7 +185,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="survey" class="form-group has-feedback formio-component formio-component-survey formio-component-survey  form-group" ref="component">
-      <label class="col-form-label ">
+      <label class="control-label ">
         Survey
       </label>
       <table class="table table-striped table-bordered">

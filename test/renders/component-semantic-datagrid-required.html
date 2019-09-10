@@ -1,14 +1,15 @@
-<div id="dataGrid" class="form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid  required form-group" ref="component">
-  <label class="col-form-label  field-required">
+<div id="dataGrid" class="field form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid  required" ref="component">
+  <label class=" field-required">
     Data Grid
   </label>
-  <table class="table datagrid-table table-bordered
+  <table class="ui table datagrid-table
+    padded
     ">
     <tbody ref="datagrid-dataGrid-tbody">
       <tr ref="datagrid-dataGrid-row">
         <td>
-          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow">
-            <i class="fa fa-times-circle-o"></i>
+          <button type="button" class="btn-xss ui icon button secondary formio-datagrid-remove" ref="datagrid-dataGrid-removeRow">
+            <i class="fa fa-remove"></i>
           </button>
         </td>
       </tr>
@@ -16,12 +17,12 @@
     <tfoot>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataGrid-addRow">
+          <button class="ui button primary" ref="datagrid-dataGrid-addRow">
             <i class="fa fa-plus"></i> Add Another
           </button>
         </td>
       </tr>
     </tfoot>
   </table>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

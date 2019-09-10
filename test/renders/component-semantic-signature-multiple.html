@@ -1,11 +1,13 @@
-<div id="signature" class="form-group has-feedback formio-component formio-component-signature formio-component-signature formio-component-multiple  formio-component-label-hidden signature-pad form-group" ref="component">
-  <table class="table table-bordered">
+<div id="signature" class="field form-group has-feedback formio-component formio-component-signature formio-component-signature formio-component-multiple  formio-component-label-hidden signature-pad" ref="component">
+  <table class="ui celled table">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No"></input>
+          <div class="ui input fluid ">
+            <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No"></input>
+          </div>
           <div class="signature-pad-body" style="width: 100%;height: 150px;padding:0;margin:0;" tabindex="0" ref="padBody">
-            <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
+            <a class="ui basic button mini icon signature-pad-refresh" ref="refresh">
               <i class="fa fa-refresh"></i>
             </a>
             <canvas class="signature-pad-canvas" height="150px" ref="canvas"></canvas>
@@ -16,17 +18,17 @@
           </div>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow">
-            <i class="fa fa-times-circle-o"></i>
+          <button type="button" class="ui icon button secondary" ref="removeRow">
+            <i class="trash icon"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="ui button primary" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>
