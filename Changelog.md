@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
      - Nested - Handles all nested components.
  - Introducing Templates
    - You can now create your own templates that can override all aspects of the UI/UX for the rendered forms. See https://github.com/formio/formio.js/wiki/Form-Templating
+ - updateValue() - This method now passes the "value" of the component to the first argument, instead of the second. 
+    3.x:  updateValue(flags, value)
+    4.x:  updateValue(value, flags)
 
 ## 3.22.6
 ### Fixed
