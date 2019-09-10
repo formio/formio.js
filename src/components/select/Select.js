@@ -320,7 +320,9 @@ export default class SelectComponent extends Field {
 
     // If a value is provided, then select it.
     if (this.dataValue) {
-      this.setValue(this.dataValue, true);
+      this.setValue(this.dataValue, {
+        noUpdateEvent: true
+      });
     }
     else {
       // If a default value is provided then select it.
