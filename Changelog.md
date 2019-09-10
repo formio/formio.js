@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.1
+### Fixed
+ - Components would incorrectly clear any values that are visible because of another value when loading a submission.
+
 ## 4.0.0
 ### Breaking Changes
  - Refactored the build methods for all components, and broke that apart to be 3 separate methods:
