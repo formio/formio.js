@@ -42,7 +42,7 @@ describe('Rendering Tests', () => {
       describe('Form Renders', () => {
         Object.keys(forms).forEach(form => {
           it(`Form renders ${form}`, () => {
-            return new Form(forms[form]).ready.then(instance => {
+            return new Form(forms[form], { template: framework }).ready.then(instance => {
               fixComponent(instance);
               console.log(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
               assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
@@ -54,9 +54,8 @@ describe('Rendering Tests', () => {
       Object.keys(AllComponents).forEach(component => {
         describe(`Component ${component}`, () => {
           it(`Renders ${component} for ${framework}`, (done) => {
-            const instance = new AllComponents[component]();
+            const instance = new AllComponents[component]({}, { template: framework });
             fixComponent(instance);
-            console.log(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
             assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
             done();
           });
@@ -65,6 +64,8 @@ describe('Rendering Tests', () => {
               validate: {
                 required: true
               }
+            }, {
+              template: framework,
             });
             fixComponent(instance);
             assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
@@ -73,6 +74,8 @@ describe('Rendering Tests', () => {
           it(`Renders ${component} for ${framework} as multiple`, (done) => {
             const instance = new AllComponents[component]({
               multiple: true
+            }, {
+              template: framework,
             });
             fixComponent(instance);
             assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));

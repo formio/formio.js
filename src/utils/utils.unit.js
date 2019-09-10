@@ -3,8 +3,8 @@ import { expect, assert } from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from '.';
-const components = fs.readFileSync('src/utils/fixtures/components.json').toJSON();
-const submission1 = fs.readFileSync('src/utils/fixtures/submission1.json').toJSON();
+const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.json'));
+const submission1 = JSON.parse(fs.readFileSync('src/utils/fixtures/submission1.json'));
 
 describe('Util Tests', () => {
   describe('eachComponent', () => {
