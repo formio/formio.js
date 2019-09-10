@@ -231,11 +231,6 @@ export default class Input extends Multivalue {
       return null;
     }
 
-    if (settings.type === 'calendar') {
-      settings.checkDataValidity = () => this.checkValidity(this.data, true);
-      this.validators.push('calendar');
-    }
-
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(widget.getValue(), {
