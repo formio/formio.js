@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import Input from '../_classes/input/Input';
+import { conformToMask } from 'vanilla-text-mask';
+import * as FormioUtils from '../../utils/utils';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -80,14 +82,12 @@ export default class TextFieldComponent extends Input {
         maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
       };
     }
-    const maskName = value.maskName || '';
     const textValue = value.value || '';
-    const textInput = this.refs.input[index] ? this.refs.input[index].text : undefined;
-    const maskInput = this.refs.input[index] ? this.refs.input[index].mask : undefined;
+    const textInput = this.refs.mask[index];
+    const maskInput = this.refs.select[index];
     if (textInput && maskInput) {
-      maskInput.value = maskName;
-      textInput.value = textValue;
-      this.updateMask(textInput, maskName);
+      const mask = FormioUtils.getInputMask(this.activeMask);
+      textInput.value = conformToMask(textValue, mask).conformedValue;
     }
   }
 

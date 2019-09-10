@@ -13,6 +13,7 @@ export default [
     label: 'Form',
     key: 'form',
     weight: 10,
+    lazyLoad: false,
     tooltip: 'The form to load within this form component.'
   },
   {

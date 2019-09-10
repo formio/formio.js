@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -516,12 +516,16 @@ export default class WebformBuilder extends Component {
       params: {
         type: &apos;resource&apos;,
         limit: 4294967295,
-        select: &apos;_id,title,name,components&apos;,
-        tags: [&apos;builder&apos;]
+        select: &apos;_id,title,name,components&apos;
       }
     };
+    if (this.options &amp;&amp; this.options.resourceTag) {
+      query.tags = [this.options.resourceTag];
+    }
+    else if (!this.options || !this.options.hasOwnProperty(&apos;resourceTag&apos;)) {
+      query.tags = [&apos;builder&apos;];
+    }
     const formio = new Formio(Formio.projectUrl);
-
     if (!formio.noProject) {
       formio.loadForms(query)
         .then((resources) =&gt; {
@@ -530,13 +534,17 @@ export default class WebformBuilder extends Component {
               title: &apos;Existing Resource Fields&apos;,
               key: &apos;resource&apos;,
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groups.resource = {
               title: &apos;Existing Resource Fields&apos;,
               key: &apos;resource&apos;,
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groupOrder.push(&apos;resource&apos;);
             this.addExistingResourceFields(resources);
@@ -1150,19 +1158,21 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    this.preview = new Webform(_.omit(this.options, [
-      &apos;hooks&apos;,
-      &apos;builder&apos;,
-      &apos;events&apos;,
-      &apos;attachMode&apos;,
-      &apos;calculatedValue&apos;
-    ]));
+    if (!componentClass.builderInfo.hasOwnProperty(&apos;preview&apos;) || componentClass.builderInfo.preview) {
+      this.preview = new Webform(_.omit(this.options, [
+        &apos;hooks&apos;,
+        &apos;builder&apos;,
+        &apos;events&apos;,
+        &apos;attachMode&apos;,
+        &apos;calculatedValue&apos;
+      ]));
+    }
 
     this.componentEdit = this.ce(&apos;div&apos;);
     this.setContent(this.componentEdit, this.renderTemplate(&apos;builderEditForm&apos;, {
       componentInfo: componentClass.builderInfo,
       editForm: this.editForm.render(),
-      preview: this.preview.render(),
+      preview: this.preview ? this.preview.render() : false,
     }));
 
     this.dialog = this.createModal(this.componentEdit);
@@ -1228,6 +1238,8 @@ export default class WebformBuilder extends Component {
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;saveButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
       if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        this.editForm.setPristine(false);
+        this.editForm.showErrors();
         return false;
       }
       saved = true;
@@ -1236,7 +1248,10 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.dialog, &apos;close&apos;, () =&gt; {
       this.editForm.destroy();
-      this.preview.destroy();
+      if (this.preview) {
+        this.preview.destroy();
+        this.preview = null;
+      }
       if (isNew &amp;&amp; !saved) {
         this.removeComponent(component, parent);
       }

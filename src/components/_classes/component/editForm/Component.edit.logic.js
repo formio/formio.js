@@ -251,6 +251,16 @@ export default [
                       type: 'string'
                     },
                     {
+                      label: 'Prefix',
+                      value: 'prefix',
+                      type: 'string'
+                    },
+                    {
+                      label: 'Suffix',
+                      value: 'suffix',
+                      type: 'string'
+                    },
+                    {
                       label: 'Tooltip',
                       value: 'tooltip',
                       type: 'string'
@@ -263,6 +273,11 @@ export default [
                     {
                       label: 'Placeholder',
                       value: 'placeholder',
+                      type: 'string'
+                    },
+                    {
+                      label: 'Input Mask',
+                      value: 'inputMask',
                       type: 'string'
                     },
                     {

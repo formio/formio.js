@@ -290,12 +290,16 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 4294967295,
-        select: '_id,title,name,components',
-        tags: ['builder']
+        select: '_id,title,name,components'
       }
     };
+    if (this.options && this.options.resourceTag) {
+      query.tags = [this.options.resourceTag];
+    }
+    else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
+      query.tags = ['builder'];
+    }
     const formio = new Formio(Formio.projectUrl);
-
     if (!formio.noProject) {
       formio.loadForms(query)
         .then((resources) => {
@@ -304,13 +308,17 @@ export default class WebformBuilder extends Component {
               title: 'Existing Resource Fields',
               key: 'resource',
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groups.resource = {
               title: 'Existing Resource Fields',
               key: 'resource',
               weight: 50,
-              subgroups: []
+              subgroups: [],
+              components: [],
+              componentOrder: []
             };
             this.groupOrder.push('resource');
             this.addExistingResourceFields(resources);
@@ -924,19 +932,21 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    this.preview = new Webform(_.omit(this.options, [
-      'hooks',
-      'builder',
-      'events',
-      'attachMode',
-      'calculatedValue'
-    ]));
+    if (!componentClass.builderInfo.hasOwnProperty('preview') || componentClass.builderInfo.preview) {
+      this.preview = new Webform(_.omit(this.options, [
+        'hooks',
+        'builder',
+        'events',
+        'attachMode',
+        'calculatedValue'
+      ]));
+    }
 
     this.componentEdit = this.ce('div');
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: componentClass.builderInfo,
       editForm: this.editForm.render(),
-      preview: this.preview.render(),
+      preview: this.preview ? this.preview.render() : false,
     }));
 
     this.dialog = this.createModal(this.componentEdit);
@@ -1002,6 +1012,8 @@ export default class WebformBuilder extends Component {
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
       if (!this.editForm.checkValidity(this.editForm.data, true)) {
+        this.editForm.setPristine(false);
+        this.editForm.showErrors();
         return false;
       }
       saved = true;
@@ -1010,7 +1022,10 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.destroy();
-      this.preview.destroy();
+      if (this.preview) {
+        this.preview.destroy();
+        this.preview = null;
+      }
       if (isNew && !saved) {
         this.removeComponent(component, parent);
       }

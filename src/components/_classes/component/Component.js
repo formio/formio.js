@@ -355,7 +355,7 @@ export default class Component extends Element {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
-          if (!this.data.hasOwnProperty(this.key)) {
+          if (!this.hasValue()) {
             this.dataValue = this.defaultValue;
           }
           else {
@@ -1199,7 +1199,6 @@ export default class Component extends Element {
       return NativePromise.resolve();
     }
     this.clear();
-    this.disabled = this.shouldDisabled;
     // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
@@ -1349,6 +1348,8 @@ export default class Component extends Element {
     // If component definition changed, replace and mark as changed.
     if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
+      // If disabled changed, be sure to distribute the setting.
+      this.disabled = this.shouldDisabled;
       changed = true;
     }
 
@@ -1423,7 +1424,7 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+    if (!this.rootPristine && this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1603,6 +1604,10 @@ export default class Component extends Element {
     return this.root ? this.root.data : this.data;
   }
 
+  get rootPristine() {
+    return _.get(this, 'root.pristine', false);
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}
@@ -1610,7 +1615,7 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return this.emptyValue;
     }
@@ -1628,7 +1633,7 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
@@ -1681,8 +1686,13 @@ export default class Component extends Element {
     }
 
     if (this.defaultMask) {
-      defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
-      if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
+      if (typeof defaultValue === 'string') {
+        defaultValue = conformToMask(defaultValue, this.defaultMask).conformedValue;
+        if (!FormioUtils.matchInputMask(defaultValue, this.defaultMask)) {
+          defaultValue = '';
+        }
+      }
+      else {
         defaultValue = '';
       }
     }
@@ -1884,7 +1894,7 @@ export default class Component extends Element {
   calculateValue(data, flags) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide)) {
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
       return false;
     }
 

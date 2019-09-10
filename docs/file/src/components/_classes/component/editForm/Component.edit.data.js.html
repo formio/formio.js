@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -282,6 +282,41 @@ export default [
     tooltip: &apos;Encrypt this field on the server. This is two way encryption which is not suitable for passwords.&apos;,
     key: &apos;encrypted&apos;,
     input: true
+  },
+  {
+    type: &apos;select&apos;,
+    input: true,
+    key: &apos;refreshOn&apos;,
+    label: &apos;Redraw On&apos;,
+    weight: 600,
+    tooltip: &apos;Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.&apos;,
+    dataSrc: &apos;custom&apos;,
+    valueProperty: &apos;value&apos;,
+    data: {
+      custom(context) {
+        var values = [];
+        values.push({ label: &apos;Any Change&apos;, value: &apos;data&apos; });
+        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
+          if (component.key !== context.data.key) {
+            values.push({
+              label: component.label || component.key,
+              value: path
+            });
+          }
+        });
+        return values;
+      }
+    },
+    conditional: {
+      json: {
+        nin: [
+          { var: &apos;data.type&apos; },
+          [
+            &apos;select&apos;,
+          ],
+        ],
+      },
+    },
   },
   {
     weight: 700,

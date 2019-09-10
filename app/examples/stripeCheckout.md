@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 150
 contrib: true
+disabled: true
 ---
 Stripe securely collect card information from your customers and create a card payment.
 This component is based on the ButtonComponent and add an overlay to call [Stripe Checkout](https://stripe.com/docs/checkout) library.

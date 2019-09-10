@@ -58,7 +58,13 @@ export default class Multivalue extends Field {
 
   attach(dom) {
     const superAttach = super.attach(dom);
-    this.loadRefs(dom, { addButton: 'multiple', input: 'multiple', removeRow: 'multiple' });
+    this.loadRefs(dom, {
+      addButton: 'multiple',
+      input: 'multiple',
+      removeRow: 'multiple',
+      mask: 'multiple',
+      select: 'multiple',
+    });
 
     this.refs.input.forEach(this.attachElement.bind(this));
     if (!this.component.multiple) {
@@ -115,7 +121,44 @@ export default class Multivalue extends Field {
       }, 1);
     });
 
-    this.setInputMask(this.refs.input[index]);
+    if (!this.tryAttachMultipleMasksInput()) {
+      this.setInputMask(this.refs.input[index]);
+    }
+  }
+
+  onSelectMaskHandler(event) {
+    const mask = this.component.inputMasks
+      .find(inputMask => inputMask.label === event.target.value);
+
+    if (mask) {
+      this.updateMask(this.refs.mask[0], mask.mask);
+    }
+  }
+
+  tryAttachMultipleMasksInput() {
+    if (!(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)) {
+      return false;
+    }
+
+    this.refs.select[0].onchange = this.onSelectMaskHandler.bind(this);
+    const input = this.refs.mask[0];
+    const mask = this.activeMask || this.component.inputMasks[0].mask;
+    this.activeMask = mask;
+    this.setInputMask(input, mask);
+
+    return true;
+  }
+
+  updateMask(input, mask) {
+    this.activeMask = mask;
+    //destroy previous mask
+    if (input.mask) {
+      input.mask.destroy();
+    }
+    //set new text field mask
+    this.setInputMask(input, mask, !this.component.placeholder);
+    //update text field value after new mask is applied
+    this.updateValue();
   }
 
   /**

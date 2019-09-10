@@ -36,17 +36,6 @@ export default [
     ignore: true
   },
   {
-    weight: 10,
-    type: 'textarea',
-    editor: 'ckeditor',
-    label: 'Content',
-    input: true,
-    key: 'html',
-    as: 'html',
-    rows: 3,
-    tooltip: 'The HTML template for the result data items.'
-  },
-  {
     weight: 700,
     type: 'checkbox',
     label: 'Refresh On Change',
