@@ -86,9 +86,14 @@ export default class Component extends Element {
       clearOnHide: true,
 
       /**
-       * This will refresh this component when this field changes.
+       * This will refresh this component options when this field changes.
        */
       refreshOn: '',
+
+      /**
+       * This will redraw the component when this field changes.
+       */
+      redrawOn: '',
 
       /**
        * If this component should be included as a column within a submission table.
@@ -928,15 +933,16 @@ export default class Component extends Element {
   }
 
   attachRefreshOn() {
+    const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      if (Array.isArray(this.component.refreshOn)) {
-        this.component.refreshOn.forEach(refreshData => {
+    if (refreshOn) {
+      if (Array.isArray(refreshOn)) {
+        refreshOn.forEach(refreshData => {
           this.attachRefreshEvent(refreshData);
         });
       }
       else {
-        this.attachRefreshEvent(this.component.refreshOn);
+        this.attachRefreshEvent(refreshOn);
       }
     }
   }
