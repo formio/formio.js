@@ -465,7 +465,6 @@ export default class NestedComponent extends Field {
    */
   checkData(data, flags, source) {
     flags = flags || {};
-    let valid = true;
     if (flags.noCheck) {
       return;
     }
@@ -477,16 +476,10 @@ export default class NestedComponent extends Field {
 
     // Iterate through all components and check conditions, and calculate values.
     this.getComponents().forEach((comp) => {
-      if (comp.checkData) {
-        valid &= comp.checkData(data, flags);
-      }
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
       comp.checkConditions(data);
-      if (!flags.noValidate) {
-        valid &= comp.checkValidity(data);
-      }
     });
 
     // Trigger the change if the values changed.
@@ -495,7 +488,7 @@ export default class NestedComponent extends Field {
     }
 
     // Return if the value is valid.
-    return !!valid;
+    return flags.noValidate ? true : this.checkValidity(data);
   }
 
   checkConditions(data) {
