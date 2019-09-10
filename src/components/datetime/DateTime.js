@@ -126,11 +126,4 @@ export default class DateTimeComponent extends Input {
   createWrapper() {
     return false;
   }
-
-  checkValidity(data, dirty, rowData) {
-    if (this._widget && this._widget.enteredDate) {
-      dirty = true;
-    }
-    return super.checkValidity(data, dirty, rowData);
-  }
 }
