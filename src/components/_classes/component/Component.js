@@ -1424,7 +1424,7 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+    if (!this.rootPristine && this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1604,6 +1604,10 @@ export default class Component extends Element {
     return this.root ? this.root.data : this.data;
   }
 
+  get rootPristine() {
+    return _.get(this, 'root.pristine', false);
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}
@@ -1611,7 +1615,7 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return this.emptyValue;
     }
@@ -1629,7 +1633,7 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
@@ -1890,7 +1894,7 @@ export default class Component extends Element {
   calculateValue(data, flags) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide)) {
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
       return false;
     }
 
