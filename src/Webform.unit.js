@@ -45,6 +45,7 @@ describe('Formio Form Renderer tests', () => {
   it('Should translate a form from options', done => {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
       language: 'es',
       i18n: {
         es: {
@@ -74,6 +75,7 @@ describe('Formio Form Renderer tests', () => {
   it('Should translate a form after instantiate', done => {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
       i18n: {
         es: {
           'Default Label': 'Spanish Label'
@@ -103,6 +105,7 @@ describe('Formio Form Renderer tests', () => {
   it('Should add a translation after instantiate', done => {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
       i18n: {
         language: 'es',
         es: {
@@ -135,7 +138,9 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should switch a translation after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new Webform(formElement);
+    const translateForm = new Webform(formElement, {
+      template: 'bootstrap3',
+    });
     translateForm.setForm({
       title: 'Translate Form',
       components: [
@@ -158,7 +163,9 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should keep translation after redraw', done => {
     const formElement = document.createElement('div');
-    const form = new Webform(formElement);
+    const form = new Webform(formElement, {
+      template: 'bootstrap3',
+    });
     const schema = {
       title: 'Translate Form',
       components: [
@@ -181,10 +188,10 @@ describe('Formio Form Renderer tests', () => {
         }, done)
         .then(() => {
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
           form.redraw();
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML).to.equal('Russian Label');
+          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
           done();
         }, done)
         .catch(done);
@@ -197,7 +204,9 @@ describe('Formio Form Renderer tests', () => {
   it('Should fire languageChanged event when language is set', done => {
     let isLanguageChangedEventFired = false;
     const formElement = document.createElement('div');
-    const form = new Webform(formElement);
+    const form = new Webform(formElement, {
+      template: 'bootstrap3',
+    });
     const schema = {
       title: 'Translate Form',
       components: [
@@ -326,7 +335,7 @@ describe('Formio Form Renderer tests', () => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
         const formElement = document.createElement('div');
-        const form = new Webform(formElement, { language: 'en' });
+        const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch(done);

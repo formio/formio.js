@@ -4,6 +4,8 @@ import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from '.';
 const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.json'));
+const components2 = JSON.parse(fs.readFileSync('src/utils/fixtures/components2.json'));
+const components3 = JSON.parse(fs.readFileSync('src/utils/fixtures/components3.json'));
 const submission1 = JSON.parse(fs.readFileSync('src/utils/fixtures/submission1.json'));
 
 describe('Util Tests', () => {
@@ -58,7 +60,6 @@ describe('Util Tests', () => {
     });
 
     it('Should be able to find components with special properties.', () => {
-      const components3 = require('./fixtures/components3.json');
       const comps = utils.findComponents(components3, { 'properties.path': 'a' });
       expect(comps.length).to.equal(4);
       expect(comps[0].key).to.equal('b');
@@ -68,7 +69,6 @@ describe('Util Tests', () => {
     });
 
     it('Should be able to generate paths based on component types', () => {
-      const components = require('./fixtures/components2.json');
       const paths = [
         'a',
         'b',
@@ -91,7 +91,7 @@ describe('Util Tests', () => {
         'submit'
       ];
       const testPaths = [];
-      utils.eachComponent(components, (component, path) => {
+      utils.eachComponent(components2, (component, path) => {
         testPaths.push(path);
       }, true);
       expect(paths).to.deep.equal(testPaths);
@@ -118,7 +118,7 @@ describe('Util Tests', () => {
         'submit'
       ];
       const testPaths = [];
-      utils.eachComponent(require('./fixtures/components2.json'), (component, path) => {
+      utils.eachComponent(components2, (component, path) => {
         testPaths.push(path);
       });
       expect(paths).to.deep.equal(testPaths);
