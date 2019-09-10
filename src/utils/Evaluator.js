@@ -1,8 +1,27 @@
 import _ from 'lodash';
 import stringHash from 'string-hash';
+
+const cache = {};
+
+const getTemplate = (template, hash, templateSettings) => {
+  if (typeof template === 'function') {
+    return template;
+  }
+
+  hash = hash || stringHash(template);
+  try {
+    // Ensure we handle copied templates from the ejs files.
+    template = template.replace(/ctx\./g, '');
+
+    return (cache[hash] = _.template(template, templateSettings));
+  }
+  catch (err) {
+    console.warn('Error while processing template', err, template);
+  }
+};
+
 const Evaluator = {
   noeval: false,
-  cache: {},
   templateSettings: {
     evaluate: /\{%([\s\S]+?)%\}/g,
     interpolate: /\{\{([\s\S]+?)\}\}/g,
@@ -17,20 +36,6 @@ const Evaluator = {
       return new Function(...params, func);
     }
   },
-  template(template, hash) {
-    if (typeof template === 'function') {
-      return template;
-    }
-    hash = hash || stringHash(template);
-    try {
-      // Ensure we handle copied templates from the ejs files.
-      template = template.replace(/ctx\./g, '');
-      return (Evaluator.cache[hash] = _.template(template, Evaluator.templateSettings));
-    }
-    catch (err) {
-      console.warn('Error while processing template', err, template);
-    }
-  },
   interpolate(rawTemplate, data) {
     if (typeof rawTemplate === 'function') {
       try {
@@ -42,17 +47,19 @@ const Evaluator = {
       }
     }
 
+    rawTemplate = String(rawTemplate);
+
     const hash = _.isNumber(rawTemplate) ? rawTemplate : stringHash(rawTemplate);
     let template;
-    if (Evaluator.cache[hash]) {
-      template = Evaluator.cache[hash];
+    if (cache[hash]) {
+      template = cache[hash];
     }
     else if (Evaluator.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
       return rawTemplate.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => _.get(data, $2));
     }
     else {
-      template = Evaluator.template(rawTemplate, hash);
+      template = getTemplate(rawTemplate, hash, Evaluator.templateSettings);
     }
     if (typeof template === 'function') {
       try {
