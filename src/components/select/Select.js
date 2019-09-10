@@ -663,7 +663,7 @@ export default class SelectComponent extends Field {
         disabled: true,
       }], 'value', 'label', true);
     }
-    else {
+    else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
     }
     this.triggerUpdate();
