@@ -498,11 +498,6 @@ export default class NestedComponent extends Field {
     return !!valid;
   }
 
-  checkConditions(data) {
-    this.getComponents().forEach(comp => comp.checkConditions(data));
-    return super.checkConditions(data);
-  }
-
   clearOnHide(show) {
     super.clearOnHide(show);
     if (this.component.clearOnHide && this.hasValue()) {
