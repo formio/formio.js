@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.2
+### Fixed
+ - Fixed issue with appearance of unnecessary loading option
+ - Disable load icon item in select component.
+ - Infinite refresh loop by not triggering an update when setting a provided value on Select components.
+ - Issue where the Redraw On option in the form builder was throwing some errors.
+
+### Changed
+ - The refreshOn property to be called "redrawOn", unless it is a Select component. This will maintain reverse compatability for now with and will gracefully deviate in the future.
+
 ## 4.0.1
 ### Fixed
  - Components would incorrectly clear any values that are visible because of another value when loading a submission.

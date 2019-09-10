@@ -312,9 +312,14 @@ export default class Component extends Element {
       clearOnHide: true,
 
       /**
-       * This will refresh this component when this field changes.
+       * This will refresh this component options when this field changes.
        */
       refreshOn: &apos;&apos;,
+
+      /**
+       * This will redraw the component when this field changes.
+       */
+      redrawOn: &apos;&apos;,
 
       /**
        * If this component should be included as a column within a submission table.
@@ -1154,15 +1159,16 @@ export default class Component extends Element {
   }
 
   attachRefreshOn() {
+    const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      if (Array.isArray(this.component.refreshOn)) {
-        this.component.refreshOn.forEach(refreshData =&gt; {
+    if (refreshOn) {
+      if (Array.isArray(refreshOn)) {
+        refreshOn.forEach(refreshData =&gt; {
           this.attachRefreshEvent(refreshData);
         });
       }
       else {
-        this.attachRefreshEvent(this.component.refreshOn);
+        this.attachRefreshEvent(refreshOn);
       }
     }
   }
@@ -1650,7 +1656,7 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (this.component.clearOnHide !== false &amp;&amp; !this.options.readOnly &amp;&amp; !this.options.showHiddenFields) {
+    if (!this.rootPristine &amp;&amp; this.component.clearOnHide !== false &amp;&amp; !this.options.readOnly &amp;&amp; !this.options.showHiddenFields) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1830,6 +1836,10 @@ export default class Component extends Element {
     return this.root ? this.root.data : this.data;
   }
 
+  get rootPristine() {
+    return _.get(this, &apos;root.pristine&apos;, false);
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}
@@ -1837,7 +1847,7 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible &amp;&amp; this.component.clearOnHide)
+      (!this.visible &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
     ) {
       return this.emptyValue;
     }
@@ -1855,7 +1865,7 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      (!this.visible &amp;&amp; this.component.clearOnHide)
+      (!this.visible &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
     ) {
       return value;
     }
@@ -2116,7 +2126,7 @@ export default class Component extends Element {
   calculateValue(data, flags) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
-    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide)) {
+    if (!this.component.calculateValue || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)) {
       return false;
     }
 
