@@ -1483,9 +1483,13 @@ export default class BaseComponent extends Component {
     settings.language = this.options.language;
 
     // Add validity method for widget
-    settings.checkDataValidity = () => this.checkValidity(this.dataValue, true);
-
-    settings.type === 'calendar' && this.validators.push('calendar');
+    if (settings.type === 'calendar') {
+      this.validators.push('calendar');
+      settings.checkDataValidity = () => {
+        this.setPristine(false);
+        return this.checkValidity(this.data, true);
+      };
+    }
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
@@ -1716,7 +1720,14 @@ export default class BaseComponent extends Component {
       const errorMessage = this.ce('p', {
         class: 'help-block'
       });
-      errorMessage.appendChild(this.text(message));
+
+      const entityRegex = /&(:?amp|lt|gt|quot|#39|#x2F);/gi;
+      if (message.match(entityRegex)) {
+        errorMessage.innerHTML = message;
+      }
+      else {
+        errorMessage.appendChild(this.text(message));
+      }
       this.errorElement.appendChild(errorMessage);
     }
 

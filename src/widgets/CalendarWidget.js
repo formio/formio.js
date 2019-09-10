@@ -102,7 +102,10 @@ export default class CalendarWidget extends InputWidget {
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
-    this.settings.onClose = () => (this.closedOn = Date.now());
+    this.settings.onClose = () => {
+      this.closedOn = Date.now();
+      this.emit('blur');
+    };
 
     // Removes console errors from Flatpickr.
     this.settings.errorHandler = () => null;
@@ -110,7 +113,9 @@ export default class CalendarWidget extends InputWidget {
     // Extension of the parseDate method for validating input data.
     this.settings.parseDate = (inputDate, format) => {
       this.enteredDate = inputDate;
-      this.calendar.clear();
+      if (this.calendar) {
+        this.calendar.clear();
+      }
 
       // Check for validation errors.
       if (this.component.widget.checkDataValidity()) {
@@ -129,6 +134,10 @@ export default class CalendarWidget extends InputWidget {
         }
 
         return Flatpickr.parseDate(inputDate, format);
+      }
+
+      if (this.calendar) {
+        this.calendar.close();
       }
       return undefined;
     };
@@ -158,7 +167,7 @@ export default class CalendarWidget extends InputWidget {
       );
 
       // Makes it possible to enter the month as text or digits in the same time.
-      if (this.settings.format.match(/[^M]M{3}[^M]/gi)) {
+      if (this.settings.format.match(/\bM{3}\b/gi)) {
         this.addEventListener(this.calendar._input, 'keyup', e => {
           let format = this.settings.format;
           const value = e.target.value;
