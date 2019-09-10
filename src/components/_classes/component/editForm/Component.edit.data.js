@@ -82,14 +82,7 @@ export default [
       }
     },
     conditional: {
-      json: {
-        nin: [
-          { var: 'data.type' },
-          [
-            'select',
-          ],
-        ],
-      },
+      json: { '!==' : [{ var: 'data.type' }, 'select'] },
     },
   },
   {

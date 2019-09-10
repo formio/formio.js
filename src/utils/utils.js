@@ -692,11 +692,15 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-  // Short and long month replacement.
-    .replace(/(MMM|MMMM)/g, 'MM')
-    // Year conversion
+  // Long month replacement.
+    .replace(/M{4}/g, 'MM')
+    // Initial short month conversion.
+    .replace(/M{3}/g, '***')
+    // Short month conversion if input as text.
+    .replace(/e/g, 'AAA')
+    // Year conversion.
     .replace(/[ydhmsHMG]/g, '9')
-    // AM/PM conversion
+    // AM/PM conversion.
     .replace(/a/g, 'AA');
 }
 
