@@ -660,7 +660,7 @@ export default class SelectComponent extends Field {
         label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`
       }], 'value', 'label', true);
     }
-    else {
+    else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
     }
     this.triggerUpdate();
