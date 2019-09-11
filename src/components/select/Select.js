@@ -61,12 +61,6 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    this._valueProperty = this.component.valueProperty;
-    // Force values datasource to use values without actually setting it on the component settings.
-    if (this.component.dataSrc === 'values') {
-      this._valueProperty = 'value';
-    }
-
     if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
@@ -104,7 +98,15 @@ export default class SelectComponent extends Field {
   }
 
   get valueProperty() {
-    return this._valueProperty;
+    if (this.component.valueProperty) {
+      return this.component.valueProperty;
+    }
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === 'values') {
+      return 'value';
+    }
+
+    return '';
   }
 
   get inputInfo() {
