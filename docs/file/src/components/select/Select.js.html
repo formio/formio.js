@@ -546,7 +546,9 @@ export default class SelectComponent extends Field {
 
     // If a value is provided, then select it.
     if (this.dataValue) {
-      this.setValue(this.dataValue, true);
+      this.setValue(this.dataValue, {
+        noUpdateEvent: true
+      });
     }
     else {
       // If a default value is provided then select it.
@@ -883,10 +885,11 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       this.choices.setChoices([{
         value: &apos;&apos;,
-        label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`
+        label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
+        disabled: true,
       }], &apos;value&apos;, &apos;label&apos;, true);
     }
-    else {
+    else if (this.component.dataSrc === &apos;url&apos; || this.component.dataSrc === &apos;resource&apos;) {
       this.addOption(&apos;&apos;, this.t(&apos;loading...&apos;));
     }
     this.triggerUpdate();
@@ -1362,7 +1365,7 @@ export default class SelectComponent extends Field {
   }
 
   /**
-   * Ouput this select dropdown as a string value.
+   * Output this select dropdown as a string value.
    * @return {*}
    */
   asString(value) {

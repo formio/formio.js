@@ -46,28 +46,9 @@ export { jsonLogic, moment };
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
   const component = args.component ? args.component : { key: 'unknown' };
-  Object.defineProperty(args, 'component', {
-    configurable: true,
-    get() {
-      if (!this._component) {
-        this._component = _.cloneDeep(component);
-      }
-      return this._components;
-    }
-  });
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
-  const { form } = args;
-  Object.defineProperty(args, 'form', {
-    configurable: true,
-    get() {
-      if (!this._form) {
-        this._form = _.cloneDeep(form);
-      }
-      return this._form;
-    }
-  });
   const componentKey = component.key;
   if (typeof func === 'string') {
     if (ret) {
@@ -692,15 +673,11 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-  // Long month replacement.
-    .replace(/M{4}/g, 'MM')
-    // Initial short month conversion.
-    .replace(/M{3}/g, '***')
-    // Short month conversion if input as text.
-    .replace(/e/g, 'AAA')
-    // Year conversion.
+  // Short and long month replacement.
+    .replace(/(MMM|MMMM)/g, 'MM')
+    // Year conversion
     .replace(/[ydhmsHMG]/g, '9')
-    // AM/PM conversion.
+    // AM/PM conversion
     .replace(/a/g, 'AA');
 }
 

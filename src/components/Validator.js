@@ -3,14 +3,9 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting,
-  convertFormatToMoment,
+  getDateSetting
 } from '../utils/utils';
 import moment from 'moment';
-import {
-  CALENDAR_ERROR_MESSAGES,
-  checkInvalidDate
-} from '../utils/calendarUtils';
 
 export default {
   get: _.get,
@@ -88,11 +83,6 @@ export default {
       check(component, setting, value) {
         if (!boolValue(setting)) {
           return true;
-        }
-        const isCalendar = component.validators.some(validator => validator === 'calendar');
-
-        if (!value && isCalendar && component.widget.enteredDate) {
-          return !this.validators.calendar.check.call(this, component, setting, value);
         }
         return !component.isEmpty(value);
       }
@@ -440,46 +430,6 @@ export default {
 
         return date.isAfter(minDate) || date.isSame(minDate);
       }
-    },
-    calendar: {
-      key: 'calendar',
-      messageText: '',
-      message(component) {
-        return component.t(component.errorMessage(this.validators.calendar.messageText), {
-          field: component.errorLabel,
-          maxDate: moment(component.dataValue).format(component.format),
-        });
-      },
-      check(component, setting, value) {
-        this.validators.calendar.messageText = '';
-        const { settings, enteredDate } = component._widget;
-        const { minDate, maxDate, format } = settings;
-        const momentFormat = [convertFormatToMoment(format)];
-
-        if (momentFormat[0].match(/M{3,}/g)) {
-          momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
-        }
-
-        if (!value && enteredDate) {
-          const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
-
-          if (!result) {
-            this.validators.calendar.messageText = message;
-            return result;
-          }
-        }
-
-        if (value && enteredDate) {
-          if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() && enteredDate.match(/_/gi)) {
-            this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
-            return false;
-          }
-          else {
-            component._widget.enteredDate = '';
-            return true;
-          }
-        }
-      }
-    },
+    }
   }
 };

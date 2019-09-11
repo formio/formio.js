@@ -699,20 +699,26 @@ describe('Util Tests', () => {
     it('should allow configuring the events limit', done => {
       try {
         for (let i = 1; i < 10; i += 1) {
-          const dispatch = utils.observeOverload(() => done('Limit option is ignored'), { limit: 100 });
+          const dispatch = utils.observeOverload(() => done('Limit option is ignored1'), { limit: 100 });
           for (let j = 0; j < i * 10; j += 1) {
             dispatch();
           }
         }
 
         // exit if we done, otherwise throw
-        const dispatch = utils.observeOverload(done, { limit: 100 });
+        let called = false;
+        const dispatch = utils.observeOverload(() => {
+          called = true;
+          done();
+        }, { limit: 100 });
 
         for (let i = 0; i < 110; i += 1) {
           dispatch();
         }
 
-        throw new Error('Limit option is ignored');
+        if (!called) {
+          throw new Error('Limit option is ignored2');
+        }
       }
       catch (error) {
         done(error);
