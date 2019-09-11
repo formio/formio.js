@@ -1181,14 +1181,15 @@ export default class Formio {
       const retVal = Formio.setToken(query.saml);
       let uri = window.location.toString();
       uri = uri.substring(0, uri.indexOf('?'));
+      if (window.location.hash) {
+        uri += window.location.hash;
+      }
       window.history.replaceState({}, document.title, uri);
       return retVal;
     }
 
-    // Only continue if we are not authenticated.
-    if (Formio.getToken()) {
-      return false;
-    }
+    // Deleted to always make a handshake
+    //
 
     // Set the relay if not provided.
     if (!options.relay) {
