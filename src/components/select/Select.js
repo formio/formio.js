@@ -1042,8 +1042,33 @@ export default class SelectComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
-      value = +value;
+    const dataType = _.get(this.component, 'dataType', 'auto');
+    switch (dataType) {
+      case 'auto':
+        if (!isNaN(parseFloat(value)) && isFinite(value)) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case 'boolean':
+        value = !!value;
+        break;
     }
     return super.normalizeValue(value);
   }
