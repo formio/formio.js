@@ -1189,7 +1189,6 @@ export default class Formio {
     }
 
     // Deleted to always make a handshake
-    //
 
     // Set the relay if not provided.
     if (!options.relay) {
