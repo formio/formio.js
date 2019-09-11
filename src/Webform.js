@@ -1036,7 +1036,8 @@ export default class Webform extends NestedComponent {
     this.loading = false;
     this.submitting = false;
     this.setPristine(true);
-    this.setValue(submission, {
+    // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
+    this.setValue(_.cloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });

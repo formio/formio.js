@@ -219,7 +219,7 @@ const Harness = {
     });
 
     onNext(form, 'change', () => {
-      form.submit().catch(done);
+      form.submit();
     });
 
     this.testSetGet(form, submission);

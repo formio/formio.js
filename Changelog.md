@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Minor issues with semantic templates and incorrect variables.
  - Missing functions when calling components directly.
+ - Client only persistence not reporting correctly in results.
+ - Get tests running and passing.
 
 ## 4.0.3
 ### Fixed
