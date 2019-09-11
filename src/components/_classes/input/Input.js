@@ -152,6 +152,14 @@ export default class Input extends Multivalue {
     }
   }
 
+  getValueAt(index) {
+    const input = this.performInputMapping(this.refs.input[index]);
+    if (input && input.widget) {
+      return input.widget.getValue();
+    }
+    return input ? input.value : undefined;
+  }
+
   updateValue(value, flags, index) {
     const changed = super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
