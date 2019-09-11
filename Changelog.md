@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.3
+### Fixed
+ - Major performance regressions when form or component were used in custom conditionals or calcuations.
+
 ## 4.0.2
 ### Fixed
  - Fixed issue with appearance of unnecessary loading option
