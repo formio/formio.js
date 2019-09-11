@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.6
+### Added
+ - Select and Radio can now specify the Storage Type for date type casting.
+
+### Fixed
+ - Shortcuts missing options in builder.
+ - Datetime component losing timezone when saving
+ - Field logic not firing on panel pages.
+
 ## 4.0.5
 ### Added
  - Add string representation of form component for table views.
