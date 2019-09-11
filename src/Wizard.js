@@ -83,6 +83,7 @@ export default class Wizard extends Webform {
     });
 
     this.page = 0;
+    this.currentNextPage = 0;
     return super.init();
   }
 
@@ -167,6 +168,8 @@ export default class Wizard extends Webform {
       });
     });
 
+    this.checkDisabledWizard(this.page);
+
     return promises;
   }
 
@@ -195,6 +198,7 @@ export default class Wizard extends Webform {
   }
 
   setPage(num) {
+    this.checkDisabledWizard(num);
     if (num === this.page) {
       return NativePromise.resolve();
     }
@@ -437,6 +441,15 @@ export default class Wizard extends Webform {
       }
     });
     return visible;
+  }
+
+  checkDisabledWizard(pageNumber) {
+    if (!pageNumber) {
+      this.disabled = false;
+    }
+
+    const shouldDisabled = this.panels[pageNumber].disabled;
+    this.disabled = shouldDisabled;
   }
 
   onChange(flags, changed) {
