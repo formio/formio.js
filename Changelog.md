@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.5
+### Added
+ - Add string representation of form component for table views.
+
+### Fixed
+ - Problem with select component would chose empty object as default instead of empty string.
+ - Fixed issue when skip&limit become undefined if select resource data type
+ - Issue with the Container component within the form builder overlapping outside.
+ - Problem where values would not get reset after a form is redrawn.
+
+## 4.0.4
+Not found
+
 ## 4.0.3
 ### Fixed
  - Major performance regressions when form or component were used in custom conditionals or calcuations.
