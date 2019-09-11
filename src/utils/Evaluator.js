@@ -13,14 +13,10 @@ const Evaluator = {
       console.warn('No evaluations allowed for this renderer.');
       return _.noop;
     }
-    else {
-      return new Function(...params, func);
-    }
+
+    return new Function(...params, func);
   },
   template(template, hash) {
-    if (typeof template === 'function') {
-      return template;
-    }
     hash = hash || stringHash(template);
     try {
       // Ensure we handle copied templates from the ejs files.
@@ -42,7 +38,9 @@ const Evaluator = {
       }
     }
 
-    const hash = _.isNumber(rawTemplate) ? rawTemplate : stringHash(rawTemplate);
+    rawTemplate = String(rawTemplate);
+
+    const hash = stringHash(rawTemplate);
     let template;
     if (Evaluator.cache[hash]) {
       template = Evaluator.cache[hash];

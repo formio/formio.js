@@ -397,7 +397,7 @@ export default class SelectComponent extends Field {
 
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item.toString()));
+      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));
     }
 
     // Add filter capability
