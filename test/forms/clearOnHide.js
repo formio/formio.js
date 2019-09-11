@@ -28,6 +28,27 @@ const hiddenData = {
   }
 };
 
+const existingData = {
+  data: {
+    columnfield: 'one',
+    container: {
+      containerfield: 'two'
+    },
+    datagrid: [
+      {
+        datagridfield: 'three'
+      }
+    ],
+    editgrid: [],
+    fieldsetfield: 'four',
+    panelfield: 'five',
+    plainfield: 'six',
+    tablefield: 'seven',
+    visible: true,
+    wellfield: 'eight'
+  }
+};
+
 export default {
   title: 'Clear on hide Form Test',
   form: {
@@ -579,7 +600,6 @@ export default {
   },
   tests: {
     'Test starting hidden'(form, done) {
-      form.checkConditions(form.getValue());
       assert.deepEqual(_.omit(form.getValue(), ['metadata']), hiddenData);
       done();
     },
@@ -595,6 +615,14 @@ export default {
         done();
       });
     },
+    'Test with data'(form, done) {
+      form.submission = _.cloneDeep(existingData);
+      // Go next tick to get the changes applied.
+      setTimeout(() => {
+        assert.deepEqual(form.getValue(), existingData);
+        done();
+      });
+    },
     'Test changing visible from hidden to visible'(form, done) {
       form.submission = {
         data: {
@@ -602,11 +630,9 @@ export default {
         }
       };
       setTimeout(() => {
-        form.checkConditions(form.getValue());
         assert.deepEqual(form.getValue(), visibleData);
         form.getComponent('visible', component => {
           component.setValue(false);
-          form.checkConditions(form.getValue());
           assert.deepEqual(form.getValue(), hiddenData);
           done();
         });
@@ -619,11 +645,9 @@ export default {
         }
       };
       setTimeout(() => {
-        form.checkConditions(form.getValue());
         assert.deepEqual(form.getValue(), hiddenData);
         form.getComponent('visible', component => {
           component.setValue(true);
-          form.checkConditions(form.getValue());
           assert.deepEqual(form.getValue(), visibleData);
           done();
         });

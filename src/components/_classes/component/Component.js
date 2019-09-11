@@ -274,7 +274,7 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
+    this._visible = this.conditionallyVisible(data);
     this._parentVisible = true;
     this._parentDisabled = false;
 
@@ -486,7 +486,6 @@ export default class Component extends Element {
   get visible() {
     if (!this.rendered) {
       // Keeps conditionally invisible fields from "flashing" when form is initially rendered.
-      this._visible = this.conditionallyVisible(this.data);
     }
 
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
@@ -1303,12 +1302,12 @@ export default class Component extends Element {
     data = data || this.rootValue;
 
     // Check advanced conditions
-    const visible = this.conditionallyVisible(data);
+    const visible = this.conditionallyVisible(data) && this._parentVisible;
     if (!this.builderMode && this.fieldLogic(data)) {
       this.redraw();
     }
 
-    if (this.visible !== visible) {
+    if (this._visible !== visible) {
       this.visible = visible;
     }
 
@@ -1409,11 +1408,6 @@ export default class Component extends Element {
       this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
         message
       }));
-      // const errorMessage = this.ce('p', {
-      //   class: 'help-block'
-      // });
-      // errorMessage.appendChild(this.text(message));
-      // this.refs.messageContainer.appendChild(errorMessage);
     }
 
     // Add error classes
@@ -1430,7 +1424,12 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (!this.rootPristine && this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+    if (
+      (!this.rootPristine || _.isEqual(this.dataValue, this.defaultValue)) &&
+      this.component.clearOnHide !== false &&
+      !this.options.readOnly &&
+      !this.options.showHiddenFields
+    ) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1621,12 +1620,12 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
+      (!this.visible && this.component.clearOnHide && this.rootPristine)
     ) {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      this.dataValue = this.component.multiple ? [] : this.emptyValue;
+      return this.dataValue = this.component.multiple ? [] : this.emptyValue;
     }
     return _.get(this.data, this.key);
   }
@@ -1639,7 +1638,7 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
+      (!this.visible && this.component.clearOnHide && (!this.rootPristine || value !== this.defaultValue))
     ) {
       return value;
     }
