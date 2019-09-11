@@ -78,15 +78,6 @@ export default class RadioComponent extends Field {
     this.refs.input.forEach((input) => {
       if (input.checked) {
         value = input.value;
-        if (value === 'true') {
-          value = true;
-        }
-        else if (value === 'false') {
-          value = false;
-        }
-        else if (!isNaN(parseInt(value, 10)) && isFinite(value)) {
-          value = parseInt(value, 10);
-        }
       }
     });
     return value;
@@ -131,5 +122,43 @@ export default class RadioComponent extends Field {
       });
     }
     return changed;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    const dataType = _.get(this.component, 'dataType', 'auto');
+    switch (dataType) {
+      case 'auto':
+        if (!isNaN(parseFloat(value)) && isFinite(value)) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case 'boolean':
+        value = !!value;
+        break;
+    }
+    return super.normalizeValue(value);
   }
 }
