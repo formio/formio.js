@@ -1081,6 +1081,21 @@ export default class SelectComponent extends Field {
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
 
+    // Undo typing when searching to set the value.
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(value => {
+        if (typeof value === 'boolean' || typeof value === 'number') {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        value = value.toString();
+      }
+    }
+
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
       return changed;
