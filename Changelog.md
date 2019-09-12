@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.7
+### Fixed
+ - Select with boolean or simple numbers were not matching on setValue
+ - Builder defaults options to an empty object if not given.
+
 ## 4.0.6
 ### Added
  - Select and Radio can now specify the Storage Type for date type casting.
