@@ -100,9 +100,9 @@ export default class TabsComponent extends NestedComponent {
         this.setTab(index);
       });
     });
-
-    // Set the tab to the first index.
-    this.setTab(0, true);
+    this.refs[this.tabKey].forEach((tab, index) => {
+      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);
+    });
     return superAttach;
   }
 
@@ -115,19 +115,16 @@ export default class TabsComponent extends NestedComponent {
    *
    * @param index
    */
-  setTab(index, force) {
+  setTab(index) {
     if (
       !this.tabs ||
       !this.tabs[index] ||
       !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index] ||
-      (!force && (this.currentTab === index))
+      !this.refs[this.tabKey][index]
     ) {
       return;
     }
 
-    // Detach current components, empty and rebuild comps for the new tab.
-    this.tabs[this.currentTab].forEach(tabComp => tabComp.detach());
     this.currentTab = index;
 
     _.each(this.refs[this.tabKey], (tab) => {
@@ -151,9 +148,6 @@ export default class TabsComponent extends NestedComponent {
     if (this.refs[this.tabLinkKey][index]) {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
-
-    // Attach components to this tab.
-    this.attachComponents(this.refs[this.tabKey][index], this.tabs[index], this.component.components[index].components);
     this.triggerChange();
   }
 }
