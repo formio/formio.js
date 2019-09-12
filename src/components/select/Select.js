@@ -61,12 +61,6 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    this._valueProperty = this.component.valueProperty;
-    // Force values datasource to use values without actually setting it on the component settings.
-    if (this.component.dataSrc === 'values') {
-      this._valueProperty = 'value';
-    }
-
     if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
@@ -104,7 +98,15 @@ export default class SelectComponent extends Field {
   }
 
   get valueProperty() {
-    return this._valueProperty;
+    if (this.component.valueProperty) {
+      return this.component.valueProperty;
+    }
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === 'values') {
+      return 'value';
+    }
+
+    return '';
   }
 
   get inputInfo() {
@@ -395,7 +397,7 @@ export default class SelectComponent extends Field {
 
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item.toString()));
+      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));
     }
 
     // Add filter capability
@@ -1040,8 +1042,33 @@ export default class SelectComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
-      value = +value;
+    const dataType = _.get(this.component, 'dataType', 'auto');
+    switch (dataType) {
+      case 'auto':
+        if (!isNaN(parseFloat(value)) && isFinite(value)) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case 'boolean':
+        value = !!value;
+        break;
     }
     return super.normalizeValue(value);
   }
@@ -1053,6 +1080,21 @@ export default class SelectComponent extends Field {
     value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
+
+    // Undo typing when searching to set the value.
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(value => {
+        if (typeof value === 'boolean' || typeof value === 'number') {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        value = value.toString();
+      }
+    }
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {

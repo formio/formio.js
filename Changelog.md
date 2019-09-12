@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Client only persistence not reporting correctly in results.
  - Get tests running and passing.
 
+## 4.0.7
+### Fixed
+ - Select with boolean or simple numbers were not matching on setValue
+ - Builder defaults options to an empty object if not given.
+
+## 4.0.6
+### Added
+ - Select and Radio can now specify the Storage Type for date type casting.
+
+### Fixed
+ - Shortcuts missing options in builder.
+ - Datetime component losing timezone when saving
+ - Field logic not firing on panel pages.
+
+## 4.0.5
+### Added
+ - Add string representation of form component for table views.
+
+### Fixed
+ - Problem with select component would chose empty object as default instead of empty string.
+ - Fixed issue when skip&limit become undefined if select resource data type
+ - Issue with the Container component within the form builder overlapping outside.
+ - Problem where values would not get reset after a form is redrawn.
+
+## 4.0.4
+Not found
+
 ## 4.0.3
 ### Fixed
  - Major performance regressions when form or component were used in custom conditionals or calcuations.
