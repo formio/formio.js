@@ -19,13 +19,15 @@ const visibleData = {
     tablefield: '',
     visible: true,
     wellfield: ''
-  }
+  },
+  metadata: {}
 };
 
 const hiddenData = {
   data: {
     visible: false
-  }
+  },
+  metadata: {}
 };
 
 const existingData = {
@@ -46,7 +48,8 @@ const existingData = {
     tablefield: 'seven',
     visible: true,
     wellfield: 'eight'
-  }
+  },
+  metadata: {}
 };
 
 export default {
@@ -600,8 +603,10 @@ export default {
   },
   tests: {
     'Test starting hidden'(form, done) {
-      assert.deepEqual(_.omit(form.getValue(), ['metadata']), hiddenData);
-      done();
+      setTimeout(() => {
+        assert.deepEqual(form.getValue(), hiddenData);
+        done();
+      }, 300);
     },
     'Test starting visible'(form, done) {
       form.submission = {
@@ -609,11 +614,10 @@ export default {
           visible: true
         }
       };
-      // Go next tick to get the changes applied.
       setTimeout(() => {
         assert.deepEqual(form.getValue(), visibleData);
         done();
-      });
+      }, 300);
     },
     'Test with data'(form, done) {
       form.submission = _.cloneDeep(existingData);
@@ -621,9 +625,10 @@ export default {
       setTimeout(() => {
         assert.deepEqual(form.getValue(), existingData);
         done();
-      });
+      }, 300);
     },
     'Test changing visible from hidden to visible'(form, done) {
+      form.pristine = false;
       form.submission = {
         data: {
           visible: true
@@ -636,9 +641,10 @@ export default {
           assert.deepEqual(form.getValue(), hiddenData);
           done();
         });
-      });
+      }, 300);
     },
     'Test changing visible from visible to hidden'(form, done) {
+      form.pristine = false;
       form.submission = {
         data: {
           visible: false
@@ -651,7 +657,7 @@ export default {
           assert.deepEqual(form.getValue(), visibleData);
           done();
         });
-      });
+      }, 300);
     }
   }
 };

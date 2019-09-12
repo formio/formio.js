@@ -484,10 +484,6 @@ export default class Component extends Element {
    * @returns {boolean}
    */
   get visible() {
-    if (!this.rendered) {
-      // Keeps conditionally invisible fields from "flashing" when form is initially rendered.
-    }
-
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (this.builderMode || this.options.showHiddenFields) {
       return true;
@@ -1302,12 +1298,12 @@ export default class Component extends Element {
     data = data || this.rootValue;
 
     // Check advanced conditions
-    const visible = this.conditionallyVisible(data) && this._parentVisible;
+    const visible = this.conditionallyVisible(data);
     if (!this.builderMode && this.fieldLogic(data)) {
       this.redraw();
     }
 
-    if (this._visible !== visible) {
+    if (this.visible !== visible) {
       this.visible = visible;
     }
 
@@ -1425,7 +1421,7 @@ export default class Component extends Element {
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
-      (!this.rootPristine || _.isEqual(this.dataValue, this.defaultValue)) &&
+      !this.rootPristine &&
       this.component.clearOnHide !== false &&
       !this.options.readOnly &&
       !this.options.showHiddenFields
@@ -1620,7 +1616,7 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide && this.rootPristine)
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return this.emptyValue;
     }
@@ -1638,7 +1634,7 @@ export default class Component extends Element {
   set dataValue(value) {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide && (!this.rootPristine || value !== this.defaultValue))
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
