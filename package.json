@@ -25,7 +25,7 @@
     "dopublish": "npm test;gulp build;npm run tag;npm publish lib;",
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "npm run transpile && npm run templates && npm run test:unit && npm run test:e2e",
+    "test": "npm run transpile && npm run templates && npm run test:unit",
     "test:unit": "mocha --require @babel/register --require jsdom-global/register 'lib/*.unit.js' -b --exit",
     "test:updateRenders": "node --require @babel/register --require jsdom-global/register test/updateRenders.js",
     "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
