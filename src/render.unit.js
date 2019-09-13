@@ -44,7 +44,6 @@ describe('Rendering Tests', () => {
           it(`Form renders ${form}`, () => {
             return new Form(forms[form], { template: framework }).ready.then(instance => {
               fixComponent(instance);
-              console.log(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
               assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
             });
           });
