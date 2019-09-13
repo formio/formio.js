@@ -613,6 +613,7 @@ export default {
           visible: true
         }
       };
+      // Need to wait for the changes to propogate.
       setTimeout(() => {
         assert.deepEqual(form.getValue(), visibleData);
         done();
@@ -633,12 +634,14 @@ export default {
           visible: true
         }
       };
+
       setTimeout(() => {
-        assert.deepEqual(form.getValue(), visibleData);
         form.getComponent('visible', component => {
+          form.on('change', change => {
+            assert.deepEqual(change.data, hiddenData.data);
+            done();
+          });
           component.setValue(false);
-          assert.deepEqual(form.getValue(), hiddenData);
-          done();
         });
       });
     },
@@ -650,14 +653,39 @@ export default {
         }
       };
       setTimeout(() => {
-        assert.deepEqual(form.getValue(), hiddenData);
         form.getComponent('visible', component => {
+          form.on('change', change => {
+            assert.deepEqual(change.data, visibleData.data);
+            done();
+          });
           component.setValue(true);
-          assert.deepEqual(form.getValue(), visibleData);
-          done();
         });
       });
-    }
+    },
+    // 'Test resetting data when hidden'(form, done) {
+    //   form.pristine = false;
+    //   form.submission = _.cloneDeep(existingData);
+    //   setTimeout(() => {
+    //     assert.deepEqual(form.getValue(), existingData);
+    //     form.getComponent('visible', component => {
+    //       let count = 0;
+    //       form.on('change', change => {
+    //         switch (count) {
+    //           case 0:
+    //             assert.deepEqual(change.data, hiddenData.data);
+    //             break;
+    //           case 1:
+    //             assert.deepEqual(change.data, visibleData.data);
+    //             done();
+    //             break;
+    //         }
+    //         count++;
+    //       });
+    //       component.setValue(false);
+    //       component.setValue(true);
+    //     });
+    //   });
+    // }
   }
 };
 

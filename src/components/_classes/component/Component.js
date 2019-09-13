@@ -1620,8 +1620,12 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue() && !this.rootPristine) {
-      return this.dataValue = this.component.multiple ? [] : this.emptyValue;
+    if (!this.hasValue()) {
+      const empty = this.component.multiple ? [] : this.emptyValue;
+      if (!this.rootPristine) {
+        this.dataValue = empty;
+      }
+      return empty;
     }
     return _.get(this.data, this.key);
   }
