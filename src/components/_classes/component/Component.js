@@ -275,7 +275,7 @@ export default class Component extends Element {
      * Determines if this component is visible, or not.
      */
     this._visible = this.conditionallyVisible(data);
-    this._parentVisible = true;
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
     this._parentDisabled = false;
 
     /**
@@ -1620,7 +1620,7 @@ export default class Component extends Element {
     ) {
       return this.emptyValue;
     }
-    if (!this.hasValue()) {
+    if (!this.hasValue() && !this.rootPristine) {
       return this.dataValue = this.component.multiple ? [] : this.emptyValue;
     }
     return _.get(this.data, this.key);

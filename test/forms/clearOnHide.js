@@ -603,12 +603,11 @@ export default {
   },
   tests: {
     'Test starting hidden'(form, done) {
-      setTimeout(() => {
-        assert.deepEqual(form.getValue(), hiddenData);
-        done();
-      }, 300);
+      assert.deepEqual(form.getValue(), hiddenData);
+      done();
     },
     'Test starting visible'(form, done) {
+      form.pristine = false;
       form.submission = {
         data: {
           visible: true
@@ -625,7 +624,7 @@ export default {
       setTimeout(() => {
         assert.deepEqual(form.getValue(), existingData);
         done();
-      }, 300);
+      });
     },
     'Test changing visible from hidden to visible'(form, done) {
       form.pristine = false;
@@ -641,7 +640,7 @@ export default {
           assert.deepEqual(form.getValue(), hiddenData);
           done();
         });
-      }, 300);
+      });
     },
     'Test changing visible from visible to hidden'(form, done) {
       form.pristine = false;
@@ -657,7 +656,7 @@ export default {
           assert.deepEqual(form.getValue(), visibleData);
           done();
         });
-      }, 300);
+      });
     }
   }
 };

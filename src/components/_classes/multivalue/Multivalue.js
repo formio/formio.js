@@ -44,7 +44,7 @@ export default class Multivalue extends Field {
     }));
   }
 
-  renderElement(data) {
+  renderElement() {
     return '';
   }
 
