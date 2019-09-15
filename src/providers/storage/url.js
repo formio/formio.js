@@ -109,6 +109,22 @@ const url = (formio) => {
         return uploadRequest();
       }
     },
+    deleteFile(fileInfo) {
+      return new NativePromise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('DELETE', fileInfo.url, true);
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve('File deleted');
+          }
+          else {
+            reject(xhr.response || 'Unable to delete file');
+          }
+        };
+        xhr.send(null);
+      });
+    },
+
     downloadFile(file) {
       if (file.private) {
         if (formio.submissionId && file.data) {
