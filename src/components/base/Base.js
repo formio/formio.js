@@ -1482,6 +1482,15 @@ export default class BaseComponent extends Component {
     settings.i18n = this.options.i18n;
     settings.language = this.options.language;
 
+    // Add validity method for widget
+    if (settings.type === 'calendar') {
+      this.validators.push('calendar');
+      settings.checkDataValidity = () => {
+        this.setPristine(false);
+        return this.checkValidity(this.data, true);
+      };
+    }
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(), true);
@@ -1711,7 +1720,14 @@ export default class BaseComponent extends Component {
       const errorMessage = this.ce('p', {
         class: 'help-block'
       });
-      errorMessage.appendChild(this.text(message));
+
+      const entityRegex = /&(:?amp|lt|gt|quot|#39|#x2F);/gi;
+      if (message.match(entityRegex)) {
+        errorMessage.innerHTML = message;
+      }
+      else {
+        errorMessage.appendChild(this.text(message));
+      }
       this.errorElement.appendChild(errorMessage);
     }
 
@@ -2400,10 +2416,15 @@ export default class BaseComponent extends Component {
       this.setCustomValidity('');
       return true;
     }
-
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error && (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    else {
+      this.setCustomValidity('');
+    }
+    return !error;
   }
 
   /* eslint-disable max-len */
@@ -2583,7 +2604,7 @@ export default class BaseComponent extends Component {
    */
   asString(value) {
     value = value || this.getValue();
-    return Array.isArray(value) ? value.join(', ') : value.toString();
+    return Array.isArray(value) ? value.join(', ') : value ? value.toString() : null;
   }
 
   /**
