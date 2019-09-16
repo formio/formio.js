@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Minor issues with semantic templates and incorrect variables.
+ - Missing functions when calling components directly.
+ - Client only persistence not reporting correctly in results.
+ - Get tests running and passing.
+ - Fix clear on hide when initially setting values and when items show or hide.
+
 ## 4.0.8
 ### Reverted
  - Changing the way tabs are attached since it broke setting values in all non-active tabs.

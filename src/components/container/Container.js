@@ -32,9 +32,8 @@ export default class ContainerComponent extends NestedComponent {
     this.type = 'container';
   }
 
-  init() {
-    this.components = this.components || [];
-    this.addComponents(this.dataValue);
+  addComponents(data, options) {
+    return super.addComponents(this.dataValue, options);
   }
 
   get defaultSchema() {

@@ -4,10 +4,10 @@ import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import { expect } from 'chai';
 
-import i18Defaults from '../src/i18n';
-import WebformBuilder from '../src/WebformBuilder';
-import AllComponents from '../src/components';
-import Components from '../src/components/Components';
+import i18Defaults from '../lib/i18n';
+import WebformBuilder from '../lib/WebformBuilder';
+import AllComponents from '../lib/components';
+import Components from '../lib/components/Components';
 
 Components.setComponents(AllComponents);
 
@@ -219,7 +219,7 @@ const Harness = {
     });
 
     onNext(form, 'change', () => {
-      form.submit().catch(done);
+      form.submit();
     });
 
     this.testSetGet(form, submission);
