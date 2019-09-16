@@ -29,7 +29,6 @@ export default class Wizard extends Webform {
     this.components = [];
     this.page = 0;
     this.currentNextPage = 0;
-    this.wasLoaded = false;
     this._seenPages = [0];
   }
 
