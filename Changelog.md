@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.28.0-beta.1
+### Changed
+ - Upgraded i18next@17.0.15, jstimezonedetect@1.0.7, sinon@7.4.2, vanilla-picker@2.10.0, @babel/cli@7.6.0, @babel/core@7.6.0, @babel/plugin-proposal-optional-chaining@7.6.0, @babel/polyfill@7.6.0, @babel/preset-env@7.6.0, webpack@4.40.2, eslint@6.4.0, gulp-eslint@6.0.0, karma-chrome-launcher@3.1.0
+
+### Added
+ - Added options to interpolate method.
+ - Validation for data for date\time component
+ 
+### Fixed
+ - Disable load icon item in select component.
+
 ## 3.27.3
 ### Fixed
  - Fix issue with single-value File component Data tab rendering

@@ -142,7 +142,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -202,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
@@ -3934,6 +3937,64 @@
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span><span class="code" data-ice="signature">(value: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, format: <span>[String]</span>, maxDate: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>, minDate: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the entered date for validity.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-function">F</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span><span class="code" data-ice="signature">(value: <span>moment</span>, format: <span>[String]</span>, maxDate: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>, minDate: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>): {&quot;message&quot;: <span>*</span>, &quot;result&quot;: <span>*</span>}</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the value for a min date and max date.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-function">F</span>
+          
+          
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span><span class="code" data-ice="signature">(form: <span>*</span>, changes: <span>*</span>): {&quot;form&quot;: <span>*</span>, &quot;failed&quot;: <span>*</span>}</span>
         </p>
       </div>
@@ -5631,6 +5692,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span><span class="code" data-ice="signature">: {&quot;noeval&quot;: <span>*</span>, &quot;cache&quot;: <span>*</span>, &quot;templateSettings&quot;: <span>*</span>, &quot;evaluator&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>, &quot;template&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>, &quot;interpolate&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>}</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-variable">V</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span><span class="code" data-ice="signature">: {&quot;INVALID&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;INCOMPLETE&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, &quot;greater&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>, &quot;less&quot;: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>}</span>
         </p>
       </div>
       <div>

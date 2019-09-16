@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/utils/calendarutils.js~calendar_error_messages",
+    "variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES",
+    "<span>CALENDAR_ERROR_MESSAGES</span> <span class=\"search-result-import-path\">formiojs/src/utils/calendarUtils.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/widgets/calendarwidget.js~calendarwidget",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html",
     "<span>CalendarWidget</span> <span class=\"search-result-import-path\">formiojs/src/widgets/CalendarWidget.js</span>",
@@ -714,6 +720,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/utils/calendarutils.js~checkinvaliddate",
+    "function/index.html#static-function-checkInvalidDate",
+    "<span>checkInvalidDate</span> <span class=\"search-result-import-path\">formiojs/src/utils/calendarUtils.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/utils/utils.js~checkjsonconditional",
     "function/index.html#static-function-checkJsonConditional",
     "<span>checkJsonConditional</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
@@ -951,6 +963,12 @@ window.esdocSearchIndex = [
     "formiojs/src/utils/utils.js~iteratekey",
     "function/index.html#static-function-iterateKey",
     "<span>iterateKey</span> <span class=\"search-result-import-path\">formiojs/src/utils/utils.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/utils/calendarutils.js~lessorgreater",
+    "function/index.html#static-function-lessOrGreater",
+    "<span>lessOrGreater</span> <span class=\"search-result-import-path\">formiojs/src/utils/calendarUtils.js</span>",
     "function"
   ],
   [
@@ -2095,13 +2113,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2521,13 +2539,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -3487,13 +3505,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4183,13 +4201,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4585,13 +4603,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#parentvisible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-parentVisible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-parentVisible",
     "src/components/base/Base.js~BaseComponent#parentVisible",
     "member"
   ],
@@ -8071,13 +8089,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#root",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-root",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-root",
     "src/components/form/Form.js~FormComponent#root",
     "member"
   ],
@@ -8155,13 +8173,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
@@ -8725,13 +8743,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
     "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#currentform",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
     "src/components/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
@@ -8851,13 +8869,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -8959,13 +8977,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
   [
     "src/components/nested/nestedcomponent.js~nestedcomponent#visible",
-    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-set-visible",
+    "class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-visible",
     "src/components/nested/NestedComponent.js~NestedComponent#visible",
     "member"
   ],
@@ -9919,13 +9937,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#downloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-downloadedResources",
     "src/components/select/Select.js~SelectComponent#downloadedResources",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#downloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-downloadedResources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
     "src/components/select/Select.js~SelectComponent#downloadedResources",
     "member"
   ],
@@ -12780,6 +12798,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/utils/calendarutils.js",
+    "file/src/utils/calendarUtils.js.html",
+    "src/utils/calendarUtils.js",
+    "file"
+  ],
+  [
     "src/utils/formutils.js",
     "file/src/utils/formUtils.js.html",
     "src/utils/formUtils.js",
@@ -12906,6 +12930,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/widgets/calendarwidget.js~calendarwidget#entereddate",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-enteredDate",
+    "src/widgets/CalendarWidget.js~CalendarWidget#enteredDate",
+    "member"
+  ],
+  [
     "src/widgets/calendarwidget.js~calendarwidget#getdatevalue",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-method-getDateValue",
     "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",
@@ -12927,6 +12957,12 @@ window.esdocSearchIndex = [
     "src/widgets/calendarwidget.js~calendarwidget#input",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-input",
     "src/widgets/CalendarWidget.js~CalendarWidget#input",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#inputmasks",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-member-inputMasks",
+    "src/widgets/CalendarWidget.js~CalendarWidget#inputMasks",
     "member"
   ],
   [
