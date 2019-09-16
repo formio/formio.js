@@ -129,7 +129,10 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.page]]);
+    const pages = this.pages.length
+      ? [...this.pages[this.page]]
+      : [];
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...pages]);
 
     [
       { name: 'cancel',    method: 'cancel' },
@@ -167,7 +170,7 @@ export default class Wizard extends Webform {
       });
     });
 
-    this.setPage(this.page);
+    this.handleFieldLogic(this.page);
 
     return promises;
   }
@@ -175,7 +178,7 @@ export default class Wizard extends Webform {
   addComponents() {
     this.pages = [];
     this.panels = [];
-    _.each(this.component.components, (item) => {
+    _.each(this.originalComponents, (item) => {
       const pageOptions = _.clone(this.options);
       if (item.type === 'panel') {
         if (checkCondition(item, this.data, this.data, this.component, this)) {
@@ -196,28 +199,32 @@ export default class Wizard extends Webform {
     });
   }
 
+  handleFieldLogic(num) {
+    if (!this.panels.length) {
+      return;
+    }
+    this.componentToRestore = _.cloneDeep(this.component);
+    this.component = _.cloneDeep(this.panels[num]);
+    this.component.key = this.componentToRestore.key;
+    this.originalComponent = _.cloneDeep(this.component);
+    this.fieldLogic(this.data);
+    // If disabled changed, be sure to distribute the setting.
+    this.disabled = this.shouldDisabled;
+  }
+
   setPage(num) {
-    debugger;
-    console.log(num);
-    if (num === this.page && this.wasLoaded) {
+    if (num === this.page) {
       return NativePromise.resolve();
     }
-    this.wasLoaded = true;
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
 
-      // Handle field logic on pages.
-      this.component = _.cloneDeep(this.panels[num]);
-      this.originalComponent = _.cloneDeep(this.component);
-      this.fieldLogic(this.data);
-      // If disabled changed, be sure to distribute the setting.
-      this.disabled = this.shouldDisabled;
+      this.handleFieldLogic(num)
 
       this.getNextPage();
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
-      debugger;
       this.redraw();
       return NativePromise.resolve();
     }
@@ -368,9 +375,10 @@ export default class Wizard extends Webform {
     }
     this.wizard = form;
     this.component.components = form.components || [];
+    this.originalComponents = _.cloneDeep(this.component.components);
 
     // Check if there are no panel components.
-    if (this.component.components.filter(component => component.type === 'panel').length === 0) {
+    if (this.originalComponents.filter(component => component.type === 'panel').length === 0) {
       this.component.components = [
         {
           type: 'panel',
@@ -380,6 +388,7 @@ export default class Wizard extends Webform {
           components: this.component.components
         }
       ];
+      this.originalComponents = _.cloneDeep(this.component.components);
     }
     return super.setForm(form);
   }
@@ -472,7 +481,9 @@ export default class Wizard extends Webform {
   rebuild() {
     this.destroyComponents();
     this.addComponents();
-    return this.redraw();
+    const result = this.redraw();
+    this.component = _.cloneDeep(this.componentToRestore);
+    return result;
   }
 
   checkCurrentPageValidity(...args) {
