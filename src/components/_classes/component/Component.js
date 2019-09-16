@@ -1408,8 +1408,7 @@ export default class Component extends Element {
 
     // Add error classes
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
+
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
@@ -2053,28 +2052,33 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit('componentError', this.error);
       if (this.refs.input) {
         this.addInputError(message, dirty, this.refs.input);
       }
     }
-    else {
+    else if (this.error && this.error.external === external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       if (this.refs.input) {
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
       }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
-      this.error = null;
     }
+
     if (!this.refs.input) {
       return;
     }
