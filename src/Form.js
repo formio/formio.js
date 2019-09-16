@@ -184,6 +184,12 @@ export default class Form extends Element {
         html: true
       }
     };
+    // Add attrs
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addAttr) && this.options.sanitizeConfig.addAttr.length > 0) {
+      this.options.sanitizeConfig.addAttr.forEach((attr) => {
+        sanitizeOptions.ADD_ATTR.push(attr);
+      });
+    }
     // Allow tags
     if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
       sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;

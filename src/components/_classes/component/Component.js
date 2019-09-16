@@ -710,12 +710,34 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    return sanitize(dirty, {
+    // Dompurify configuration
+    const sanitizeOptions = {
       ADD_ATTR: ['ref', 'target'],
-      USE_PROFILES: {
-        html: true
-      }
-    });
+      USE_PROFILES: { html: true }
+    };
+    // Add attrs
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addAttr) && this.options.sanitizeConfig.addAttr.length > 0) {
+      this.options.sanitizeConfig.addAttr.forEach((attr) => {
+        sanitizeOptions.ADD_ATTR.push(attr);
+      });
+    }
+    // Add tags
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addTags) && this.options.sanitizeConfig.addTags.length > 0) {
+      sanitizeOptions.ADD_TAGS = this.options.sanitizeConfig.addTags;
+    }
+    // Allow tags
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
+      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
+    }
+    // Allow attributes
+    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttrs) && this.options.sanitizeConfig.allowedAttrs.length > 0) {
+      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
+    }
+    // Allowd URI Regex
+    if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
+      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
+    }
+    return sanitize(dirty, sanitizeOptions);
   }
 
   /**
@@ -1499,9 +1521,10 @@ export default class Component extends Element {
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
+    settings.mediaEmbed = { previewsInData: true };
     settings.image = {
-      toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:full', 'imageStyle:alignRight'],
-      styles: ['full', 'side', 'alignLeft', 'alignCenter', 'alignRight']
+      toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
+      styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
     };
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
