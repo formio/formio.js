@@ -57,7 +57,7 @@ const Evaluator = {
           console.warn('Error interpolating template', err, rawTemplate, data);
         }
 
-        if (options.hasOwnProperty('defaultValue')) {
+        if (options && options.hasOwnProperty('defaultValue')) {
           return options.defaultValue || '';
         }
       }
