@@ -29,7 +29,9 @@ const Evaluator = {
       console.warn('Error while processing template', err, template);
     }
   },
-  interpolate(rawTemplate, data) {
+  interpolate(rawTemplate, data, options) {
+    const { suppressWarnings } = options || {};
+
     if (typeof rawTemplate === 'function') {
       return rawTemplate(data);
     }
@@ -51,7 +53,13 @@ const Evaluator = {
         return template(data);
       }
       catch (err) {
-        console.warn('Error interpolating template', err, rawTemplate, data);
+        if (!suppressWarnings) {
+          console.warn('Error interpolating template', err, rawTemplate, data);
+        }
+
+        if (options && options.hasOwnProperty('defaultValue')) {
+          return options.defaultValue || '';
+        }
       }
     }
     return template;
