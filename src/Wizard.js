@@ -481,7 +481,9 @@ export default class Wizard extends Webform {
     this.destroyComponents();
     this.addComponents();
     const result = this.redraw();
-    this.component = _.cloneDeep(this.componentToRestore);
+    if (this.componentToRestore) {
+      this.component = _.cloneDeep(this.componentToRestore);
+    }
     return result;
   }
 
