@@ -29,6 +29,7 @@ export default class Wizard extends Webform {
     this.components = [];
     this.page = 0;
     this.currentNextPage = 0;
+    this.wasLoaded = false;
     this._seenPages = [0];
   }
 
@@ -82,7 +83,6 @@ export default class Wizard extends Webform {
       clickable: true
     });
 
-    this.page = 0;
     return super.init();
   }
 
@@ -167,6 +167,8 @@ export default class Wizard extends Webform {
       });
     });
 
+    this.setPage(this.page);
+
     return promises;
   }
 
@@ -195,14 +197,17 @@ export default class Wizard extends Webform {
   }
 
   setPage(num) {
-    if (num === this.page) {
+    debugger;
+    console.log(num);
+    if (num === this.page && this.wasLoaded) {
       return NativePromise.resolve();
     }
+    this.wasLoaded = true;
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
 
       // Handle field logic on pages.
-      this.component = this.panels[num];
+      this.component = _.cloneDeep(this.panels[num]);
       this.originalComponent = _.cloneDeep(this.component);
       this.fieldLogic(this.data);
       // If disabled changed, be sure to distribute the setting.
@@ -212,6 +217,7 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
       }
+      debugger;
       this.redraw();
       return NativePromise.resolve();
     }
