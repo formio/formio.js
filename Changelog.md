@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.0.9
 ### Fixed
+ - Custom validation errors clearing too often when external validations are set.
+ - Field logic not firing on first page of wizard.
  - Minor issues with semantic templates and incorrect variables.
  - Missing functions when calling components directly.
  - Client only persistence not reporting correctly in results.
