@@ -351,6 +351,7 @@ export default class EditGridComponent extends NestedComponent {
     else {
       this.redraw();
     }
+    return editRow;
   }
 
   addRowModal(rowIndex) {
