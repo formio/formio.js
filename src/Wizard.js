@@ -129,7 +129,10 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.page]]);
+    const pages = this.pages.length
+      ? [...this.pages[this.page]]
+      : [];
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...pages]);
 
     [
       { name: 'cancel',    method: 'cancel' },
@@ -379,6 +382,9 @@ export default class Wizard extends Webform {
         }
       ];
     }
+
+    this.originalComponents = _.cloneDeep(this.component.components);
+
     return super.setForm(form);
   }
 
