@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.10
+### Added
+ - Delete handler for file storage providers
+ 
+### Fixed
+ - Select component delete event
+ - Wizard page length can sometimes cause issues if used before initialized.
+ - Editgrid state for each row sometimes is wrong.
+
 ## 4.0.9
 ### Fixed
  - Custom validation errors clearing too often when external validations are set.
