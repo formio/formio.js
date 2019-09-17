@@ -727,7 +727,7 @@ export default class SelectComponent extends Field {
         const { key } = event;
 
         if (['Backspace', 'Delete'].includes(key)) {
-          this.setValue(null);
+          this.setValue(this.emptyValue);
         }
       });
 
