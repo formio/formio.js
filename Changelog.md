@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.11
+### Fixed 
+ - Use of for/of in template not supported in IE11
+
 ## 4.0.10
 ### Added
  - Delete handler for file storage providers
