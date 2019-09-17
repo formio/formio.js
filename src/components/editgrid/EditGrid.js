@@ -411,6 +411,7 @@ export default class EditGridComponent extends NestedComponent {
       const dataValue = this.dataValue || [];
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
         editRow.data = editRow.backup;
@@ -461,6 +462,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     editRow.dirty = false;
     editRow.isOpen = false;
+    editRow.editing = false;
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);
