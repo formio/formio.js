@@ -169,9 +169,11 @@ export default class Wizard extends Webform {
       if (item.type === 'panel') {
         if (checkCondition(item, this.data, this.data, this.component, this)) {
           this.panels.push(item);
+          if (!item.key) {
+            item.key = item.title;
+          }
           const page = this.createComponent(item, pageOptions);
           this.pages.push(page);
-
           page.eachComponent((component) => {
             component.page = this.page;
           });
@@ -433,6 +435,9 @@ export default class Wizard extends Webform {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (checkCondition(component, this.data, this.data, this.wizard, this)) {
+          if (!component.key) {
+            component.key = component.title;
+          }
           visible.push(component);
         }
       }
@@ -444,12 +449,13 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed);
 
     // Only rebuild if there is a page visibility change.
-    const panels = this.calculateVisiblePanels();
     const currentNextPage = this.currentNextPage;
     const nextPage = this.getNextPage();
+    const currentPanels = this.panels.map(panel => panel.key);
+    const panels = this.calculateVisiblePanels().map(panel => panel.key);
     if (
       (nextPage !== currentNextPage) ||
-      !_.isEqual(panels.map(panel => panel.key), this.panels.map(panel => panel.key))
+      !_.isEqual(panels, currentPanels)
     ) {
       // If visible panels changes we need to build this template again.
       this.rebuild();
