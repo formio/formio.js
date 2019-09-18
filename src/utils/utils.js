@@ -7,6 +7,7 @@ import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import NativePromise from 'native-promise-only';
+import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
 const interpolate = Evaluator.interpolate;
@@ -998,6 +999,43 @@ export function getContextComponents(context) {
     }
   });
   return values;
+}
+
+/**
+ * Sanitize an html string.
+ *
+ * @param string
+ * @returns {*}
+ */
+export function sanitize(string, options) {
+  // Dompurify configuration
+  const sanitizeOptions = {
+    ADD_ATTR: ['ref', 'target'],
+    USE_PROFILES: { html: true }
+  };
+  // Add attrs
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addAttr) && options.sanitizeConfig.addAttr.length > 0) {
+    options.sanitizeConfig.addAttr.forEach((attr) => {
+      sanitizeOptions.ADD_ATTR.push(attr);
+    });
+  }
+  // Add tags
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addTags) && options.sanitizeConfig.addTags.length > 0) {
+    sanitizeOptions.ADD_TAGS = options.sanitizeConfig.addTags;
+  }
+  // Allow tags
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.allowedTags) && options.sanitizeConfig.allowedTags.length > 0) {
+    sanitizeOptions.ALLOWED_TAGS = options.sanitizeConfig.allowedTags;
+  }
+  // Allow attributes
+  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.allowedAttrs) && options.sanitizeConfig.allowedAttrs.length > 0) {
+    sanitizeOptions.ALLOWED_ATTR = options.sanitizeConfig.allowedAttrs;
+  }
+  // Allowd URI Regex
+  if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
+    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+  }
+  return dompurify.sanitize(string, sanitizeOptions);
 }
 
 export { Evaluator, interpolate };

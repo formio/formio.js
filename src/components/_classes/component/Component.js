@@ -3,7 +3,6 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
-import { sanitize } from 'dompurify';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
@@ -705,12 +704,7 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    return sanitize(dirty, {
-      ADD_ATTR: ['ref', 'target'],
-      USE_PROFILES: {
-        html: true
-      }
-    });
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   /**
@@ -1502,9 +1496,10 @@ export default class Component extends Element {
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
+    settings.mediaEmbed = { previewsInData: true };
     settings.image = {
-      toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:full', 'imageStyle:alignRight'],
-      styles: ['full', 'side', 'alignLeft', 'alignCenter', 'alignRight']
+      toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
+      styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
     };
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
       .then(() => {
@@ -2125,7 +2120,7 @@ export default class Component extends Element {
         this.addInputError(message, dirty, this.refs.input);
       }
     }
-    else if (this.error && this.error.external === external) {
+    else if (this.error && this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
