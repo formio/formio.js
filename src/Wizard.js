@@ -1,7 +1,6 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import Component from './components/_classes/component/Component';
 import Formio from './Formio';
 import { checkCondition, firstNonNil } from './utils/utils';
 
