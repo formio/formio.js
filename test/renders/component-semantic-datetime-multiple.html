@@ -1,25 +1,29 @@
-<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  form-group" ref="component">
-  <label class="control-label ">
+<div id="dateTime" class="field form-group has-feedback formio-component formio-component-datetime formio-component-dateTime formio-component-multiple " ref="component">
+  <label class="">
     Date / Time
   </label>
-  <table class="table table-bordered">
+  <table class="ui celled table">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+          <div class="ui input fluid  right labeled">
+            <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+            <div class="ui label" ref="suffix"><i ref="icon" class="fa fa-calendar" style=""></i>
+            </div>
+          </div>
         </td>
         <td>
-          <button type="button" class="btn btn-default" ref="removeRow">
-            <i class="glyphicons glyphicons-remove-circle"></i>
+          <button type="button" class="ui icon button secondary" ref="removeRow">
+            <i class="trash icon"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+          <button class="ui button primary" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

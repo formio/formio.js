@@ -15,7 +15,8 @@ export default class FormComponent extends Component {
       src: '',
       reference: true,
       form: '',
-      path: ''
+      path: '',
+      tableView: true,
     }, ...extend);
   }
 
@@ -156,6 +157,34 @@ export default class FormComponent extends Component {
     return super.render(subform);
   }
 
+  asString(value) {
+    return this.getValueAsString(value);
+  }
+
+  /**
+   * Prints out the value of form components as a datagrid value.
+   */
+  getValueAsString(value) {
+    if (!Object.keys(value.data).length) {
+      return 'No data provided';
+    }
+    const columns = Object.keys(value.data).map(column => {
+      return {
+        key: column,
+        label: column,
+        hideLabel: false
+      };
+    });
+
+    return super.render(this.renderTemplate('datagrid', {
+      rows: [value.data],
+      columns: columns,
+      visibleColumns: value.data,
+      hasHeader: true,
+      numColumns: Object.keys(value.data).length,
+    }));
+  }
+
   attach(element) {
     super.attach(element);
     // Don't attach in builder.
@@ -164,7 +193,7 @@ export default class FormComponent extends Component {
     }
     return this.loadSubForm().then(() => {
       if (this.subForm) {
-        this.subForm.attach(element);
+        return this.subForm.attach(element);
       }
     });
   }

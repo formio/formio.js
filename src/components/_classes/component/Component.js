@@ -274,8 +274,8 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
-    this._parentVisible = true;
+    this._visible = this.conditionallyVisible(data);
+    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
     this._parentDisabled = false;
 
     /**
@@ -484,11 +484,6 @@ export default class Component extends Element {
    * @returns {boolean}
    */
   get visible() {
-    if (!this.rendered) {
-      // Keeps conditionally invisible fields from "flashing" when form is initially rendered.
-      this._visible = this.conditionallyVisible(this.data);
-    }
-
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (this.builderMode || this.options.showHiddenFields) {
       return true;
@@ -876,7 +871,7 @@ export default class Component extends Element {
 
   addShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -889,7 +884,7 @@ export default class Component extends Element {
 
   removeShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -1418,17 +1413,11 @@ export default class Component extends Element {
       this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
         message
       }));
-      // const errorMessage = this.ce('p', {
-      //   class: 'help-block'
-      // });
-      // errorMessage.appendChild(this.text(message));
-      // this.refs.messageContainer.appendChild(errorMessage);
     }
 
     // Add error classes
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-    this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'has-error');
+
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
@@ -1439,7 +1428,12 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (!this.rootPristine && this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+    if (
+      !this.rootPristine &&
+      this.component.clearOnHide !== false &&
+      !this.options.readOnly &&
+      !this.options.showHiddenFields
+    ) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1635,7 +1629,11 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      this.dataValue = this.component.multiple ? [] : this.emptyValue;
+      const empty = this.component.multiple ? [] : this.emptyValue;
+      if (!this.rootPristine) {
+        this.dataValue = empty;
+      }
+      return empty;
     }
     return _.get(this.data, this.key);
   }
@@ -2112,28 +2110,33 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit('componentError', this.error);
       if (this.refs.input) {
         this.addInputError(message, dirty, this.refs.input);
       }
     }
-    else {
+    else if (this.error && this.error.external === external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       if (this.refs.input) {
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
       }
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
-      this.error = null;
     }
+
     if (!this.refs.input) {
       return;
     }
@@ -2197,6 +2200,9 @@ export default class Component extends Element {
   }
 
   setDisabled(element, disabled) {
+    if (!element) {
+      return;
+    }
     element.disabled = disabled;
     if (disabled) {
       element.setAttribute('disabled', 'disabled');
@@ -2207,7 +2213,7 @@ export default class Component extends Element {
   }
 
   setLoading(element, loading) {
-    if (element.loading === loading) {
+    if (!element || (element.loading === loading)) {
       return;
     }
 

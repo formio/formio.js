@@ -287,12 +287,6 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    this._valueProperty = this.component.valueProperty;
-    // Force values datasource to use values without actually setting it on the component settings.
-    if (this.component.dataSrc === &apos;values&apos;) {
-      this._valueProperty = &apos;value&apos;;
-    }
-
     if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
@@ -330,7 +324,15 @@ export default class SelectComponent extends Field {
   }
 
   get valueProperty() {
-    return this._valueProperty;
+    if (this.component.valueProperty) {
+      return this.component.valueProperty;
+    }
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === &apos;values&apos;) {
+      return &apos;value&apos;;
+    }
+
+    return &apos;&apos;;
   }
 
   get inputInfo() {
@@ -621,7 +623,7 @@ export default class SelectComponent extends Field {
 
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + Formio.serialize(query, (item) =&gt; this.interpolate(item.toString()));
+      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + Formio.serialize(query, (item) =&gt; this.interpolate(item));
     }
 
     // Add filter capability

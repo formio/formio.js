@@ -44,6 +44,10 @@ export default class Multivalue extends Field {
     }));
   }
 
+  renderElement() {
+    return '';
+  }
+
   renderRow(value, index) {
     return this.renderTemplate('multiValueRow', {
       index,

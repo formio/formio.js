@@ -243,9 +243,9 @@ export default class NestedComponent extends Field {
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
+    options.parentVisible = this.visible;
     options.root = this.root || this;
     const comp = Components.create(component, options, data, true);
-    comp.parentVisible = this.visible;
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -583,7 +583,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags) || changed;
     }
-    else {
+    else if (!this.rootPristine) {
       flags.noValidate = true;
       return component.setValue(component.defaultValue, flags) || changed;
     }

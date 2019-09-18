@@ -1,4 +1,4 @@
-<div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea  form-group" ref="component">
+<div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea formio-component-multiple  form-group" ref="component">
   <label class="control-label ">
     Text Area
   </label>
@@ -6,17 +6,17 @@
     <tbody>
       <tr ref="row">
         <td>
-          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en"></textarea>
+          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" rows="3"></textarea>
         </td>
         <td>
           <button type="button" class="btn btn-default" ref="removeRow">
-            <i class="glyphicons glyphicons-remove-circle"></i>
+            <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>

@@ -1,9 +1,13 @@
-<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  form-group" ref="component">
-  <label class="control-label ">
+<div id="dateTime" class="field form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
+  <label class="">
     Date / Time
   </label>
   <div ref="element">
-    <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+    <div class="ui input fluid  right labeled">
+      <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+      <div class="ui label" ref="suffix"><i ref="icon" class="fa fa-calendar" style=""></i>
+      </div>
+    </div>
   </div>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>
