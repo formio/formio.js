@@ -44,16 +44,8 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pageOptions = _.clone(this.options);
-    const components = _.clone(this.components);
     const pages = this.pages
-          .filter(all ? _.identity : (p, index) => this._seenPages.includes(index))
-          .map((page, index) => this.createComponent(
-            page,
-            _.assign(pageOptions, { components: index === this.page ? components : null })
-          ));
-
-    this.components = components;
+          .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
     return pages;
   }
@@ -114,7 +106,7 @@ export default class Wizard extends Webform {
       panels: this.panels,
       buttons: this.buttons,
       currentPage: this.page,
-      components: this.renderComponents([...this.globalComponents, ...this.pages[this.page]]),
+      components: this.renderComponents([...this.globalComponents, ...this.currentPage.components]),
     }, this.builderMode ? 'builder' : 'form');
   }
 
@@ -129,10 +121,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const pages = this.pages.length
-      ? [...this.pages[this.page]]
-      : [];
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...pages]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
 
     [
       { name: 'cancel',    method: 'cancel' },
@@ -176,18 +165,17 @@ export default class Wizard extends Webform {
   addComponents() {
     this.pages = [];
     this.panels = [];
-    _.each(this.component.components, (item) => {
+    _.each(this.originalComponents, (item) => {
       const pageOptions = _.clone(this.options);
       if (item.type === 'panel') {
         if (checkCondition(item, this.data, this.data, this.component, this)) {
           this.panels.push(item);
-          const page = [];
-          _.each(item.components, (comp) => {
-            const component = this.createComponent(comp, pageOptions);
-            component.page = this.page;
-            page.push(component);
-          });
+          const page = this.createComponent(item, pageOptions);
           this.pages.push(page);
+
+          page.eachComponent((component) => {
+            component.page = this.page;
+          });
         }
       }
       else if (item.type === 'hidden') {
@@ -230,7 +218,7 @@ export default class Wizard extends Webform {
   }
 
   get currentPage() {
-    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
+    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : { components: [] };
   }
 
   getNextPage() {
@@ -290,7 +278,7 @@ export default class Wizard extends Webform {
 
         const form = this.currentPage;
         if (form) {
-          NativePromise.all(form.map((comp) => comp.beforePage(next))).then(resolve).catch(reject);
+          form.beforePage(next).then(resolve).catch(reject);
         }
         else {
           resolve();
@@ -308,7 +296,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkCurrentPageValidity(this.submission.data, true)) {
+    if (this.checkValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -347,16 +335,6 @@ export default class Wizard extends Webform {
       }
     });
     return pageIndex;
-  }
-
-  checkPageValidity(data, dirty, page) {
-    page = page || this.page;
-
-    let check = true;
-    this.pages[page].forEach((comp) => {
-      check &= comp.checkValidity(data, dirty);
-    });
-    return check;
   }
 
   get schema() {
@@ -485,35 +463,25 @@ export default class Wizard extends Webform {
     return this.redraw();
   }
 
-  checkCurrentPageValidity(...args) {
-    return super.checkValidity(...args);
-  }
-
-  checkPagesValidity(pages, ...args) {
-    const isValid = Component.prototype.checkValidity.apply(this, args);
-    return pages.reduce((check, pageComp) => {
-      return pageComp.checkValidity(...args) && check;
-    }, isValid);
-  }
-
   checkValidity(data, dirty) {
-    if (this.submitting) {
-      return this.checkPagesValidity(this.getPages(), data, dirty);
+    if (!this.checkCondition(null, data)) {
+      this.setCustomValidity('');
+      return true;
     }
-    else {
-      return this.checkCurrentPageValidity(data, dirty);
-    }
+
+    const components = !this.isLastPage()
+      ? this.currentPage.components
+      : this.getComponents();
+
+    return components.reduce(
+      (check, comp) => comp.checkValidity(data, dirty) && check,
+      true
+    );
   }
 
   get errors() {
-    if (this.isLastPage()) {
-      const pages = this.getPages({ all: true });
-
-      this.checkPagesValidity(pages, this.submission.data, true);
-
-      return pages.reduce((errors, pageComp) => {
-        return errors.concat(pageComp.errors || []);
-      }, []);
+    if (!this.isLastPage()) {
+      return this.currentPage.errors;
     }
 
     return super.errors;
