@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.11
+### Fixed 
+ - Use of for/of in template not supported in IE11
+
+## 4.0.10
+### Added
+ - Delete handler for file storage providers
+ 
+### Fixed
+ - Select component delete event
+ - Wizard page length can sometimes cause issues if used before initialized.
+ - Editgrid state for each row sometimes is wrong.
+
+## 4.0.9
+### Fixed
+ - Custom validation errors clearing too often when external validations are set.
+ - Field logic not firing on first page of wizard.
+ - Minor issues with semantic templates and incorrect variables.
+ - Missing functions when calling components directly.
+ - Client only persistence not reporting correctly in results.
+ - Get tests running and passing.
+ - Fix clear on hide when initially setting values and when items show or hide.
+
+## 4.0.8
+### Reverted
+ - Changing the way tabs are attached since it broke setting values in all non-active tabs.
+
+## 4.0.7
+### Fixed
+ - Select with boolean or simple numbers were not matching on setValue
+ - Builder defaults options to an empty object if not given.
+
+## 4.0.6
+### Added
+ - Select and Radio can now specify the Storage Type for date type casting.
+
+### Fixed
+ - Shortcuts missing options in builder.
+ - Datetime component losing timezone when saving
+ - Field logic not firing on panel pages.
+
 ## 4.0.5
 ### Added
  - Add string representation of form component for table views.

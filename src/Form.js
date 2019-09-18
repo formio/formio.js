@@ -34,21 +34,24 @@ export default class Form extends Element {
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
-      this.options = args[2];
+      this.options = args[2] || {};
+      this.options.events = this.events;
       this.setForm(args[1])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else if (args[0]) {
       this.element = null;
-      this.options = args[1];
+      this.options = args[1] || {};
+      this.options.events = this.events;
       this.setForm(args[0])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else {
       this.element = null;
-      this.options = null;
+      this.options = {};
+      this.options.events = this.events;
     }
     this.display = '';
   }

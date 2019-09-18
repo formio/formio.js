@@ -62,7 +62,7 @@
 </div>
 {% } else if (!ctx.self.cameraMode) { %}
 <div class="fileSelector" ref="fileDrop">
-  <i class="{{iconClass('cloud-upload')}}"></i> Drop files to attach,
+  <i class="{{ctx.iconClass('cloud-upload')}}"></i> Drop files to attach,
     {% if (ctx.component.image) { %}
       <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> Use Camera</a>,
     {% } %}

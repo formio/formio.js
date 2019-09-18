@@ -1,25 +1,27 @@
-<div id="textField" class="form-group has-feedback formio-component formio-component-textfield formio-component-textField  form-group" ref="component">
-  <label class="control-label ">
+<div id="textField" class="field form-group has-feedback formio-component formio-component-textfield formio-component-textField formio-component-multiple " ref="component">
+  <label class="">
     Text Field
   </label>
-  <table class="table table-bordered">
+  <table class="ui celled table">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" value=""></input>
+          <div class="ui input fluid ">
+            <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" value=""></input>
+          </div>
         </td>
         <td>
-          <button type="button" class="btn btn-default" ref="removeRow">
-            <i class="glyphicons glyphicons-remove-circle"></i>
+          <button type="button" class="ui icon button secondary" ref="removeRow">
+            <i class="trash icon"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+          <button class="ui button primary" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

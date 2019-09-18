@@ -727,7 +727,7 @@ export default class SelectComponent extends Field {
         const { key } = event;
 
         if (['Backspace', 'Delete'].includes(key)) {
-          this.setValue(null);
+          this.setValue(this.emptyValue);
         }
       });
 
@@ -1042,8 +1042,33 @@ export default class SelectComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
-      value = +value;
+    const dataType = _.get(this.component, 'dataType', 'auto');
+    switch (dataType) {
+      case 'auto':
+        if (!isNaN(parseFloat(value)) && isFinite(value)) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case 'boolean':
+        value = !!value;
+        break;
     }
     return super.normalizeValue(value);
   }
@@ -1055,6 +1080,21 @@ export default class SelectComponent extends Field {
     value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
+
+    // Undo typing when searching to set the value.
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(value => {
+        if (typeof value === 'boolean' || typeof value === 'number') {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        value = value.toString();
+      }
+    }
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -1196,26 +1236,29 @@ export default class SelectComponent extends Field {
     this.focusableElement.focus();
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
-    if (!this.refs.selectContainer) {
-      return;
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty, [this.refs.selectContainer]);
+      if (this.refs.selectContainer) {
+        this.addInputError(message, dirty, [this.refs.selectContainer]);
+      }
     }
-    else {
+    else if (this.error && this.error.external === external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       this.removeClass(this.refs.selectContainer, 'is-invalid');
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
-      this.error = null;
     }
   }
 }

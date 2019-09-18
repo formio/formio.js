@@ -129,7 +129,10 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.page]]);
+    const pages = this.pages.length
+      ? [...this.pages[this.page]]
+      : [];
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...pages]);
 
     [
       { name: 'cancel',    method: 'cancel' },
@@ -200,6 +203,9 @@ export default class Wizard extends Webform {
     }
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
+
+      this.pageFieldLogic(num);
+
       this.getNextPage();
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
@@ -212,6 +218,15 @@ export default class Wizard extends Webform {
       return NativePromise.resolve();
     }
     return NativePromise.reject('Page not found');
+  }
+
+  pageFieldLogic(page) {
+    // Handle field logic on pages.
+    this.component = this.panels[page];
+    this.originalComponent = _.cloneDeep(this.component);
+    this.fieldLogic(this.data);
+    // If disabled changed, be sure to distribute the setting.
+    this.disabled = this.shouldDisabled;
   }
 
   get currentPage() {
@@ -367,7 +382,16 @@ export default class Wizard extends Webform {
         }
       ];
     }
+
+    this.originalComponents = _.cloneDeep(this.component.components);
+
     return super.setForm(form);
+  }
+
+  setValue(submission, flags) {
+    const changed = super.setValue(submission, flags);
+    this.pageFieldLogic(this.page);
+    return changed;
   }
 
   isClickable(page, index) {

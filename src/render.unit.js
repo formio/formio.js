@@ -4,11 +4,11 @@ const pretty = require('pretty');
 import assert from 'power-assert';
 import i18next from 'i18next';
 
-const i18Defaults = require('../lib/i18n');
-const AllComponents = require('../lib/components').default;
-const Components = require('../lib/components/Components').default;
-const templates = require('../lib/templates').default;
-const Form = require('../lib/Form').default;
+const i18Defaults = require('./i18n');
+const AllComponents = require('./components').default;
+const Components = require('./components/Components').default;
+const templates = require('./templates').default;
+const Form = require('./Form').default;
 Components.setComponents(AllComponents);
 
 const fixComponent = (instance, index = 0) => {
@@ -16,9 +16,13 @@ const fixComponent = (instance, index = 0) => {
   index++;
   if (instance.type === 'form') {
     instance.everyComponent(component => fixComponent(component, index));
-    if (instance.hasOwnProperty('subForm')) {
+    if (instance.hasOwnProperty('subForm') && instance.subForm) {
       instance.subForm.id = instance.key;
     }
+  }
+  if (instance.type === 'file') {
+    instance.support.filereader = true;
+    instance.support.hasWarning = false;
   }
 };
 
@@ -38,9 +42,8 @@ describe('Rendering Tests', () => {
       describe('Form Renders', () => {
         Object.keys(forms).forEach(form => {
           it(`Form renders ${form}`, () => {
-            return new Form(forms[form]).ready.then(instance => {
+            return new Form(forms[form], { template: framework }).ready.then(instance => {
               fixComponent(instance);
-              console.log(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
               assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
             });
           });
@@ -50,9 +53,8 @@ describe('Rendering Tests', () => {
       Object.keys(AllComponents).forEach(component => {
         describe(`Component ${component}`, () => {
           it(`Renders ${component} for ${framework}`, (done) => {
-            const instance = new AllComponents[component]();
+            const instance = new AllComponents[component]({}, { template: framework });
             fixComponent(instance);
-            console.log(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
             assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
             done();
           });
@@ -61,6 +63,8 @@ describe('Rendering Tests', () => {
               validate: {
                 required: true
               }
+            }, {
+              template: framework,
             });
             fixComponent(instance);
             assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
@@ -69,6 +73,8 @@ describe('Rendering Tests', () => {
           it(`Renders ${component} for ${framework} as multiple`, (done) => {
             const instance = new AllComponents[component]({
               multiple: true
+            }, {
+              template: framework,
             });
             fixComponent(instance);
             assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));

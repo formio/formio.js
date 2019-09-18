@@ -1,14 +1,15 @@
-<div id="editGrid" class="form-group has-feedback formio-component formio-component-editgrid formio-component-editGrid  required form-group" ref="component">
-  <label class="control-label" style="">Edit Grid</label>
-  <ul class="editgrid-listgroup list-group 
-    ">
-    <li class="list-group-item list-group-header">
+<div id="editGrid" class="field form-group has-feedback formio-component formio-component-editgrid formio-component-editGrid  required" ref="component">
+  <label class=" field-required">
+    Edit Grid
+  </label>
+  <div class="editgrid-listgroup ui celled list">
+    <div class="item list-group-header">
       <div class="row">
       </div>
-    </li>
-  </ul>
-  <button class="btn btn-primary formio-button-add-another" ref="editgrid-editGrid-addRow">
-    <i class="glyphicons glyphicons-plus"></i> Add Another
+    </div>
+  </div>
+  <button class="ui button primary" ref="editgrid-editGrid-addRow">
+    <i class="fa fa-plus"></i> Add Another
   </button>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>
