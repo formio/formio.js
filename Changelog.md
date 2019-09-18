@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixing the tags component setValue and getValue to work without choices.
  - Fix events missing from Form factory.
  - SAML is redirecting to home page after handshake. 
+ - Fixing issues with the panels from refreshing in wizards if they do not have keys.
  
 ### Added
  - Adding element protections.
