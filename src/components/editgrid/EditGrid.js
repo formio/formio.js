@@ -243,41 +243,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkRow(data, editRow, flags = {}) {
-    let valid = true;
-    if (flags.noCheck) {
-      return;
-    }
-
-    // Update the value.
-    let changed = this.updateValue(null, {
-      noUpdateEvent: true
-    });
-
-    // Iterate through all components and check conditions, and calculate values.
-    editRow.components.forEach(comp => {
-      if (comp.checkData) {
-        valid &= comp.checkData(data, flags);
-      }
-      changed |= comp.calculateValue(data, {
-        noUpdateEvent: true
-      });
-      comp.checkConditions(data);
-      if (!flags.noValidate) {
-        valid &= comp.checkValidity(data, this.component.inlineEdit || !editRow.isOpen);
-      }
-    });
-
-    if (!flags.noValidate) {
-      valid &= (this.validateRow(editRow) === true);
-    }
-
-    // Trigger the change if the values changed.
-    if (changed) {
-      this.triggerChange(flags);
-    }
-
-    // Return if the value is valid.
-    return valid;
+    return super.checkData(data, flags, editRow.components);
   }
 
   everyComponent(fn, rowIndex) {

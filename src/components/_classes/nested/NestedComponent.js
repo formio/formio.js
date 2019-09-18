@@ -442,66 +442,25 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags, source) {
+  updateValue(value, flags) {
     return this.components.reduce((changed, comp) => {
-      // Skip over the source if it is provided.
-      if (source && source.id === comp.id) {
-        return changed;
-      }
       return comp.updateValue(null, flags) || changed;
-    }, false);
+    }, super.updateValue(value, flags));
   }
 
   hasChanged() {
     return false;
   }
 
-  /**
-   * A more performant way to check the conditions, calculations, and validity of
-   * a submission once it has been changed.
-   *
-   * @param data
-   * @param flags
-   */
-  checkData(data, flags, source) {
-    flags = flags || {};
-    let valid = true;
-    if (flags.noCheck) {
-      return;
-    }
-
-    // Update the value.
-    let changed = this.updateValue(null, {
-      noUpdateEvent: true
-    }, source);
-
-    // Iterate through all components and check conditions, and calculate values.
-    this.getComponents().forEach((comp) => {
-      if (comp.checkData) {
-        valid &= comp.checkData(data, flags);
-      }
-      changed |= comp.calculateValue(data, {
-        noUpdateEvent: true
-      });
-      comp.checkConditions(data, true);
-      if (!flags.noValidate) {
-        valid &= comp.checkValidity(data);
-      }
-    });
-
-    // Trigger the change if the values changed.
-    if (changed) {
-      this.triggerChange(flags, changed);
-    }
-
-    // Return if the value is valid.
-    return !!valid;
+  checkData(data, flags, components) {
+    components = components || this.getComponents();
+    return components.reduce((valid, comp) => {
+      return comp.checkData(data, flags) && valid;
+    }, super.checkData(data, flags));
   }
 
-  checkConditions(data, norecurse) {
-    if (!norecurse) {
-      this.getComponents().forEach(comp => comp.checkConditions(data, norecurse));
-    }
+  checkConditions(data) {
+    this.getComponents().forEach(comp => comp.checkConditions(data));
     return super.checkConditions(data);
   }
 

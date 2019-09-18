@@ -1288,7 +1288,7 @@ export default class Component extends Element {
   /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
-  checkConditions(data) {
+  checkComponentConditions(data) {
     data = data || this.rootValue;
 
     // Check advanced conditions
@@ -1302,6 +1302,15 @@ export default class Component extends Element {
     }
 
     return visible;
+  }
+
+  /**
+   * Checks conditions for this component and any sub components.
+   * @param args
+   * @return {boolean}
+   */
+  checkConditions(...args) {
+    return this.checkComponentConditions(...args);
   }
 
   get logic() {
@@ -1823,7 +1832,7 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateValue(value, flags) {
+  updateComponentValue(value, flags) {
     flags = flags || {};
     let newValue = (value === undefined || value === null) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue);
@@ -1833,6 +1842,16 @@ export default class Component extends Element {
       this.updateOnChange(flags, changed);
     }
     return changed;
+  }
+
+  /**
+   * Updates the value of this component plus all sub-components.
+   *
+   * @param args
+   * @return {boolean}
+   */
+  updateValue(...args) {
+    return this.updateComponentValue(...args);
   }
 
   getIcon(name, content, styles, ref = 'icon') {
@@ -1890,7 +1909,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
-  calculateValue(data, flags) {
+  calculateComponentValue(data, flags) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
@@ -1938,11 +1957,19 @@ export default class Component extends Element {
       return true;
     }
 
-    flags = flags || {};
-    flags.noCheck = true;
     const changed = this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
     return changed;
+  }
+
+  /**
+   * Performs calculations in this component plus any child components.
+   *
+   * @param args
+   * @return {boolean}
+   */
+  calculateValue(...args) {
+    return this.calculateComponentValue(...args);
   }
 
   /**
@@ -2009,7 +2036,15 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  checkValidity(data, dirty, rowData) {
+  /**
+   * Checks the validity of this component and sets the error message if it is invalid.
+   *
+   * @param data
+   * @param dirty
+   * @param rowData
+   * @return {boolean}
+   */
+  checkComponentValidity(data, dirty, rowData) {
     if (this.shouldSkipValidation(data, dirty, rowData)) {
       this.setCustomValidity('');
       return true;
@@ -2024,6 +2059,29 @@ export default class Component extends Element {
       this.setCustomValidity('');
     }
     return !error;
+  }
+
+  checkValidity(...args) {
+    return this.checkComponentValidity(...args);
+  }
+
+  /**
+   * Check the conditions, calculations, and validity of a single component and triggers an update if
+   * something changed.
+   *
+   * @param data - The contextual data of the change event.
+   * @param flags - The flags from this change event.
+   *
+   * @return boolean - If component is valid or not.
+   */
+  checkData(data, flags) {
+    flags = flags || {};
+    if (flags.noCheck) {
+      return true;
+    }
+    this.calculateComponentValue(data);
+    this.checkComponentConditions(data);
+    return flags.noValidate ? true : this.checkComponentValidity(data);
   }
 
   get validationValue() {
