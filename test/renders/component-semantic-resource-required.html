@@ -1,7 +1,8 @@
-<div id="resource" class="form-group has-feedback formio-component formio-component-resource formio-component-resource  required form-group" ref="component">
-  <label class="control-label  field-required">
+<div id="resource" class="field form-group has-feedback formio-component formio-component-resource formio-component-resource  required" ref="component">
+  <label class=" field-required">
     Resource
   </label>
-  <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en"></select>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <select ref="selectContainer" class="ui search dropdown" name="data[resource]" type="text" class="form-control" lang="en"></select>
+  <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
+  <div ref="messageContainer"></div>
 </div>

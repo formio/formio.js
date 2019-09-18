@@ -1,4 +1,33 @@
-<div id="dataMap" class="form-group has-feedback formio-component formio-component-datamap formio-component-dataMap  form-group" ref="component">
-  Unknown component: datamap
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+<div id="dataMap" class="field form-group has-feedback formio-component formio-component-datamap formio-component-dataMap formio-component-multiple " ref="component">
+  <label class="">
+    Data Map
+  </label>
+  <table class="ui table datagrid-table
+    padded
+    ">
+    <thead>
+      <tr>
+        <th class="">
+          Key
+        </th>
+        <th class="">
+          Value
+        </th>
+        <th>
+        </th>
+      </tr>
+    </thead>
+    <tbody ref="datagrid-dataMap-tbody">
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">
+          <button class="ui button primary" ref="datagrid-dataMap-addRow">
+            <i class="fa fa-plus"></i> Add Another
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <div ref="messageContainer"></div>
 </div>

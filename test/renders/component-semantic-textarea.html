@@ -1,9 +1,11 @@
-<div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea  form-group" ref="component">
-  <label class="control-label ">
+<div id="textArea" class="field form-group has-feedback formio-component formio-component-textarea formio-component-textArea " ref="component">
+  <label class="">
     Text Area
   </label>
   <div ref="element">
-    <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en"></textarea>
+    <div class="ui input fluid ">
+      <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" rows="3"></textarea>
+    </div>
   </div>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

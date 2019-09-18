@@ -1,9 +1,11 @@
-<div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number  required form-group" ref="component">
-  <label class="control-label  field-required">
+<div id="number" class="field form-group has-feedback formio-component formio-component-number formio-component-number  required" ref="component">
+  <label class=" field-required">
     Number
   </label>
   <div ref="element">
-    <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value=""></input>
+    <div class="ui input fluid ">
+      <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value=""></input>
+    </div>
   </div>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

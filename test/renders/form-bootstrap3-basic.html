@@ -1,5 +1,5 @@
-<div id="" class="form-group has-feedback formio-component formio-component-undefined  form-group" ref="component">
-  <div class="formio-form" ref="webform">
+<div id="" class="formio-component formio-component-form  formio-component-label-hidden form-group" ref="component">
+  <div class="formio-form" ref="webform" novalidate>
     <div id="text" class="form-group has-feedback formio-component formio-component-textfield formio-component-text  required form-group" ref="component">
       <label class="control-label  field-required">
         Text
@@ -9,7 +9,7 @@
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="multiple" class="form-group has-feedback formio-component formio-component-textfield formio-component-multiple  form-group" ref="component">
+    <div id="multiple" class="form-group has-feedback formio-component formio-component-textfield formio-component-multiple formio-component-multiple  form-group" ref="component">
       <label class="control-label ">
         Multiple
       </label>
@@ -21,23 +21,23 @@
             </td>
             <td>
               <button type="button" class="btn btn-default" ref="removeRow">
-                <i class="glyphicons glyphicons-remove-circle"></i>
+                <i class="fa fa-times-circle-o"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td colspan="2">
-              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
             </td>
           </tr>
         </tbody>
       </table>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="everything" class="form-group has-feedback formio-component formio-component-textfield formio-component-everything CustomCssClass required form-group" ref="component">
+    <div id="everything" class="form-group has-feedback formio-component formio-component-textfield formio-component-everything formio-component-multiple CustomCssClass required form-group" ref="component">
       <label class="control-label  field-required">
         Everything
-        <i ref="tooltip" class="glyphicons glyphicons-question-sign text-muted" data-title="Tooltip"></i>
+        <i ref="tooltip" class="fa fa-question-circle text-muted"></i>
       </label>
       <table class="table table-bordered">
         <tbody>
@@ -51,13 +51,13 @@
             </td>
             <td>
               <button type="button" class="btn btn-default" ref="removeRow">
-                <i class="glyphicons glyphicons-remove-circle"></i>
+                <i class="fa fa-times-circle-o"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td colspan="2">
-              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
             </td>
           </tr>
         </tbody>
@@ -92,9 +92,9 @@
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox  checkbox form-group" ref="component">
-      <div class="form-check">
-        <label class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox  checkbox form-check-label">
+    <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox  form-group" ref="component">
+      <div class="form-check checkbox">
+        <label class=" form-check-label">
           <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0">
           <span>Checkbox</span>
           </input>
@@ -133,6 +133,7 @@
         Select
       </label>
       <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en"></select>
+      <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio  form-group" ref="component">
@@ -187,12 +188,12 @@
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="content" class="formio-component formio-component-htmlelement formio-component-content  form-group" ref="component">
-      <p ref="html" attribute="value">HTML Content</p>
+    <div id="content" class="formio-component formio-component-htmlelement formio-component-content  formio-component-label-hidden form-group" ref="component">
+      <p class="cssclass" ref="html" attribute="value">HTML Content</p>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="content2" class="formio-component formio-component-content formio-component-content2  form-group" ref="component">
-      <div ref="html">
+    <div id="content2" class="formio-component formio-component-content formio-component-content2  formio-component-label-hidden form-group" ref="component">
+      <div class="" ref="html">
         <p>Content <strong>Bold</strong></p>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -201,6 +202,9 @@
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
         Submit
       </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
   </div>
