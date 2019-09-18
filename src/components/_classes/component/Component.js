@@ -3,7 +3,6 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
-import { sanitize } from 'dompurify';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
@@ -705,34 +704,7 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    // Dompurify configuration
-    const sanitizeOptions = {
-      ADD_ATTR: ['ref', 'target'],
-      USE_PROFILES: { html: true }
-    };
-    // Add attrs
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addAttr) && this.options.sanitizeConfig.addAttr.length > 0) {
-      this.options.sanitizeConfig.addAttr.forEach((attr) => {
-        sanitizeOptions.ADD_ATTR.push(attr);
-      });
-    }
-    // Add tags
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addTags) && this.options.sanitizeConfig.addTags.length > 0) {
-      sanitizeOptions.ADD_TAGS = this.options.sanitizeConfig.addTags;
-    }
-    // Allow tags
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
-      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
-    }
-    // Allow attributes
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttrs) && this.options.sanitizeConfig.allowedAttrs.length > 0) {
-      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
-    }
-    // Allowd URI Regex
-    if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
-      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
-    }
-    return sanitize(dirty, sanitizeOptions);
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   /**

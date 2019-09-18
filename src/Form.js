@@ -4,7 +4,7 @@ import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
 import templates from './templates';
-import { sanitize } from 'dompurify';
+import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 
 export default class Form extends Element {
@@ -180,32 +180,7 @@ export default class Form extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    // Dompurify configuration
-    const sanitizeOptions = {
-      ADD_ATTR: ['ref'],
-      USE_PROFILES: {
-        html: true
-      }
-    };
-    // Add attrs
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.addAttr) && this.options.sanitizeConfig.addAttr.length > 0) {
-      this.options.sanitizeConfig.addAttr.forEach((attr) => {
-        sanitizeOptions.ADD_ATTR.push(attr);
-      });
-    }
-    // Allow tags
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
-      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
-    }
-    // Allow attributes
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttrs) && this.options.sanitizeConfig.allowedAttrs.length > 0) {
-      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
-    }
-    // Allowd URI Regex
-    if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
-      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
-    }
-    return sanitize(dirty, sanitizeOptions);
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   setContent(element, content) {
