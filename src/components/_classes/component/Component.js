@@ -871,7 +871,7 @@ export default class Component extends Element {
 
   addShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -884,7 +884,7 @@ export default class Component extends Element {
 
   removeShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -2142,6 +2142,9 @@ export default class Component extends Element {
   }
 
   setDisabled(element, disabled) {
+    if (!element) {
+      return;
+    }
     element.disabled = disabled;
     if (disabled) {
       element.setAttribute('disabled', 'disabled');
@@ -2152,7 +2155,7 @@ export default class Component extends Element {
   }
 
   setLoading(element, loading) {
-    if (element.loading === loading) {
+    if (!element || (element.loading === loading)) {
       return;
     }
 
