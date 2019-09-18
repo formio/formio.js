@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -953,7 +954,7 @@ export default class SelectComponent extends Field {
         const { key } = event;
 
         if ([&apos;Backspace&apos;, &apos;Delete&apos;].includes(key)) {
-          this.setValue(null);
+          this.setValue(this.emptyValue);
         }
       });
 
@@ -1268,8 +1269,33 @@ export default class SelectComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
-      value = +value;
+    const dataType = _.get(this.component, &apos;dataType&apos;, &apos;auto&apos;);
+    switch (dataType) {
+      case &apos;auto&apos;:
+        if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
+          value = +value;
+        }
+        if (value === &apos;true&apos;) {
+          value = true;
+        }
+        if (value === &apos;false&apos;) {
+          value = false;
+        }
+        break;
+      case &apos;number&apos;:
+        value = +value;
+        break;
+      case &apos;string&apos;:
+        if (typeof value === &apos;object&apos;) {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case &apos;boolean&apos;:
+        value = !!value;
+        break;
     }
     return super.normalizeValue(value);
   }
@@ -1281,6 +1307,21 @@ export default class SelectComponent extends Field {
     value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
+
+    // Undo typing when searching to set the value.
+    if (this.component.multiple &amp;&amp; Array.isArray(value)) {
+      value = value.map(value =&gt; {
+        if (typeof value === &apos;boolean&apos; || typeof value === &apos;number&apos;) {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === &apos;boolean&apos; || typeof value === &apos;number&apos;) {
+        value = value.toString();
+      }
+    }
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -1422,26 +1463,29 @@ export default class SelectComponent extends Field {
     this.focusableElement.focus();
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
-    if (!this.refs.selectContainer) {
-      return;
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit(&apos;componentError&apos;, this.error);
-      this.addInputError(message, dirty, [this.refs.selectContainer]);
+      if (this.refs.selectContainer) {
+        this.addInputError(message, dirty, [this.refs.selectContainer]);
+      }
     }
-    else {
+    else if (this.error &amp;&amp; this.error.external === external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       this.removeClass(this.refs.selectContainer, &apos;is-invalid&apos;);
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
-      this.error = null;
     }
   }
 }

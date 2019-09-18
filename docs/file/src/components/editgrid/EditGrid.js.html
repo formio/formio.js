@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -469,41 +470,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkRow(data, editRow, flags = {}) {
-    let valid = true;
-    if (flags.noCheck) {
-      return;
-    }
-
-    // Update the value.
-    let changed = this.updateValue(null, {
-      noUpdateEvent: true
-    });
-
-    // Iterate through all components and check conditions, and calculate values.
-    editRow.components.forEach(comp =&gt; {
-      if (comp.checkData) {
-        valid &amp;= comp.checkData(data, flags);
-      }
-      changed |= comp.calculateValue(data, {
-        noUpdateEvent: true
-      });
-      comp.checkConditions(data);
-      if (!flags.noValidate) {
-        valid &amp;= comp.checkValidity(data, this.component.inlineEdit || !editRow.isOpen);
-      }
-    });
-
-    if (!flags.noValidate) {
-      valid &amp;= (this.validateRow(editRow) === true);
-    }
-
-    // Trigger the change if the values changed.
-    if (changed) {
-      this.triggerChange(flags);
-    }
-
-    // Return if the value is valid.
-    return valid;
+    return super.checkData(data, flags, editRow.components);
   }
 
   everyComponent(fn, rowIndex) {
@@ -577,6 +544,7 @@ export default class EditGridComponent extends NestedComponent {
     else {
       this.redraw();
     }
+    return editRow;
   }
 
   addRowModal(rowIndex) {
@@ -637,6 +605,7 @@ export default class EditGridComponent extends NestedComponent {
       const dataValue = this.dataValue || [];
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
         editRow.data = editRow.backup;
@@ -687,6 +656,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     editRow.dirty = false;
     editRow.isOpen = false;
+    editRow.editing = false;
     this.updateValue();
     this.triggerChange();
     this.checkValidity(this.data, true);

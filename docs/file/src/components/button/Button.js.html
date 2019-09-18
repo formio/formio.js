@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -331,21 +332,8 @@ export default class ButtonComponent extends Field {
     }));
   }
 
-  attach(element) {
-    this.loadRefs(element, {
-      button: &apos;single&apos;,
-      buttonMessageContainer: &apos;single&apos;,
-      buttonMessage: &apos;single&apos;
-    });
-
-    const superAttach = super.attach(element);
-
-    if (!this.refs.button) {
-      return;
-    }
-
+  attachButton() {
     this.addShortcut(this.refs.button);
-
     let onChange = null;
     let onError = null;
     if (this.component.action === &apos;submit&apos;) {
@@ -406,6 +394,7 @@ export default class ButtonComponent extends Field {
 
     this.on(&apos;error&apos;, () =&gt; {
       this.loading = false;
+      this.disabled = false;
       if (onError) {
         onError();
       }
@@ -434,6 +423,17 @@ export default class ButtonComponent extends Field {
         this.openOauth();
       }
     }
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      button: &apos;single&apos;,
+      buttonMessageContainer: &apos;single&apos;,
+      buttonMessage: &apos;single&apos;
+    });
+
+    const superAttach = super.attach(element);
+    this.attachButton();
     return superAttach;
   }
   /* eslint-enable max-statements */
@@ -606,7 +606,9 @@ export default class ButtonComponent extends Field {
   }
 
   focus() {
-    this.refs.button.focus();
+    if (this.refs.button) {
+      this.refs.button.focus();
+    }
   }
 
   triggerReCaptcha() {

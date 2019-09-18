@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -227,7 +228,6 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import NativePromise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
-import Component from &apos;./components/_classes/component/Component&apos;;
 import Formio from &apos;./Formio&apos;;
 import { checkCondition, firstNonNil } from &apos;./utils/utils&apos;;
 
@@ -270,16 +270,8 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pageOptions = _.clone(this.options);
-    const components = _.clone(this.components);
     const pages = this.pages
-          .filter(all ? _.identity : (p, index) =&gt; this._seenPages.includes(index))
-          .map((page, index) =&gt; this.createComponent(
-            page,
-            _.assign(pageOptions, { components: index === this.page ? components : null })
-          ));
-
-    this.components = components;
+          .filter(all ? _.identity : (p, index) =&gt; this._seenPages.includes(index));
 
     return pages;
   }
@@ -340,7 +332,7 @@ export default class Wizard extends Webform {
       panels: this.panels,
       buttons: this.buttons,
       currentPage: this.page,
-      components: this.renderComponents([...this.globalComponents, ...this.pages[this.page]]),
+      components: this.renderComponents([...this.globalComponents, ...this.currentPage.components]),
     }, this.builderMode ? &apos;builder&apos; : &apos;form&apos;);
   }
 
@@ -355,7 +347,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: &apos;multiple&apos;,
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.page]]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
 
     [
       { name: &apos;cancel&apos;,    method: &apos;cancel&apos; },
@@ -399,18 +391,17 @@ export default class Wizard extends Webform {
   addComponents() {
     this.pages = [];
     this.panels = [];
-    _.each(this.component.components, (item) =&gt; {
+    _.each(this.originalComponents, (item) =&gt; {
       const pageOptions = _.clone(this.options);
       if (item.type === &apos;panel&apos;) {
         if (checkCondition(item, this.data, this.data, this.component, this)) {
           this.panels.push(item);
-          const page = [];
-          _.each(item.components, (comp) =&gt; {
-            const component = this.createComponent(comp, pageOptions);
-            component.page = this.page;
-            page.push(component);
-          });
+          const page = this.createComponent(item, pageOptions);
           this.pages.push(page);
+
+          page.eachComponent((component) =&gt; {
+            component.page = this.page;
+          });
         }
       }
       else if (item.type === &apos;hidden&apos;) {
@@ -426,6 +417,9 @@ export default class Wizard extends Webform {
     }
     if (!this.wizard.full &amp;&amp; num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
       this.page = num;
+
+      this.pageFieldLogic(num);
+
       this.getNextPage();
       if (!this._seenPages.includes(num)) {
         this._seenPages = this._seenPages.concat(num);
@@ -440,8 +434,17 @@ export default class Wizard extends Webform {
     return NativePromise.reject(&apos;Page not found&apos;);
   }
 
+  pageFieldLogic(page) {
+    // Handle field logic on pages.
+    this.component = this.panels[page];
+    this.originalComponent = _.cloneDeep(this.component);
+    this.fieldLogic(this.data);
+    // If disabled changed, be sure to distribute the setting.
+    this.disabled = this.shouldDisabled;
+  }
+
   get currentPage() {
-    return (this.pages &amp;&amp; (this.pages.length &gt;= this.page)) ? this.pages[this.page] : null;
+    return (this.pages &amp;&amp; (this.pages.length &gt;= this.page)) ? this.pages[this.page] : { components: [] };
   }
 
   getNextPage() {
@@ -501,7 +504,7 @@ export default class Wizard extends Webform {
 
         const form = this.currentPage;
         if (form) {
-          NativePromise.all(form.map((comp) =&gt; comp.beforePage(next))).then(resolve).catch(reject);
+          form.beforePage(next).then(resolve).catch(reject);
         }
         else {
           resolve();
@@ -519,7 +522,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkCurrentPageValidity(this.submission.data, true)) {
+    if (this.checkValidity(this.submission.data, true)) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() =&gt; {
         return this.setPage(this.getNextPage()).then(() =&gt; {
@@ -560,16 +563,6 @@ export default class Wizard extends Webform {
     return pageIndex;
   }
 
-  checkPageValidity(data, dirty, page) {
-    page = page || this.page;
-
-    let check = true;
-    this.pages[page].forEach((comp) =&gt; {
-      check &amp;= comp.checkValidity(data, dirty);
-    });
-    return check;
-  }
-
   get schema() {
     return this.wizard;
   }
@@ -593,7 +586,16 @@ export default class Wizard extends Webform {
         }
       ];
     }
+
+    this.originalComponents = _.cloneDeep(this.component.components);
+
     return super.setForm(form);
+  }
+
+  setValue(submission, flags) {
+    const changed = super.setValue(submission, flags);
+    this.pageFieldLogic(this.page);
+    return changed;
   }
 
   isClickable(page, index) {
@@ -687,35 +689,25 @@ export default class Wizard extends Webform {
     return this.redraw();
   }
 
-  checkCurrentPageValidity(...args) {
-    return super.checkValidity(...args);
-  }
-
-  checkPagesValidity(pages, ...args) {
-    const isValid = Component.prototype.checkValidity.apply(this, args);
-    return pages.reduce((check, pageComp) =&gt; {
-      return pageComp.checkValidity(...args) &amp;&amp; check;
-    }, isValid);
-  }
-
   checkValidity(data, dirty) {
-    if (this.submitting) {
-      return this.checkPagesValidity(this.getPages(), data, dirty);
+    if (!this.checkCondition(null, data)) {
+      this.setCustomValidity(&apos;&apos;);
+      return true;
     }
-    else {
-      return this.checkCurrentPageValidity(data, dirty);
-    }
+
+    const components = !this.isLastPage()
+      ? this.currentPage.components
+      : this.getComponents();
+
+    return components.reduce(
+      (check, comp) =&gt; comp.checkValidity(data, dirty) &amp;&amp; check,
+      true
+    );
   }
 
   get errors() {
-    if (this.isLastPage()) {
-      const pages = this.getPages({ all: true });
-
-      this.checkPagesValidity(pages, this.submission.data, true);
-
-      return pages.reduce((errors, pageComp) =&gt; {
-        return errors.concat(pageComp.errors || []);
-      }, []);
+    if (!this.isLastPage()) {
+      return this.currentPage.errors;
     }
 
     return super.errors;

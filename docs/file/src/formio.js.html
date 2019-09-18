@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -1407,13 +1408,11 @@ export default class Formio {
       const retVal = Formio.setToken(query.saml);
       let uri = window.location.toString();
       uri = uri.substring(0, uri.indexOf(&apos;?&apos;));
+      if (window.location.hash) {
+        uri += window.location.hash;
+      }
       window.history.replaceState({}, document.title, uri);
       return retVal;
-    }
-
-    // Only continue if we are not authenticated.
-    if (Formio.getToken()) {
-      return false;
     }
 
     // Set the relay if not provided.

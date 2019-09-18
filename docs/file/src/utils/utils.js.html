@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -233,6 +234,7 @@ import moment from &apos;moment-timezone/moment-timezone&apos;;
 import jtz from &apos;jstimezonedetect&apos;;
 import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import dompurify from &apos;dompurify&apos;;
 import { getValue } from &apos;./formUtils&apos;;
 import Evaluator from &apos;./Evaluator&apos;;
 const interpolate = Evaluator.interpolate;
@@ -1224,6 +1226,43 @@ export function getContextComponents(context) {
     }
   });
   return values;
+}
+
+/**
+ * Sanitize an html string.
+ *
+ * @param string
+ * @returns {*}
+ */
+export function sanitize(string, options) {
+  // Dompurify configuration
+  const sanitizeOptions = {
+    ADD_ATTR: [&apos;ref&apos;, &apos;target&apos;],
+    USE_PROFILES: { html: true }
+  };
+  // Add attrs
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addAttr) &amp;&amp; options.sanitizeConfig.addAttr.length &gt; 0) {
+    options.sanitizeConfig.addAttr.forEach((attr) =&gt; {
+      sanitizeOptions.ADD_ATTR.push(attr);
+    });
+  }
+  // Add tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addTags) &amp;&amp; options.sanitizeConfig.addTags.length &gt; 0) {
+    sanitizeOptions.ADD_TAGS = options.sanitizeConfig.addTags;
+  }
+  // Allow tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedTags) &amp;&amp; options.sanitizeConfig.allowedTags.length &gt; 0) {
+    sanitizeOptions.ALLOWED_TAGS = options.sanitizeConfig.allowedTags;
+  }
+  // Allow attributes
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedAttrs) &amp;&amp; options.sanitizeConfig.allowedAttrs.length &gt; 0) {
+    sanitizeOptions.ALLOWED_ATTR = options.sanitizeConfig.allowedAttrs;
+  }
+  // Allowd URI Regex
+  if (options.sanitizeConfig &amp;&amp; options.sanitizeConfig.allowedUriRegex) {
+    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+  }
+  return dompurify.sanitize(string, sanitizeOptions);
 }
 
 export { Evaluator, interpolate };

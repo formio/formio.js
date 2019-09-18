@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -229,7 +230,6 @@ import { conformToMask } from &apos;vanilla-text-mask&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import _ from &apos;lodash&apos;;
-import { sanitize } from &apos;dompurify&apos;;
 import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
 import Validator from &apos;../../Validator&apos;;
@@ -500,8 +500,8 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
-    this._parentVisible = true;
+    this._visible = this.conditionallyVisible(data);
+    this._parentVisible = this.options.hasOwnProperty(&apos;parentVisible&apos;) ? this.options.parentVisible : true;
     this._parentDisabled = false;
 
     /**
@@ -710,11 +710,6 @@ export default class Component extends Element {
    * @returns {boolean}
    */
   get visible() {
-    if (!this.rendered) {
-      // Keeps conditionally invisible fields from &quot;flashing&quot; when form is initially rendered.
-      this._visible = this.conditionallyVisible(this.data);
-    }
-
     // Show only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (this.builderMode || this.options.showHiddenFields) {
       return true;
@@ -936,12 +931,7 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    return sanitize(dirty, {
-      ADD_ATTR: [&apos;ref&apos;, &apos;target&apos;],
-      USE_PROFILES: {
-        html: true
-      }
-    });
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   /**
@@ -1102,7 +1092,7 @@ export default class Component extends Element {
 
   addShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -1115,7 +1105,7 @@ export default class Component extends Element {
 
   removeShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (this.root === this) {
+    if (!element || (this.root === this)) {
       return;
     }
 
@@ -1525,7 +1515,7 @@ export default class Component extends Element {
   /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
-  checkConditions(data) {
+  checkComponentConditions(data) {
     data = data || this.rootValue;
 
     // Check advanced conditions
@@ -1539,6 +1529,15 @@ export default class Component extends Element {
     }
 
     return visible;
+  }
+
+  /**
+   * Checks conditions for this component and any sub components.
+   * @param args
+   * @return {boolean}
+   */
+  checkConditions(...args) {
+    return this.checkComponentConditions(...args);
   }
 
   get logic() {
@@ -1635,17 +1634,11 @@ export default class Component extends Element {
       this.setContent(this.refs.messageContainer, this.renderTemplate(&apos;message&apos;, {
         message
       }));
-      // const errorMessage = this.ce(&apos;p&apos;, {
-      //   class: &apos;help-block&apos;
-      // });
-      // errorMessage.appendChild(this.text(message));
-      // this.refs.messageContainer.appendChild(errorMessage);
     }
 
     // Add error classes
     elements.forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-invalid&apos;));
-    this.removeClass(this.element, &apos;alert alert-danger&apos;);
-    this.removeClass(this.element, &apos;has-error&apos;);
+
     if (dirty &amp;&amp; this.options.highlightErrors) {
       this.addClass(this.element, &apos;alert alert-danger&apos;);
     }
@@ -1656,7 +1649,12 @@ export default class Component extends Element {
 
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (!this.rootPristine &amp;&amp; this.component.clearOnHide !== false &amp;&amp; !this.options.readOnly &amp;&amp; !this.options.showHiddenFields) {
+    if (
+      !this.rootPristine &amp;&amp;
+      this.component.clearOnHide !== false &amp;&amp;
+      !this.options.readOnly &amp;&amp;
+      !this.options.showHiddenFields
+    ) {
       if (!this.visible) {
         this.deleteValue();
       }
@@ -1725,9 +1723,10 @@ export default class Component extends Element {
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
+    settings.mediaEmbed = { previewsInData: true };
     settings.image = {
-      toolbar: [&apos;imageTextAlternative&apos;, &apos;|&apos;, &apos;imageStyle:alignLeft&apos;, &apos;imageStyle:alignCenter&apos;, &apos;imageStyle:full&apos;, &apos;imageStyle:alignRight&apos;],
-      styles: [&apos;full&apos;, &apos;side&apos;, &apos;alignLeft&apos;, &apos;alignCenter&apos;, &apos;alignRight&apos;]
+      toolbar: [&apos;imageTextAlternative&apos;, &apos;|&apos;, &apos;imageStyle:full&apos;, &apos;imageStyle:alignLeft&apos;, &apos;imageStyle:alignCenter&apos;, &apos;imageStyle:alignRight&apos;],
+      styles: [&apos;full&apos;, &apos;alignLeft&apos;, &apos;alignCenter&apos;, &apos;alignRight&apos;]
     };
     return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, CKEDITOR, true)
       .then(() =&gt; {
@@ -1852,7 +1851,11 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      this.dataValue = this.component.multiple ? [] : this.emptyValue;
+      const empty = this.component.multiple ? [] : this.emptyValue;
+      if (!this.rootPristine) {
+        this.dataValue = empty;
+      }
+      return empty;
     }
     return _.get(this.data, this.key);
   }
@@ -2056,7 +2059,7 @@ export default class Component extends Element {
    *
    * @param flags
    */
-  updateValue(value, flags) {
+  updateComponentValue(value, flags) {
     flags = flags || {};
     let newValue = (value === undefined || value === null) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue);
@@ -2066,6 +2069,16 @@ export default class Component extends Element {
       this.updateOnChange(flags, changed);
     }
     return changed;
+  }
+
+  /**
+   * Updates the value of this component plus all sub-components.
+   *
+   * @param args
+   * @return {boolean}
+   */
+  updateValue(...args) {
+    return this.updateComponentValue(...args);
   }
 
   getIcon(name, content, styles, ref = &apos;icon&apos;) {
@@ -2123,7 +2136,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
-  calculateValue(data, flags) {
+  calculateComponentValue(data, flags) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
     if (!this.component.calculateValue || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)) {
@@ -2171,11 +2184,19 @@ export default class Component extends Element {
       return true;
     }
 
-    flags = flags || {};
-    flags.noCheck = true;
     const changed = this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
     return changed;
+  }
+
+  /**
+   * Performs calculations in this component plus any child components.
+   *
+   * @param args
+   * @return {boolean}
+   */
+  calculateValue(...args) {
+    return this.calculateComponentValue(...args);
   }
 
   /**
@@ -2242,7 +2263,15 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  checkValidity(data, dirty, rowData) {
+  /**
+   * Checks the validity of this component and sets the error message if it is invalid.
+   *
+   * @param data
+   * @param dirty
+   * @param rowData
+   * @return {boolean}
+   */
+  checkComponentValidity(data, dirty, rowData) {
     if (this.shouldSkipValidation(data, dirty, rowData)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
@@ -2257,6 +2286,29 @@ export default class Component extends Element {
       this.setCustomValidity(&apos;&apos;);
     }
     return !error;
+  }
+
+  checkValidity(...args) {
+    return this.checkComponentValidity(...args);
+  }
+
+  /**
+   * Check the conditions, calculations, and validity of a single component and triggers an update if
+   * something changed.
+   *
+   * @param data - The contextual data of the change event.
+   * @param flags - The flags from this change event.
+   *
+   * @return boolean - If component is valid or not.
+   */
+  checkData(data, flags) {
+    flags = flags || {};
+    if (flags.noCheck) {
+      return true;
+    }
+    this.calculateComponentValue(data);
+    this.checkComponentConditions(data);
+    return flags.noValidate ? true : this.checkComponentValidity(data);
   }
 
   get validationValue() {
@@ -2280,28 +2332,33 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit(&apos;componentError&apos;, this.error);
       if (this.refs.input) {
         this.addInputError(message, dirty, this.refs.input);
       }
     }
-    else {
+    else if (this.error &amp;&amp; this.error.external === !!external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       if (this.refs.input) {
         this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
       }
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
-      this.error = null;
     }
+
     if (!this.refs.input) {
       return;
     }
@@ -2365,6 +2422,9 @@ export default class Component extends Element {
   }
 
   setDisabled(element, disabled) {
+    if (!element) {
+      return;
+    }
     element.disabled = disabled;
     if (disabled) {
       element.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
@@ -2375,7 +2435,7 @@ export default class Component extends Element {
   }
 
   setLoading(element, loading) {
-    if (element.loading === loading) {
+    if (!element || (element.loading === loading)) {
       return;
     }
 

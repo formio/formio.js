@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.1.0
+### Changed
+ - Major upgrade dompurify@2.0.0
+ - Minor upgrade i18next@17.0.16, eslint@6.4.0, webpack@4.40.2
+ - Code cleanup: Creating common sanitize methods.
+ - Refactoring the checkdata system to be more performant and easier to understand.
+
+### Fixed
+ - Fix issue where errors aren't clearing.
+ - Fix wizard taking a very long time to submit and simplify logic.
+ - Fixing button component to not require button element to attach and states to work correctly.
+ - Fixing the tags component setValue and getValue to work without choices.
+ - Fix events missing from Form factory.
+ - SAML is redirecting to home page after handshake. 
+ 
+### Added
+ - Adding element protections.
+ - Added error container to TextArea component.
+ - A way to configure the Sanitization settings with outside configurations.
+
 ## 4.0.11
 ### Fixed 
  - Use of for/of in template not supported in IE11

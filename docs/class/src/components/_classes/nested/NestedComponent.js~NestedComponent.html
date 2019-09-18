@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -1291,7 +1292,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, norecurse: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1319,15 +1320,13 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, components: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
-a submission once it has been changed.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -2170,7 +2169,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>, source: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4338,7 +4337,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4905,13 +4904,100 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
 </div>
       </div>
     </td>
@@ -4963,13 +5049,43 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+        <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
       </div>
     </td>
@@ -5048,7 +5164,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -6641,7 +6757,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>, external: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -6926,6 +7042,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue">updateComponentValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateItems">updateItems</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>)</span>
         </p>
       </div>
@@ -6983,13 +7128,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Update a value of this component.</p>
+        <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
       </div>
     </td>
@@ -7576,7 +7721,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber613">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber568">source</a></span></span>
     </span>
   </h3>
 
@@ -7750,7 +7895,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber599">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber554">source</a></span></span>
     </span>
   </h3>
 
@@ -8664,7 +8809,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber525">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber484">source</a></span></span>
     </span>
   </h3>
 
@@ -8736,7 +8881,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber534">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber493">source</a></span></span>
     </span>
   </h3>
 
@@ -8792,14 +8937,14 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber538">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber497">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Perform a calculated value operation.</p>
+  <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">Component#calculateValue</a></span></div>
@@ -8866,18 +9011,18 @@ to perform special async functions.</p>
     
     
     
-    <span class="code" data-ice="name">checkConditions</span><span class="code" data-ice="signature">(data: <span>*</span>, norecurse: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">checkConditions</span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber501">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber462">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+  <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">Component#checkConditions</a></span></div>
@@ -8892,12 +9037,6 @@ to perform special async functions.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">data</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">norecurse</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -8944,22 +9083,22 @@ to perform special async functions.</p>
     
     
     
-    <span class="code" data-ice="name">checkData</span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">checkData</span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, components: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber466">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber455">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
-a submission once it has been changed.</p>
+  <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
 
-  
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">Component#checkData</a></span></div>
 
   <div data-ice="properties"><div data-ice="properties">
   <h4 data-ice="title">Params:</h4>
@@ -8977,6 +9116,12 @@ a submission once it has been changed.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">components</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -9027,7 +9172,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber560">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber519">source</a></span></span>
     </span>
   </h3>
 
@@ -9104,7 +9249,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber508">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber467">source</a></span></span>
     </span>
   </h3>
 
@@ -9241,7 +9386,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber588">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber543">source</a></span></span>
     </span>
   </h3>
 
@@ -9284,7 +9429,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber593">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber548">source</a></span></span>
     </span>
   </h3>
 
@@ -9327,7 +9472,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber581">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber536">source</a></span></span>
     </span>
   </h3>
 
@@ -9877,7 +10022,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber603">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber558">source</a></span></span>
     </span>
   </h3>
 
@@ -9933,7 +10078,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber455">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber451">source</a></span></span>
     </span>
   </h3>
 
@@ -10044,7 +10189,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber549">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber508">source</a></span></span>
     </span>
   </h3>
 
@@ -10099,7 +10244,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber553">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber512">source</a></span></span>
     </span>
   </h3>
 
@@ -10547,7 +10692,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber607">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber562">source</a></span></span>
     </span>
   </h3>
 
@@ -10591,7 +10736,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber516">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber475">source</a></span></span>
     </span>
   </h3>
 
@@ -10634,7 +10779,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber617">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber572">source</a></span></span>
     </span>
   </h3>
 
@@ -10723,7 +10868,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber576">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber531">source</a></span></span>
     </span>
   </h3>
 
@@ -10783,7 +10928,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber633">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/_classes/nested/NestedComponent.js.html#lineNumber588">source</a></span></span>
     </span>
   </h3>
 
@@ -10857,7 +11002,7 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">updateValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>, source: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">updateValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
@@ -10868,7 +11013,7 @@ component tree.</p>
   
   
   
-  <div data-ice="description"><p>Update a value of this component.</p>
+  <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">Component#updateValue</a></span></div>
@@ -10889,12 +11034,6 @@ component tree.</p>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">flags</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">source</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>

@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -2843,7 +2844,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3410,13 +3411,100 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
 </div>
       </div>
     </td>
@@ -3468,13 +3556,43 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+        <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
       </div>
     </td>
@@ -3553,7 +3671,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5146,7 +5264,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>, external: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -5431,6 +5549,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue">updateComponentValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateItems">updateItems</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>)</span>
         </p>
       </div>
@@ -5488,13 +5635,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Update a value of this component.</p>
+        <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
       </div>
     </td>
@@ -5847,6 +5994,35 @@ to perform special async functions.</p>
         
         
         
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html#instance-method-normalizeValue">normalizeValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Normalize values coming into updateValue.</p>
+</div>
       </div>
     </td>
     <td>
@@ -6635,7 +6811,7 @@ to perform special async functions.</p>
   <div data-ice="description"><p>Normalize values coming into updateValue.</p>
 </div>
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-normalizeValue">Component#normalizeValue</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/radio/Radio.js~RadioComponent.html#instance-method-normalizeValue">RadioComponent#normalizeValue</a></span></div>
 
   <div data-ice="properties"><div data-ice="properties">
   <h4 data-ice="title">Params:</h4>
