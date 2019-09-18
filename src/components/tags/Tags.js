@@ -75,18 +75,20 @@ export default class TagsComponent extends Input {
   }
 
   setValue(value) {
+    if (this.component.storeas === 'string' && (typeof value === 'string')) {
+      value = value.split(this.delimiter);
+    }
+    if (value && !_.isArray(value)) {
+      value = [value];
+    }
+    const changed = super.setValue(value);
     if (this.choices) {
-      if (this.component.storeas === 'string' && (typeof value === 'string')) {
-        value = value.split(this.delimiter);
-      }
-      if (value && !_.isArray(value)) {
-        value = [value];
-      }
       this.choices.removeActiveItems();
       if (value) {
         this.choices.setValue(value);
       }
     }
+    return changed;
   }
 
   getValue() {
@@ -94,7 +96,7 @@ export default class TagsComponent extends Input {
       const value = this.choices.getValue(true);
       return (this.component.storeas === 'string') ? value.join(this.delimiter) : value;
     }
-    return null;
+    return this.dataValue;
   }
 
   set disabled(disabled) {
