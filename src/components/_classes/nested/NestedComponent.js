@@ -563,11 +563,7 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    const components = this.wizard && !this.isLastPage()
-      ? this.pages[this.page]
-      : this.getComponents();
-
-    return components.reduce(
+    return this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty) && check,
       super.checkValidity(data, dirty)
     );

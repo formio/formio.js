@@ -2067,7 +2067,7 @@ export default class Component extends Element {
         this.addInputError(message, dirty, this.refs.input);
       }
     }
-    else if (this.error && this.error.external === external) {
+    else if (this.error && this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
