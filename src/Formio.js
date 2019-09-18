@@ -1188,8 +1188,6 @@ export default class Formio {
       return retVal;
     }
 
-    // Deleted to always make a handshake
-
     // Set the relay if not provided.
     if (!options.relay) {
       options.relay = window.location.href;
