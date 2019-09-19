@@ -831,9 +831,11 @@ export default class WebformBuilder extends Component {
         'calculatedValue'
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
-      this.setContent(previewElement, this.preview.render());
-      this.preview.attach(previewElement);
+      if (previewElement) {
+        this.setContent(previewElement, this.preview.render());
+        this.preview.attach(previewElement);
       }
+    }
 
     // Change the "default value" field to be reflective of this component.
     if (this.defaultValueComponent) {
