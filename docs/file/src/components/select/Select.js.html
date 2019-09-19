@@ -420,11 +420,16 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer &amp;&amp; (this.component.widget === &apos;html5&apos;)) {
-      this.refs.selectContainer.insertAdjacentHTML(&apos;beforeend&apos;, this.sanitize(this.renderTemplate(&apos;selectOption&apos;, {
+      // Add element to option so we can reference it later.
+      const div = document.createElement(&apos;div&apos;);
+      div.innerHTML = this.sanitize(this.renderTemplate(&apos;selectOption&apos;, {
         selected: this.dataValue === option.value,
         option,
         attrs,
-      })));
+      })).trim();
+
+      option.element = div.firstChild;
+      this.refs.selectContainer.appendChild(option.element);
     }
   }
 
