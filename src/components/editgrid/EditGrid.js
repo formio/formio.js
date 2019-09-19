@@ -605,6 +605,9 @@ export default class EditGridComponent extends NestedComponent {
       }
     });
     this.updateOnChange(flags, changed);
+    if (changed) {
+      this.redraw();
+    }
     return changed;
   }
 
