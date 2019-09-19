@@ -87,6 +87,25 @@ export default class EditGridComponent extends NestedComponent {
     return _.get(this.component, 'validate.minLength', 0);
   }
 
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+
+    const data = this.dataValue;
+
+    (this.editRows || []).forEach((row, index) => {
+      const rowData = data[index];
+
+      row.data = rowData;
+      row.components.forEach((component) => {
+        component.data = rowData;
+      });
+    });
+  }
+
   constructor(...args) {
     super(...args);
     this.type = 'editgrid';

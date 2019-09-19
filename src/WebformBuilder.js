@@ -125,7 +125,7 @@ export default class WebformBuilder extends Component {
         return html.replace('formio-component-form', '');
       }
 
-      if (this.options.disabled && this.options.disabled.includes(self.key)) {
+      if (this.options.disabled && this.options.disabled.includes(self.key) || self.parent.noDragDrop) {
         return html;
       }
 
@@ -136,7 +136,7 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.renderComponents = (html, { components, self }) => {
       // if Datagrid and already has a component, don't make it droppable.
-      if (self.type === 'datagrid' && components.length > 0) {
+      if (self.type === 'datagrid' && components.length > 0 || self.noDragDrop) {
         return html;
       }
 
@@ -170,9 +170,12 @@ export default class WebformBuilder extends Component {
     };
 
     this.options.hooks.attachComponents = (element, components, container, component) => {
-      // Don't attach if no element was found.
+      // Don't attach if no element was found or component doesn't participate in drag'n'drop.
       if (!element) {
         return;
+      }
+      if (component.noDragDrop) {
+        return element;
       }
       // Attach container and component to element for later reference.
       const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
@@ -800,9 +803,12 @@ export default class WebformBuilder extends Component {
     }
     let remove = true;
     if (
-      (Array.isArray(component.components) && component.components.length) ||
-      (Array.isArray(component.rows) && component.rows.length) ||
-      (Array.isArray(component.columns) && component.columns.length)
+      !component.skipRemoveConfirm &&
+      (
+        (Array.isArray(component.components) && component.components.length) ||
+        (Array.isArray(component.rows) && component.rows.length) ||
+        (Array.isArray(component.columns) && component.columns.length)
+      )
     ) {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
@@ -825,8 +831,10 @@ export default class WebformBuilder extends Component {
         'calculatedValue'
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
-      this.setContent(previewElement, this.preview.render());
-      this.preview.attach(previewElement);
+      if (previewElement) {
+        this.setContent(previewElement, this.preview.render());
+        this.preview.attach(previewElement);
+      }
     }
 
     // Change the "default value" field to be reflective of this component.

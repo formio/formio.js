@@ -182,7 +182,7 @@ export default class SelectComponent extends Field {
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}) {
+  addOption(value, label, attrs = {}, id) {
     const option = {
       value: value,
       label: label
@@ -196,9 +196,11 @@ export default class SelectComponent extends Field {
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
       div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
-        selected: this.dataValue === option.value,
+        selected: _.isEqual(this.dataValue, option.value),
         option,
         attrs,
+        id,
+        useId: (this.valueProperty === '') && _.isObject(value) && id,
       })).trim();
 
       option.element = div.firstChild;
@@ -309,8 +311,8 @@ export default class SelectComponent extends Field {
     }
 
     // Iterate through each of the items.
-    _.each(items, (item) => {
-      this.addOption(this.itemValue(item), this.itemTemplate(item));
+    _.each(items, (item, index) => {
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
     if (this.choices) {
@@ -1023,6 +1025,17 @@ export default class SelectComponent extends Field {
     }
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
+
+      if (this.valueProperty === '') {
+        if (value === '') {
+          return {};
+        }
+
+        const option = this.selectOptions[value];
+        if (option && _.isObject(option.value)) {
+          value = option.value;
+        }
+      }
     }
     else {
       value = this.dataValue;

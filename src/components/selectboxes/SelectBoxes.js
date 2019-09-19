@@ -57,7 +57,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    * @param value
    * @return {boolean}
    */
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     let empty = true;
     for (const key in value) {
       if (value.hasOwnProperty(key) && value[key]) {
