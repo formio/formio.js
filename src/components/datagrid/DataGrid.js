@@ -453,11 +453,7 @@ export default class DataGridComponent extends NestedComponent {
       });
     });
 
-    this.triggerChange(flags, changed);
-
-    if (changed) {
-      this.redraw();
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 
