@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix events missing from Form factory.
  - SAML is redirecting to home page after handshake. 
  - Fixing issues with the panels from refreshing in wizards if they do not have keys.
+ - Fix issue where select html5 components can't restore value properly.
  
 ### Added
  - Adding element protections.
