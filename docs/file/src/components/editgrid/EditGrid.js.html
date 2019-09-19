@@ -747,7 +747,7 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
@@ -831,10 +831,7 @@ export default class EditGridComponent extends NestedComponent {
         this.checkRow(this.data, this.editRows[rowIndex]);
       }
     });
-    if (changed) {
-      this.checkValidity(this.data);
-      this.redraw();
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 

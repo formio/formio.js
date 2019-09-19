@@ -369,16 +369,14 @@ export default class ColumnsComponent extends NestedComponent {
     _.each(this.columns, this.justifyRow.bind(this));
   }
 
-  checkConditions(data) {
+  checkComponentConditions(data) {
     if (this.component.autoAdjust) {
-      const result = super.checkConditions(data);
-
+      const result = super.checkComponentConditions(data);
       this.justify();
-
       return result;
     }
     else {
-      return super.checkConditions(data);
+      return super.checkComponentConditions(data);
     }
   }
 
