@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0
+### Added
+ - noDragDrop and skipRemoveConfirm to create components with predefined nested components and denied users to change that components.
+ - GetView for DateTime with defined format.
+ - Improvement to isEmpty function, that if we not provide the value, then we are getting dataValue.
+ - Function isEqual, to support comparison of values for at least  DateTime component, where we need to compare only formatted dates.
+ - Added support for objects in HTML5 Select component.
+ 
+## Fixed
+ - Fix for EditGrid's components data context.
+ - Fix for Hidden component inside DataGrid.
+ - Check to verify, that previewElement exists.
+
 ## 4.1.0
 ### Changed
  - Major upgrade dompurify@2.0.0
