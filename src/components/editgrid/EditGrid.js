@@ -604,10 +604,7 @@ export default class EditGridComponent extends NestedComponent {
         this.checkRow(this.data, this.editRows[rowIndex]);
       }
     });
-    if (changed) {
-      this.checkValidity(this.data);
-      this.redraw();
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 
