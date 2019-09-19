@@ -62,7 +62,7 @@ export default function(...extend) {
   ]).concat(extend.map((items) => ({
     type: 'tabs',
     key: 'tabs',
-    components: items
+    components: _.cloneDeep(items),
   })));
   return {
     components: _.unionWith(components, EditFormUtils.unifyComponents).concat({
