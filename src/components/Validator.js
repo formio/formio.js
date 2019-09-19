@@ -3,12 +3,14 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting
+  getDateSetting,
+  escapeRegExCharacters,
+  interpolate
 } from '../utils/utils';
 import moment from 'moment';
 
 class ValidationChecker {
-  constructor() {
+  constructor(config = {}) {
     this.validators = {
       required: {
         key: 'validate.required',
@@ -24,6 +26,216 @@ class ValidationChecker {
             return true;
           }
           return !component.isEmpty(value);
+        }
+      },
+      unique: {
+        key: 'validate.unique',
+        message(component) {
+          return component.t(component.errorMessage('unique'), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          // Skip if setting is falsy
+          if (!boolValue(setting)) {
+            return true;
+          }
+
+          // Skip if value is empty
+          if (!value || _.isEmpty(value)) {
+            return true;
+          }
+
+          // Skip if we don't have a database connection
+          if (!config.db) {
+            return true;
+          }
+
+          return new Promise(resolve => {
+            const form = config.form;
+            const submission = config.submission;
+            const path = `data.${component.path}`;
+
+            // Build the query
+            const query = { form: form._id };
+
+            if (_.isString(value)) {
+              query[path] = {
+                $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                $options: 'i'
+              };
+            }
+            // FOR-213 - Pluck the unique location id
+            else if (_.isPlainObject(value) && value.hasOwnProperty('address_components') && value.hasOwnProperty('place_id')) {
+              query[`${path}.place_id`] = {
+                $regex: new RegExp(`^${escapeRegExCharacters(value.place_id)}$`),
+                $options: 'i'
+              };
+            }
+            // Compare the contents of arrays vs the order.
+            else if (_.isArray(value)) {
+              query[path] = { $all: value };
+            }
+            else if (_.isObject(value)) {
+              query[path] = { $eq: value };
+            }
+
+            // Only search for non-deleted items
+            query.deleted = { $eq: null };
+
+            // Try to find an existing value within the form
+            config.db.models.submission.findOne(query, (err, result) => {
+              if (err) {
+                return resolve(false);
+              }
+              else if (result) {
+                // Only OK if it matches the current submission
+                return resolve(submission._id && (result._id.toString() === submission._id));
+              }
+              else {
+                return resolve(true);
+              }
+            });
+          }).catch(() => false);
+        }
+      },
+      multiple: {
+        key: 'validate.multiple',
+        message(component) {
+          const shouldBeArray = boolValue(component.component.multiple) || component.component.type === 'file';
+          const isRequired = component.component.validate.required;
+          const messageKey = shouldBeArray ? (isRequired ? 'array_nonempty' : 'array') : 'nonarray';
+
+          return component.t(component.errorMessage(messageKey), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const shouldBeArray = boolValue(setting);
+          const canBeArray = ['file', 'selectboxes'].includes(component.component.type);
+          const isArray = Array.isArray(value);
+          const isRequired = component.component.validate.required;
+
+          if (shouldBeArray) {
+            if (isArray) {
+              return isRequired ? !!value.length : true;
+            }
+            else {
+              // Null/undefined is ok if this value isn't required; anything else should fail
+              return _.isNil(value) ? !isRequired : false;
+            }
+          }
+          else {
+            return canBeArray || !isArray;
+          }
+        }
+      },
+      select: {
+        key: 'validate.select',
+        message(component) {
+          return component.t(component.errorMessage('select'), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          // Skip if setting is falsy
+          if (!boolValue(setting)) {
+            return true;
+          }
+
+          // Skip if value is empty
+          if (!value || _.isEmpty(value)) {
+            return true;
+          }
+
+          const schema = component.component;
+
+          // Initialize the request options
+          const requestOptions = {
+            url: setting,
+            method: 'GET',
+            qs: {},
+            json: true,
+            headers: {}
+          };
+
+          // If the url is a boolean value
+          if (_.isBoolean(requestOptions.url)) {
+            requestOptions.url = !!requestOptions.url;
+
+            if (
+              !requestOptions.url ||
+              schema.dataSrc !== 'url' ||
+              !schema.data.url ||
+              !schema.searchField
+            ) {
+              return true;
+            }
+
+            // Get the validation url
+            requestOptions.url = schema.data.url;
+
+            // Add the search field
+            requestOptions.qs[schema.searchField] = value;
+
+            // Add the filters
+            if (schema.filter) {
+              requestOptions.url += (!requestOptions.url.includes('?') ? '?' : '&') + schema.filter;
+            }
+
+            // If they only wish to return certain fields.
+            if (schema.selectFields) {
+              requestOptions.qs.select = schema.selectFields;
+            }
+          }
+
+          if (!requestOptions.url) {
+            return true;
+          }
+
+          // Make sure to interpolate.
+          requestOptions.url = interpolate(requestOptions.url, { data: component.data });
+
+          // Add query string to URL
+          requestOptions.url += (requestOptions.url.includes('?') ? '&' : '?') + _.chain(requestOptions.qs)
+            .map((val, key) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
+            .join('&')
+            .value();
+
+          // Set custom headers.
+          if (schema.data && schema.data.headers) {
+            _.each(schema.data.headers, header => {
+              if (header.key) {
+                requestOptions.headers[header.key] = header.value;
+              }
+            });
+          }
+
+          // Set form.io authentication.
+          if (schema.authenticate && config.token) {
+            requestOptions.headers['x-jwt-token'] = config.token;
+          }
+
+          // Isomorphic fetch
+          const isofetch = (window && window.fetch) ? { fetch, Headers, Request, Response } : require('fetch-ponyfill')();
+
+          const request = new isofetch.Request(requestOptions.url, {
+            headers: new isofetch.Headers(requestOptions.headers)
+          });
+
+          return isofetch.fetch(request)
+            .then(async response => {
+              if (!response.ok) {
+                return false;
+              }
+
+              const results = await response.json();
+              return results && results.length;
+            })
+            .catch(() => false);
         }
       },
       min: {
@@ -421,15 +633,15 @@ class ValidationChecker {
     };
   }
 
-  checkValidator(component, validator, setting, value, data) {
+  async checkValidator(component, validator, setting, value, data) {
     let result = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      result = component[validator.method](setting, value, data);
+      result = await component[validator.method](setting, value, data);
     }
     else {
-      result = validator.check.call(this, component, setting, value, data);
+      result = await validator.check.call(this, component, setting, value, data);
     }
 
     if (typeof result === 'string') {
@@ -443,14 +655,24 @@ class ValidationChecker {
     return '';
   }
 
-  validate(component, validatorName, value, data) {
+  async validate(component, validatorName, value, data) {
+    // Skip validation for conditionally hidden components
+    if (!component.conditionallyVisible()) {
+      return false;
+    }
+
     const validator = this.validators[validatorName];
     const setting   = _.get(component.component, validator.key, null);
-    const output    = this.checkValidator(component, validator, setting, value, data);
+    const output    = await this.checkValidator(component, validator, setting, value, data);
 
     return output ? {
       message: _.get(output, 'message', output),
       level: _.get(output, 'level') === 'warning' ? 'warning' : 'error',
+      path: (component.path || '')
+        .replace(/[[\]]/g, '.')
+        .replace(/\.\./g, '.')
+        .split('.')
+        .map(part => _.defaultTo(_.toNumber(part), part)),
       context: {
         validator: validatorName,
         setting,
@@ -461,15 +683,23 @@ class ValidationChecker {
     } : false;
   }
 
-  checkComponent(component, data, includeWarnings = false) {
+  async checkComponent(component, data, includeWarnings = false) {
     data = data || component.data;
 
-    const values = component.multiple ? component.validationValue : [component.validationValue];
+    const values = (component.component.multiple && Array.isArray(component.validationValue))
+      ? component.validationValue
+      : [component.validationValue];
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
 
-    const results = _(component.validators).chain()
+    // Add the select validator for select components
+    if (component.component.type === 'select' && component.validators.indexOf('select') === -1) {
+      component.validators.push('select');
+    }
+
+    // Run primary validators
+    const resultPromises = _(component.validators).chain()
       .map(validatorName => {
         if (!this.validators.hasOwnProperty(validatorName)) {
           return {
@@ -486,8 +716,23 @@ class ValidationChecker {
         return _.map(values, value => this.validate(component, validatorName, value, data));
       })
       .flatten()
-      .compact()
       .value();
+
+    // Run the "unique" pseudo-validator
+    component.component.validate = component.component.validate || {};
+    component.component.validate.unique = component.component.unique;
+    resultPromises.push(this.validate(component, 'unique', component.validationValue, data));
+
+    // Run the "multiple" pseudo-validator
+    component.component.validate.multiple = component.component.multiple;
+    resultPromises.push(this.validate(component, 'multiple', component.validationValue, data));
+
+    // Run the "select" pseudo-validator
+    // component.component.validate.select = component.component.type === 'select';
+    // resultPromises.push(this.validate(component, 'select', component.validationValue, data));
+
+    // Wait for results and condense to a single flat array
+    const results = _(await Promise.all(resultPromises)).chain().flatten().compact().value();
 
     if (customErrorMessage || validateCustom) {
       _.each(results, result => {

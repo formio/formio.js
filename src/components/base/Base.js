@@ -1676,6 +1676,11 @@ export default class BaseComponent extends Component {
           );
           if (!_.isEqual(oldValue, newValue)) {
             this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
             changed = true;
           }
           break;
