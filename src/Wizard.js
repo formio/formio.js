@@ -120,7 +120,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage]);
 
     [
       { name: 'cancel',    method: 'cancel' },

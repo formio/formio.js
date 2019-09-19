@@ -979,7 +979,7 @@ export default class Webform extends NestedComponent {
    */
   showErrors(error, triggerEvent) {
     this.loading = false;
-    let errors = this.errors;
+    let errors = this.errors || [];
     if (error) {
       if (Array.isArray(error)) {
         errors = errors.concat(error);
