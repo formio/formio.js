@@ -208,9 +208,6 @@ export default class DataMapComponent extends DataGridComponent {
     this.dataValue = value;
     this.createRows();
     this.updateOnChange(flags, changed);
-    if (changed) {
-      this.redraw();
-    }
     return changed;
   }
 
