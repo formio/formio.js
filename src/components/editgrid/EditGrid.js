@@ -520,7 +520,7 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;

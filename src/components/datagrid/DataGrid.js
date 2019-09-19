@@ -392,9 +392,9 @@ export default class DataGridComponent extends NestedComponent {
     return { rebuild, show };
   }
 
-  checkConditions(data) {
+  checkComponentConditions(data) {
     // If table isn't visible, don't bother calculating columns.
-    if (!super.checkConditions(data)) {
+    if (!super.checkComponentConditions(data)) {
       return false;
     }
 

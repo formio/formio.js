@@ -348,16 +348,16 @@ export default class FormComponent extends Component {
     return this.subFormReady.then(() => this.restoreValue());
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty);
   }
 
-  checkConditions(data) {
-    const visible = super.checkConditions(data);
+  checkComponentConditions(data) {
+    const visible = super.checkComponentConditions(data);
 
     // Return if already hidden
     if (!visible) {

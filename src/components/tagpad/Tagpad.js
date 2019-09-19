@@ -437,7 +437,7 @@ export default class Tagpad extends NestedComponent {
     this.setValue(this.dataValue);
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
@@ -464,7 +464,7 @@ export default class Tagpad extends NestedComponent {
   checkDotValidity(data, dirty, dot) {
     const isDotValid = this.components.reduce((valid, component) => {
       component.dataValue = dot.dot.data[component.key];
-      return valid && component.checkValidity(data, dirty);
+      return valid && component.checkComponentValidity(data, dirty);
     }, true);
     this.setDotValidity(dot, isDotValid);
     return isDotValid;
