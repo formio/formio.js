@@ -193,11 +193,16 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
-      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
+      // Add element to option so we can reference it later.
+      const div = document.createElement('div');
+      div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
         selected: this.dataValue === option.value,
         option,
         attrs,
-      })));
+      })).trim();
+
+      option.element = div.firstChild;
+      this.refs.selectContainer.appendChild(option.element);
     }
   }
 
