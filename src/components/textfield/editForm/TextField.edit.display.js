@@ -28,12 +28,13 @@ export default [
     key: 'widget',
     label: 'Widget Settings',
     calculateValue: (context) => {
-      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
-        if (context.data.widget && context.data.widget.type) {
-          settings = Widgets[context.data.widget.type].defaultSettings;
+      if (!context.instance.calculatedValue) {
+        if (context.instance._currentForm.editComponent._widget) {
+          return _.omit(context.instance._currentForm.editComponent._widget.options, ['i18n', 'namespace', 'language']);
         }
-        return settings;
+        else {
+          return Widgets[context.data.widget.type].defaultSettings;
+        }
       }
       return context.data.widget;
     },
