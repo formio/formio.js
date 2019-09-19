@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import moment from 'moment';
 import Input from '../_classes/input/Input';
+import FormioUtils from '../../utils';
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -116,14 +118,24 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     if (value && (value.toString() === 'Invalid Date')) {
       return true;
     }
     return super.isEmpty(value);
   }
 
+  isEqual(valueA, valueB = this.dataValue) {
+    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    return (this.isEmpty(valueA) && this.isEmpty(valueB))
+      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);
+  }
+
   createWrapper() {
     return false;
+  }
+
+  getView(value) {
+    return this.widget.getValueAsString(value);
   }
 }

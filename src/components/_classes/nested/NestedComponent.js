@@ -114,7 +114,7 @@ export default class NestedComponent extends Field {
 
   set data(value) {
     this._data = value;
-    this.eachComponent(component => {
+    this.eachComponent((component) => {
       component.data = this._data;
     });
   }

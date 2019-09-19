@@ -398,7 +398,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    if (this.hasInput && this.component.validate && this.component.validate.required) {
+    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
       label.className += ' field-required';
     }
     if (label.hidden) {
@@ -1076,7 +1076,7 @@ export default class Component extends Element {
     if (this.component.customClass) {
       className += this.component.customClass;
     }
-    if (this.hasInput && this.component.validate && this.component.validate.required) {
+    if (this.hasInput && this.component.validate && boolValue(this.component.validate.required)) {
       className += ' required';
     }
     if (this.labelIsHidden()) {
@@ -2088,8 +2088,12 @@ export default class Component extends Element {
     return this.dataValue;
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
+  }
+
+  isEqual(valueA, valueB = this.dataValue) {
+    return (this.isEmpty(valueA) && this.isEmpty(valueB)) || _.isEqual(valueA, valueB);
   }
 
   /**

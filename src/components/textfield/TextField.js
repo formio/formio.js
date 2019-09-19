@@ -109,7 +109,7 @@ export default class TextFieldComponent extends Input {
     return input && input.text ? input.text : input;
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty((value || '').toString().trim());
     }

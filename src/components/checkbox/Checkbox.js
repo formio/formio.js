@@ -100,7 +100,7 @@ export default class CheckBoxComponent extends Field {
     return false;
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     return super.isEmpty(value) || value === false;
   }
 
