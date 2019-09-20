@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
-import Input from '../_classes/input/Input';
+import WidgetComponent from '../_classes/widgetcomponent/WidgetComponent';
 import FormioUtils from '../../utils';
-export default class DateTimeComponent extends Input {
+
+export default class DateTimeComponent extends WidgetComponent {
   static schema(...extend) {
-    return Input.schema({
+    return WidgetComponent.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -90,10 +91,6 @@ export default class DateTimeComponent extends Input {
       minDate: _.get(this.component, 'datePicker.minDate'),
       maxDate: _.get(this.component, 'datePicker.maxDate')
     };
-    /* eslint-enable camelcase */
-
-    // Add the validators date.
-    this.validators.push('date');
   }
 
   performInputMapping(input) {
@@ -133,6 +130,13 @@ export default class DateTimeComponent extends Input {
 
   createWrapper() {
     return false;
+  }
+
+  checkValidity(data, dirty, rowData) {
+    if (this._widget && this._widget.enteredDate) {
+      dirty = true;
+    }
+    return super.checkValidity(data, dirty, rowData);
   }
 
   getView(value) {
