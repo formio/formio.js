@@ -2378,7 +2378,7 @@ export default class BaseComponent extends Component {
       return '';
     }
 
-    return _.map(Validator.check(this, data), 'message').join('\n\n');
+    return _.map(Validator.checkComponent(this, data), 'message').join('\n\n');
   }
 
   /**

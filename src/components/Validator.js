@@ -11,6 +11,8 @@ import moment from 'moment';
 
 class ValidationChecker {
   constructor(config = {}) {
+    this.async = _.defaultTo(config.async, true);
+
     this.validators = {
       required: {
         key: 'validate.required',
@@ -148,6 +150,11 @@ class ValidationChecker {
 
           // Skip if value is empty
           if (!value || _.isEmpty(value)) {
+            return true;
+          }
+
+          // Skip if we're not async-capable
+          if (!this.async) {
             return true;
           }
 
@@ -633,57 +640,77 @@ class ValidationChecker {
     };
   }
 
-  async checkValidator(component, validator, setting, value, data) {
-    let result = null;
+  checkValidator(component, validator, setting, value, data) {
+    let resultOrPromise = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      result = await component[validator.method](setting, value, data);
+      resultOrPromise = component[validator.method](setting, value, data);
     }
     else {
-      result = await validator.check.call(this, component, setting, value, data);
+      resultOrPromise = validator.check.call(this, component, setting, value, data);
     }
 
-    if (typeof result === 'string') {
-      return result;
-    }
+    const processResult = result => {
+      if (typeof result === 'string') {
+        return result;
+      }
 
-    if (!result) {
-      return validator.message.call(this, component, setting);
-    }
+      if (!result) {
+        return validator.message.call(this, component, setting);
+      }
 
-    return '';
+      return '';
+    };
+
+    if (this.async) {
+      return Promise.resolve(resultOrPromise).then(processResult);
+    }
+    else {
+      return processResult(resultOrPromise);
+    }
   }
 
-  async validate(component, validatorName, value, data) {
+  validate(component, validatorName, value, data) {
     // Skip validation for conditionally hidden components
     if (!component.conditionallyVisible()) {
       return false;
     }
 
-    const validator = this.validators[validatorName];
-    const setting   = _.get(component.component, validator.key, null);
-    const output    = await this.checkValidator(component, validator, setting, value, data);
+    const validator       = this.validators[validatorName];
+    const setting         = _.get(component.component, validator.key, null);
+    const resultOrPromise = this.checkValidator(component, validator, setting, value, data);
 
-    return output ? {
-      message: _.get(output, 'message', output),
-      level: _.get(output, 'level') === 'warning' ? 'warning' : 'error',
-      path: (component.path || '')
-        .replace(/[[\]]/g, '.')
-        .replace(/\.\./g, '.')
-        .split('.')
-        .map(part => _.defaultTo(_.toNumber(part), part)),
-      context: {
-        validator: validatorName,
-        setting,
-        key: component.key,
-        label: component.label,
-        value
-      }
-    } : false;
+    const processResult = result => {
+      return result ? {
+        message: _.get(result, 'message', result),
+        level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
+        path: (component.path || '')
+          .replace(/[[\]]/g, '.')
+          .replace(/\.\./g, '.')
+          .split('.')
+          .map(part => _.defaultTo(_.toNumber(part), part)),
+        context: {
+          validator: validatorName,
+          setting,
+          key: component.key,
+          label: component.label,
+          value
+        }
+      } : false;
+    };
+
+    if (this.async) {
+      return Promise.resolve(resultOrPromise).then(processResult);
+    }
+    else {
+      return processResult(resultOrPromise);
+    }
   }
 
-  async checkComponent(component, data, includeWarnings = false) {
+  checkComponent(component, data, includeWarnings = false) {
+    // eslint-disable-next-line
+    debugger;
     data = data || component.data;
 
     const values = (component.component.multiple && Array.isArray(component.validationValue))
@@ -699,7 +726,7 @@ class ValidationChecker {
     }
 
     // Run primary validators
-    const resultPromises = _(component.validators).chain()
+    const resultsOrPromises = _(component.validators).chain()
       .map(validatorName => {
         if (!this.validators.hasOwnProperty(validatorName)) {
           return {
@@ -721,35 +748,106 @@ class ValidationChecker {
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultPromises.push(this.validate(component, 'unique', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data));
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultPromises.push(this.validate(component, 'multiple', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data));
 
-    // Run the "select" pseudo-validator
-    // component.component.validate.select = component.component.type === 'select';
-    // resultPromises.push(this.validate(component, 'select', component.validationValue, data));
+    // Define how results should be formatted
+    const formatResults = results => {
+      // Condense to a single flat array
+      results = _(results).chain().flatten().compact().value();
 
-    // Wait for results and condense to a single flat array
-    const results = _(await Promise.all(resultPromises)).chain().flatten().compact().value();
-
-    if (customErrorMessage || validateCustom) {
-      _.each(results, result => {
-        result.message = component.t(customErrorMessage || result.message, {
-          field: component.errorLabel,
-          data: component.data,
-          error: result
+      if (customErrorMessage || validateCustom) {
+        _.each(results, result => {
+          result.message = component.t(customErrorMessage || result.message, {
+            field: component.errorLabel,
+            data: component.data,
+            error: result
+          });
         });
-      });
-    }
+      }
 
-    return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
+      return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
+    };
+
+    // Wait for results if using async mode, otherwise process and return immediately
+    if (this.async) {
+      return Promise.all(resultsOrPromises).then(formatResults);
+    }
+    else {
+      return formatResults(resultsOrPromises);
+    }
   }
 
   get check() {
     return this.checkComponent;
   }
+
+  // oldAsyncCheckComponent(component, data, includeWarnings = false) {
+  //   data = data || component.data;
+
+  //   const values = (component.component.multiple && Array.isArray(component.validationValue))
+  //     ? component.validationValue
+  //     : [component.validationValue];
+
+  //   const validateCustom     = _.get(component, 'component.validate.custom');
+  //   const customErrorMessage = _.get(component, 'component.validate.customMessage');
+
+  //   // Add the select validator for select components
+  //   if (component.component.type === 'select' && component.validators.indexOf('select') === -1) {
+  //     component.validators.push('select');
+  //   }
+
+  //   // Run primary validators
+  //   const resultPromises = _(component.validators).chain()
+  //     .map(validatorName => {
+  //       if (!this.validators.hasOwnProperty(validatorName)) {
+  //         return {
+  //           message: `Validator for "${validatorName}" is not defined`,
+  //           level: 'warning',
+  //           context: {
+  //             validator: validatorName,
+  //             key: component.key,
+  //             label: component.label
+  //           }
+  //         };
+  //       }
+
+  //       return _.map(values, value => this.validate(component, validatorName, value, data));
+  //     })
+  //     .flatten()
+  //     .value();
+
+  //   // Run the "unique" pseudo-validator
+  //   component.component.validate = component.component.validate || {};
+  //   component.component.validate.unique = component.component.unique;
+  //   resultPromises.push(this.validate(component, 'unique', component.validationValue, data));
+
+  //   // Run the "multiple" pseudo-validator
+  //   component.component.validate.multiple = component.component.multiple;
+  //   resultPromises.push(this.validate(component, 'multiple', component.validationValue, data));
+
+  //   // Run the "select" pseudo-validator
+  //   // component.component.validate.select = component.component.type === 'select';
+  //   // resultPromises.push(this.validate(component, 'select', component.validationValue, data));
+
+  //   // Wait for results and condense to a single flat array
+  //   const results = _(await Promise.all(resultPromises)).chain().flatten().compact().value();
+
+  //   if (customErrorMessage || validateCustom) {
+  //     _.each(results, result => {
+  //       result.message = component.t(customErrorMessage || result.message, {
+  //         field: component.errorLabel,
+  //         data: component.data,
+  //         error: result
+  //       });
+  //     });
+  //   }
+
+  //   return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
+  // }
 
   get() {
     _.get.call(this, arguments);
@@ -764,7 +862,7 @@ class ValidationChecker {
   }
 }
 
-const instance = new ValidationChecker();
+const instance = new ValidationChecker({ async: false });
 
 export {
   instance as default,

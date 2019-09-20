@@ -4,6 +4,11 @@ module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['mocha'],
+    client: {
+      mocha: {
+        timeout: 5000
+      }
+    },
     webpack: {
       mode: 'development',
       module: {
