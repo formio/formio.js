@@ -19,28 +19,43 @@ describe('Day Component', () => {
   it('Should change the max day when the month changes', (done) => {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'option', 13);
-      assert(!!component.yearInput, 'There should be a year');
+      assert(!!component.refs.year, 'There should be a year');
       // Set the year to a non-leap year.
-      component.yearInput.value = 2017;
-      component.setSelectValue(component.monthInput, '1');
-      assert.equal(component.dayInput.max, '31');
-      component.setSelectValue(component.monthInput, '2');
-      assert.equal(component.dayInput.max, '28');
-      component.setSelectValue(component.monthInput, '3');
-      assert.equal(component.dayInput.max, '31');
-      component.setSelectValue(component.monthInput, '4');
-      assert.equal(component.dayInput.max, '30');
+      component.refs.year.value = 2017;
+      component.setSelectValue(component.refs.month, '1');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '31');
+
+      component.setSelectValue(component.refs.month, '2');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '28');
+
+      component.setSelectValue(component.refs.month, '3');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '31');
+
+      component.setSelectValue(component.refs.month, '4');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '30');
 
       // Set to a leap year.
-      component.yearInput.value = 2020;
-      component.setSelectValue(component.monthInput, '1');
-      assert.equal(component.dayInput.max, '31');
-      component.setSelectValue(component.monthInput, '2');
-      assert.equal(component.dayInput.max, '29');
-      component.setSelectValue(component.monthInput, '3');
-      assert.equal(component.dayInput.max, '31');
-      component.setSelectValue(component.monthInput, '4');
-      assert.equal(component.dayInput.max, '30');
+      component.refs.year.value = 2020;
+      component.setSelectValue(component.refs.month, '1');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '31');
+
+      component.setSelectValue(component.refs.month, '2');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '29');
+
+      component.setSelectValue(component.refs.month, '3');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '31');
+
+      component.setSelectValue(component.refs.month, '4');
+      component.refs.month.dispatchEvent(new Event('change'));
+      assert.equal(component.refs.day.max, '30');
+
       done();
     });
   });
@@ -105,8 +120,8 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '02/05/2018');
         done();
       });
-      component.monthInput.value = 2;
-      component.monthInput.dispatchEvent(new Event('change'));
+      component.refs.month.value = 2;
+      component.refs.month.dispatchEvent(new Event('change'));
     });
   });
 
@@ -118,14 +133,15 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '02/28/2018');
         done();
       });
-      component.monthInput.value = 2;
-      component.monthInput.dispatchEvent(new Event('change'));
+      component.refs.month.value = 2;
+      component.refs.month.dispatchEvent(new Event('change'));
     });
   });
 
   it('Should validate required fields', (done) => {
     Harness.testCreate(DayComponent, comp2).then((component) => {
-      const valid = () => component.checkValidity(null, true);
+      component.pristine = false;
+      const valid = () => component.checkValidity(component.data, true);
       const tests = {
         '12/18/2018': true,
         '12/00/0000': false,

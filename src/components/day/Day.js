@@ -120,6 +120,7 @@ export default class DayComponent extends Field {
       ref: name,
       widget: 'html5',
       attr: {
+        id: `${this.component.key}-${name}`,
         class: 'form-control',
         name,
         lang: this.options.language

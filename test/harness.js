@@ -87,6 +87,7 @@ const Harness = {
         maxListeners: 0
       })
     }, options));
+    component.pristine = false;
     return new Promise((resolve, reject) => {
       i18next.init(i18Defaults, (err) => {
         if (err) {
@@ -277,6 +278,7 @@ const Harness = {
     });
 
     // Set the value.
+    component.pristine = false;
     component.setValue(test.bad.value);
   },
   testWizardPrevPage(form, errors, onPrevPage) {

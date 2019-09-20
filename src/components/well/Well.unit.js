@@ -1,5 +1,3 @@
-import assert from 'power-assert';
-
 import Harness from '../../../test/harness';
 import WellComponent from './Well';
 

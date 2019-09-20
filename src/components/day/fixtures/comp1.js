@@ -19,7 +19,7 @@ export default {
     'year': {
       'required': false,
       'placeholder': '',
-      'type': 'text'
+      'type': 'number'
     },
     'month': {
       'required': false,
@@ -29,7 +29,7 @@ export default {
     'day': {
       'required': false,
       'placeholder': '',
-      'type': 'text'
+      'type': 'number'
     }
   },
   'key': 'date',
