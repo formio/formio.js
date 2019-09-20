@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col col-sm-6">
-    <p class="lead">{{ctx.componentInfo.title}} {{ctx.t('Component')}}</p>
+    <p class="lead">{{ctx.t(ctx.componentInfo.title)}} {{ctx.t('Component')}}</p>
   </div>
   <div class="col col-sm-6">
     <div class="float-right" style="margin-right: 20px; margin-top: 10px">
-      <a href="{{ctx.componentInfo.documentation}}" target="_blank">
+      <a href="{{ctx.t(ctx.componentInfo.documentation)}}" target="_blank">
         <i class="{{ctx.iconClass('new-window')}}"> {{ctx.t('Help')}}</i>
       </a>
     </div>
@@ -37,7 +37,7 @@
     </div>
     {% if (ctx.componentInfo.help) { %}
     <div class="card card-body bg-light formio-settings-help">
-      {{ ctx.componentInfo.help }}
+      {{ ctx.t(ctx.componentInfo.help) }}
     </div>
     {% } %}
     <div style="margin-top: 10px;">
