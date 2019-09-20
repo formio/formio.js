@@ -11,6 +11,17 @@ import {
 } from './fixtures';
 
 describe('TextField Component', () => {
+  it('Should create a new TextField', () => {
+    const textField = new TextFieldComponent({
+      label: 'First Name',
+      key: 'firstName',
+      input: true,
+      type: 'textfield'
+    });
+
+    assert.equal(textField.component.key, 'firstName');
+  });
+
   it('Should build a TextField component', () => {
     return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
@@ -87,16 +98,6 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should allow for multiple values', () => {
-    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
-      Harness.testElements(component, 'table', 1);
-      Harness.testElements(component, 'table tr', 2);
-      Harness.testElements(component, 'table tr:first-child td', 2);
-      Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
-    });
-  });
-
   it('Should provide required validation', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
@@ -164,16 +165,6 @@ describe('TextField Component', () => {
         Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
         Harness.testValid(component, 'Joe')
       ];
-    });
-  });
-
-  it('Should allow for multiple values', () => {
-    return Harness.testCreate(TextFieldComponent, comp3).then((component) => {
-      Harness.testElements(component, 'table', 1);
-      Harness.testElements(component, 'table tr', 2);
-      Harness.testElements(component, 'table tr:first-child td', 2);
-      Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
-      Harness.testElements(component, 'table tr:first-child td:last-child .glyphicons-remove-circle', 1);
     });
   });
 });

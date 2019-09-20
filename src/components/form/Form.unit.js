@@ -1,7 +1,6 @@
 import Harness from '../../../test/harness';
 import FormComponent from './Form';
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import {
   comp1,

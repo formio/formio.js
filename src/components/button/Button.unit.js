@@ -4,7 +4,6 @@ import Harness from '../../../test/harness';
 import ButtonComponent from './Button';
 import Formio from './../../Formio';
 import sinon from 'sinon';
-import _ from 'lodash';
 
 import {
   comp1
@@ -51,7 +50,7 @@ describe('Button Component', () => {
     Formio.createForm(element, formJson)
       .then(form => {
         const spy = sinon.spy(Formio, 'makeStaticRequest');
-        form.getComponent('postToUrl').buttonElement.click();
+        form.getComponent('postToUrl').refs.button.click();
         const passedUrl = spy.firstCall.args[0];
         const passedHeaders = spy.firstCall.lastArg.headers;
         spy.restore();
@@ -99,7 +98,7 @@ describe('Button Component', () => {
         return form.submissionReady
           .then(() => {
             const spy = sinon.spy(Formio, 'makeStaticRequest');
-            form.getComponent('postToUrl').buttonElement.click();
+            form.getComponent('postToUrl').refs.button.click();
             const passedUrl = spy.firstCall.args[0];
             spy.restore();
             assert.equal(passedUrl, 'someUrl/submission');
@@ -153,7 +152,7 @@ describe('Button Component', () => {
         return form.submissionReady
           .then(() => {
             const spy = sinon.spy(Formio, 'makeStaticRequest');
-            form.getComponent('postToUrl').buttonElement.click();
+            form.getComponent('postToUrl').refs.button.click();
             const passedHeaders = spy.firstCall.lastArg.headers;
             spy.restore();
             assert.deepEqual(passedHeaders, {

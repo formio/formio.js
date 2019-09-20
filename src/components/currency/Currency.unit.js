@@ -93,14 +93,14 @@ describe('Currency Component', () => {
       Harness.testSetInput(component, -1.00, -1, '-1,00 $US');
       Harness.testSetInput(component, 1, 1, '1,00 $US');
       Harness.testSetInput(component, -1, -1, '-1,00 $US');
-      Harness.testSetInput(component, 1000, 1000, '1 000,00 $US');
-      Harness.testSetInput(component, -1000, -1000, '-1 000,00 $US');
-      Harness.testSetInput(component, 1000.01, 1000.01, '1 000,01 $US');
-      Harness.testSetInput(component, -1000.01, -1000.01, '-1 000,01 $US');
-      Harness.testSetInput(component, 1234567890.12, 1234567890.12, '1 234 567 890,12 $US');
-      Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1 234 567 890,12 $US');
-      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, '1 234 567 890,12 $US');
-      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, '-1 234 567 890,12 $US');
+      Harness.testSetInput(component, 1000, 1000, '1 000,00 $US');
+      Harness.testSetInput(component, -1000, -1000, '-1 000,00 $US');
+      Harness.testSetInput(component, 1000.01, 1000.01, '1 000,01 $US');
+      Harness.testSetInput(component, -1000.01, -1000.01, '-1 000,01 $US');
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, '1 234 567 890,12 $US');
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1 234 567 890,12 $US');
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, '1 234 567 890,12 $US');
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, '-1 234 567 890,12 $US');
     });
   });
 

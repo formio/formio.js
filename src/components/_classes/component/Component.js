@@ -865,7 +865,7 @@ export default class Component extends Element {
 
   addShortcut(element, shortcut) {
     // Avoid infinite recursion.
-    if (!element || (this.root === this)) {
+    if (!element || !this.root || (this.root === this)) {
       return;
     }
 
@@ -1894,7 +1894,7 @@ export default class Component extends Element {
    * @param flags
    * @param changed
    */
-  updateOnChange(flags, changed) {
+  updateOnChange(flags = {}, changed) {
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2260,7 +2260,7 @@ export default class Component extends Element {
       select.onchange();
     }
     if (select.onselect) {
-      select.onchange();
+      select.onselect();
     }
   }
 
