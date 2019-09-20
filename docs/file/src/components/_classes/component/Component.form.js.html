@@ -289,7 +289,7 @@ export default function(...extend) {
   ]).concat(extend.map((items) =&gt; ({
     type: &apos;tabs&apos;,
     key: &apos;tabs&apos;,
-    components: items
+    components: _.cloneDeep(items),
   })));
   return {
     components: _.unionWith(components, EditFormUtils.unifyComponents).concat({
