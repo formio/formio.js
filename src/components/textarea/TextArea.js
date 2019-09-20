@@ -124,6 +124,10 @@ export default class TextAreaComponent extends TextFieldComponent {
       return super.createInput(container);
     }
 
+    if (!this.errorContainer) {
+      this.errorContainer = container;
+    }
+
     if (this.htmlView) {
       this.input = this.ce('div', {
         class: 'well'

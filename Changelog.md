@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.28.0-beta.1
+### Changed
+ - Upgraded i18next@17.0.15, jstimezonedetect@1.0.7, sinon@7.4.2, vanilla-picker@2.10.0, @babel/cli@7.6.0, @babel/core@7.6.0, @babel/plugin-proposal-optional-chaining@7.6.0, @babel/polyfill@7.6.0, @babel/preset-env@7.6.0, webpack@4.40.2, eslint@6.4.0, gulp-eslint@6.0.0, karma-chrome-launcher@3.1.0
+
+### Added
+ - Added options to interpolate method.
+ - Validation for data for date\time component
+ 
+### Fixed
+ - Disable load icon item in select component.
+
+## 3.27.3
+### Fixed
+ - Fix issue with single-value File component Data tab rendering
+
+### Changed
+ - Upgraded cross-env@5.2.1, chance@1.1.0
+
+## 3.27.2
+### Fixed
+ - Issues where the submit button disableOnInvalid would not properly re-enable or work with readOnly mode set.
+
+### Changed
+ - Upgrade i18next@17.0.13
+
+## 3.27.1
+### Fixed
+ - Problem with PDF where flags may not be set causing a crash in the renderer.
+
 ## 3.27.0
 ### Added
  - beforePrev hook for wizards.

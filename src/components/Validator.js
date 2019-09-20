@@ -5,9 +5,14 @@ import {
   matchInputMask,
   getDateSetting,
   escapeRegExCharacters,
-  interpolate
+  interpolate,
+  convertFormatToMoment
 } from '../utils/utils';
 import moment from 'moment';
+import {
+  checkInvalidDate,
+  CALENDAR_ERROR_MESSAGES
+} from '../utils/calendarUtils';
 
 class ValidationChecker {
   constructor(config = {}) {
@@ -27,6 +32,13 @@ class ValidationChecker {
           if (!boolValue(setting)) {
             return true;
           }
+
+          const isCalendar = component.validators.some(validator => validator === 'calendar');
+
+          if (!value && isCalendar && component.widget.enteredDate) {
+            return !this.validators.calendar.check.call(this, component, setting, value);
+          }
+
           return !component.isEmpty(value);
         }
       },
@@ -636,6 +648,46 @@ class ValidationChecker {
 
           return date.isAfter(minDate) || date.isSame(minDate);
         }
+      },
+      calendar: {
+        key: 'validate.calendar',
+        messageText: '',
+        message(component) {
+          return component.t(component.errorMessage(this.validators.calendar.messageText), {
+            field: component.errorLabel,
+            maxDate: moment(component.dataValue).format(component.format),
+          });
+        },
+        check(component, setting, value) {
+          this.validators.calendar.messageText = '';
+          const { settings, enteredDate } = component._widget;
+          const { minDate, maxDate, format } = settings;
+          const momentFormat = [convertFormatToMoment(format)];
+
+          if (momentFormat[0].match(/M{3,}/g)) {
+            momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
+          }
+
+          if (!value && enteredDate) {
+            const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
+
+            if (!result) {
+              this.validators.calendar.messageText = message;
+              return result;
+            }
+          }
+
+          if (value && enteredDate) {
+            if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() && enteredDate.match(/_/gi)) {
+              this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
+              return false;
+            }
+            else {
+              component._widget.enteredDate = '';
+              return true;
+            }
+          }
+        }
       }
     };
   }
@@ -784,70 +836,6 @@ class ValidationChecker {
   get check() {
     return this.checkComponent;
   }
-
-  // oldAsyncCheckComponent(component, data, includeWarnings = false) {
-  //   data = data || component.data;
-
-  //   const values = (component.component.multiple && Array.isArray(component.validationValue))
-  //     ? component.validationValue
-  //     : [component.validationValue];
-
-  //   const validateCustom     = _.get(component, 'component.validate.custom');
-  //   const customErrorMessage = _.get(component, 'component.validate.customMessage');
-
-  //   // Add the select validator for select components
-  //   if (component.component.type === 'select' && component.validators.indexOf('select') === -1) {
-  //     component.validators.push('select');
-  //   }
-
-  //   // Run primary validators
-  //   const resultPromises = _(component.validators).chain()
-  //     .map(validatorName => {
-  //       if (!this.validators.hasOwnProperty(validatorName)) {
-  //         return {
-  //           message: `Validator for "${validatorName}" is not defined`,
-  //           level: 'warning',
-  //           context: {
-  //             validator: validatorName,
-  //             key: component.key,
-  //             label: component.label
-  //           }
-  //         };
-  //       }
-
-  //       return _.map(values, value => this.validate(component, validatorName, value, data));
-  //     })
-  //     .flatten()
-  //     .value();
-
-  //   // Run the "unique" pseudo-validator
-  //   component.component.validate = component.component.validate || {};
-  //   component.component.validate.unique = component.component.unique;
-  //   resultPromises.push(this.validate(component, 'unique', component.validationValue, data));
-
-  //   // Run the "multiple" pseudo-validator
-  //   component.component.validate.multiple = component.component.multiple;
-  //   resultPromises.push(this.validate(component, 'multiple', component.validationValue, data));
-
-  //   // Run the "select" pseudo-validator
-  //   // component.component.validate.select = component.component.type === 'select';
-  //   // resultPromises.push(this.validate(component, 'select', component.validationValue, data));
-
-  //   // Wait for results and condense to a single flat array
-  //   const results = _(await Promise.all(resultPromises)).chain().flatten().compact().value();
-
-  //   if (customErrorMessage || validateCustom) {
-  //     _.each(results, result => {
-  //       result.message = component.t(customErrorMessage || result.message, {
-  //         field: component.errorLabel,
-  //         data: component.data,
-  //         error: result
-  //       });
-  //     });
-  //   }
-
-  //   return includeWarnings ? results : _.reject(results, result => result.level === 'warning');
-  // }
 
   get() {
     _.get.call(this, arguments);

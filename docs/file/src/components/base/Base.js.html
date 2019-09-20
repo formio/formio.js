@@ -142,7 +142,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -202,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
@@ -735,6 +738,14 @@ export default class BaseComponent extends Component {
 
   get shouldDisable() {
     return (this.options.readOnly || this.component.disabled) &amp;&amp; !this.component.alwaysEnabled;
+  }
+
+  /**
+   * Helps keep the logic blocks simple to ready.
+   * @return {boolean}
+   */
+  get canEnable() {
+    return !this.shouldDisable;
   }
 
   /**
@@ -1688,6 +1699,15 @@ export default class BaseComponent extends Component {
     settings.i18n = this.options.i18n;
     settings.language = this.options.language;
 
+    // Add validity method for widget
+    if (settings.type === &apos;calendar&apos;) {
+      this.validators.push(&apos;calendar&apos;);
+      settings.checkDataValidity = () =&gt; {
+        this.setPristine(false);
+        return this.checkValidity(this.data, true);
+      };
+    }
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on(&apos;update&apos;, () =&gt; this.updateValue(), true);
@@ -1917,7 +1937,14 @@ export default class BaseComponent extends Component {
       const errorMessage = this.ce(&apos;p&apos;, {
         class: &apos;help-block&apos;
       });
-      errorMessage.appendChild(this.text(message));
+
+      const entityRegex = /&amp;(:?amp|lt|gt|quot|#39|#x2F);/gi;
+      if (message.match(entityRegex)) {
+        errorMessage.innerHTML = message;
+      }
+      else {
+        errorMessage.appendChild(this.text(message));
+      }
       this.errorElement.appendChild(errorMessage);
     }
 
@@ -2606,10 +2633,15 @@ export default class BaseComponent extends Component {
       this.setCustomValidity(&apos;&apos;);
       return true;
     }
-
-    const message = this.invalidMessage(data, dirty, true);
-    this.setCustomValidity(message, dirty);
-    return message ? false : true;
+    const error = Validator.check(this, data);
+    if (error &amp;&amp; (dirty || !this.pristine)) {
+      const message = this.invalidMessage(data, dirty, true);
+      this.setCustomValidity(message, dirty);
+    }
+    else {
+      this.setCustomValidity(&apos;&apos;);
+    }
+    return !error;
   }
 
   /* eslint-disable max-len */
@@ -2789,7 +2821,7 @@ export default class BaseComponent extends Component {
    */
   asString(value) {
     value = value || this.getValue();
-    return Array.isArray(value) ? value.join(&apos;, &apos;) : value.toString();
+    return Array.isArray(value) ? value.join(&apos;, &apos;) : value ? value.toString() : null;
   }
 
   /**
@@ -2818,6 +2850,14 @@ export default class BaseComponent extends Component {
 
     // Disable all inputs.
     _.each(this.inputs, (input) =&gt; this.setDisabled(this.performInputMapping(input), disabled));
+  }
+
+  /**
+   * Helps keep the logic blocks easy to read.
+   * @param enabled
+   */
+  set forceEnabled(enabled) {
+    this.forceDisabled = !enabled;
   }
 
   /**

@@ -89,7 +89,11 @@ export default class FileComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? value.originalName : '';
+    if (_.isArray(value)) {
+      return _.map(value, 'originalName').join(', ');
+    }
+
+    return _.get(value, 'originalName', '');
   }
 
   loadImage(fileInfo) {

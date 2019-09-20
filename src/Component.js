@@ -536,8 +536,8 @@ export default class Component {
    * @param data
    * @return {XML|string|*|void}
    */
-  interpolate(string, data) {
-    return FormioUtils.interpolate(string, this.evalContext(data));
+  interpolate(string, data, options) {
+    return FormioUtils.interpolate(string, this.evalContext(data), options);
   }
 
   /**

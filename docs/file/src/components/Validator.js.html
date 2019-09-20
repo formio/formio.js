@@ -142,7 +142,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
@@ -202,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
@@ -217,9 +220,14 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting
+  getDateSetting,
+  convertFormatToMoment
 } from &apos;../utils/utils&apos;;
 import moment from &apos;moment&apos;;
+import {
+  checkInvalidDate,
+  CALENDAR_ERROR_MESSAGES
+} from &apos;../utils/calendarUtils&apos;;
 
 export default {
   get: _.get,
@@ -297,6 +305,11 @@ export default {
       check(component, setting, value) {
         if (!boolValue(setting)) {
           return true;
+        }
+        const isCalendar = component.validators.some(validator =&gt; validator === &apos;calendar&apos;);
+
+        if (!value &amp;&amp; isCalendar &amp;&amp; component.widget.enteredDate) {
+          return !this.validators.calendar.check.call(this, component, setting, value);
         }
         return !component.isEmpty(value);
       }
@@ -691,9 +704,49 @@ export default {
         }
 
         return date.isAfter(minDate) || date.isSame(minDate);
+      },
+    },
+    calendar: {
+      key: &apos;validate.calendar&apos;,
+      messageText: &apos;&apos;,
+      message(component) {
+        return component.t(component.errorMessage(this.validators.calendar.messageText), {
+          field: component.errorLabel,
+          maxDate: moment(component.dataValue).format(component.format),
+        });
+      },
+      check(component, setting, value) {
+        this.validators.calendar.messageText = &apos;&apos;;
+        const { settings, enteredDate } = component._widget;
+        const { minDate, maxDate, format } = settings;
+        const momentFormat = [convertFormatToMoment(format)];
+
+        if (momentFormat[0].match(/M{3,}/g)) {
+          momentFormat.push(momentFormat[0].replace(/M{3,}/g, &apos;MM&apos;));
+        }
+
+        if (!value &amp;&amp; enteredDate) {
+          const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
+
+          if (!result) {
+            this.validators.calendar.messageText = message;
+            return result;
+          }
+        }
+
+        if (value &amp;&amp; enteredDate) {
+          if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() &amp;&amp; enteredDate.match(/_/gi)) {
+            this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
+            return false;
+          }
+          else {
+            component._widget.enteredDate = &apos;&apos;;
+            return true;
+          }
+        }
       }
-    }
-  }
+    },
+  },
 };
 </code></pre>
 
