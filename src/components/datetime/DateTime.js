@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import Input from '../_classes/input/Input';
-export default class DateTimeComponent extends Input {
+import WidgetComponent from '../_classes/widgetcomponent/WidgetComponent';
+export default class DateTimeComponent extends WidgetComponent {
   static schema(...extend) {
-    return Input.schema({
+    return WidgetComponent.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -88,10 +88,6 @@ export default class DateTimeComponent extends Input {
       minDate: _.get(this.component, 'datePicker.minDate'),
       maxDate: _.get(this.component, 'datePicker.maxDate')
     };
-    /* eslint-enable camelcase */
-
-    // Add the validators date.
-    this.validators.push('date');
   }
 
   performInputMapping(input) {
@@ -103,17 +99,6 @@ export default class DateTimeComponent extends Input {
 
   get defaultSchema() {
     return DateTimeComponent.schema();
-  }
-
-  setValue(value, flags) {
-    if (this.widget) {
-      this.widget.setValue(value);
-    }
-    return super.setValue(value, flags);
-  }
-
-  get emptyValue() {
-    return '';
   }
 
   isEmpty(value) {

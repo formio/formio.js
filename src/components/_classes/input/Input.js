@@ -98,7 +98,7 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       this.component.suffix = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.component.enableDate ? 'calendar' : 'time'),
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
         styles: '',
         content: ''
       });
@@ -222,11 +222,6 @@ export default class Input extends Multivalue {
     // Make sure we have a widget.
     if (!Widgets.hasOwnProperty(settings.type)) {
       return null;
-    }
-
-    if (settings.type === 'calendar') {
-      settings.checkDataValidity = () => this.checkValidity(this.data, true);
-      this.validators.push('calendar');
     }
 
     // Create the widget.
