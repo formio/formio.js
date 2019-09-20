@@ -260,35 +260,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 848,
+        "lineNumber": 856,
         "line": "  /**"
       },
       {
-        "lineNumber": 849,
+        "lineNumber": 857,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 850,
+        "lineNumber": 858,
         "line": "   *"
       },
       {
-        "lineNumber": 851,
+        "lineNumber": 859,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 852,
+        "lineNumber": 860,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 853,
+        "lineNumber": 861,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 854,
+        "lineNumber": 862,
         "line": "   */"
       },
       {
-        "lineNumber": 855,
+        "lineNumber": 863,
         "line": "  saveComponent(component, parent) {"
       }
     ],
@@ -910,13 +910,14 @@
       },
       {
         "lineNumber": 184,
-        "line": "  addOption(value, label, attrs = {}) {"
+        "line": "  addOption(value, label, attrs = {}, id) {"
       }
     ],
     "codeParams": [
       "value",
       "label",
-      "attrs"
+      "attrs",
+      "id"
     ],
     "docParams": [
       "value",
@@ -928,23 +929,23 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 940,
+        "lineNumber": 942,
         "line": "  /**"
       },
       {
-        "lineNumber": 941,
+        "lineNumber": 943,
         "line": "   * @param {*} value"
       },
       {
-        "lineNumber": 942,
+        "lineNumber": 944,
         "line": "   * @param {Array} items"
       },
       {
-        "lineNumber": 943,
+        "lineNumber": 945,
         "line": "   */"
       },
       {
-        "lineNumber": 944,
+        "lineNumber": 946,
         "line": "  addCurrentChoices(values, items, keyValue) {"
       }
     ],
@@ -956,6 +957,80 @@
     "docParams": [
       "value",
       "items"
+    ]
+  },
+  {
+    "name": "checkInvalidDate",
+    "filePath": "src/utils/calendarUtils.js",
+    "lines": [
+      {
+        "lineNumber": 72,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 73,
+        "line": " * Checks the entered date for validity."
+      },
+      {
+        "lineNumber": 74,
+        "line": " *"
+      },
+      {
+        "lineNumber": 75,
+        "line": " * @param {String} value"
+      },
+      {
+        "lineNumber": 76,
+        "line": " *   The value to check."
+      },
+      {
+        "lineNumber": 77,
+        "line": " * @param {[String]} format"
+      },
+      {
+        "lineNumber": 78,
+        "line": " *   A moment formats."
+      },
+      {
+        "lineNumber": 79,
+        "line": " * @param {Date} maxDate"
+      },
+      {
+        "lineNumber": 80,
+        "line": " *   The max date."
+      },
+      {
+        "lineNumber": 81,
+        "line": " * @param {Date} minDate"
+      },
+      {
+        "lineNumber": 82,
+        "line": " *   The min date."
+      },
+      {
+        "lineNumber": 83,
+        "line": " * * @return {{message: string, result: boolean}}"
+      },
+      {
+        "lineNumber": 84,
+        "line": " */"
+      },
+      {
+        "lineNumber": 85,
+        "line": "export function checkInvalidDate(value, format, minDate, maxDate) {"
+      }
+    ],
+    "codeParams": [
+      "value",
+      "format",
+      "minDate",
+      "maxDate"
+    ],
+    "docParams": [
+      "value",
+      "format",
+      "maxDate",
+      "minDate"
     ]
   },
   {
@@ -1438,39 +1513,98 @@
     ]
   },
   {
+    "name": "formatOffset",
+    "filePath": "src/utils/utils.js",
+    "lines": [
+      {
+        "lineNumber": 580,
+        "line": "/**"
+      },
+      {
+        "lineNumber": 581,
+        "line": " * Pass a format function to format within a timezone."
+      },
+      {
+        "lineNumber": 582,
+        "line": " *"
+      },
+      {
+        "lineNumber": 583,
+        "line": " * @param formatFn"
+      },
+      {
+        "lineNumber": 584,
+        "line": " * @param date"
+      },
+      {
+        "lineNumber": 585,
+        "line": " * @param format"
+      },
+      {
+        "lineNumber": 586,
+        "line": " * @param timezone"
+      },
+      {
+        "lineNumber": 587,
+        "line": " * @return {string}"
+      },
+      {
+        "lineNumber": 588,
+        "line": " */"
+      },
+      {
+        "lineNumber": 589,
+        "line": "export function formatOffset(formatFn, date, format, timezone, locale) {"
+      }
+    ],
+    "codeParams": [
+      "formatFn",
+      "date",
+      "format",
+      "timezone",
+      "locale"
+    ],
+    "docParams": [
+      "formatFn",
+      "date",
+      "format",
+      "timezone"
+    ]
+  },
+  {
     "name": "delay",
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 841,
+        "lineNumber": 849,
         "line": "/**"
       },
       {
-        "lineNumber": 842,
+        "lineNumber": 850,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 843,
+        "lineNumber": 851,
         "line": " *"
       },
       {
-        "lineNumber": 844,
+        "lineNumber": 852,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 845,
+        "lineNumber": 853,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 846,
+        "lineNumber": 854,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 847,
+        "lineNumber": 855,
         "line": " */"
       },
       {
-        "lineNumber": 848,
+        "lineNumber": 856,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1489,35 +1623,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 915,
+        "lineNumber": 923,
         "line": "/**"
       },
       {
-        "lineNumber": 916,
+        "lineNumber": 924,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 917,
+        "lineNumber": 925,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 918,
+        "lineNumber": 926,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 919,
+        "lineNumber": 927,
         "line": " *"
       },
       {
-        "lineNumber": 920,
+        "lineNumber": 928,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 921,
+        "lineNumber": 929,
         "line": " */"
       },
       {
-        "lineNumber": 922,
+        "lineNumber": 930,
         "line": "export function unfold(e) {"
       }
     ],
@@ -1533,31 +1667,31 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 1003,
+        "lineNumber": 1011,
         "line": "/**"
       },
       {
-        "lineNumber": 1004,
+        "lineNumber": 1012,
         "line": " * Sanitize an html string."
       },
       {
-        "lineNumber": 1005,
+        "lineNumber": 1013,
         "line": " *"
       },
       {
-        "lineNumber": 1006,
+        "lineNumber": 1014,
         "line": " * @param string"
       },
       {
-        "lineNumber": 1007,
+        "lineNumber": 1015,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 1008,
+        "lineNumber": 1016,
         "line": " */"
       },
       {
-        "lineNumber": 1009,
+        "lineNumber": 1017,
         "line": "export function sanitize(string, options) {"
       }
     ],
