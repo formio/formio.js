@@ -761,8 +761,6 @@ class ValidationChecker {
   }
 
   checkComponent(component, data, includeWarnings = false) {
-    // eslint-disable-next-line
-    debugger;
     data = data || component.data;
 
     const values = (component.component.multiple && Array.isArray(component.validationValue))

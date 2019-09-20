@@ -2421,15 +2421,15 @@ export default class BaseComponent extends Component {
       this.setCustomValidity('');
       return true;
     }
-    const error = Validator.check(this, data);
-    if (error && (dirty || !this.pristine)) {
+    const errors = Validator.checkComponent(this, data);
+    if (errors.length && (dirty || !this.pristine)) {
       const message = this.invalidMessage(data, dirty, true);
       this.setCustomValidity(message, dirty);
     }
     else {
       this.setCustomValidity('');
     }
-    return !error;
+    return !errors.length;
   }
 
   /* eslint-disable max-len */
