@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.2.0
+## 4.2.0-rc.2
+### Added
+ - Adding authurl and cansubmit refactor
+
+### Fixed
+ - Send user-visible text in templates through i18next.t() function
+ - FOR-2442: Fixing the calendar widget validations.
+
+## 4.2.0-rc.1
 ### Added
  - noDragDrop and skipRemoveConfirm to create components with predefined nested components and denied users to change that components.
  - GetView for DateTime with defined format.
@@ -16,6 +24,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix for EditGrid's components data context.
  - Fix for Hidden component inside DataGrid.
  - Check to verify, that previewElement exists.
+
+## 4.1.1
+### Added
+ - Added filter and sort fields to resource component. 
+ 
+### Fixed
+ - Stop different component editforms from mutating each other.
 
 ## 4.1.0
 ### Changed
