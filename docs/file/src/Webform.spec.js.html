@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -271,6 +272,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   it(&apos;Should translate a form from options&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
       language: &apos;es&apos;,
       i18n: {
         es: {
@@ -300,6 +302,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   it(&apos;Should translate a form after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
       i18n: {
         es: {
           &apos;Default Label&apos;: &apos;Spanish Label&apos;
@@ -329,6 +332,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   it(&apos;Should add a translation after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
       i18n: {
         language: &apos;es&apos;,
         es: {
@@ -361,7 +365,9 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
 
   it(&apos;Should switch a translation after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const translateForm = new Webform(formElement);
+    const translateForm = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
+    });
     translateForm.setForm({
       title: &apos;Translate Form&apos;,
       components: [
@@ -384,7 +390,9 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
 
   it(&apos;Should keep translation after redraw&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement);
+    const form = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
+    });
     const schema = {
       title: &apos;Translate Form&apos;,
       components: [
@@ -407,10 +415,10 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
         }, done)
         .then(() =&gt; {
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           form.redraw();
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           done();
         }, done)
         .catch(done);
@@ -423,7 +431,9 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   it(&apos;Should fire languageChanged event when language is set&apos;, done =&gt; {
     let isLanguageChangedEventFired = false;
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement);
+    const form = new Webform(formElement, {
+      template: &apos;bootstrap3&apos;,
+    });
     const schema = {
       title: &apos;Translate Form&apos;,
       components: [
@@ -441,7 +451,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
     try {
       form.setForm(schema)
         .then(() =&gt; {
-          form.addLanguage(&apos;ru&apos;, { &apos;Default Label&apos;: &apos;Russian Label&apos; }, true);
+          form.addLanguage(&apos;ru&apos;, { &apos;Default Label&apos;: &apos;Russian Label&apos; }, false);
           form.on(&apos;languageChanged&apos;, () =&gt; {
             isLanguageChangedEventFired = true;
           });
@@ -456,37 +466,6 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
     catch (error) {
       done(error);
     }
-  });
-
-  it(&apos;Should fire initialized event after change event when language is set&apos;, done =&gt; {
-    let isChangeEventFired = false;
-    const formElement = document.createElement(&apos;div&apos;);
-    const schema = {
-      title: &apos;Translate Form&apos;,
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          label: &apos;Default Label&apos;,
-          key: &apos;myfield&apos;,
-          input: true,
-          inputType: &apos;text&apos;,
-          validate: {}
-        }
-      ]
-    };
-    Formio.createForm(formElement, schema)
-      .then(form =&gt; {
-        form.ready.then(() =&gt; {
-          form.language = &apos;en-GB&apos;;
-        });
-        form.on(&apos;change&apos;, () =&gt; {
-          isChangeEventFired = true;
-        });
-        form.on(&apos;initialized&apos;, () =&gt; {
-          assert(isChangeEventFired);
-          done();
-        });
-      });
   });
 
   it(&apos;When submitted should strip fields with persistent: client-only from submission&apos;, done =&gt; {
@@ -552,7 +531,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
     each(formTest.tests, (formTestTest, title) =&gt; {
       it(title, (done) =&gt; {
         const formElement = document.createElement(&apos;div&apos;);
-        const form = new Webform(formElement, { language: &apos;en&apos; });
+        const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
         form.setForm(formTest.form).then(() =&gt; {
           formTestTest(form, done);
         }).catch(done);

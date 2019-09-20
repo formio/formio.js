@@ -158,7 +158,7 @@ export default {
   },
   tests: {
     'Test hidden components'(form, done) {
-      Harness.testElements(form, 'input[type="text"]', 4);
+      Harness.testElements(form, 'input[type="text"]', 1);
       Harness.testConditionals(form, {data: {}}, ['typeMe', 'typeThe', 'typeMonkey', 'monkey'], done);
     },
     'Test validation errors on typeShow field'(form, done) {

@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -270,6 +271,10 @@ export default class Multivalue extends Field {
     }));
   }
 
+  renderElement() {
+    return &apos;&apos;;
+  }
+
   renderRow(value, index) {
     return this.renderTemplate(&apos;multiValueRow&apos;, {
       index,
@@ -280,7 +285,13 @@ export default class Multivalue extends Field {
 
   attach(dom) {
     const superAttach = super.attach(dom);
-    this.loadRefs(dom, { addButton: &apos;multiple&apos;, input: &apos;multiple&apos;, removeRow: &apos;multiple&apos; });
+    this.loadRefs(dom, {
+      addButton: &apos;multiple&apos;,
+      input: &apos;multiple&apos;,
+      removeRow: &apos;multiple&apos;,
+      mask: &apos;multiple&apos;,
+      select: &apos;multiple&apos;,
+    });
 
     this.refs.input.forEach(this.attachElement.bind(this));
     if (!this.component.multiple) {
@@ -337,7 +348,44 @@ export default class Multivalue extends Field {
       }, 1);
     });
 
-    this.setInputMask(this.refs.input[index]);
+    if (!this.tryAttachMultipleMasksInput()) {
+      this.setInputMask(this.refs.input[index]);
+    }
+  }
+
+  onSelectMaskHandler(event) {
+    const mask = this.component.inputMasks
+      .find(inputMask =&gt; inputMask.label === event.target.value);
+
+    if (mask) {
+      this.updateMask(this.refs.mask[0], mask.mask);
+    }
+  }
+
+  tryAttachMultipleMasksInput() {
+    if (!(this.isMultipleMasksField &amp;&amp; this.component.inputMasks.length &amp;&amp; this.refs.input.length)) {
+      return false;
+    }
+
+    this.refs.select[0].onchange = this.onSelectMaskHandler.bind(this);
+    const input = this.refs.mask[0];
+    const mask = this.activeMask || this.component.inputMasks[0].mask;
+    this.activeMask = mask;
+    this.setInputMask(input, mask);
+
+    return true;
+  }
+
+  updateMask(input, mask) {
+    this.activeMask = mask;
+    //destroy previous mask
+    if (input.mask) {
+      input.mask.destroy();
+    }
+    //set new text field mask
+    this.setInputMask(input, mask, !this.component.placeholder);
+    //update text field value after new mask is applied
+    this.updateValue();
   }
 
   /**

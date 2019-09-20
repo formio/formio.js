@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -230,7 +231,7 @@ import Wizard from &apos;./Wizard&apos;;
 import PDF from &apos;./PDF&apos;;
 import Webform from &apos;./Webform&apos;;
 import templates from &apos;./templates&apos;;
-import { sanitize } from &apos;dompurify&apos;;
+import * as FormioUtils from &apos;./utils/utils&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 
 export default class Form extends Element {
@@ -260,21 +261,24 @@ export default class Form extends Element {
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
-      this.options = args[2];
+      this.options = args[2] || {};
+      this.options.events = this.events;
       this.setForm(args[1])
         .then(() =&gt; this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else if (args[0]) {
       this.element = null;
-      this.options = args[1];
+      this.options = args[1] || {};
+      this.options.events = this.events;
       this.setForm(args[0])
         .then(() =&gt; this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else {
       this.element = null;
-      this.options = null;
+      this.options = {};
+      this.options.events = this.events;
     }
     this.display = &apos;&apos;;
   }
@@ -403,26 +407,7 @@ export default class Form extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    // Dompurify configuration
-    const sanitizeOptions = {
-      ADD_ATTR: [&apos;ref&apos;],
-      USE_PROFILES: {
-        html: true
-      }
-    };
-    // Allow tags
-    if (this.options.sanitizeConfig &amp;&amp; Array.isArray(this.options.sanitizeConfig.allowedTags) &amp;&amp; this.options.sanitizeConfig.allowedTags.length &gt; 0) {
-      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
-    }
-    // Allow attributes
-    if (this.options.sanitizeConfig &amp;&amp; Array.isArray(this.options.sanitizeConfig.allowedAttrs) &amp;&amp; this.options.sanitizeConfig.allowedAttrs.length &gt; 0) {
-      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
-    }
-    // Allowd URI Regex
-    if (this.options.sanitizeConfig &amp;&amp; this.options.sanitizeConfig.allowedUriRegex) {
-      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
-    }
-    return sanitize(dirty, sanitizeOptions);
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   setContent(element, content) {

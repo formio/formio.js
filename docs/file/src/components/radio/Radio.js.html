@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -304,15 +305,6 @@ export default class RadioComponent extends Field {
     this.refs.input.forEach((input) =&gt; {
       if (input.checked) {
         value = input.value;
-        if (value === &apos;true&apos;) {
-          value = true;
-        }
-        else if (value === &apos;false&apos;) {
-          value = false;
-        }
-        else if (!isNaN(parseInt(value, 10)) &amp;&amp; isFinite(value)) {
-          value = parseInt(value, 10);
-        }
       }
     });
     return value;
@@ -357,6 +349,44 @@ export default class RadioComponent extends Field {
       });
     }
     return changed;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    const dataType = _.get(this.component, &apos;dataType&apos;, &apos;auto&apos;);
+    switch (dataType) {
+      case &apos;auto&apos;:
+        if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
+          value = +value;
+        }
+        if (value === &apos;true&apos;) {
+          value = true;
+        }
+        if (value === &apos;false&apos;) {
+          value = false;
+        }
+        break;
+      case &apos;number&apos;:
+        value = +value;
+        break;
+      case &apos;string&apos;:
+        if (typeof value === &apos;object&apos;) {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case &apos;boolean&apos;:
+        value = !!value;
+        break;
+    }
+    return super.normalizeValue(value);
   }
 }
 </code></pre>

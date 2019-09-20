@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -469,9 +470,9 @@ export default class NestedComponent extends Field {
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
+    options.parentVisible = this.visible;
     options.root = this.root || this;
     const comp = Components.create(component, options, data, true);
-    comp.parentVisible = this.visible;
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -668,60 +669,21 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags, source) {
+  updateValue(value, flags) {
     return this.components.reduce((changed, comp) =&gt; {
-      // Skip over the source if it is provided.
-      if (source &amp;&amp; source.id === comp.id) {
-        return changed;
-      }
       return comp.updateValue(null, flags) || changed;
-    }, false);
+    }, super.updateValue(value, flags));
   }
 
   hasChanged() {
     return false;
   }
 
-  /**
-   * A more performant way to check the conditions, calculations, and validity of
-   * a submission once it has been changed.
-   *
-   * @param data
-   * @param flags
-   */
-  checkData(data, flags, source) {
-    flags = flags || {};
-    let valid = true;
-    if (flags.noCheck) {
-      return;
-    }
-
-    // Update the value.
-    let changed = this.updateValue(null, {
-      noUpdateEvent: true
-    }, source);
-
-    // Iterate through all components and check conditions, and calculate values.
-    this.getComponents().forEach((comp) =&gt; {
-      if (comp.checkData) {
-        valid &amp;= comp.checkData(data, flags);
-      }
-      changed |= comp.calculateValue(data, {
-        noUpdateEvent: true
-      });
-      comp.checkConditions(data);
-      if (!flags.noValidate) {
-        valid &amp;= comp.checkValidity(data);
-      }
-    });
-
-    // Trigger the change if the values changed.
-    if (changed) {
-      this.triggerChange(flags, changed);
-    }
-
-    // Return if the value is valid.
-    return !!valid;
+  checkData(data, flags, components) {
+    components = components || this.getComponents();
+    return components.reduce((valid, comp) =&gt; {
+      return comp.checkData(data, flags) &amp;&amp; valid;
+    }, super.checkData(data, flags));
   }
 
   checkConditions(data) {
@@ -787,11 +749,7 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    const components = this.wizard &amp;&amp; !this.isLastPage()
-      ? this.pages[this.page]
-      : this.getComponents();
-
-    return components.reduce(
+    return this.getComponents().reduce(
       (check, comp) =&gt; comp.checkValidity(data, dirty) &amp;&amp; check,
       super.checkValidity(data, dirty)
     );
@@ -848,7 +806,7 @@ export default class NestedComponent extends Field {
     else if (value &amp;&amp; component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags) || changed;
     }
-    else {
+    else if (!this.rootPristine) {
       flags.noValidate = true;
       return component.setValue(component.defaultValue, flags) || changed;
     }

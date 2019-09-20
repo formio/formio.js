@@ -506,7 +506,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     return super.hasChanged(this.removeBlanks(newValue), this.removeBlanks(oldValue));
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     return super.isEmpty(this.removeBlanks(value));
   }
 

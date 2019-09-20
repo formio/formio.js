@@ -61,12 +61,6 @@ export default class SelectComponent extends Field {
     // Keep track of the select options.
     this.selectOptions = [];
 
-    this._valueProperty = this.component.valueProperty;
-    // Force values datasource to use values without actually setting it on the component settings.
-    if (this.component.dataSrc === 'values') {
-      this._valueProperty = 'value';
-    }
-
     if (this.isInfiniteScrollProvided) {
       this.isFromSearch = false;
 
@@ -104,7 +98,15 @@ export default class SelectComponent extends Field {
   }
 
   get valueProperty() {
-    return this._valueProperty;
+    if (this.component.valueProperty) {
+      return this.component.valueProperty;
+    }
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === 'values') {
+      return 'value';
+    }
+
+    return '';
   }
 
   get inputInfo() {
@@ -180,7 +182,7 @@ export default class SelectComponent extends Field {
    * @param value
    * @param label
    */
-  addOption(value, label, attrs = {}) {
+  addOption(value, label, attrs = {}, id) {
     const option = {
       value: value,
       label: label
@@ -191,11 +193,18 @@ export default class SelectComponent extends Field {
     }
 
     if (this.refs.selectContainer && (this.component.widget === 'html5')) {
-      this.refs.selectContainer.insertAdjacentHTML('beforeend', this.sanitize(this.renderTemplate('selectOption', {
-        selected: this.dataValue === option.value,
+      // Add element to option so we can reference it later.
+      const div = document.createElement('div');
+      div.innerHTML = this.sanitize(this.renderTemplate('selectOption', {
+        selected: _.isEqual(this.dataValue, option.value),
         option,
         attrs,
-      })));
+        id,
+        useId: (this.valueProperty === '') && _.isObject(value) && id,
+      })).trim();
+
+      option.element = div.firstChild;
+      this.refs.selectContainer.appendChild(option.element);
     }
   }
 
@@ -302,8 +311,8 @@ export default class SelectComponent extends Field {
     }
 
     // Iterate through each of the items.
-    _.each(items, (item) => {
-      this.addOption(this.itemValue(item), this.itemTemplate(item));
+    _.each(items, (item, index) => {
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, String(index));
     });
 
     if (this.choices) {
@@ -320,7 +329,9 @@ export default class SelectComponent extends Field {
 
     // If a value is provided, then select it.
     if (this.dataValue) {
-      this.setValue(this.dataValue, true);
+      this.setValue(this.dataValue, {
+        noUpdateEvent: true
+      });
     }
     else {
       // If a default value is provided then select it.
@@ -393,7 +404,7 @@ export default class SelectComponent extends Field {
 
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item.toString()));
+      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query, (item) => this.interpolate(item));
     }
 
     // Add filter capability
@@ -657,10 +668,11 @@ export default class SelectComponent extends Field {
     if (this.choices) {
       this.choices.setChoices([{
         value: '',
-        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`
+        label: `<i class="${this.iconClass('refresh')}" style="font-size:1.3em;"></i>`,
+        disabled: true,
       }], 'value', 'label', true);
     }
-    else {
+    else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
       this.addOption('', this.t('loading...'));
     }
     this.triggerUpdate();
@@ -722,7 +734,7 @@ export default class SelectComponent extends Field {
         const { key } = event;
 
         if (['Backspace', 'Delete'].includes(key)) {
-          this.setValue(null);
+          this.setValue(this.emptyValue);
         }
       });
 
@@ -1013,6 +1025,17 @@ export default class SelectComponent extends Field {
     }
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
+
+      if (this.valueProperty === '') {
+        if (value === '') {
+          return {};
+        }
+
+        const option = this.selectOptions[value];
+        if (option && _.isObject(option.value)) {
+          value = option.value;
+        }
+      }
     }
     else {
       value = this.dataValue;
@@ -1037,8 +1060,33 @@ export default class SelectComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
-      value = +value;
+    const dataType = _.get(this.component, 'dataType', 'auto');
+    switch (dataType) {
+      case 'auto':
+        if (!isNaN(parseFloat(value)) && isFinite(value)) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = value.toString();
+        }
+        break;
+      case 'boolean':
+        value = !!value;
+        break;
     }
     return super.normalizeValue(value);
   }
@@ -1050,6 +1098,21 @@ export default class SelectComponent extends Field {
     value = this.dataValue;
     const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
+
+    // Undo typing when searching to set the value.
+    if (this.component.multiple && Array.isArray(value)) {
+      value = value.map(value => {
+        if (typeof value === 'boolean' || typeof value === 'number') {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        value = value.toString();
+      }
+    }
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -1136,7 +1199,7 @@ export default class SelectComponent extends Field {
   }
 
   /**
-   * Ouput this select dropdown as a string value.
+   * Output this select dropdown as a string value.
    * @return {*}
    */
   asString(value) {
@@ -1191,26 +1254,29 @@ export default class SelectComponent extends Field {
     this.focusableElement.focus();
   }
 
-  setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer) {
-      this.empty(this.refs.messageContainer);
-    }
-    if (!this.refs.selectContainer) {
-      return;
-    }
+  setCustomValidity(message, dirty, external) {
     if (message) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
       this.error = {
         component: this.component,
-        message: message
+        message: message,
+        external: !!external,
       };
       this.emit('componentError', this.error);
-      this.addInputError(message, dirty, [this.refs.selectContainer]);
+      if (this.refs.selectContainer) {
+        this.addInputError(message, dirty, [this.refs.selectContainer]);
+      }
     }
-    else {
+    else if (this.error && this.error.external === external) {
+      if (this.refs.messageContainer) {
+        this.empty(this.refs.messageContainer);
+      }
+      this.error = null;
       this.removeClass(this.refs.selectContainer, 'is-invalid');
       this.removeClass(this.element, 'alert alert-danger');
       this.removeClass(this.element, 'has-error');
-      this.error = null;
     }
   }
 }

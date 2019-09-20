@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -224,13 +225,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Wizard from &apos;<span><a href="file/src/Wizard.js.html#lineNumber8">formiojs/src/Wizard.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Wizard from &apos;<span><a href="file/src/Wizard.js.html#lineNumber7">formiojs/src/Wizard.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/Wizard.js.html#lineNumber8">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/Wizard.js.html#lineNumber7">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -346,6 +347,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-component">component</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-components">components</a></span></span><span class="code" data-ice="signature">: <span><span>*</span><span>[]</span></span></span>
         </p>
       </div>
@@ -430,6 +459,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-disabled">disabled</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-element">element</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -476,34 +533,6 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">get</span>
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-get-form">form</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
       <span class="kind" data-ice="kind">set</span>
       
       <span class="override" data-ice="override"></span>
@@ -532,6 +561,34 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-get-form">form</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
       
       
       <span class="override" data-ice="override"></span>
@@ -543,6 +600,62 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-globalComponents">globalComponents</a></span></span><span class="code" data-ice="signature">: <span><span>*</span><span>[]</span></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-originalComponent">originalComponent</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-member-originalComponents">originalComponents</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -947,90 +1060,6 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-checkCurrentPageValidity">checkCurrentPageValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-checkPageValidity">checkPageValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, page: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-checkPagesValidity">checkPagesValidity</a></span></span><span class="code" data-ice="signature">(pages: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -1367,6 +1396,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-pageFieldLogic">pageFieldLogic</a></span></span><span class="code" data-ice="signature">(page: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-pageId">pageId</a></span></span><span class="code" data-ice="signature">(page: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -1536,6 +1593,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setPage">setPage</a></span></span><span class="code" data-ice="signature">(num: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html#instance-method-setValue">setValue</a></span></span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2508,6 +2593,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-ready">ready</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-rootPristine">rootPristine</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3675,7 +3788,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4242,13 +4355,100 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
 </div>
       </div>
     </td>
@@ -4300,13 +4500,43 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+        <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
       </div>
     </td>
@@ -4385,7 +4615,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5978,7 +6208,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>, external: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -6263,6 +6493,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue">updateComponentValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateItems">updateItems</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>)</span>
         </p>
       </div>
@@ -6320,13 +6579,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Update a value of this component.</p>
+        <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
       </div>
     </td>
@@ -7431,15 +7690,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, components: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
-a submission once it has been changed.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -8282,7 +8539,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>, source: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -9232,6 +9489,34 @@ within other container based components.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-member-originalComponents">originalComponents</a></span></span><span class="code" data-ice="signature">: <span><span>*</span><span>[]</span></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-member-root">root</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -9829,7 +10114,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, source: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Webform.js~Webform.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -10719,7 +11004,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber15">source</a></span></span>
     </span>
   </h3>
 
@@ -10794,7 +11079,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber101">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber92">source</a></span></span>
     </span>
   </h3>
 
@@ -10804,6 +11089,50 @@ within other container based components.</p>
   
 
   
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-component">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">component</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber214">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>The Form.io component JSON schema.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/Webform.js~Webform.html#instance-member-component">Webform#component</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -10837,7 +11166,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber28">source</a></span></span>
     </span>
   </h3>
 
@@ -10880,7 +11209,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -10923,7 +11252,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber217">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber221">source</a></span></span>
     </span>
   </h3>
 
@@ -10933,6 +11262,50 @@ within other container based components.</p>
   
 
   
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-disabled">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">disabled</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber218">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Return if the component is disabled.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-disabled">NestedComponent#disabled</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -10966,7 +11339,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber113">source</a></span></span>
     </span>
   </h3>
 
@@ -11009,7 +11382,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber484">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber487">source</a></span></span>
     </span>
   </h3>
 
@@ -11019,50 +11392,6 @@ within other container based components.</p>
   
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-errors">NestedComponent#errors</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-get-form">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">get</span>
-    
-    
-    
-    <span class="code" data-ice="name">form</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber93">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Gets the form object.</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/Webform.js~Webform.html#instance-get-form">Webform#form</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -11096,7 +11425,51 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber88">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Gets the form object.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/Webform.js~Webform.html#instance-get-form">Webform#form</a></span></div>
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-form">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    
+    <span class="code" data-ice="name">form</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -11140,7 +11513,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber28">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber27">source</a></span></span>
     </span>
   </h3>
 
@@ -11150,6 +11523,92 @@ within other container based components.</p>
   
 
   
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-originalComponent">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">originalComponent</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber215">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-originalComponent">Component#originalComponent</a></span></div>
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-originalComponents">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">originalComponents</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber365">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/Webform.js~Webform.html#instance-member-originalComponents">Webform#originalComponents</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -11183,7 +11642,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber30">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber29">source</a></span></span>
     </span>
   </h3>
 
@@ -11226,7 +11685,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber26">source</a></span></span>
     </span>
   </h3>
 
@@ -11269,7 +11728,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber26">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber25">source</a></span></span>
     </span>
   </h3>
 
@@ -11312,7 +11771,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber347">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber341">source</a></span></span>
     </span>
   </h3>
 
@@ -11355,7 +11814,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber355">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber349">source</a></span></span>
     </span>
   </h3>
 
@@ -11398,7 +11857,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber89">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber80">source</a></span></span>
     </span>
   </h3>
 
@@ -11443,7 +11902,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber32">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber31">source</a></span></span>
     </span>
   </h3>
 
@@ -11489,7 +11948,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber173">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber164">source</a></span></span>
     </span>
   </h3>
 
@@ -11532,7 +11991,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber121">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber112">source</a></span></span>
     </span>
   </h3>
 
@@ -11603,7 +12062,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber268">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber272">source</a></span></span>
     </span>
   </h3>
 
@@ -11675,7 +12134,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber261">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber265">source</a></span></span>
     </span>
   </h3>
 
@@ -11731,7 +12190,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber429">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber432">source</a></span></span>
     </span>
   </h3>
 
@@ -11786,7 +12245,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber317">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber321">source</a></span></span>
     </span>
   </h3>
 
@@ -11847,237 +12306,6 @@ within other container based components.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-checkCurrentPageValidity">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">checkCurrentPageValidity</span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber464">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">args</td>
-      <td data-ice="type" class="code">...<span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-checkPageValidity">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">checkPageValidity</span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, page: <span>*</span>): <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber337">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">data</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">dirty</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">page</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-checkPagesValidity">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">checkPagesValidity</span><span class="code" data-ice="signature">(pages: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber468">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">pages</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">args</td>
-      <td data-ice="type" class="code">...<span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-checkValidity">
     <span class="access" data-ice="access">public</span>
     
@@ -12089,7 +12317,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber475">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber471">source</a></span></span>
     </span>
   </h3>
 
@@ -12166,7 +12394,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber61">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber52">source</a></span></span>
     </span>
   </h3>
 
@@ -12221,7 +12449,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber221">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber225">source</a></span></span>
     </span>
   </h3>
 
@@ -12276,7 +12504,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber326">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber330">source</a></span></span>
     </span>
   </h3>
 
@@ -12347,7 +12575,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber45">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber44">source</a></span></span>
     </span>
   </h3>
 
@@ -12419,7 +12647,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber257">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber261">source</a></span></span>
     </span>
   </h3>
 
@@ -12474,7 +12702,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber380">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber383">source</a></span></span>
     </span>
   </h3>
 
@@ -12551,7 +12779,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber72">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber63">source</a></span></span>
     </span>
   </h3>
 
@@ -12607,7 +12835,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber373">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber376">source</a></span></span>
     </span>
   </h3>
 
@@ -12684,7 +12912,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber35">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber34">source</a></span></span>
     </span>
   </h3>
 
@@ -12739,7 +12967,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber287">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber291">source</a></span></span>
     </span>
   </h3>
 
@@ -12794,7 +13022,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber442">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber448">source</a></span></span>
     </span>
   </h3>
 
@@ -12849,6 +13077,65 @@ within other container based components.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-pageFieldLogic">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">pageFieldLogic</span><span class="code" data-ice="signature">(page: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber212">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">page</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-pageId">
     <span class="access" data-ice="access">public</span>
     
@@ -12860,7 +13147,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber413">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber416">source</a></span></span>
     </span>
   </h3>
 
@@ -12931,7 +13218,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber309">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber313">source</a></span></span>
     </span>
   </h3>
 
@@ -12986,7 +13273,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber458">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber465">source</a></span></span>
     </span>
   </h3>
 
@@ -13041,7 +13328,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber111">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber102">source</a></span></span>
     </span>
   </h3>
 
@@ -13096,7 +13383,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber67">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber58">source</a></span></span>
     </span>
   </h3>
 
@@ -13140,7 +13427,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber351">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber345">source</a></span></span>
     </span>
   </h3>
 
@@ -13212,7 +13499,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber197">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber189">source</a></span></span>
     </span>
   </h3>
 
@@ -13233,6 +13520,84 @@ within other container based components.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">num</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-setValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">setValue</span><span class="code" data-ice="signature">(submission: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber370">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Set the value of this component.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/Webform.js~Webform.html#instance-method-setValue">Webform#setValue</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">submission</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">flags</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>

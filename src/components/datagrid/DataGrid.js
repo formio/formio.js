@@ -379,7 +379,7 @@ export default class DataGridComponent extends NestedComponent {
     this.rows.forEach((row) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
-          visibility[key] = !!visibility[key] || col.checkConditions(data);
+          visibility[key] = !!visibility[key] || (col.checkConditions(data) && col.type !== 'hidden');
         }
       });
     });
@@ -392,9 +392,9 @@ export default class DataGridComponent extends NestedComponent {
     return { rebuild, show };
   }
 
-  checkConditions(data) {
+  checkComponentConditions(data) {
     // If table isn't visible, don't bother calculating columns.
-    if (!super.checkConditions(data)) {
+    if (!super.checkComponentConditions(data)) {
       return false;
     }
 
@@ -453,11 +453,7 @@ export default class DataGridComponent extends NestedComponent {
       });
     });
 
-    this.triggerChange(flags, changed);
-
-    if (changed) {
-      this.redraw();
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 

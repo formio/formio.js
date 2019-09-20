@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -274,18 +275,6 @@ export default class Input extends Multivalue {
     };
   }
 
-  updateMask(textInput, newMaskName) {
-    const newMask = this.getMaskByName(newMaskName);
-    //destroy previous mask
-    if (textInput.mask) {
-      textInput.mask.destroy();
-    }
-    //set new text field mask
-    this.setInputMask(textInput, newMask);
-    //update text field value after new mask is applied
-    this.updateValue();
-  }
-
   get maskOptions() {
     return _.map(this.component.inputMasks, mask =&gt; {
       return {
@@ -310,6 +299,14 @@ export default class Input extends Multivalue {
     return super.setInputMask(input, (inputMask || this.component.inputMask), !this.component.placeholder);
   }
 
+  getMaskOptions() {
+    return this.component.inputMasks
+      .map(mask =&gt; ({
+        label: mask.label,
+        value: mask.label,
+      }));
+  }
+
   get remainingWords() {
     const maxWords = _.parseInt(_.get(this.component, &apos;validate.maxWords&apos;), 10);
     const wordCount = _.words(this.dataValue).length;
@@ -320,6 +317,9 @@ export default class Input extends Multivalue {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.attr.value = this.getValueAsString(value);
+    if (this.isMultipleMasksField) {
+      info.attr.class += &apos; formio-multiple-mask-input&apos;;
+    }
     // This should be in the calendar widget but it doesn&apos;t have access to renderTemplate.
     if (this.component.widget &amp;&amp; this.component.widget.type === &apos;calendar&apos;) {
       this.component.suffix = this.renderTemplate(&apos;icon&apos;, {
@@ -329,11 +329,19 @@ export default class Input extends Multivalue {
         content: &apos;&apos;
       });
     }
-    return this.renderTemplate(&apos;input&apos;, {
-      input: info,
-      value,
-      index
-    });
+
+    return this.isMultipleMasksField
+      ? this.renderTemplate(&apos;multipleMasksInput&apos;, {
+        input: info,
+        value,
+        index,
+        selectOptions: this.getMaskOptions() || [],
+      })
+      : this.renderTemplate(&apos;input&apos;, {
+        input: info,
+        value,
+        index
+      });
   }
 
   setCounter(type, element, count, max) {
@@ -369,6 +377,14 @@ export default class Input extends Multivalue {
         this.setCounter(&apos;characters&apos;, this.refs.charcount[index], value.length, maxChars);
       }
     }
+  }
+
+  getValueAt(index) {
+    const input = this.performInputMapping(this.refs.input[index]);
+    if (input &amp;&amp; input.widget) {
+      return input.widget.getValue();
+    }
+    return input ? input.value : undefined;
   }
 
   updateValue(value, flags, index) {

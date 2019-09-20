@@ -4,12 +4,137 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.2.0
+### Added
+ - noDragDrop and skipRemoveConfirm to create components with predefined nested components and denied users to change that components.
+ - GetView for DateTime with defined format.
+ - Improvement to isEmpty function, that if we not provide the value, then we are getting dataValue.
+ - Function isEqual, to support comparison of values for at least  DateTime component, where we need to compare only formatted dates.
+ - Added support for objects in HTML5 Select component.
+ 
+## Fixed
+ - Fix for EditGrid's components data context.
+ - Fix for Hidden component inside DataGrid.
+ - Check to verify, that previewElement exists.
+
+## 4.1.0
+### Changed
+ - Major upgrade dompurify@2.0.0
+ - Minor upgrade i18next@17.0.16, eslint@6.4.0, webpack@4.40.2
+ - Code cleanup: Creating common sanitize methods.
+ - Refactoring the checkdata system to be more performant and easier to understand.
+
 ### Fixed
- - ```saveSubmission``` method not adding Content-Type header if headers are manually passed
- - Loader being oval instead of circle
- - Mutating passed component JSON when calling component constructor
- - ```submissionReady``` being called with empty submission when submission will be set later after ```loadSubmission```
+ - Fix issue where errors aren't clearing.
+ - Fix wizard taking a very long time to submit and simplify logic.
+ - Fixing button component to not require button element to attach and states to work correctly.
+ - Fixing the tags component setValue and getValue to work without choices.
+ - Fix events missing from Form factory.
+ - SAML is redirecting to home page after handshake. 
+ - Fixing issues with the panels from refreshing in wizards if they do not have keys.
+ - Fix issue where select html5 components can't restore value properly.
+ - Fixing issue with DataGrid, EditGrid, and DataMap not triggering changes correctly within setValue method.
+ 
+### Added
+ - Adding element protections.
+ - Added error container to TextArea component.
+ - A way to configure the Sanitization settings with outside configurations.
+
+## 4.0.11
+### Fixed 
+ - Use of for/of in template not supported in IE11
+
+## 4.0.10
+### Added
+ - Delete handler for file storage providers
+ 
+### Fixed
+ - Select component delete event
+ - Wizard page length can sometimes cause issues if used before initialized.
+ - Editgrid state for each row sometimes is wrong.
+
+## 4.0.9
+### Fixed
+ - Custom validation errors clearing too often when external validations are set.
+ - Field logic not firing on first page of wizard.
+ - Minor issues with semantic templates and incorrect variables.
+ - Missing functions when calling components directly.
+ - Client only persistence not reporting correctly in results.
+ - Get tests running and passing.
+ - Fix clear on hide when initially setting values and when items show or hide.
+
+## 4.0.8
+### Reverted
+ - Changing the way tabs are attached since it broke setting values in all non-active tabs.
+
+## 4.0.7
+### Fixed
+ - Select with boolean or simple numbers were not matching on setValue
+ - Builder defaults options to an empty object if not given.
+
+## 4.0.6
+### Added
+ - Select and Radio can now specify the Storage Type for date type casting.
+
+### Fixed
+ - Shortcuts missing options in builder.
+ - Datetime component losing timezone when saving
+ - Field logic not firing on panel pages.
+
+## 4.0.5
+### Added
+ - Add string representation of form component for table views.
+
+### Fixed
+ - Problem with select component would chose empty object as default instead of empty string.
+ - Fixed issue when skip&limit become undefined if select resource data type
+ - Issue with the Container component within the form builder overlapping outside.
+ - Problem where values would not get reset after a form is redrawn.
+
+## 4.0.4
+Not found
+
+## 4.0.3
+### Fixed
+ - Major performance regressions when form or component were used in custom conditionals or calcuations.
+
+## 4.0.2
+### Fixed
+ - Fixed issue with appearance of unnecessary loading option
+ - Disable load icon item in select component.
+ - Infinite refresh loop by not triggering an update when setting a provided value on Select components.
+ - Issue where the Redraw On option in the form builder was throwing some errors.
+
+### Changed
+ - The refreshOn property to be called "redrawOn", unless it is a Select component. This will maintain reverse compatability for now with and will gracefully deviate in the future.
+
+## 4.0.1
+### Fixed
+ - Components would incorrectly clear any values that are visible because of another value when loading a submission.
+
+## 4.0.0
+### Breaking Changes
+ - Refactored the build methods for all components, and broke that apart to be 3 separate methods:
+   - init: Initialize the render component.
+   - render: Renders the component as a string.
+   - attach: Looks up references in the template, and then binds events and attaches component logic to the template.
+ - Component class replaces the BaseCompoennt class.
+ - Added more OOP heirarchy to components including.
+   - Field
+   - Input
+   - MultiValue
+ - Directory structure:
+   - Base classes are now stored in the "components/_classes" folder including
+     - Component - Base component for most components.
+     - Field
+     - Input - All input element derive from this class.
+     - MultiValue - Handles multiple valued components
+     - Nested - Handles all nested components.
+ - Introducing Templates
+   - You can now create your own templates that can override all aspects of the UI/UX for the rendered forms. See https://github.com/formio/formio.js/wiki/Form-Templating
+ - updateValue() - This method now passes the "value" of the component to the first argument, instead of the second. 
+    3.x:  updateValue(flags, value)
+    4.x:  updateValue(value, flags)
 
 ## 3.22.6
 ### Fixed

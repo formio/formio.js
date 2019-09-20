@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import WidgetComponent from '../_classes/widgetcomponent/WidgetComponent';
+import { conformToMask } from 'vanilla-text-mask';
+import * as FormioUtils from '../../utils/utils';
 
 export default class TextFieldComponent extends WidgetComponent {
   static schema(...extend) {
@@ -76,14 +78,12 @@ export default class TextFieldComponent extends WidgetComponent {
         maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
       };
     }
-    const maskName = value.maskName || '';
     const textValue = value.value || '';
-    const textInput = this.refs.input[index] ? this.refs.input[index].text : undefined;
-    const maskInput = this.refs.input[index] ? this.refs.input[index].mask : undefined;
+    const textInput = this.refs.mask[index];
+    const maskInput = this.refs.select[index];
     if (textInput && maskInput) {
-      maskInput.value = maskName;
-      textInput.value = textValue;
-      this.updateMask(textInput, maskName);
+      const mask = FormioUtils.getInputMask(this.activeMask);
+      textInput.value = conformToMask(textValue, mask).conformedValue;
     }
   }
 
@@ -105,7 +105,7 @@ export default class TextFieldComponent extends WidgetComponent {
     return input && input.text ? input.text : input;
   }
 
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty((value || '').toString().trim());
     }

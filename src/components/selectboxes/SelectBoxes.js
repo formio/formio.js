@@ -57,7 +57,7 @@ export default class SelectBoxesComponent extends RadioComponent {
    * @param value
    * @return {boolean}
    */
-  isEmpty(value) {
+  isEmpty(value = this.dataValue) {
     let empty = true;
     for (const key in value) {
       if (value.hasOwnProperty(key) && value[key]) {
@@ -135,7 +135,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       .join(', ');
   }
 
-  checkValidity(data, dirty, rowData) {
+  checkComponentValidity(data, dirty, rowData) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
 
@@ -184,6 +184,6 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
     }
 
-    return super.checkValidity(data, dirty, rowData);
+    return super.checkComponentValidity(data, dirty, rowData);
   }
 }

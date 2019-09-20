@@ -114,7 +114,7 @@ export default class NestedComponent extends Field {
 
   set data(value) {
     this._data = value;
-    this.eachComponent(component => {
+    this.eachComponent((component) => {
       component.data = this._data;
     });
   }
@@ -243,9 +243,9 @@ export default class NestedComponent extends Field {
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
+    options.parentVisible = this.visible;
     options.root = this.root || this;
     const comp = Components.create(component, options, data, true);
-    comp.parentVisible = this.visible;
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -442,60 +442,21 @@ export default class NestedComponent extends Field {
     }
   }
 
-  updateValue(value, flags, source) {
+  updateValue(value, flags) {
     return this.components.reduce((changed, comp) => {
-      // Skip over the source if it is provided.
-      if (source && source.id === comp.id) {
-        return changed;
-      }
       return comp.updateValue(null, flags) || changed;
-    }, false);
+    }, super.updateValue(value, flags));
   }
 
   hasChanged() {
     return false;
   }
 
-  /**
-   * A more performant way to check the conditions, calculations, and validity of
-   * a submission once it has been changed.
-   *
-   * @param data
-   * @param flags
-   */
-  checkData(data, flags, source) {
-    flags = flags || {};
-    let valid = true;
-    if (flags.noCheck) {
-      return;
-    }
-
-    // Update the value.
-    let changed = this.updateValue(null, {
-      noUpdateEvent: true
-    }, source);
-
-    // Iterate through all components and check conditions, and calculate values.
-    this.getComponents().forEach((comp) => {
-      if (comp.checkData) {
-        valid &= comp.checkData(data, flags);
-      }
-      changed |= comp.calculateValue(data, {
-        noUpdateEvent: true
-      });
-      comp.checkConditions(data);
-      if (!flags.noValidate) {
-        valid &= comp.checkValidity(data);
-      }
-    });
-
-    // Trigger the change if the values changed.
-    if (changed) {
-      this.triggerChange(flags, changed);
-    }
-
-    // Return if the value is valid.
-    return !!valid;
+  checkData(data, flags, components) {
+    components = components || this.getComponents();
+    return components.reduce((valid, comp) => {
+      return comp.checkData(data, flags) && valid;
+    }, super.checkData(data, flags));
   }
 
   checkConditions(data) {
@@ -561,11 +522,7 @@ export default class NestedComponent extends Field {
       return true;
     }
 
-    const components = this.wizard && !this.isLastPage()
-      ? this.pages[this.page]
-      : this.getComponents();
-
-    return components.reduce(
+    return this.getComponents().reduce(
       (check, comp) => comp.checkValidity(data, dirty) && check,
       super.checkValidity(data, dirty)
     );
@@ -622,7 +579,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags) || changed;
     }
-    else {
+    else if (!this.rootPristine) {
       flags.noValidate = true;
       return component.setValue(component.defaultValue, flags) || changed;
     }

@@ -15,7 +15,8 @@ export default class FormComponent extends Component {
       src: '',
       reference: true,
       form: '',
-      path: ''
+      path: '',
+      tableView: true,
     }, ...extend);
   }
 
@@ -156,6 +157,34 @@ export default class FormComponent extends Component {
     return super.render(subform);
   }
 
+  asString(value) {
+    return this.getValueAsString(value);
+  }
+
+  /**
+   * Prints out the value of form components as a datagrid value.
+   */
+  getValueAsString(value) {
+    if (!Object.keys(value.data).length) {
+      return 'No data provided';
+    }
+    const columns = Object.keys(value.data).map(column => {
+      return {
+        key: column,
+        label: column,
+        hideLabel: false
+      };
+    });
+
+    return super.render(this.renderTemplate('datagrid', {
+      rows: [value.data],
+      columns: columns,
+      visibleColumns: value.data,
+      hasHeader: true,
+      numColumns: Object.keys(value.data).length,
+    }));
+  }
+
   attach(element) {
     super.attach(element);
     // Don't attach in builder.
@@ -164,7 +193,7 @@ export default class FormComponent extends Component {
     }
     return this.loadSubForm().then(() => {
       if (this.subForm) {
-        this.subForm.attach(element);
+        return this.subForm.attach(element);
       }
     });
   }
@@ -319,16 +348,16 @@ export default class FormComponent extends Component {
     return this.subFormReady.then(() => this.restoreValue());
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty);
   }
 
-  checkConditions(data) {
-    const visible = super.checkConditions(data);
+  checkComponentConditions(data) {
+    const visible = super.checkComponentConditions(data);
 
     // Return if already hidden
     if (!visible) {
@@ -416,7 +445,10 @@ export default class FormComponent extends Component {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return NativePromise.resolve(this.dataValue);
+
+      if (!this.shouldSubmit) {
+        return NativePromise.resolve(this.dataValue);
+      }
     }
 
     // This submission has not been submitted yet.

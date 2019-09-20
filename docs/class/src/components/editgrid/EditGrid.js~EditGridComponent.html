@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -700,7 +701,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-addRow">addRow</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-addRow">addRow</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -812,6 +813,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: {}): <span>*</span></span>
         </p>
       </div>
@@ -841,34 +870,6 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkRow">checkRow</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, editRow: <span>*</span>, flags: {}): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -2457,6 +2458,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-rootPristine">rootPristine</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-rootValue">rootValue</a></span></span><span class="code" data-ice="signature">: <span>*</span>: <span>*</span></span>
         </p>
       </div>
@@ -3597,7 +3626,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4164,13 +4193,100 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
 </div>
       </div>
     </td>
@@ -4222,13 +4338,43 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+        <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
       </div>
     </td>
@@ -4307,7 +4453,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5900,7 +6046,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>, external: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -6185,6 +6331,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue">updateComponentValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateItems">updateItems</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>)</span>
         </p>
       </div>
@@ -6242,13 +6417,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Update a value of this component.</p>
+        <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
       </div>
     </td>
@@ -7353,15 +7528,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, components: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
-a submission once it has been changed.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -8204,7 +8377,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>, source: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -8532,7 +8705,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber603">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber572">source</a></span></span>
     </span>
   </h3>
 
@@ -8619,7 +8792,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber586">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber555">source</a></span></span>
     </span>
   </h3>
 
@@ -8877,11 +9050,11 @@ within other container based components.</p>
     
     
     
-    <span class="code" data-ice="name">addRow</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">addRow</span><span class="code" data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber327">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber293">source</a></span></span>
     </span>
   </h3>
 
@@ -8895,7 +9068,19 @@ within other container based components.</p>
   <div data-ice="properties">
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -8924,7 +9109,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber356">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber323">source</a></span></span>
     </span>
   </h3>
 
@@ -9054,7 +9239,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber402">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber369">source</a></span></span>
     </span>
   </h3>
 
@@ -9102,6 +9287,84 @@ within other container based components.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-checkComponentValidity">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">checkComponentValidity</span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber523">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">Component#checkComponentValidity</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">data</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">dirty</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-checkData">
     <span class="access" data-ice="access">public</span>
     
@@ -9120,8 +9383,8 @@ within other container based components.</p>
   
   
   
-  <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
-a submission once it has been changed.</p>
+  <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkData">NestedComponent#checkData</a></span></div>
@@ -9266,83 +9529,6 @@ a submission once it has been changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-checkValidity">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">checkValidity</span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber554">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkValidity">NestedComponent#checkValidity</a></span></div>
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">data</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">dirty</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
-          
-        </tr>
-      </tbody>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-clearErrors">
     <span class="access" data-ice="access">public</span>
     
@@ -9354,7 +9540,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber392">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber359">source</a></span></span>
     </span>
   </h3>
 
@@ -9413,7 +9599,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber498">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber467">source</a></span></span>
     </span>
   </h3>
 
@@ -9490,7 +9676,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber318">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber284">source</a></span></span>
     </span>
   </h3>
 
@@ -9561,7 +9747,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber370">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber337">source</a></span></span>
     </span>
   </h3>
 
@@ -9620,7 +9806,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber283">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber249">source</a></span></span>
     </span>
   </h3>
 
@@ -9687,7 +9873,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber298">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber264">source</a></span></span>
     </span>
   </h3>
 
@@ -9758,7 +9944,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber308">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber274">source</a></span></span>
     </span>
   </h3>
 
@@ -9829,7 +10015,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber650">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber619">source</a></span></span>
     </span>
   </h3>
 
@@ -10050,7 +10236,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber476">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber445">source</a></span></span>
     </span>
   </h3>
 
@@ -10257,7 +10443,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber654">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber623">source</a></span></span>
     </span>
   </h3>
 
@@ -10300,7 +10486,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber658">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber627">source</a></span></span>
     </span>
   </h3>
 
@@ -10359,7 +10545,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber435">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber403">source</a></span></span>
     </span>
   </h3>
 
@@ -10418,7 +10604,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber597">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber566">source</a></span></span>
     </span>
   </h3>
 
@@ -10496,7 +10682,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber491">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber460">source</a></span></span>
     </span>
   </h3>
 
@@ -10561,7 +10747,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber470">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber439">source</a></span></span>
     </span>
   </h3>
 
@@ -10620,7 +10806,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber525">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber494">source</a></span></span>
     </span>
   </h3>
 

@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -326,9 +327,9 @@ export default class TabsComponent extends NestedComponent {
         this.setTab(index);
       });
     });
-
-    // Set the tab to the first index.
-    this.setTab(0, true);
+    this.refs[this.tabKey].forEach((tab, index) =&gt; {
+      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);
+    });
     return superAttach;
   }
 
@@ -341,19 +342,16 @@ export default class TabsComponent extends NestedComponent {
    *
    * @param index
    */
-  setTab(index, force) {
+  setTab(index) {
     if (
       !this.tabs ||
       !this.tabs[index] ||
       !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index] ||
-      (!force &amp;&amp; (this.currentTab === index))
+      !this.refs[this.tabKey][index]
     ) {
       return;
     }
 
-    // Detach current components, empty and rebuild comps for the new tab.
-    this.tabs[this.currentTab].forEach(tabComp =&gt; tabComp.detach());
     this.currentTab = index;
 
     _.each(this.refs[this.tabKey], (tab) =&gt; {
@@ -377,9 +375,6 @@ export default class TabsComponent extends NestedComponent {
     if (this.refs[this.tabLinkKey][index]) {
       this.addClass(this.refs[this.tabLinkKey][index], &apos;formio-tab-link-active&apos;);
     }
-
-    // Attach components to this tab.
-    this.attachComponents(this.refs[this.tabKey][index], this.tabs[index], this.component.components[index].components);
     this.triggerChange();
   }
 }

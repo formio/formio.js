@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -241,7 +242,8 @@ export default class FormComponent extends Component {
       src: &apos;&apos;,
       reference: true,
       form: &apos;&apos;,
-      path: &apos;&apos;
+      path: &apos;&apos;,
+      tableView: true,
     }, ...extend);
   }
 
@@ -382,6 +384,34 @@ export default class FormComponent extends Component {
     return super.render(subform);
   }
 
+  asString(value) {
+    return this.getValueAsString(value);
+  }
+
+  /**
+   * Prints out the value of form components as a datagrid value.
+   */
+  getValueAsString(value) {
+    if (!Object.keys(value.data).length) {
+      return &apos;No data provided&apos;;
+    }
+    const columns = Object.keys(value.data).map(column =&gt; {
+      return {
+        key: column,
+        label: column,
+        hideLabel: false
+      };
+    });
+
+    return super.render(this.renderTemplate(&apos;datagrid&apos;, {
+      rows: [value.data],
+      columns: columns,
+      visibleColumns: value.data,
+      hasHeader: true,
+      numColumns: Object.keys(value.data).length,
+    }));
+  }
+
   attach(element) {
     super.attach(element);
     // Don&apos;t attach in builder.
@@ -390,7 +420,7 @@ export default class FormComponent extends Component {
     }
     return this.loadSubForm().then(() =&gt; {
       if (this.subForm) {
-        this.subForm.attach(element);
+        return this.subForm.attach(element);
       }
     });
   }
@@ -545,16 +575,16 @@ export default class FormComponent extends Component {
     return this.subFormReady.then(() =&gt; this.restoreValue());
   }
 
-  checkValidity(data, dirty) {
+  checkComponentValidity(data, dirty) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty);
   }
 
-  checkConditions(data) {
-    const visible = super.checkConditions(data);
+  checkComponentConditions(data) {
+    const visible = super.checkComponentConditions(data);
 
     // Return if already hidden
     if (!visible) {
@@ -642,7 +672,10 @@ export default class FormComponent extends Component {
         _id: submission._id,
         form: submission.form
       } : submission;
-      return NativePromise.resolve(this.dataValue);
+
+      if (!this.shouldSubmit) {
+        return NativePromise.resolve(this.dataValue);
+      }
     }
 
     // This submission has not been submitted yet.

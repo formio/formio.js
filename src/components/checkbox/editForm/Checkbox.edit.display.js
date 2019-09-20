@@ -1,4 +1,5 @@
 import BuilderUtils from '../../../utils/builder';
+import _ from 'lodash';
 
 export default [
   {
@@ -21,15 +22,11 @@ export default [
     customDefaultValue: () => '',
     template: '{{ item.label }}',
     data: {
-      custom({
-        instance: {
-          root: {
-            editForm,
-            editComponent,
-          } = {},
-        } = {},
-      }) {
-        return BuilderUtils.getAvailableShortcuts(editForm, editComponent);
+      custom(context) {
+        return BuilderUtils.getAvailableShortcuts(
+          _.get(context, 'instance.options.editForm', {}),
+          _.get(context, 'instance.options.editComponent', {})
+        );
       },
     },
   },

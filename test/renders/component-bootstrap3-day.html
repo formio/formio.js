@@ -5,9 +5,8 @@
   <div class="row">
     <div class="form-group col col-xs-4">
       <label for="day-month" class="">Month</label>
-      <div>
-        <select ref="month" class="form-control" name="month" lang="en">
-          <option value="0">
+      <div><select ref="month" class="form-control" name="month" lang="en">
+          <option value="">
           </option>
           <option value="1">
             January
@@ -46,18 +45,19 @@
             December
           </option>
         </select>
+        <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" />
       </div>
     </div>
     <div class="form-group col col-xs-3">
       <label for="day-day" class="">Day</label>
       <div>
-        <input ref="day" id="day-day" class="form-control" type="number" placeholder="" step="1" min="1" max="31"></input>
+        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31"></input>
       </div>
     </div>
     <div class="form-group col col-xs-5">
       <label for="day-year" class="">Year</label>
       <div>
-        <input ref="year" id="day-year" class="form-control" type="number" placeholder="" step="1" min="1" max=""></input>
+        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030"></input>
       </div>
     </div>
   </div>

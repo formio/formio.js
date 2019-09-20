@@ -13,7 +13,7 @@ export default [
     type: 'textfield',
     label: 'Default Value',
     key: 'defaultValue',
-    weight: 20,
+    weight: 5,
     placeholder: 'Default Value',
     tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
@@ -60,7 +60,7 @@ export default [
   {
     type: 'select',
     input: true,
-    key: 'refreshOn',
+    key: 'redrawOn',
     label: 'Redraw On',
     weight: 600,
     tooltip: 'Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.',
@@ -82,14 +82,7 @@ export default [
       }
     },
     conditional: {
-      json: {
-        nin: [
-          { var: 'data.type' },
-          [
-            'select',
-          ],
-        ],
-      },
+      json: { '!' : [{ var: 'data.dataSrc' }] },
     },
   },
   {

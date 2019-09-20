@@ -14,7 +14,7 @@ const forms = require('./formtest');
 Components.setComponents(AllComponents);
 
 const dir = './test/renders';
-if (!fs.existsSync(dir)){
+if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
@@ -23,21 +23,21 @@ const fixComponent = (instance, index = 0) => {
   index++;
   if (instance.type === 'form') {
     instance.everyComponent(component => fixComponent(component, index));
-    if (instance.hasOwnProperty('subForm')) {
-      instance.subForm.id = instance.key;
-    }
+    // if (instance.hasOwnProperty('subForm') && instance.subForm) {
+    //   instance.subForm.id = instance.key;
+    // }
   }
 };
 
-const renderForm = (form) => {
-  return new Form(form).ready.then(instance => {
+const renderForm = (form, options) => {
+  return new Form(form, options).ready.then(instance => {
     fixComponent(instance);
     return pretty(instance.render(), { ocd: true });
   });
 };
 
-const renderComponent = (Type, definition) => {
-  const instance = new Type(definition);
+const renderComponent = (Type, definition, options) => {
+  const instance = new Type(definition, options);
   fixComponent(instance);
   return pretty(instance.render(), { ocd: true });
 };
@@ -48,7 +48,7 @@ Object.keys(templates).forEach(framework => {
   // Render forms
   Object.keys(forms).forEach(form => {
     renders.push(`form-${framework}-${form}`);
-    renderForm(forms[form], {}).then(html => {
+    renderForm(forms[form], { template: framework }).then(html => {
       fs.writeFileSync(`${dir}/form-${framework}-${form}.html`, html);
     }).catch(err => console.log(err));
   });
@@ -61,7 +61,7 @@ Object.keys(templates).forEach(framework => {
   Object.keys(AllComponents).forEach(component => {
     // Basic
     renders.push(`component-${framework}-${component}`);
-    fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}));
+    fs.writeFileSync(`${dir}/component-${framework}-${component}.html`, renderComponent(AllComponents[component], {}, { template: framework }));
 
     // Required
     renders.push(`component-${framework}-${component}-required`);
@@ -69,24 +69,28 @@ Object.keys(templates).forEach(framework => {
       validate: {
         required: true
       }
+    }, {
+      template: framework,
     }));
 
     // Multiple
     renders.push(`component-${framework}-${component}-multiple`);
     fs.writeFileSync(`${dir}/component-${framework}-${component}-multiple.html`, renderComponent(AllComponents[component], {
       multiple: true
+    }, {
+      template: framework,
     }));
   });
 });
 
 // Build index.js for loading all renders.
-const index = fs.createWriteStream(`${dir}/index.js`);
+// const index = fs.createWriteStream(`${dir}/index.js`);
 
-renders.forEach(key => {
-  index.write(`exports['${key}'] = require('./${key}.html');\n`);
-});
-
-index.end();
+// renders.forEach(key => {
+//   index.write(`exports['${key}'] = require('./${key}.html');\n`);
+// });
+//
+// index.end();
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);

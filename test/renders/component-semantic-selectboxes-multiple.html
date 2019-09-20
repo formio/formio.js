@@ -1,14 +1,16 @@
-<div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes  form-group" ref="component">
-  <label class="control-label ">
+<div id="selectBoxes" class="field form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes formio-component-multiple " ref="component">
+  <label class="">
     Select Boxes
   </label>
-  <div class="input-group">
-    <div class="checkbox" ref="wrapper">
-      <label class="control-label form-check-label" for="selectBoxes-">
+  <div class="fields grouped">
+    <div class="field">
+      <div class="ui  checkbox" ref="wrapper">
         <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="" id="selectBoxes-">
-        <span></span>
-      </label>
+        <label class="" for="selectBoxes-">
+          <span></span>
+        </label>
+      </div>
     </div>
   </div>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div ref="messageContainer"></div>
 </div>

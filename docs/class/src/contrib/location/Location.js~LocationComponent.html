@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -205,6 +205,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
@@ -1554,6 +1555,34 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-rootPristine">rootPristine</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-rootValue">rootValue</a></span></span><span class="code" data-ice="signature">: <span>*</span>: <span>*</span></span>
         </p>
       </div>
@@ -2694,7 +2723,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-member-_parentVisible">_parentVisible</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3261,13 +3290,100 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateComponentValue">calculateComponentValue</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-calculateValue">calculateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Performs calculations in this component plus any child components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Checks the validity of this component and sets the error message if it is invalid.</p>
 </div>
       </div>
     </td>
@@ -3319,13 +3435,43 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkConditions">checkConditions</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Check for conditionals and hide/show the element based on those conditions.</p>
+        <div data-ice="description"><p>Checks conditions for this component and any sub components.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkData">checkData</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Check the conditions, calculations, and validity of a single component and triggers an update if
+something changed.</p>
 </div>
       </div>
     </td>
@@ -3404,7 +3550,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4997,7 +5143,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>, external: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -5282,6 +5428,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue">updateComponentValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateItems">updateItems</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>)</span>
         </p>
       </div>
@@ -5339,13 +5514,13 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(args: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Update a value of this component.</p>
+        <div data-ice="description"><p>Updates the value of this component plus all sub-components.</p>
 </div>
       </div>
     </td>
@@ -5579,6 +5754,34 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-member-activeMask">activeMask</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-addNewValue">addNewValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>)</span>
         </p>
       </div>
@@ -5694,6 +5897,34 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-onSelectMaskHandler">onSelectMaskHandler</a></span></span><span class="code" data-ice="signature">(event: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-render">render</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
@@ -5722,7 +5953,91 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-renderElement">renderElement</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-renderRow">renderRow</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, index: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-tryAttachMultipleMasksInput">tryAttachMultipleMasksInput</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-updateMask">updateMask</a></span></span><span class="code" data-ice="signature">(input: <span>*</span>, mask: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -6151,6 +6466,62 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-getMaskOptions">getMaskOptions</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAt">getValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-renderElement">renderElement</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, index: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -6208,34 +6579,6 @@ to perform special async functions.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-setInputMask">setInputMask</a></span></span><span class="code" data-ice="signature">(input: <span>*</span>, inputMask: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-updateMask">updateMask</a></span></span><span class="code" data-ice="signature">(textInput: <span>*</span>, newMaskName: <span>*</span>)</span>
         </p>
       </div>
       <div>

@@ -3,7 +3,7 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting,
+  getDateSetting
 } from '../utils/utils';
 import moment from 'moment';
 import {

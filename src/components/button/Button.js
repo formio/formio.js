@@ -105,21 +105,8 @@ export default class ButtonComponent extends Field {
     }));
   }
 
-  attach(element) {
-    this.loadRefs(element, {
-      button: 'single',
-      buttonMessageContainer: 'single',
-      buttonMessage: 'single'
-    });
-
-    const superAttach = super.attach(element);
-
-    if (!this.refs.button) {
-      return;
-    }
-
+  attachButton() {
     this.addShortcut(this.refs.button);
-
     let onChange = null;
     let onError = null;
     if (this.component.action === 'submit') {
@@ -180,6 +167,7 @@ export default class ButtonComponent extends Field {
 
     this.on('error', () => {
       this.loading = false;
+      this.disabled = false;
       if (onError) {
         onError();
       }
@@ -208,6 +196,17 @@ export default class ButtonComponent extends Field {
         this.openOauth();
       }
     }
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      button: 'single',
+      buttonMessageContainer: 'single',
+      buttonMessage: 'single'
+    });
+
+    const superAttach = super.attach(element);
+    this.attachButton();
     return superAttach;
   }
   /* eslint-enable max-statements */
@@ -380,7 +379,9 @@ export default class ButtonComponent extends Field {
   }
 
   focus() {
-    this.refs.button.focus();
+    if (this.refs.button) {
+      this.refs.button.focus();
+    }
   }
 
   triggerReCaptcha() {

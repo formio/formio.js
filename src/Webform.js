@@ -124,6 +124,7 @@ export default class Webform extends NestedComponent {
     this._form = {};
     this.draftEnabled = false;
     this.savingDraft = true;
+    this.originalComponents = [];
     if (this.options.saveDraftThrottle) {
       this.triggerSaveDraft = _.throttle(this.saveDraft.bind(this), this.options.saveDraftThrottle);
     }
@@ -843,6 +844,7 @@ export default class Webform extends NestedComponent {
 
     if (this.component) {
       this.component.components = this.form ? this.form.components : [];
+      this.originalComponents = _.cloneDeep(this.component.components);
     }
     else {
       this.component = this.form;
@@ -910,7 +912,9 @@ export default class Webform extends NestedComponent {
     this.element.addEventListener('keydown', this.executeShortcuts);
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
-    return childPromise;
+    return childPromise.then(() => this.setValue(this._submission, {
+      noUpdateEvent: true
+    }));
   }
 
   detach() {
@@ -1036,7 +1040,8 @@ export default class Webform extends NestedComponent {
     this.loading = false;
     this.submitting = false;
     this.setPristine(true);
-    this.setValue(submission, {
+    // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
+    this.setValue(_.cloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });
@@ -1093,7 +1098,7 @@ export default class Webform extends NestedComponent {
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     value.changed = changed;
-    value.isValid = this.checkData(value.data, flags, changed ? changed.instance : null);
+    value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
       this.showErrors();
@@ -1115,8 +1120,8 @@ export default class Webform extends NestedComponent {
     }
   }
 
-  checkData(data, flags, source) {
-    const valid = super.checkData(data, flags, source);
+  checkData(data, flags) {
+    const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }

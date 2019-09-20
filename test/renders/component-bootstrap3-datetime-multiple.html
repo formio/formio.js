@@ -1,4 +1,4 @@
-<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  form-group" ref="component">
+<div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime formio-component-multiple  form-group" ref="component">
   <label class="control-label ">
     Date / Time
   </label>
@@ -6,17 +6,21 @@
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+          <div class="input-group">
+            <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+            <div class="input-group-addon"><i ref="icon" class="fa fa-calendar" style=""></i>
+            </div>
+          </div>
         </td>
         <td>
           <button type="button" class="btn btn-default" ref="removeRow">
-            <i class="glyphicons glyphicons-remove-circle"></i>
+            <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="glyphicons glyphicons-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
         </td>
       </tr>
     </tbody>

@@ -4,7 +4,7 @@ import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
 import templates from './templates';
-import { sanitize } from 'dompurify';
+import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
 
 export default class Form extends Element {
@@ -34,21 +34,24 @@ export default class Form extends Element {
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
       this.element = args[0];
-      this.options = args[2];
+      this.options = args[2] || {};
+      this.options.events = this.events;
       this.setForm(args[1])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else if (args[0]) {
       this.element = null;
-      this.options = args[1];
+      this.options = args[1] || {};
+      this.options.events = this.events;
       this.setForm(args[0])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
     else {
       this.element = null;
-      this.options = null;
+      this.options = {};
+      this.options.events = this.events;
     }
     this.display = '';
   }
@@ -177,26 +180,7 @@ export default class Form extends Element {
    * @returns {*}
    */
   sanitize(dirty) {
-    // Dompurify configuration
-    const sanitizeOptions = {
-      ADD_ATTR: ['ref'],
-      USE_PROFILES: {
-        html: true
-      }
-    };
-    // Allow tags
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedTags) && this.options.sanitizeConfig.allowedTags.length > 0) {
-      sanitizeOptions.ALLOWED_TAGS = this.options.sanitizeConfig.allowedTags;
-    }
-    // Allow attributes
-    if (this.options.sanitizeConfig && Array.isArray(this.options.sanitizeConfig.allowedAttrs) && this.options.sanitizeConfig.allowedAttrs.length > 0) {
-      sanitizeOptions.ALLOWED_ATTR = this.options.sanitizeConfig.allowedAttrs;
-    }
-    // Allowd URI Regex
-    if (this.options.sanitizeConfig && this.options.sanitizeConfig.allowedUriRegex) {
-      sanitizeOptions.ALLOWED_URI_REGEXP = this.options.sanitizeConfig.allowedUriRegex;
-    }
-    return sanitize(dirty, sanitizeOptions);
+    return FormioUtils.sanitize(dirty, this.options);
   }
 
   setContent(element, content) {
