@@ -368,7 +368,7 @@ export default [
     label: 'Sort Query',
     weight: 18,
     description: 'The sort query for results',
-    tooltip: 'User this to provide additional sorting using query parameters',
+    tooltip: 'Use this to provide additional sorting using query parameters',
     conditional: {
       json: {
         in: [
