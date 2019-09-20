@@ -28,7 +28,10 @@ export default class ContentComponent extends Component {
   }
 
   get content() {
-    return this.component.html ? this.interpolate(this.component.html, { data: this.data, row: this.row }) : '';
+    return this.component.html ? this.interpolate(this.component.html, {
+      data: this.rootValue,
+      row: this.data
+    }) : '';
   }
 
   render() {
