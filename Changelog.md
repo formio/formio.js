@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0-rc.3
+### Fixed
+ - Including other changes from 3.x regarding which variables are provided to userPermissions method.
+
 ## 4.2.0-rc.2
 ### Added
  - Adding authurl and cansubmit refactor
