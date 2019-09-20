@@ -620,6 +620,9 @@ export default class ButtonComponent extends Field {
   }
 
   triggerReCaptcha() {
+    if (!this.root) {
+      return;
+    }
     const recaptchaComponent = this.root.components.find((component) =&gt; {
       return component.component.type === &apos;recaptcha&apos; &amp;&amp;
         component.component.eventType === &apos;buttonClick&apos; &amp;&amp;

@@ -246,6 +246,17 @@ import {
 } from &apos;./fixtures&apos;;
 
 describe(&apos;TextField Component&apos;, () =&gt; {
+  it(&apos;Should create a new TextField&apos;, () =&gt; {
+    const textField = new TextFieldComponent({
+      label: &apos;First Name&apos;,
+      key: &apos;firstName&apos;,
+      input: true,
+      type: &apos;textfield&apos;
+    });
+
+    assert.equal(textField.component.key, &apos;firstName&apos;);
+  });
+
   it(&apos;Should build a TextField component&apos;, () =&gt; {
     return Harness.testCreate(TextFieldComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
@@ -322,16 +333,6 @@ describe(&apos;TextField Component&apos;, () =&gt; {
     });
   });
 
-  it(&apos;Should allow for multiple values&apos;, () =&gt; {
-    return Harness.testCreate(TextFieldComponent, comp3).then((component) =&gt; {
-      Harness.testElements(component, &apos;table&apos;, 1);
-      Harness.testElements(component, &apos;table tr&apos;, 2);
-      Harness.testElements(component, &apos;table tr:first-child td&apos;, 2);
-      Harness.testElements(component, &apos;table tr:first-child td:first-child input[name=&quot;data[names]&quot;]&apos;, 1);
-      Harness.testElements(component, &apos;table tr:first-child td:last-child .glyphicons-remove-circle&apos;, 1);
-    });
-  });
-
   it(&apos;Should provide required validation&apos;, () =&gt; {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
@@ -399,16 +400,6 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         Harness.testInvalid(component, &apos;Tom&apos;, &apos;firstName&apos;, &apos;You must be Joe&apos;),
         Harness.testValid(component, &apos;Joe&apos;)
       ];
-    });
-  });
-
-  it(&apos;Should allow for multiple values&apos;, () =&gt; {
-    return Harness.testCreate(TextFieldComponent, comp3).then((component) =&gt; {
-      Harness.testElements(component, &apos;table&apos;, 1);
-      Harness.testElements(component, &apos;table tr&apos;, 2);
-      Harness.testElements(component, &apos;table tr:first-child td&apos;, 2);
-      Harness.testElements(component, &apos;table tr:first-child td:first-child input[name=&quot;data[names]&quot;]&apos;, 1);
-      Harness.testElements(component, &apos;table tr:first-child td:last-child .glyphicons-remove-circle&apos;, 1);
     });
   });
 });

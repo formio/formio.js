@@ -233,11 +233,16 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/component/Component.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Component from &apos;./Component&apos;;
-import assert from &apos;assert&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+import assert from &apos;power-assert&apos;;
+import { expect } from &apos;chai&apos;;
+import Component from &apos;./Component&apos;;
+import Harness from &apos;../../../../test/harness&apos;;
+import { comp1 } from &apos;./fixtures&apos;;
+import _merge from &apos;lodash/merge&apos;;
 
-describe(&apos;Base Component Unit Tests&apos;, () =&gt; {
-  it(&apos;Should create a Base Component&apos;, () =&gt; {
+describe(&apos;Component&apos;, () =&gt; {
+  it(&apos;Should create a Component&apos;, (done) =&gt; {
     const component = new Component();
 
     // Test that we have a proper constructed component.
@@ -245,6 +250,145 @@ describe(&apos;Base Component Unit Tests&apos;, () =&gt; {
     assert.equal(component.options.attachMode, &apos;full&apos;);
     assert.equal(component.attached, false);
     assert.equal(component.rendered, false);
+    done();
+  });
+
+  it(&apos;Should build a base component&apos;, () =&gt; {
+    return Harness.testCreate(Component, { type: &apos;base&apos; }).then((component) =&gt; {
+      const element = component.element.querySelector(&apos;[ref=&quot;component&quot;]&apos;);
+      assert.equal(element.textContent.trim(), &apos;Unknown component: base&apos;);
+    });
+  });
+
+  it(&apos;Should provide required validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { required: true }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;First Name is required&apos;
+      },
+      good: {
+        value: &apos;te&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide minLength validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { minLength: 2 }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;t&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;First Name must be longer than 1 characters.&apos;
+      },
+      good: {
+        value: &apos;te&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide maxLength validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: { maxLength: 5 }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;testte&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;First Name must be shorter than 6 characters.&apos;
+      },
+      good: {
+        value: &apos;te&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide custom validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: {
+        custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
+      }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;Joe&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;You cannot be Joe&apos;
+      },
+      good: {
+        value: &apos;Tom&apos;
+      }
+    }, done));
+  });
+
+  it(&apos;Should provide json validation&apos;, (done) =&gt; {
+    Harness.testCreate(Component, _merge({}, comp1, {
+      validate: {
+        json: {
+          &apos;if&apos;: [
+            {
+              &apos;===&apos;: [
+                { var: &apos;data.firstName&apos; },
+                &apos;Joe&apos;
+              ]
+            },
+            true,
+            &apos;You must be Joe&apos;
+          ]
+        }
+      }
+    })).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;Tom&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;You must be Joe&apos;
+      },
+      good: {
+        value: &apos;Joe&apos;
+      }
+    }, done));
+  });
+
+  describe(&apos;shouldSkipValidation&apos;, () =&gt; {
+    it(&apos;should return true if component is hidden&apos;, done =&gt; {
+      Harness.testCreate(Component, comp1)
+        .then(cmp =&gt; {
+          cmp.visible = false;
+          cmp.checkCondition = () =&gt; true;
+          expect(cmp.visible).to.be.false;
+          expect(cmp.checkCondition()).to.be.true;
+          expect(cmp.shouldSkipValidation()).to.be.true;
+          done();
+        }, done)
+        .catch(done);
+    });
+
+    it(&apos;should return true if component is conditionally hidden&apos;, done =&gt; {
+      Harness.testCreate(Component, comp1)
+        .then(cmp =&gt; {
+          cmp.visible = true;
+          cmp.checkCondition = () =&gt; false;
+          expect(cmp.visible).to.be.true;
+          expect(cmp.checkCondition()).to.be.false;
+          expect(cmp.shouldSkipValidation()).to.be.true;
+          done();
+        }, done)
+        .catch(done);
+    });
+
+    it(&apos;should return false if not hidden&apos;, done =&gt; {
+      Harness.testCreate(Component, comp1)
+        .then(cmp =&gt; {
+          cmp.visible = true;
+          cmp.checkCondition = () =&gt; true;
+          expect(cmp.visible).to.be.true;
+          expect(cmp.checkCondition()).to.be.true;
+          expect(cmp.shouldSkipValidation()).to.be.false;
+          done();
+        }, done)
+        .catch(done);
+    });
   });
 });
 </code></pre>

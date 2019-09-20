@@ -358,7 +358,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : null;
+    return val ? this.parseNumber(val) : val;
   }
 
   clearInput(input) {
