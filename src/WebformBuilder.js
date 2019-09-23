@@ -665,6 +665,23 @@ export default class WebformBuilder extends Component {
     return info;
   }
 
+  getComponentsPath(component, parent) {
+    // Get path to the component in the parent component.
+    let path = 'components';
+    switch (parent.type) {
+      case 'table':
+        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        break;
+      case 'columns':
+        path = `columns[${component.column}].components`;
+        break;
+      case 'tabs':
+        path = `components[${component.tab}].components`;
+        break;
+    }
+    return path;
+  }
+
   /* eslint-disable max-statements */
   onDrop(element, target, source, sibling) {
     if (!target) {
@@ -728,22 +745,9 @@ export default class WebformBuilder extends Component {
     }
 
     const parent = target.formioComponent;
-    // Get path to the component in the parent component.
-    let path = 'components';
-    switch (parent.type) {
-      case 'table':
-        path = `rows[${info.tableRow}][${info.tableColumn}].components`;
-        break;
-      case 'columns':
-        path = `columns[${info.column}].components`;
-        break;
-      case 'tabs':
-        path = `components[${info.tab}].components`;
-        break;
-    }
-    // Index within container
+    const path = this.getComponentsPath(info, parent.component);
     const index = _.findIndex(_.get(parent.schema, path), { key: info.key }) || 0;
-    this.emit('addComponent', info, parent, path, index);
+    this.emit('addComponent', info, parent, path, index, isNew);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
@@ -815,7 +819,8 @@ export default class WebformBuilder extends Component {
     }
     const index = parent.formioContainer.indexOf(component);
     if (remove && index !== -1) {
-      this.emit('removeComponent', component);
+      const path = this.getComponentsPath(component, parent.formioComponent.component);
+      this.emit('removeComponent', component, parent.formioComponent.component, path, index);
       parent.formioContainer.splice(index, 1);
       parent.formioComponent.rebuild();
       this.emit('change', this.form);
@@ -861,10 +866,11 @@ export default class WebformBuilder extends Component {
    * @param component
    * @return {boolean}
    */
-  saveComponent(component, parent) {
+  saveComponent(component, parent, isNew) {
     this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
+    const path = this.getComponentsPath(component, parentComponent.component);
     const index = parentContainer.indexOf(component);
     this.dialog.close();
     if (index !== -1) {
@@ -873,7 +879,14 @@ export default class WebformBuilder extends Component {
       parentContainer[index] = submissionData.componentJson || submissionData;
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
-        this.emit('saveComponent', parentContainer[index], originalComponent);
+        this.emit('saveComponent',
+          parentContainer[index],
+          originalComponent,
+          parentComponent.component,
+          path,
+          index,
+          isNew
+        );
         this.emit('change', this.form);
       });
     }
@@ -1025,7 +1038,7 @@ export default class WebformBuilder extends Component {
         return false;
       }
       saved = true;
-      this.saveComponent(component, parent);
+      this.saveComponent(component, parent, isNew);
     });
 
     this.addEventListener(this.dialog, 'close', () => {
@@ -1079,7 +1092,7 @@ export default class WebformBuilder extends Component {
         const index = parent.formioContainer.indexOf(component.component);
         parent.formioContainer.splice(index + 1, 0, schema);
         parent.formioComponent.rebuild();
-        this.emit('saveComponent');
+        this.emit('saveComponent', schema, schema);
         this.emit('change', this.form);
       }
     }
