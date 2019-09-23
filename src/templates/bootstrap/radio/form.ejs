@@ -1,25 +1,29 @@
-<div class="form-radio radio">
+<div class="form-radio radio" role="radiogroup" aria-labelledby="{{ctx.input.component.key}}">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="form-check-label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
-      {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
-      <span>{{ctx.t(item.label)}}</span>
+    {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
+      <label class="form-check-label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+        <span>{{ctx.t(item.label)}}</span>
+      </label>
+    {% } %}
+
+    <{{ctx.input.type}}
+      ref="input"
+      {% for (var attr in ctx.input.attr) { %}
+      {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
-      <{{ctx.input.type}}
-        ref="input"
-        {% for (var attr in ctx.input.attr) { %}
-        {{attr}}="{{ctx.input.attr[attr]}}"
-        {% } %}
-        value="{{item.value}}"
-        {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
-          checked=true
-        {% } %}
-        id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
-      >
-      {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
-      <span>{{ctx.t(item.label)}}</span>
+      value="{{item.value}}"
+      {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
+      checked=true
       {% } %}
-    </label>
+      id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+    >
+
+    {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
+      <label class="form-check-label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+        <span>{{ctx.t(item.label)}}</span>
+      </label>
+    {% } %}
   </div>
   {% }) %}
 </div>
