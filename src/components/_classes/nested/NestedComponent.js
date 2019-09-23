@@ -108,6 +108,17 @@ export default class NestedComponent extends Field {
     });
   }
 
+  get rowIndex() {
+    return this._rowIndex;
+  }
+
+  set rowIndex(value) {
+    this._rowIndex = value;
+    this.eachComponent((component) => {
+      component.rowIndex = value;
+    });
+  }
+
   get data() {
     return this._data;
   }
