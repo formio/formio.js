@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/public/assets/scripts/choices.js';
 
 export const KEY_CODES = {
   BACK_KEY: 46,
