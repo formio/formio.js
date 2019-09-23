@@ -614,13 +614,13 @@ export default class CalendarWidget extends InputWidget {
 
     if (this.settings.useLocaleSettings) {
       if (!Flatpickr.l10ns[loc]) {
-        currentLocale = require(`flatpickr/dist/l10n/${loc}.js`).default[loc];
+        console.warn(`Flatpickr localization ${loc} not found.`);
       }
       else {
         currentLocale = Flatpickr.l10ns[loc];
       }
       if (!moment.locales().some(locale =&gt; locale === loc)) {
-        require(`moment/locale/${loc}.js`);
+        console.warn(`Moment localization ${loc} not found.`);
       }
     }
     else {

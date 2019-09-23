@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0-rc.6
+### Fixed
+ - Build sizes by removing the locales from Flatpickr and Moment in our build, as well as removed double include of Choices.js.
+ - Issue with the rowIndex variable when working with nested components inside EditGrid and DataGrid.
+
+### Changed
+ - Upgraded dompurify@2.0.2, sinon@7.5.0
+
 ## 4.2.0-rc.5
 ### Fixed
  - The form builder events to pass along all the necessary information for form merging to occur properly.
