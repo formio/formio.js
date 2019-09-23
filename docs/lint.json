@@ -260,41 +260,42 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 856,
+        "lineNumber": 861,
         "line": "  /**"
       },
       {
-        "lineNumber": 857,
+        "lineNumber": 862,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 858,
+        "lineNumber": 863,
         "line": "   *"
       },
       {
-        "lineNumber": 859,
+        "lineNumber": 864,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 860,
+        "lineNumber": 865,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 861,
+        "lineNumber": 866,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 862,
+        "lineNumber": 867,
         "line": "   */"
       },
       {
-        "lineNumber": 863,
-        "line": "  saveComponent(component, parent) {"
+        "lineNumber": 868,
+        "line": "  saveComponent(component, parent, isNew) {"
       }
     ],
     "codeParams": [
       "component",
-      "parent"
+      "parent",
+      "isNew"
     ],
     "docParams": [
       "parent",
