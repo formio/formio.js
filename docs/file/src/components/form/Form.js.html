@@ -421,16 +421,16 @@ export default class FormComponent extends Component {
   }
 
   attach(element) {
-    super.attach(element);
     // Don&apos;t attach in builder.
     if (this.builderMode) {
-      return NativePromise.resolve();
+      return super.attach(element);
     }
-    return this.loadSubForm().then(() =&gt; {
-      if (this.subForm) {
-        return this.subForm.attach(element);
-      }
-    });
+    return super.attach(element).then(() =&gt;
+      this.loadSubForm().then(() =&gt; {
+        // Intentionally do not return... for some reason it doesn&apos;t resolve.
+        this.subForm.attach(element);
+      })
+    );
   }
 
   detach() {
@@ -550,6 +550,14 @@ export default class FormComponent extends Component {
     });
   }
 
+  show(...args) {
+    const state = super.show(...args);
+    if (!this.subFormReady &amp;&amp; state) {
+      this.loadSubForm();
+    }
+    return state;
+  }
+
   /**
    * Load the subform.
    */
@@ -558,8 +566,9 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
+    // Only load the subform if the subform isn&apos;t loaded and the conditions apply.
     if (this.subFormReady) {
-      return this.subFormReady.then(() =&gt; this.restoreValue());
+      return this.subFormReady;
     }
 
     // Determine if we already have a loaded form object.
@@ -572,10 +581,11 @@ export default class FormComponent extends Component {
       this.subFormReady = this.renderSubForm(this.formObj);
     }
     else if (this.formSrc) {
-      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } }).then((formObj) =&gt; {
-        this.formObj = formObj;
-        return this.renderSubForm(formObj);
-      });
+      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+        .then((formObj) =&gt; {
+          this.formObj = formObj;
+          return this.renderSubForm(formObj);
+        });
     }
     if (!this.subFormReady) {
       return new NativePromise(() =&gt; {});
@@ -648,15 +658,24 @@ export default class FormComponent extends Component {
    *
    * @return {*}
    */
-  submitSubForm() {
+  submitSubForm(rejectOnError) {
+    // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      return this.subFormReady.then(() =&gt; this.subForm.submitForm().then(result =&gt; {
-        this.dataValue = result.submission;
-        return this.dataValue;
-      }).catch(err =&gt; {
-        this.subForm.onSubmissionError(err);
-        return NativePromise.reject(err);
-      }));
+      return this.loadSubForm().then(() =&gt; {
+        return this.subForm.submitForm().then(result =&gt; {
+          this.subForm.loading = false;
+          this.dataValue = result.submission;
+          return this.dataValue;
+        }).catch(err =&gt; {
+          if (rejectOnError) {
+            this.subForm.onSubmissionError(err);
+            return NativePromise.reject(err);
+          }
+          else {
+            return {};
+          }
+        });
+      });
     }
     return this.getSubFormData();
   }
@@ -665,7 +684,7 @@ export default class FormComponent extends Component {
    * Submit the form before the next page is triggered.
    */
   beforePage(next) {
-    return this.submitSubForm().then(() =&gt; super.beforePage(next));
+    return this.submitSubForm(true).then(() =&gt; super.beforePage(next));
   }
 
   /**
@@ -680,30 +699,19 @@ export default class FormComponent extends Component {
         _id: submission._id,
         form: submission.form
       } : submission;
-
-      if (!this.shouldSubmit) {
-        return NativePromise.resolve(this.dataValue);
-      }
+      return NativePromise.resolve(this.dataValue);
     }
-
-    // This submission has not been submitted yet.
-    if (this.shouldSubmit) {
-      return this.subFormReady.then(() =&gt; {
-        return this.subForm.submitForm()
-          .then(result =&gt; {
-            this.subForm.loading = false;
-            this.dataValue = {
-              _id: result.submission._id,
-              form: result.submission.form
-            };
-            return this.dataValue;
-          })
-          .catch(() =&gt; {});
-      });
-    }
-    else {
-      return super.beforeSubmit();
-    }
+    return this.submitSubForm(false)
+      .then((data) =&gt; {
+        if (data._id) {
+          this.dataValue = {
+            _id: data._id,
+            form: data.form
+          };
+        }
+        return this.dataValue;
+      })
+      .then(() =&gt; super.beforeSubmit());
   }
 
   isHidden() {

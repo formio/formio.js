@@ -660,39 +660,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 181,
+        "lineNumber": 192,
         "line": "  /**"
       },
       {
-        "lineNumber": 182,
+        "lineNumber": 193,
         "line": "   * Returns a component provided a key. This performs a deep search within the"
       },
       {
-        "lineNumber": 183,
+        "lineNumber": 194,
         "line": "   * component tree."
       },
       {
-        "lineNumber": 184,
+        "lineNumber": 195,
         "line": "   *"
       },
       {
-        "lineNumber": 185,
+        "lineNumber": 196,
         "line": "   * @param {string} key - The key of the component to retrieve."
       },
       {
-        "lineNumber": 186,
+        "lineNumber": 197,
         "line": "   * @param {function} fn - Called with the component once found."
       },
       {
-        "lineNumber": 187,
+        "lineNumber": 198,
         "line": "   * @return {Object} - The component that is located."
       },
       {
-        "lineNumber": 188,
+        "lineNumber": 199,
         "line": "   */"
       },
       {
-        "lineNumber": 189,
+        "lineNumber": 200,
         "line": "  getComponent(path, fn) {"
       }
     ],
@@ -710,31 +710,31 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 235,
+        "lineNumber": 246,
         "line": "  /**"
       },
       {
-        "lineNumber": 236,
+        "lineNumber": 247,
         "line": "   * Create a new component and add it to the components array."
       },
       {
-        "lineNumber": 237,
+        "lineNumber": 248,
         "line": "   *"
       },
       {
-        "lineNumber": 238,
+        "lineNumber": 249,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 239,
+        "lineNumber": 250,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 240,
+        "lineNumber": 251,
         "line": "   */"
       },
       {
-        "lineNumber": 241,
+        "lineNumber": 252,
         "line": "  createComponent(component, options, data, before) {"
       }
     ],
@@ -754,27 +754,27 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 290,
+        "lineNumber": 301,
         "line": "  /**"
       },
       {
-        "lineNumber": 291,
+        "lineNumber": 302,
         "line": "   *"
       },
       {
-        "lineNumber": 292,
+        "lineNumber": 303,
         "line": "   * @param element"
       },
       {
-        "lineNumber": 293,
+        "lineNumber": 304,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 294,
+        "lineNumber": 305,
         "line": "   */"
       },
       {
-        "lineNumber": 295,
+        "lineNumber": 306,
         "line": "  addComponents(data, options) {"
       }
     ],
@@ -792,39 +792,39 @@
     "filePath": "src/components/_classes/nested/NestedComponent.js",
     "lines": [
       {
-        "lineNumber": 307,
+        "lineNumber": 318,
         "line": "  /**"
       },
       {
-        "lineNumber": 308,
+        "lineNumber": 319,
         "line": "   * Add a new component to the components array."
       },
       {
-        "lineNumber": 309,
+        "lineNumber": 320,
         "line": "   *"
       },
       {
-        "lineNumber": 310,
+        "lineNumber": 321,
         "line": "   * @param {Object} component - The component JSON schema to add."
       },
       {
-        "lineNumber": 311,
+        "lineNumber": 322,
         "line": "   * @param {Object} data - The submission data object to house the data for this component."
       },
       {
-        "lineNumber": 312,
+        "lineNumber": 323,
         "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
       },
       {
-        "lineNumber": 313,
+        "lineNumber": 324,
         "line": "   * @return {Component} - The created component instance."
       },
       {
-        "lineNumber": 314,
+        "lineNumber": 325,
         "line": "   */"
       },
       {
-        "lineNumber": 315,
+        "lineNumber": 326,
         "line": "  addComponent(component, data, before, noAdd) {"
       }
     ],
