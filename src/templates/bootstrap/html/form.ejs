@@ -2,4 +2,7 @@
   {% ctx.attrs.forEach(function(attr) { %}
     {{attr.attr}}="{{attr.value}}"
   {% }) %}
->{{ctx.content}}</{{ctx.tag}}>
+>{{ctx.content}}
+{% if (ctx.singleTags.indexOf(ctx.tag) === -1) { %}
+</{{ctx.tag}}>
+{% } %}
