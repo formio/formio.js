@@ -40,11 +40,6 @@ export default class FormComponent extends Component {
     };
     this.subForm = null;
     this.formSrc = '';
-    this.subFormReady = new NativePromise((resolve, reject) => {
-      this.subFormReadyResolve = resolve;
-      this.subFormReadyReject = reject;
-    });
-    this.subFormLoaded = false;
     if (this.component.src) {
       this.formSrc = this.component.src;
     }
@@ -95,7 +90,7 @@ export default class FormComponent extends Component {
   }
 
   get dataReady() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   get defaultSchema() {
@@ -107,7 +102,7 @@ export default class FormComponent extends Component {
   }
 
   get ready() {
-    return this.subFormReady;
+    return this.subFormReady || NativePromise.resolve();
   }
 
   getSubOptions(options = {}) {
@@ -316,25 +311,15 @@ export default class FormComponent extends Component {
       this.subForm.nosubmit = this.nosubmit;
       this.redraw();
       this.subForm.root = this.root;
-      this.subFormReadyResolve(this.subForm);
       return this.subForm;
     });
   }
 
   show(...args) {
     const state = super.show(...args);
-
-    if (!this.subFormLoaded) {
-      if (state) {
-        this.loadSubForm();
-      }
-      // If our parent is read-only and is done loading, and we were never asked
-      // to load a subform, consider our subform loading promise resolved
-      else if (this.parent.options.readOnly && !this.parent.loading) {
-        this.subFormReadyResolve(this.subForm);
-      }
+    if (!this.subFormReady && state) {
+      this.loadSubForm();
     }
-
     return state;
   }
 
@@ -347,10 +332,9 @@ export default class FormComponent extends Component {
     }
 
     // Only load the subform if the subform isn't loaded and the conditions apply.
-    if (this.subFormLoaded) {
+    if (this.subFormReady) {
       return this.subFormReady;
     }
-    this.subFormLoaded = true;
 
     // Determine if we already have a loaded form object.
     if (
@@ -359,15 +343,17 @@ export default class FormComponent extends Component {
       Array.isArray(this.formObj.components) &&
       this.formObj.components.length
     ) {
-      this.renderSubForm(this.formObj);
+      this.subFormReady = this.renderSubForm(this.formObj);
     }
     else if (this.formSrc) {
-      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
           return this.renderSubForm(formObj);
-        })
-        .catch((err) => this.subFormReadyReject(err));
+        });
+    }
+    if (!this.subFormReady) {
+      return new NativePromise(() => {});
     }
     return this.subFormReady.then(() => this.restoreValue());
   }
