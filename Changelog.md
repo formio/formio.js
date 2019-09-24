@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0-rc.7
+### Fixed
+ - Issues with the nested forms not triggering the "ready" flag when it is supposed to.
+ 
+### Changed
+ - Upgraded @babel/cli@7.6.2, @babel/core@7.6.2, @babel/preset-env@7.6.2, @babel/register@7.6.2
+
 ## 4.2.0-rc.6
 ### Fixed
  - Build sizes by removing the locales from Flatpickr and Moment in our build, as well as removed double include of Choices.js.
