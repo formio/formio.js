@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+ - Any part of Panel header to trigger collapse instead of just its title
+
 ## 4.2.0-rc.7
 ### Fixed
  - Issues with the nested forms not triggering the "ready" flag when it is supposed to.
