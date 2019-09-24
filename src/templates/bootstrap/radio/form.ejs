@@ -1,4 +1,5 @@
-<div class="form-radio radio" role="radiogroup" aria-labelledby="{{ctx.input.component.key}}">
+<div class="form-radio radio" role="radiogroup"
+  aria-labelledby="{{ctx.input.component.key}}" aria-describedby="desc-{{ctx.input.component.key}}">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
     {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
@@ -17,6 +18,7 @@
       checked=true
       {% } %}
       id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+      aria-required="{{ctx.input.component.validate.required}}"
     >
 
     {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}

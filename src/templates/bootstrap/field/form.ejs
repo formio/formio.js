@@ -10,5 +10,7 @@
   </label>
 {% } %}
 {% if (ctx.component.description) { %}
-  <div class="form-text text-muted">{{ctx.t(ctx.component.description)}}</div>
+  <div class="form-text text-muted">
+    <span id="desc-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</span>
+  </div>
 {% } %}
