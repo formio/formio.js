@@ -1002,4 +1002,24 @@ export function observeOverload(callback, options = {}) {
   };
 }
 
+export function isInputComponent(componentJson) {
+  if (componentJson.input === false || componentJson.input === true) {
+    return componentJson.input;
+  }
+  switch (componentJson.type) {
+    case 'htmlelement':
+    case 'content':
+    case 'columns':
+    case 'fieldset':
+    case 'panel':
+    case 'table':
+    case 'tabs':
+    case 'well':
+    case 'button':
+      return false;
+    default:
+      return true;
+  }
+}
+
 export { Evaluator, interpolate };
