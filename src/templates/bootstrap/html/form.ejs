@@ -3,6 +3,6 @@
     {{attr.attr}}="{{attr.value}}"
   {% }) %}
 >{{ctx.content}}
-{% if (ctx.singleTags.indexOf(ctx.tag) === -1) { %}
+{% if (!ctx.singleTags || ctx.singleTags.indexOf(ctx.tag) === -1) { %}
 </{{ctx.tag}}>
 {% } %}
