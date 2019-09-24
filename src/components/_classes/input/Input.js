@@ -106,12 +106,14 @@ export default class Input extends Multivalue {
     return this.isMultipleMasksField
       ? this.renderTemplate('multipleMasksInput', {
         input: info,
+        component: this.component,
         value,
         index,
         selectOptions: this.getMaskOptions() || [],
       })
       : this.renderTemplate('input', {
         input: info,
+        component: this.component,
         value,
         index
       });
