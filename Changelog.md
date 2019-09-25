@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0
+### Fixed
+ - Possibility for edit grid render string to crash.
+
 ## 4.2.0-rc.8
 ### Changed
  - Any part of Panel header to trigger collapse instead of just its title
