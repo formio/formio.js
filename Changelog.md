@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.2.0
 ### Changed
  - Any part of Panel header to trigger collapse instead of just its title
+ - Upgrade dompurify@2.0.3, webpack@4.41.0
  
 ### Added
  - isInputComponent method in utils
  - Type definitions to enable working with TypeScript wrappers.
  - Added saved status for edit grid rows
  - Htmlelement self closing tags support
+ - Adding the PDF page to the overlay settings and also tooltips.
  
 ### Fixed
  - Signature bug with disabling
