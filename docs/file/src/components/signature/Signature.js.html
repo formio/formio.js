@@ -204,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -336,11 +337,10 @@ export default class SignatureComponent extends Input {
     }
   }
 
-  set disabled(disabled) {
-    super.disabled = disabled;
-    this.showCanvas(!disabled);
+  onDisabled() {
+    this.showCanvas(!super.disabled);
     if (this.signaturePad) {
-      if (disabled) {
+      if (super.disabled) {
         this.signaturePad.off();
         if (this.refs.refresh) {
           this.refs.refresh.classList.add(&apos;disabled&apos;);
@@ -381,6 +381,7 @@ export default class SignatureComponent extends Input {
     this.loadRefs(element, { canvas: &apos;single&apos;, refresh: &apos;single&apos;, padBody: &apos;single&apos;, signatureImage: &apos;single&apos; });
     const superAttach = super.attach(element);
 
+    this.onDisabled();
     // Create the signature pad.
     if (this.refs.canvas) {
       this.signaturePad = new SignaturePad(this.refs.canvas, {

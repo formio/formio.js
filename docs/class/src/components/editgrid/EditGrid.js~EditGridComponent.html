@@ -204,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -1444,7 +1445,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-saveRow">saveRow</a></span></span><span class="code" data-ice="signature">(rowIndex: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-saveRow">saveRow</a></span></span><span class="code" data-ice="signature">(rowIndex: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -9003,7 +9004,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber591">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber593">source</a></span></span>
     </span>
   </h3>
 
@@ -9090,7 +9091,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber574">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber576">source</a></span></span>
     </span>
   </h3>
 
@@ -9641,7 +9642,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber542">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber544">source</a></span></span>
     </span>
   </h3>
 
@@ -9942,7 +9943,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber486">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber488">source</a></span></span>
     </span>
   </h3>
 
@@ -10358,7 +10359,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber638">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber640">source</a></span></span>
     </span>
   </h3>
 
@@ -10579,7 +10580,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber464">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber466">source</a></span></span>
     </span>
   </h3>
 
@@ -10786,7 +10787,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber642">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber644">source</a></span></span>
     </span>
   </h3>
 
@@ -10829,7 +10830,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber646">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber648">source</a></span></span>
     </span>
   </h3>
 
@@ -10884,7 +10885,7 @@ within other container based components.</p>
     
     
     
-    <span class="code" data-ice="name">saveRow</span><span class="code" data-ice="signature">(rowIndex: <span>*</span>)</span>
+    <span class="code" data-ice="name">saveRow</span><span class="code" data-ice="signature">(rowIndex: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
     <span class="right-info">
       
       
@@ -10918,7 +10919,19 @@ within other container based components.</p>
 </div>
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -10947,7 +10960,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber585">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber587">source</a></span></span>
     </span>
   </h3>
 
@@ -11025,7 +11038,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber479">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber481">source</a></span></span>
     </span>
   </h3>
 
@@ -11090,7 +11103,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber458">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber460">source</a></span></span>
     </span>
   </h3>
 
@@ -11149,7 +11162,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber513">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/editgrid/EditGrid.js.html#lineNumber515">source</a></span></span>
     </span>
   </h3>
 

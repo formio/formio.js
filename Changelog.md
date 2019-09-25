@@ -4,12 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.2.0
 ### Changed
  - Any part of Panel header to trigger collapse instead of just its title
  
 ### Added
  - isInputComponent method in utils
+ - Type definitions to enable working with TypeScript wrappers.
+ - Added saved status for edit grid rows
+ - Htmlelement self closing tags support
+ 
+### Fixed
+ - Signature bug with disabling
 
 ## 4.2.0-rc.7
 ### Fixed
