@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.2.0
+## 4.2.0-rc.8
 ### Changed
  - Any part of Panel header to trigger collapse instead of just its title
  - Upgrade dompurify@2.0.3, webpack@4.41.0
