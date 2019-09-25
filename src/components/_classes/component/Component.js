@@ -143,7 +143,12 @@ export default class Component extends Element {
         /**
          * If the custom validation should remain private (only the backend will see it and execute it).
          */
-        customPrivate: false
+        customPrivate: false,
+
+        /**
+         * If this component should implement a strict date validation if the Calendar widget is implemented.
+         */
+        strictDateValidation: false
       },
 
       /**
