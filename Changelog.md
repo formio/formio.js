@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.2.0
 ### Fixed
  - Possibility for edit grid render string to crash.
+ - Fixed the default schemas to not include the strictDateValidation flags.
+ - Fixed the default schemas for text field to not include the inputFormat flag.
 
 ## 4.2.0-rc.8
 ### Changed
