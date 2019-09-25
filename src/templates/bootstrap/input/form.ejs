@@ -1,6 +1,6 @@
 {% if (ctx.component.prefix || ctx.component.suffix) { %}
 <div class="input-group">
-  {% } %}
+{% } %}
   {% if (ctx.component.prefix) { %}
   <div class="input-group-prepend" ref="prefix">
     <span class="input-group-text">
@@ -11,10 +11,10 @@
 
   <{{ctx.input.type}}
     ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+    id="{{ctx.component.key}}"
     {% for (var attr in ctx.input.attr) { %}
     {{attr}}="{{ctx.input.attr[attr]}}"
     {% } %}
-    aria-labelledby="{{ctx.component.key}}"
     aria-describedby="desc-{{ctx.component.key}}"
     aria-required="{{ctx.component.validate.required}}"
   >{{ctx.input.content}}</{{ctx.input.type}}>
@@ -35,6 +35,6 @@
   </div>
   {% } %}
 
-  {% if (ctx.component.prefix || ctx.component.suffix) { %}
+{% if (ctx.component.prefix || ctx.component.suffix) { %}
 </div>
 {% } %}
