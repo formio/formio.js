@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.28.0
 ### Added
  - isInputComponent method in utils
+ 
+### Fixed
+ - Fix day comp does not populate global data until blured
+
+### Changed
+ - Upgraded i18next@17.0.16, @babel/cli@7.6.2, @babel/core@7.6.2, @babel/preset-env@7.6.2, sinon@7.5.0, webpack@4.41.0, cross-env@6.0.0
 
 ## 3.28.0-beta.1
 ### Changed

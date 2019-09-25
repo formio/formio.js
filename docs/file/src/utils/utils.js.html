@@ -188,6 +188,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -1217,6 +1218,26 @@ export function observeOverload(callback, options = {}) {
       return callback();
     }
   };
+}
+
+export function isInputComponent(componentJson) {
+  if (componentJson.input === false || componentJson.input === true) {
+    return componentJson.input;
+  }
+  switch (componentJson.type) {
+    case &apos;htmlelement&apos;:
+    case &apos;content&apos;:
+    case &apos;columns&apos;:
+    case &apos;fieldset&apos;:
+    case &apos;panel&apos;:
+    case &apos;table&apos;:
+    case &apos;tabs&apos;:
+    case &apos;well&apos;:
+    case &apos;button&apos;:
+      return false;
+    default:
+      return true;
+  }
 }
 
 export { Evaluator, interpolate };

@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "3.28.0-beta.1",
+  "version": "3.28.0",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "files": [
@@ -72,7 +72,7 @@
     "fast-json-patch": "^2.2.1",
     "fetch-ponyfill": "^6.1.0",
     "flatpickr": "^4.6.2",
-    "i18next": "^17.0.15",
+    "i18next": "^17.0.16",
     "json-logic-js": "^1.2.2",
     "jstimezonedetect": "^1.0.7",
     "lodash": "^4.17.15",
@@ -89,13 +89,13 @@
     "vanilla-text-mask": "^5.1.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@babel/polyfill": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-env": "^7.6.2",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-espower": "^3.0.1",
@@ -103,7 +103,7 @@
     "bootswatch": "^4.3.1",
     "chai": "^4.2.0",
     "chance": "^1.1.0",
-    "cross-env": "^5.2.1",
+    "cross-env": "^6.0.0",
     "del": "^5.1.0",
     "ejs-loader": "^0.3.3",
     "escape-string-regexp": "^2.0.0",
@@ -139,8 +139,8 @@
     "power-assert": "^1.6.1",
     "pre-commit": "^1.2.2",
     "pygments-css": "^1.0.0",
-    "sinon": "^7.4.2",
-    "webpack": "^4.40.2",
+    "sinon": "^7.5.0",
+    "webpack": "^4.41.0",
     "webpack-stream": "^5.2.1",
     "written-number": "^0.9.1"
   }

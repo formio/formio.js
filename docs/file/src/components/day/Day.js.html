@@ -188,6 +188,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -407,7 +408,7 @@ export default class DayComponent extends BaseComponent {
     });
     this.hook(&apos;input&apos;, this.dayInput, dayInputWrapper);
     this.addFocusBlurEvents(this.dayInput);
-    this.addEventListener(this.dayInput, &apos;change&apos;, () =&gt; this.updateValue());
+    this.addEventListener(this.dayInput, &apos;input&apos;, () =&gt; this.updateValue());
     dayInputWrapper.appendChild(this.dayInput);
     this.setSubinputStyle(dayInputWrapper);
     dayColumn.appendChild(dayInputWrapper);
@@ -511,7 +512,7 @@ export default class DayComponent extends BaseComponent {
 
     this.hook(&apos;input&apos;, this.yearInput, yearInputWrapper);
     this.addFocusBlurEvents(this.yearInput);
-    this.addEventListener(this.yearInput, &apos;change&apos;, () =&gt; this.updateValue());
+    this.addEventListener(this.yearInput, &apos;input&apos;, () =&gt; this.updateValue());
     yearInputWrapper.appendChild(this.yearInput);
     this.setSubinputStyle(yearInputWrapper);
     yearColumn.appendChild(yearInputWrapper);
