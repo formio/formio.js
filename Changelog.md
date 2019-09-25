@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+ - Any part of Panel header to trigger collapse instead of just its title
+ 
 ### Added
  - isInputComponent method in utils
 
