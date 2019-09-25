@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import WidgetComponent from '../widgetcomponent/WidgetComponent';
+import BaseComponent from '../base/Base';
 
-export default class TextFieldComponent extends WidgetComponent {
+export default class TextFieldComponent extends BaseComponent {
   static schema(...extend) {
-    return WidgetComponent.schema({
+    return BaseComponent.schema({
       label: 'Text Field',
       key: 'textField',
       type: 'textfield',

@@ -1,11 +1,12 @@
-import widgetBaseEditForm from '../widgetcomponent/WidgetComponent.form';
+import baseEditForm from '../base/Base.form';
+
 import DateTimeEditData from './editForm/DateTime.edit.data';
 import DateTimeEditDate from './editForm/DateTime.edit.date';
 import DateTimeEditDisplay from './editForm/DateTime.edit.display';
 import DateTimeEditTime from './editForm/DateTime.edit.time';
 
 export default function(...extend) {
-  return widgetBaseEditForm([
+  return baseEditForm([
     {
       key: 'display',
       components: DateTimeEditDisplay
@@ -25,6 +26,6 @@ export default function(...extend) {
     {
       key: 'data',
       components: DateTimeEditData
-    },
+    }
   ], ...extend);
 }

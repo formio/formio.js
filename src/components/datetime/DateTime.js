@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import WidgetComponent from '../widgetcomponent/WidgetComponent';
-export default class DateTimeComponent extends WidgetComponent {
+import BaseComponent from '../base/Base';
+export default class DateTimeComponent extends BaseComponent {
   static schema(...extend) {
-    return WidgetComponent.schema({
+    return BaseComponent.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -86,8 +86,12 @@ export default class DateTimeComponent extends WidgetComponent {
       time_24hr: time24hr,
       readOnly: this.options.readOnly,
       minDate: _.get(this.component, 'datePicker.minDate'),
-      maxDate: _.get(this.component, 'datePicker.maxDate'),
+      maxDate: _.get(this.component, 'datePicker.maxDate')
     };
+    /* eslint-enable camelcase */
+
+    // Add the validators date.
+    this.validators.push('date');
   }
 
   performInputMapping(input) {

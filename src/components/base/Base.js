@@ -1482,6 +1482,15 @@ export default class BaseComponent extends Component {
     settings.i18n = this.options.i18n;
     settings.language = this.options.language;
 
+    // Add validity method for widget
+    if (settings.type === 'calendar') {
+      this.validators.push('calendar');
+      settings.checkDataValidity = () => {
+        this.setPristine(false);
+        return this.checkValidity(this.data, true);
+      };
+    }
+
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component);
     widget.on('update', () => this.updateValue(), true);
