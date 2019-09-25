@@ -153,6 +153,11 @@ gulp.task('package-version', function() {
 // Copy over the dist folder into the lib folder.
 gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
 
+// Copy over the types folder and index.d.ts into the lib folder.
+gulp.task('types-index', () => gulp.src(['index.d.ts']).pipe(gulp.dest('lib')));
+gulp.task('types-folder', () => gulp.src(['types/**/*.*']).pipe(gulp.dest('lib/types')));
+gulp.task('types', gulp.parallel('types-index', 'types-folder'));
+
 // Watch for changes.
 gulp.task('watch', () => gulp.watch(['./src/*.js', './src/**/*.js'], gulp.series('scripts-full')));
 
@@ -183,7 +188,8 @@ gulp.task('build', gulp.series(
     'scripts-form',
     'scripts-full'
   ),
-  'dist'
+  'dist',
+  'types'
 ));
 
 // Create a new build (scripts only)
@@ -197,7 +203,8 @@ gulp.task('rebuild-scripts', gulp.series(
     'scripts-form',
     'scripts-full'
   ),
-  'dist'
+  'dist',
+  'types'
 ));
 
 // Watch for changes.

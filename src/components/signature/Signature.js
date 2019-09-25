@@ -101,11 +101,10 @@ export default class SignatureComponent extends Input {
     }
   }
 
-  set disabled(disabled) {
-    super.disabled = disabled;
-    this.showCanvas(!disabled);
+  onDisabled() {
+    this.showCanvas(!super.disabled);
     if (this.signaturePad) {
-      if (disabled) {
+      if (super.disabled) {
         this.signaturePad.off();
         if (this.refs.refresh) {
           this.refs.refresh.classList.add('disabled');
@@ -146,6 +145,7 @@ export default class SignatureComponent extends Input {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
 
+    this.onDisabled();
     // Create the signature pad.
     if (this.refs.canvas) {
       this.signaturePad = new SignaturePad(this.refs.canvas, {

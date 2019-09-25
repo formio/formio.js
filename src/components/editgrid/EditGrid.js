@@ -429,7 +429,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     editRow.dirty = true;
     if (!!this.validateRow(editRow) !== true) {
-      return;
+      return false;
     }
 
     if (!this.component.inlineEdit) {
@@ -453,6 +453,8 @@ export default class EditGridComponent extends NestedComponent {
     this.triggerChange();
     this.checkValidity(this.data, true);
     this.redraw();
+
+    return true;
   }
 
   updateRowsComponents(rowIndex) {

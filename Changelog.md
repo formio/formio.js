@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
  - Any part of Panel header to trigger collapse instead of just its title
+ 
+### Added
+ - isInputComponent method in utils
 
 ## 4.2.0-rc.7
 ### Fixed
