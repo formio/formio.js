@@ -1,4 +1,4 @@
-<div id="{{ctx.id}}" class="{{ctx.classes}} form-group"{% if (ctx.styles) { %} styles="{{ctx.styles}}"{% } %} ref="component">
+<div id="{{ctx.id}}" class="{{ctx.classes}}"{% if (ctx.styles) { %} styles="{{ctx.styles}}"{% } %} ref="component">
   {% if (ctx.visible) { %}
   {{ctx.children}}
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
