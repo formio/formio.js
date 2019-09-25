@@ -11,6 +11,7 @@ export default class TextFieldComponent extends WidgetComponent {
       type: 'textfield',
       mask: false,
       inputType: 'text',
+      inputFormat: 'plain',
       inputMask: '',
       tableView: true,
       validate: {
