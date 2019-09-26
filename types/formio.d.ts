@@ -18,10 +18,21 @@ export class Formio {
   public submissionUrl?: string;
   public submissionsUrl?: string;
   public token: any | string;
+  static authUrl: string;
+  static libraries: any;
+  static Promise: any;
+  static fetch: any;
+  static Headers: any;
+  static baseUrl: string;
+  static projectUrl: string;
+  static authUrl: string;
+  static projectUrlSet: boolean;
+  static plugins: any;
+  static cache: any;
+  static providers: any;
+  static events: any; // EventEmitter2
   static namespace: string;
   static formOnly?: boolean;
-  static events: any; // EventEmitter2
-  static cache: Object;
   delete(type: any, opts?: any): any;
   index(type: any, query?: any, opts?: any): any;
   save(type: any, data: any, opts?: any): any;
