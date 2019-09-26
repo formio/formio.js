@@ -112,7 +112,7 @@ export default class Input extends Multivalue {
       })
       : this.renderTemplate('input', {
         input: info,
-        value,
+        value: this.formatValue(this.parseValue(value)),
         index
       });
   }
@@ -164,6 +164,14 @@ export default class Input extends Multivalue {
     const changed = super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
     return changed;
+  }
+
+  parseValue(value) {
+    return value;
+  }
+
+  formatValue(value) {
+    return value;
   }
 
   attach(element) {

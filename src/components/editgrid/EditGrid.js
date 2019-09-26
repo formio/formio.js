@@ -538,7 +538,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
-    return !!valid;
+    return valid.toString() === 'true';
   }
 
   checkComponentValidity(data, dirty) {
