@@ -204,6 +204,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
@@ -400,7 +401,13 @@ export default class FormComponent extends Component {
    * Prints out the value of form components as a datagrid value.
    */
   getValueAsString(value) {
-    if (!Object.keys(value.data).length) {
+    if (!value) {
+      return &apos;No data provided&apos;;
+    }
+    if (!value.data &amp;&amp; value._id) {
+      return value._id;
+    }
+    if (!value.data || !Object.keys(value.data).length) {
       return &apos;No data provided&apos;;
     }
     const columns = Object.keys(value.data).map(column =&gt; {

@@ -29,7 +29,15 @@ export default [
         key: 'overlay.style',
         label: 'Style',
         placeholder: '',
-        tooltip: ''
+        tooltip: 'Custom styles that should be applied to this component when rendered in PDF.'
+      },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'overlay.page',
+        label: 'Page',
+        placeholder: '',
+        tooltip: 'The PDF page to place this component.'
       },
       {
         type: 'textfield',
@@ -37,7 +45,7 @@ export default [
         key: 'overlay.left',
         label: 'Left',
         placeholder: '',
-        tooltip: ''
+        tooltip: 'The left margin within a page to place this component.'
       },
       {
         type: 'textfield',
@@ -45,7 +53,7 @@ export default [
         key: 'overlay.top',
         label: 'Top',
         placeholder: '',
-        tooltip: ''
+        tooltip: 'The top margin within a page to place this component.'
       },
       {
         type: 'textfield',
@@ -53,7 +61,7 @@ export default [
         key: 'overlay.width',
         label: 'Width',
         placeholder: '',
-        tooltip: ''
+        tooltip: 'The width of the component (in pixels).'
       },
       {
         type: 'textfield',
@@ -61,7 +69,7 @@ export default [
         key: 'overlay.height',
         label: 'Height',
         placeholder: '',
-        tooltip: ''
+        tooltip: 'The height of the component (in pixels).'
       },
 
     ]

@@ -165,7 +165,13 @@ export default class FormComponent extends Component {
    * Prints out the value of form components as a datagrid value.
    */
   getValueAsString(value) {
-    if (!Object.keys(value.data).length) {
+    if (!value) {
+      return 'No data provided';
+    }
+    if (!value.data && value._id) {
+      return value._id;
+    }
+    if (!value.data || !Object.keys(value.data).length) {
       return 'No data provided';
     }
     const columns = Object.keys(value.data).map(column => {

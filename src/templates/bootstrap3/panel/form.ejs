@@ -1,6 +1,6 @@
 <div class="panel panel-{{ctx.component.theme}}">
-  <div class="panel-heading">
-    <h4 class="mb-0 panel-title" ref="header">
+  <div class="panel-heading" ref="header">
+    <h4 class="mb-0 panel-title">
       {% if (ctx.component.collapsible) { %}
         <i class="formio-collapse-icon {{ctx.iconClass(ctx.collapsed ? 'plus' : 'minus')}} text-muted" data-title="Collapse Panel"></i>
       {% } %}

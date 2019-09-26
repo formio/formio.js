@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.1
+### Fixed
+ - Possibility for edit grid render string to crash.
+ - Fixed the default schemas to not include the strictDateValidation flags.
+ - Fixed the default schemas for text field to not include the inputFormat flag.
+
+## 4.2.0
+NPM would not let us publish to this version. Increase minor version.
+
+## 4.2.0-rc.8
+### Changed
+ - Any part of Panel header to trigger collapse instead of just its title
+ - Upgrade dompurify@2.0.3, webpack@4.41.0
+ 
+### Added
+ - isInputComponent method in utils
+ - Type definitions to enable working with TypeScript wrappers.
+ - Added saved status for edit grid rows
+ - Htmlelement self closing tags support
+ - Adding the PDF page to the overlay settings and also tooltips.
+ 
+### Fixed
+ - Signature bug with disabling
+
 ## 4.2.0-rc.7
 ### Fixed
  - Issues with the nested forms not triggering the "ready" flag when it is supposed to.

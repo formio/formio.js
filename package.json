@@ -1,8 +1,9 @@
 {
   "name": "formiojs",
-  "version": "4.2.0-rc.7",
+  "version": "4.2.1",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
+  "types": "index.d.ts",
   "files": [
     "dist",
     "lib",
@@ -10,7 +11,9 @@
     "wizard.js",
     "form.js",
     "embed.js",
-    "full.js"
+    "full.js",
+    "types",
+    "index.d.ts"
   ],
   "pre-commit": [
     "lint"
@@ -50,7 +53,7 @@
     "choices.js": "^7.0.0",
     "core-js": "^3.2.1",
     "dialog-polyfill": "^0.5.0",
-    "dompurify": "^2.0.2",
+    "dompurify": "^2.0.3",
     "downloadjs": "^1.4.7",
     "dragula": "^3.7.2",
     "eventemitter2": "^5.0.1",
@@ -135,7 +138,7 @@
     "pygments-css": "^1.0.0",
     "raw-loader": "^3.1.0",
     "sinon": "^7.5.0",
-    "webpack": "^4.40.2",
+    "webpack": "^4.41.0",
     "webpack-stream": "^5.2.1",
     "written-number": "^0.9.1"
   }

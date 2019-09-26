@@ -35,12 +35,17 @@ export default class HTMLComponent extends Component {
     }) : '';
   }
 
+  get singleTags() {
+    return ['br', 'img', 'hr'];
+  }
+
   render() {
     return super.render(this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
       attrs: this.component.attrs || {},
       content: this.content,
+      singleTags: this.singleTags,
     }));
   }
 
