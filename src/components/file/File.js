@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
     this.support = {
       filereader: typeof FileReader != 'undefined',
       formdata: !!window.FormData,
-      progress: 'upload' in new XMLHttpRequest
+      progress: window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false
     };
     // Called when our files are ready.
     this.filesReady = new NativePromise((resolve, reject) => {

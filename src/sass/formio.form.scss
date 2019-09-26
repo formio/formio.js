@@ -10,6 +10,7 @@
 .formio-component.has-error .invalid-feedback, .formio-component.alert-danger .invalid-feedback {
   display: block;
   color: inherit;
+  white-space: pre-wrap;
 }
 
 .formio-wysiwyg-editor {
