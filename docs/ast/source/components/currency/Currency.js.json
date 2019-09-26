@@ -4986,9 +4986,9 @@
                       "line": 72,
                       "column": 12
                     },
-                    "identifierName": "clearInput"
+                    "identifierName": "parseValue"
                   },
-                  "name": "clearInput"
+                  "name": "parseValue"
                 },
                 "kind": "method",
                 "id": null,
@@ -5009,9 +5009,9 @@
                         "line": 72,
                         "column": 18
                       },
-                      "identifierName": "input"
+                      "identifierName": "value"
                     },
-                    "name": "input"
+                    "name": "value"
                   }
                 ],
                 "body": {
@@ -5177,9 +5177,9 @@
                                           "line": 75,
                                           "column": 13
                                         },
-                                        "identifierName": "input"
+                                        "identifierName": "value"
                                       },
-                                      "name": "input"
+                                      "name": "value"
                                     },
                                     "right": {
                                       "type": "CallExpression",
@@ -5222,9 +5222,9 @@
                                               "line": 75,
                                               "column": 21
                                             },
-                                            "identifierName": "input"
+                                            "identifierName": "value"
                                           },
-                                          "name": "input"
+                                          "name": "value"
                                         },
                                         "property": {
                                           "type": "Identifier",
@@ -5442,9 +5442,9 @@
                                           "line": 78,
                                           "column": 13
                                         },
-                                        "identifierName": "input"
+                                        "identifierName": "value"
                                       },
-                                      "name": "input"
+                                      "name": "value"
                                     },
                                     "right": {
                                       "type": "CallExpression",
@@ -5487,9 +5487,9 @@
                                               "line": 78,
                                               "column": 21
                                             },
-                                            "identifierName": "input"
+                                            "identifierName": "value"
                                           },
-                                          "name": "input"
+                                          "name": "value"
                                         },
                                         "property": {
                                           "type": "Identifier",
@@ -5732,9 +5732,9 @@
                                 "line": 85,
                                 "column": 27
                               },
-                              "identifierName": "clearInput"
+                              "identifierName": "parseValue"
                             },
-                            "name": "clearInput"
+                            "name": "parseValue"
                           },
                           "computed": false
                         },
@@ -5752,9 +5752,9 @@
                                 "line": 85,
                                 "column": 33
                               },
-                              "identifierName": "input"
+                              "identifierName": "value"
                             },
-                            "name": "input"
+                            "name": "value"
                           }
                         ]
                       }
@@ -15650,7 +15650,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "clearInput",
+      "value": "parseValue",
       "start": 2026,
       "end": 2036,
       "loc": {
@@ -15701,7 +15701,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2037,
       "end": 2042,
       "loc": {
@@ -16013,7 +16013,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2089,
       "end": 2094,
       "loc": {
@@ -16066,7 +16066,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2097,
       "end": 2102,
       "loc": {
@@ -16561,7 +16561,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2170,
       "end": 2175,
       "loc": {
@@ -16614,7 +16614,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2178,
       "end": 2183,
       "loc": {
@@ -17203,7 +17203,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "clearInput",
+      "value": "parseValue",
       "start": 2338,
       "end": 2348,
       "loc": {
@@ -17254,7 +17254,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "input",
+      "value": "value",
       "start": 2349,
       "end": 2354,
       "loc": {
