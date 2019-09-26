@@ -349,6 +349,10 @@ export default class FormComponent extends Component {
       Array.isArray(this.formObj.components) &&
       this.formObj.components.length
     ) {
+      // Pass config down to sub forms.
+      if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
+        this.formObj.config = this.root.form.config;
+      }
       this.subFormReady = this.renderSubForm(this.formObj);
     }
     else if (this.formSrc) {
