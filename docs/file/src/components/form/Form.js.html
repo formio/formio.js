@@ -478,6 +478,10 @@ export default class FormComponent extends BaseComponent {
 
     // Determine if we already have a loaded form object.
     if (this.component &amp;&amp; this.component.components &amp;&amp; this.component.components.length) {
+      // Pass config down to sub forms.
+      if (this.root &amp;&amp; this.root.form &amp;&amp; this.root.form.config &amp;&amp; !this.component.config) {
+        this.component.config = this.root.form.config;
+      }
       this.renderSubForm(this.component, srcOptions);
     }
     else if (this.formSrc) {

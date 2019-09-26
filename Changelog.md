@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.28.1
+### Fixed
+ - Fix nested forms not having config if loaded with full=true
+ - Fix apply actions when action type is property
+ 
+### Changed
+ - Upgraded flatpickr@4.6.3, ejs-loader@0.3.5
+
 ## 3.28.0
 ### Added
  - isInputComponent method in utils
