@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.2
+### Fixed
+ - The Typescript definitions for the Formio class.
+ - Fix nested forms not having config if loaded with full=true.
+
+### Changed
+ - Upgraded flatpickr@4.6.3, ejs-loader@0.3.5
+
 ## 4.2.1
 ### Fixed
  - Possibility for edit grid render string to crash.
