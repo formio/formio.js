@@ -18,7 +18,6 @@ export class Formio {
   public submissionUrl?: string;
   public submissionsUrl?: string;
   public token: any | string;
-  static authUrl: string;
   static libraries: any;
   static Promise: any;
   static fetch: any;
