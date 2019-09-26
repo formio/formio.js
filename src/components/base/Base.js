@@ -1678,6 +1678,9 @@ export default class BaseComponent extends Component {
       switch (action.type) {
         case 'property':
           FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
+          if (!_.isEqual(this, newComponent)) {
+            changed = true;
+          }
           break;
         case 'value': {
           const oldValue = this.getValue();
