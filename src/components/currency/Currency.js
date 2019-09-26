@@ -69,19 +69,19 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  clearInput(input) {
+  parseValue(value) {
     try {
       if (this.prefix) {
-        input = input.replace(this.prefix, '');
+        value = value.replace(this.prefix, '');
       }
       if (this.suffix) {
-        input = input.replace(this.suffix, '');
+        value = value.replace(this.suffix, '');
       }
     }
     catch (err) {
       // If value doesn't have a replace method, continue on as before.
     }
 
-    return super.clearInput(input);
+    return super.parseValue(value);
   }
 }

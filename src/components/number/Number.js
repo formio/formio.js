@@ -126,7 +126,7 @@ export default class NumberComponent extends Input {
     return val ? this.parseNumber(val) : val;
   }
 
-  clearInput(input) {
+  parseValue(input) {
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
@@ -151,7 +151,7 @@ export default class NumberComponent extends Input {
   }
 
   setValueAt(index, value) {
-    return super.setValueAt(index, this.formatValue(this.clearInput(value)));
+    return super.setValueAt(index, this.formatValue(this.parseValue(value)));
   }
 
   focus() {
