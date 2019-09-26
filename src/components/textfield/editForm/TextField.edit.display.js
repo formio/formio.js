@@ -1,49 +1,19 @@
-import Widgets from '../../../widgets';
-import _ from 'lodash';
-export default [
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = [
   {
-    weight: 50,
-    type: 'select',
+    weight: 100,
+    type: 'textfield',
     input: true,
-    key: 'widget.type',
-    label: 'Widget',
-    placeholder: 'Select a widget',
-    tooltip: 'The widget is the display UI used to input the value of the field.',
-    onChange: (context) => {
-      context.data.widget = _.pick(context.data.widget, 'type');
-    },
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Calendar', value: 'calendar' }
-      ]
-    },
-    conditional: {
-      json: { '===': [{ var: 'data.type' }, 'textfield'] }
-    }
-  },
-  {
-    weight: 55,
-    type: 'textarea',
-    key: 'widget',
-    label: 'Widget Settings',
-    calculateValue: (context) => {
-      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
-        if (context.data.widget && context.data.widget.type) {
-          settings = Widgets[context.data.widget.type].defaultSettings;
-        }
-        return settings;
-      }
-      return context.data.widget;
-    },
-    input: true,
-    rows: 5,
-    editor: 'ace',
-    as: 'json',
-    conditional: {
-      json: { '!!': { var: 'data.widget.type' } }
-    }
+    key: 'placeholder',
+    label: 'Placeholder',
+    placeholder: 'Placeholder',
+    tooltip: 'The placeholder text that will appear when this field is empty.'
   },
   {
     weight: 410,
@@ -55,13 +25,6 @@ export default [
     customConditional(context) {
       return !context.data.allowMultipleMasks;
     }
-  },
-  {
-    weight: 413,
-    type: 'checkbox',
-    input: true,
-    key: 'allowMultipleMasks',
-    label: 'Allow Multiple Masks'
   },
   {
     weight: 417,
@@ -89,31 +52,13 @@ export default [
     ]
   },
   {
-    weight: 420,
-    type: 'textfield',
+    type: 'number',
     input: true,
-    key: 'prefix',
-    label: 'Prefix'
+    key: 'rows',
+    label: 'Rows',
+    weight: 510,
+    tooltip: 'This allows control over how many rows are visible in the text area.',
+    placeholder: 'Enter the amount of rows'
   },
-  {
-    weight: 430,
-    type: 'textfield',
-    input: true,
-    key: 'suffix',
-    label: 'Suffix'
-  },
-  {
-    weight: 710,
-    type: 'checkbox',
-    input: true,
-    key: 'showWordCount',
-    label: 'Show Word Counter'
-  },
-  {
-    weight: 720,
-    type: 'checkbox',
-    input: true,
-    key: 'showCharCount',
-    label: 'Show Character Counter'
-  }
 ];
+exports.default = _default;

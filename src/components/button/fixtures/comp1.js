@@ -1,4 +1,10 @@
-export default {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
   'type': 'button',
   'theme': 'primary',
   'disableOnInvalid': false,
@@ -12,3 +18,4 @@ export default {
   'label': 'Submit',
   'input': true
 };
+exports.default = _default;

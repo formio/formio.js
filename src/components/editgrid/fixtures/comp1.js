@@ -1,99 +1,100 @@
-export default {
-  'components': [
-    {
-      'components': [
-        {
-          'properties': {
-            '': ''
-          },
-          'tags': [],
-          'type': 'textfield',
-          'conditional': {
-            'show': '',
-            'when': null,
-            'eq': ''
-          },
-          'validate': {
-            'required': false,
-            'minLength': '',
-            'maxLength': '',
-            'pattern': '',
-            'custom': '',
-            'customPrivate': false
-          },
-          'clearOnHide': true,
-          'hidden': false,
-          'persistent': true,
-          'unique': false,
-          'protected': false,
-          'defaultValue': '',
-          'multiple': false,
-          'suffix': '',
-          'prefix': '',
-          'placeholder': '',
-          'key': 'field1',
-          'label': 'Field 1',
-          'inputMask': '',
-          'inputType': 'text',
-          'tableView': true,
-          'input': true
-        },
-        {
-          'properties': {
-            '': ''
-          },
-          'tags': [],
-          'type': 'textfield',
-          'conditional': {
-            'show': '',
-            'when': null,
-            'eq': ''
-          },
-          'validate': {
-            'required': true,
-            'minLength': '',
-            'maxLength': '',
-            'pattern': '',
-            'custom': '',
-            'customPrivate': false
-          },
-          'clearOnHide': true,
-          'hidden': false,
-          'persistent': true,
-          'unique': false,
-          'protected': false,
-          'defaultValue': '',
-          'multiple': false,
-          'suffix': '',
-          'prefix': '',
-          'placeholder': '',
-          'key': 'field2',
-          'label': 'Field 2',
-          'inputMask': '',
-          'inputType': 'text',
-          'tableView': true,
-          'input': true
-        }
-      ],
-      'clearOnHide': false,
-      'key': 'editgridPanel',
-      'input': false,
-      'title': '',
-      'theme': 'default',
-      'tableView': false,
-      'type': 'panel',
-      'breadcrumb': 'default',
-      'tags': [],
-      'conditional': {
-        'eq': '',
-        'when': null,
-        'show': ''
-      },
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  'components': [{
+    'components': [{
       'properties': {
         '': ''
-      }
+      },
+      'tags': [],
+      'type': 'textfield',
+      'conditional': {
+        'show': '',
+        'when': null,
+        'eq': ''
+      },
+      'validate': {
+        'required': false,
+        'minLength': '',
+        'maxLength': '',
+        'pattern': '',
+        'custom': '',
+        'customPrivate': false
+      },
+      'clearOnHide': true,
+      'hidden': false,
+      'persistent': true,
+      'unique': false,
+      'protected': false,
+      'defaultValue': '',
+      'multiple': false,
+      'suffix': '',
+      'prefix': '',
+      'placeholder': '',
+      'key': 'field1',
+      'label': 'Field 1',
+      'inputMask': '',
+      'inputType': 'text',
+      'tableView': true,
+      'input': true
+    }, {
+      'properties': {
+        '': ''
+      },
+      'tags': [],
+      'type': 'textfield',
+      'conditional': {
+        'show': '',
+        'when': null,
+        'eq': ''
+      },
+      'validate': {
+        'required': true,
+        'minLength': '',
+        'maxLength': '',
+        'pattern': '',
+        'custom': '',
+        'customPrivate': false
+      },
+      'clearOnHide': true,
+      'hidden': false,
+      'persistent': true,
+      'unique': false,
+      'protected': false,
+      'defaultValue': '',
+      'multiple': false,
+      'suffix': '',
+      'prefix': '',
+      'placeholder': '',
+      'key': 'field2',
+      'label': 'Field 2',
+      'inputMask': '',
+      'inputType': 'text',
+      'tableView': true,
+      'input': true
+    }],
+    'clearOnHide': false,
+    'key': 'editgridPanel',
+    'input': false,
+    'title': '',
+    'theme': 'default',
+    'tableView': false,
+    'type': 'panel',
+    'breadcrumb': 'default',
+    'tags': [],
+    'conditional': {
+      'eq': '',
+      'when': null,
+      'show': ''
+    },
+    'properties': {
+      '': ''
     }
-  ],
+  }],
   'validate': {
     'row': "valid = row.field1 === 'good' ? true : 'Must be good';"
   },
@@ -124,3 +125,4 @@ export default {
   'input': true,
   'removeRow': 'Cancel'
 };
+exports.default = _default;

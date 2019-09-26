@@ -1,26 +1,46 @@
 {
-  "name": "formiojs",
-  "version": "",
-  "description": "Common js library for client side interaction with <form.io>",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/formio/formio.js.git"
+  "_args": [
+    [
+      "formiojs@3.22.10",
+      "C:\\Users\\squire.johnson\\dev\\testFolder\\maxxlogic-frontend"
+    ]
+  ],
+  "_from": "formiojs@3.22.10",
+  "_id": "formiojs@3.22.10",
+  "_inBundle": false,
+  "_integrity": "sha512-YZ39v36inAq0vDMz/fRwv3pu65IImjg1JgO7p9/aFfmf1s9Zuag3Xg86onxaEs2aw/KvQLmY8NIvy/x/6RmW1g==",
+  "_location": "/formiojs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "formiojs@3.22.10",
+    "name": "formiojs",
+    "escapedName": "formiojs",
+    "rawSpec": "3.22.10",
+    "saveSpec": null,
+    "fetchSpec": "3.22.10"
+  },
+  "_requiredBy": [
+    "/vue-formio"
+  ],
+  "_resolved": "https://registry.npmjs.org/formiojs/-/formiojs-3.22.10.tgz",
+  "_spec": "3.22.10",
+  "_where": "C:\\Users\\squire.johnson\\dev\\testFolder\\maxxlogic-frontend",
+  "bugs": {
+    "url": "https://github.com/formio/formio.js/issues"
   },
   "contributors": [
     {
       "name": "Travis Tidwell",
-      "github": "https://github.com/travist",
       "email": "travis@form.io"
     },
     {
       "name": "Randall Knutson",
-      "github": "https://github.com/randallknutson",
       "email": "randall@form.io"
     },
     {
       "name": "Doug Lee",
-      "github": "https://github.com/douglaselee",
       "email": "douglaselee@comcast.net"
     },
     {
@@ -32,10 +52,42 @@
       "email": "guillaume.smaha@gmail.com"
     }
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/formio/formio.js/issues"
+  "dependencies": {
+    "browser-cookies": "^1.2.0",
+    "choices.js": "^7.0.0",
+    "core-js": "^3.1.4",
+    "custom-event-polyfill": "^1.0.7",
+    "dialog-polyfill": "^0.5.0",
+    "downloadjs": "^1.4.7",
+    "dragula": "^3.7.2",
+    "eventemitter2": "^5.0.1",
+    "fast-json-patch": "^2.1.0",
+    "fetch-ponyfill": "^6.1.0",
+    "flatpickr": "^4.6.1",
+    "i18next": "^17.0.4",
+    "json-logic-js": "^1.2.2",
+    "jstimezonedetect": "^1.0.6",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
+    "native-promise-only": "^0.8.1",
+    "shallow-copy": "0.0.1",
+    "signature_pad": "^2.3.2",
+    "string-hash": "^1.1.3",
+    "text-mask-addons": "^3.8.0",
+    "tooltip.js": "^1.3.2",
+    "two.js": "^0.7.0-beta.3",
+    "vanilla-picker": "^2.8.1",
+    "vanilla-text-mask": "^5.1.1"
   },
+  "description": "Common js library for client side interaction with <form.io>",
   "homepage": "https://github.com/formio/formio.js#readme",
-  "dependencies": {}
+  "license": "MIT",
+  "main": "index.js",
+  "name": "formiojs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formio/formio.js.git"
+  },
+  "version": "3.22.10"
 }

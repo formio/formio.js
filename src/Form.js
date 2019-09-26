@@ -1,9 +1,35 @@
-import Formio from './Formio';
-import Wizard from './Wizard';
-import PDF from './PDF';
-import Webform from './Webform';
+"use strict";
 
-export default class Form {
+require("core-js/modules/es.array.concat");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.regexp.to-string");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Formio = _interopRequireDefault(require("./Formio"));
+
+var _Wizard = _interopRequireDefault(require("./Wizard"));
+
+var _PDF = _interopRequireDefault(require("./PDF"));
+
+var _Webform = _interopRequireDefault(require("./Webform"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Form =
+/*#__PURE__*/
+function () {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
    *
@@ -20,87 +46,112 @@ export default class Form {
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.render();
    */
-  constructor(element, form, options) {
+  function Form(element, form, options) {
+    _classCallCheck(this, Form);
+
     this.instance = null;
     this.element = element;
     this.form = form;
     this.options = options;
   }
 
-  create() {
-    const isFlat = this.options && this.options.flatten;
-    if (this.form.display === 'wizard' && !isFlat) {
-      return new Wizard(this.element, this.options);
-    }
-    else if (this.form.display === 'pdf' && !isFlat) {
-      return new PDF(this.element, this.options);
-    }
-    else {
-      return new Webform(this.element, this.options);
-    }
-  }
+  _createClass(Form, [{
+    key: "create",
+    value: function create() {
+      var isFlat = this.options && this.options.flatten;
 
-  setForm(formParam) {
-    formParam = formParam || this.form;
-    this.element.innerHTML = '';
-    if (typeof formParam === 'string') {
-      return (new Formio(formParam)).loadForm().then((form) => {
-        this.form = form;
+      if (this.form.display === 'wizard' && !isFlat) {
+        return new _Wizard.default(this.element, this.options);
+      } else if (this.form.display === 'pdf' && !isFlat) {
+        return new _PDF.default(this.element, this.options);
+      } else {
+        return new _Webform.default(this.element, this.options);
+      }
+    }
+  }, {
+    key: "setForm",
+    value: function setForm(formParam) {
+      var _this = this;
+
+      formParam = formParam || this.form;
+      this.element.innerHTML = '';
+
+      if (typeof formParam === 'string') {
+        return new _Formio.default(formParam).loadForm().then(function (form) {
+          _this.form = form;
+
+          if (_this.instance) {
+            _this.instance.destroy();
+          }
+
+          _this.instance = _this.create();
+          _this.instance.url = formParam;
+          _this.instance.nosubmit = false;
+
+          _this.instance.loadSubmission();
+
+          _this.form = _this.instance.form = form;
+          return _this.instance.ready.then(function () {
+            return _this.instance;
+          });
+        });
+      } else {
+        this.form = formParam;
+
         if (this.instance) {
           this.instance.destroy();
         }
+
         this.instance = this.create();
-        this.instance.url = formParam;
-        this.instance.nosubmit = false;
-        this.instance.loadSubmission();
-        this.form = this.instance.form = form;
-        return this.instance.ready.then(() => this.instance);
-      });
-    }
-    else {
-      this.form = formParam;
-      if (this.instance) {
-        this.instance.destroy();
+        this.instance.form = this.form;
+        return this.instance.ready.then(function () {
+          return _this.instance;
+        });
       }
-      this.instance = this.create();
-      this.instance.form = this.form;
-      return this.instance.ready.then(() => this.instance);
     }
-  }
-
-  setDisplay(display) {
-    this.form.display = display;
-    return this.render();
-  }
-
-  static embed(embed) {
-    if (!embed || !embed.src) {
-      return null;
+  }, {
+    key: "setDisplay",
+    value: function setDisplay(display) {
+      this.form.display = display;
+      return this.render();
     }
-    const id = this.id || `formio-${Math.random().toString(36).substring(7)}`;
-    const className = embed.class || 'formio-form-wrapper';
-
-    // Add the styles to the header.
-    if (embed.styles) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = embed.styles;
-      document.head.appendChild(link);
+  }, {
+    key: "render",
+    value: function render(form) {
+      return this.setForm(form);
     }
+  }], [{
+    key: "embed",
+    value: function embed(_embed) {
+      if (!_embed || !_embed.src) {
+        return null;
+      }
 
-    document.write(`<div id="${id}" class="${className}"></div>`);
-    const formElement = document.getElementById(id);
-    return (new Form(formElement, embed.src)).render();
-  }
+      var id = this.id || "formio-".concat(Math.random().toString(36).substring(7));
+      var className = _embed.class || 'formio-form-wrapper'; // Add the styles to the header.
 
-  render(form) {
-    return this.setForm(form);
-  }
-}
+      if (_embed.styles) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = _embed.styles;
+        document.head.appendChild(link);
+      }
 
-// Allow simple embedding.
-Formio.embedForm = (embed) => Form.embed(embed);
+      document.write("<div id=\"".concat(id, "\" class=\"").concat(className, "\"></div>"));
+      var formElement = document.getElementById(id);
+      return new Form(formElement, _embed.src).render();
+    }
+  }]);
 
+  return Form;
+}(); // Allow simple embedding.
+
+
+exports.default = Form;
+
+_Formio.default.embedForm = function (embed) {
+  return Form.embed(embed);
+};
 /**
  * Creates a new form based on the form parameter.
  *
@@ -110,8 +161,10 @@ Formio.embedForm = (embed) => Form.embed(embed);
  *
  * @return {Promise} - When the form is instance is ready.
  */
-Formio.createForm = (element, form, options) => {
-  return (new Form(element, form, options)).render();
+
+
+_Formio.default.createForm = function (element, form, options) {
+  return new Form(element, form, options).render();
 };
 
-Formio.Form = Form;
+_Formio.default.Form = Form;

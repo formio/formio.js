@@ -1,11 +1,25 @@
-import radioEditForm from '../radio/Radio.form';
-import SelectBoxesEditValidation from './editSelectBoxes/SelectBoxes.edit.validation';
+"use strict";
 
-export default function(...extend) {
-  return radioEditForm([
-    {
-      key: 'validation',
-      components: SelectBoxesEditValidation
-    }
-  ], ...extend);
+require("core-js/modules/es.array.concat");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _Radio = _interopRequireDefault(require("../radio/Radio.form"));
+
+var _SelectBoxesEdit = _interopRequireDefault(require("./editSelectBoxes/SelectBoxes.edit.validation"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
+  for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Radio.default.apply(void 0, [[{
+    key: 'validation',
+    components: _SelectBoxesEdit.default
+  }]].concat(extend));
 }

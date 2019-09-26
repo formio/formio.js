@@ -1,70 +1,61 @@
-import _ from 'lodash';
-import BaseEditConditional from './editForm/Base.edit.conditional';
-import BaseEditData from './editForm/Base.edit.data';
-import BaseEditAPI from './editForm/Base.edit.api';
-import BaseEditDisplay from './editForm/Base.edit.display';
-import BaseEditLogic from './editForm/Base.edit.logic';
-import BaseEditValidation from './editForm/Base.edit.validation';
-import BaseEditLayout from './editForm/Base.edit.layout';
-import EditFormUtils from './editForm/utils';
+"use strict";
 
-export default function(...extend) {
-  const components = _.cloneDeep([
-    {
-      type: 'tabs',
-      key: 'tabs',
-      components: [
-        {
-          label: 'Display',
-          key: 'display',
-          weight: 0,
-          components: BaseEditDisplay
-        },
-        {
-          label: 'Data',
-          key: 'data',
-          weight: 10,
-          components: BaseEditData
-        },
-        {
-          label: 'Validation',
-          key: 'validation',
-          weight: 20,
-          components: BaseEditValidation
-        },
-        {
-          label: 'API',
-          key: 'api',
-          weight: 30,
-          components: BaseEditAPI
-        },
-        {
-          label: 'Conditional',
-          key: 'conditional',
-          weight: 40,
-          components: BaseEditConditional
-        },
-        {
-          label: 'Logic',
-          key: 'logic',
-          weight: 50,
-          components: BaseEditLogic
-        },
-        {
-          label: 'Layout',
-          key: 'layout',
-          weight: 60,
-          components: BaseEditLayout
-        }
-      ]
-    }
-  ]).concat(extend.map((items) => ({
+require("core-js/modules/es.array.concat");
+
+require("core-js/modules/es.array.map");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _lodash = _interopRequireDefault(require("lodash"));
+
+var _BaseEdit = _interopRequireDefault(require("./editForm/Base.edit.conditional"));
+
+var _BaseEdit2 = _interopRequireDefault(require("./editForm/Base.edit.data"));
+
+var _BaseEdit3 = _interopRequireDefault(require("./editForm/Base.edit.api"));
+
+var _BaseEdit4 = _interopRequireDefault(require("./editForm/Base.edit.display"));
+
+var _BaseEdit5 = _interopRequireDefault(require("./editForm/Base.edit.logic"));
+
+var _BaseEdit6 = _interopRequireDefault(require("./editForm/Base.edit.validation"));
+
+var _utils = _interopRequireDefault(require("./editForm/utils"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
+  for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  var components = _lodash.default.cloneDeep([{
     type: 'tabs',
     key: 'tabs',
-    components: items
-  })));
+    components: [{
+      label: 'Display',
+      key: 'display',
+      weight: 0,
+      components: _BaseEdit4.default
+    }, {
+      label: 'Validation',
+      key: 'validation',
+      weight: 20,
+      components: _BaseEdit6.default
+    },]
+  }]).concat(extend.map(function (items) {
+    return {
+      type: 'tabs',
+      key: 'tabs',
+      components: items
+    };
+  }));
+
   return {
-    components: _.unionWith(components, EditFormUtils.unifyComponents).concat({
+    components: _lodash.default.unionWith(components, _utils.default.unifyComponents).concat({
       type: 'hidden',
       key: 'type'
     })

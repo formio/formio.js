@@ -1,13 +1,17 @@
-export default {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
   'multiple': false,
   'conditional': {
     'eq': '',
     'when': null,
     'show': ''
   },
-  'tags': [
-
-  ],
+  'tags': [],
   'type': 'number',
   'validate': {
     'custom': '',
@@ -29,3 +33,4 @@ export default {
   'delimiter': true,
   'input': true
 };
+exports.default = _default;

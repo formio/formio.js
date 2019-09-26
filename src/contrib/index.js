@@ -1,29 +1,53 @@
-// Keep lodash off the global scope.
-import _ from 'lodash';
-_.noConflict();
+"use strict";
 
-import StripeComponent from './stripe/stripe/Stripe';
-import StripeCheckoutComponent from './stripe/checkout/StripeCheckout';
-import SketchPad from './sketchpad/sketchpad';
-import Tagpad from './tagpad/tagpad';
+require("core-js/modules/es.symbol");
 
-const Contrib = {
+require("core-js/modules/es.symbol.description");
+
+require("core-js/modules/es.symbol.iterator");
+
+require("core-js/modules/es.array.iterator");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Stripe = _interopRequireDefault(require("./stripe/stripe/Stripe"));
+
+var _StripeCheckout = _interopRequireDefault(require("./stripe/checkout/StripeCheckout"));
+
+var _sketchpad = _interopRequireDefault(require("./sketchpad/sketchpad"));
+
+var _tagpad = _interopRequireDefault(require("./tagpad/tagpad"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var Contrib = {
   stripe: {
-    stripe: StripeComponent,
-    checkout: StripeCheckoutComponent
+    stripe: _Stripe.default,
+    checkout: _StripeCheckout.default
   },
-  sketchpad: SketchPad,
-  tagpad: Tagpad,
+  sketchpad: _sketchpad.default,
+  tagpad: _tagpad.default
 };
+var _default = Contrib;
+exports.default = _default;
 
-export default Contrib;
-if (typeof global === 'object' && global.Formio) {
+if ((typeof global === "undefined" ? "undefined" : _typeof(global)) === 'object' && global.Formio) {
   global.Formio.contrib = Contrib;
 
   if (global.Formio.Components) {
     global.Formio.Components.setComponents(Contrib);
-  }
-  else {
+  } else {
     console.log('Failed to register contrib components');
   }
 }

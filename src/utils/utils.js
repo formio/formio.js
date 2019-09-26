@@ -1,40 +1,238 @@
-/* global $ */
+"use strict";
 
-import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
-import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
-import { getValue } from './formUtils';
-import Evaluator from './Evaluator';
-const interpolate = Evaluator.interpolate;
-const { fetch } = fetchPonyfill({
-  Promise: NativePromise
+require("core-js/modules/es.symbol");
+
+require("core-js/modules/es.symbol.description");
+
+require("core-js/modules/es.symbol.iterator");
+
+require("core-js/modules/es.array.concat");
+
+require("core-js/modules/es.array.find");
+
+require("core-js/modules/es.array.from");
+
+require("core-js/modules/es.array.includes");
+
+require("core-js/modules/es.array.iterator");
+
+require("core-js/modules/es.array.join");
+
+require("core-js/modules/es.array.map");
+
+require("core-js/modules/es.array.slice");
+
+require("core-js/modules/es.function.name");
+
+require("core-js/modules/es.number.constructor");
+
+require("core-js/modules/es.object.assign");
+
+require("core-js/modules/es.object.keys");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.reflect.construct");
+
+require("core-js/modules/es.regexp.constructor");
+
+require("core-js/modules/es.regexp.to-string");
+
+require("core-js/modules/es.string.includes");
+
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/es.string.match");
+
+require("core-js/modules/es.string.replace");
+
+require("core-js/modules/es.string.split");
+
+require("core-js/modules/web.dom-collections.for-each");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  evaluate: true,
+  getRandomComponentId: true,
+  getPropertyValue: true,
+  getElementRect: true,
+  boolValue: true,
+  isMongoId: true,
+  checkCalculated: true,
+  checkSimpleConditional: true,
+  checkCustomConditional: true,
+  checkJsonConditional: true,
+  checkCondition: true,
+  checkTrigger: true,
+  setActionProperty: true,
+  addTemplateHash: true,
+  interpolate: true,
+  uniqueName: true,
+  guid: true,
+  getDateSetting: true,
+  isValidDate: true,
+  currentTimezone: true,
+  offsetDate: true,
+  zonesLoaded: true,
+  shouldLoadZones: true,
+  loadZones: true,
+  momentDate: true,
+  formatDate: true,
+  formatOffset: true,
+  getLocaleDateFormatInfo: true,
+  convertFormatToFlatpickr: true,
+  convertFormatToMoment: true,
+  convertFormatToMask: true,
+  getInputMask: true,
+  matchInputMask: true,
+  getNumberSeparators: true,
+  getNumberDecimalLimit: true,
+  getCurrencyAffixes: true,
+  fieldData: true,
+  delay: true,
+  iterateKey: true,
+  uniqueKey: true,
+  bootstrapVersion: true,
+  unfold: true,
+  firstNonNil: true,
+  withSwitch: true,
+  observeOverload: true,
+  jsonLogic: true,
+  moment: true
+};
+exports.evaluate = evaluate;
+exports.getRandomComponentId = getRandomComponentId;
+exports.getPropertyValue = getPropertyValue;
+exports.getElementRect = getElementRect;
+exports.boolValue = boolValue;
+exports.isMongoId = isMongoId;
+exports.checkCalculated = checkCalculated;
+exports.checkSimpleConditional = checkSimpleConditional;
+exports.checkCustomConditional = checkCustomConditional;
+exports.checkJsonConditional = checkJsonConditional;
+exports.checkCondition = checkCondition;
+exports.checkTrigger = checkTrigger;
+exports.setActionProperty = setActionProperty;
+exports.addTemplateHash = addTemplateHash;
+exports.interpolate = interpolate;
+exports.uniqueName = uniqueName;
+exports.guid = guid;
+exports.getDateSetting = getDateSetting;
+exports.isValidDate = isValidDate;
+exports.currentTimezone = currentTimezone;
+exports.offsetDate = offsetDate;
+exports.zonesLoaded = zonesLoaded;
+exports.shouldLoadZones = shouldLoadZones;
+exports.loadZones = loadZones;
+exports.momentDate = momentDate;
+exports.formatDate = formatDate;
+exports.formatOffset = formatOffset;
+exports.getLocaleDateFormatInfo = getLocaleDateFormatInfo;
+exports.convertFormatToFlatpickr = convertFormatToFlatpickr;
+exports.convertFormatToMoment = convertFormatToMoment;
+exports.convertFormatToMask = convertFormatToMask;
+exports.getInputMask = getInputMask;
+exports.matchInputMask = matchInputMask;
+exports.getNumberSeparators = getNumberSeparators;
+exports.getNumberDecimalLimit = getNumberDecimalLimit;
+exports.getCurrencyAffixes = getCurrencyAffixes;
+exports.fieldData = fieldData;
+exports.delay = delay;
+exports.iterateKey = iterateKey;
+exports.uniqueKey = uniqueKey;
+exports.bootstrapVersion = bootstrapVersion;
+exports.unfold = unfold;
+exports.withSwitch = withSwitch;
+exports.observeOverload = observeOverload;
+Object.defineProperty(exports, "jsonLogic", {
+  enumerable: true,
+  get: function get() {
+    return _jsonLogicJs.default;
+  }
+});
+Object.defineProperty(exports, "moment", {
+  enumerable: true,
+  get: function get() {
+    return _momentTimezone.default;
+  }
+});
+exports.firstNonNil = void 0;
+
+var _lodash = _interopRequireDefault(require("lodash"));
+
+var _fetchPonyfill2 = _interopRequireDefault(require("fetch-ponyfill"));
+
+var _jsonLogicJs = _interopRequireDefault(require("json-logic-js"));
+
+var _momentTimezone = _interopRequireDefault(require("moment-timezone/moment-timezone"));
+
+var _jstimezonedetect = _interopRequireDefault(require("jstimezonedetect"));
+
+var _operators = require("./jsonlogic/operators");
+
+var _nativePromiseOnly = _interopRequireDefault(require("native-promise-only"));
+
+var _formUtils = require("./formUtils");
+
+Object.keys(_formUtils).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _formUtils[key];
+    }
+  });
 });
 
-export * from './formUtils';
+var _stringHash = _interopRequireDefault(require("string-hash"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var _fetchPonyfill = (0, _fetchPonyfill2.default)({
+  Promise: _nativePromiseOnly.default
+}),
+    fetch = _fetchPonyfill.fetch;
 
 // Configure JsonLogic
-lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
+_operators.lodashOperators.forEach(function (name) {
+  return _jsonLogicJs.default.add_operation("_".concat(name), _lodash.default[name]);
+}); // Retrieve Any Date
 
-// Retrieve Any Date
-jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
+
+_jsonLogicJs.default.add_operation('getDate', function (date) {
+  return (0, _momentTimezone.default)(date).toISOString();
+}); // Set Relative Minimum Date
+
+
+_jsonLogicJs.default.add_operation('relativeMinDate', function (relativeMinDate) {
+  return (0, _momentTimezone.default)().subtract(relativeMinDate, 'days').toISOString();
+}); // Set Relative Maximum Date
+
+
+_jsonLogicJs.default.add_operation('relativeMaxDate', function (relativeMaxDate) {
+  return (0, _momentTimezone.default)().add(relativeMaxDate, 'days').toISOString();
 });
-
-// Set Relative Minimum Date
-jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
-});
-
-// Set Relative Maximum Date
-jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
-});
-
-export { jsonLogic, moment };
 
 /**
  * Evaluate a method.
@@ -43,83 +241,84 @@ export { jsonLogic, moment };
  * @param args
  * @return {*}
  */
-/* eslint-disable max-statements */
-export function evaluate(func, args, ret, tokenize) {
-  let returnVal = null;
-  args.component = args.component ? _.cloneDeep(args.component) : { key: 'unknown' };
-  if (!args.form && args.instance) {
-    args.form = _.get(args.instance, 'root._form', {});
-  }
 
-  // Deeply cloning the form is expensive - only do it if it looks like the function needs it
+/* eslint-disable max-statements */
+function evaluate(func, args, ret, tokenize) {
+  var returnVal = null;
+  args.component = args.component ? _lodash.default.cloneDeep(args.component) : {
+    key: 'unknown'
+  };
+
+  if (!args.form && args.instance) {
+    args.form = _lodash.default.get(args.instance, 'root._form', {});
+  } // Deeply cloning the form is expensive - only do it if it looks like the function needs it
+
+
   if (func.toString().includes('form')) {
-    args.form = _.cloneDeep(args.form);
-  }
-  else {
+    args.form = _lodash.default.cloneDeep(args.form);
+  } else {
     delete args.form;
   }
 
-  const componentKey = args.component.key;
+  var componentKey = args.component.key;
+
   if (typeof func === 'string') {
     if (ret) {
-      func += `;return ${ret}`;
+      func += ";return ".concat(ret);
     }
-    const params = _.keys(args);
+
+    var params = _lodash.default.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
-      func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
+      func = func.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
         if ($2.indexOf('data.') === 0) {
-          return _.get(args.data, $2.replace('data.', ''));
-        }
-        else if ($2.indexOf('row.') === 0) {
-          return _.get(args.row, $2.replace('row.', ''));
-        }
+          return _lodash.default.get(args.data, $2.replace('data.', ''));
+        } else if ($2.indexOf('row.') === 0) {
+          return _lodash.default.get(args.row, $2.replace('row.', ''));
+        } // Support legacy...
 
-        // Support legacy...
-        return _.get(args.data, $2);
+
+        return _lodash.default.get(args.data, $2);
       });
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
-      args = _.values(args);
-    }
-    catch (err) {
-      console.warn(`An error occured within the custom function for ${componentKey}`, err);
+      func = _construct(Function, _toConsumableArray(params).concat([func]));
+      args = _lodash.default.values(args);
+    } catch (err) {
+      console.warn("An error occured within the custom function for ".concat(componentKey), err);
       returnVal = null;
       func = false;
     }
   }
+
   if (typeof func === 'function') {
     try {
-      returnVal = Array.isArray(args) ? func(...args) : func(args);
-    }
-    catch (err) {
+      returnVal = Array.isArray(args) ? func.apply(void 0, _toConsumableArray(args)) : func(args);
+    } catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${componentKey}`, err);
+      console.warn("An error occured within custom function for ".concat(componentKey), err);
     }
-  }
-  else if (typeof func === 'object') {
+  } else if (_typeof(func) === 'object') {
     try {
-      returnVal = jsonLogic.apply(func, args);
-    }
-    catch (err) {
+      returnVal = _jsonLogicJs.default.apply(func, args);
+    } catch (err) {
       returnVal = null;
-      console.warn(`An error occured within custom function for ${componentKey}`, err);
+      console.warn("An error occured within custom function for ".concat(componentKey), err);
     }
+  } else if (func) {
+    console.warn("Unknown function type for ".concat(componentKey));
   }
-  else if (func) {
-    console.warn(`Unknown function type for ${componentKey}`);
-  }
+
   return returnVal;
 }
 /* eslint-enable max-statements */
 
-export function getRandomComponentId() {
-  return `e${Math.random().toString(36).substring(7)}`;
-}
 
+function getRandomComponentId() {
+  return "e".concat(Math.random().toString(36).substring(7));
+}
 /**
  * Get a property value of an element.
  *
@@ -127,20 +326,23 @@ export function getRandomComponentId() {
  * @param prop
  * @return {number}
  */
-export function getPropertyValue(style, prop) {
-  let value = style.getPropertyValue(prop);
+
+
+function getPropertyValue(style, prop) {
+  var value = style.getPropertyValue(prop);
   value = value ? value.replace(/[^0-9.]/g, '') : '0';
   return parseFloat(value);
 }
-
 /**
  * Get an elements bounding rectagle.
  *
  * @param element
  * @return {{x: string, y: string, width: string, height: string}}
  */
-export function getElementRect(element) {
-  const style = window.getComputedStyle(element, null);
+
+
+function getElementRect(element) {
+  var style = window.getComputedStyle(element, null);
   return {
     x: getPropertyValue(style, 'left'),
     y: getPropertyValue(style, 'top'),
@@ -148,34 +350,33 @@ export function getElementRect(element) {
     height: getPropertyValue(style, 'height')
   };
 }
-
 /**
  * Determines the boolean value of a setting.
  *
  * @param value
  * @return {boolean}
  */
-export function boolValue(value) {
-  if (_.isBoolean(value)) {
+
+
+function boolValue(value) {
+  if (_lodash.default.isBoolean(value)) {
     return value;
-  }
-  else if (_.isString(value)) {
-    return (value.toLowerCase() === 'true');
-  }
-  else {
+  } else if (_lodash.default.isString(value)) {
+    return value.toLowerCase() === 'true';
+  } else {
     return !!value;
   }
 }
-
 /**
  * Check to see if an ID is a mongoID.
  * @param text
  * @return {Array|{index: number, input: string}|Boolean|*}
  */
-export function isMongoId(text) {
+
+
+function isMongoId(text) {
   return text.toString().match(/^[0-9a-fA-F]{24}$/);
 }
-
 /**
  * Checks the calculated value for a provided component and data.
  *
@@ -186,19 +387,20 @@ export function isMongoId(text) {
  * @param data
  *   The full submission data.
  */
-export function checkCalculated(component, submission, rowData) {
+
+
+function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
   if (component.calculateValue) {
-    _.set(rowData, component.key, evaluate(component.calculateValue, {
+    _lodash.default.set(rowData, component.key, evaluate(component.calculateValue, {
       value: undefined,
       data: submission ? submission.data : rowData,
       row: rowData,
       util: this,
-      component
+      component: component
     }, 'value'));
   }
 }
-
 /**
  * Check if a simple conditional evaluates to true.
  *
@@ -208,34 +410,42 @@ export function checkCalculated(component, submission, rowData) {
  * @param data
  * @returns {boolean}
  */
-export function checkSimpleConditional(component, condition, row, data) {
-  let value = null;
+
+
+function checkSimpleConditional(component, condition, row, data) {
+  var value = null;
+
   if (row) {
-    value = getValue({ data: row }, condition.when);
+    value = (0, _formUtils.getValue)({
+      data: row
+    }, condition.when);
   }
-  if (data && _.isNil(value)) {
-    value = getValue({ data }, condition.when);
-  }
-  // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-  if (_.isNil(value)) {
+
+  if (data && _lodash.default.isNil(value)) {
+    value = (0, _formUtils.getValue)({
+      data: data
+    }, condition.when);
+  } // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+
+
+  if (_lodash.default.isNil(value)) {
     value = '';
   }
 
-  const eq = String(condition.eq);
-  const show = String(condition.show);
+  var eq = String(condition.eq);
+  var show = String(condition.show); // Special check for selectboxes component.
 
-  // Special check for selectboxes component.
-  if (_.isObject(value) && _.has(value, condition.eq)) {
+  if (_lodash.default.isObject(value) && _lodash.default.has(value, condition.eq)) {
     return String(value[condition.eq]) === show;
-  }
-  // FOR-179 - Check for multiple values.
+  } // FOR-179 - Check for multiple values.
+
+
   if (Array.isArray(value) && value.map(String).includes(eq)) {
     return show === 'true';
   }
 
-  return (String(value) === eq) === (show === 'true');
+  return String(value) === eq === (show === 'true');
 }
-
 /**
  * Check custom javascript conditional.
  *
@@ -245,34 +455,39 @@ export function checkSimpleConditional(component, condition, row, data) {
  * @param data
  * @returns {*}
  */
-export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
+
+
+function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
   if (typeof custom === 'string') {
-    custom = `var ${variable} = true; ${custom}; return ${variable};`;
+    custom = "var ".concat(variable, " = true; ").concat(custom, "; return ").concat(variable, ";");
   }
-  const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom) :
-    evaluate(custom, { row, data, form });
+
+  var value = instance && instance.evaluate ? instance.evaluate(custom) : evaluate(custom, {
+    row: row,
+    data: data,
+    form: form
+  });
+
   if (value === null) {
     return onError;
   }
+
   return value;
 }
 
-export function checkJsonConditional(component, json, row, data, form, onError) {
+function checkJsonConditional(component, json, row, data, form, onError) {
   try {
-    return jsonLogic.apply(json, {
-      data,
-      row,
-      form,
-      _
+    return _jsonLogicJs.default.apply(json, {
+      data: data,
+      row: row,
+      form: form,
+      _: _lodash.default
     });
-  }
-  catch (err) {
-    console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);
+  } catch (err) {
+    console.warn("An error occurred in jsonLogic advanced condition for ".concat(component.key), err);
     return onError;
   }
 }
-
 /**
  * Checks the conditions for a provided component and data.
  *
@@ -285,21 +500,20 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
  *
  * @returns {boolean}
  */
-export function checkCondition(component, row, data, form, instance) {
+
+
+function checkCondition(component, row, data, form, instance) {
   if (component.customConditional) {
     return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
-  }
-  else if (component.conditional && component.conditional.when) {
+  } else if (component.conditional && component.conditional.when) {
     return checkSimpleConditional(component, component.conditional, row, data, true);
-  }
-  else if (component.conditional && component.conditional.json) {
+  } else if (component.conditional && component.conditional.json) {
     return checkJsonConditional(component, component.conditional.json, row, data, form, instance);
-  }
+  } // Default to show.
 
-  // Default to show.
+
   return true;
 }
-
 /**
  * Test a trigger on a component.
  *
@@ -309,46 +523,99 @@ export function checkCondition(component, row, data, form, instance) {
  * @param row
  * @returns {mixed}
  */
-export function checkTrigger(component, trigger, row, data, form, instance) {
+
+
+function checkTrigger(component, trigger, row, data, form, instance) {
   switch (trigger.type) {
     case 'simple':
       return checkSimpleConditional(component, trigger.simple, row, data);
+
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
+
     case 'json':
       return checkJsonConditional(component, trigger.json, row, data, form, false);
-  }
-  // If none of the types matched, don't fire the trigger.
+  } // If none of the types matched, don't fire the trigger.
+
+
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance) {
+function setActionProperty(component, action, row, data, result, instance) {
   switch (action.property.type) {
     case 'boolean':
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
-        _.set(component, action.property.value, action.state.toString() === 'true');
+      if (_lodash.default.get(component, action.property.value, false).toString() !== action.state.toString()) {
+        _lodash.default.set(component, action.property.value, action.state.toString() === 'true');
       }
+
       break;
-    case 'string': {
-      const evalData = {
-        data,
-        row,
-        component,
-        result
-      };
-      const textValue = action.property.component ? action[action.property.component] : action.text;
-      const newValue = (instance && instance.interpolate) ?
-        instance.interpolate(textValue, evalData) :
-        Evaluator.interpolate(textValue, evalData);
-      if (newValue !== _.get(component, action.property.value, '')) {
-        _.set(component, action.property.value, newValue);
+
+    case 'string':
+      {
+        var evalData = {
+          data: data,
+          row: row,
+          component: component,
+          result: result
+        };
+        var textValue = action.property.component ? action[action.property.component] : action.text;
+        var newValue = instance && instance.interpolate ? instance.interpolate(textValue, evalData) : interpolate(textValue, evalData);
+
+        if (newValue !== _lodash.default.get(component, action.property.value, '')) {
+          _lodash.default.set(component, action.property.value, newValue);
+        }
+
+        break;
       }
-      break;
-    }
   }
+
   return component;
 }
 
+var templateCache = {};
+var templateHashCache = {};
+
+function interpolateTemplate(template) {
+  var templateSettings = {
+    evaluate: /\{%([\s\S]+?)%\}/g,
+    interpolate: /\{\{([\s\S]+?)\}\}/g,
+    escape: /\{\{\{([\s\S]+?)\}\}\}/g
+  };
+
+  try {
+    return _lodash.default.template(template, templateSettings);
+  } catch (err) {
+    console.warn('Error while processing template', err, template);
+  }
+}
+
+function addTemplateHash(template) {
+  var hash = (0, _stringHash.default)(template);
+  templateHashCache[hash] = interpolateTemplate(template);
+  return hash;
+}
+/**
+ * Interpolate a string and add data replacements.
+ *
+ * @param string
+ * @param data
+ * @returns {XML|string|*|void}
+ */
+
+
+function interpolate(rawTemplate, data) {
+  var template = _lodash.default.isNumber(rawTemplate) && templateHashCache.hasOwnProperty(rawTemplate) ? templateHashCache[rawTemplate] : templateCache[rawTemplate] = templateCache[rawTemplate] || interpolateTemplate(rawTemplate);
+
+  if (typeof template === 'function') {
+    try {
+      return template(data);
+    } catch (err) {
+      console.warn('Error interpolating template', err, rawTemplate, data);
+    }
+  }
+
+  return template;
+}
 /**
  * Make a filename guaranteed to be unique.
  * @param name
@@ -356,83 +623,82 @@ export function setActionProperty(component, action, row, data, result, instance
  * @param evalContext
  * @returns {string}
  */
-export function uniqueName(name, template, evalContext) {
-  template = template || '{{fileName}}-{{guid}}';
-  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+
+
+function uniqueName(name, template, evalContext) {
+  template = template || '{{fileName}}-{{guid}}'; //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+
   if (!template.includes('{{guid}}')) {
-    template = `${template}-{{guid}}`;
+    template = "".concat(template, "-{{guid}}");
   }
-  const parts = name.split('.');
-  let fileName = parts.slice(0, parts.length - 1).join('.');
-  const extension = parts.length > 1
-    ? `.${_.last(parts)}`
-    : '';
-  //allow only 100 characters from original name to avoid issues with filename length restrictions
+
+  var parts = name.split('.');
+  var fileName = parts.slice(0, parts.length - 1).join('.');
+  var extension = parts.length > 1 ? ".".concat(_lodash.default.last(parts)) : ''; //allow only 100 characters from original name to avoid issues with filename length restrictions
+
   fileName = fileName.substr(0, 100);
   evalContext = Object.assign(evalContext || {}, {
-    fileName,
+    fileName: fileName,
     guid: guid()
-  });
-  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  }); //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+
+  var uniqueName = "".concat(interpolate(template, evalContext)).concat(extension).replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
   return uniqueName;
 }
 
-export function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random()*16|0;
-    const v = c === 'x'
-      ? r
-      : (r&0x3|0x8);
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0;
+    var v = c === 'x' ? r : r & 0x3 | 0x8;
     return v.toString(16);
   });
 }
-
 /**
  * Return a translated date setting.
  *
  * @param date
  * @return {(null|Date)}
  */
-export function getDateSetting(date) {
-  if (_.isNil(date) || _.isNaN(date) || date === '') {
+
+
+function getDateSetting(date) {
+  if (_lodash.default.isNil(date) || _lodash.default.isNaN(date) || date === '') {
     return null;
   }
 
   if (date instanceof Date) {
     return date;
-  }
-  else if (typeof date.toDate === 'function') {
+  } else if (typeof date.toDate === 'function') {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  var dateSetting = typeof date !== 'string' || date.indexOf('moment(') === -1 ? (0, _momentTimezone.default)(date) : null;
+
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
   dateSetting = null;
+
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    var value = new Function('moment', "return ".concat(date, ";"))(_momentTimezone.default);
+
     if (typeof value === 'string') {
-      dateSetting = moment(value);
+      dateSetting = (0, _momentTimezone.default)(value);
+    } else if (typeof value.toDate === 'function') {
+      dateSetting = (0, _momentTimezone.default)(value.toDate().toUTCString());
+    } else if (value instanceof Date) {
+      dateSetting = (0, _momentTimezone.default)(value);
     }
-    else if (typeof value.toDate === 'function') {
-      dateSetting = moment(value.toDate().toUTCString());
-    }
-    else if (value instanceof Date) {
-      dateSetting = moment(value);
-    }
-  }
-  catch (e) {
+  } catch (e) {
     return null;
   }
 
   if (!dateSetting) {
     return null;
-  }
+  } // Ensure this is a date.
 
-  // Ensure this is a date.
+
   if (!dateSetting.isValid()) {
     return null;
   }
@@ -440,23 +706,24 @@ export function getDateSetting(date) {
   return dateSetting.toDate();
 }
 
-export function isValidDate(date) {
-  return _.isDate(date) && !_.isNaN(date.getDate());
+function isValidDate(date) {
+  return _lodash.default.isDate(date) && !_lodash.default.isNaN(date.getDate());
 }
-
 /**
  * Get the current timezone string.
  *
  * @return {string}
  */
-export function currentTimezone() {
-  if (moment.currentTimezone) {
-    return moment.currentTimezone;
-  }
-  moment.currentTimezone = jtz.determine().name();
-  return moment.currentTimezone;
-}
 
+
+function currentTimezone() {
+  if (_momentTimezone.default.currentTimezone) {
+    return _momentTimezone.default.currentTimezone;
+  }
+
+  _momentTimezone.default.currentTimezone = _jstimezonedetect.default.determine().name();
+  return _momentTimezone.default.currentTimezone;
+}
 /**
  * Get an offset date provided a date object and timezone object.
  *
@@ -464,71 +731,78 @@ export function currentTimezone() {
  * @param timezone
  * @return {Date}
  */
-export function offsetDate(date, timezone) {
+
+
+function offsetDate(date, timezone) {
   if (timezone === 'UTC') {
     return {
-      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      date: new Date(date.getTime() + date.getTimezoneOffset() * 60000),
       abbr: 'UTC'
     };
   }
-  const dateMoment = moment(date).tz(timezone);
+
+  var dateMoment = (0, _momentTimezone.default)(date).tz(timezone);
   return {
-    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    date: new Date(date.getTime() + (dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000),
     abbr: dateMoment.format('z')
   };
 }
-
 /**
  * Returns if the zones are loaded.
  *
  * @return {boolean}
  */
-export function zonesLoaded() {
-  return moment.zonesLoaded;
-}
 
+
+function zonesLoaded() {
+  return _momentTimezone.default.zonesLoaded;
+}
 /**
  * Returns if we should load the zones.
  *
  * @param timezone
  * @return {boolean}
  */
-export function shouldLoadZones(timezone) {
+
+
+function shouldLoadZones(timezone) {
   if (timezone === currentTimezone() || timezone === 'UTC') {
     return false;
   }
+
   return true;
 }
-
 /**
  * Externally load the timezone data.
  *
  * @return {Promise<any> | *}
  */
-export function loadZones(timezone) {
+
+
+function loadZones(timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
-    return new NativePromise(_.noop);
+    return new _nativePromiseOnly.default(_lodash.default.noop);
   }
 
-  if (moment.zonesPromise) {
-    return moment.zonesPromise;
+  if (_momentTimezone.default.zonesPromise) {
+    return _momentTimezone.default.zonesPromise;
   }
-  return moment.zonesPromise = fetch(
-    'https://formio.github.io/formio.js/resources/latest.json',
-  ).then(resp => resp.json().then(zones => {
-    moment.tz.load(zones);
-    moment.zonesLoaded = true;
 
-    // Trigger a global event that the timezones have finished loading.
-    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-      var event = document.createEvent('Event');
-      event.initEvent('zonesLoaded', true, true);
-      document.body.dispatchEvent(event);
-    }
-  }));
+  return _momentTimezone.default.zonesPromise = fetch('https://formio.github.io/formio.js/resources/latest.json').then(function (resp) {
+    return resp.json().then(function (zones) {
+      _momentTimezone.default.tz.load(zones);
+
+      _momentTimezone.default.zonesLoaded = true; // Trigger a global event that the timezones have finished loading.
+
+      if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+        var event = document.createEvent('Event');
+        event.initEvent('zonesLoaded', true, true);
+        document.body.dispatchEvent(event);
+      }
+    });
+  });
 }
-
 /**
  * Get the moment date object for translating dates with timezones.
  *
@@ -537,17 +811,21 @@ export function loadZones(timezone) {
  * @param timezone
  * @return {*}
  */
-export function momentDate(value, format, timezone) {
-  const momentDate = moment(value);
+
+
+function momentDate(value, format, timezone) {
+  var momentDate = (0, _momentTimezone.default)(value);
+
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+
+  if ((timezone !== currentTimezone() || format && format.match(/\s(z$|z\s)/)) && _momentTimezone.default.zonesLoaded) {
     return momentDate.tz(timezone);
   }
+
   return momentDate;
 }
-
 /**
  * Format a date provided a value, format, and timezone object.
  *
@@ -556,38 +834,41 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone) {
-  const momentDate = moment(value);
+
+
+function formatDate(value, format, timezone) {
+  var momentDate = (0, _momentTimezone.default)(value);
+
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
       loadZones();
-      if (moment.zonesLoaded) {
+
+      if (_momentTimezone.default.zonesLoaded) {
         return momentDate.tz(timezone).format(convertFormatToMoment(format));
-      }
-      else {
+      } else {
         return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
       }
-    }
+    } // Return the standard format.
 
-    // Return the standard format.
+
     return momentDate.format(convertFormatToMoment(format));
   }
-  if (timezone === 'UTC') {
-    const offset = offsetDate(momentDate.toDate(), 'UTC');
-    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
-  }
 
-  // Load the zones since we need timezone information.
+  if (timezone === 'UTC') {
+    var offset = offsetDate(momentDate.toDate(), 'UTC');
+    return "".concat((0, _momentTimezone.default)(offset.date).format(convertFormatToMoment(format)), " UTC");
+  } // Load the zones since we need timezone information.
+
+
   loadZones();
-  if (moment.zonesLoaded) {
-    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
-  }
-  else {
+
+  if (_momentTimezone.default.zonesLoaded) {
+    return momentDate.tz(timezone).format("".concat(convertFormatToMoment(format), " z"));
+  } else {
     return momentDate.format(convertFormatToMoment(format));
   }
 }
-
 /**
  * Pass a format function to format within a timezone.
  *
@@ -597,146 +878,128 @@ export function formatDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatOffset(formatFn, date, format, timezone) {
+
+
+function formatOffset(formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
     return formatFn(date, format);
   }
-  if (timezone === 'UTC') {
-    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
-  }
 
-  // Load the zones since we need timezone information.
+  if (timezone === 'UTC') {
+    return "".concat(formatFn(offsetDate(date, 'UTC').date, format), " UTC");
+  } // Load the zones since we need timezone information.
+
+
   loadZones();
-  if (moment.zonesLoaded) {
-    const offset = offsetDate(date, timezone);
-    return `${formatFn(offset.date, format)} ${offset.abbr}`;
-  }
-  else {
+
+  if (_momentTimezone.default.zonesLoaded) {
+    var offset = offsetDate(date, timezone);
+    return "".concat(formatFn(offset.date, format), " ").concat(offset.abbr);
+  } else {
     return formatFn(date, format);
   }
 }
 
-export function getLocaleDateFormatInfo(locale) {
-  const formatInfo = {};
-
-  const day = 21;
-  const exampleDate = new Date(2017, 11, day);
-  const localDateString = exampleDate.toLocaleDateString(locale);
-
+function getLocaleDateFormatInfo(locale) {
+  var formatInfo = {};
+  var day = 21;
+  var exampleDate = new Date(2017, 11, day);
+  var localDateString = exampleDate.toLocaleDateString(locale);
   formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
-
   return formatInfo;
 }
-
 /**
  * Convert the format from the angular-datepicker module to flatpickr format.
  * @param format
  * @return {string}
  */
-export function convertFormatToFlatpickr(format) {
-  return format
-  // Remove the Z timezone offset, not supported by flatpickr.
-    .replace(/Z/g, '')
 
-    // Year conversion.
-    .replace(/y/g, 'Y')
-    .replace('YYYY', 'Y')
-    .replace('YY', 'y')
 
-    // Month conversion.
-    .replace('MMMM', 'F')
-    .replace(/M/g, 'n')
-    .replace('nnn', 'M')
-    .replace('nn', 'm')
-
-    // Day in month.
-    .replace(/d/g, 'j')
-    .replace(/jj/g, 'd')
-
-    // Day in week.
-    .replace('EEEE', 'l')
-    .replace('EEE', 'D')
-
-    // Hours, minutes, seconds
-    .replace('HH', 'H')
-    .replace('hh', 'h')
-    .replace('mm', 'i')
-    .replace('ss', 'S')
-    .replace(/a/g, 'K');
+function convertFormatToFlatpickr(format) {
+  return format // Remove the Z timezone offset, not supported by flatpickr.
+  .replace(/Z/g, '') // Year conversion.
+  .replace(/y/g, 'Y').replace('YYYY', 'Y').replace('YY', 'y') // Month conversion.
+  .replace('MMMM', 'F').replace(/M/g, 'n').replace('nnn', 'M').replace('nn', 'm') // Day in month.
+  .replace(/d/g, 'j').replace(/jj/g, 'd') // Day in week.
+  .replace('EEEE', 'l').replace('EEE', 'D') // Hours, minutes, seconds
+  .replace('HH', 'H').replace('hh', 'h').replace('mm', 'i').replace('ss', 'S').replace(/a/g, 'K');
 }
-
 /**
  * Convert the format from the angular-datepicker module to moment format.
  * @param format
  * @return {string}
  */
-export function convertFormatToMoment(format) {
-  return format
-    // Year conversion.
-    .replace(/y/g, 'Y')
-    // Day in month.
-    .replace(/d/g, 'D')
-    // Day in week.
-    .replace(/E/g, 'd')
-    // AM/PM marker
-    .replace(/a/g, 'A');
+
+
+function convertFormatToMoment(format) {
+  return format // Year conversion.
+  .replace(/y/g, 'Y') // Day in month.
+  .replace(/d/g, 'D') // Day in week.
+  .replace(/E/g, 'd') // AM/PM marker
+  .replace(/a/g, 'A');
 }
 
-export function convertFormatToMask(format) {
-  return format
-    // Short and long month replacement.
-    .replace(/(MMM|MMMM)/g, 'MM')
-    // Year conversion
-    .replace(/[ydhmsHM]/g, '9')
-    // AM/PM conversion
-    .replace(/a/g, 'AA');
+function convertFormatToMask(format) {
+  return format // Short and long month replacement.
+  .replace(/(MMM|MMMM)/g, 'MM') // Year conversion
+  .replace(/[ydhmsHM]/g, '9') // AM/PM conversion
+  .replace(/a/g, 'AA');
 }
-
 /**
  * Returns an input mask that is compatible with the input mask library.
  * @param {string} mask - The Form.io input mask.
  * @returns {Array} - The input mask for the mask library.
  */
-export function getInputMask(mask) {
+
+
+function getInputMask(mask) {
   if (mask instanceof Array) {
     return mask;
   }
-  const maskArray = [];
+
+  var maskArray = [];
   maskArray.numeric = true;
-  for (let i = 0; i < mask.length; i++) {
+
+  for (var i = 0; i < mask.length; i++) {
     switch (mask[i]) {
       case '9':
         maskArray.push(/\d/);
         break;
+
       case 'A':
         maskArray.numeric = false;
         maskArray.push(/[a-zA-Z]/);
         break;
+
       case 'a':
         maskArray.numeric = false;
         maskArray.push(/[a-z]/);
         break;
+
       case '*':
         maskArray.numeric = false;
         maskArray.push(/[a-zA-Z0-9]/);
         break;
+
       default:
         maskArray.push(mask[i]);
         break;
     }
   }
+
   return maskArray;
 }
 
-export function matchInputMask(value, inputMask) {
+function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
   }
-  for (let i = 0; i < inputMask.length; i++) {
-    const char = value[i];
-    const charPart = inputMask[i];
 
-    if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {
+  for (var i = 0; i < inputMask.length; i++) {
+    var char = value[i];
+    var charPart = inputMask[i];
+
+    if (!(_lodash.default.isRegExp(charPart) && charPart.test(char) || charPart === char)) {
       return false;
     }
   }
@@ -744,28 +1007,33 @@ export function matchInputMask(value, inputMask) {
   return true;
 }
 
-export function getNumberSeparators(lang = 'en') {
-  const formattedNumberString = (12345.6789).toLocaleString(lang);
-  const delimeters = formattedNumberString.match(/..(.)...(.)../);
+function getNumberSeparators() {
+  var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'en';
+  var formattedNumberString = 12345.6789.toLocaleString(lang);
+  var delimeters = formattedNumberString.match(/..(.)...(.)../);
+
   if (!delimeters) {
     return {
       delimiter: ',',
       decimalSeparator: '.'
     };
   }
+
   return {
-    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',
-    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',
+    delimiter: delimeters.length > 1 ? delimeters[1] : ',',
+    decimalSeparator: delimeters.length > 2 ? delimeters[2] : '.'
   };
 }
 
-export function getNumberDecimalLimit(component) {
+function getNumberDecimalLimit(component) {
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-  let decimalLimit = 20;
-  const step = _.get(component, 'validate.step', 'any');
+  var decimalLimit = 20;
+
+  var step = _lodash.default.get(component, 'validate.step', 'any');
 
   if (step !== 'any') {
-    const parts = step.toString().split('.');
+    var parts = step.toString().split('.');
+
     if (parts.length > 1) {
       decimalLimit = parts[1].length;
     }
@@ -774,21 +1042,23 @@ export function getNumberDecimalLimit(component) {
   return decimalLimit;
 }
 
-export function getCurrencyAffixes({
-  currency = 'USD',
-  decimalLimit,
-  decimalSeparator,
-  lang,
-}) {
+function getCurrencyAffixes(_ref) {
+  var _ref$currency = _ref.currency,
+      currency = _ref$currency === void 0 ? 'USD' : _ref$currency,
+      decimalLimit = _ref.decimalLimit,
+      decimalSeparator = _ref.decimalSeparator,
+      lang = _ref.lang;
   // Get the prefix and suffix from the localized string.
-  let regex = '(.*)?100';
+  var regex = '(.*)?100';
+
   if (decimalLimit) {
-    regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
+    regex += "".concat(decimalSeparator === '.' ? '\\.' : decimalSeparator, "0{").concat(decimalLimit, "}");
   }
+
   regex += '(.*)?';
-  const parts = (100).toLocaleString(lang, {
+  var parts = 100 .toLocaleString(lang, {
     style: 'currency',
-    currency,
+    currency: currency,
     useGrouping: true,
     maximumFractionDigits: decimalLimit,
     minimumFractionDigits: decimalLimit
@@ -798,7 +1068,6 @@ export function getCurrencyAffixes({
     suffix: parts[2] || ''
   };
 }
-
 /**
  * Fetch the field data provided a component.
  *
@@ -806,49 +1075,53 @@ export function getCurrencyAffixes({
  * @param component
  * @return {*}
  */
-export function fieldData(data, component) {
+
+
+function fieldData(data, component) {
   if (!data) {
     return '';
   }
+
   if (!component || !component.key) {
     return data;
   }
-  if (component.key.includes('.')) {
-    let value = data;
-    const parts = component.key.split('.');
-    let key = '';
-    for (let i = 0; i < parts.length; i++) {
-      key = parts[i];
 
-      // Handle nested resources
+  if (component.key.includes('.')) {
+    var value = data;
+    var parts = component.key.split('.');
+    var key = '';
+
+    for (var i = 0; i < parts.length; i++) {
+      key = parts[i]; // Handle nested resources
+
       if (value.hasOwnProperty('_id')) {
         value = value.data;
-      }
+      } // Return if the key is not found on the value.
 
-      // Return if the key is not found on the value.
+
       if (!value.hasOwnProperty(key)) {
         return;
-      }
+      } // Convert old single field data in submissions to multiple
 
-      // Convert old single field data in submissions to multiple
+
       if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
         value[key] = [value[key]];
-      }
+      } // Set the value of this key.
 
-      // Set the value of this key.
+
       value = value[key];
     }
+
     return value;
-  }
-  else {
+  } else {
     // Convert old single field data in submissions to multiple
     if (component.multiple && !Array.isArray(data[component.key])) {
       data[component.key] = [data[component.key]];
     }
+
     return data[component.key];
   }
 }
-
 /**
  * Delays function execution with possibility to execute function synchronously or cancel it.
  *
@@ -856,8 +1129,16 @@ export function fieldData(data, component) {
  * @param delay Delay time
  * @return {*}
  */
-export function delay(fn, delay = 0, ...args) {
-  const timer = setTimeout(fn, delay, ...args);
+
+
+function delay(fn) {
+  var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  var timer = setTimeout.apply(void 0, [fn, delay].concat(args));
 
   function cancel() {
     clearTimeout(timer);
@@ -865,15 +1146,13 @@ export function delay(fn, delay = 0, ...args) {
 
   function earlyCall() {
     cancel();
-    return fn(...args);
+    return fn.apply(void 0, args);
   }
 
   earlyCall.timer = timer;
   earlyCall.cancel = cancel;
-
   return earlyCall;
 }
-
 /**
  * Iterate the given key to make it unique.
  *
@@ -883,16 +1162,17 @@ export function delay(fn, delay = 0, ...args) {
  * @returns {String}
  *   The new component key.
  */
-export function iterateKey(key) {
+
+
+function iterateKey(key) {
   if (!key.match(/(\d+)$/)) {
-    return `${key}2`;
+    return "".concat(key, "2");
   }
 
-  return key.replace(/(\d+)$/, function(suffix) {
+  return key.replace(/(\d+)$/, function (suffix) {
     return Number(suffix) + 1;
   });
 }
-
 /**
  * Determines a unique key within a map provided the base key.
  *
@@ -900,29 +1180,35 @@ export function iterateKey(key) {
  * @param base
  * @return {*}
  */
-export function uniqueKey(map, base) {
-  let newKey = base;
+
+
+function uniqueKey(map, base) {
+  var newKey = base;
+
   while (map.hasOwnProperty(newKey)) {
     newKey = iterateKey(newKey);
   }
+
   return newKey;
 }
-
 /**
  * Determines the major version number of bootstrap.
  *
  * @return {number}
  */
-export function bootstrapVersion(options) {
+
+
+function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
+
+  if (typeof $ === 'function' && typeof $().collapse === 'function') {
     return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }
+
   return 0;
 }
-
 /**
  * Retrun provided argument.
  * If argument is a function, returns the result of a function call.
@@ -930,25 +1216,26 @@ export function bootstrapVersion(options) {
  *
  * @return {*}
  */
-export function unfold(e) {
+
+
+function unfold(e) {
   if (typeof e === 'function') {
     return e();
   }
 
   return e;
 }
-
 /**
  * Map values through unfold and return first non-nil value.
  * @param {Array<T>} collection;
  *
  * @return {T}
  */
-export const firstNonNil = _.flow([
-  _.partialRight(_.map, unfold),
-  _.partialRight(_.find, v => !_.isUndefined(v))
-]);
 
+
+var firstNonNil = _lodash.default.flow([_lodash.default.partialRight(_lodash.default.map, unfold), _lodash.default.partialRight(_lodash.default.find, function (v) {
+  return !_lodash.default.isUndefined(v);
+})]);
 /*
  * Create enclosed state.
  * Returns functions to getting and cycling between states.
@@ -956,16 +1243,20 @@ export const firstNonNil = _.flow([
  * @param {*} b - next state.
  * @return {Functions[]} -- [get, toggle];
  */
-export function withSwitch(a, b) {
-  let state = a;
-  let next = b;
+
+
+exports.firstNonNil = firstNonNil;
+
+function withSwitch(a, b) {
+  var state = a;
+  var next = b;
 
   function get() {
     return state;
   }
 
   function toggle() {
-    const prev = state;
+    var prev = state;
     state = next;
     next = prev;
   }
@@ -973,21 +1264,26 @@ export function withSwitch(a, b) {
   return [get, toggle];
 }
 
-export function observeOverload(callback, options = {}) {
-  const { limit = 50, delay = 500 } = options;
-  let callCount = 0;
-  let timeoutID = 0;
+function observeOverload(callback) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _options$limit = options.limit,
+      limit = _options$limit === void 0 ? 50 : _options$limit,
+      _options$delay = options.delay,
+      delay = _options$delay === void 0 ? 500 : _options$delay;
+  var callCount = 0;
+  var timeoutID = 0;
 
-  const reset = () => callCount = 0;
+  var reset = function reset() {
+    return callCount = 0;
+  };
 
-  return () => {
+  return function () {
     if (timeoutID !== 0) {
       clearTimeout(timeoutID);
       timeoutID = 0;
     }
 
     timeoutID = setTimeout(reset, delay);
-
     callCount += 1;
 
     if (callCount >= limit) {
@@ -997,5 +1293,3 @@ export function observeOverload(callback, options = {}) {
     }
   };
 }
-
-export { Evaluator, interpolate };

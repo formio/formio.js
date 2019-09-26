@@ -1,4 +1,10 @@
-export default {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
   lng: 'en',
   resources: {
     en: {
@@ -17,11 +23,16 @@ export default {
         maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
         minDate: '{{field}} should not contain date before {{- minDate}}',
-        invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
-        invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
-        invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
-        invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
-        invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
+        invalid_email: '{{field}} must be a valid email.',
+        // eslint-disable-line camelcase
+        invalid_url: '{{field}} must be a valid url.',
+        // eslint-disable-line camelcase
+        invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+        // eslint-disable-line camelcase
+        invalid_date: '{{field}} is not a valid date.',
+        // eslint-disable-line camelcase
+        invalid_day: '{{field}} is not a valid day.',
+        // eslint-disable-line camelcase
         mask: '{{field}} does not match the mask.',
         stripe: '{{stripe}}',
         month: 'Month',
@@ -47,3 +58,4 @@ export default {
     }
   }
 };
+exports.default = _default;

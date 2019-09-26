@@ -1,4 +1,10 @@
-export default {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
   type: 'datamap',
   key: 'properties',
   label: 'Properties',
@@ -11,3 +17,4 @@ export default {
     input: true
   }
 };
+exports.default = _default;

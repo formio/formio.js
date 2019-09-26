@@ -1,284 +1,452 @@
-import _ from 'lodash';
-import DataGridComponent from '../datagrid/DataGrid';
-import ModalEdit from '../modaledit/ModalEdit';
+"use strict";
 
-export default class EditTableComponent extends DataGridComponent {
-  static schema(...extend) {
-    return DataGridComponent.schema({
-      label: 'Edit Table',
-      key: 'editTable',
-      type: 'edittable',
-      input: true,
-      tree: true,
-      components: [],
-      columns: [],
-    }, ...extend);
-  }
+require("core-js/modules/es.symbol");
 
-  static get builderInfo() {
-    return false;
-    /*
-    return {
-      title: 'Edit Table',
-      icon: 'fa fa-th',
-      group: 'data',
-      weight: 20,
-      schema: EditTableComponent.schema()
-    };
-    */
-  }
+require("core-js/modules/es.symbol.description");
 
-  constructor(...args) {
-    super(...args);
+require("core-js/modules/es.symbol.iterator");
 
-    const groups  = _.get(this.component, 'rowGroups', []);
+require("core-js/modules/es.array.concat");
 
-    if (this.hasColumns()) {
-      this.component.components = this.componentComponents;
+require("core-js/modules/es.array.filter");
+
+require("core-js/modules/es.array.from");
+
+require("core-js/modules/es.array.iterator");
+
+require("core-js/modules/es.array.join");
+
+require("core-js/modules/es.array.map");
+
+require("core-js/modules/es.array.slice");
+
+require("core-js/modules/es.object.get-own-property-descriptor");
+
+require("core-js/modules/es.object.get-prototype-of");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.reflect.get");
+
+require("core-js/modules/es.regexp.to-string");
+
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/web.dom-collections.for-each");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _lodash = _interopRequireDefault(require("lodash"));
+
+var _DataGrid = _interopRequireDefault(require("../datagrid/DataGrid"));
+
+var _ModalEdit = _interopRequireDefault(require("../modaledit/ModalEdit"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var EditTableComponent =
+/*#__PURE__*/
+function (_DataGridComponent) {
+  _inherits(EditTableComponent, _DataGridComponent);
+
+  _createClass(EditTableComponent, null, [{
+    key: "schema",
+    value: function schema() {
+      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {
+        extend[_key] = arguments[_key];
+      }
+
+      return _DataGrid.default.schema.apply(_DataGrid.default, [{
+        label: 'Edit Table',
+        key: 'editTable',
+        type: 'edittable',
+        input: true,
+        tree: true,
+        components: [],
+        columns: []
+      }].concat(extend));
+    }
+  }, {
+    key: "builderInfo",
+    get: function get() {
+      return false;
+      /*
+      return {
+        title: 'Edit Table',
+        icon: 'fa fa-th',
+        group: 'data',
+        weight: 20,
+        schema: EditTableComponent.schema()
+      };
+      */
+    }
+  }]);
+
+  function EditTableComponent() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    _classCallCheck(this, EditTableComponent);
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
     }
 
-    if (this.groupsMode) {
-      this.addEmptyRows(this.totalRowsNumber(groups));
-    }
-  }
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(EditTableComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
+    var groups = _lodash.default.get(_this.component, 'rowGroups', []);
+
+    if (_this.hasColumns()) {
+      _this.component.components = _this.componentComponents;
+    }
+
+    if (_this.groupsMode) {
+      _this.addEmptyRows(_this.totalRowsNumber(groups));
+    }
+
+    return _this;
+  }
   /**
    * Checks whether columns are available
    * @return {Boolean}
    */
-  hasColumns() {
-    return this.getColumns().length > 0;
-  }
 
-  /** Don't show last col in header **/
-  /** @override **/
-  hasExtraColumn() {
-    return false;
-  }
 
-  /** @override **/
-  hasAddButton() {
-    return super.hasAddButton() && this.hasColumns();
-  }
-
-  componentSchema(...extend) {
-    return ModalEdit.schema({
-      rows: 0,
-      editor: 'ckeditor',
-      hideLabel: true,
-    }, ...extend);
-  }
-
-  /**
-   * Returns all non-empty columns.
-   *
-   * @return {Array}
-   */
-  getColumns() {
-    const cols = _.get(this, 'component.columns', []);
-
-    return _.filter(
-      _.map(cols, c => _.pick(c, ['label', 'key'])),
-      c => !_.isEqual(c, this.emptyColumn),
-    );
-  }
-
-  getGroups() {
-    return _.get(this.component, 'rowGroups', []);
-  }
-
-  totalRowsNumber(groups) {
-    return _.sum(_.map(groups, 'numberOfRows'));
-  }
-
-  addEmptyRows(n) {
-    this.dataValue = _.range(n).map(() => ({}));
-  }
-
-  get emptyColumn() {
-    return { label: '', key: '' };
-  }
-
-  get componentComponents() {
-    return this.getColumns().map(({ label, key }) => {
-      return this.componentSchema({ label, key });
-    });
-  }
-
-  get tableClass() {
-    const type = _.get(this.component, 'type', 'edittable');
-    const defaultClass = [
-      'table',
-      'table-bordered',
-      `table-${type}`,
-      'form-group',
-      `formio-${type}-table`
-    ].join(' ');
-    let className = _.get(this.component, 'tableClass');
-
-    if (className === '' || !_.isString(className)) {
-      className = defaultClass;
+  _createClass(EditTableComponent, [{
+    key: "hasColumns",
+    value: function hasColumns() {
+      return this.getColumns().length > 0;
     }
+    /** Don't show last col in header **/
 
-    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {
-      if (this.component[prop]) {
-        className = `${className} table-${prop}`;
+    /** @override **/
+
+  }, {
+    key: "hasExtraColumn",
+    value: function hasExtraColumn() {
+      return false;
+    }
+    /** @override **/
+
+  }, {
+    key: "hasAddButton",
+    value: function hasAddButton() {
+      return _get(_getPrototypeOf(EditTableComponent.prototype), "hasAddButton", this).call(this) && this.hasColumns();
+    }
+  }, {
+    key: "componentSchema",
+    value: function componentSchema() {
+      for (var _len3 = arguments.length, extend = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        extend[_key3] = arguments[_key3];
       }
-    });
 
-    return className;
-  }
-
-  get groupsMode() {
-    return _.get(this.component, 'enableRowGroups', false);
-  }
-
-  /** @override **/
-  build(state = {}) {
-    super.build(state);
-
-    this.tableElement.className = this.tableClass;
-
-    if (this.options.builder && !this.hasColumns()) {
-      this.element.appendChild(this.builderView());
+      return _ModalEdit.default.schema.apply(_ModalEdit.default, [{
+        rows: 0,
+        editor: 'ckeditor',
+        hideLabel: true
+      }].concat(extend));
     }
+    /**
+     * Returns all non-empty columns.
+     *
+     * @return {Array}
+     */
 
-    this.setMeta();
-  }
+  }, {
+    key: "getColumns",
+    value: function getColumns() {
+      var _this2 = this;
 
-  buildRows() {
-    super.buildRows();
+      var cols = _lodash.default.get(this, 'component.columns', []);
 
-    if (this.groupsMode) {
-      this.buildGroups();
+      return _lodash.default.filter(_lodash.default.map(cols, function (c) {
+        return _lodash.default.pick(c, ['label', 'key']);
+      }), function (c) {
+        return !_lodash.default.isEqual(c, _this2.emptyColumn);
+      });
     }
-  }
+  }, {
+    key: "getGroups",
+    value: function getGroups() {
+      return _lodash.default.get(this.component, 'rowGroups', []);
+    }
+  }, {
+    key: "totalRowsNumber",
+    value: function totalRowsNumber(groups) {
+      return _lodash.default.sum(_lodash.default.map(groups, 'numberOfRows'));
+    }
+  }, {
+    key: "addEmptyRows",
+    value: function addEmptyRows(n) {
+      this.dataValue = _lodash.default.range(n).map(function () {
+        return {};
+      });
+    }
+  }, {
+    key: "build",
 
-  buildGroups() {
-    const groups = _.get(this.component, 'rowGroups', []);
-    const ranges = _.map(groups, 'numberOfRows');
-    const rows = this.tableElement.querySelectorAll('tbody>tr');
-    const tbody = this.tableElement.querySelector('tbody');
-    const chunks = this.getRowChunks(ranges, rows);
-    const firstElements = chunks.map(_.head);
-    const groupElements = groups.map(g => this.buildGroup(g));
+    /** @override **/
+    value: function build() {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    groupElements.forEach((elt, index) => {
-      const row = firstElements[index];
+      _get(_getPrototypeOf(EditTableComponent.prototype), "build", this).call(this, state);
 
-      if (row) {
-        tbody.insertBefore(elt, row);
+      this.tableElement.className = this.tableClass;
+
+      if (this.options.builder && !this.hasColumns()) {
+        this.element.appendChild(this.builderView());
       }
-    });
-  }
 
-  /**
-   * @param {Numbers[]} groups
-   * @param {Array<T>} coll - collection
-   *
-   * @return {Array<T[]>}
-   */
-  getRowChunks(groups, coll) {
-    const [, chunks] = groups.reduce(
-      ([startIndex, acc], size) => {
-        const endIndex = startIndex +  size;
-        return [endIndex, [...acc, [startIndex, endIndex]]];
-      },
-      [0, []]
-    );
-
-    return chunks.map(range => _.slice(coll, ...range));
-  }
-
-  buildGroup({ label }) {
-    const colsNumber = this.getColumns().length;
-    const cell = this.ce('td', {
-      colspan: colsNumber,
-      class: 'edittable-group-label',
-    }, label);
-    return this.ce('tr', null, cell);
-  }
-
-  /** @override **/
-  buildRow(row, index, state = {}) {
-    if (this.options.builder) {
-      return null;
+      this.setMeta();
     }
+  }, {
+    key: "buildRows",
+    value: function buildRows() {
+      _get(_getPrototypeOf(EditTableComponent.prototype), "buildRows", this).call(this);
 
-    this.rows[index] = {};
+      if (this.groupsMode) {
+        this.buildGroups();
+      }
+    }
+  }, {
+    key: "buildGroups",
+    value: function buildGroups() {
+      var _this3 = this;
 
-    const colSchemes = this.componentComponents;
-    const lastIndex = colSchemes.length - 1;
-    const columns = colSchemes.map(
-      (col, colIndex) => {
-        const colContainer = this.buildComponent(
-          col,
-          colIndex,
-          row,
-          index,
-          this.getComponentState(col, state)
-        );
+      var groups = _lodash.default.get(this.component, 'rowGroups', []);
 
-        if (this.hasRemoveButtons() && colIndex === lastIndex) {
-          colContainer.append(this.removeButton(index));
+      var ranges = _lodash.default.map(groups, 'numberOfRows');
+
+      var rows = this.tableElement.querySelectorAll('tbody>tr');
+      var tbody = this.tableElement.querySelector('tbody');
+      var chunks = this.getRowChunks(ranges, rows);
+      var firstElements = chunks.map(_lodash.default.head);
+      var groupElements = groups.map(function (g) {
+        return _this3.buildGroup(g);
+      });
+      groupElements.forEach(function (elt, index) {
+        var row = firstElements[index];
+
+        if (row) {
+          tbody.insertBefore(elt, row);
+        }
+      });
+    }
+    /**
+     * @param {Numbers[]} groups
+     * @param {Array<T>} coll - collection
+     *
+     * @return {Array<T[]>}
+     */
+
+  }, {
+    key: "getRowChunks",
+    value: function getRowChunks(groups, coll) {
+      var _groups$reduce = groups.reduce(function (_ref, size) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            startIndex = _ref2[0],
+            acc = _ref2[1];
+
+        var endIndex = startIndex + size;
+        return [endIndex, [].concat(_toConsumableArray(acc), [[startIndex, endIndex]])];
+      }, [0, []]),
+          _groups$reduce2 = _slicedToArray(_groups$reduce, 2),
+          chunks = _groups$reduce2[1];
+
+      return chunks.map(function (range) {
+        return _lodash.default.slice.apply(_lodash.default, [coll].concat(_toConsumableArray(range)));
+      });
+    }
+  }, {
+    key: "buildGroup",
+    value: function buildGroup(_ref3) {
+      var label = _ref3.label;
+      var colsNumber = this.getColumns().length;
+      var cell = this.ce('td', {
+        colspan: colsNumber,
+        class: 'edittable-group-label'
+      }, label);
+      return this.ce('tr', null, cell);
+    }
+    /** @override **/
+
+  }, {
+    key: "buildRow",
+    value: function buildRow(row, index) {
+      var _this4 = this;
+
+      var state = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+      if (this.options.builder) {
+        return null;
+      }
+
+      this.rows[index] = {};
+      var colSchemes = this.componentComponents;
+      var lastIndex = colSchemes.length - 1;
+      var columns = colSchemes.map(function (col, colIndex) {
+        var colContainer = _this4.buildComponent(col, colIndex, row, index, _this4.getComponentState(col, state));
+
+        if (_this4.hasRemoveButtons() && colIndex === lastIndex) {
+          colContainer.append(_this4.removeButton(index));
         }
 
         return colContainer;
-      }
-    );
+      });
+      return this.ce('tr', null, columns);
+    }
+    /** override **/
 
-    return this.ce('tr', null, columns);
-  }
+  }, {
+    key: "removeButton",
+    value: function removeButton(index) {
+      var _this5 = this;
 
-  /** override **/
-  removeButton(index) {
-    const type = _.get(this.component, 'type', 'edittable');
-    const button = this.ce(
-      'button',
-      {
+      var type = _lodash.default.get(this.component, 'type', 'edittable');
+
+      var button = this.ce('button', {
         type: 'button',
-        class: `btn btn-xxs btn-danger formio-${type}-remove`,
-      },
-      this.ce('i', {
+        class: "btn btn-xxs btn-danger formio-".concat(type, "-remove")
+      }, this.ce('i', {
         class: this.iconClass('remove')
-      })
-    );
+      }));
+      this.addEventListener(button, 'click', function (event) {
+        event.preventDefault();
 
-    this.addEventListener(button, 'click', (event) => {
-      event.preventDefault();
-      this.removeValue(index);
-    });
-
-    return button;
-  }
-
-  builderView() {
-    return this.ce('div', { class: 'well edittable-placeholder' }, [
-      this.ce('i', { class: this.iconClass('warning-sign') }),
-      ' ',
-      this.t('No columns provided')
-    ]);
-  }
-
-  getMeta() {
-    const groups = this.getGroups();
-    if (this.hasColumns && groups.length) {
-      return groups.reduce((info, g) => {
-        info[g.label] = g.numberOfRows;
-        return info;
-      }, {});
+        _this5.removeValue(index);
+      });
+      return button;
     }
-    else {
-      return null;
+  }, {
+    key: "builderView",
+    value: function builderView() {
+      return this.ce('div', {
+        class: 'well edittable-placeholder'
+      }, [this.ce('i', {
+        class: this.iconClass('warning-sign')
+      }), ' ', this.t('No columns provided')]);
     }
-  }
+  }, {
+    key: "getMeta",
+    value: function getMeta() {
+      var groups = this.getGroups();
 
-  setMeta() {
-    const key = _.get(this.component, 'key');
-    const data = this.getMeta();
-
-    if (key && data) {
-      _.set(this.root, ['_submission', 'metadata', key], data);
+      if (this.hasColumns && groups.length) {
+        return groups.reduce(function (info, g) {
+          info[g.label] = g.numberOfRows;
+          return info;
+        }, {});
+      } else {
+        return null;
+      }
     }
-  }
-}
+  }, {
+    key: "setMeta",
+    value: function setMeta() {
+      var key = _lodash.default.get(this.component, 'key');
+
+      var data = this.getMeta();
+
+      if (key && data) {
+        _lodash.default.set(this.root, ['_submission', 'metadata', key], data);
+      }
+    }
+  }, {
+    key: "emptyColumn",
+    get: function get() {
+      return {
+        label: '',
+        key: ''
+      };
+    }
+  }, {
+    key: "componentComponents",
+    get: function get() {
+      var _this6 = this;
+
+      return this.getColumns().map(function (_ref4) {
+        var label = _ref4.label,
+            key = _ref4.key;
+        return _this6.componentSchema({
+          label: label,
+          key: key
+        });
+      });
+    }
+  }, {
+    key: "tableClass",
+    get: function get() {
+      var _this7 = this;
+
+      var type = _lodash.default.get(this.component, 'type', 'edittable');
+
+      var defaultClass = ['table', 'table-bordered', "table-".concat(type), 'form-group', "formio-".concat(type, "-table")].join(' ');
+
+      var className = _lodash.default.get(this.component, 'tableClass');
+
+      if (className === '' || !_lodash.default.isString(className)) {
+        className = defaultClass;
+      }
+
+      ['striped', 'bordered', 'hover', 'condensed'].forEach(function (prop) {
+        if (_this7.component[prop]) {
+          className = "".concat(className, " table-").concat(prop);
+        }
+      });
+      return className;
+    }
+  }, {
+    key: "groupsMode",
+    get: function get() {
+      return _lodash.default.get(this.component, 'enableRowGroups', false);
+    }
+  }]);
+
+  return EditTableComponent;
+}(_DataGrid.default);
+
+exports.default = EditTableComponent;

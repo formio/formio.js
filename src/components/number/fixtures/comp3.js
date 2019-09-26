@@ -1,4 +1,10 @@
-export default {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
   label: 'Number',
   mask: false,
   tableView: true,
@@ -11,3 +17,4 @@ export default {
   encrypted: false,
   defaultValue: 42
 };
+exports.default = _default;

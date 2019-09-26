@@ -1,18 +1,34 @@
-import EditFormUtils from './utils';
-import Evaluator from '../../../utils/Evaluator';
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _utils = _interopRequireDefault(require("./utils"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* eslint-disable quotes, max-len */
-export default [
+var _default = [
   {
-    weight: 0,
+    weight: 59,
+    type: 'checkbox',
+    label: 'Hidden',
+    tooltip: 'This field is hidden.',
+    key: 'hidden',
+    input: true
+  }, 
+  {
+    weight: 100,
     type: 'checkbox',
     label: 'Required',
     tooltip: 'A required field must be filled in before the form can be submitted.',
     key: 'validate.required',
     input: true
-  },
+  }, 
   {
-    weight: 100,
+    weight: 110,
     type: 'checkbox',
     label: 'Unique',
     tooltip: 'Makes sure the data submitted for this field is unique, and has not been submitted before.',
@@ -20,111 +36,13 @@ export default [
     input: true
   },
   {
-    weight: 150,
-    type: 'select',
-    key: 'validateOn',
-    defaultValue: 'change',
-    input: true,
-    label: 'Validate On',
-    tooltip: 'Determines when this component should trigger front-end validation.',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Change', value: 'change' },
-        { label: 'Blur', value: 'blur' }
-      ]
-    }
-  },
-  {
-    weight: 200,
-    key: 'validate.customMessage',
-    label: 'Custom Error Message',
-    placeholder: 'Custom Error Message',
-    type: 'textfield',
-    tooltip: 'Error message displayed if any error occurred.',
+    weight: 130,
+    type: 'checkbox',
+    label: 'Read Only',
+    tooltip: 'User cannot edit this field.',
+    key: 'readOnly',
     input: true
-  },
-  {
-    type: 'panel',
-    title: 'Custom Validation',
-    collapsible: true,
-    collapsed: true,
-    style: { 'margin-bottom': '10px' },
-    key: 'custom-validation-js',
-    weight: 300,
-    customConditional() {
-      return !Evaluator.noeval;
-    },
-    components: [
-      EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
-      {
-        type: 'textarea',
-        key: 'validate.custom',
-        rows: 5,
-        editor: 'ace',
-        hideLabel: true,
-        input: true
-      },
-      {
-        type: 'htmlelement',
-        tag: 'div',
-        content: `
-          <small>
-            <p>Enter custom validation code.</p>
-            <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>
-            <h5>Example:</h5>
-            <pre>valid = (input === 'Joe') ? true : 'Your name must be "Joe"';</pre>
-          </small>`
-      },
-      {
-        type: 'well',
-        components: [
-          {
-            weight: 100,
-            type: 'checkbox',
-            label: 'Secret Validation',
-            tooltip: 'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
-            description: 'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
-            key: 'validate.customPrivate',
-            input: true
-          }
-        ]
-      }
-    ]
-  },
-  {
-    type: 'panel',
-    title: 'JSONLogic Validation',
-    collapsible: true,
-    collapsed: true,
-    key: 'json-validation-json',
-    weight: 400,
-    components: [
-      {
-        type: 'htmlelement',
-        tag: 'div',
-        /* eslint-disable prefer-template */
-        content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-          '<h5>Example:</h5>' +
-          '<pre>' + JSON.stringify({
-            "if": [
-              { "===": [{ "var": "input" }, "Bob"] },
-              true,
-              "Your name must be 'Bob'!"
-            ]
-          }, null, 2) + '</pre>'
-        /* eslint-enable prefer-template */
-      },
-      {
-        type: 'textarea',
-        key: 'validate.json',
-        hideLabel: true,
-        rows: 5,
-        editor: 'ace',
-        as: 'json',
-        input: true
-      }
-    ]
-  }
+  }, 
 ];
-/* eslint-enable quotes, max-len */
+
+exports.default = _default;

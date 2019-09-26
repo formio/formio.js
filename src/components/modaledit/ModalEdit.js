@@ -1,241 +1,342 @@
-/* globals InlineEditor */
-import _ from 'lodash';
-import Formio from '../../Formio';
-import TextAreaComponent from '../textarea/TextArea';
-import { withSwitch } from '../../utils/utils.js';
-import NativePromise from 'native-promise-only';
+"use strict";
 
-const EDIT = Symbol('edit');
-const VIEW = Symbol('view');
-const CKEDITOR = 'https://cdn.ckeditor.com/ckeditor5/11.2.0/inline/ckeditor.js';
+require("core-js/modules/es.symbol");
 
-export default class ModalEditComponent extends TextAreaComponent {
-  static schema(...extend) {
-    return TextAreaComponent.schema({
-      type: 'modaledit',
-      label: 'Modal Edit',
-      key: 'modalEdit',
-    }, ...extend);
-  }
+require("core-js/modules/es.symbol.description");
 
-  static get builderInfo() {
-    return {
-      title: 'Modal Edit',
-      group: 'advanced',
-      icon: 'fa fa-font',
-      weight: 50,
-      schema: ModalEditComponent.schema()
-    };
-  }
+require("core-js/modules/es.symbol.iterator");
 
-  constructor(...args) {
-    super(...args);
-    const [get, toggle] = withSwitch(VIEW, EDIT);
-    this.getMode = get;
-    this.toggleMode = () => {
-      toggle();
-      this.emit('modechange');
-    };
-  }
+require("core-js/modules/es.array.concat");
 
-  build() {
-    this.createElement();
+require("core-js/modules/es.array.iterator");
 
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
+require("core-js/modules/es.object.get-prototype-of");
 
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
+require("core-js/modules/es.object.to-string");
 
-    this.editElement = this.buildEditMode({
-      onCloseRequest: () => {
-        this.removeChildFrom(this.editElement, document.body);
-        this.toggleMode();
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _lodash = _interopRequireDefault(require("lodash"));
+
+var _Formio = _interopRequireDefault(require("../../Formio"));
+
+var _TextArea = _interopRequireDefault(require("../textarea/TextArea"));
+
+var _utils = require("../../utils/utils.js");
+
+var _nativePromiseOnly = _interopRequireDefault(require("native-promise-only"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var EDIT = Symbol('edit');
+var VIEW = Symbol('view');
+var CKEDITOR = 'https://cdn.ckeditor.com/ckeditor5/11.2.0/inline/ckeditor.js';
+
+var ModalEditComponent =
+/*#__PURE__*/
+function (_TextAreaComponent) {
+  _inherits(ModalEditComponent, _TextAreaComponent);
+
+  _createClass(ModalEditComponent, null, [{
+    key: "schema",
+    value: function schema() {
+      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {
+        extend[_key] = arguments[_key];
       }
-    });
-    this.preview = this.ce('div', { class: 'edittable-preview' });
-    this.element.appendChild(this.preview);
-    this.updateView(this.preview);
 
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
+      return _TextArea.default.schema.apply(_TextArea.default, [{
+        type: 'modaledit',
+        label: 'Modal Edit',
+        key: 'modalEdit'
+      }].concat(extend));
+    }
+  }, {
+    key: "builderInfo",
+    get: function get() {
+      return {
+        title: 'Modal Edit',
+        group: 'advanced',
+        icon: 'fa fa-font',
+        weight: 50,
+        schema: ModalEditComponent.schema()
+      };
+    }
+  }]);
+
+  function ModalEditComponent() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    _classCallCheck(this, ModalEditComponent);
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
     }
 
-    this.restoreValue();
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(ModalEditComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
-    this.on('modechange', this.updateView.bind(this, this.preview));
+    var _withSwitch = (0, _utils.withSwitch)(VIEW, EDIT),
+        _withSwitch2 = _slicedToArray(_withSwitch, 2),
+        get = _withSwitch2[0],
+        toggle = _withSwitch2[1];
+
+    _this.getMode = get;
+
+    _this.toggleMode = function () {
+      toggle();
+
+      _this.emit('modechange');
+    };
+
+    return _this;
   }
 
-  buildViewMode({ content = '', onEdit: onClick }) {
-    const icon = this.ce('i', { class: this.iconClass('edit') });
-    const button = this.ce(
-      'button',
-      {
+  _createClass(ModalEditComponent, [{
+    key: "build",
+    value: function build() {
+      var _this2 = this;
+
+      this.createElement();
+      var labelAtTheBottom = this.component.labelPosition === 'bottom';
+
+      if (!labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+
+      this.editElement = this.buildEditMode({
+        onCloseRequest: function onCloseRequest() {
+          _this2.removeChildFrom(_this2.editElement, document.body);
+
+          _this2.toggleMode();
+        }
+      });
+      this.preview = this.ce('div', {
+        class: 'edittable-preview'
+      });
+      this.element.appendChild(this.preview);
+      this.updateView(this.preview);
+
+      if (labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+
+      this.restoreValue();
+      this.on('modechange', this.updateView.bind(this, this.preview));
+    }
+  }, {
+    key: "buildViewMode",
+    value: function buildViewMode(_ref) {
+      var _ref$content = _ref.content,
+          content = _ref$content === void 0 ? '' : _ref$content,
+          onClick = _ref.onEdit;
+      var icon = this.ce('i', {
+        class: this.iconClass('edit')
+      });
+      var button = this.ce('button', {
         type: 'button',
         role: 'button',
-        onClick,
+        onClick: onClick,
         class: 'btn btn-xxs btn-warning formio-modaledit-edit'
-      },
-      icon
-    );
-    const child = this.ce('div', { class: 'modaledit-view-inner reset-margins' });
-
-    child.innerHTML = this.interpolate(content);
-
-    return this.ce('div', {
-      class: 'formio-modaledit-view-container',
-      onDblClick: onClick,
-    }, [
-      button,
-      child
-    ]);
-  }
-
-  buildEditMode({ onCloseRequest, onCloseClick, onOverlayClick }) {
-    const overlay = this.ce('div', { class: 'formio-dialog-overlay' });
-    const inner = this.ce('div', { class: 'reset-margins' });
-    const close = this.ce(
-      'button',
-      {
-        type: 'button',
-        class: 'btn btn-primary btn-xs formio-modaledit-close',
-      },
-      'Close'
-    );
-    const container = this.ce(
-      'div',
-      {
-        class: 'formio-modaledit-content'
-      },
-      [
-        close,
-        inner
-      ]
-    );
-    const dialog = this.ce('div', {
-      class: 'formio-dialog formio-dialog-theme-default formio-modaledit-dialog',
-    }, [
-      overlay,
-      container
-    ]);
-    const [dw, dh] = this.defaultEditorSize;
-    const layout = _.get(this.component, 'editorLayout', this.defaultLayout);
-    const widthPath = _.get(this.layoutOptions, [layout, 'width']);
-    const heightPath = _.get(this.layoutOptions, [layout, 'height']);
-    const width = _.get(this.component, widthPath, dw);
-    const height = _.get(this.component, heightPath, dh);
-
-    this.createInput(inner);
-
-    if (this.isPlain) {
-      const textarea = container.querySelector('textarea');
-      textarea.style.minHeight = `${height}px`;
-      textarea.style.borderRadius = 0;
-      textarea.style.resize = 'vertical';
+      }, icon);
+      var child = this.ce('div', {
+        class: 'modaledit-view-inner reset-margins'
+      });
+      child.innerHTML = this.interpolate(content);
+      return this.ce('div', {
+        class: 'formio-modaledit-view-container',
+        onDblClick: onClick
+      }, [button, child]);
     }
+  }, {
+    key: "buildEditMode",
+    value: function buildEditMode(_ref2) {
+      var _this3 = this;
 
-    container.style.position = 'absolute';
-    container.style.backgroundColor = '#fff';
-    container.style.width = `${width}px`;
-    container.style.minHeight = `${height}px`;
+      var onCloseRequest = _ref2.onCloseRequest,
+          onCloseClick = _ref2.onCloseClick,
+          onOverlayClick = _ref2.onOverlayClick;
+      var overlay = this.ce('div', {
+        class: 'formio-dialog-overlay'
+      });
+      var inner = this.ce('div', {
+        class: 'reset-margins'
+      });
+      var close = this.ce('button', {
+        type: 'button',
+        class: 'btn btn-primary btn-xs formio-modaledit-close'
+      }, 'Close');
+      var container = this.ce('div', {
+        class: 'formio-modaledit-content'
+      }, [close, inner]);
+      var dialog = this.ce('div', {
+        class: 'formio-dialog formio-dialog-theme-default formio-modaledit-dialog'
+      }, [overlay, container]);
 
-    this.addEventListener(overlay, 'click', event => {
-      event.preventDefault();
+      var _this$defaultEditorSi = _slicedToArray(this.defaultEditorSize, 2),
+          dw = _this$defaultEditorSi[0],
+          dh = _this$defaultEditorSi[1];
 
-      if (_.isFunction(onOverlayClick)) {
-        onOverlayClick();
+      var layout = _lodash.default.get(this.component, 'editorLayout', this.defaultLayout);
+
+      var widthPath = _lodash.default.get(this.layoutOptions, [layout, 'width']);
+
+      var heightPath = _lodash.default.get(this.layoutOptions, [layout, 'height']);
+
+      var width = _lodash.default.get(this.component, widthPath, dw);
+
+      var height = _lodash.default.get(this.component, heightPath, dh);
+
+      this.createInput(inner);
+
+      if (this.isPlain) {
+        var textarea = container.querySelector('textarea');
+        textarea.style.minHeight = "".concat(height, "px");
+        textarea.style.borderRadius = 0;
+        textarea.style.resize = 'vertical';
       }
 
-      if (_.isFunction(onCloseRequest)) {
-        onCloseRequest();
-      }
-    });
+      container.style.position = 'absolute';
+      container.style.backgroundColor = '#fff';
+      container.style.width = "".concat(width, "px");
+      container.style.minHeight = "".concat(height, "px");
+      this.addEventListener(overlay, 'click', function (event) {
+        event.preventDefault();
 
-    this.addEventListener(close, 'click', event => {
-      event.preventDefault();
+        if (_lodash.default.isFunction(onOverlayClick)) {
+          onOverlayClick();
+        }
 
-      if (_.isFunction(onCloseClick)) {
-        onCloseClick();
-      }
+        if (_lodash.default.isFunction(onCloseRequest)) {
+          onCloseRequest();
+        }
+      });
+      this.addEventListener(close, 'click', function (event) {
+        event.preventDefault();
 
-      if (_.isFunction(onCloseRequest)) {
-        onCloseRequest();
-      }
-    });
+        if (_lodash.default.isFunction(onCloseClick)) {
+          onCloseClick();
+        }
 
-    dialog.updateLayout = () => {
-      const rect = this.preview.getBoundingClientRect();
-      container.style.top = `${rect.top}px`;
-      container.style.left = `${rect.left}px`;
-      container.style.width = `${Math.max(width, rect.width)}px`;
-    };
-
-    return dialog;
-  }
-
-  updateView(container) {
-    const mode = this.getMode();
-
-    if (this.options.builder || mode === VIEW) {
-      const view = this.buildViewMode({
-        onEdit: this.toggleMode,
-        content: _.isString(this.dataValue) ? this.dataValue : '',
+        if (_lodash.default.isFunction(onCloseRequest)) {
+          onCloseRequest();
+        }
       });
 
-      if (container.firstChild) {
-        container.replaceChild(
-          view,
-          container.firstChild
-        );
-      }
-      else {
-        container.appendChild(view);
-      }
+      dialog.updateLayout = function () {
+        var rect = _this3.preview.getBoundingClientRect();
+
+        container.style.top = "".concat(rect.top, "px");
+        container.style.left = "".concat(rect.left, "px");
+        container.style.width = "".concat(Math.max(width, rect.width), "px");
+      };
+
+      return dialog;
     }
+  }, {
+    key: "updateView",
+    value: function updateView(container) {
+      var mode = this.getMode();
 
-    if (mode === EDIT) {
-      this.editElement.updateLayout();
-      document.body.appendChild(this.editElement);
-    }
-  }
+      if (this.options.builder || mode === VIEW) {
+        var view = this.buildViewMode({
+          onEdit: this.toggleMode,
+          content: _lodash.default.isString(this.dataValue) ? this.dataValue : ''
+        });
 
-  // get defaultValue() {
-  //   const value = super.defaultValue;
-  //   return '';
-  // }
-
-  get defaultEditorSize() {
-    return [300, 200];
-  }
-
-  get defaultLayout() {
-    return 'grow';
-  }
-
-  get layoutOptions() {
-    return {
-      grow: {
-        width: 'minEditorWidth',
-        height: 'minEditorHeight',
-      },
-      fixed: {
-        width: 'width',
-        height: 'height'
-      }
-    };
-  }
-
-  addCKE(element, settings, onChange) {
-    settings = _.isEmpty(settings) ? null : settings;
-    return Formio.requireLibrary('ckeditor', 'InlineEditor', CKEDITOR, true)
-      .then(() => {
-        if (!element.parentNode) {
-          return NativePromise.reject();
+        if (container.firstChild) {
+          container.replaceChild(view, container.firstChild);
+        } else {
+          container.appendChild(view);
         }
-        return InlineEditor.create(element, settings).then(editor => {
-          editor.model.document.on('change', () => onChange(editor.data.get()));
+      }
+
+      if (mode === EDIT) {
+        this.editElement.updateLayout();
+        document.body.appendChild(this.editElement);
+      }
+    } // get defaultValue() {
+    //   const value = super.defaultValue;
+    //   return '';
+    // }
+
+  }, {
+    key: "addCKE",
+    value: function addCKE(element, settings, onChange) {
+      settings = _lodash.default.isEmpty(settings) ? null : settings;
+      return _Formio.default.requireLibrary('ckeditor', 'InlineEditor', CKEDITOR, true).then(function () {
+        if (!element.parentNode) {
+          return _nativePromiseOnly.default.reject();
+        }
+
+        return InlineEditor.create(element, settings).then(function (editor) {
+          editor.model.document.on('change', function () {
+            return onChange(editor.data.get());
+          });
           return editor;
         });
       });
-  }
-}
+    }
+  }, {
+    key: "defaultEditorSize",
+    get: function get() {
+      return [300, 200];
+    }
+  }, {
+    key: "defaultLayout",
+    get: function get() {
+      return 'grow';
+    }
+  }, {
+    key: "layoutOptions",
+    get: function get() {
+      return {
+        grow: {
+          width: 'minEditorWidth',
+          height: 'minEditorHeight'
+        },
+        fixed: {
+          width: 'width',
+          height: 'height'
+        }
+      };
+    }
+  }]);
+
+  return ModalEditComponent;
+}(_TextArea.default);
+
+exports.default = ModalEditComponent;
