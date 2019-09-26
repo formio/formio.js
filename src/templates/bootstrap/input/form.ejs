@@ -15,6 +15,7 @@
     {% for (var attr in ctx.input.attr) { %}
     {{attr}}="{{ctx.input.attr[attr]}}"
     {% } %}
+    aria-labelledby="label-{{ctx.component.key}}"
     aria-describedby="desc-{{ctx.component.key}}"
     aria-required="{{ctx.component.validate.required}}"
   >{{ctx.input.content}}</{{ctx.input.type}}>
