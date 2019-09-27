@@ -150,19 +150,20 @@ describe('Number Component', () => {
     });
   });
 
-  // it('Should display default decimal value', () => {
-  //   const TEST_VAL = 4.2;
-  //   const comp = _.cloneDeep(comp3);
-  //
-  //   comp.defaultValue = TEST_VAL;
-  //   comp.decimalLimit = 2;
-  //   comp.requireDecimal = true;
-  //
-  //   return Harness.testCreate(NumberComponent, comp).then(number => {
-  //     assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
-  //   });
-  // });
-  //
+  it('Should display default decimal value', () => {
+    const TEST_VAL = 4.2;
+    const comp = _.cloneDeep(comp3);
+
+    comp.defaultValue = TEST_VAL;
+    comp.decimalLimit = 2;
+    comp.requireDecimal = true;
+
+    return Harness.testCreate(NumberComponent, comp).then(number => {
+      const html = number.element.innerHTML;
+      assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
+    });
+  });
+
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
   //   const comp = _.cloneDeep(comp3);
   //
