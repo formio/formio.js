@@ -529,6 +529,7 @@ export default class EditGridComponent extends NestedComponent {
       }, 'valid', true);
       if (valid.toString() !== 'true') {
         editRow.error = valid;
+        valid = false;
       }
       else {
         delete editRow.error;
@@ -538,7 +539,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
-    return valid.toString() === 'true';
+    return !!valid;
   }
 
   checkComponentValidity(data, dirty) {
