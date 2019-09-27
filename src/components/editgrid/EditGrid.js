@@ -356,7 +356,7 @@ export default class EditGridComponent extends NestedComponent {
   editRow(rowIndex) {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
-    editRow.dirty = false;
+    editRow.dirty = true;
     editRow.isOpen = true;
     editRow.editing = true;
     const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
