@@ -14,12 +14,10 @@ export default class WidgetComponent extends BaseComponent {
       this.validators.push(...validators);
     }
 
-    if (this.widget) {
-      this.component.checkDataValidity = () => {
-        this.setPristine(false);
-        return this.checkValidity(this.data, true);
-      };
-    }
+    this.component.checkDataValidity = () => {
+      this.setPristine(false);
+      return this.checkValidity(this.data, true);
+    };
   }
 
   get defaultSchema() {
