@@ -4,7 +4,11 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
+  aria-labelledby="label-{{ctx.input.component.key}}"
+  aria-describedby="desc-{{ctx.input.component.key}}"
+  aria-required="{{ctx.input.component.validate.required}}"
 >{{ctx.selectOptions}}</select>
+{% if (ctx.input.component.widget === 'html5') { %}
 <input type="text"
        class="formio-select-autocomplete-input"
        ref="autocompleteInput"
@@ -13,3 +17,4 @@
        {% } %}
        tabindex="-1"
 />
+{% } %}
