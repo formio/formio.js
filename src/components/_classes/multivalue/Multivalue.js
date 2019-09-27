@@ -114,11 +114,19 @@ export default class Multivalue extends Field {
         element.selectionStart = selectionStart;
         element.selectionEnd = selectionEnd;
       }
-      setTimeout(() => {
+      // If a mask is present, delay the update to allow mask to update first.
+      if (element.mask) {
+        setTimeout(() => {
+          return this.updateValue(null, {
+            modified: true
+          }, index);
+        }, 1);
+      }
+      else {
         return this.updateValue(null, {
           modified: true
         }, index);
-      }, 1);
+      }
     });
 
     if (!this.tryAttachMultipleMasksInput()) {

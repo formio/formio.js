@@ -32,11 +32,11 @@ export default class WidgetComponent extends Input {
     return super.isEmpty(value);
   }
 
-  setCustomValidity(message, dirty) {
+  setCustomValidity(message, dirty, external) {
     if (this.widget && this.widget.toggleInvalidClassForWidget) {
       this.widget.toggleInvalidClassForWidget(message);
     }
-    return super.setCustomValidity(message, dirty);
+    return super.setCustomValidity(message, dirty, external);
   }
 
   setValue(value, flags) {
