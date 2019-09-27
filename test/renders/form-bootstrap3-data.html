@@ -220,10 +220,9 @@
     </div>
     <div id="show" class="form-group has-feedback formio-component formio-component-checkbox formio-component-show " ref="component">
       <div class="form-check checkbox">
-        <label class=" form-check-label">
-          <input ref="input" name="data[show]" type="checkbox" class="form-check-input" lang="en" value="0">
+        <label class=" form-check-label" id="label-show">
+          <input ref="input" name="data[show]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-labelledby="label-show" aria-describedby="desc-show"></input>
           <span>Show</span>
-          </input>
         </label>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -248,9 +247,8 @@
             <td ref="datagrid-conditionalDataGrid">
               <div id="conditionalDataGridShow2" class="form-group has-feedback formio-component formio-component-checkbox formio-component-conditionalDataGridShow2  formio-component-label-hidden" ref="component">
                 <div class="form-check checkbox">
-                  <label class=" form-check-label">
-                    <input ref="input" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" value="0">
-                    </input>
+                  <label class=" form-check-label" id="label-conditionalDataGridShow2">
+                    <input ref="input" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-labelledby="label-conditionalDataGridShow2" aria-describedby="desc-conditionalDataGridShow2"></input>
                   </label>
                 </div>
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>

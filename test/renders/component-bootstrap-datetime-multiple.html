@@ -1,5 +1,5 @@
 <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime formio-component-multiple " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-dateTime" for="dateTime">
     Date / Time
   </label>
   <table class="table table-bordered">
@@ -7,16 +7,16 @@
       <tr ref="row">
         <td>
           <div class="input-group">
-            <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value=""></input>
+            <input ref="input" id="dateTime" name="data[dateTime]" type="text" class="form-control" lang="en" value="" aria-labelledby="label-dateTime" aria-describedby="desc-dateTime" aria-required="false"></input>
             <div class="input-group-append" ref="suffix">
               <span class="input-group-text">
-    <i ref="icon" class="fa fa-calendar" style=""></i>
-  </span>
+      <i ref="icon" class="fa fa-calendar" style=""></i>
+    </span>
             </div>
           </div>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>

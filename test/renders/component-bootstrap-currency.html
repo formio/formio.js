@@ -1,9 +1,9 @@
 <div id="currency" class="form-group has-feedback formio-component formio-component-currency formio-component-currency " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-currency" for="currency">
     Currency
   </label>
   <div ref="element">
-    <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="numeric" value=""></input>
+    <input ref="input" id="currency" name="data[currency]" type="text" class="form-control" lang="en" inputmode="numeric" value="" aria-labelledby="label-currency" aria-describedby="desc-currency" aria-required="false"></input>
   </div>
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
 </div>

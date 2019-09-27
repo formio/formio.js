@@ -1,11 +1,11 @@
 <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio formio-component-multiple " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-radio" for="radio">
     Radio
   </label>
-  <div class="form-radio radio">
+  <div class="form-radio radio" role="radiogroup" aria-labelledby="label-radio" aria-describedby="desc-radio">
     <div class="form-check" ref="wrapper">
+      <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="" id="radio-" aria-required="false">
       <label class="form-check-label" for="radio-">
-        <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="" id="radio-">
         <span></span>
       </label>
     </div>

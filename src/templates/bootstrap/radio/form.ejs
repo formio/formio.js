@@ -1,5 +1,5 @@
 <div class="form-radio radio" role="radiogroup"
-  aria-labelledby="{{ctx.input.component.key}}" aria-describedby="desc-{{ctx.input.component.key}}">
+  aria-labelledby="label-{{ctx.input.component.key}}" aria-describedby="desc-{{ctx.input.component.key}}">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
     {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}

@@ -1,15 +1,15 @@
 <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea formio-component-multiple " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-textArea" for="textArea">
     Text Area
   </label>
   <table class="table table-bordered">
     <tbody>
       <tr ref="row">
         <td>
-          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" rows="3"></textarea>
+          <textarea ref="input" id="textArea" name="data[textArea]" type="text" class="form-control" lang="en" rows="3" aria-labelledby="label-textArea" aria-describedby="desc-textArea" aria-required="false"></textarea>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>

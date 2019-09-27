@@ -1,5 +1,5 @@
 <div id="day" class="form-group has-feedback formio-component formio-component-day formio-component-day " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-day" for="day">
     Day
   </label>
   <div class="row">
@@ -51,13 +51,13 @@
     <div class="col col-xs-3">
       <label for="day-day" class="">Day</label>
       <div>
-        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31"></input>
+        <input ref="day" id="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" aria-labelledby="label-day" aria-describedby="desc-day" aria-required="false"></input>
       </div>
     </div>
     <div class="col col-xs-5">
       <label for="day-year" class="">Year</label>
       <div>
-        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030"></input>
+        <input ref="year" id="day" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" aria-labelledby="label-day" aria-describedby="desc-day" aria-required="false"></input>
       </div>
     </div>
   </div>

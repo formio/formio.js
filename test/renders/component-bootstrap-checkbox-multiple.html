@@ -1,9 +1,8 @@
 <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox formio-component-multiple " ref="component">
   <div class="form-check checkbox">
-    <label class=" form-check-label">
-      <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0">
+    <label class=" form-check-label" id="label-checkbox">
+      <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-labelledby="label-checkbox" aria-describedby="desc-checkbox"></input>
       <span>Checkbox</span>
-      </input>
     </label>
   </div>
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>

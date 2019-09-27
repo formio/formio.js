@@ -1,11 +1,11 @@
 <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes formio-component-multiple " ref="component">
-  <label class="col-form-label ">
+  <label class="col-form-label " id="label-selectBoxes" for="selectBoxes">
     Select Boxes
   </label>
-  <div class="form-radio radio">
+  <div class="form-radio radio" role="radiogroup" aria-labelledby="label-selectBoxes" aria-describedby="desc-selectBoxes">
     <div class="form-check" ref="wrapper">
+      <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="" id="selectBoxes-" aria-required="false">
       <label class="form-check-label" for="selectBoxes-">
-        <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="" id="selectBoxes-">
         <span></span>
       </label>
     </div>

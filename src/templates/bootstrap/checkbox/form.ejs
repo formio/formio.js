@@ -1,17 +1,19 @@
 <div class="form-check checkbox">
-  <label class="{{ctx.input.labelClass}} form-check-label">
+  <label class="{{ctx.input.labelClass}} form-check-label" id="label-{{ctx.component.key}}">
     <{{ctx.input.type}}
       ref="input"
       {% for (var attr in ctx.input.attr) { %}
       {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
       {% if (ctx.checked) { %}checked=true{% } %}
-      >
+      aria-required="{{ctx.component.validate.required}}"
+      aria-labelledby="label-{{ctx.component.key}}"
+      aria-describedby="desc-{{ctx.component.key}}"
+    ></{{ctx.input.type}}>
     {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
     {% if (ctx.component.tooltip) { %}
-      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
     {% } %}
     {{ctx.input.content}}
-    </{{ctx.input.type}}>
   </label>
 </div>
