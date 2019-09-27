@@ -310,7 +310,7 @@ const Harness = {
     return form.nextPage();
   },
   testNumberBlur(cmp, inv, outv, display, index = 0) {
-    const input = _.get(cmp, ['inputs', index], {});
+    const input = _.get(cmp, ['refs', 'input', index], {});
     input.value = inv;
     input.dispatchEvent(new Event('blur'));
     assert.strictEqual(cmp.getValueAt(index), outv);
