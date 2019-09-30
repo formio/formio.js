@@ -258,7 +258,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkData(data, flags = {}) {
-    return this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
+    return super.checkData(data, flags) && this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -529,6 +529,7 @@ export default class EditGridComponent extends NestedComponent {
       }, 'valid', true);
       if (valid.toString() !== 'true') {
         editRow.error = valid;
+        valid = false;
       }
       else {
         delete editRow.error;
@@ -538,7 +539,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
-    return valid.toString() === 'true';
+    return !!valid;
   }
 
   checkComponentValidity(data, dirty) {

@@ -144,7 +144,7 @@ export default class NumberComponent extends Input {
       return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
     }
     else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {
-      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)})}`;
+      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)}`;
     }
 
     return value;

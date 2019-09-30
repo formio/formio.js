@@ -17,7 +17,7 @@ describe('Wizard Component', () => {
   });
 });
 
-describe('Form Wizard Renderer tests', () => {
+describe('WizardRenderer tests', () => {
   each(WizardTests, (wizardTest) => {
     each(wizardTest.tests, (wizardTestTest, title) => {
       it(title, (done) => {
