@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.6
+### Fixed
+ - Fixes to typescript types.
+ - Removed duplicate table-responsive class, fixed styles for help-block.
+ - Make editgrid dirty overridable.
+ - Add readme and changelog to released version.
+
 ## 4.2.5
 ### Fixed
  - Edigrid rows not correctly reporting as valid.
