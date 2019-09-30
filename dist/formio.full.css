@@ -3109,6 +3109,10 @@ body.formio-dialog-open {
   opacity: 0;
   position: absolute; }
 
+.has-error > .help-block {
+  margin-top: 5px;
+  margin-bottom: 10px; }
+
 .formbuilder {
   position: relative; }
 
@@ -3241,3 +3245,6 @@ body.formio-dialog-open {
   background-color: #fcf8e3;
   border-color: #faebcc;
   margin-top: 10px; }
+
+.help-block {
+  margin: 0px; }
