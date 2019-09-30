@@ -353,12 +353,16 @@ export default class EditGridComponent extends NestedComponent {
     this.attachComponents(formComponents, this.editRows[rowIndex].components);
   }
 
-  editRow(rowIndex) {
-    const dataValue = this.dataValue || [];
-    const editRow = this.editRows[rowIndex];
+  setEditRowSettings(editRow) {
     editRow.dirty = false;
     editRow.isOpen = true;
     editRow.editing = true;
+  }
+
+  editRow(rowIndex) {
+    const dataValue = this.dataValue || [];
+    const editRow = this.editRows[rowIndex];
+    this.setEditRowSettings(editRow);
     const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
