@@ -158,7 +158,7 @@ export default class ButtonComponent extends Field {
 
     this.on('change', (value) => {
       this.loading = false;
-      this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !value.isValid);
+      this.disabled = this.shouldDisabled || (this.component.disableOnInvalid && !value.isValid);
       this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
         onChange(value, value.isValid);
@@ -176,7 +176,7 @@ export default class ButtonComponent extends Field {
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
     if (this.canDisable) {
-      this.disabled = this.options.readOnly || this.component.disabled;
+      this.disabled = this.shouldDisabled;
     }
 
     function getUrlParameter(name) {
