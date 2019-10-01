@@ -305,7 +305,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.editorReady) {
       this.editorReady.then((editor) => {
-        this.autoModified = this.autoModified === undefined ? true : this.autoModified;
+        this.autoModified = _.isNil(this.autoModified) ? true : this.autoModified;
 
         if (!skipSetting) {
           if (this.component.editor === 'ace') {
