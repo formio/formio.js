@@ -184,7 +184,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: value,
+      value: _.isObject(value) ? value : value.toString(),
       label: label
     };
 
