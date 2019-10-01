@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.7
+### Added
+ - Clickable option to wizard that existed in 3.x
+
+### Fixed 
+ - Make PDF render templates use data-noattach; make PDF rendering honor submit button visibility.
+ - Fixed Content-type and Accept headers being added to non-formio requests.
+ - Fix select components not matching numeric values.
+ - Fixed Button component disabling.
+ - Fix select components not properly clearing error messages.
+ 
 ## 4.2.6
 ### Fixed
  - Fixes to typescript types.
