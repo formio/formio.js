@@ -184,7 +184,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: value,
+      value: _.isObject(value) ? value : value.toString(),
       label: label
     };
 
@@ -1273,7 +1273,7 @@ export default class SelectComponent extends Field {
         this.addInputError(message, dirty, [this.refs.selectContainer]);
       }
     }
-    else if (this.error && this.error.external === external) {
+    else if (this.error && this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
