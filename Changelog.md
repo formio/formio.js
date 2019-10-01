@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.8
+### Fixed
+ - Submissions not working due to content-type header incorrect.
+
 ## 4.2.7
 ### Added
  - Clickable option to wizard that existed in 3.x

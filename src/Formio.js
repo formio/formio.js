@@ -710,7 +710,7 @@ export default class Formio {
     }
     requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {
       'Accept': 'application/json',
-      'Content-type': 'application/json;'
+      'Content-type': 'application/json'
     });
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => Formio.pluginGet('request', requestArgs)
