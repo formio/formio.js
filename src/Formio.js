@@ -750,7 +750,7 @@ export default class Formio {
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
-      'Content-type': 'application/json;'
+      'Content-type': 'application/json'
     });
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
