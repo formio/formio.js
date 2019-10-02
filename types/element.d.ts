@@ -41,5 +41,5 @@ export class Element {
     ret: any,
     tokenize?: any,
   ): any;
-  hook(...args: any): any;
+  hook(...args: any[]): any;
 }
