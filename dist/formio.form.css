@@ -747,3 +747,7 @@ body.formio-dialog-open {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
   position: absolute; }
+
+.has-error > .help-block {
+  margin-top: 5px;
+  margin-bottom: 10px; }

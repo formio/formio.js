@@ -36,7 +36,7 @@ export class Formio {
   index(type: any, query?: any, opts?: any): any;
   save(type: any, data: any, opts?: any): any;
   load(type: any, query?: any, opts?: any): any;
-  makeRequest(...args): any;
+  makeRequest(...args: any[]): any;
   loadProject(query?: any, opts?: any): any;
   saveProject(data: any, opts?: any): any;
   deleteProject(opts?: any): any;
@@ -102,9 +102,9 @@ export class Formio {
   static deregisterPlugin(plugin: any): any;
   static registerPlugin(plugin: any, name: string): any;
   static getPlugin(name: any | string): any;
-  static pluginWait(pluginFn: any, ...args): any;
-  static pluginGet(pluginFn: any, ...args): any;
-  static pluginAlter(pluginFn: any, value: any, ...args): any;
+  static pluginWait(pluginFn: any, ...args: any[]): any;
+  static pluginGet(pluginFn: any, ...args: any[]): any;
+  static pluginAlter(pluginFn: any, value: any, ...args: any[]): any;
   static accessInfo(formio?: Formio): any;
   static pageQuery(): any;
   static oAuthCurrentUser(formio?: Formio, token?: any): any;
