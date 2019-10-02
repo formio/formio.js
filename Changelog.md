@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.10
+### Fixed
+ - Select as HTML5 not matching strings correctly.
+ - Collapsing of columns in bootstrap 4.
+ 
+### Reverted
+ - Added columns extra small classes, so they are responsive on very small screen sizes.
+
 ## 4.2.9
 ### Added
  - Added columns extra small classes, so they are responsive on very small screen sizes.
