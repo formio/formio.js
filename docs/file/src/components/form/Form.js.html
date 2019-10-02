@@ -435,7 +435,9 @@ export default class FormComponent extends Component {
     return super.attach(element).then(() =&gt;
       this.loadSubForm().then(() =&gt; {
         // Intentionally do not return... for some reason it doesn&apos;t resolve.
-        this.subForm.attach(element);
+        if (this.subForm) {
+          this.subForm.attach(element);
+        }
       })
     );
   }

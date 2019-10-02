@@ -683,8 +683,11 @@ export default class WebformBuilder extends Component {
       value.components = [];
     }
 
+    const isShowSubmitButton = !this.options.noDefaultSubmitButton
+      &amp;&amp; !value.components.length;
+
     // Ensure there is at least a submit button.
-    if (!value.components.length) {
+    if (isShowSubmitButton) {
       value.components.push({
         type: &apos;button&apos;,
         label: &apos;Submit&apos;,
