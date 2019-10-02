@@ -420,7 +420,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: _.isObject(value) ? value : value.toString(),
+      value: _.isObject(value) ? value : String(value),
       label: label
     };
 

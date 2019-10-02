@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.11
+### Fixed
+ - Some type issues that was throwing compile errors about "A rest parameter must be of an array type."
+
 ## 4.2.10
 ### Fixed
  - Select as HTML5 not matching strings correctly.
