@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" aria-labelledby="label-{{ctx.component.key}}" aria-describedby="desc-{{ctx.component.key}}">
   {% if (ctx.dayFirst && ctx.showDay) { %}
   <div class="col col-xs-3">
     {% if (!ctx.component.hideInputLabels) { %}
@@ -7,6 +7,7 @@
     <div>{{ctx.day}}</div>
   </div>
   {% } %}
+
   {% if (ctx.showMonth) { %}
   <div class="col col-xs-4">
     {% if (!ctx.component.hideInputLabels) { %}
@@ -15,6 +16,7 @@
     <div>{{ctx.month}}</div>
   </div>
   {% } %}
+
   {% if (!ctx.dayFirst && ctx.showDay) { %}
   <div class="col col-xs-3">
     {% if (!ctx.component.hideInputLabels) { %}
@@ -23,6 +25,7 @@
     <div>{{ctx.day}}</div>
   </div>
   {% } %}
+
   {% if (ctx.showYear) { %}
   <div class="col col-xs-5">
     {% if (!ctx.component.hideInputLabels) { %}
