@@ -420,7 +420,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: value,
+      value: _.isObject(value) ? value : value.toString(),
       label: label
     };
 
@@ -1008,10 +1008,14 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
-      fuseOptions: Object.assign({
-        include: &apos;score&apos;,
-        threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
-      }, _.get(this, &apos;component.fuseOptions&apos;, {})),
+      fuseOptions: Object.assign(
+        {},
+        _.get(this, &apos;component.fuseOptions&apos;, {}),
+        {
+          include: &apos;score&apos;,
+          threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
+        }
+      ),
       itemComparer: _.isEqual,
       resetScrollPosition: false,
       ...customOptions,
@@ -1505,7 +1509,7 @@ export default class SelectComponent extends Field {
         this.addInputError(message, dirty, [this.refs.selectContainer]);
       }
     }
-    else if (this.error &amp;&amp; this.error.external === external) {
+    else if (this.error &amp;&amp; this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }

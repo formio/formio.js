@@ -358,33 +358,33 @@ export default class Wizard extends Webform {
 
     const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
 
-    [
-      { name: &apos;cancel&apos;,    method: &apos;cancel&apos; },
-      { name: &apos;previous&apos;,  method: &apos;prevPage&apos; },
-      { name: &apos;next&apos;,      method: &apos;nextPage&apos; },
-      { name: &apos;submit&apos;,    method: &apos;submit&apos; }
-    ].forEach((button) =&gt; {
-      const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
-      if (!buttonElement) {
-        return;
-      }
-      this.addEventListener(buttonElement, &apos;click&apos;, (event) =&gt; {
-        event.preventDefault();
+    const isClickable = _.get(this.options, &apos;breadcrumbSettings.clickable&apos;, true);
+    if (isClickable) {
+      [
+        { name: &apos;cancel&apos;,    method: &apos;cancel&apos; },
+        { name: &apos;previous&apos;,  method: &apos;prevPage&apos; },
+        { name: &apos;next&apos;,      method: &apos;nextPage&apos; },
+        { name: &apos;submit&apos;,    method: &apos;submit&apos; }
+      ].forEach((button) =&gt; {
+        const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
+        this.addEventListener(buttonElement, &apos;click&apos;, (event) =&gt; {
+          event.preventDefault();
 
-        // Disable the button until done.
-        buttonElement.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
-        this.setLoading(buttonElement, true);
+          // Disable the button until done.
+          buttonElement.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+          this.setLoading(buttonElement, true);
 
-        // Call the button method, then re-enable the button.
-        this[button.method]().then(() =&gt; {
-          buttonElement.removeAttribute(&apos;disabled&apos;);
-          this.setLoading(buttonElement, false);
-        }).catch(() =&gt; {
-          buttonElement.removeAttribute(&apos;disabled&apos;);
-          this.setLoading(buttonElement, false);
+          // Call the button method, then re-enable the button.
+          this[button.method]().then(() =&gt; {
+            buttonElement.removeAttribute(&apos;disabled&apos;);
+            this.setLoading(buttonElement, false);
+          }).catch(() =&gt; {
+            buttonElement.removeAttribute(&apos;disabled&apos;);
+            this.setLoading(buttonElement, false);
+          });
         });
       });
-    });
+    }
 
     this.refs[`${this.wizardKey}-link`].forEach((link, index) =&gt; {
       this.addEventListener(link, &apos;click&apos;, (event) =&gt; {

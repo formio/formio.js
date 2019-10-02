@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.9
+### Added
+ - Added columns extra small classes, so they are responsive on very small screen sizes.
+ - Added option that removes submit button in empty form within builder.
+
+### Fixed
+ - Fixed type for customDefaultValue
+ - Fixed Content-type header to remove semi-colon from end of "application/json"
+
+### Changed
+ - Upgraded i18next@17.0.18, mocha@6.2.1, eslint@6.5.1, fetch-mock@7.4.0
+
 ## 4.2.8
 ### Fixed
  - Submissions not working due to content-type header incorrect.
