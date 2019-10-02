@@ -70,7 +70,13 @@ export default class TableComponent extends NestedComponent {
   }
 
   get className() {
-    return `table-responsive ${super.className}`;
+    let name = `table-responsive ${super.className}`;
+
+    if (this.component.removeTopBorder) {
+      name += 'no-top-border-table';
+    }
+
+    return name;
   }
 
   get tableKey() {
