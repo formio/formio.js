@@ -335,7 +335,6 @@ export default class ButtonComponent extends Field {
     if (this.viewOnly || this.options.hideButtons) {
       this._visible = false;
     }
-    console.log(&apos;Button.render&apos;, this.disabled, this.options.disabled);
     return super.render(this.renderTemplate(&apos;button&apos;, {
       component: this.component,
       input: this.inputInfo,
@@ -395,7 +394,6 @@ export default class ButtonComponent extends Field {
 
     this.on(&apos;change&apos;, (value) =&gt; {
       this.loading = false;
-      console.log(&apos;Button.change&apos;, this.shouldDisabled || (this.component.disableOnInvalid &amp;&amp; !value.isValid), this.options.disabled[&apos;issueCitation&apos;]);
       this.disabled = this.shouldDisabled || (this.component.disableOnInvalid &amp;&amp; !value.isValid);
       this.setDisabled(this.refs.button, this.disabled);
       if (onChange) {
