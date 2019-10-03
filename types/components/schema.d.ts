@@ -131,7 +131,7 @@ export interface ComponentSchema<T = any> {
   disabled?: boolean;
   autofocus?: boolean;
   dbIndex?: boolean;
-  customDefaultValue?: string;
+  customDefaultValue?: any;
   calculateValue?: any;
   allowCalculateOverride?: boolean;
   widget?: any; // Input widgets i.e. calendar widget

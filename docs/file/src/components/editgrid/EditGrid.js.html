@@ -494,7 +494,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkData(data, flags = {}) {
-    return this.editRows.reduce((valid, editRow) =&gt; this.checkRow(data, editRow, flags) &amp;&amp; valid, true);
+    return super.checkData(data, flags) &amp;&amp; this.editRows.reduce((valid, editRow) =&gt; this.checkRow(data, editRow, flags) &amp;&amp; valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -589,12 +589,16 @@ export default class EditGridComponent extends NestedComponent {
     this.attachComponents(formComponents, this.editRows[rowIndex].components);
   }
 
-  editRow(rowIndex) {
-    const dataValue = this.dataValue || [];
-    const editRow = this.editRows[rowIndex];
+  setEditRowSettings(editRow) {
     editRow.dirty = false;
     editRow.isOpen = true;
     editRow.editing = true;
+  }
+
+  editRow(rowIndex) {
+    const dataValue = this.dataValue || [];
+    const editRow = this.editRows[rowIndex];
+    this.setEditRowSettings(editRow);
     const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
@@ -765,6 +769,7 @@ export default class EditGridComponent extends NestedComponent {
       }, &apos;valid&apos;, true);
       if (valid.toString() !== &apos;true&apos;) {
         editRow.error = valid;
+        valid = false;
       }
       else {
         delete editRow.error;
@@ -774,7 +779,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
-    return valid.toString() === &apos;true&apos;;
+    return !!valid;
   }
 
   checkComponentValidity(data, dirty) {
