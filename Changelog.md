@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.28.2
+### Fixed
+ - Fixed EditGrid to not validate when editing a row that has not been saved.
+ - Upgraded i18next@17.0.18, cross-env@6.0.3, mocha@6.2.1, eslint@6.5.1
+
 ## 3.28.1
 ### Fixed
  - Fix nested forms not having config if loaded with full=true
