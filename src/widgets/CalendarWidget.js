@@ -121,7 +121,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.onClose = () => {
       this.closedOn = Date.now();
       if (this.calendar) {
-       this.emit('blur');
+        this.emit('blur');
       }
     };
 
@@ -375,7 +375,7 @@ export default class CalendarWidget extends InputWidget {
 
   get widgetLocale() {
     let currentLocale = Flatpickr.l10ns.default;
-    let loc = this.i18next.language.slice(-2);
+    let loc = this.i18next.language ? this.i18next.language.slice(-2) : null;
 
     if (this.settings.useLocaleSettings) {
       if (!Flatpickr.l10ns[loc]) {
