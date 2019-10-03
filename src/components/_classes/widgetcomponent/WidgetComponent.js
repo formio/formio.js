@@ -14,11 +14,9 @@ export default class WidgetComponent extends Input {
       this.validators.push(...validators);
     }
 
-    if (this.widget) {
-      this.component.checkDataValidity = () => {
-        return this.checkValidity(this.data, true);
-      };
-    }
+    this.component.checkDataValidity = () => {
+      return this.checkValidity(this.data, true);
+    };
   }
 
   get defaultSchema() {
@@ -69,5 +67,10 @@ export default class WidgetComponent extends Input {
       dirty = true;
     }
     return super.checkValidity(data, dirty, rowData);
+  }
+
+  destroy() {
+    this.widget.destroy();
+    super.destroy();
   }
 }
