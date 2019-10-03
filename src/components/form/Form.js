@@ -472,20 +472,11 @@ export default class FormComponent extends Component {
 
     // This submission has already been submitted, so just return the reference data.
     if (submission && submission._id && submission.form) {
-      this.dataValue = this.shouldSubmit ? {
-        _id: submission._id,
-        form: submission.form
-      } : submission;
+      this.dataValue = submission;
       return NativePromise.resolve(this.dataValue);
     }
     return this.submitSubForm(false)
       .then((data) => {
-        if (data._id) {
-          this.dataValue = {
-            _id: data._id,
-            form: data.form
-          };
-        }
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());
