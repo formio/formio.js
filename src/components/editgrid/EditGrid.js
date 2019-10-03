@@ -433,6 +433,7 @@ export default class EditGridComponent extends NestedComponent {
     if (editRow.editing) {
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       if (this.component.inlineEdit) {
         this.dataValue[rowIndex] = editRow.backup;
       }
@@ -459,7 +460,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     editRow.dirty = true;
-    if (!this.validateRow(rowIndex)) {
+    if (!this.validateRow(rowIndex, true)) {
       return;
     }
     editRow.dirty = false;
@@ -478,6 +479,7 @@ export default class EditGridComponent extends NestedComponent {
       }
     }
 
+    editRow.editing = false;
     this.updateGrid();
     if (this.component.modal) {
       modal.close();
@@ -498,10 +500,12 @@ export default class EditGridComponent extends NestedComponent {
     let check = true;
     const editRow = this.editRows[rowIndex];
     const isDirty = dirty || !!editRow.dirty;
-    editRow.components.forEach(comp => {
-      comp.setPristine(!isDirty);
-      check &= comp.checkValidity(null, isDirty, editRow.data);
-    });
+    if (editRow.editing || isDirty) {
+      editRow.components.forEach(comp => {
+        comp.setPristine(!isDirty);
+        check &= comp.checkValidity(null, isDirty, editRow.data);
+      });
+    }
 
     if (this.component.validate && this.component.validate.row) {
       let valid = this.evaluate(this.component.validate.row, {
