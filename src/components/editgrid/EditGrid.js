@@ -432,7 +432,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     editRow.dirty = true;
-    if (!!this.validateRow(editRow) !== true) {
+    if (!!this.validateRow(editRow, true) !== true) {
       return false;
     }
 
@@ -518,8 +518,8 @@ export default class EditGridComponent extends NestedComponent {
 
   validateRow(editRow, dirty) {
     let valid = true;
-    if (editRow.isOpen) {
-      const isDirty = dirty || !!editRow.dirty;
+    const isDirty = dirty || !!editRow.dirty;
+    if (editRow.editing || isDirty) {
       editRow.components.forEach(comp => {
         comp.setPristine(!isDirty);
         valid &= comp.checkValidity(null, isDirty, editRow.data);
