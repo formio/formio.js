@@ -239,9 +239,10 @@ import { uniqueName } from &apos;../../utils/utils&apos;;
 import download from &apos;downloadjs&apos;;
 import _ from &apos;lodash&apos;;
 import Formio from &apos;../../Formio&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+
 let Camera;
 const webViewCamera = navigator.camera || Camera;
-import NativePromise from &apos;native-promise-only&apos;;
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -501,8 +502,15 @@ export default class FileComponent extends Field {
     this.refs.removeLink.forEach((removeLink, index) =&gt; {
       this.addEventListener(removeLink, &apos;click&apos;, (event) =&gt; {
         const fileInfo = this.dataValue[index];
+
         if (fileInfo &amp;&amp; (this.component.storage === &apos;url&apos;)) {
-          this.options.formio.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
+          const fileService = this.fileService;
+          if (fileService &amp;&amp; typeof fileService.deleteFile === &apos;function&apos;) {
+            fileService.deleteFile(fileInfo);
+          }
+          else {
+            this.options.formio.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
+          }
         }
         event.preventDefault();
         this.splice(index);
@@ -591,6 +599,7 @@ export default class FileComponent extends Field {
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${&apos;kMGTPEZY&apos;[--e]}B` : &apos;Bytes&apos;}`;
   }
+
   /* eslint-enable max-len */
 
   /* eslint-disable max-depth */
@@ -630,6 +639,7 @@ export default class FileComponent extends Field {
     }
     return { regexp: regexp, excludes: excludes };
   }
+
   /* eslint-enable max-depth */
 
   translateScalars(str) {

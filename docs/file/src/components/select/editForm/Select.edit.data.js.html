@@ -663,6 +663,15 @@ export default [
     rows: 3,
     weight: 18,
     tooltip: &apos;The HTML template for the result data items.&apos;,
+    calculateValue:(context) =&gt; {
+      if (!context.instance.calculatedValue) {
+        if (context.instance &amp;&amp; context.instance._currentForm.options.editComponent) {
+          return context.instance._currentForm.options.editComponent.template;
+        }
+      }
+
+      return context.data.template;
+    }
   },
   {
     type: &apos;select&apos;,
