@@ -370,7 +370,9 @@ export default class CalendarWidget extends InputWidget {
 
   destroy() {
     super.destroy();
-    this.calendar.destroy();
+    if (this.calendar) {
+      this.calendar.destroy();
+    }
   }
 
   get widgetLocale() {

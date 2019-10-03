@@ -68,4 +68,9 @@ export default class WidgetComponent extends Input {
     }
     return super.checkValidity(data, dirty, rowData);
   }
+
+  destroy() {
+    this.widget.destroy();
+    super.destroy();
+  }
 }

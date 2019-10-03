@@ -1119,4 +1119,11 @@ export default class WebformBuilder extends Component {
     }
     return component;
   }
+
+  destroy() {
+    if (this.webform.initialized) {
+      this.webform.destroy();
+    }
+    super.destroy();
+  }
 }
