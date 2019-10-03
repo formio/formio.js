@@ -71,11 +71,9 @@ export default class TableComponent extends NestedComponent {
 
   get className() {
     let name = `table-responsive ${super.className}`;
-
-    if (this.component.removeTopBorder) {
+    if (!this.component.bordered) {
       name += ' no-top-border-table';
     }
-
     return name;
   }
 

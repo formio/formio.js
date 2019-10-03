@@ -81,15 +81,4 @@ export default [
     tooltip: 'Condense the size of the table.',
     weight: 704
   },
-  {
-    type: 'checkbox',
-    label: 'Remove top border',
-    key: 'removeTopBorder',
-    input: true,
-    tooltip: 'Remove row divider above the first row.',
-    weight: 705,
-    conditional: {
-      json: { '!==': [{ var: 'data.bordered' }, true] },
-    },
-  },
 ];
