@@ -38,8 +38,8 @@
     </div>
     <div id="checkboxFalse" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxFalse " ref="component">
       <div class="form-check checkbox">
-        <label class=" form-check-label" id="label-checkboxFalse">
-          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-labelledby="label-checkboxFalse" aria-describedby="desc-checkboxFalse"></input>
+        <label class=" form-check-label">
+          <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-describedby="d-checkboxFalse-checkboxFalse"></input>
           <span>Checkbox False</span>
         </label>
       </div>
@@ -47,8 +47,8 @@
     </div>
     <div id="checkboxTrue" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxTrue " ref="component">
       <div class="form-check checkbox">
-        <label class=" form-check-label" id="label-checkboxTrue">
-          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false" aria-labelledby="label-checkboxTrue" aria-describedby="desc-checkboxTrue"></input>
+        <label class=" form-check-label">
+          <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false" aria-describedby="d-checkboxTrue-checkboxTrue"></input>
           <span>Checkbox True</span>
         </label>
       </div>
@@ -110,7 +110,7 @@
       <label class="control-label ">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" aria-labelledby="label-select" aria-describedby="desc-select" aria-required="false"></select>
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-describedby="d-select-select" aria-required="false"></select>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
@@ -142,7 +142,47 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div>Cannot read property 'key' of undefined</div>
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-describedby="d-day-day" aria-required="false">
+              <option value="">
+              </option>
+              <option value="1">
+                January
+              </option>
+              <option value="2">
+                February
+              </option>
+              <option value="3">
+                March
+              </option>
+              <option value="4">
+                April
+              </option>
+              <option value="5">
+                May
+              </option>
+              <option value="6">
+                June
+              </option>
+              <option value="7">
+                July
+              </option>
+              <option value="8">
+                August
+              </option>
+              <option value="9">
+                September
+              </option>
+              <option value="10">
+                October
+              </option>
+              <option value="11">
+                November
+              </option>
+              <option value="12">
+                December
+              </option>
+            </select>
+          </div>
         </div>
         <div class="form-group col col-xs-3">
           <label for="day-day" class="">Day</label>
