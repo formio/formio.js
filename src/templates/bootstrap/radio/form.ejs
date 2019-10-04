@@ -1,4 +1,4 @@
-<div class="form-radio radio" role="radiogroup"
+<div class="form-radio radio" role="{{ctx.component.type === 'selectboxes' ? 'group' : 'radiogroup'}}"
   aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}" aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">

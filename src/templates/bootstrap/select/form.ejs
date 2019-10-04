@@ -4,10 +4,11 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
-
-  aria-label="{{ctx.input.ref === 'selectContainer' || !ctx.input.ref ? ctx.input.component.label : ctx.input.ref}}"
-  aria-describedby="desc-{{ctx.component.key}}"
-  aria-required="{{ctx.input.ref === 'selectContainer' || !ctx.input.ref ? ctx.input.component.validate.required : ctx.input.component.fields[ctx.input.ref].required}}"
+  {% if (!ctx.input.attr.id) { %}
+  id="{{ctx.instance.id}}-{{ctx.component.key}}"
+  {% } %}
+  aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
+  aria-required="{{ctx.input.ref === 'selectContainer' || !ctx.input.ref ? ctx.input.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
 >{{ctx.selectOptions}}</select>
 
 {% if (ctx.input.component.widget && ctx.input.component.widget === 'html5') { %}

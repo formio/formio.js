@@ -208,7 +208,7 @@ export default class DayComponent extends Field {
 
   renderField(name) {
     if (this.component.fields[name].type === 'select') {
-      const obj = {
+      return this.renderTemplate('select', {
         input: this.selectDefinition(name),
         selectOptions: this[`${name}s`].reduce((html, option) =>
           html + this.renderTemplate('selectOption', {
@@ -217,12 +217,7 @@ export default class DayComponent extends Field {
             attrs: {}
           }), ''
         ),
-      };
-      if (obj.input.ref === 'day') {
-        console.log(obj);
-        console.log(obj.input.ref);
-      }
-      return this.renderTemplate('select', obj);
+      });
     }
     else {
       return this.renderTemplate('input', {

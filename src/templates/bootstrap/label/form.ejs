@@ -1,6 +1,10 @@
-<label class="col-form-label {{ctx.label.className}}" id="l-{{ctx.instance.id}}-{{ctx.component.key}}" for="{{ctx.instance.id}}-{{ctx.component.key}}">
+<{{(ctx.component.type === "radio" && ctx.component.values.length > 1) || ctx.component.type === "selectboxes" ? 'legend' : 'label'}}
+  class="col-form-label {{ctx.label.className}}"
+  id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  for="{{ctx.instance.id}}-{{ctx.component.key}}"
+>
   {{ ctx.t(ctx.component.label) }}
   {% if (ctx.component.tooltip) { %}
     <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
   {% } %}
-</label>
+</{{(ctx.component.type === "radio" && ctx.component.values.length > 1) || ctx.component.type === "selectboxes" ? 'legend' : 'label'}}>

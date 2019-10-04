@@ -111,11 +111,11 @@
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
-      <label class="col-form-label " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
+    <fieldset id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
+      <legend class="col-form-label " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
         Select Boxes
-      </label>
-      <div class="form-radio radio" role="radiogroup" aria-labelledby="l-selectBoxes-selectBoxes" aria-describedby="d-selectBoxes-selectBoxes">
+      </legend>
+      <div class="form-radio radio" role="group" aria-labelledby="l-selectBoxes-selectBoxes" aria-describedby="d-selectBoxes-selectBoxes">
         <div class="form-check" ref="wrapper">
           <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" id="selectBoxes-one" aria-required="false">
           <label class="form-check-label" for="selectBoxes-one">
@@ -136,7 +136,7 @@
         </div>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
+    </fieldset>
     <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
       <label class="col-form-label " id="l-select-select" for="select-select">
         Select
@@ -144,10 +144,10 @@
       <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-describedby="d-select-select" aria-required="false"></select>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
-      <label class="col-form-label " id="l-radio-radio" for="radio-radio">
+    <fieldset id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
+      <legend class="col-form-label " id="l-radio-radio" for="radio-radio">
         Radio
-      </label>
+      </legend>
       <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radio-radio" aria-describedby="d-radio-radio">
         <div class="form-check" ref="wrapper">
           <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="one" id="radio-one" aria-required="false">
@@ -169,11 +169,11 @@
         </div>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="radioInline" class="form-group has-feedback formio-component formio-component-radio formio-component-radioInline " ref="component">
-      <label class="col-form-label " id="l-radioInline-radioInline" for="radioInline-radioInline">
+    </fieldset>
+    <fieldset id="radioInline" class="form-group has-feedback formio-component formio-component-radio formio-component-radioInline " ref="component">
+      <legend class="col-form-label " id="l-radioInline-radioInline" for="radioInline-radioInline">
         Radio Inline
-      </label>
+      </legend>
       <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radioInline-radioInline" aria-describedby="d-radioInline-radioInline">
         <div class="form-check-inline" ref="wrapper">
           <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="one" id="radioInline-one" aria-required="false">
@@ -195,7 +195,7 @@
         </div>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
+    </fieldset>
     <div id="content" class="formio-component formio-component-htmlelement formio-component-content  formio-component-label-hidden" ref="component">
       <p class="cssclass" ref="html" attribute="value">HTML Content</p>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
