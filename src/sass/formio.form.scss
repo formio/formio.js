@@ -896,3 +896,11 @@ body.formio-dialog-open {
   margin-top: 5px;
   margin-bottom: 10px;
 }
+
+.no-top-border-table
+  > .table
+  > tbody
+  > tr:first-child
+  > td {
+  border-top: none;
+}

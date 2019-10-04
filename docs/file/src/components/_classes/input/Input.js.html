@@ -423,6 +423,9 @@ export default class Input extends Multivalue {
   attachElement(element, index) {
     super.attachElement(element, index);
 
+    if (this.widget) {
+      this.widget.destroy();
+    }
     // Attach the widget.
     element.widget = this.createWidget(index);
     if (element.widget) {

@@ -427,6 +427,15 @@ export default [
     rows: 3,
     weight: 18,
     tooltip: 'The HTML template for the result data items.',
+    calculateValue:(context) => {
+      if (!context.instance.calculatedValue) {
+        if (context.instance && context.instance._currentForm.options.editComponent) {
+          return context.instance._currentForm.options.editComponent.template;
+        }
+      }
+
+      return context.data.template;
+    }
   },
   {
     type: 'select',

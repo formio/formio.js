@@ -80,5 +80,5 @@ export default [
     input: true,
     tooltip: 'Condense the size of the table.',
     weight: 704
-  }
+  },
 ];
