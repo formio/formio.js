@@ -904,3 +904,26 @@ body.formio-dialog-open {
   > td {
   border-top: none;
 }
+
+.table > tbody > tr > td.cell-align {
+  &-left {
+    text-align: left;
+  }
+
+  &-center {
+    & > div {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    text-align: center;
+  }
+
+  &-right {
+    & > div {
+      margin-left: auto;
+    }
+
+    text-align: right;
+  }
+}
