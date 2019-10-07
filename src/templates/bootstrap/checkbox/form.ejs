@@ -6,6 +6,7 @@
       {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
       {% if (ctx.checked) { %}checked=true{% } %}
+      {% if (ctx.component.hideLabel) { %}aria-label="{{ctx.component.label}}"{% } %}
       aria-required="{{ctx.component.validate.required}}"
       aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
     ></{{ctx.input.type}}>
