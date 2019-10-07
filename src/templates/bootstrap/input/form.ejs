@@ -19,11 +19,13 @@
     id="{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
 
-    {% if (ctx.component.hideLabel) { %}
+    {% if (ctx.component.hideLabel && ctx.component.type !== "day") { %}
     aria-label="{{ctx.component.label}}"
     {% } %}
 
-    aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}} cc-{{ctx.instance.id}}-{{ctx.component.key}} wc-{{ctx.instance.id}}-{{ctx.component.key}}"
+    aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}
+      {{ctx.component.showCharCount ? `cc-${ctx.instance.id}-${ctx.component.key}` : ''}}
+      {{ctx.component.showWordCount ? `wc-${ctx.instance.id}-${ctx.component.key}` : ''}}"
     aria-required="{{ctx.input.ref === 'input' || !ctx.input.ref ? ctx.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
   >{{ctx.input.content}}</{{ctx.input.type}}>
 
