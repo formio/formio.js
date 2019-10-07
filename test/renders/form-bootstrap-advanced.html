@@ -5,7 +5,7 @@
         Email
       </label>
       <div ref="element">
-        <input ref="input" name="data[email]" type="email" class="form-control" lang="en" value="" id="email-email" aria-describedby="d-email-email" aria-required="false"></input>
+        <input ref="input" name="data[email]" type="email" class="form-control" lang="en" value="" id="email-email" aria-describedby="d-email-email cc-email-email wc-email-email" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -14,7 +14,7 @@
         Phone Number
       </label>
       <div ref="element">
-        <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" value="" id="phoneNumber-phoneNumber" aria-describedby="d-phoneNumber-phoneNumber" aria-required="false"></input>
+        <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" value="" id="phoneNumber-phoneNumber" aria-describedby="d-phoneNumber-phoneNumber cc-phoneNumber-phoneNumber wc-phoneNumber-phoneNumber" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -23,7 +23,7 @@
         Address
       </label>
       <div ref="element">
-        <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value="" id="address-address" aria-describedby="d-address-address" aria-required="false"></input>
+        <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value="" id="address-address" aria-describedby="d-address-address cc-address-address wc-address-address" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -33,7 +33,7 @@
       </label>
       <div ref="element">
         <div class="input-group">
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="" id="dateTime-dateTime" aria-describedby="d-dateTime-dateTime" aria-required="false"></input>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="" id="dateTime-dateTime" aria-describedby="d-dateTime-dateTime cc-dateTime-dateTime wc-dateTime-dateTime" aria-required="false"></input>
           <div class="input-group-append" ref="suffix">
             <span class="input-group-text">
       <i ref="icon" class="fa fa-calendar" style=""></i>
@@ -95,13 +95,13 @@
         <div class="col col-xs-3">
           <label for="day-day" class="">Day</label>
           <div>
-            <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" aria-describedby="d-day-day" aria-required="false"></input>
+            <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" aria-describedby="d-day-day cc-day-day wc-day-day" aria-required="false"></input>
           </div>
         </div>
         <div class="col col-xs-5">
           <label for="day-year" class="">Year</label>
           <div>
-            <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" aria-describedby="d-day-day" aria-required="false"></input>
+            <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" aria-describedby="d-day-day cc-day-day wc-day-day" aria-required="false"></input>
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@
         Time
       </label>
       <div ref="element">
-        <input ref="input" name="data[time]" type="time" class="form-control" lang="en" value="" id="time-time" aria-describedby="d-time-time" aria-required="false"></input>
+        <input ref="input" name="data[time]" type="time" class="form-control" lang="en" value="" id="time-time" aria-describedby="d-time-time cc-time-time wc-time-time" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -122,7 +122,7 @@
         Currency
       </label>
       <div ref="element">
-        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="currency-currency" aria-describedby="d-currency-currency" aria-required="false"></input>
+        <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="currency-currency" aria-describedby="d-currency-currency cc-currency-currency wc-currency-currency" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -158,7 +158,7 @@
     </div>
     <div id="signature" class="form-group has-feedback formio-component formio-component-signature formio-component-signature  required formio-component-label-hidden signature-pad" ref="component">
       <div ref="element">
-        <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No" id="signature-signature" aria-describedby="d-signature-signature" aria-required="true"></input>
+        <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No" id="signature-signature" aria-label="Signature" aria-describedby="d-signature-signature cc-signature-signature wc-signature-signature" aria-required="true"></input>
         <div class="signature-pad-body" style="width: 100%;height: 150px;padding:0;margin:0;" tabindex="0" ref="padBody">
           <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
             <i class="fa fa-refresh"></i>
@@ -180,7 +180,7 @@
         Tags
       </label>
       <div ref="element">
-        <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="" id="tags-tags" aria-describedby="d-tags-tags" aria-required="false"></input>
+        <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="" id="tags-tags" aria-describedby="d-tags-tags cc-tags-tags wc-tags-tags" aria-required="false"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
