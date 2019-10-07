@@ -1,4 +1,12 @@
-<div class="row" aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}" aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}">
+<div class="row"
+  role="group"
+  {% if (ctx.component.hideLabel) { %}
+  aria-label="{{ctx.component.label}}"
+  {% } else { %}
+  aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  {% } %}
+  aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
+>
   {% if (ctx.dayFirst && ctx.showDay) { %}
   <div class="col col-xs-3">
     {% if (!ctx.component.hideInputLabels) { %}

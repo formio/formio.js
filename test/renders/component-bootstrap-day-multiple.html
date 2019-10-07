@@ -2,10 +2,10 @@
   <label class="col-form-label " id="l-day-day" for="day-day">
     Day
   </label>
-  <div class="row" aria-labelledby="l-day-day" aria-describedby="d-day-day">
+  <div class="row" role="group" aria-labelledby="l-day-day" aria-describedby="d-day-day">
     <div class="col col-xs-4">
       <label for="day-month" class="">Month</label>
-      <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-describedby="d-day-day" aria-required="false">
+      <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-multiselectable="true" aria-describedby="d-day-day" aria-required="false">
           <option value="">
           </option>
           <option value="1">
@@ -50,13 +50,15 @@
     <div class="col col-xs-3">
       <label for="day-day" class="">Day</label>
       <div>
-        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" aria-describedby="d-day-day cc-day-day wc-day-day" aria-required="false"></input>
+        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" aria-describedby="d-day-day
+      " aria-required="false"></input>
       </div>
     </div>
     <div class="col col-xs-5">
       <label for="day-year" class="">Year</label>
       <div>
-        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" aria-describedby="d-day-day cc-day-day wc-day-day" aria-required="false"></input>
+        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" aria-describedby="d-day-day
+      " aria-required="false"></input>
       </div>
     </div>
   </div>

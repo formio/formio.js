@@ -110,7 +110,7 @@
       <label class="control-label ">
         Select
       </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-describedby="d-select-select" aria-required="false"></select>
+      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-multiselectable="false" aria-describedby="d-select-select" aria-required="false"></select>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="dateTime" class="form-group has-feedback formio-component formio-component-datetime formio-component-dateTime " ref="component">
@@ -142,7 +142,7 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-describedby="d-day-day" aria-required="false">
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-multiselectable="false" aria-describedby="d-day-day" aria-required="false">
               <option value="">
               </option>
               <option value="1">

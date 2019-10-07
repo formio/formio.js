@@ -47,7 +47,7 @@
       <div class="row">
         <div class="form-group col col-xs-4">
           <label for="day-month" class="">Month</label>
-          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-describedby="d-day-day" aria-required="false">
+          <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-multiselectable="false" aria-describedby="d-day-day" aria-required="false">
               <option value="">
               </option>
               <option value="1">
@@ -127,7 +127,7 @@
       <label class="control-label ">
         Resource
       </label>
-      <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en" id="resource-resource" aria-describedby="d-resource-resource" aria-required="false"></select>
+      <select ref="selectContainer" name="data[resource]" type="text" class="form-control" lang="en" id="resource-resource" aria-multiselectable="false" aria-describedby="d-resource-resource" aria-required="false"></select>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="resourceAdd" class="form-group has-feedback formio-component formio-component-resource formio-component-resourceAdd formio-component-multiple " ref="component">
@@ -138,7 +138,7 @@
         <tbody>
           <tr>
             <td>
-              <select ref="selectContainer" multiple name="data[resourceAdd]" type="text" class="form-control" lang="en" id="resourceAdd-resourceAdd" aria-describedby="d-resourceAdd-resourceAdd" aria-required="false"></select>
+              <select ref="selectContainer" multiple name="data[resourceAdd]" type="text" class="form-control" lang="en" id="resourceAdd-resourceAdd" aria-multiselectable="true" aria-describedby="d-resourceAdd-resourceAdd" aria-required="false"></select>
             </td>
           </tr>
           <tr>
