@@ -112,7 +112,7 @@ export default class Multivalue extends Field {
           element.value = element.value.toLowerCase();
         }
 
-        if (element.type !== 'email') {
+        if (element.selectionStart && element.selectionEnd) {
           element.selectionStart = selectionStart;
           element.selectionEnd = selectionEnd;
         }
