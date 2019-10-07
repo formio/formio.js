@@ -306,7 +306,10 @@ export default class WidgetComponent extends Input {
   }
 
   destroy() {
-    this.widget.destroy();
+    if (this.widget) {
+      this.widget.destroy();
+    }
+
     super.destroy();
   }
 }
