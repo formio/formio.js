@@ -1400,6 +1400,28 @@ export default class Component extends Element {
     }, false);
   }
 
+  addInputWarning(message, dirty, elements) {
+    if (!message) {
+      return;
+    }
+
+    if (this.refs.messageContainer) {
+      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
+        message
+      }));
+    }
+
+    elements
+      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
+
+    if (dirty && this.options.highlightErrors) {
+      this.addClass(this.element, 'alert alert-warning');
+    }
+    else {
+      this.addClass(this.element, 'has-error');
+    }
+  }
+
   /**
    * Add a new input error to this element.
    *
@@ -2117,7 +2139,7 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty, external) {
+  setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -2129,7 +2151,12 @@ export default class Component extends Element {
       };
       this.emit('componentError', this.error);
       if (this.refs.input) {
-        this.addInputError(message, dirty, this.refs.input);
+        if (isWarning) {
+          this.addInputWarning(message, dirty, this.refs.input);
+        }
+        else {
+          this.addInputError(message, dirty, this.refs.input);
+        }
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2139,8 +2166,10 @@ export default class Component extends Element {
       this.error = null;
       if (this.refs.input) {
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
       }
       this.removeClass(this.element, 'alert alert-danger');
+      this.removeClass(this.element, 'alert alert-warning');
       this.removeClass(this.element, 'has-error');
     }
 

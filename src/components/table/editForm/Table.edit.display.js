@@ -50,6 +50,23 @@ export default [
     tooltip: 'Enter the number or columns that should be displayed by this table.'
   },
   {
+    type: 'select',
+    label: 'Cell Alignment',
+    key: 'cellAlignment',
+    input: true,
+    tooltip: 'Horizontal alignment for cells of the table.',
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Left', value: 'left' },
+        { label: 'Center', value: 'center' },
+        { label: 'Right', value: 'right' }
+      ]
+    },
+    defaultValue: 'left',
+    weight: 3
+  },
+  {
     type: 'checkbox',
     label: 'Striped',
     key: 'striped',

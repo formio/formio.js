@@ -77,6 +77,14 @@ export default class TableComponent extends NestedComponent {
     return name;
   }
 
+  get cellClassName() {
+    let name = '';
+    if (this.component.cellAlignment) {
+      name = `cell-align-${this.component.cellAlignment}`;
+    }
+    return name;
+  }
+
   get tableKey() {
     return `table-${this.key}`;
   }
@@ -115,6 +123,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('table', {
+      cellClassName: this.cellClassName,
       tableKey: this.tableKey,
       tableComponents: this.table.map(row =>
         row.map(column =>
