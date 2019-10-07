@@ -7,6 +7,9 @@
   {% if (!ctx.input.attr.id) { %}
   id="{{ctx.instance.id}}-{{ctx.component.key}}"
   {% } %}
+  {% if (ctx.component.hideLabel) { %}
+  aria-label="{{ctx.component.label}}"
+  {% } %}
   aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
   aria-required="{{ctx.input.ref === 'selectContainer' || !ctx.input.ref ? ctx.input.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
 >{{ctx.selectOptions}}</select>
