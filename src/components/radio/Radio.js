@@ -57,6 +57,8 @@ export default class RadioComponent extends Field {
       this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
+
+      this.setValueAt(index, this.dataValue);
       this.addShortcut(input, this.component.values[index].shortcut);
     });
     return super.attach(element);
