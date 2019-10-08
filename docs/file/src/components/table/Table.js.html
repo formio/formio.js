@@ -313,6 +313,14 @@ export default class TableComponent extends NestedComponent {
     return name;
   }
 
+  get cellClassName() {
+    let name = &apos;&apos;;
+    if (this.component.cellAlignment) {
+      name = `cell-align-${this.component.cellAlignment}`;
+    }
+    return name;
+  }
+
   get tableKey() {
     return `table-${this.key}`;
   }
@@ -351,6 +359,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate(&apos;table&apos;, {
+      cellClassName: this.cellClassName,
       tableKey: this.tableKey,
       tableComponents: this.table.map(row =&gt;
         row.map(column =&gt;

@@ -286,6 +286,23 @@
     tooltip: &apos;Enter the number or columns that should be displayed by this table.&apos;
   },
   {
+    type: &apos;select&apos;,
+    label: &apos;Cell Alignment&apos;,
+    key: &apos;cellAlignment&apos;,
+    input: true,
+    tooltip: &apos;Horizontal alignment for cells of the table.&apos;,
+    dataSrc: &apos;values&apos;,
+    data: {
+      values: [
+        { label: &apos;Left&apos;, value: &apos;left&apos; },
+        { label: &apos;Center&apos;, value: &apos;center&apos; },
+        { label: &apos;Right&apos;, value: &apos;right&apos; }
+      ]
+    },
+    defaultValue: &apos;left&apos;,
+    weight: 3
+  },
+  {
     type: &apos;checkbox&apos;,
     label: &apos;Striped&apos;,
     key: &apos;striped&apos;,

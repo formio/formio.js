@@ -98,6 +98,7 @@ export default class Multivalue extends Field {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
       // Delay update slightly to give input mask a chance to run.
       const textCase = _.get(this.component, 'case', 'mixed');
+
       if (textCase !== 'mixed') {
         const {
           selectionStart,
@@ -111,8 +112,10 @@ export default class Multivalue extends Field {
           element.value = element.value.toLowerCase();
         }
 
-        element.selectionStart = selectionStart;
-        element.selectionEnd = selectionEnd;
+        if (element.selectionStart && element.selectionEnd) {
+          element.selectionStart = selectionStart;
+          element.selectionEnd = selectionEnd;
+        }
       }
       // If a mask is present, delay the update to allow mask to update first.
       if (element.mask) {

@@ -57,7 +57,9 @@ dialog.fixed {
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }
 
-.formio-component.has-error .invalid-feedback, .formio-component.alert-danger .invalid-feedback {
+.formio-component.has-error .invalid-feedback,
+.formio-component.alert-danger .invalid-feedback,
+.formio-component.alert-warning .invalid-feedback {
   display: block;
   color: inherit; }
 
@@ -731,7 +733,8 @@ body.formio-dialog-open {
 .datagrid-group-header.clickable.collapsed .datagrid-group-label:before {
   content: '▸'; }
 
-.formio-component.alert-danger .help-block {
+.formio-component.alert-danger .help-block,
+.formio-component.alert-warning .help-block {
   color: inherit; }
 
 .tree__level_even {
@@ -758,3 +761,17 @@ body.formio-dialog-open {
 > tr:first-child
 > td {
   border-top: none; }
+
+.table > tbody > tr > td.cell-align-left {
+  text-align: left; }
+
+.table > tbody > tr > td.cell-align-center {
+  text-align: center; }
+  .table > tbody > tr > td.cell-align-center > div {
+    margin-left: auto;
+    margin-right: auto; }
+
+.table > tbody > tr > td.cell-align-right {
+  text-align: right; }
+  .table > tbody > tr > td.cell-align-right > div {
+    margin-left: auto; }

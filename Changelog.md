@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.1
+### Fixed
+ - Add check for this.widget before destroy(). Fixes https://github.com/formio/formio.js/issues/1817
+
+## 4.3.0
+### Added
+ - Warning message support.
+ - Added cell alignment option to table component.
+
+### Changed
+ - Rollback flatpickr to 4.6.2 to prev version until bug will be fixed
+ - Upgraded dompurify@2.0.4, idb@4.0.5, fetch-mock@7.5.1
+ 
+### Fixed
+ - Add check of component type because of selection properties of input
+
 ## 4.2.12
 ### Fixed
  - Issue where EditGrid was validating rows when saved was not pressed.

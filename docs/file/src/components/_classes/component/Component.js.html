@@ -1636,6 +1636,28 @@ export default class Component extends Element {
     }, false);
   }
 
+  addInputWarning(message, dirty, elements) {
+    if (!message) {
+      return;
+    }
+
+    if (this.refs.messageContainer) {
+      this.setContent(this.refs.messageContainer, this.renderTemplate(&apos;warning&apos;, {
+        message
+      }));
+    }
+
+    elements
+      .forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-warning&apos;));
+
+    if (dirty &amp;&amp; this.options.highlightErrors) {
+      this.addClass(this.element, &apos;alert alert-warning&apos;);
+    }
+    else {
+      this.addClass(this.element, &apos;has-error&apos;);
+    }
+  }
+
   /**
    * Add a new input error to this element.
    *
@@ -2353,7 +2375,7 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty, external) {
+  setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -2365,7 +2387,12 @@ export default class Component extends Element {
       };
       this.emit(&apos;componentError&apos;, this.error);
       if (this.refs.input) {
-        this.addInputError(message, dirty, this.refs.input);
+        if (isWarning) {
+          this.addInputWarning(message, dirty, this.refs.input);
+        }
+        else {
+          this.addInputError(message, dirty, this.refs.input);
+        }
       }
     }
     else if (this.error &amp;&amp; this.error.external === !!external) {
@@ -2375,8 +2402,10 @@ export default class Component extends Element {
       this.error = null;
       if (this.refs.input) {
         this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+        this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-warning&apos;));
       }
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
+      this.removeClass(this.element, &apos;alert alert-warning&apos;);
       this.removeClass(this.element, &apos;has-error&apos;);
     }
 
