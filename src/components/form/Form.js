@@ -122,7 +122,7 @@ export default class FormComponent extends Component {
       options.breadcrumbSettings = this.options.breadcrumbSettings;
     }
     if (this.options.buttonSettings) {
-      options.buttonSettings = this.options.buttonSettings;
+      options.buttonSettings = _.clone(this.options.buttonSettings);
     }
     if (this.options.viewAsHtml) {
       options.viewAsHtml = this.options.viewAsHtml;
@@ -483,12 +483,10 @@ export default class FormComponent extends Component {
         submission &&
         submission._id &&
         this.subForm.formio &&
-        !flags.noload &&
-        (_.isEmpty(submission.data) || this.shouldSubmit)
+        _.isEmpty(submission.data)
       ) {
         const submissionUrl = `${this.subForm.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
         this.subForm.setUrl(submissionUrl, this.options);
-        this.subForm.nosubmit = false;
         this.subForm.loadSubmission();
       }
       else {
