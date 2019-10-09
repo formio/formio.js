@@ -199,7 +199,20 @@ export default class FormComponent extends Component {
     if (this.builderMode) {
       return super.attach(element);
     }
-    return super.attach(element).then(() => this.renderSubForm(element));
+    return super.attach(element)
+      .then(() => this.createSubForm())
+      .then(() => {
+        this.empty(element);
+        if (this.options.builder) {
+          this.setContent(element, this.ce('div', {
+            class: 'text-muted text-center p-2'
+          }, this.text(this.formObj.title)));
+          return;
+        }
+
+        this.setContent(element, this.render());
+        return this.subForm.attach(element);
+      });
   }
 
   detach() {
@@ -251,19 +264,12 @@ export default class FormComponent extends Component {
   }
 
   /**
-   * Render a subform.
+   * Create a subform instance.
+   *
+   * @return {*}
    */
-  renderSubForm(element) {
-    element = element || this.element;
+  createSubForm() {
     return this.loadSubForm().then((form) => {
-      this.empty(element);
-      if (this.options.builder) {
-        this.setContent(element, this.ce('div', {
-          class: 'text-muted text-center p-2'
-        }, this.text(form.title)));
-        return;
-      }
-
       if (!form) {
         return;
       }
@@ -300,20 +306,10 @@ export default class FormComponent extends Component {
         this.subForm.url = this.formSrc;
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
-        this.setContent(element, this.render());
-        this.subForm.attach(element);
         this.restoreValue();
         return this.subForm;
       });
     });
-  }
-
-  show(...args) {
-    const state = super.show(...args);
-    if (!this.subFormReady && state) {
-      this.renderSubForm();
-    }
-    return state;
   }
 
   /**
@@ -423,7 +419,7 @@ export default class FormComponent extends Component {
   submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      return this.loadSubForm().then(() => {
+      return this.createSubForm().then(() => {
         this.subForm.nosubmit = false;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
