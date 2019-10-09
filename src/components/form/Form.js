@@ -211,7 +211,9 @@ export default class FormComponent extends Component {
         }
 
         this.setContent(element, this.render());
-        return this.subForm.attach(element);
+        if (this.subForm) {
+          this.subForm.attach(element);
+        }
       });
   }
 
@@ -420,6 +422,9 @@ export default class FormComponent extends Component {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.createSubForm().then(() => {
+        if (!this.subForm) {
+          return this.dataValue;
+        }
         this.subForm.nosubmit = false;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
