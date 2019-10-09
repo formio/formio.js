@@ -1,7 +1,9 @@
 <div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <label class="col-form-label  control-label--hidden sr-only" id="l--" for="-">
+  </label>
   <div class="formio-form" ref="webform" novalidate>
     <div id="files" class="form-group has-feedback formio-component formio-component-file formio-component-files " ref="component">
-      <label class="col-form-label " id="l-files-files" for="files-files">
+      <label class="col-form-label  " id="l-files-files" for="files-files">
         Files
       </label>
       <ul class="list-group list-group-striped">
@@ -21,6 +23,9 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="file" class="form-group has-feedback formio-component formio-component-file formio-component-file formio-component-multiple  formio-component-label-hidden" ref="component">
+      <label class="col-form-label  control-label--hidden sr-only" id="l-file-file" for="file-file">
+        file
+      </label>
       <div>
       </div>
       <input type="file" style="opacity: 0; position: absolute;" tabindex="-1" ref="hiddenFileInputElement">
@@ -40,6 +45,9 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+      <label class="col-form-label  sr-only" id="l-submit-submit" for="submit-submit">
+        Submit
+      </label>
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
         Submit
       </button>

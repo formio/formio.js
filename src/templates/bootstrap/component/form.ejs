@@ -1,10 +1,6 @@
-<{{(ctx.component.type === "radio" && ctx.component.values.length > 1) || ctx.component.type === "selectboxes" ? 'fieldset' : 'div'}}
-  id="{{ctx.id}}"
-  class="{{ctx.classes}}"{% if (ctx.styles) { %} styles="{{ctx.styles}}"{% } %}
-  ref="component"
->
+<div id="{{ctx.id}}" class="{{ctx.classes}}"{% if (ctx.styles) { %} styles="{{ctx.styles}}"{% } %} ref="component">
   {% if (ctx.visible) { %}
   {{ctx.children}}
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
   {% } %}
-</{{(ctx.component.type === "radio" && ctx.component.values.length > 1) || ctx.component.type === "selectboxes" ? 'fieldset' : 'div'}}>
+</div>

@@ -1,9 +1,5 @@
 <div class="form-radio radio" role="{{ctx.component.type === 'selectboxes' ? 'group' : 'radiogroup'}}"
-  {% if (ctx.component.hideLabel) { %}
-  aria-label="{{ctx.component.label}}"
-  {% } else { %}
   aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
-  {% } %}
   aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
