@@ -712,7 +712,10 @@ export default class Webform extends NestedComponent {
           this.triggerChange();
         }
         else {
-          this.redraw();
+          const isSame = _.isEqual(submission, this.getValue());
+          if (!isSame) {
+            this.redraw();
+          }
         }
         return this.submissionReadyResolve(submission);
       },
