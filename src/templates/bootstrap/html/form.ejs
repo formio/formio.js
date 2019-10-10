@@ -1,5 +1,7 @@
-<{{ctx.tag}} class="{{ ctx.component.className }}" ref="html"
-  {% ctx.attrs.forEach(function(attr) { %}
+<{{ctx.tag}}
+    {% if ( !!ctx.tag.match(/[h, H]\d/) ) { %}
+    class="title is-{{ctx.tag.match(/[h, H]\d/)[0][1]}}" {% } %} ref="html"
+{% ctx.attrs.forEach(function(attr) { %}
     {{attr.attr}}="{{attr.value}}"
   {% }) %}
->{{ctx.content}}</{{ctx.tag}}>
+>{{ctx.content}}{% if (!ctx.singleTags || ctx.singleTags.indexOf(ctx.tag) === -1) { %}</{{ctx.tag}}>{% } %}

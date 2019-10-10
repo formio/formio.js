@@ -1,5 +1,6 @@
 <{{ctx.input.type}}
   ref="button"
+  class="button is-link"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
