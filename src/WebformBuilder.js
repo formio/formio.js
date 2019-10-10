@@ -760,31 +760,39 @@ export default class WebformBuilder extends Component {
     const parent = target.formioComponent;
     const path = this.getComponentsPath(info, parent.component);
     const index = _.findIndex(_.get(parent.schema, path), { key: info.key }) || 0;
-    this.emit('addComponent', info, parent, path, index, isNew);
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
     // Only rebuild the parts needing to be rebuilt.
+    let rebuild;
     if (target !== source) {
       if (source.formioContainer && source.contains(target)) {
-        source.formioComponent.rebuild();
+        rebuild = source.formioComponent.rebuild();
       }
       else if (target.contains(source)) {
-        target.formioComponent.rebuild();
+        rebuild = target.formioComponent.rebuild();
       }
       else {
         if (source.formioContainer) {
-          source.formioComponent.rebuild();
+          rebuild = source.formioComponent.rebuild();
         }
-        target.formioComponent.rebuild();
+        rebuild = target.formioComponent.rebuild();
       }
     }
     else {
       // If they are the same, only rebuild one.
-      target.formioComponent.rebuild();
+      rebuild = target.formioComponent.rebuild();
     }
+
+    if (!rebuild) {
+      rebuild = NativePromise.resolve();
+    }
+
+    return rebuild.then(() => {
+      this.emit('addComponent', info, parent, path, index, isNew);
+    });
   }
 
   setForm(form) {
