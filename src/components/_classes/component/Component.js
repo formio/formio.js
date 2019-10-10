@@ -1415,7 +1415,7 @@ export default class Component extends Element {
       .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-warning');
+      this.addClass(this.element, 'formio-error-wrapper');
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1443,7 +1443,7 @@ export default class Component extends Element {
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-danger');
+      this.addClass(this.element, 'formio-error-wrapper');
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -2139,6 +2139,13 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
+  clearErrorClasses() {
+    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, 'alert alert-danger');
+    this.removeClass(this.element, 'alert alert-warning');
+    this.removeClass(this.element, 'has-error');
+  }
+
   setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
@@ -2168,9 +2175,7 @@ export default class Component extends Element {
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
       }
-      this.removeClass(this.element, 'alert alert-danger');
-      this.removeClass(this.element, 'alert alert-warning');
-      this.removeClass(this.element, 'has-error');
+      this.clearErrorClasses();
     }
 
     if (!this.refs.input) {
