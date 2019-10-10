@@ -7,7 +7,7 @@ weight: 18
 ```html
 <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
 <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
-<div id="formio"></formio>
+<div id="formio"></div>
 ```
 
 ```js
