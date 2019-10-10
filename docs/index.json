@@ -31838,7 +31838,7 @@
     "__docId__": 1651,
     "kind": "file",
     "name": "src/components/radio/Radio.js",
-    "content": "import _ from 'lodash';\nimport Field from '../_classes/field/Field';\n\nexport default class RadioComponent extends Field {\n  static schema(...extend) {\n    return Field.schema({\n      type: 'radio',\n      inputType: 'radio',\n      label: 'Radio',\n      key: 'radio',\n      values: [{ label: '', value: '' }],\n      fieldSet: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Radio',\n      group: 'basic',\n      icon: 'dot-circle-o',\n      weight: 80,\n      documentation: 'http://help.form.io/userguide/#radio',\n      schema: RadioComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return RadioComponent.schema();\n  }\n\n  get inputInfo() {\n    const info = super.elementInfo();\n    info.type = 'input';\n    info.changeEvent = 'click';\n    info.attr.class = 'form-check-input';\n    info.attr.name = info.attr.name += `[${this.id}]`;\n    return info;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  render() {\n    return super.render(this.renderTemplate('radio', {\n      input: this.inputInfo,\n      inline: this.component.inline,\n      values: this.component.values,\n      value: this.dataValue,\n      row: this.row,\n    }));\n  }\n\n  attach(element) {\n    this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });\n    this.refs.input.forEach((input, index) => {\n      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {\n        modified: true\n      }));\n\n      this.setValueAt(index, this.dataValue);\n      this.addShortcut(input, this.component.values[index].shortcut);\n    });\n    return super.attach(element);\n  }\n\n  detach(element) {\n    if (element && this.refs.input) {\n      this.refs.input.forEach((input, index) => {\n        this.removeShortcut(input, this.component.values[index].shortcut);\n      });\n    }\n  }\n\n  getValue() {\n    if (this.viewOnly || !this.refs.input || !this.refs.input.length) {\n      return this.dataValue;\n    }\n    let value = this.dataValue;\n    this.refs.input.forEach((input) => {\n      if (input.checked) {\n        value = input.value;\n      }\n    });\n    return value;\n  }\n\n  getValueAsString(value) {\n    if (!value) {\n      return '';\n    }\n    if (!_.isString(value)) {\n      return _.toString(value);\n    }\n\n    const option = _.find(this.component.values, (v) => v.value === value);\n\n    return _.get(option, 'label');\n  }\n\n  setValueAt(index, value) {\n    if (this.refs.input && this.refs.input[index] && value !== null && value !== undefined) {\n      const inputValue = this.refs.input[index].value;\n      this.refs.input[index].checked = (inputValue === value.toString());\n    }\n  }\n\n  updateValue(value, flags) {\n    const changed = super.updateValue(value, flags);\n    if (changed && this.refs.wrapper) {\n      //add/remove selected option class\n      const value = this.dataValue;\n      const optionSelectedClass = 'radio-selected';\n\n      this.refs.wrapper.forEach((wrapper, index) => {\n        const input = this.refs.input[index];\n        if (input && input.value.toString() === value.toString()) {\n          //add class to container when selected\n          this.addClass(wrapper, optionSelectedClass);\n        }\n        else {\n          this.removeClass(wrapper, optionSelectedClass);\n        }\n      });\n    }\n    return changed;\n  }\n\n  /**\n   * Normalize values coming into updateValue.\n   *\n   * @param value\n   * @return {*}\n   */\n  normalizeValue(value) {\n    const dataType = _.get(this.component, 'dataType', 'auto');\n    switch (dataType) {\n      case 'auto':\n        if (!isNaN(parseFloat(value)) && isFinite(value)) {\n          value = +value;\n        }\n        if (value === 'true') {\n          value = true;\n        }\n        if (value === 'false') {\n          value = false;\n        }\n        break;\n      case 'number':\n        value = +value;\n        break;\n      case 'string':\n        if (typeof value === 'object') {\n          value = JSON.stringify(value);\n        }\n        else {\n          value = value.toString();\n        }\n        break;\n      case 'boolean':\n        value = !!value;\n        break;\n    }\n    return super.normalizeValue(value);\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport Field from '../_classes/field/Field';\n\nexport default class RadioComponent extends Field {\n  static schema(...extend) {\n    return Field.schema({\n      type: 'radio',\n      inputType: 'radio',\n      label: 'Radio',\n      key: 'radio',\n      values: [{ label: '', value: '' }],\n      fieldSet: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Radio',\n      group: 'basic',\n      icon: 'dot-circle-o',\n      weight: 80,\n      documentation: 'http://help.form.io/userguide/#radio',\n      schema: RadioComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return RadioComponent.schema();\n  }\n\n  get inputInfo() {\n    const info = super.elementInfo();\n    info.type = 'input';\n    info.changeEvent = 'click';\n    info.attr.class = 'form-check-input';\n    info.attr.name = info.attr.name += `[${this.id}]`;\n    return info;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  render() {\n    return super.render(this.renderTemplate('radio', {\n      input: this.inputInfo,\n      inline: this.component.inline,\n      values: this.component.values,\n      value: this.dataValue,\n      row: this.row,\n    }));\n  }\n\n  attach(element) {\n    this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });\n    this.refs.input.forEach((input, index) => {\n      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {\n        modified: true\n      }));\n      this.addShortcut(input, this.component.values[index].shortcut);\n    });\n    return super.attach(element);\n  }\n\n  detach(element) {\n    if (element && this.refs.input) {\n      this.refs.input.forEach((input, index) => {\n        this.removeShortcut(input, this.component.values[index].shortcut);\n      });\n    }\n  }\n\n  getValue() {\n    if (this.viewOnly || !this.refs.input || !this.refs.input.length) {\n      return this.dataValue;\n    }\n    let value = this.dataValue;\n    this.refs.input.forEach((input) => {\n      if (input.checked) {\n        value = input.value;\n      }\n    });\n    return value;\n  }\n\n  getValueAsString(value) {\n    if (!value) {\n      return '';\n    }\n    if (!_.isString(value)) {\n      return _.toString(value);\n    }\n\n    const option = _.find(this.component.values, (v) => v.value === value);\n\n    return _.get(option, 'label');\n  }\n\n  setValueAt(index, value) {\n    if (this.refs.input && this.refs.input[index] && value !== null && value !== undefined) {\n      const inputValue = this.refs.input[index].value;\n      this.refs.input[index].checked = (inputValue === value.toString());\n    }\n  }\n\n  updateValue(value, flags) {\n    const changed = super.updateValue(value, flags);\n    if (changed && this.refs.wrapper) {\n      //add/remove selected option class\n      const value = this.dataValue;\n      const optionSelectedClass = 'radio-selected';\n\n      this.refs.wrapper.forEach((wrapper, index) => {\n        const input = this.refs.input[index];\n        if (input && input.value.toString() === value.toString()) {\n          //add class to container when selected\n          this.addClass(wrapper, optionSelectedClass);\n        }\n        else {\n          this.removeClass(wrapper, optionSelectedClass);\n        }\n      });\n    }\n    return changed;\n  }\n\n  /**\n   * Normalize values coming into updateValue.\n   *\n   * @param value\n   * @return {*}\n   */\n  normalizeValue(value) {\n    const dataType = _.get(this.component, 'dataType', 'auto');\n    switch (dataType) {\n      case 'auto':\n        if (!isNaN(parseFloat(value)) && isFinite(value)) {\n          value = +value;\n        }\n        if (value === 'true') {\n          value = true;\n        }\n        if (value === 'false') {\n          value = false;\n        }\n        break;\n      case 'number':\n        value = +value;\n        break;\n      case 'string':\n        if (typeof value === 'object') {\n          value = JSON.stringify(value);\n        }\n        else {\n          value = value.toString();\n        }\n        break;\n      case 'boolean':\n        value = !!value;\n        break;\n    }\n    return super.normalizeValue(value);\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/radio/Radio.js",
     "access": "public",
@@ -32026,7 +32026,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#detach",
     "access": "public",
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 65,
     "undocument": true,
     "params": [
       {
@@ -32049,7 +32049,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 73,
     "undocument": true,
     "params": [],
     "return": {
@@ -32069,7 +32069,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#getValueAsString",
     "access": "public",
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 86,
     "undocument": true,
     "params": [
       {
@@ -32096,7 +32096,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#setValueAt",
     "access": "public",
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 99,
     "undocument": true,
     "params": [
       {
@@ -32125,7 +32125,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#updateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 108,
+    "lineNumber": 106,
     "undocument": true,
     "params": [
       {
@@ -32158,7 +32158,7 @@
     "longname": "src/components/radio/Radio.js~RadioComponent#normalizeValue",
     "access": "public",
     "description": "Normalize values coming into updateValue.",
-    "lineNumber": 135,
+    "lineNumber": 133,
     "params": [
       {
         "nullable": null,
