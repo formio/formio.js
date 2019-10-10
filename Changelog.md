@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix emit event on drop - https://github.com/formio/formio.js/pull/1838
  - Fix day does not populate global data until tabbed or clicked off
  - Fixing nested forms to work within modals, where nested form is a wizard.
- - Fixed issue where Radio control would not initialize with a value if contained within a panel. https://github.com/formio/formio.js/issues/1717
 
 ### Changed
  - Updated dompurify@2.0.6, flatpickr@4.6.3, @babel/cli@7.6.4, @babel/core@7.6.4, @babel/preset-env@7.6.3, chance@1.1.3, i18next@17.1.0
