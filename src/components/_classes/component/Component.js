@@ -1946,50 +1946,16 @@ export default class Component extends Element {
       return false;
     }
 
-    // Get the dataValue.
-    let firstPass = false;
-    let dataValue = null;
-    const allowOverride = this.component.allowCalculateOverride;
-    if (allowOverride) {
-      dataValue = this.dataValue;
-    }
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
-    ) {
+    // Skip this operation if this component allows modification and it is no longer pristine.
+    if (this.component.allowCalculateOverride && !this.pristine) {
       return false;
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: this.defaultValue,
+    return this.setValue(this.evaluate(this.component.calculateValue, {
+      value: this.dataValue,
       data
-    }, 'value');
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-
-    const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
-    return changed;
+    }, 'value'), flags);
   }
 
   /**

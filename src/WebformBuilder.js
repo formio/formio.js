@@ -872,7 +872,9 @@ export default class WebformBuilder extends Component {
         'tooltip',
         'validate',
         'disabled',
-        'calculatedValue'
+        'defaultValue',
+        'customDefaultValue',
+        'calculateValue'
       ]));
     }
 
