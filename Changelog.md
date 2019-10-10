@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.2
+### Added
+ - Added possibility to add builder groups dynamically.
+ - Content Component Default CSS for embedded images.
+
+### Fixed
+ - Fixing checkValidity and checkData for EditGrid and DataGrid and also fixed defaulting datagrid rows.
+ - Fixing problem where EditGrid is validating when it shouldn't be.
+ - Fixing the error reporting styles when a form is submitted with errors.
+ - Fix event casing error in File.js
+ - Fixing calculated overrides and form builder default values.
+ - Fix day component validation tries to reach refs on other page
+ - Fix emit event on drop - https://github.com/formio/formio.js/pull/1838
+ - Fix day does not populate global data until tabbed or clicked off
+ - Fixing nested forms to work within modals, where nested form is a wizard.
+ - Fixed issue where Radio control would not initialize with a value if contained within a panel. https://github.com/formio/formio.js/issues/1717
+
+### Changed
+ - Updated dompurify@2.0.6, flatpickr@4.6.3, @babel/cli@7.6.4, @babel/core@7.6.4, @babel/preset-env@7.6.3, chance@1.1.3, i18next@17.1.0
+ - Extend eachComponent and flattenComponent functions
+
 ## 4.3.1
 ### Fixed
  - Add check for this.widget before destroy(). Fixes https://github.com/formio/formio.js/issues/1817
