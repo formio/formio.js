@@ -326,18 +326,19 @@ export default class DayComponent extends Field {
   }
 
   getFieldValue(name) {
+    const parts = this.dataValue.split('/');
     let val = 0;
-    if (!this.refs[name]) {
-      return val;
-    }
-    if (this.component.fields[name].type === 'number') {
-      val = this.refs[name].value;
-    }
-    else if (this.component.fields[name].type === 'select') {
-      const selectedIndex = this.refs[name].selectedIndex;
-      if (selectedIndex !== -1) {
-        val = this.refs[name].options[selectedIndex].value;
-      }
+
+    switch (name) {
+      case 'month':
+        val = parts[this.dayFirst ? 1 : 0];
+        break;
+      case 'day':
+        val = parts[this.dayFirst ? 0 : 1];
+        break;
+      case 'year':
+        val = parts[2];
+        break;
     }
 
     val = parseInt(val, 10);
@@ -446,7 +447,7 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get validationValue() {
-    return this.date;
+    return this.dataValue;
   }
 
   getValue() {
