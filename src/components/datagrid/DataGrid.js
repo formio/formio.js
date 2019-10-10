@@ -38,7 +38,7 @@ export default class DataGridComponent extends NestedComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.createRows();
+    this.createRows(true);
     this.visibleColumns = {};
     this.checkColumns(this.dataValue);
   }
@@ -343,15 +343,21 @@ export default class DataGridComponent extends NestedComponent {
     this.redraw();
   }
 
-  createRows() {
+  createRows(init) {
+    let added = false;
     // Create any missing rows.
     this.dataValue.forEach((row, index) => {
       if (!this.rows[index]) {
         this.rows[index] = this.createRowComponents(row, index);
+        added = true;
       }
     });
     // Delete any extra rows.
     this.rows.splice(this.dataValue.length);
+    if (!init && added) {
+      this.redraw();
+    }
+    return added;
   }
 
   createRowComponents(row, rowIndex) {
@@ -365,6 +371,64 @@ export default class DataGridComponent extends NestedComponent {
       components[col.key].inDataGrid = true;
     });
     return components;
+  }
+
+  /**
+   * Checks the validity of this datagrid.
+   *
+   * @param data
+   * @param dirty
+   * @return {*}
+   */
+  checkValidity(data, dirty) {
+    if (!this.checkCondition(null, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
+    return this.checkRows('checkValidity', data, dirty);
+  }
+
+  /**
+   * Checks the data within each cell of the datagrid.
+   *
+   * @param data
+   * @param flags
+   * @return {*}
+   */
+  checkData(data, flags = {}) {
+    Component.prototype.checkData.call(this, data, flags);
+    return this.checkRows('checkData', data, flags);
+  }
+
+  /**
+   * Checks all rows within the datagrid.
+   *
+   * @param method
+   * @param data
+   * @param opts
+   * @return {*|boolean}
+   */
+  checkRows(method, data, opts) {
+    const dataValue = this.dataValue;
+    return this.rows.reduce((valid, row, index) => this.checkRow(method, dataValue[index], row, opts) && valid, true);
+  }
+
+  /**
+   * Checks validity of each row according to a specific method.
+   *
+   * @param method
+   * @param rowData
+   * @param row
+   * @param opts
+   * @return {boolean}
+   */
+  checkRow(method, rowData, row, opts) {
+    let valid = true;
+    _.each(row, (col) => {
+      valid = col[method](rowData, opts) && valid;
+    });
+    return valid;
   }
 
   checkColumns(data) {

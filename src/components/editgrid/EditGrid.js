@@ -258,7 +258,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkData(data, flags = {}) {
-    return super.checkData(data, flags) && this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
+    Component.prototype.checkData.call(this, data, flags);
+    return this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -546,7 +547,7 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
-  checkComponentValidity(data, dirty) {
+  checkValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
