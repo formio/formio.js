@@ -1220,6 +1220,14 @@ export default class Component extends Element {
     this.refs.input = [];
   }
 
+  addAttribute(element, attributeName, attributeValue) {
+    if (!element) {
+      return;
+    }
+
+    return super.addAttribute(element, attributeName, attributeValue);
+  }
+
   hasClass(element, className) {
     if (!element) {
       return;
@@ -1440,7 +1448,10 @@ export default class Component extends Element {
     }
 
     // Add error classes
-    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    elements.forEach((input) => {
+      this.addClass(this.performInputMapping(input), 'is-invalid');
+      this.addAttribute(this.performInputMapping(input), 'aria-invalid', 'true');
+    });
 
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'formio-error-wrapper');
@@ -2138,7 +2149,10 @@ export default class Component extends Element {
       }
       this.error = null;
       if (this.refs.input) {
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+        this.refs.input.forEach((input) => {
+          this.removeClass(this.performInputMapping(input), 'is-invalid');
+          this.addAttribute(this.performInputMapping(input), 'aria-invalid', 'false');
+        });
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
       }
       this.clearErrorClasses();
