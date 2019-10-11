@@ -1,0 +1,17 @@
+<table class="table table-bordered">
+  <tbody>
+    <tr>
+      <td>
+        {{ctx.element}}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <button class="btn btn-primary formio-button-add-resource" ref="addResource">
+          <i class="{{ctx.iconClass('plus')}}"></i>
+          {{ctx.t(ctx.component.addResourceLabel || 'Add Resource')}}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,26 @@
+<div class="control">
+  {% ctx.values.forEach(function(item) { %}
+  <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
+    <label class="radio" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+      {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
+      <span>{{ctx.t(item.label)}}</span>
+      {% } %}
+      <{{ctx.input.type}}
+        ref="input"
+        class='radio'
+        {% for (var attr in ctx.input.attr) { %}
+        {{attr}}="{{ctx.input.attr[attr]}}"
+        {% } %}
+        value="{{item.value}}"
+        {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
+          checked=true
+        {% } %}
+        id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+      >
+      {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
+      {{ctx.t(item.label)}}
+      {% } %}
+    </label>
+  </div>
+  {% }) %}
+</div>

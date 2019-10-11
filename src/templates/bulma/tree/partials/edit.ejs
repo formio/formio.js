@@ -1,0 +1,9 @@
+<div class="node-edit">
+  <div ref="nodeEdit">{{ ctx.children }}</div>
+  {% if (!ctx.readOnly) { %}
+    <div class="node-actions">
+      <button ref="saveNode" class="btn btn-primary saveNode">{{ ctx.t('Save') }}</button>
+      <button ref="cancelNode" class="btn btn-danger cancelNode">{{ ctx.t('Cancel') }}</button>
+    </div>
+  {% } %}
+</div>

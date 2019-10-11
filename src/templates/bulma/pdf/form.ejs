@@ -1,0 +1,10 @@
+<div class="{{ctx.classes}}" ref="webform">
+	<span data-noattach="true" ref="zoomIn" style="position:absolute;right:10px;top:10px;cursor:pointer;" class="btn btn-default btn-secondary no-disable">
+		<i class="{{ ctx.iconClass('zoom-in') }}"></i>
+	</span>
+	<span data-noattach="true" ref="zoomOut" style="position:absolute;right:10px;top:60px;cursor:pointer;" class="btn btn-default btn-secondary no-disable">
+		<i class="{{ ctx.iconClass('zoom-out') }}"></i>
+	</span>
+  <div data-noattach="true" ref="iframeContainer"></div>
+  <button type="button" class="btn btn-primary" ref="submitButton">{{ctx.t('Submit')}}</button>
+</div>

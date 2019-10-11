@@ -1,0 +1,25 @@
+<table class="table
+    {{ ctx.component.striped ? 'table-striped' : ''}}
+    {{ ctx.component.bordered ? 'table-bordered' : ''}}
+    {{ ctx.component.hover ? 'table-hover' : ''}}
+    {{ ctx.component.condensed ? 'table-sm' : ''}}
+  ">
+  {% if (ctx.component.header && ctx.component.header.length > 0) { %}
+  <thead>
+    <tr>
+      {% ctx.component.header.forEach(function(header) { %}
+      <th>{{ctx.t(header)}}</th>
+      {% }) %}
+    </tr>
+  </thead>
+  {% } %}
+  <tbody>
+    {% ctx.tableComponents.forEach(function(row, rowIndex) { %}
+    <tr ref="row-{{ctx.id}}">
+      {% row.forEach(function(column, colIndex) { %}
+      <td ref="{{ctx.tableKey}}-{{rowIndex}}"{% if (ctx.cellClassName) { %} class="{{ctx.cellClassName}}"{% } %}>{{column}}</td>
+      {% }) %}
+    </tr>
+    {% }) %}
+  </tbody>
+</table>

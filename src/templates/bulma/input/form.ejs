@@ -1,0 +1,33 @@
+{% if (ctx.component.prefix || ctx.component.suffix) { %}
+<div class="input-group">
+  {% } %}
+  {% if (ctx.component.prefix) { %}
+  <div class="input-group-prepend" ref="prefix">
+  <span class="input-group-text">
+    {{ctx.component.prefix}}
+  </span>
+  </div>
+  {% } %}
+  <{{ctx.input.type}}
+  ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+  class={{ctx.input.type === 'textarea' ? 'textarea' : 'input' }}
+  {% for (var attr in ctx.input.attr) { %}
+  {{attr}}="{{ctx.input.attr[attr]}}"
+  {% } %}
+  >{{ctx.input.content}}</{{ctx.input.type}}>
+{% if (ctx.component.showCharCount) { %}
+<span class="text-muted pull-right" ref="charcount"></span>
+{% } %}
+{% if (ctx.component.showWordCount) { %}
+<span class="text-muted pull-right" ref="wordcount"></span>
+{% } %}
+{% if (ctx.component.suffix) { %}
+<div class="input-group-append" ref="suffix">
+  <span class="input-group-text">
+    {{ctx.component.suffix}}
+  </span>
+</div>
+{% } %}
+{% if (ctx.component.prefix || ctx.component.suffix) { %}
+</div>
+{% } %}

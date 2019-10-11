@@ -1,0 +1,18 @@
+<div class="mb-2 card border">
+  <div class="card-header {{ctx.transform('class', 'bg-' + ctx.component.theme)}}" ref="header">
+    <span class="mb-0 card-title">
+      {% if (ctx.component.collapsible) { %}
+        <i class="formio-collapse-icon {{ctx.iconClass(ctx.collapsed ? 'plus-square-o' : 'minus-square-o')}} text-muted" data-title="Collapse Panel"></i>
+      {% } %}
+      {{ctx.t(ctx.component.title)}}
+      {% if (ctx.component.tooltip) { %}
+        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+      {% } %}
+    </span>
+  </div>
+  {% if (!ctx.collapsed || ctx.builder) { %}
+  <div class="card-body" ref="{{ctx.nestedKey}}">
+    {{ctx.children}}
+  </div>
+  {% } %}
+</div>

@@ -1,0 +1,22 @@
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th></th>
+      {% ctx.component.values.forEach(function(value) { %}
+      <th style="text-align: center;">{{ctx.t(value.label)}}</th>
+      {% }) %}
+    </tr>
+  </thead>
+  <tbody>
+    {% ctx.component.questions.forEach(function(question) { %}
+    <tr>
+      <td>{{ctx.t(question.label)}}</td>
+      {% ctx.component.values.forEach(function(value) { %}
+      <td style="text-align: center;">
+        <input type="radio" name="{{ ctx.self.getInputName(question) }}" value="{{value.value}}" id="{{ctx.key}}-{{question.value}}-{{value.value}}" ref="input">
+      </td>
+      {% }) %}
+    </tr>
+    {% }) %}
+  </tbody>
+</table>

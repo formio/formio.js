@@ -1,0 +1,9 @@
+<div id="{{ctx.id}}"
+     {% if (ctx.classes.split(' ')[0] == 'row') { %} class = "{{ctx.classes.replace(/row/g, 'columns')}}" {% } %}
+     {% if (ctx.styles) { %} styles='{{ctx.styles}}'{% } %}
+     ref='component' >
+    {% if (ctx.visible) { %}
+    {{ctx.children}}
+  <p ref="messageContainer" class="help is-danger"></p>
+  {% } %}
+</div>

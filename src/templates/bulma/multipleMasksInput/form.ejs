@@ -1,0 +1,19 @@
+<div
+  class="input-group formio-multiple-mask-container"
+  ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
+>
+  <select
+    class="form-control formio-multiple-mask-select"
+    id="{{ctx.key}}-mask"
+    ref="select">
+    {% ctx.selectOptions.forEach(function(option) { %}
+    <option value="{{option.value}}">{{option.label}}</option>
+    {% }); %}
+  </select>
+  <input
+    ref="mask"
+    {% for (var attr in ctx.input.attr) { %}
+    {{attr}}="{{ctx.input.attr[attr]}}"
+    {% } %}
+  >
+</div>

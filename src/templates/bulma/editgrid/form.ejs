@@ -1,0 +1,40 @@
+<ul class="editgrid-listgroup list-group
+    {{ ctx.component.striped ? 'table-striped' : ''}}
+    {{ ctx.component.bordered ? 'table-bordered' : ''}}
+    {{ ctx.component.hover ? 'table-hover' : ''}}
+    {{ ctx.component.condensed ? 'table-sm' : ''}}
+    ">
+  {% if (ctx.header) { %}
+  <li class="list-group-item list-group-header">
+    {{ctx.header}}
+  </li>
+  {% } %}
+  {% ctx.rows.forEach(function(row, rowIndex) { %}
+  <li class="list-group-item" ref="{{ctx.editgridKey}}">
+    {{row}}
+    {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
+    <div class="editgrid-actions">
+      <button class="btn btn-primary" ref="{{ctx.editgridKey}}-saveRow">{{ctx.t(ctx.component.saveRow || 'Save')}}</button>
+      {% if (ctx.component.removeRow) { %}
+      <button class="btn btn-danger" ref="{{ctx.editgridKey}}-cancelRow">{{ctx.t(ctx.component.removeRow || 'Cancel')}}</button>
+      {% } %}
+    </div>
+    {% } %}
+    <div class="has-error">
+      <div class="editgrid-row-error help-block">
+        {{ctx.errors[rowIndex]}}
+      </div>
+    </div>
+  </li>
+  {% }) %}
+  {% if (ctx.footer) { %}
+  <li class="list-group-item list-group-footer">
+    {{ctx.footer}}
+  </li>
+  {% } %}
+</ul>
+{% if (!ctx.readOnly && ctx.hasAddButton) { %}
+<button class="btn btn-primary" ref="{{ctx.editgridKey}}-addRow">
+  <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another')}}
+</button>
+{% } %}

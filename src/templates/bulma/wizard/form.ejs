@@ -1,0 +1,36 @@
+<div style="position: relative;">
+  <nav aria-label="navigation">
+    <ul class="pagination">
+      {% ctx.panels.forEach(function(panel, index) { %}
+      <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
+        <span class="page-link" ref="{{ctx.wizardKey}}-link">{{panel.title}}</span>
+      </li>
+      {% }) %}
+    </ul>
+  </nav>
+  <div class="wizard-page" ref="{{ctx.wizardKey}}">
+    {{ctx.components}}
+  </div>
+  <ul class="list-inline">
+    {% if (ctx.buttons.cancel) { %}
+    <li class="list-inline-item">
+      <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel">{{ctx.t('cancel')}}</button>
+    </li>
+    {% } %}
+    {% if (ctx.buttons.previous) { %}
+    <li class="list-inline-item">
+      <button class="btn btn-primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous">{{ctx.t('previous')}}</button>
+    </li>
+    {% } %}
+    {% if (ctx.buttons.next) { %}
+    <li class="list-inline-item">
+      <button class="btn btn-primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next">{{ctx.t('next')}}</button>
+    </li>
+    {% } %}
+    {% if (ctx.buttons.submit) { %}
+    <li class="list-inline-item">
+      <button class="btn btn-primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit">{{ctx.t('submit')}}</button>
+    </li>
+    {% } %}
+  </ul>
+</div>

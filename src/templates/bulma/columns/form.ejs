@@ -1,0 +1,9 @@
+{% ctx.component.columns.forEach(function(column, index) { %}
+<div class="
+    column
+    is-{{column.width}}
+    is-offset-{{column.offset}}
+  " ref="{{ctx.columnKey}}">
+  {{ctx.columnComponents[index]}}
+</div>
+{% }) %}
