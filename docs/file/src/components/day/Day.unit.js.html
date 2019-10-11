@@ -261,37 +261,37 @@ describe(&apos;Day Component&apos;, () =&gt; {
       // Set the year to a non-leap year.
       component.refs.year.value = 2017;
       component.setSelectValue(component.refs.month, &apos;1&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;31&apos;);
 
       component.setSelectValue(component.refs.month, &apos;2&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;28&apos;);
 
       component.setSelectValue(component.refs.month, &apos;3&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;31&apos;);
 
       component.setSelectValue(component.refs.month, &apos;4&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;30&apos;);
 
       // Set to a leap year.
       component.refs.year.value = 2020;
       component.setSelectValue(component.refs.month, &apos;1&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;31&apos;);
 
       component.setSelectValue(component.refs.month, &apos;2&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;29&apos;);
 
       component.setSelectValue(component.refs.month, &apos;3&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;31&apos;);
 
       component.setSelectValue(component.refs.month, &apos;4&apos;);
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
       assert.equal(component.refs.day.max, &apos;30&apos;);
 
       done();
@@ -359,7 +359,7 @@ describe(&apos;Day Component&apos;, () =&gt; {
         done();
       });
       component.refs.month.value = 2;
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
     });
   });
 
@@ -372,7 +372,7 @@ describe(&apos;Day Component&apos;, () =&gt; {
         done();
       });
       component.refs.month.value = 2;
-      component.refs.month.dispatchEvent(new Event(&apos;change&apos;));
+      component.refs.month.dispatchEvent(new Event(&apos;input&apos;));
     });
   });
 
