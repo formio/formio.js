@@ -434,6 +434,10 @@ export default class WebformBuilder extends Component {
     };
   }
 
+  redraw() {
+    return Webform.prototype.redraw.call(this);
+  }
+
   get form() {
     return this.webform.form;
   }
