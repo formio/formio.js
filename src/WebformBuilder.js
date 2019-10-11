@@ -854,6 +854,7 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
         'hidden',
+        'conditional',
         'calculatedValue'
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
