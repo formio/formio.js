@@ -161,12 +161,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponentWithFilters">eachComponentWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponentsWithFilters">flattenComponentsWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
@@ -267,127 +265,6 @@ export function isLayoutComponent(component) {
   );
 }
 
-const componentAction = (componentObject) =&gt; {
-  const {
-    component,
-    fn,
-    includeAll,
-    path,
-    parent,
-    excludedTypes,
-    pathPreffix,
-    invokeEachComponent
-  } = componentObject;
-
-  const hasColumns = component.columns &amp;&amp; Array.isArray(component.columns);
-  const hasRows = component.rows &amp;&amp; Array.isArray(component.rows);
-  const hasComps = component.components &amp;&amp; Array.isArray(component.components);
-  let noRecurse = false;
-  const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : &apos;&apos;;
-
-  // Keep track of parent references.
-  if (parent) {
-    // Ensure we don&apos;t create infinite JSON structures.
-    component.parent = clone(parent);
-    delete component.parent.components;
-    delete component.parent.componentMap;
-    delete component.parent.columns;
-    delete component.parent.rows;
-  }
-
-  if (includeAll || component.tree || (!hasColumns &amp;&amp; !hasRows &amp;&amp; !hasComps)) {
-    // eslint-disable-next-line no-multi-assign, no-param-reassign
-    noRecurse = fn(
-      component,
-      excludedTypes &amp;&amp; excludedTypes.length ? `${pathPreffix}${newPath}` : newPath);
-  }
-
-  const subPath = () =&gt; {
-    if (
-      component.key &amp;&amp;
-      ![&apos;panel&apos;, &apos;table&apos;, &apos;well&apos;, &apos;columns&apos;, &apos;fieldset&apos;, &apos;tabs&apos;, &apos;form&apos;].includes(component.type) &amp;&amp;
-      (
-        [&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;].includes(component.type) ||
-        component.tree
-      )
-    ) {
-      return newPath;
-    }
-    else if (
-      component.key &amp;&amp;
-      component.type === &apos;form&apos;
-    ) {
-      return `${newPath}.data`;
-    }
-    return path;
-  };
-
-  if (!noRecurse) {
-    const getComponentsContext = (components) =&gt; ({
-      components,
-      fn,
-      includeAll,
-      path: subPath(),
-      parent: parent ? component : null,
-      excludedTypes,
-      pathPreffix,
-      invokeEachComponent,
-    });
-
-    if (hasColumns) {
-      component.columns.forEach((column) =&gt;
-        invokeEachComponent(getComponentsContext(column.components)));
-    }
-
-    else if (hasRows) {
-      component.rows.forEach((row) =&gt; {
-        if (Array.isArray(row)) {
-          row.forEach((column) =&gt;
-            invokeEachComponent(getComponentsContext(column.components)));
-        }
-      });
-    }
-
-    else if (hasComps) {
-      invokeEachComponent(getComponentsContext(component.components));
-    }
-  }
-};
-
-export function eachComponentWithFilters(filters) {
-  const {
-    components,
-    fn,
-    includeAll,
-    parent,
-    pathPreffix = &apos;&apos;,
-  } = filters;
-  let { path, excludedTypes = [] } = filters;
-
-  if (!components) return;
-  if (!Array.isArray(excludedTypes)) {
-    excludedTypes = [];
-  }
-  path = path || &apos;&apos;;
-  components.forEach((component) =&gt; {
-    if (!component || excludedTypes.includes(component.type)) {
-      return;
-    }
-
-    componentAction({
-      component,
-      fn,
-      includeAll,
-      path,
-      parent,
-      excludedTypes,
-      pathPreffix,
-      invokeEachComponent: (componentsContext) =&gt;
-        eachComponentWithFilters(componentsContext)
-    });
-  });
-}
-
 /**
  * Iterate through each component within a form.
  *
@@ -409,21 +286,65 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     if (!component) {
       return;
     }
+    const hasColumns = component.columns &amp;&amp; Array.isArray(component.columns);
+    const hasRows = component.rows &amp;&amp; Array.isArray(component.rows);
+    const hasComps = component.components &amp;&amp; Array.isArray(component.components);
+    let noRecurse = false;
+    const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : &apos;&apos;;
 
-    componentAction({
-      component,
-      fn,
-      includeAll,
-      path,
-      parent,
-      invokeEachComponent: (componentsContext) =&gt; eachComponent(
-        componentsContext.components,
-        componentsContext.fn,
-        componentsContext.includeAll,
-        componentsContext.path,
-        componentsContext.parent
-      ),
-    });
+    // Keep track of parent references.
+    if (parent) {
+      // Ensure we don&apos;t create infinite JSON structures.
+      component.parent = clone(parent);
+      delete component.parent.components;
+      delete component.parent.componentMap;
+      delete component.parent.columns;
+      delete component.parent.rows;
+    }
+
+    if (includeAll || component.tree || (!hasColumns &amp;&amp; !hasRows &amp;&amp; !hasComps)) {
+      noRecurse = fn(component, newPath);
+    }
+
+    const subPath = () =&gt; {
+      if (
+        component.key &amp;&amp;
+        ![&apos;panel&apos;, &apos;table&apos;, &apos;well&apos;, &apos;columns&apos;, &apos;fieldset&apos;, &apos;tabs&apos;, &apos;form&apos;].includes(component.type) &amp;&amp;
+        (
+          [&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;].includes(component.type) ||
+          component.tree
+        )
+      ) {
+        return newPath;
+      }
+      else if (
+        component.key &amp;&amp;
+        component.type === &apos;form&apos;
+      ) {
+        return `${newPath}.data`;
+      }
+      return path;
+    };
+
+    if (!noRecurse) {
+      if (hasColumns) {
+        component.columns.forEach((column) =&gt;
+          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+      }
+
+      else if (hasRows) {
+        component.rows.forEach((row) =&gt; {
+          if (Array.isArray(row)) {
+            row.forEach((column) =&gt;
+              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+          }
+        });
+      }
+
+      else if (hasComps) {
+        eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
+      }
+    }
   });
 }
 
@@ -666,23 +587,6 @@ export function applyFormChanges(form, changes) {
     form,
     failed
   };
-}
-
-export function flattenComponentsWithFilters(componentsContext) {
-  const { components, includeAll, excludedTypes, pathPreffix } = componentsContext;
-  const flattened = {};
-  const componentAction = (component, path) =&gt; {
-    flattened[path] = component;
-  };
-  eachComponentWithFilters({
-    components,
-    fn: componentAction,
-    includeAll,
-    excludedTypes,
-    pathPreffix,
-  });
-
-  return flattened;
 }
 
 /**
