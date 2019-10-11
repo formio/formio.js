@@ -64,7 +64,7 @@ const url = (formio) => {
 
       //Overrides previous request props
       if (options) {
-        const parsedOptions = JSON.parse(options);
+        const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
         for (const prop in parsedOptions) {
           xhr[prop] = parsedOptions[prop];
         }
