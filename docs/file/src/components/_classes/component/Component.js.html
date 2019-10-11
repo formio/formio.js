@@ -161,10 +161,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponentWithFilters">eachComponentWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponentsWithFilters">flattenComponentsWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
@@ -1651,7 +1653,7 @@ export default class Component extends Element {
       .forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-warning&apos;));
 
     if (dirty &amp;&amp; this.options.highlightErrors) {
-      this.addClass(this.element, &apos;alert alert-warning&apos;);
+      this.addClass(this.element, &apos;formio-error-wrapper&apos;);
     }
     else {
       this.addClass(this.element, &apos;has-error&apos;);
@@ -1679,7 +1681,7 @@ export default class Component extends Element {
     elements.forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-invalid&apos;));
 
     if (dirty &amp;&amp; this.options.highlightErrors) {
-      this.addClass(this.element, &apos;alert alert-danger&apos;);
+      this.addClass(this.element, &apos;formio-error-wrapper&apos;);
     }
     else {
       this.addClass(this.element, &apos;has-error&apos;);
@@ -2182,50 +2184,16 @@ export default class Component extends Element {
       return false;
     }
 
-    // Get the dataValue.
-    let firstPass = false;
-    let dataValue = null;
-    const allowOverride = this.component.allowCalculateOverride;
-    if (allowOverride) {
-      dataValue = this.dataValue;
-    }
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &amp;&amp;
-      (this.calculatedValue !== null) &amp;&amp;
-      !_.isEqual(dataValue, this.calculatedValue)
-    ) {
+    // Skip this operation if this component allows modification and it is no longer pristine.
+    if (this.component.allowCalculateOverride &amp;&amp; !this.pristine) {
       return false;
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: this.defaultValue,
+    return this.setValue(this.evaluate(this.component.calculateValue, {
+      value: this.dataValue,
       data
-    }, &apos;value&apos;);
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &amp;&amp;
-      firstPass &amp;&amp;
-      !this.isEmpty(dataValue) &amp;&amp;
-      !_.isEqual(dataValue, calculatedValue)
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-
-    const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
-    return changed;
+    }, &apos;value&apos;), flags);
   }
 
   /**
@@ -2375,6 +2343,13 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
+  clearErrorClasses() {
+    this.removeClass(this.element, &apos;formio-error-wrapper&apos;);
+    this.removeClass(this.element, &apos;alert alert-danger&apos;);
+    this.removeClass(this.element, &apos;alert alert-warning&apos;);
+    this.removeClass(this.element, &apos;has-error&apos;);
+  }
+
   setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
@@ -2404,9 +2379,7 @@ export default class Component extends Element {
         this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
         this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-warning&apos;));
       }
-      this.removeClass(this.element, &apos;alert alert-danger&apos;);
-      this.removeClass(this.element, &apos;alert alert-warning&apos;);
-      this.removeClass(this.element, &apos;has-error&apos;);
+      this.clearErrorClasses();
     }
 
     if (!this.refs.input) {

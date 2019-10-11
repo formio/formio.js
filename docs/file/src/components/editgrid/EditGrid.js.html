@@ -161,10 +161,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponentWithFilters">eachComponentWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponentsWithFilters">flattenComponentsWithFilters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
@@ -479,7 +481,7 @@ export default class EditGridComponent extends NestedComponent {
       return this.renderString(
         rowTemplate,
         {
-          row: dataValue[rowIndex],
+          row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -494,7 +496,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkData(data, flags = {}) {
-    return super.checkData(data, flags) &amp;&amp; this.editRows.reduce((valid, editRow) =&gt; this.checkRow(data, editRow, flags) &amp;&amp; valid, true);
+    Component.prototype.checkData.call(this, data, flags);
+    return this.editRows.reduce((valid, editRow, index) =&gt; this.checkRow(data[index], editRow, flags) &amp;&amp; valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -630,6 +633,7 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.readOnly) {
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       this.redraw();
       return;
     }
@@ -782,6 +786,10 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
+  checkValidity(data, dirty) {
+    return this.checkComponentValidity(data, dirty);
+  }
+
   checkComponentValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity(&apos;&apos;);
@@ -789,22 +797,22 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     let rowsValid = true;
-    let rowsClosed = true;
+    let rowsEditing = false;
     this.editRows.forEach((editRow) =&gt; {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &amp;= rowValid;
 
-      // Any open rows causes validation to fail.
-      rowsClosed &amp;= !editRow.isOpen;
+      // If this is a dirty check, and any rows are still editing, we need to throw validation error.
+      rowsEditing |= (dirty &amp;&amp; (editRow.editing || editRow.isOpen));
     });
 
     if (!rowsValid) {
       this.setCustomValidity(&apos;Please correct rows before proceeding.&apos;, dirty);
       return false;
     }
-    else if (!rowsClosed &amp;&amp; !this.component.inlineEdit) {
+    else if (rowsEditing &amp;&amp; !this.component.inlineEdit) {
       this.setCustomValidity(&apos;Please save all rows before proceeding.&apos;, dirty);
       return false;
     }

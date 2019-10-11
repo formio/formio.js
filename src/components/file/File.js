@@ -222,7 +222,7 @@ export default class FileComponent extends Field {
 
     if (this.refs.fileDrop) {
       const element = this;
-      this.addEventListener(this.refs.fileDrop, 'dragOver', function(event) {
+      this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
         this.className = 'fileSelector fileDragOver';
         event.preventDefault();
       });

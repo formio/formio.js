@@ -29,6 +29,127 @@ export function isLayoutComponent(component) {
   );
 }
 
+const componentAction = (componentObject) => {
+  const {
+    component,
+    fn,
+    includeAll,
+    path,
+    parent,
+    excludedTypes,
+    pathPreffix,
+    invokeEachComponent
+  } = componentObject;
+
+  const hasColumns = component.columns && Array.isArray(component.columns);
+  const hasRows = component.rows && Array.isArray(component.rows);
+  const hasComps = component.components && Array.isArray(component.components);
+  let noRecurse = false;
+  const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : '';
+
+  // Keep track of parent references.
+  if (parent) {
+    // Ensure we don't create infinite JSON structures.
+    component.parent = clone(parent);
+    delete component.parent.components;
+    delete component.parent.componentMap;
+    delete component.parent.columns;
+    delete component.parent.rows;
+  }
+
+  if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
+    // eslint-disable-next-line no-multi-assign, no-param-reassign
+    noRecurse = fn(
+      component,
+      excludedTypes && excludedTypes.length ? `${pathPreffix}${newPath}` : newPath);
+  }
+
+  const subPath = () => {
+    if (
+      component.key &&
+      !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
+      (
+        ['datagrid', 'container', 'editgrid'].includes(component.type) ||
+        component.tree
+      )
+    ) {
+      return newPath;
+    }
+    else if (
+      component.key &&
+      component.type === 'form'
+    ) {
+      return `${newPath}.data`;
+    }
+    return path;
+  };
+
+  if (!noRecurse) {
+    const getComponentsContext = (components) => ({
+      components,
+      fn,
+      includeAll,
+      path: subPath(),
+      parent: parent ? component : null,
+      excludedTypes,
+      pathPreffix,
+      invokeEachComponent,
+    });
+
+    if (hasColumns) {
+      component.columns.forEach((column) =>
+        invokeEachComponent(getComponentsContext(column.components)));
+    }
+
+    else if (hasRows) {
+      component.rows.forEach((row) => {
+        if (Array.isArray(row)) {
+          row.forEach((column) =>
+            invokeEachComponent(getComponentsContext(column.components)));
+        }
+      });
+    }
+
+    else if (hasComps) {
+      invokeEachComponent(getComponentsContext(component.components));
+    }
+  }
+};
+
+export function eachComponentWithFilters(filters) {
+  const {
+    components,
+    fn,
+    includeAll,
+    parent,
+    pathPreffix = '',
+  } = filters;
+  let { path, excludedTypes = [] } = filters;
+
+  if (!components) return;
+  if (!Array.isArray(excludedTypes)) {
+    excludedTypes = [];
+  }
+  path = path || '';
+  components.forEach((component) => {
+    if (!component || excludedTypes.includes(component.type)) {
+      return;
+    }
+
+    componentAction({
+      component,
+      fn,
+      includeAll,
+      path,
+      parent,
+      excludedTypes,
+      pathPreffix,
+      invokeEachComponent: (componentsContext) =>
+        eachComponentWithFilters(componentsContext)
+    });
+  });
+}
+
 /**
  * Iterate through each component within a form.
  *
@@ -50,65 +171,21 @@ export function eachComponent(components, fn, includeAll, path, parent) {
     if (!component) {
       return;
     }
-    const hasColumns = component.columns && Array.isArray(component.columns);
-    const hasRows = component.rows && Array.isArray(component.rows);
-    const hasComps = component.components && Array.isArray(component.components);
-    let noRecurse = false;
-    const newPath = component.key ? (path ? (`${path}.${component.key}`) : component.key) : '';
 
-    // Keep track of parent references.
-    if (parent) {
-      // Ensure we don't create infinite JSON structures.
-      component.parent = clone(parent);
-      delete component.parent.components;
-      delete component.parent.componentMap;
-      delete component.parent.columns;
-      delete component.parent.rows;
-    }
-
-    if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
-      noRecurse = fn(component, newPath);
-    }
-
-    const subPath = () => {
-      if (
-        component.key &&
-        !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
-        (
-          ['datagrid', 'container', 'editgrid'].includes(component.type) ||
-          component.tree
-        )
-      ) {
-        return newPath;
-      }
-      else if (
-        component.key &&
-        component.type === 'form'
-      ) {
-        return `${newPath}.data`;
-      }
-      return path;
-    };
-
-    if (!noRecurse) {
-      if (hasColumns) {
-        component.columns.forEach((column) =>
-          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
-      }
-
-      else if (hasRows) {
-        component.rows.forEach((row) => {
-          if (Array.isArray(row)) {
-            row.forEach((column) =>
-              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
-          }
-        });
-      }
-
-      else if (hasComps) {
-        eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
-      }
-    }
+    componentAction({
+      component,
+      fn,
+      includeAll,
+      path,
+      parent,
+      invokeEachComponent: (componentsContext) => eachComponent(
+        componentsContext.components,
+        componentsContext.fn,
+        componentsContext.includeAll,
+        componentsContext.path,
+        componentsContext.parent
+      ),
+    });
   });
 }
 
@@ -351,6 +428,23 @@ export function applyFormChanges(form, changes) {
     form,
     failed
   };
+}
+
+export function flattenComponentsWithFilters(componentsContext) {
+  const { components, includeAll, excludedTypes, pathPreffix } = componentsContext;
+  const flattened = {};
+  const componentAction = (component, path) => {
+    flattened[path] = component;
+  };
+  eachComponentWithFilters({
+    components,
+    fn: componentAction,
+    includeAll,
+    excludedTypes,
+    pathPreffix,
+  });
+
+  return flattened;
 }
 
 /**

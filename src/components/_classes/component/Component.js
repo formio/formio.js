@@ -1415,7 +1415,7 @@ export default class Component extends Element {
       .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-warning');
+      this.addClass(this.element, 'formio-error-wrapper');
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1443,7 +1443,7 @@ export default class Component extends Element {
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-danger');
+      this.addClass(this.element, 'formio-error-wrapper');
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1946,50 +1946,16 @@ export default class Component extends Element {
       return false;
     }
 
-    // Get the dataValue.
-    let firstPass = false;
-    let dataValue = null;
-    const allowOverride = this.component.allowCalculateOverride;
-    if (allowOverride) {
-      dataValue = this.dataValue;
-    }
-
-    // First pass, the calculatedValue is undefined.
-    if (this.calculatedValue === undefined) {
-      firstPass = true;
-      this.calculatedValue = null;
-    }
-
-    // Check to ensure that the calculated value is different than the previously calculated value.
-    if (
-      allowOverride &&
-      (this.calculatedValue !== null) &&
-      !_.isEqual(dataValue, this.calculatedValue)
-    ) {
+    // Skip this operation if this component allows modification and it is no longer pristine.
+    if (this.component.allowCalculateOverride && !this.pristine) {
       return false;
     }
 
     // Calculate the new value.
-    const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: this.defaultValue,
+    return this.setValue(this.evaluate(this.component.calculateValue, {
+      value: this.dataValue,
       data
-    }, 'value');
-
-    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
-    if (
-      allowOverride &&
-      firstPass &&
-      !this.isEmpty(dataValue) &&
-      !_.isEqual(dataValue, calculatedValue)
-    ) {
-      // Return that we have a change so it will perform another pass.
-      this.calculatedValue = calculatedValue;
-      return true;
-    }
-
-    const changed = this.setValue(calculatedValue, flags);
-    this.calculatedValue = this.dataValue;
-    return changed;
+    }, 'value'), flags);
   }
 
   /**
@@ -2139,6 +2105,13 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
+  clearErrorClasses() {
+    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, 'alert alert-danger');
+    this.removeClass(this.element, 'alert alert-warning');
+    this.removeClass(this.element, 'has-error');
+  }
+
   setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
@@ -2168,9 +2141,7 @@ export default class Component extends Element {
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
       }
-      this.removeClass(this.element, 'alert alert-danger');
-      this.removeClass(this.element, 'alert alert-warning');
-      this.removeClass(this.element, 'has-error');
+      this.clearErrorClasses();
     }
 
     if (!this.refs.input) {
