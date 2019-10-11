@@ -1,4 +1,5 @@
 import WebformBuilder from './WebformBuilder';
+import Webform from './Webform';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
@@ -69,7 +70,8 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get currentPage() {
-    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
+    const pages = this.pages;
+    return (pages && (pages.length >= this.page)) ? pages[this.page] : null;
   }
 
   set form(value) {
@@ -90,7 +92,10 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get schema() {
-    return this._form;
+    _.assign(this._form.components[this.page], this.webform._form.components[0]);
+    const webform = new Webform();
+    webform.form = this._form;
+    return webform.schema;
   }
 
   render() {
