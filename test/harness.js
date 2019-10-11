@@ -16,6 +16,36 @@ if (process) {
   process.on('unhandledRejection', (err, p) => {});
 }
 
+// Stub out the toLocaleString method so it works in mocha.
+Number.prototype.toLocaleString = function(local, options) {
+  if (options && options.style === 'currency') {
+    switch (local) {
+      case 'en':
+      case 'en-US':
+        return '$100.00';
+      case 'en-GB':
+        return 'US$100.00';
+      case 'fr':
+        return '100,00 $US';
+      case 'de':
+        return '100,00 $';
+    }
+  }
+  else {
+    switch (local) {
+      case 'en':
+      case 'en-US':
+        return '12,345.679';
+      case 'en-GB':
+        return '12,345.679';
+      case 'fr':
+        return '12 345,679';
+      case 'de':
+        return '12.345,679';
+    }
+  }
+};
+
 let formBuilderElement = null;
 let formBuilder = null;
 
