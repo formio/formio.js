@@ -410,8 +410,7 @@ export default class DataGridComponent extends NestedComponent {
    * @return {*|boolean}
    */
   checkRows(method, data, opts) {
-    const dataValue = this.dataValue;
-    return this.rows.reduce((valid, row, index) => this.checkRow(method, dataValue[index], row, opts) && valid, true);
+    return this.rows.reduce((valid, row, index) => this.checkRow(method, data[index], row, opts) && valid, true);
   }
 
   /**

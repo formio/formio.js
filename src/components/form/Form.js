@@ -271,7 +271,7 @@ export default class FormComponent extends Component {
    * @return {*}
    */
   createSubForm() {
-    return this.loadSubForm().then((form) => {
+    this.subFormReady = this.loadSubForm().then((form) => {
       if (!form) {
         return;
       }
@@ -312,6 +312,7 @@ export default class FormComponent extends Component {
         return this.subForm;
       });
     });
+    return this.subFormReady;
   }
 
   /**
@@ -320,11 +321,6 @@ export default class FormComponent extends Component {
   loadSubForm() {
     if (this.builderMode || this.isHidden()) {
       return NativePromise.resolve();
-    }
-
-    // Only load the subform if the subform isn't loaded and the conditions apply.
-    if (this.subFormReady) {
-      return this.subFormReady;
     }
 
     // Determine if we already have a loaded form object.
@@ -338,19 +334,16 @@ export default class FormComponent extends Component {
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;
       }
-      this.subFormReady = NativePromise.resolve(this.formObj);
+      return NativePromise.resolve(this.formObj);
     }
     else if (this.formSrc) {
-      this.subFormReady = (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
           return formObj;
         });
     }
-    if (!this.subFormReady) {
-      return new NativePromise(() => {});
-    }
-    return this.subFormReady;
+    return NativePromise.resolve();
   }
 
   checkComponentValidity(data, dirty) {
