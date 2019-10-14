@@ -260,35 +260,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 884,
+        "lineNumber": 889,
         "line": "  /**"
       },
       {
-        "lineNumber": 885,
+        "lineNumber": 890,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 886,
+        "lineNumber": 891,
         "line": "   *"
       },
       {
-        "lineNumber": 887,
+        "lineNumber": 892,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 888,
+        "lineNumber": 893,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 889,
+        "lineNumber": 894,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 890,
+        "lineNumber": 895,
         "line": "   */"
       },
       {
-        "lineNumber": 891,
+        "lineNumber": 896,
         "line": "  saveComponent(component, parent, isNew) {"
       }
     ],
@@ -998,51 +998,51 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 214,
+        "lineNumber": 137,
         "line": "/**"
       },
       {
-        "lineNumber": 215,
+        "lineNumber": 138,
         "line": " * Get a component by its key"
       },
       {
-        "lineNumber": 216,
+        "lineNumber": 139,
         "line": " *"
       },
       {
-        "lineNumber": 217,
+        "lineNumber": 140,
         "line": " * @param {Object} components"
       },
       {
-        "lineNumber": 218,
+        "lineNumber": 141,
         "line": " *   The components to iterate."
       },
       {
-        "lineNumber": 219,
+        "lineNumber": 142,
         "line": " * @param {String|Object} key"
       },
       {
-        "lineNumber": 220,
+        "lineNumber": 143,
         "line": " *   The key of the component to get, or a query of the component to search."
       },
       {
-        "lineNumber": 221,
+        "lineNumber": 144,
         "line": " *"
       },
       {
-        "lineNumber": 222,
+        "lineNumber": 145,
         "line": " * @returns {Object}"
       },
       {
-        "lineNumber": 223,
+        "lineNumber": 146,
         "line": " *   The component that matches the given key, or undefined if not found."
       },
       {
-        "lineNumber": 224,
+        "lineNumber": 147,
         "line": " */"
       },
       {
-        "lineNumber": 225,
+        "lineNumber": 148,
         "line": "export function getComponent(components, key, includeAll) {"
       }
     ],
@@ -1061,43 +1061,43 @@
     "filePath": "src/utils/formUtils.js",
     "lines": [
       {
-        "lineNumber": 267,
+        "lineNumber": 190,
         "line": "/**"
       },
       {
-        "lineNumber": 268,
+        "lineNumber": 191,
         "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form."
       },
       {
-        "lineNumber": 269,
+        "lineNumber": 192,
         "line": " *"
       },
       {
-        "lineNumber": 270,
+        "lineNumber": 193,
         "line": " * @param components"
       },
       {
-        "lineNumber": 271,
+        "lineNumber": 194,
         "line": " * @param key"
       },
       {
-        "lineNumber": 272,
+        "lineNumber": 195,
         "line": " * @param fn"
       },
       {
-        "lineNumber": 273,
+        "lineNumber": 196,
         "line": " * @param path"
       },
       {
-        "lineNumber": 274,
+        "lineNumber": 197,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 275,
+        "lineNumber": 198,
         "line": " */"
       },
       {
-        "lineNumber": 276,
+        "lineNumber": 199,
         "line": "export function findComponent(components, key, path, fn) {"
       }
     ],

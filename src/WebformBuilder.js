@@ -434,6 +434,10 @@ export default class WebformBuilder extends Component {
     };
   }
 
+  redraw() {
+    return Webform.prototype.redraw.call(this);
+  }
+
   get form() {
     return this.webform.form;
   }
@@ -854,6 +858,7 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
         'hidden',
+        'conditional',
         'calculatedValue'
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.3
+### Changed
+ - Upgraded webpack@4.41.1, i18next@17.2.0
+
+### Fixed
+ - Issues with the webform builder redraw that was replacing outside containing element.
+ - Reverted: Extend eachComponent and flattenComponent functions
+ - Fixed file component configured as URL saying SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data
+ - Fixing the schema for wizard builders so that it will save when changes are made.
+
 ## 4.3.2
 ### Added
  - Added possibility to add builder groups dynamically.
