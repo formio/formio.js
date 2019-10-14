@@ -776,11 +776,11 @@ export function getNumberDecimalLimit(component) {
 }
 
 export function getCurrencyAffixes({
-                                     currency = 'USD',
-                                     decimalLimit,
-                                     decimalSeparator,
-                                     lang,
-                                   }) {
+   currency = 'USD',
+   decimalLimit,
+   decimalSeparator,
+   lang,
+ }) {
   // Get the prefix and suffix from the localized string.
   let regex = '(.*)?100';
   if (decimalLimit) {

@@ -317,7 +317,7 @@ export default class DayComponent extends Field {
     const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.attr.type = &apos;hidden&apos;;
-    info.changeEvent = &apos;change&apos;;
+    info.changeEvent = &apos;input&apos;;
     return info;
   }
 
@@ -464,12 +464,12 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: &apos;single&apos;, month: &apos;single&apos;, year: &apos;single&apos;, input: &apos;multiple&apos; });
     const superAttach = super.attach(element);
-    this.addEventListener(this.refs.day, &apos;change&apos;, () =&gt; this.updateValue(null, {
+    this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
       modified: true
     }));
     // TODO: Need to rework this to work with day select as well.
     // Change day max input when month changes.
-    this.addEventListener(this.refs.month, &apos;change&apos;, () =&gt; {
+    this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
       const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
       const day = this.getFieldValue(&apos;day&apos;);
       this.refs.day.max = maxDay;
@@ -480,7 +480,7 @@ export default class DayComponent extends Field {
         modified: true
       });
     });
-    this.addEventListener(this.refs.year, &apos;change&apos;, () =&gt; this.updateValue(null, {
+    this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
       modified: true
     }));
     this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
@@ -562,18 +562,19 @@ export default class DayComponent extends Field {
   }
 
   getFieldValue(name) {
+    const parts = this.dataValue.split(&apos;/&apos;);
     let val = 0;
-    if (!this.refs[name]) {
-      return val;
-    }
-    if (this.component.fields[name].type === &apos;number&apos;) {
-      val = this.refs[name].value;
-    }
-    else if (this.component.fields[name].type === &apos;select&apos;) {
-      const selectedIndex = this.refs[name].selectedIndex;
-      if (selectedIndex !== -1) {
-        val = this.refs[name].options[selectedIndex].value;
-      }
+
+    switch (name) {
+      case &apos;month&apos;:
+        val = parts[this.dayFirst ? 1 : 0];
+        break;
+      case &apos;day&apos;:
+        val = parts[this.dayFirst ? 0 : 1];
+        break;
+      case &apos;year&apos;:
+        val = parts[2];
+        break;
     }
 
     val = parseInt(val, 10);
@@ -682,7 +683,7 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get validationValue() {
-    return this.date;
+    return this.dataValue;
   }
 
   getValue() {

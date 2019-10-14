@@ -243,7 +243,7 @@ export default class EditGridComponent extends NestedComponent {
       return this.renderString(
         rowTemplate,
         {
-          row: dataValue[rowIndex],
+          row: dataValue[rowIndex] || {},
           data: this.data,
           rowIndex,
           components: this.component.components,
@@ -258,7 +258,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkData(data, flags = {}) {
-    return super.checkData(data, flags) && this.editRows.reduce((valid, editRow) => this.checkRow(data, editRow, flags) && valid, true);
+    Component.prototype.checkData.call(this, data, flags);
+    return this.editRows.reduce((valid, editRow, index) => this.checkRow(data[index], editRow, flags) && valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -394,6 +395,7 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.readOnly) {
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       this.redraw();
       return;
     }
@@ -546,6 +548,10 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
+  checkValidity(data, dirty) {
+    return this.checkComponentValidity(data, dirty);
+  }
+
   checkComponentValidity(data, dirty) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
@@ -553,22 +559,22 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     let rowsValid = true;
-    let rowsClosed = true;
+    let rowsEditing = false;
     this.editRows.forEach((editRow) => {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(editRow, dirty);
 
       rowsValid &= rowValid;
 
-      // Any open rows causes validation to fail.
-      rowsClosed &= !editRow.isOpen;
+      // If this is a dirty check, and any rows are still editing, we need to throw validation error.
+      rowsEditing |= (dirty && (editRow.editing || editRow.isOpen));
     });
 
     if (!rowsValid) {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
-    else if (!rowsClosed && !this.component.inlineEdit) {
+    else if (rowsEditing && !this.component.inlineEdit) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }

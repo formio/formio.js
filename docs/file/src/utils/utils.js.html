@@ -1012,11 +1012,11 @@ export function getNumberDecimalLimit(component) {
 }
 
 export function getCurrencyAffixes({
-                                     currency = &apos;USD&apos;,
-                                     decimalLimit,
-                                     decimalSeparator,
-                                     lang,
-                                   }) {
+   currency = &apos;USD&apos;,
+   decimalLimit,
+   decimalSeparator,
+   lang,
+ }) {
   // Get the prefix and suffix from the localized string.
   let regex = &apos;(.*)?100&apos;;
   if (decimalLimit) {

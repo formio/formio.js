@@ -235,6 +235,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/WizardBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import WebformBuilder from &apos;./WebformBuilder&apos;;
+import Webform from &apos;./Webform&apos;;
 import _ from &apos;lodash&apos;;
 
 export default class WizardBuilder extends WebformBuilder {
@@ -305,7 +306,8 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get currentPage() {
-    return (this.pages &amp;&amp; (this.pages.length &gt;= this.page)) ? this.pages[this.page] : null;
+    const pages = this.pages;
+    return (pages &amp;&amp; (pages.length &gt;= this.page)) ? pages[this.page] : null;
   }
 
   set form(value) {
@@ -326,7 +328,10 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get schema() {
-    return this._form;
+    _.assign(this._form.components[this.page], this.webform._form.components[0]);
+    const webform = new Webform();
+    webform.form = this._form;
+    return webform.schema;
   }
 
   render() {

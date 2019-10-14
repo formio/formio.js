@@ -260,35 +260,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 864,
+        "lineNumber": 889,
         "line": "  /**"
       },
       {
-        "lineNumber": 865,
+        "lineNumber": 890,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 866,
+        "lineNumber": 891,
         "line": "   *"
       },
       {
-        "lineNumber": 867,
+        "lineNumber": 892,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 868,
+        "lineNumber": 893,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 869,
+        "lineNumber": 894,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 870,
+        "lineNumber": 895,
         "line": "   */"
       },
       {
-        "lineNumber": 871,
+        "lineNumber": 896,
         "line": "  saveComponent(component, parent, isNew) {"
       }
     ],
@@ -613,35 +613,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2032,
+        "lineNumber": 1998,
         "line": "  /**"
       },
       {
-        "lineNumber": 2033,
+        "lineNumber": 1999,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2034,
+        "lineNumber": 2000,
         "line": "   *"
       },
       {
-        "lineNumber": 2035,
+        "lineNumber": 2001,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2036,
+        "lineNumber": 2002,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2037,
+        "lineNumber": 2003,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2038,
+        "lineNumber": 2004,
         "line": "   */"
       },
       {
-        "lineNumber": 2039,
+        "lineNumber": 2005,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],
@@ -838,47 +838,6 @@
       "component",
       "data",
       "before"
-    ]
-  },
-  {
-    "name": "FormComponent#renderSubForm",
-    "filePath": "src/components/form/Form.js",
-    "lines": [
-      {
-        "lineNumber": 279,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 280,
-        "line": "   * Render a subform."
-      },
-      {
-        "lineNumber": 281,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 282,
-        "line": "   * @param form"
-      },
-      {
-        "lineNumber": 283,
-        "line": "   * @param options"
-      },
-      {
-        "lineNumber": 284,
-        "line": "   */"
-      },
-      {
-        "lineNumber": 285,
-        "line": "  renderSubForm(form) {"
-      }
-    ],
-    "codeParams": [
-      "form"
-    ],
-    "docParams": [
-      "form",
-      "options"
     ]
   },
   {

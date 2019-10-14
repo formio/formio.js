@@ -1279,8 +1279,7 @@ export default class SelectComponent extends Field {
       }
       this.error = null;
       this.removeClass(this.refs.selectContainer, 'is-invalid');
-      this.removeClass(this.element, 'alert alert-danger');
-      this.removeClass(this.element, 'has-error');
+      this.clearErrorClasses();
     }
   }
 }

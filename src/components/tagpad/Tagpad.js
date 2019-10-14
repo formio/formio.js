@@ -500,7 +500,7 @@ export default class Tagpad extends NestedComponent {
 
     this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-danger');
+      this.addClass(this.element, 'formio-error-wrapper');
     }
   }
 }
