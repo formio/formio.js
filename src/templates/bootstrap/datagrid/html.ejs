@@ -7,12 +7,10 @@
   <thead>
     <tr>
       {% ctx.columns.forEach(function(col) { %}
-      {% if (ctx.visibleColumns[col.key]) { %}
-      <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-        {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
-        {% if (col.tooltip) { %} <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
-      </th>
-      {% } %}
+        <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+          {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
+          {% if (col.tooltip) { %} <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
+        </th>
       {% }) %}
     </tr>
   </thead>
@@ -21,11 +19,9 @@
     {% ctx.rows.forEach(function(row) { %}
     <tr>
       {% ctx.columns.forEach(function(col) { %}
-      {% if (ctx.visibleColumns[col.key]) { %}
-      <td ref="{{ctx.datagridKey}}">
-        {{row[col.key]}}
-      </td>
-      {% } %}
+        <td ref="{{ctx.datagridKey}}">
+          {{row[col.key]}}
+        </td>
       {% }) %}
     </tr>
     {% }) %}

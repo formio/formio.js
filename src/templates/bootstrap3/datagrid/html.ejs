@@ -7,12 +7,10 @@
   <thead>
     <tr>
       {% columns.forEach(function(col) { %}
-      {% if (visibleColumns[col.key]) { %}
-      <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-        {{ col.hideLabel ? '' : t(col.label || col.title) }}
-        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
-      </th>
-      {% } %}
+        <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+          {{ col.hideLabel ? '' : t(col.label || col.title) }}
+          {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
+        </th>
       {% }) %}
     </tr>
   </thead>
@@ -21,11 +19,9 @@
     {% rows.forEach(function(row) { %}
     <tr>
       {% columns.forEach(function(col) { %}
-      {% if (visibleColumns[col.key]) { %}
-      <td ref="{{datagridKey}}">
-        {{row[col.key]}}
-      </td>
-      {% } %}
+        <td ref="{{datagridKey}}">
+          {{row[col.key]}}
+        </td>
       {% }) %}
     </tr>
     {% }) %}
