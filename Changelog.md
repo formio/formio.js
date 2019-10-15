@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.3.5
+### Changed
+ - Upgraded choices.js@7.0.2, webpack@4.41.2
+
 ### Fixed
  - Removed redraw when setting a submission, and replace with triggerUpdate. Fixes cursor jumping while typing in ng-formio
 
