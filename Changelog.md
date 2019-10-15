@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Removed redraw when setting a submission, and replace with triggerUpdate. Fixes cursor jumping while typing in ng-formio
+ - Styles for form builder to allow wrapping in the sidebar buttons.
 
 ## 4.3.4
 ### Changed
