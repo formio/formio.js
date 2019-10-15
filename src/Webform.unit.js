@@ -307,6 +307,7 @@ describe('Webform tests', () => {
         const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
         return form.setForm(formTest.form).then(() => {
           formTestTest(form, (error) => {
+            form.destroy();
             if (error) {
               throw new Error(error);
             }
