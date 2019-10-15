@@ -1,0 +1,11 @@
+<div class="pdf-upload formio-component-file">
+  <h3 class="label">{{ctx.t('Upload a PDF File')}}</h3>
+  <input type="file" style="opacity: 0; position: absolute;" tabindex="-1" accept=".pdf" ref="hiddenFileInputElement">
+  <div class="fileSelector" ref="fileDrop">
+    <i class="{{ctx.iconClass('cloud-upload')}}"></i>{{ctx.t('Drop pdf to start, or')}}<a href="#" ref="fileBrowse" class="browse">{{ctx.t('browse')}}</a>
+  </div>
+  <div class="alert alert-danger" ref="uploadError">
+
+  </div>
+</div>
+

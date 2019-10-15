@@ -1,0 +1,12 @@
+<table class="table table-bordered">
+  <tbody>
+  {{ctx.rows}}
+  {% if (!ctx.disabled) { %}
+  <tr>
+    <td colspan="2">
+      <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.addAnother)}}</button>
+    </td>
+  </tr>
+  {% } %}
+  </tbody>
+</table>

@@ -1,0 +1,5 @@
+<div id="{{ctx.groupId}}" class="accordion builder-sidebar{{ctx.scrollEnabled ? ' builder-sidebar_scroll' : ''}}" ref="sidebar">
+  {% ctx.groups.forEach(function(group) { %}
+    {{ group }}
+  {% }) %}
+</div>

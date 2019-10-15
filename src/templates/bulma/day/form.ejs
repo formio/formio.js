@@ -1,0 +1,35 @@
+<div class="row">
+  {% if (ctx.dayFirst && ctx.showDay) { %}
+  <div class="col col-xs-3">
+    {% if (!ctx.component.hideInputLabels) { %}
+    <label for="{{ctx.component.key}}-day" class="{% if(ctx.component.fields.day.required) { %}field-required{% } %}">{{ctx.t('Day')}}</label>
+    {% } %}
+    <div>{{ctx.day}}</div>
+  </div>
+  {% } %}
+  {% if (ctx.showMonth) { %}
+  <div class="col col-xs-4">
+    {% if (!ctx.component.hideInputLabels) { %}
+    <label for="{{ctx.component.key}}-month" class="{% if(ctx.component.fields.month.required) { %}field-required{% } %}">{{ctx.t('Month')}}</label>
+    {% } %}
+    <div>{{ctx.month}}</div>
+  </div>
+  {% } %}
+  {% if (!ctx.dayFirst && ctx.showDay) { %}
+  <div class="col col-xs-3">
+    {% if (!ctx.component.hideInputLabels) { %}
+    <label for="{{ctx.component.key}}-day" class="{% if(ctx.component.fields.day.required) { %}field-required{% } %}">{{ctx.t('Day')}}</label>
+    {% } %}
+    <div>{{ctx.day}}</div>
+  </div>
+  {% } %}
+  {% if (ctx.showYear) { %}
+  <div class="col col-xs-5">
+    {% if (!ctx.component.hideInputLabels) { %}
+    <label for="{{ctx.component.key}}-year" class="{% if(ctx.component.fields.year.required) { %}field-required{% } %}">{{ctx.t('Year')}}</label>
+    {% } %}
+    <div>{{ctx.year}}</div>
+  </div>
+  {% } %}
+</div>
+<input name="ctx.data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">

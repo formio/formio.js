@@ -1,0 +1,22 @@
+<div class="row">
+  {% ctx.values.forEach(function(value) { %}
+    <div class="col-sm-2">
+      {{ value }}
+    </div>
+  {% }) %}
+  <div class="col-sm-3">
+    <div class="btn-group pull-right">
+      {% if (ctx.node.hasChildren) { %}
+        <button ref="toggleNode" class="btn btn-default btn-sm toggleNode">{{ ctx.t(ctx.node.collapsed ? 'Expand' : 'Collapse') }}</button>
+      {% } %}
+      {% if (!ctx.readOnly) { %}
+        <button ref="addChild" class="btn btn-default btn-sm addChild">{{ ctx.t('Add') }}</button>
+        <button ref="editNode" class="btn btn-default btn-sm editNode">{{ ctx.t('Edit') }}</button>
+        <button ref="removeNode" class="btn btn-danger btn-sm removeNode">{{ ctx.t('Delete') }}</button>
+        {% if (ctx.node.revertAvailable) { %}
+          <button ref="revertNode" class="btn btn-danger btn-sm revertNode">{{ ctx.t('Revert') }}</button>
+        {% } %}
+      {% } %}
+    </div>
+  </div>
+</div>

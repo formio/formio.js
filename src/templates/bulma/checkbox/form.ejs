@@ -1,0 +1,20 @@
+<div class='field'>
+  <div class='control'>
+    <label class="{{ctx.input.labelClass}} checkbox">
+      <{{ctx.input.type}}
+        ref="input"
+        class='checkbox'
+        {% for (var attr in ctx.input.attr) { %}
+        {{attr}}="{{ctx.input.attr[attr]}}"
+        {% } %}
+        {% if (ctx.checked) { %}checked=true{% } %}
+        >
+      {% if (!ctx.self.labelIsHidden()) { %}{{ctx.input.label}}{% } %}
+      {% if (ctx.component.tooltip) { %}
+        <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
+      {% } %}
+      {{ctx.input.content}}
+      </{{ctx.input.type}}>
+    </label>
+  </div>
+</div>

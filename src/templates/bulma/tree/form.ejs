@@ -1,0 +1,20 @@
+{% if (ctx.node.isRoot) { %}
+  <div ref="root" class="list-group-item">
+{% } else { %}
+  <li ref="node" class="list-group-item col-sm-12 tree__level tree__level_{{ ctx.odd ? 'odd' : 'even' }}">
+{% } %}
+  {% if (ctx.content) { %}
+    <div ref="content" class="tree__node-content">
+      {{ ctx.content }}
+    </div>
+  {% } %}
+  {% if (ctx.childNodes && ctx.childNodes.length) { %}
+    <ul ref="childNodes" class="tree__node-children list-group row">
+      {{ ctx.childNodes.join('') }}
+    </ul>
+  {% } %}
+{% if (ctx.node.isRoot) { %}
+  </div>
+{% } else { %}
+  </li>
+{% } %}
