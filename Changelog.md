@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Cursor jumping while typing in ng-formio
 
+## 4.3.4
+### Changed
+ - Upgraded core-js@3.3.2, jsdom@15.2.0
+
+### Fixed
+ - Problems with the DataGrid and hiding columns when in builder mode.
+ - Fixed custom default value in wysiwyg editors.
+ - Fixed issues where datetime loses format in Wizard 
+
 ## 4.3.3
 ### Changed
  - Upgraded webpack@4.41.1, i18next@17.2.0

@@ -212,9 +212,10 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   render() {
+    const columns = this.getColumns();
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
-      columns: this.getColumns(),
+      columns: columns,
       groups: this.hasRowGroups() ? this.getGroups() : [],
       visibleColumns: this.visibleColumns,
       hasToggle: _.get(this, 'component.groupToggle', false),
@@ -225,7 +226,7 @@ export default class DataGridComponent extends NestedComponent {
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
       hasGroups: this.hasRowGroups(),
-      numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
+      numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
       allowReorder: this.allowReorder,
       builder: this.builderMode,
@@ -246,7 +247,9 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   getColumns() {
-    return this.component.components;
+    return this.component.components.filter((comp) => {
+      return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
+    });
   }
 
   hasHeader() {
@@ -291,18 +294,17 @@ export default class DataGridComponent extends NestedComponent {
       });
      }
 
-    const rowLength = _.filter(this.visibleColumns).length;
+    const columns = this.getColumns();
+    const rowLength = columns.length;
     this.rows.forEach((row, rowIndex) => {
       let columnIndex = 0;
-      this.getColumns().forEach((col) => {
-        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
-          this.attachComponents(
-            this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
-            [this.rows[rowIndex][col.key]],
-            this.component.components
-          );
-          columnIndex++;
-        }
+      columns.forEach((col) => {
+        this.attachComponents(
+          this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+          [this.rows[rowIndex][col.key]],
+          this.component.components
+        );
+        columnIndex++;
       });
     });
     return super.attach(element);
@@ -435,6 +437,10 @@ export default class DataGridComponent extends NestedComponent {
 
     if (!this.rows || !this.rows.length) {
       return { rebuld: false, show: false };
+    }
+
+    if (this.builderMode) {
+      return { rebuild: false, show: true };
     }
 
     const visibility = {};
