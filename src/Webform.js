@@ -706,17 +706,9 @@ export default class Webform extends NestedComponent {
   setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () => {
-        // If nothing changed, still trigger an update.
         this.submissionSet = true;
-        if (!this.setValue(submission, flags)) {
-          this.triggerChange();
-        }
-        else {
-          const isSame = _.isEqual(submission, this.getValue());
-          if (!isSame) {
-            this.redraw();
-          }
-        }
+        this.setValue(submission, flags);
+        this.triggerChange();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
