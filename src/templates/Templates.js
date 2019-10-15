@@ -31,7 +31,7 @@ export default class Templates {
   }
 
   static get defaultTemplates() {
-    return Templates.templates.bulma;
+    return Templates.templates.bootstrap;
   }
 
   static set framework(framework) {
