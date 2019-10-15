@@ -22453,7 +22453,7 @@
     "__docId__": 1141,
     "kind": "file",
     "name": "src/components/datagrid/DataGrid.js",
-    "content": "import _ from 'lodash';\n// Import from \"dist\" because it would require and \"global\" would not be defined in Angular apps.\nimport dragula from 'dragula/dist/dragula';\nimport NestedComponent from '../_classes/nested/NestedComponent';\nimport Component from '../_classes/component/Component';\n\nexport default class DataGridComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Data Grid',\n      key: 'dataGrid',\n      type: 'datagrid',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Grid',\n      icon: 'th',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datagrid',\n      weight: 30,\n      schema: DataGridComponent.schema()\n    };\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'datagrid';\n  }\n\n  init() {\n    this.components = this.components || [];\n\n    // Add new values based on minLength.\n    this.rows = [];\n    this.createRows(true);\n    this.visibleColumns = {};\n    this.checkColumns(this.dataValue);\n  }\n\n  get dataValue() {\n    const dataValue = super.dataValue;\n    if (!dataValue || !Array.isArray(dataValue)) {\n      return this.emptyValue;\n    }\n    return dataValue;\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultSchema() {\n    return DataGridComponent.schema();\n  }\n\n  get emptyValue() {\n    return [{}];\n  }\n\n  get addAnotherPosition() {\n    return _.get(this.component, 'addAnotherPosition', 'bottom');\n  }\n\n  get minLength() {\n    if (this.hasRowGroups()) {\n      return _.sum(this.getGroupSizes());\n    }\n    else {\n      return _.get(this.component, 'validate.minLength', 0);\n    }\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    let defaultValue;\n\n    if (Array.isArray(value)) {\n      defaultValue = value;\n    }\n    else if (value && (typeof value === 'object')) {\n      defaultValue = [value];\n    }\n    else {\n      defaultValue = this.emptyValue;\n    }\n\n    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {\n      defaultValue.push({});\n    }\n\n    return defaultValue;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    _.each(this.refs[`${this.datagridKey}-addRow`], (button) => {\n      button.disabled = disabled;\n    });\n    _.each(this.refs[`${this.datagridKey}-removeRow`], (button) => {\n      button.disabled = disabled;\n    });\n  }\n\n  get disabled() {\n    return super.disabled;\n  }\n\n  get datagridKey() {\n    return `datagrid-${this.key}`;\n  }\n\n  get allowReorder() {\n    return !this.options.readOnly && _.get(this.component, 'reorder', false);\n  }\n\n  /**\n   * Split rows into chunks.\n   * @param {Number[]} groups - array of numbers where each item is size of group\n   * @param {Array<T>} rows - rows collection\n   * @return {Array<T[]>}\n   */\n  getRowChunks(groups, rows) {\n    const [, chunks] = groups.reduce(\n      ([startIndex, acc], size) => {\n        const endIndex = startIndex +  size;\n        return [endIndex, [...acc, [startIndex, endIndex]]];\n      }, [0, []]\n    );\n    return chunks.map(range => _.slice(rows, ...range));\n  }\n\n  /**\n   * Create groups object.\n   * Each key in object represents index of first row in group.\n   * @return {Object}\n   */\n  getGroups() {\n    const groups = _.get(this.component, 'rowGroups', []);\n    const sizes = _.map(groups, 'numberOfRows').slice(0, -1);\n    const indexes = sizes.reduce((groupIndexes, size) => {\n      const last = groupIndexes[groupIndexes.length - 1];\n      return groupIndexes.concat(last + size);\n    }, [0]);\n\n    return groups.reduce(\n      (gidxs, group, idx) => {\n        return {\n          ...gidxs,\n          [indexes[idx]]: group\n        };\n      },\n      {}\n    );\n  }\n\n  /**\n   * Retrun group sizes.\n   * @return {Number[]}\n   */\n  getGroupSizes() {\n    return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');\n  }\n\n  hasRowGroups() {\n    return _.get(this, 'component.enableRowGroups', false) && !this.builderMode;\n  }\n\n  totalRowsNumber(groups) {\n    return _.sum(_.map(groups, 'numberOfRows'));\n  }\n\n  setStaticValue(n) {\n    this.dataValue = _.range(n).map(() => ({}));\n  }\n\n  hasAddButton() {\n    const maxLength = _.get(this.component, 'validate.maxLength');\n    return !this.component.disableAddingRemovingRows &&\n      !this.disabled &&\n      this.fullMode &&\n      !this.options.preview &&\n      (!maxLength || (this.dataValue.length < maxLength));\n  }\n\n  hasExtraColumn() {\n    return (this.hasRemoveButtons() || this.builderMode);\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.disabled &&\n      this.fullMode &&\n      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));\n  }\n\n  hasTopSubmit() {\n    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasBottomSubmit() {\n    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasChanged(newValue, oldValue) {\n    return !_.isEqual(newValue, oldValue);\n  }\n\n  render() {\n    return super.render(this.renderTemplate('datagrid', {\n      rows: this.getRows(),\n      columns: this.getColumns(),\n      groups: this.hasRowGroups() ? this.getGroups() : [],\n      visibleColumns: this.visibleColumns,\n      hasToggle: _.get(this, 'component.groupToggle', false),\n      hasHeader: this.hasHeader(),\n      hasExtraColumn: this.hasExtraColumn(),\n      hasAddButton: this.hasAddButton(),\n      hasRemoveButtons: this.hasRemoveButtons(),\n      hasTopSubmit: this.hasTopSubmit(),\n      hasBottomSubmit: this.hasBottomSubmit(),\n      hasGroups: this.hasRowGroups(),\n      numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),\n      datagridKey: this.datagridKey,\n      allowReorder: this.allowReorder,\n      builder: this.builderMode,\n      placeholder: this.renderTemplate('builderPlaceholder', {\n        position: this.componentComponents.length,\n      }),\n    }));\n  }\n\n  getRows() {\n    return this.rows.map(row => {\n      const components = {};\n      _.each(row, (col, key) => {\n        components[key] = col.render();\n      });\n      return components;\n    });\n  }\n\n  getColumns() {\n    return this.component.components;\n  }\n\n  hasHeader() {\n    return this.component.components.reduce((hasHeader, col) => {\n      // If any of the components has a title and it isn't hidden, display the header.\n      return hasHeader || ((col.label || col.title) && !col.hideLabel);\n    }, false);\n  }\n\n  attach(element) {\n    this.loadRefs(element, {\n      [`${this.datagridKey}-row`]: 'multiple',\n      [`${this.datagridKey}-tbody`]: 'single',\n      [`${this.datagridKey}-addRow`]: 'multiple',\n      [`${this.datagridKey}-removeRow`]: 'multiple',\n      [`${this.datagridKey}-group-header`]: 'multiple',\n      [this.datagridKey]: 'multiple',\n    });\n\n    if (this.allowReorder) {\n      this.refs[`${this.datagridKey}-row`].forEach((row, index) => {\n        row.dragInfo = { index };\n      });\n\n      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {\n        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')\n      }).on('drop', this.onReorder.bind(this));\n    }\n\n    this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {\n      this.addEventListener(addButton, 'click', this.addRow.bind(this));\n    });\n\n    this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {\n      this.addEventListener(removeButton, 'click', this.removeRow.bind(this, index));\n    });\n\n    if (this.hasRowGroups()) {\n      this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);\n      this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {\n        this.addEventListener(header, 'click', () => this.toggleGroup(header, index));\n      });\n     }\n\n    const rowLength = _.filter(this.visibleColumns).length;\n    this.rows.forEach((row, rowIndex) => {\n      let columnIndex = 0;\n      this.getColumns().forEach((col) => {\n        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {\n          this.attachComponents(\n            this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],\n            [this.rows[rowIndex][col.key]],\n            this.component.components\n          );\n          columnIndex++;\n        }\n      });\n    });\n    return super.attach(element);\n  }\n\n  onReorder(element, _target, _source, sibling) {\n    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {\n      console.warn('There is no Drag Info available for either dragged or sibling element');\n      return;\n    }\n\n    const oldPosition = element.dragInfo.index;\n    //should drop at next sibling position; no next sibling means drop to last position\n    const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;\n    const movedBelow = newPosition > oldPosition;\n    const dataValue = _.cloneDeep(this.dataValue);\n    const draggedRowData = dataValue[oldPosition];\n\n    //insert element at new position\n    dataValue.splice(newPosition, 0, draggedRowData);\n    //remove element from old position (if was moved above, after insertion it's at +1 index)\n    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);\n\n    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)\n    this.setValue(dataValue);\n  }\n\n  addRow() {\n    this.dataValue.push({});\n    const index = this.rows.length;\n    this.rows[index] = this.createRowComponents(this.dataValue[index], index);\n    this.redraw();\n  }\n\n  removeRow(index) {\n    this.splice(index);\n    this.rows.splice(index, 1);\n    this.redraw();\n  }\n\n  createRows(init) {\n    let added = false;\n    // Create any missing rows.\n    this.dataValue.forEach((row, index) => {\n      if (!this.rows[index]) {\n        this.rows[index] = this.createRowComponents(row, index);\n        added = true;\n      }\n    });\n    // Delete any extra rows.\n    this.rows.splice(this.dataValue.length);\n    if (!init && added) {\n      this.redraw();\n    }\n    return added;\n  }\n\n  createRowComponents(row, rowIndex) {\n    const components = {};\n    this.component.components.map((col, colIndex) => {\n      const options = _.clone(this.options);\n      options.name += `[${rowIndex}]`;\n      options.row = `${rowIndex}-${colIndex}`;\n      components[col.key] = this.createComponent(col, options, row);\n      components[col.key].rowIndex = rowIndex;\n      components[col.key].inDataGrid = true;\n    });\n    return components;\n  }\n\n  /**\n   * Checks the validity of this datagrid.\n   *\n   * @param data\n   * @param dirty\n   * @return {*}\n   */\n  checkValidity(data, dirty) {\n    if (!this.checkCondition(null, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n\n    return this.checkRows('checkValidity', data, dirty);\n  }\n\n  /**\n   * Checks the data within each cell of the datagrid.\n   *\n   * @param data\n   * @param flags\n   * @return {*}\n   */\n  checkData(data, flags = {}) {\n    Component.prototype.checkData.call(this, data, flags);\n    return this.checkRows('checkData', data, flags);\n  }\n\n  /**\n   * Checks all rows within the datagrid.\n   *\n   * @param method\n   * @param data\n   * @param opts\n   * @return {*|boolean}\n   */\n  checkRows(method, data, opts) {\n    return this.rows.reduce((valid, row, index) => this.checkRow(method, data[index], row, opts) && valid, true);\n  }\n\n  /**\n   * Checks validity of each row according to a specific method.\n   *\n   * @param method\n   * @param rowData\n   * @param row\n   * @param opts\n   * @return {boolean}\n   */\n  checkRow(method, rowData, row, opts) {\n    let valid = true;\n    _.each(row, (col) => {\n      valid = col[method](rowData, opts) && valid;\n    });\n    return valid;\n  }\n\n  checkColumns(data) {\n    let show = false;\n\n    if (!this.rows || !this.rows.length) {\n      return { rebuld: false, show: false };\n    }\n\n    const visibility = {};\n\n    this.rows.forEach((row) => {\n      _.each(row, (col, key) => {\n        if (col && (typeof col.checkConditions === 'function')) {\n          visibility[key] = !!visibility[key] || (col.checkConditions(data) && col.type !== 'hidden');\n        }\n      });\n    });\n    const rebuild = !_.isEqual(visibility, this.visibleColumns);\n    _.each(visibility, (col) => {\n      show |= col;\n    });\n\n    this.visibleColumns = visibility;\n    return { rebuild, show };\n  }\n\n  checkComponentConditions(data) {\n    // If table isn't visible, don't bother calculating columns.\n    if (!super.checkComponentConditions(data)) {\n      return false;\n    }\n\n    const { rebuild, show } = this.checkColumns(data);\n    // If a rebuild is needed, then rebuild the table.\n    if (rebuild) {\n      this.redraw();\n    }\n\n    // Return if this table should show.\n    return show;\n  }\n\n  updateValue(value, flags) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return Component.prototype.updateValue.call(this, value, flags);\n  }\n\n  setValue(value, flags) {\n    flags = flags || {};\n    if (!value) {\n      this.dataValue = this.defaultValue;\n      this.createRows();\n      return false;\n    }\n    if (!Array.isArray(value)) {\n      if (typeof value === 'object') {\n        value = [value];\n      }\n      else {\n        this.createRows();\n        value = [{}];\n      }\n    }\n\n    const changed = this.hasChanged(value, this.dataValue);\n    this.dataValue = value;\n    this.createRows();\n    this.rows.forEach((row, rowIndex) => {\n      if (value.length <= rowIndex) {\n        return;\n      }\n      _.each(row, (col, key) => {\n        if (col.type === 'components') {\n          col.data = value[rowIndex];\n          col.setValue(value[rowIndex], flags);\n        }\n        else if (value[rowIndex].hasOwnProperty(key)) {\n          col.data = value[rowIndex];\n          col.setValue(value[rowIndex][key], flags);\n        }\n        else {\n          col.data = value[rowIndex];\n          col.setValue(col.defaultValue, flags);\n        }\n      });\n    });\n\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  /**\n   * Get the value of this component.\n   *\n   * @returns {*}\n   */\n  getValue() {\n    return this.dataValue;\n  }\n\n  restoreComponentsContext() {\n    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));\n  }\n\n  getComponent(path, fn) {\n    path = Array.isArray(path) ? path : [path];\n    const [key, ...remainingPath] = path;\n    let result = [];\n\n    if (!_.isString(key)) {\n      return result;\n    }\n\n    this.everyComponent((component, components) => {\n      if (component.component.key === key) {\n        let comp = component;\n        if (remainingPath.length > 0 && 'getComponent' in component) {\n          comp = component.getComponent(remainingPath, fn);\n        }\n        else if (fn) {\n          fn(component, components);\n        }\n\n        result = result.concat(comp);\n      }\n    });\n    return result.length > 0 ? result : null;\n  }\n\n  toggleGroup(element, index) {\n    element.classList.toggle('collapsed');\n    _.each(this.refs.chunks[index], row => {\n      row.classList.toggle('hidden');\n    });\n  }\n}\n",
+    "content": "import _ from 'lodash';\n// Import from \"dist\" because it would require and \"global\" would not be defined in Angular apps.\nimport dragula from 'dragula/dist/dragula';\nimport NestedComponent from '../_classes/nested/NestedComponent';\nimport Component from '../_classes/component/Component';\n\nexport default class DataGridComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Data Grid',\n      key: 'dataGrid',\n      type: 'datagrid',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Grid',\n      icon: 'th',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datagrid',\n      weight: 30,\n      schema: DataGridComponent.schema()\n    };\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'datagrid';\n  }\n\n  init() {\n    this.components = this.components || [];\n\n    // Add new values based on minLength.\n    this.rows = [];\n    this.createRows(true);\n    this.visibleColumns = {};\n    this.checkColumns(this.dataValue);\n  }\n\n  get dataValue() {\n    const dataValue = super.dataValue;\n    if (!dataValue || !Array.isArray(dataValue)) {\n      return this.emptyValue;\n    }\n    return dataValue;\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultSchema() {\n    return DataGridComponent.schema();\n  }\n\n  get emptyValue() {\n    return [{}];\n  }\n\n  get addAnotherPosition() {\n    return _.get(this.component, 'addAnotherPosition', 'bottom');\n  }\n\n  get minLength() {\n    if (this.hasRowGroups()) {\n      return _.sum(this.getGroupSizes());\n    }\n    else {\n      return _.get(this.component, 'validate.minLength', 0);\n    }\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    let defaultValue;\n\n    if (Array.isArray(value)) {\n      defaultValue = value;\n    }\n    else if (value && (typeof value === 'object')) {\n      defaultValue = [value];\n    }\n    else {\n      defaultValue = this.emptyValue;\n    }\n\n    for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {\n      defaultValue.push({});\n    }\n\n    return defaultValue;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    _.each(this.refs[`${this.datagridKey}-addRow`], (button) => {\n      button.disabled = disabled;\n    });\n    _.each(this.refs[`${this.datagridKey}-removeRow`], (button) => {\n      button.disabled = disabled;\n    });\n  }\n\n  get disabled() {\n    return super.disabled;\n  }\n\n  get datagridKey() {\n    return `datagrid-${this.key}`;\n  }\n\n  get allowReorder() {\n    return !this.options.readOnly && _.get(this.component, 'reorder', false);\n  }\n\n  /**\n   * Split rows into chunks.\n   * @param {Number[]} groups - array of numbers where each item is size of group\n   * @param {Array<T>} rows - rows collection\n   * @return {Array<T[]>}\n   */\n  getRowChunks(groups, rows) {\n    const [, chunks] = groups.reduce(\n      ([startIndex, acc], size) => {\n        const endIndex = startIndex +  size;\n        return [endIndex, [...acc, [startIndex, endIndex]]];\n      }, [0, []]\n    );\n    return chunks.map(range => _.slice(rows, ...range));\n  }\n\n  /**\n   * Create groups object.\n   * Each key in object represents index of first row in group.\n   * @return {Object}\n   */\n  getGroups() {\n    const groups = _.get(this.component, 'rowGroups', []);\n    const sizes = _.map(groups, 'numberOfRows').slice(0, -1);\n    const indexes = sizes.reduce((groupIndexes, size) => {\n      const last = groupIndexes[groupIndexes.length - 1];\n      return groupIndexes.concat(last + size);\n    }, [0]);\n\n    return groups.reduce(\n      (gidxs, group, idx) => {\n        return {\n          ...gidxs,\n          [indexes[idx]]: group\n        };\n      },\n      {}\n    );\n  }\n\n  /**\n   * Retrun group sizes.\n   * @return {Number[]}\n   */\n  getGroupSizes() {\n    return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');\n  }\n\n  hasRowGroups() {\n    return _.get(this, 'component.enableRowGroups', false) && !this.builderMode;\n  }\n\n  totalRowsNumber(groups) {\n    return _.sum(_.map(groups, 'numberOfRows'));\n  }\n\n  setStaticValue(n) {\n    this.dataValue = _.range(n).map(() => ({}));\n  }\n\n  hasAddButton() {\n    const maxLength = _.get(this.component, 'validate.maxLength');\n    return !this.component.disableAddingRemovingRows &&\n      !this.disabled &&\n      this.fullMode &&\n      !this.options.preview &&\n      (!maxLength || (this.dataValue.length < maxLength));\n  }\n\n  hasExtraColumn() {\n    return (this.hasRemoveButtons() || this.builderMode);\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.disabled &&\n      this.fullMode &&\n      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));\n  }\n\n  hasTopSubmit() {\n    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasBottomSubmit() {\n    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n  }\n\n  hasChanged(newValue, oldValue) {\n    return !_.isEqual(newValue, oldValue);\n  }\n\n  render() {\n    const columns = this.getColumns();\n    return super.render(this.renderTemplate('datagrid', {\n      rows: this.getRows(),\n      columns: columns,\n      groups: this.hasRowGroups() ? this.getGroups() : [],\n      visibleColumns: this.visibleColumns,\n      hasToggle: _.get(this, 'component.groupToggle', false),\n      hasHeader: this.hasHeader(),\n      hasExtraColumn: this.hasExtraColumn(),\n      hasAddButton: this.hasAddButton(),\n      hasRemoveButtons: this.hasRemoveButtons(),\n      hasTopSubmit: this.hasTopSubmit(),\n      hasBottomSubmit: this.hasBottomSubmit(),\n      hasGroups: this.hasRowGroups(),\n      numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),\n      datagridKey: this.datagridKey,\n      allowReorder: this.allowReorder,\n      builder: this.builderMode,\n      placeholder: this.renderTemplate('builderPlaceholder', {\n        position: this.componentComponents.length,\n      }),\n    }));\n  }\n\n  getRows() {\n    return this.rows.map(row => {\n      const components = {};\n      _.each(row, (col, key) => {\n        components[key] = col.render();\n      });\n      return components;\n    });\n  }\n\n  getColumns() {\n    return this.component.components.filter((comp) => {\n      return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);\n    });\n  }\n\n  hasHeader() {\n    return this.component.components.reduce((hasHeader, col) => {\n      // If any of the components has a title and it isn't hidden, display the header.\n      return hasHeader || ((col.label || col.title) && !col.hideLabel);\n    }, false);\n  }\n\n  attach(element) {\n    this.loadRefs(element, {\n      [`${this.datagridKey}-row`]: 'multiple',\n      [`${this.datagridKey}-tbody`]: 'single',\n      [`${this.datagridKey}-addRow`]: 'multiple',\n      [`${this.datagridKey}-removeRow`]: 'multiple',\n      [`${this.datagridKey}-group-header`]: 'multiple',\n      [this.datagridKey]: 'multiple',\n    });\n\n    if (this.allowReorder) {\n      this.refs[`${this.datagridKey}-row`].forEach((row, index) => {\n        row.dragInfo = { index };\n      });\n\n      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {\n        moves: (_draggedElement, _oldParent, clickedElement) => clickedElement.classList.contains('formio-drag-button')\n      }).on('drop', this.onReorder.bind(this));\n    }\n\n    this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {\n      this.addEventListener(addButton, 'click', this.addRow.bind(this));\n    });\n\n    this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {\n      this.addEventListener(removeButton, 'click', this.removeRow.bind(this, index));\n    });\n\n    if (this.hasRowGroups()) {\n      this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);\n      this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {\n        this.addEventListener(header, 'click', () => this.toggleGroup(header, index));\n      });\n     }\n\n    const columns = this.getColumns();\n    const rowLength = columns.length;\n    this.rows.forEach((row, rowIndex) => {\n      let columnIndex = 0;\n      columns.forEach((col) => {\n        this.attachComponents(\n          this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],\n          [this.rows[rowIndex][col.key]],\n          this.component.components\n        );\n        columnIndex++;\n      });\n    });\n    return super.attach(element);\n  }\n\n  onReorder(element, _target, _source, sibling) {\n    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {\n      console.warn('There is no Drag Info available for either dragged or sibling element');\n      return;\n    }\n\n    const oldPosition = element.dragInfo.index;\n    //should drop at next sibling position; no next sibling means drop to last position\n    const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;\n    const movedBelow = newPosition > oldPosition;\n    const dataValue = _.cloneDeep(this.dataValue);\n    const draggedRowData = dataValue[oldPosition];\n\n    //insert element at new position\n    dataValue.splice(newPosition, 0, draggedRowData);\n    //remove element from old position (if was moved above, after insertion it's at +1 index)\n    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);\n\n    //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)\n    this.setValue(dataValue);\n  }\n\n  addRow() {\n    this.dataValue.push({});\n    const index = this.rows.length;\n    this.rows[index] = this.createRowComponents(this.dataValue[index], index);\n    this.redraw();\n  }\n\n  removeRow(index) {\n    this.splice(index);\n    this.rows.splice(index, 1);\n    this.redraw();\n  }\n\n  createRows(init) {\n    let added = false;\n    // Create any missing rows.\n    this.dataValue.forEach((row, index) => {\n      if (!this.rows[index]) {\n        this.rows[index] = this.createRowComponents(row, index);\n        added = true;\n      }\n    });\n    // Delete any extra rows.\n    this.rows.splice(this.dataValue.length);\n    if (!init && added) {\n      this.redraw();\n    }\n    return added;\n  }\n\n  createRowComponents(row, rowIndex) {\n    const components = {};\n    this.component.components.map((col, colIndex) => {\n      const options = _.clone(this.options);\n      options.name += `[${rowIndex}]`;\n      options.row = `${rowIndex}-${colIndex}`;\n      components[col.key] = this.createComponent(col, options, row);\n      components[col.key].rowIndex = rowIndex;\n      components[col.key].inDataGrid = true;\n    });\n    return components;\n  }\n\n  /**\n   * Checks the validity of this datagrid.\n   *\n   * @param data\n   * @param dirty\n   * @return {*}\n   */\n  checkValidity(data, dirty) {\n    if (!this.checkCondition(null, data)) {\n      this.setCustomValidity('');\n      return true;\n    }\n\n    return this.checkRows('checkValidity', data, dirty);\n  }\n\n  /**\n   * Checks the data within each cell of the datagrid.\n   *\n   * @param data\n   * @param flags\n   * @return {*}\n   */\n  checkData(data, flags = {}) {\n    Component.prototype.checkData.call(this, data, flags);\n    return this.checkRows('checkData', data, flags);\n  }\n\n  /**\n   * Checks all rows within the datagrid.\n   *\n   * @param method\n   * @param data\n   * @param opts\n   * @return {*|boolean}\n   */\n  checkRows(method, data, opts) {\n    return this.rows.reduce((valid, row, index) => this.checkRow(method, data[index], row, opts) && valid, true);\n  }\n\n  /**\n   * Checks validity of each row according to a specific method.\n   *\n   * @param method\n   * @param rowData\n   * @param row\n   * @param opts\n   * @return {boolean}\n   */\n  checkRow(method, rowData, row, opts) {\n    let valid = true;\n    _.each(row, (col) => {\n      valid = col[method](rowData, opts) && valid;\n    });\n    return valid;\n  }\n\n  checkColumns(data) {\n    let show = false;\n\n    if (!this.rows || !this.rows.length) {\n      return { rebuld: false, show: false };\n    }\n\n    if (this.builderMode) {\n      return { rebuild: false, show: true };\n    }\n\n    const visibility = {};\n\n    this.rows.forEach((row) => {\n      _.each(row, (col, key) => {\n        if (col && (typeof col.checkConditions === 'function')) {\n          visibility[key] = !!visibility[key] || (col.checkConditions(data) && col.type !== 'hidden');\n        }\n      });\n    });\n    const rebuild = !_.isEqual(visibility, this.visibleColumns);\n    _.each(visibility, (col) => {\n      show |= col;\n    });\n\n    this.visibleColumns = visibility;\n    return { rebuild, show };\n  }\n\n  checkComponentConditions(data) {\n    // If table isn't visible, don't bother calculating columns.\n    if (!super.checkComponentConditions(data)) {\n      return false;\n    }\n\n    const { rebuild, show } = this.checkColumns(data);\n    // If a rebuild is needed, then rebuild the table.\n    if (rebuild) {\n      this.redraw();\n    }\n\n    // Return if this table should show.\n    return show;\n  }\n\n  updateValue(value, flags) {\n    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n    return Component.prototype.updateValue.call(this, value, flags);\n  }\n\n  setValue(value, flags) {\n    flags = flags || {};\n    if (!value) {\n      this.dataValue = this.defaultValue;\n      this.createRows();\n      return false;\n    }\n    if (!Array.isArray(value)) {\n      if (typeof value === 'object') {\n        value = [value];\n      }\n      else {\n        this.createRows();\n        value = [{}];\n      }\n    }\n\n    const changed = this.hasChanged(value, this.dataValue);\n    this.dataValue = value;\n    this.createRows();\n    this.rows.forEach((row, rowIndex) => {\n      if (value.length <= rowIndex) {\n        return;\n      }\n      _.each(row, (col, key) => {\n        if (col.type === 'components') {\n          col.data = value[rowIndex];\n          col.setValue(value[rowIndex], flags);\n        }\n        else if (value[rowIndex].hasOwnProperty(key)) {\n          col.data = value[rowIndex];\n          col.setValue(value[rowIndex][key], flags);\n        }\n        else {\n          col.data = value[rowIndex];\n          col.setValue(col.defaultValue, flags);\n        }\n      });\n    });\n\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  /**\n   * Get the value of this component.\n   *\n   * @returns {*}\n   */\n  getValue() {\n    return this.dataValue;\n  }\n\n  restoreComponentsContext() {\n    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));\n  }\n\n  getComponent(path, fn) {\n    path = Array.isArray(path) ? path : [path];\n    const [key, ...remainingPath] = path;\n    let result = [];\n\n    if (!_.isString(key)) {\n      return result;\n    }\n\n    this.everyComponent((component, components) => {\n      if (component.component.key === key) {\n        let comp = component;\n        if (remainingPath.length > 0 && 'getComponent' in component) {\n          comp = component.getComponent(remainingPath, fn);\n        }\n        else if (fn) {\n          fn(component, components);\n        }\n\n        result = result.concat(comp);\n      }\n    });\n    return result.length > 0 ? result : null;\n  }\n\n  toggleGroup(element, index) {\n    element.classList.toggle('collapsed');\n    _.each(this.refs.chunks[index], row => {\n      row.classList.toggle('hidden');\n    });\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datagrid/DataGrid.js",
     "access": "public",
@@ -23144,7 +23144,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getRows",
     "access": "public",
     "description": null,
-    "lineNumber": 238,
+    "lineNumber": 239,
     "undocument": true,
     "params": [],
     "return": {
@@ -23164,7 +23164,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 248,
+    "lineNumber": 249,
     "undocument": true,
     "params": [],
     "return": {
@@ -23184,7 +23184,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#hasHeader",
     "access": "public",
     "description": null,
-    "lineNumber": 252,
+    "lineNumber": 255,
     "undocument": true,
     "params": [],
     "return": {
@@ -23204,7 +23204,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 259,
+    "lineNumber": 262,
     "undocument": true,
     "params": [
       {
@@ -23229,7 +23229,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#dragula",
     "access": "public",
     "description": null,
-    "lineNumber": 274,
+    "lineNumber": 277,
     "undocument": true,
     "type": {
       "types": [
@@ -23248,7 +23248,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#onReorder",
     "access": "public",
     "description": null,
-    "lineNumber": 311,
+    "lineNumber": 313,
     "undocument": true,
     "params": [
       {
@@ -23289,7 +23289,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#addRow",
     "access": "public",
     "description": null,
-    "lineNumber": 333,
+    "lineNumber": 335,
     "undocument": true,
     "params": [],
     "return": null
@@ -23305,7 +23305,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#removeRow",
     "access": "public",
     "description": null,
-    "lineNumber": 340,
+    "lineNumber": 342,
     "undocument": true,
     "params": [
       {
@@ -23328,7 +23328,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#createRows",
     "access": "public",
     "description": null,
-    "lineNumber": 346,
+    "lineNumber": 348,
     "undocument": true,
     "params": [
       {
@@ -23355,7 +23355,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#createRowComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 363,
+    "lineNumber": 365,
     "undocument": true,
     "params": [
       {
@@ -23388,7 +23388,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkValidity",
     "access": "public",
     "description": "Checks the validity of this datagrid.",
-    "lineNumber": 383,
+    "lineNumber": 385,
     "params": [
       {
         "nullable": null,
@@ -23431,7 +23431,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkData",
     "access": "public",
     "description": "Checks the data within each cell of the datagrid.",
-    "lineNumber": 399,
+    "lineNumber": 401,
     "params": [
       {
         "nullable": null,
@@ -23474,7 +23474,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkRows",
     "access": "public",
     "description": "Checks all rows within the datagrid.",
-    "lineNumber": 412,
+    "lineNumber": 414,
     "params": [
       {
         "nullable": null,
@@ -23528,7 +23528,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkRow",
     "access": "public",
     "description": "Checks validity of each row according to a specific method.",
-    "lineNumber": 425,
+    "lineNumber": 427,
     "params": [
       {
         "nullable": null,
@@ -23591,7 +23591,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 433,
+    "lineNumber": 435,
     "undocument": true,
     "params": [
       {
@@ -23618,7 +23618,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#checkComponentConditions",
     "access": "public",
     "description": null,
-    "lineNumber": 458,
+    "lineNumber": 464,
     "undocument": true,
     "params": [
       {
@@ -23645,7 +23645,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#updateValue",
     "access": "public",
     "description": null,
-    "lineNumber": 474,
+    "lineNumber": 480,
     "undocument": true,
     "params": [
       {
@@ -23678,7 +23678,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 479,
+    "lineNumber": 485,
     "undocument": true,
     "params": [
       {
@@ -23711,7 +23711,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getValue",
     "access": "public",
     "description": "Get the value of this component.",
-    "lineNumber": 528,
+    "lineNumber": 534,
     "unknown": [
       {
         "tagName": "@returns",
@@ -23739,7 +23739,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#restoreComponentsContext",
     "access": "public",
     "description": null,
-    "lineNumber": 532,
+    "lineNumber": 538,
     "undocument": true,
     "params": [],
     "return": null
@@ -23755,7 +23755,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#getComponent",
     "access": "public",
     "description": null,
-    "lineNumber": 536,
+    "lineNumber": 542,
     "undocument": true,
     "params": [
       {
@@ -23788,7 +23788,7 @@
     "longname": "src/components/datagrid/DataGrid.js~DataGridComponent#toggleGroup",
     "access": "public",
     "description": null,
-    "lineNumber": 561,
+    "lineNumber": 567,
     "undocument": true,
     "params": [
       {
@@ -52011,7 +52011,7 @@
     "__docId__": 2746,
     "kind": "file",
     "name": "src/widgets/CalendarWidget.js",
-    "content": "import Flatpickr from 'flatpickr';\nimport InputWidget from './InputWidget';\nimport {\n  convertFormatToFlatpickr,\n  convertFormatToMask,\n  convertFormatToMoment,\n  currentTimezone,\n  formatDate,\n  formatOffset,\n  getDateSetting,\n  getLocaleDateFormatInfo,\n  momentDate,\n  zonesLoaded,\n  shouldLoadZones,\n  loadZones\n} from '../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\nimport {\n  monthFormatCorrector,\n  dynamicMonthLength,\n  timeFormatLocaleCorrector,\n} from '../utils/calendarUtils';\nconst DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';\nconst ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';\n\nexport default class CalendarWidget extends InputWidget {\n  /* eslint-disable camelcase */\n  static get defaultSettings() {\n    return {\n      type: 'calendar',\n      altInput: true,\n      allowInput: true,\n      clickOpens: true,\n      enableDate: true,\n      enableTime: true,\n      mode: 'single',\n      noCalendar: false,\n      format: DEFAULT_FORMAT,\n      dateFormat: ISO_8601_FORMAT,\n      useLocaleSettings: false,\n      language: 'us-en',\n      defaultValue: null,\n      hourIncrement: 1,\n      minuteIncrement: 5,\n      time_24hr: false,\n      saveAs: 'date',\n      displayInTimezone: '',\n      timezone: '',\n      minDate: '',\n      maxDate: ''\n    };\n  }\n  /* eslint-enable camelcase */\n\n  constructor(settings, component) {\n    super(settings, component);\n    // Change the format to map to the settings.\n    if (this.settings.noCalendar) {\n      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.settings.enableTime) {\n      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (this.settings.time_24hr) {\n      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n\n    this.component.suffix = '';\n\n    const { time_24hr: is24hours } = this.widgetLocale.currentLocale;\n    this.settings.format = timeFormatLocaleCorrector(is24hours, this.settings.format);\n\n    /*eslint-disable camelcase*/\n    this.settings.time_24hr = is24hours;\n    /*eslint-enable camelcase*/\n  }\n\n  /**\n   * Load the timezones.\n   *\n   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.\n   */\n  loadZones() {\n    const timezone = this.timezone;\n    if (!zonesLoaded() && shouldLoadZones(timezone)) {\n      loadZones(timezone).then(() => this.emit('redraw'));\n\n      // Return zones are loading.\n      return true;\n    }\n\n    // Zones are already loaded.\n    return false;\n  }\n\n  attach(input) {\n    const superAttach = super.attach(input);\n    if (input && !input.getAttribute('placeholder')) {\n      input.setAttribute('placeholder', this.settings.format);\n    }\n\n    const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);\n    this.defaultFormat = {\n      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',\n      time: 'G:i K'\n    };\n\n    const { currentLocale } = this.widgetLocale;\n\n    this.closedOn = 0;\n    this.settings.locale = currentLocale;\n    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;\n    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);\n    this.settings.minDate = getDateSetting(this.settings.minDate);\n    this.settings.maxDate = getDateSetting(this.settings.maxDate);\n    this.settings.defaultValue = getDateSetting(this.settings.defaultValue);\n    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);\n    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);\n    this.settings.onChange = () => this.emit('update');\n    this.settings.onClose = () => {\n      this.closedOn = Date.now();\n      if (this.calendar) {\n        this.emit('blur');\n      }\n    };\n\n    // Removes console errors from Flatpickr.\n    this.settings.errorHandler = () => null;\n\n    this.settings.formatDate = (date, format) => {\n      // Only format this if this is the altFormat and the form is readOnly.\n      if (this.settings.readOnly && (format === this.settings.altFormat)) {\n        if (this.settings.saveAs === 'text' || this.loadZones()) {\n          return Flatpickr.formatDate(date, format, currentLocale);\n        }\n\n        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, currentLocale);\n      }\n\n      return Flatpickr.formatDate(date, format, currentLocale);\n    };\n\n    // Extension of the parseDate method for validating input data.\n    this.settings.parseDate = (inputDate, format) => {\n      this.enteredDate = inputDate;\n\n      if (this.calendar) {\n        this.calendar.clear();\n      }\n\n      // Check for validation errors.\n      if (this.component.checkDataValidity()) {\n        this.enteredDate = '';\n        // Solving the problem with parsing dates with MMM or MMMM format.\n        if (!inputDate.match(/[a-zа-яё\\u00C0-\\u017F]{3,}/gi)) {\n          if (format.indexOf('M') !== -1) {\n            format = format.replace('M', 'm');\n          }\n          else if (format.indexOf('F') !== -1) {\n            format = format.replace('F', 'm');\n          }\n        }\n\n        // Creates a date to prevent incorrect parsing of locations such as ru.\n        const correctDate = moment(inputDate, monthFormatCorrector(this.settings.format)).toDate();\n        return Flatpickr.parseDate(correctDate, format, currentLocale);\n      }\n\n      if (this.calendar) {\n        this.calendar.close();\n      }\n\n      return undefined;\n    };\n\n    if (this._input) {\n      // Create a new flatpickr.\n      this.calendar = new Flatpickr(this._input, this.settings);\n\n      // Enforce the input mask of the format.\n      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));\n\n      // Make sure we commit the value after a blur event occurs.\n      this.addEventListener(this.calendar._input, 'blur', () =>\n        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)\n      );\n\n      // Makes it possible to enter the month as text.\n      if (this.settings.format.match(/\\bM{3}\\b/gi)) {\n        this.addEventListener(this.calendar._input, 'keyup', (e) => {\n          let format = this.settings.format;\n          const value = e.target.value;\n          const monthIndex = format.indexOf('M');\n\n          if (value && value[monthIndex].match(/\\d/)) {\n            format = format.replace('MMM', 'MM');\n          }\n          else if (value && value[monthIndex].match(/[a-zа-яё\\u00C0-\\u017F]/i)) {\n            const month = value .match(/([a-zа-яё\\u00C0-\\u017F]{2,})/gi);\n\n            if (month) {\n              const { monthsShort } = this.widgetLocale;\n              const monthLength = dynamicMonthLength(month[0], monthsShort);\n\n              if (monthLength) {\n                // Sets the dynamic length of the mask for the month.\n                format = format.replace(/M{3,}/g, _.fill(Array(monthLength), 'M').join(''));\n              }\n            }\n            format = format.replace(/M/g, 'e');\n          }\n          if (this.inputMasks[0]) {\n            this.inputMasks[0].destroy();\n            this.inputMasks = [];\n          }\n\n          this.setInputMask(this.calendar._input, convertFormatToMask(format));\n        });\n      }\n    }\n    return superAttach;\n  }\n\n  get timezone() {\n    if (this.settings.timezone) {\n      return this.settings.timezone;\n    }\n    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {\n      return this.settings.submissionTimezone;\n    }\n    if (this.settings.displayInTimezone === 'utc') {\n      return 'UTC';\n    }\n\n    // Return current timezone if none are provided.\n    return currentTimezone();\n  }\n\n  get defaultSettings() {\n    return CalendarWidget.defaultSettings;\n  }\n\n  addSuffix(suffix) {\n    this.addEventListener(suffix, 'click', () => {\n      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {\n        this.calendar.open();\n      }\n    });\n    return suffix;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (this.calendar) {\n      if (disabled) {\n        this.calendar._input.setAttribute('disabled', 'disabled');\n      }\n      else {\n        this.calendar._input.removeAttribute('disabled');\n      }\n      this.calendar.close();\n      this.calendar.redraw();\n    }\n  }\n\n  get input() {\n    return this.calendar ? this.calendar.altInput : null;\n  }\n\n  get localeFormat() {\n    let format = '';\n\n    if (this.settings.enableDate) {\n      format += this.defaultFormat.date;\n    }\n\n    if (this.settings.enableTime) {\n      format += this.defaultFormat.time;\n    }\n\n    return format;\n  }\n\n  get dateTimeFormat() {\n    return this.settings.useLocaleSettings ? this.localeFormat : convertFormatToFlatpickr(this.dateFormat);\n  }\n\n  get dateFormat() {\n    return _.get(this.settings, 'format', DEFAULT_FORMAT);\n  }\n\n  get defaultValue() {\n    const defaultDate = getDateSetting(this.settings.defaultValue);\n    return defaultDate ? defaultDate.toISOString() : '';\n  }\n\n  /**\n   * Return the date value.\n   *\n   * @param date\n   * @param format\n   * @return {string}\n   */\n  getDateValue(date, format) {\n    return moment(date).format(convertFormatToMoment(format));\n  }\n\n  /**\n   * Return the value of the selected date.\n   *\n   * @return {*}\n   */\n  getValue() {\n    // Standard output format.\n    if (!this.calendar) {\n      return super.getValue();\n    }\n\n    // Get the selected dates from the calendar widget.\n    const dates = this.calendar.selectedDates;\n    if (!dates || !dates.length) {\n      return super.getValue();\n    }\n\n    if (!(dates[0] instanceof Date)) {\n      return 'Invalid Date';\n    }\n\n    return this.getDateValue(dates[0], this.valueFormat);\n  }\n\n  /**\n   * Set the selected date value.\n   *\n   * @param value\n   */\n  setValue(value) {\n    if (!this.calendar) {\n      return super.setValue(value);\n    }\n    if (value) {\n      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {\n        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);\n      }\n      else {\n        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);\n      }\n    }\n    else {\n      this.calendar.clear(false);\n    }\n  }\n\n  getValueAsString(value, format) {\n    format = format || this.dateFormat;\n    if (this.settings.saveAs === 'text') {\n      return this.getDateValue(value, format);\n    }\n\n    return formatDate(value, format, this.timezone);\n  }\n\n  validationValue(value) {\n    if (typeof value === 'string') {\n      return new Date(value);\n    }\n    return value.map(val => new Date(val));\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.calendar) {\n      this.calendar.destroy();\n    }\n  }\n\n  get widgetLocale() {\n    let currentLocale = Flatpickr.l10ns.default;\n    let loc = this.i18next.language ? this.i18next.language.slice(-2) : null;\n\n    if (this.settings.useLocaleSettings) {\n      if (!Flatpickr.l10ns[loc]) {\n        console.warn(`Flatpickr localization ${loc} not found.`);\n      }\n      else {\n        currentLocale = Flatpickr.l10ns[loc];\n      }\n      if (!moment.locales().some(locale => locale === loc)) {\n        console.warn(`Moment localization ${loc} not found.`);\n      }\n    }\n    else {\n      loc !== 'en' && (loc = 'en');\n    }\n\n    const monthsShort = currentLocale.months.shorthand;\n    const monthsShortStrictRegex = new RegExp(`^(${monthsShort.join('|')})`, 'i');\n\n    return {\n      locale: loc,\n      monthsShort,\n      monthsShortStrictRegex,\n      currentLocale,\n    };\n  }\n\n  toggleInvalidClassForWidget(message) {\n    if (this.calendar && this.calendar._input) {\n      const inputClasses = this._input.classList;\n      const calendarInputClasses = this.calendar._input.classList;\n      const invalidClass = 'is-invalid';\n\n      if (message && !calendarInputClasses.contains(invalidClass)) {\n        this.calendar._input.classList.add(invalidClass);\n      }\n      else {\n        if (inputClasses.contains(invalidClass) && !calendarInputClasses.contains(invalidClass)) {\n          this.calendar._input.classList.add(invalidClass);\n        }\n        else if (!inputClasses.contains(invalidClass) && calendarInputClasses.contains(invalidClass)) {\n          this.calendar._input.classList.remove(invalidClass);\n        }\n      }\n    }\n  }\n\n  get widgetData() {\n    const { format, minDate, maxDate } = this.settings;\n    return {\n      enteredDate: this.enteredDate,\n      format,\n      minDate,\n      maxDate,\n    };\n  }\n}\n",
+    "content": "import Flatpickr from 'flatpickr';\nimport InputWidget from './InputWidget';\nimport {\n  convertFormatToFlatpickr,\n  convertFormatToMask,\n  convertFormatToMoment,\n  currentTimezone,\n  formatDate,\n  formatOffset,\n  getDateSetting,\n  getLocaleDateFormatInfo,\n  momentDate,\n  zonesLoaded,\n  shouldLoadZones,\n  loadZones\n} from '../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\nimport {\n  monthFormatCorrector,\n  dynamicMonthLength,\n  timeFormatLocaleCorrector,\n} from '../utils/calendarUtils';\nconst DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';\nconst ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';\n\nexport default class CalendarWidget extends InputWidget {\n  /* eslint-disable camelcase */\n  static get defaultSettings() {\n    return {\n      type: 'calendar',\n      altInput: true,\n      allowInput: true,\n      clickOpens: true,\n      enableDate: true,\n      enableTime: true,\n      mode: 'single',\n      noCalendar: false,\n      format: DEFAULT_FORMAT,\n      dateFormat: ISO_8601_FORMAT,\n      useLocaleSettings: false,\n      language: 'us-en',\n      defaultValue: null,\n      hourIncrement: 1,\n      minuteIncrement: 5,\n      time_24hr: false,\n      saveAs: 'date',\n      displayInTimezone: '',\n      timezone: '',\n      minDate: '',\n      maxDate: ''\n    };\n  }\n  /* eslint-enable camelcase */\n\n  constructor(settings, component) {\n    super(settings, component);\n    // Change the format to map to the settings.\n    if (this.settings.noCalendar) {\n      this.settings.format = this.settings.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.settings.enableTime) {\n      this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (this.settings.time_24hr) {\n      this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n\n    this.component.suffix = '';\n\n    const { time_24hr: is24hours } = this.widgetLocale.currentLocale;\n    this.settings.format = timeFormatLocaleCorrector(is24hours, this.settings.format);\n\n    /*eslint-disable camelcase*/\n    this.settings.time_24hr = is24hours;\n    /*eslint-enable camelcase*/\n  }\n\n  /**\n   * Load the timezones.\n   *\n   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.\n   */\n  loadZones() {\n    const timezone = this.timezone;\n    if (!zonesLoaded() && shouldLoadZones(timezone)) {\n      loadZones(timezone).then(() => this.emit('redraw'));\n\n      // Return zones are loading.\n      return true;\n    }\n\n    // Zones are already loaded.\n    return false;\n  }\n\n  attach(input) {\n    const superAttach = super.attach(input);\n    if (input && !input.getAttribute('placeholder')) {\n      input.setAttribute('placeholder', this.settings.format);\n    }\n\n    const dateFormatInfo = getLocaleDateFormatInfo(this.settings.language);\n    this.defaultFormat = {\n      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',\n      time: 'G:i K'\n    };\n\n    const { currentLocale } = this.widgetLocale;\n\n    this.closedOn = 0;\n    this.settings.locale = currentLocale;\n    this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;\n    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);\n    this.settings.minDate = getDateSetting(this.settings.minDate);\n    this.settings.maxDate = getDateSetting(this.settings.maxDate);\n    this.settings.defaultValue = getDateSetting(this.settings.defaultValue);\n    this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);\n    this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);\n    this.settings.onChange = () => this.emit('update');\n    this.settings.onClose = () => {\n      this.closedOn = Date.now();\n      if (this.calendar) {\n        this.emit('blur');\n      }\n    };\n\n    // Removes console errors from Flatpickr.\n    this.settings.errorHandler = () => null;\n\n    this.settings.formatDate = (date, format) => {\n      // Only format this if this is the altFormat and the form is readOnly.\n      if (this.settings.readOnly && (format === this.settings.altFormat)) {\n        if (this.settings.saveAs === 'text' || this.loadZones()) {\n          return Flatpickr.formatDate(date, format, currentLocale);\n        }\n\n        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, currentLocale);\n      }\n\n      return Flatpickr.formatDate(date, format, currentLocale);\n    };\n\n    // Extension of the parseDate method for validating input data.\n    this.settings.parseDate = (inputDate, format) => {\n      this.enteredDate = inputDate;\n\n      if (this.calendar) {\n        this.calendar.clear();\n      }\n\n      // Check for validation errors.\n      if (this.component.checkDataValidity()) {\n        this.enteredDate = '';\n        // Solving the problem with parsing dates with MMM or MMMM format.\n        if (!inputDate.match(/[a-zа-яё\\u00C0-\\u017F]{3,}/gi)) {\n          if (format.indexOf('M') !== -1) {\n            format = format.replace('M', 'm');\n          }\n          else if (format.indexOf('F') !== -1) {\n            format = format.replace('F', 'm');\n          }\n        }\n\n        // Creates a date to prevent incorrect parsing of locations such as ru.\n        let correctDate = null;\n\n        if (format === this.settings.dateFormat) {\n          correctDate = moment(inputDate).toDate();\n        }\n        else {\n          correctDate = moment(inputDate, monthFormatCorrector(this.settings.format)).toDate();\n        }\n\n        return Flatpickr.parseDate(correctDate, format, currentLocale);\n      }\n\n      if (this.calendar) {\n        this.calendar.close();\n      }\n\n      return undefined;\n    };\n\n    if (this._input) {\n      // Create a new flatpickr.\n      this.calendar = new Flatpickr(this._input, this.settings);\n\n      // Enforce the input mask of the format.\n      this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));\n\n      // Make sure we commit the value after a blur event occurs.\n      this.addEventListener(this.calendar._input, 'blur', () =>\n        this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)\n      );\n\n      // Makes it possible to enter the month as text.\n      if (this.settings.format.match(/\\bM{3}\\b/gi)) {\n        this.addEventListener(this.calendar._input, 'keyup', (e) => {\n          let format = this.settings.format;\n          const value = e.target.value;\n          const monthIndex = format.indexOf('M');\n\n          if (value && value[monthIndex].match(/\\d/)) {\n            format = format.replace('MMM', 'MM');\n          }\n          else if (value && value[monthIndex].match(/[a-zа-яё\\u00C0-\\u017F]/i)) {\n            const month = value .match(/([a-zа-яё\\u00C0-\\u017F]{2,})/gi);\n\n            if (month) {\n              const { monthsShort } = this.widgetLocale;\n              const monthLength = dynamicMonthLength(month[0], monthsShort);\n\n              if (monthLength) {\n                // Sets the dynamic length of the mask for the month.\n                format = format.replace(/M{3,}/g, _.fill(Array(monthLength), 'M').join(''));\n              }\n            }\n            format = format.replace(/M/g, 'e');\n          }\n          if (this.inputMasks[0]) {\n            this.inputMasks[0].destroy();\n            this.inputMasks = [];\n          }\n\n          this.setInputMask(this.calendar._input, convertFormatToMask(format));\n        });\n      }\n    }\n    return superAttach;\n  }\n\n  get timezone() {\n    if (this.settings.timezone) {\n      return this.settings.timezone;\n    }\n    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {\n      return this.settings.submissionTimezone;\n    }\n    if (this.settings.displayInTimezone === 'utc') {\n      return 'UTC';\n    }\n\n    // Return current timezone if none are provided.\n    return currentTimezone();\n  }\n\n  get defaultSettings() {\n    return CalendarWidget.defaultSettings;\n  }\n\n  addSuffix(suffix) {\n    this.addEventListener(suffix, 'click', () => {\n      if (this.calendar && !this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {\n        this.calendar.open();\n      }\n    });\n    return suffix;\n  }\n\n  set disabled(disabled) {\n    super.disabled = disabled;\n    if (this.calendar) {\n      if (disabled) {\n        this.calendar._input.setAttribute('disabled', 'disabled');\n      }\n      else {\n        this.calendar._input.removeAttribute('disabled');\n      }\n      this.calendar.close();\n      this.calendar.redraw();\n    }\n  }\n\n  get input() {\n    return this.calendar ? this.calendar.altInput : null;\n  }\n\n  get localeFormat() {\n    let format = '';\n\n    if (this.settings.enableDate) {\n      format += this.defaultFormat.date;\n    }\n\n    if (this.settings.enableTime) {\n      format += this.defaultFormat.time;\n    }\n\n    return format;\n  }\n\n  get dateTimeFormat() {\n    return this.settings.useLocaleSettings ? this.localeFormat : convertFormatToFlatpickr(this.dateFormat);\n  }\n\n  get dateFormat() {\n    return _.get(this.settings, 'format', DEFAULT_FORMAT);\n  }\n\n  get defaultValue() {\n    const defaultDate = getDateSetting(this.settings.defaultValue);\n    return defaultDate ? defaultDate.toISOString() : '';\n  }\n\n  /**\n   * Return the date value.\n   *\n   * @param date\n   * @param format\n   * @return {string}\n   */\n  getDateValue(date, format) {\n    return moment(date).format(convertFormatToMoment(format));\n  }\n\n  /**\n   * Return the value of the selected date.\n   *\n   * @return {*}\n   */\n  getValue() {\n    // Standard output format.\n    if (!this.calendar) {\n      return super.getValue();\n    }\n\n    // Get the selected dates from the calendar widget.\n    const dates = this.calendar.selectedDates;\n    if (!dates || !dates.length) {\n      return super.getValue();\n    }\n\n    if (!(dates[0] instanceof Date)) {\n      return 'Invalid Date';\n    }\n\n    return this.getDateValue(dates[0], this.valueFormat);\n  }\n\n  /**\n   * Set the selected date value.\n   *\n   * @param value\n   */\n  setValue(value) {\n    if (!this.calendar) {\n      return super.setValue(value);\n    }\n    if (value) {\n      if ((this.settings.saveAs !== 'text') && this.settings.readOnly && !this.loadZones()) {\n        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);\n      }\n      else {\n        this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);\n      }\n    }\n    else {\n      this.calendar.clear(false);\n    }\n  }\n\n  getValueAsString(value, format) {\n    format = format || this.dateFormat;\n    if (this.settings.saveAs === 'text') {\n      return this.getDateValue(value, format);\n    }\n\n    return formatDate(value, format, this.timezone);\n  }\n\n  validationValue(value) {\n    if (typeof value === 'string') {\n      return new Date(value);\n    }\n    return value.map(val => new Date(val));\n  }\n\n  destroy() {\n    super.destroy();\n    if (this.calendar) {\n      this.calendar.destroy();\n    }\n  }\n\n  get widgetLocale() {\n    let currentLocale = Flatpickr.l10ns.default;\n    let loc = this.i18next.language ? this.i18next.language.slice(-2) : null;\n\n    if (this.settings.useLocaleSettings) {\n      if (!Flatpickr.l10ns[loc]) {\n        console.warn(`Flatpickr localization ${loc} not found.`);\n      }\n      else {\n        currentLocale = Flatpickr.l10ns[loc];\n      }\n      if (!moment.locales().some(locale => locale === loc)) {\n        console.warn(`Moment localization ${loc} not found.`);\n      }\n    }\n    else {\n      loc !== 'en' && (loc = 'en');\n    }\n\n    const monthsShort = currentLocale.months.shorthand;\n    const monthsShortStrictRegex = new RegExp(`^(${monthsShort.join('|')})`, 'i');\n\n    return {\n      locale: loc,\n      monthsShort,\n      monthsShortStrictRegex,\n      currentLocale,\n    };\n  }\n\n  toggleInvalidClassForWidget(message) {\n    if (this.calendar && this.calendar._input) {\n      const inputClasses = this._input.classList;\n      const calendarInputClasses = this.calendar._input.classList;\n      const invalidClass = 'is-invalid';\n\n      if (message && !calendarInputClasses.contains(invalidClass)) {\n        this.calendar._input.classList.add(invalidClass);\n      }\n      else {\n        if (inputClasses.contains(invalidClass) && !calendarInputClasses.contains(invalidClass)) {\n          this.calendar._input.classList.add(invalidClass);\n        }\n        else if (!inputClasses.contains(invalidClass) && calendarInputClasses.contains(invalidClass)) {\n          this.calendar._input.classList.remove(invalidClass);\n        }\n      }\n    }\n  }\n\n  get widgetData() {\n    const { format, minDate, maxDate } = this.settings;\n    return {\n      enteredDate: this.enteredDate,\n      format,\n      minDate,\n      maxDate,\n    };\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/widgets/CalendarWidget.js",
     "access": "public",
@@ -52255,7 +52255,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#calendar",
     "access": "public",
     "description": null,
-    "lineNumber": 179,
+    "lineNumber": 187,
     "undocument": true,
     "type": {
       "types": [
@@ -52272,7 +52272,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#inputMasks",
     "access": "public",
     "description": null,
-    "lineNumber": 215,
+    "lineNumber": 223,
     "undocument": true,
     "type": {
       "types": [
@@ -52291,7 +52291,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#timezone",
     "access": "public",
     "description": null,
-    "lineNumber": 225,
+    "lineNumber": 233,
     "undocument": true,
     "type": {
       "types": [
@@ -52310,7 +52310,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultSettings",
     "access": "public",
     "description": null,
-    "lineNumber": 240,
+    "lineNumber": 248,
     "undocument": true,
     "type": {
       "types": [
@@ -52329,7 +52329,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#addSuffix",
     "access": "public",
     "description": null,
-    "lineNumber": 244,
+    "lineNumber": 252,
     "undocument": true,
     "params": [
       {
@@ -52356,7 +52356,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#disabled",
     "access": "public",
     "description": null,
-    "lineNumber": 253,
+    "lineNumber": 261,
     "undocument": true
   },
   {
@@ -52370,7 +52370,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#input",
     "access": "public",
     "description": null,
-    "lineNumber": 267,
+    "lineNumber": 275,
     "undocument": true,
     "type": {
       "types": [
@@ -52389,7 +52389,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#localeFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 271,
+    "lineNumber": 279,
     "undocument": true,
     "type": {
       "types": [
@@ -52408,7 +52408,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateTimeFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 285,
+    "lineNumber": 293,
     "undocument": true,
     "type": {
       "types": [
@@ -52427,7 +52427,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#dateFormat",
     "access": "public",
     "description": null,
-    "lineNumber": 289,
+    "lineNumber": 297,
     "undocument": true,
     "type": {
       "types": [
@@ -52446,7 +52446,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#defaultValue",
     "access": "public",
     "description": null,
-    "lineNumber": 293,
+    "lineNumber": 301,
     "undocument": true,
     "type": {
       "types": [
@@ -52465,7 +52465,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getDateValue",
     "access": "public",
     "description": "Return the date value.",
-    "lineNumber": 305,
+    "lineNumber": 313,
     "params": [
       {
         "nullable": null,
@@ -52508,7 +52508,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getValue",
     "access": "public",
     "description": "Return the value of the selected date.",
-    "lineNumber": 314,
+    "lineNumber": 322,
     "return": {
       "nullable": null,
       "types": [
@@ -52530,7 +52530,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#setValue",
     "access": "public",
     "description": "Set the selected date value.",
-    "lineNumber": 338,
+    "lineNumber": 346,
     "params": [
       {
         "nullable": null,
@@ -52560,7 +52560,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#getValueAsString",
     "access": "public",
     "description": null,
-    "lineNumber": 355,
+    "lineNumber": 363,
     "undocument": true,
     "params": [
       {
@@ -52593,7 +52593,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#validationValue",
     "access": "public",
     "description": null,
-    "lineNumber": 364,
+    "lineNumber": 372,
     "undocument": true,
     "params": [
       {
@@ -52620,7 +52620,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 371,
+    "lineNumber": 379,
     "undocument": true,
     "params": [],
     "return": null
@@ -52636,7 +52636,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#widgetLocale",
     "access": "public",
     "description": null,
-    "lineNumber": 378,
+    "lineNumber": 386,
     "undocument": true,
     "type": {
       "types": [
@@ -52655,7 +52655,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#toggleInvalidClassForWidget",
     "access": "public",
     "description": null,
-    "lineNumber": 408,
+    "lineNumber": 416,
     "undocument": true,
     "params": [
       {
@@ -52678,7 +52678,7 @@
     "longname": "src/widgets/CalendarWidget.js~CalendarWidget#widgetData",
     "access": "public",
     "description": null,
-    "lineNumber": 428,
+    "lineNumber": 436,
     "undocument": true,
     "type": {
       "types": [
@@ -53070,7 +53070,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.3.3\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.0.0\",\n    \"core-js\": \"^3.2.1\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"dompurify\": \"^2.0.6\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-deep-equal\": \"^2.0.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"i18next\": \"^17.2.0\",\n    \"idb\": \"^4.0.5\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.26\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.2\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"uuid\": \"^3.3.3\",\n    \"vanilla-picker\": \"^2.10.0\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.6.4\",\n    \"@babel/core\": \"^7.6.4\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.5.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.5.2\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.6.0\",\n    \"@babel/polyfill\": \"^7.6.0\",\n    \"@babel/preset-env\": \"^7.6.3\",\n    \"@babel/register\": \"^7.6.2\",\n    \"babel-eslint\": \"^10.0.3\",\n    \"babel-loader\": \"^8.0.6\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"browser-env\": \"^3.2.6\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.3\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.3.5\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.5.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.5.1\",\n    \"file-loader\": \"^4.2.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.2.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.1\",\n    \"jsdom\": \"^15.1.1\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^4.3.0\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.7.0\",\n    \"mocha\": \"^6.2.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^3.1.0\",\n    \"sinon\": \"^7.5.0\",\n    \"webpack\": \"^4.41.1\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.3.4\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc;gulp build\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha --require @babel/register --require jsdom-global/register 'lib/**/*.unit.js' -b --exit\",\n    \"test:updateRenders\": \"node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"browser-cookies\": \"^1.2.0\",\n    \"choices.js\": \"^7.0.0\",\n    \"core-js\": \"^3.3.2\",\n    \"dialog-polyfill\": \"^0.5.0\",\n    \"dompurify\": \"^2.0.6\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.2\",\n    \"eventemitter2\": \"^5.0.1\",\n    \"fast-deep-equal\": \"^2.0.1\",\n    \"fast-json-patch\": \"^2.2.1\",\n    \"fetch-ponyfill\": \"^6.1.0\",\n    \"flatpickr\": \"^4.6.3\",\n    \"i18next\": \"^17.2.0\",\n    \"idb\": \"^4.0.5\",\n    \"json-logic-js\": \"^1.2.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"lodash\": \"^4.17.15\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.26\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"resize-observer-polyfill\": \"^1.5.1\",\n    \"signature_pad\": \"^2.3.2\",\n    \"string-hash\": \"^1.1.3\",\n    \"text-mask-addons\": \"^3.8.0\",\n    \"tooltip.js\": \"^1.3.2\",\n    \"two.js\": \"^0.7.0-beta.3\",\n    \"uuid\": \"^3.3.3\",\n    \"vanilla-picker\": \"^2.10.0\",\n    \"vanilla-text-mask\": \"^5.1.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.6.4\",\n    \"@babel/core\": \"^7.6.4\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.5.5\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.5.2\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.6.0\",\n    \"@babel/polyfill\": \"^7.6.0\",\n    \"@babel/preset-env\": \"^7.6.3\",\n    \"@babel/register\": \"^7.6.2\",\n    \"babel-eslint\": \"^10.0.3\",\n    \"babel-loader\": \"^8.0.6\",\n    \"bootstrap\": \"^4.3.1\",\n    \"bootswatch\": \"^4.3.1\",\n    \"browser-env\": \"^3.2.6\",\n    \"chai\": \"^4.2.0\",\n    \"chance\": \"^1.1.3\",\n    \"del\": \"^5.1.0\",\n    \"ejs-loader\": \"^0.3.5\",\n    \"escape-string-regexp\": \"^2.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^6.5.1\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^7.5.1\",\n    \"file-loader\": \"^4.2.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.2.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^6.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^1.4.0\",\n    \"gulp-replace\": \"^1.0.0\",\n    \"gulp-sass\": \"^4.0.2\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.4.1\",\n    \"jsdom\": \"^15.2.0\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^4.3.0\",\n    \"karma-chrome-launcher\": \"^3.1.0\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^4.0.2\",\n    \"marked\": \"^0.7.0\",\n    \"mocha\": \"^6.2.1\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^3.1.0\",\n    \"sinon\": \"^7.5.0\",\n    \"webpack\": \"^4.41.1\",\n    \"webpack-stream\": \"^5.2.1\",\n    \"written-number\": \"^0.9.1\"\n  }\n}\n",
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/package.json",
     "name": "package.json",
     "static": true,
