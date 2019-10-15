@@ -34,12 +34,12 @@ export default {
     }
     return '';
   },
-  validate(component, validator, value, data) {
+  validate(component, validator, value, data, index) {
     if (validator.key && _.has(component.component, validator.key)) {
       const setting = this.get(component.component, validator.key);
-      return this.checkValidator(component, validator, setting, value, data);
+      return this.checkValidator(component, validator, setting, value, data, index);
     }
-    return this.checkValidator(component, validator, null, value, data);
+    return this.checkValidator(component, validator, null, value, data, index);
   },
   check(component, data) {
     let result = '';
@@ -49,15 +49,15 @@ export default {
       if (this.validators.hasOwnProperty(name)) {
         const validator = this.validators[name];
         if (component.validateMultiple(value)) {
-          _.each(value, (val) => {
-            result = this.validate(component, validator, val, data);
+          _.each(value, (val, index) => {
+            result = this.validate(component, validator, val, data, index);
             if (result) {
               return false;
             }
           });
         }
         else {
-          result = this.validate(component, validator, value, data);
+          result = this.validate(component, validator, value, data, 0);
         }
         if (result) {
           return false;
@@ -445,16 +445,17 @@ export default {
           maxDate: moment(component.dataValue).format(component.format),
         });
       },
-      check(component, setting, value) {
+      check(component, setting, value, data, index) {
         this.validators.strictDateValidation.messageText = '';
-        if (!component.widgetData) {
+        const input = component.refs.input[index];
+        if (!input.widget.widgetData) {
           return true;
         }
-        const { minDate, maxDate, format, enteredDate } = component.widgetData;
+        const { minDate, maxDate, format, enteredDate } = input.widget.widgetData;
         const momentFormat = monthFormatCorrector(format);
 
-        if (component.widgetLocale) {
-          const { locale, monthsShort, monthsShortStrictRegex } = component.widgetLocale;
+        if (input.widget.widgetLocale) {
+          const { locale, monthsShort, monthsShortStrictRegex } = input.widget.widgetLocale;
 
           moment.updateLocale(locale, {
             monthsShort,
@@ -477,7 +478,7 @@ export default {
             return false;
           }
           else {
-            component._widget.enteredDate = '';
+            input.widget.enteredDate = '';
             return true;
           }
         }

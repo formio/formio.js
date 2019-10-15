@@ -1,20 +1,11 @@
 import Multivalue from '../multivalue/Multivalue';
 import { delay } from '../../../utils/utils';
-import Widgets from '../../../widgets';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
   constructor(component, options, data) {
     super(component, options, data);
     this.triggerUpdateValueAt = _.debounce(this.updateValueAt.bind(this), 100);
-  }
-
-  static schema(...extend) {
-    return Multivalue.schema({
-      widget: {
-        type: 'input'
-      }
-    }, ...extend);
   }
 
   get inputInfo() {
@@ -59,6 +50,10 @@ export default class Input extends Multivalue {
 
   get isMultipleMasksField() {
     return this.component.allowMultipleMasks && !!this.component.inputMasks && !!this.component.inputMasks.length;
+  }
+
+  get emptyValue() {
+    return '';
   }
 
   getMaskByName(maskName) {
@@ -152,14 +147,6 @@ export default class Input extends Multivalue {
     }
   }
 
-  getValueAt(index) {
-    const input = this.performInputMapping(this.refs.input[index]);
-    if (input && input.widget) {
-      return input.widget.getValue();
-    }
-    return input ? input.value : undefined;
-  }
-
   updateValue(value, flags, index) {
     const changed = super.updateValue(value, flags);
     this.triggerUpdateValueAt(this.dataValue, flags, index);
@@ -185,23 +172,6 @@ export default class Input extends Multivalue {
   }
 
   attachElement(element, index) {
-    super.attachElement(element, index);
-
-    if (this.widget) {
-      this.widget.destroy();
-    }
-    // Attach the widget.
-    element.widget = this.createWidget(index);
-    if (element.widget) {
-      element.widget.attach(element);
-      if (this.refs.prefix && this.refs.prefix[index]) {
-        element.widget.addPrefix(this.refs.prefix[index]);
-      }
-      if (this.refs.suffix && this.refs.suffix[index]) {
-        element.widget.addSuffix(this.refs.suffix[index]);
-      }
-    }
-
     // Add focus and blur events.
     this.addFocusBlurEvents(element);
 
@@ -215,49 +185,7 @@ export default class Input extends Multivalue {
         }
       });
     }
-  }
-
-  /**
-   * Returns the instance of the widget for this component.
-   *
-   * @return {*}
-   */
-  get widget() {
-    if (this._widget) {
-      return this._widget;
-    }
-    return this.createWidget();
-  }
-
-  /**
-   * Creates an instance of a widget for this component.
-   *
-   * @return {null}
-   */
-  createWidget(index) {
-    // Return null if no widget is found.
-    if (!this.component.widget) {
-      return null;
-    }
-
-    // Get the widget settings.
-    const settings = (typeof this.component.widget === 'string') ? {
-      type: this.component.widget
-    } : this.component.widget;
-
-    // Make sure we have a widget.
-    if (!Widgets.hasOwnProperty(settings.type)) {
-      return null;
-    }
-
-    // Create the widget.
-    const widget = new Widgets[settings.type](settings, this.component);
-    widget.on('update', () => this.updateValue(widget.getValue(), {
-      modified: true
-    }, index), true);
-    widget.on('redraw', () => this.redraw(), true);
-    this._widget = widget;
-    return widget;
+    return super.attachElement(element, index);
   }
 
   addFocusBlurEvents(element) {

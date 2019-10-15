@@ -170,6 +170,7 @@ export default class NumberComponent extends Input {
     if (!value && value !== 0) {
       return '';
     }
+    // TODO: Number's don't have widgets so what does this do?
     const widget = this.widget;
     if (widget && widget.getValueAsString) {
       return widget.getValueAsString(value);

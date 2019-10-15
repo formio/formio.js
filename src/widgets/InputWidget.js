@@ -64,4 +64,8 @@ export default class InputWidget extends Element {
   setValue() {
     return null;
   }
+
+  toggleInvalidClassForWidget() {
+    return null;
+  }
 }

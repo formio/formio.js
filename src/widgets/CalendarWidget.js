@@ -164,6 +164,9 @@ export default class CalendarWidget extends InputWidget {
 
         // Creates a date to prevent incorrect parsing of locations such as ru.
         const correctDate = moment(inputDate, monthFormatCorrector(this.settings.format)).toDate();
+        if (correctDate.toString() === 'Invalid Date') {
+          return;
+        }
         return Flatpickr.parseDate(correctDate, format, currentLocale);
       }
 
