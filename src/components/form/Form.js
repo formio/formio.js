@@ -188,6 +188,7 @@ export default class FormComponent extends Component {
     return super.render(this.renderTemplate('datagrid', {
       rows: [value.data],
       columns: columns,
+      visibleColumns: value.data,
       hasHeader: true,
       numColumns: Object.keys(value.data).length,
     }));
