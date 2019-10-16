@@ -2075,8 +2075,11 @@ export default class Component extends Element {
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data);
+    // First check the component conditions, then calculate value. If the value changes, then check conditions again.
     this.checkComponentConditions(data);
+    if (this.calculateComponentValue(data)) {
+      this.checkComponentConditions(data);
+    }
     return flags.noValidate ? true : this.checkComponentValidity(data);
   }
 
