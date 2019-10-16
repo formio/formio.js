@@ -40,7 +40,12 @@ export default class TabsComponent extends NestedComponent {
     const components = _.cloneDeep(this.component.components);
     schema.components = components.map((tab, index) => {
       if (index === this.currentTab) {
-        tab.components = this.getComponents().map((component) => component.schema);
+        tab.components = this.getComponents().reduce((result, component) => {
+          if (component.tab === this.currentTab) {
+            result.push(component.schema);
+          }
+          return result;
+        }, []);
       }
       return tab;
     });
