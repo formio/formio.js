@@ -3,13 +3,13 @@ import {
   boolValue,
   getInputMask,
   matchInputMask,
-  getDateSetting
+  getDateSetting,
+  convertFormatToMoment
 } from '../utils/utils';
 import moment from 'moment';
 import {
-  CALENDAR_ERROR_MESSAGES,
   checkInvalidDate,
-  monthFormatCorrector,
+  CALENDAR_ERROR_MESSAGES
 } from '../utils/calendarUtils';
 
 export default {
@@ -88,6 +88,11 @@ export default {
       check(component, setting, value) {
         if (!boolValue(setting)) {
           return true;
+        }
+        const isCalendar = component.validators.some(validator => validator === 'calendar');
+
+        if (!value && isCalendar && component.widget.enteredDate) {
+          return !this.validators.calendar.check.call(this, component, setting, value);
         }
         return !component.isEmpty(value);
       }
@@ -436,44 +441,37 @@ export default {
         return date.isAfter(minDate) || date.isSame(minDate);
       }
     },
-    strictDateValidation: {
-      key: 'validate.strictDateValidation',
+    calendar: {
+      key: 'validate.calendar',
       messageText: '',
       message(component) {
-        return component.t(component.errorMessage(this.validators.strictDateValidation.messageText), {
+        return component.t(component.errorMessage(this.validators.calendar.messageText), {
           field: component.errorLabel,
           maxDate: moment(component.dataValue).format(component.format),
         });
       },
       check(component, setting, value) {
-        this.validators.strictDateValidation.messageText = '';
-        if (!component.widgetData) {
-          return true;
-        }
-        const { minDate, maxDate, format, enteredDate } = component.widgetData;
-        const momentFormat = monthFormatCorrector(format);
+        this.validators.calendar.messageText = '';
+        const { settings, enteredDate } = component._widget;
+        const { minDate, maxDate, format } = settings;
+        const momentFormat = [convertFormatToMoment(format)];
 
-        if (component.widgetLocale) {
-          const { locale, monthsShort, monthsShortStrictRegex } = component.widgetLocale;
-
-          moment.updateLocale(locale, {
-            monthsShort,
-            monthsShortStrictRegex,
-          });
+        if (momentFormat[0].match(/M{3,}/g)) {
+          momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
         }
 
         if (!value && enteredDate) {
           const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
 
           if (!result) {
-            this.validators.strictDateValidation.messageText = message;
+            this.validators.calendar.messageText = message;
             return result;
           }
         }
 
         if (value && enteredDate) {
           if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() && enteredDate.match(/_/gi)) {
-            this.validators.strictDateValidation.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
+            this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
             return false;
           }
           else {
