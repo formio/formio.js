@@ -16,7 +16,8 @@
 
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.alert-warning .invalid-feedback {
+.formio-component.alert-warning .invalid-feedback,
+.formio-component.formio-error-wrapper .invalid-feedback  {
   display: block;
   color: inherit;
 }
