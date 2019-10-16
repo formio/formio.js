@@ -101,7 +101,12 @@ export default class CalendarWidget extends InputWidget {
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
-    this.settings.onClose = () => (this.closedOn = Date.now());
+    this.settings.onClose = () => {
+      this.closedOn = Date.now();
+      if (this.calendar) {
+        this.emit('blur');
+      }
+    };
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
@@ -278,6 +283,8 @@ export default class CalendarWidget extends InputWidget {
 
   destroy() {
     super.destroy();
-    this.calendar.destroy();
+    if (this.calendar) {
+      this.calendar.destroy();
+    }
   }
 }
