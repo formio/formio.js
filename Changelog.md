@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.0
+### Reverted
+ - Refactoring of widgets and localization of calendar widget.
+ 
+### Fixed
+ - Translation in Component template.
+ - Select component not enabling correctly based on parent.
+ 
+### Added
+ - BuilderUtils export.
+ - Additional typescript types and improvements.
+
 ## 4.3.5
 ### Changed
  - Upgraded choices.js@7.0.2, webpack@4.41.2
