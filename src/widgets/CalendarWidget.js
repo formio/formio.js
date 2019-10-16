@@ -16,11 +16,6 @@ import {
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
-import {
-  monthFormatCorrector,
-  dynamicMonthLength,
-  timeFormatLocaleCorrector,
-} from '../utils/calendarUtils';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 
@@ -65,15 +60,6 @@ export default class CalendarWidget extends InputWidget {
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
-
-    this.component.suffix = '';
-
-    const { time_24hr: is24hours } = this.widgetLocale.currentLocale;
-    this.settings.format = timeFormatLocaleCorrector(is24hours, this.settings.format);
-
-    /*eslint-disable camelcase*/
-    this.settings.time_24hr = is24hours;
-    /*eslint-enable camelcase*/
   }
 
   /**
@@ -106,10 +92,7 @@ export default class CalendarWidget extends InputWidget {
       time: 'G:i K'
     };
 
-    const { currentLocale } = this.widgetLocale;
-
     this.closedOn = 0;
-    this.settings.locale = currentLocale;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
@@ -118,68 +101,18 @@ export default class CalendarWidget extends InputWidget {
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.onChange = () => this.emit('update');
-    this.settings.onClose = () => {
-      this.closedOn = Date.now();
-      if (this.calendar) {
-        this.emit('blur');
-      }
-    };
-
-    // Removes console errors from Flatpickr.
-    this.settings.errorHandler = () => null;
-
+    this.settings.onClose = () => (this.closedOn = Date.now());
     this.settings.formatDate = (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
         if (this.settings.saveAs === 'text' || this.loadZones()) {
-          return Flatpickr.formatDate(date, format, currentLocale);
+          return Flatpickr.formatDate(date, format);
         }
 
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, currentLocale);
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
-      return Flatpickr.formatDate(date, format, currentLocale);
-    };
-
-    // Extension of the parseDate method for validating input data.
-    this.settings.parseDate = (inputDate, format) => {
-      this.enteredDate = inputDate;
-
-      if (this.calendar) {
-        this.calendar.clear();
-      }
-
-      // Check for validation errors.
-      if (this.component.checkDataValidity()) {
-        this.enteredDate = '';
-        // Solving the problem with parsing dates with MMM or MMMM format.
-        if (!inputDate.match(/[a-zа-яё\u00C0-\u017F]{3,}/gi)) {
-          if (format.indexOf('M') !== -1) {
-            format = format.replace('M', 'm');
-          }
-          else if (format.indexOf('F') !== -1) {
-            format = format.replace('F', 'm');
-          }
-        }
-
-        // Creates a date to prevent incorrect parsing of locations such as ru.
-        let correctDate = null;
-
-        if (format === this.settings.dateFormat) {
-          correctDate = moment(inputDate).toDate();
-        }
-        else {
-          correctDate = moment(inputDate, monthFormatCorrector(this.settings.format)).toDate();
-        }
-
-        return Flatpickr.parseDate(correctDate, format, currentLocale);
-      }
-
-      if (this.calendar) {
-        this.calendar.close();
-      }
-
-      return undefined;
+      return Flatpickr.formatDate(date, format);
     };
 
     if (this._input) {
@@ -193,39 +126,6 @@ export default class CalendarWidget extends InputWidget {
       this.addEventListener(this.calendar._input, 'blur', () =>
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       );
-
-      // Makes it possible to enter the month as text.
-      if (this.settings.format.match(/\bM{3}\b/gi)) {
-        this.addEventListener(this.calendar._input, 'keyup', (e) => {
-          let format = this.settings.format;
-          const value = e.target.value;
-          const monthIndex = format.indexOf('M');
-
-          if (value && value[monthIndex].match(/\d/)) {
-            format = format.replace('MMM', 'MM');
-          }
-          else if (value && value[monthIndex].match(/[a-zа-яё\u00C0-\u017F]/i)) {
-            const month = value .match(/([a-zа-яё\u00C0-\u017F]{2,})/gi);
-
-            if (month) {
-              const { monthsShort } = this.widgetLocale;
-              const monthLength = dynamicMonthLength(month[0], monthsShort);
-
-              if (monthLength) {
-                // Sets the dynamic length of the mask for the month.
-                format = format.replace(/M{3,}/g, _.fill(Array(monthLength), 'M').join(''));
-              }
-            }
-            format = format.replace(/M/g, 'e');
-          }
-          if (this.inputMasks[0]) {
-            this.inputMasks[0].destroy();
-            this.inputMasks = [];
-          }
-
-          this.setInputMask(this.calendar._input, convertFormatToMask(format));
-        });
-      }
     }
     return superAttach;
   }
@@ -378,68 +278,6 @@ export default class CalendarWidget extends InputWidget {
 
   destroy() {
     super.destroy();
-    if (this.calendar) {
-      this.calendar.destroy();
-    }
-  }
-
-  get widgetLocale() {
-    let currentLocale = Flatpickr.l10ns.default;
-    let loc = this.i18next.language ? this.i18next.language.slice(-2) : null;
-
-    if (this.settings.useLocaleSettings) {
-      if (!Flatpickr.l10ns[loc]) {
-        console.warn(`Flatpickr localization ${loc} not found.`);
-      }
-      else {
-        currentLocale = Flatpickr.l10ns[loc];
-      }
-      if (!moment.locales().some(locale => locale === loc)) {
-        console.warn(`Moment localization ${loc} not found.`);
-      }
-    }
-    else {
-      loc !== 'en' && (loc = 'en');
-    }
-
-    const monthsShort = currentLocale.months.shorthand;
-    const monthsShortStrictRegex = new RegExp(`^(${monthsShort.join('|')})`, 'i');
-
-    return {
-      locale: loc,
-      monthsShort,
-      monthsShortStrictRegex,
-      currentLocale,
-    };
-  }
-
-  toggleInvalidClassForWidget(message) {
-    if (this.calendar && this.calendar._input) {
-      const inputClasses = this._input.classList;
-      const calendarInputClasses = this.calendar._input.classList;
-      const invalidClass = 'is-invalid';
-
-      if (message && !calendarInputClasses.contains(invalidClass)) {
-        this.calendar._input.classList.add(invalidClass);
-      }
-      else {
-        if (inputClasses.contains(invalidClass) && !calendarInputClasses.contains(invalidClass)) {
-          this.calendar._input.classList.add(invalidClass);
-        }
-        else if (!inputClasses.contains(invalidClass) && calendarInputClasses.contains(invalidClass)) {
-          this.calendar._input.classList.remove(invalidClass);
-        }
-      }
-    }
-  }
-
-  get widgetData() {
-    const { format, minDate, maxDate } = this.settings;
-    return {
-      enteredDate: this.enteredDate,
-      format,
-      minDate,
-      maxDate,
-    };
+    this.calendar.destroy();
   }
 }

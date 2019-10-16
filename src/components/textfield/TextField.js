@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import WidgetComponent from '../_classes/widgetcomponent/WidgetComponent';
+import Input from '../_classes/input/Input';
 import { conformToMask } from 'vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
 
-export default class TextFieldComponent extends WidgetComponent {
+export default class TextFieldComponent extends Input {
   static schema(...extend) {
-    return WidgetComponent.schema({
+    return Input.schema({
       label: 'Text Field',
       key: 'textField',
       type: 'textfield',

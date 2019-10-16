@@ -1,10 +1,11 @@
+import baseEditForm from '../_classes/component/Component.form';
+
 import TextFieldEditData from './editForm/TextField.edit.data';
 import TextFieldEditDisplay from './editForm/TextField.edit.display';
 import TextFieldEditValidation from './editForm/TextField.edit.validation';
-import widgetComponentForm from '../_classes/widgetcomponent/WidgetComponent.form';
 
 export default function(...extend) {
-  return widgetComponentForm([
+  return baseEditForm([
     {
       key: 'display',
       components: TextFieldEditDisplay
