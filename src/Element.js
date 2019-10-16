@@ -414,6 +414,24 @@ export default class Element {
   }
 
   /**
+   * Adds an attribute with provided value to a DOM element.
+   *
+   * @param element
+   *   The element to add a class to.
+   * @param attributeName
+   *   The name of the attribute to add.
+   * @param attributeValue
+   *   The value of the attribute to add.
+   */
+  addAttribute(element, attributeName, attributeValue) {
+    if (!element) {
+      return this;
+    }
+
+    element.setAttribute(attributeName, attributeValue);
+  }
+
+  /**
    * Determines if an element has a class.
    *
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
