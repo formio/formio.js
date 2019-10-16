@@ -55,6 +55,10 @@ export default class TextFieldComponent extends Input {
     return info;
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   setValueAt(index, value, flags) {
     flags = flags || {};
     if (!this.isMultipleMasksField) {
