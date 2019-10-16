@@ -1,3 +1,4 @@
+{% if (ctx.component.type !== 'checkbox') { %}
 <label
   class="col-form-label {{ctx.label.className}} {{ctx.label.hidden ? 'sr-only' : ''}}"
   id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
@@ -8,3 +9,4 @@
     <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
   {% } %}
 </label>
+{% } %}
