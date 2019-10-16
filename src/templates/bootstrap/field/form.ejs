@@ -1,4 +1,4 @@
-{% if (ctx.label.labelPosition !== 'bottom') { %}
+{% if (ctx.label.labelPosition !== 'bottom' && ctx.component.type !== 'checkbox') { %}
   {{ ctx.render('label', ctx) }}
 {% } %}
 {{ctx.element}}
