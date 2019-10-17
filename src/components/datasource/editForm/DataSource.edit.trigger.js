@@ -1,12 +1,24 @@
-import { eachComponent } from '../../../utils/formUtils';
+import EditFormUtils from '../../_classes/component/editForm/utils';
 
 export default [
+  {
+    weight: 0,
+    type: 'textfield',
+    input: true,
+    key: 'label',
+    label: 'Label',
+    placeholder: 'Field Label',
+    tooltip: 'The label for this field that will appear next to it.',
+    validate: {
+      required: true
+    }
+  },
   {
     type: 'select',
     input: true,
     key: 'refreshOn',
     label: 'Refresh Data On',
-    weight: 19,
+    weight: 10,
     tooltip: 'Refresh data when another field changes.',
     dataSrc: 'custom',
     valueProperty: 'value',
@@ -26,4 +38,8 @@ export default [
       }
     },
   },
+  EditFormUtils.javaScriptValue('Custom Refresh Data On', 'customRefreshOn', 'customRefreshOn', 20,
+    '<p><h4>Example:</h4><pre>refresh = data.age > 18</pre></p>',
+    '<p><h4>Example:</h4><pre>{ ">" : [{"var": "data.age"}, 18] }</pre>'
+  ),
 ];
