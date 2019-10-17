@@ -365,7 +365,8 @@ export default class Component extends Element {
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.component.multiple ? [this.defaultValue] : this.defaultValue;
+            const defaultValue = this.defaultValue;
+            this.dataValue = this.component.multiple && !Array.isArray(defaultValue) ? [defaultValue] : defaultValue;
           }
           else {
             // Ensure the dataValue is set.
