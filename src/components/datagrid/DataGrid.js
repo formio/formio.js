@@ -509,6 +509,11 @@ export default class DataGridComponent extends NestedComponent {
       }
     }
 
+    // Make sure we always have at least one row.
+    if (value && !value.length) {
+      value.push({});
+    }
+
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.createRows();
