@@ -350,17 +350,22 @@ export default class DataGridComponent extends NestedComponent {
     this.redraw();
   }
 
+  getRowValues() {
+    return this.dataValue;
+  }
+
   createRows(init) {
     let added = false;
+    const rowValues = this.getRowValues();
     // Create any missing rows.
-    this.dataValue.forEach((row, index) => {
+    rowValues.forEach((row, index) => {
       if (!this.rows[index]) {
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
     });
     // Delete any extra rows.
-    this.rows.splice(this.dataValue.length);
+    this.rows.splice(rowValues.length);
     if (!init && added) {
       this.redraw();
     }
