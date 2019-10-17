@@ -42,7 +42,9 @@ export default class DataMapComponent extends DataGridComponent {
 
   get schema() {
     const schema = super.schema;
-    schema.valueComponent = this.components[this.components.length - 1].schema;
+    if (this.components && (this.components.length > 0)) {
+      schema.valueComponent = this.components[this.components.length - 1].schema;
+    }
     return _.omit(schema, 'components');
   }
 
