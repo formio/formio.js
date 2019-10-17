@@ -260,6 +260,9 @@ export default [
         type: &apos;textfield&apos;,
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: &apos;row.label&apos; }] },
+        validate: {
+          required: true
+        }
       },
       {
         type: &apos;select&apos;,
