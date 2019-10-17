@@ -92,7 +92,9 @@ export default class DataSourceComponent extends Component {
   assign(data) {
     (this.component.assign || []).forEach((assign) => {
       const instance = this.parent.getComponent(assign.component) || this.root.getComponent(assign.component);
-      instance.setValue(_.get(data, assign.path));
+      if (instance) {
+        instance.setValue(_.get(data, assign.path, instance.defaultValue));
+      }
     });
     // TODO: Implement custom assign.
   }

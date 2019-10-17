@@ -12,7 +12,6 @@ export default [
         weight: 10,
         label: 'Data source path',
         placeholder: 'data.myfield',
-        description: 'test',
         tooltip: 'The property within the source data where the value can be found. For example: mydata.firstName or mydata.children[0].name.',
         clearOnHide: true,
       },
