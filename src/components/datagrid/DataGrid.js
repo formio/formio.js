@@ -510,6 +510,7 @@ export default class DataGridComponent extends NestedComponent {
     }
 
     // Make sure we always have at least one row.
+    // NOTE: Removing this will break "Public Configurations" in portal. ;)
     if (value && !value.length) {
       value.push({});
     }
