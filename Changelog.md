@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Adding validate required to value for radio configuration.
  - DataMap component to work with defaulted values.
  - Fix calendar event icon in bootstrap3
+ - Issue where DataGrid would to initialize correctly when set externally. Fixes Public Configurations in portal.
  
 ### Changed
  - Upgraded tooltip.js@1.3.3, karma@4.4.0, moment-timezone@0.5.27
