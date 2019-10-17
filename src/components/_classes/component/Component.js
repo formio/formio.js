@@ -360,12 +360,12 @@ export default class Component extends Element {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.hasInput && this.key) {
+      if (this.allowData && this.key) {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
           if (!this.hasValue()) {
-            this.dataValue = this.defaultValue;
+            this.dataValue = this.component.multiple ? [this.defaultValue] : this.defaultValue;
           }
           else {
             // Ensure the dataValue is set.
@@ -433,6 +433,10 @@ export default class Component extends Element {
 
   get isInputComponent() {
     return !this.component.hasOwnProperty('input') || this.component.input;
+  }
+
+  get allowData() {
+    return this.hasInput;
   }
 
   get hasInput() {
@@ -1652,13 +1656,6 @@ export default class Component extends Element {
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return this.emptyValue;
-    }
-    if (!this.hasValue()) {
-      const empty = this.component.multiple ? [] : this.emptyValue;
-      if (!this.rootPristine) {
-        this.dataValue = empty;
-      }
-      return empty;
     }
     return _.get(this.data, this.key);
   }

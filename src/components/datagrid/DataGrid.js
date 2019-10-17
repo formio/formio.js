@@ -43,6 +43,10 @@ export default class DataGridComponent extends NestedComponent {
     this.checkColumns(this.dataValue);
   }
 
+  get allowData() {
+    return true;
+  }
+
   get dataValue() {
     const dataValue = super.dataValue;
     if (!dataValue || !Array.isArray(dataValue)) {
