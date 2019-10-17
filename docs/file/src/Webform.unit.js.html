@@ -543,6 +543,7 @@ describe(&apos;Webform tests&apos;, () =&gt; {
         const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
         return form.setForm(formTest.form).then(() =&gt; {
           formTestTest(form, (error) =&gt; {
+            form.destroy();
             if (error) {
               throw new Error(error);
             }

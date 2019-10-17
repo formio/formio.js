@@ -44,27 +44,27 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 750,
+        "lineNumber": 745,
         "line": "  /**"
       },
       {
-        "lineNumber": 751,
+        "lineNumber": 746,
         "line": "   * Restores a draft submission based on the user who is authenticated."
       },
       {
-        "lineNumber": 752,
+        "lineNumber": 747,
         "line": "   *"
       },
       {
-        "lineNumber": 753,
+        "lineNumber": 748,
         "line": "   * @param {userId} - The user id where we need to restore the draft from."
       },
       {
-        "lineNumber": 754,
+        "lineNumber": 749,
         "line": "   */"
       },
       {
-        "lineNumber": 755,
+        "lineNumber": 750,
         "line": "  restoreDraft(userId) {"
       }
     ],
@@ -80,31 +80,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 973,
+        "lineNumber": 968,
         "line": "  /**"
       },
       {
-        "lineNumber": 974,
+        "lineNumber": 969,
         "line": "   * Show the errors of this form within the alert dialog."
       },
       {
-        "lineNumber": 975,
+        "lineNumber": 970,
         "line": "   *"
       },
       {
-        "lineNumber": 976,
+        "lineNumber": 971,
         "line": "   * @param {Object} error - An optional additional error to display along with the component errors."
       },
       {
-        "lineNumber": 977,
+        "lineNumber": 972,
         "line": "   * @returns {*}"
       },
       {
-        "lineNumber": 978,
+        "lineNumber": 973,
         "line": "   */"
       },
       {
-        "lineNumber": 979,
+        "lineNumber": 974,
         "line": "  showErrors(error, triggerEvent) {"
       }
     ],
@@ -121,31 +121,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1084,
+        "lineNumber": 1079,
         "line": "  /**"
       },
       {
-        "lineNumber": 1085,
+        "lineNumber": 1080,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 1086,
+        "lineNumber": 1081,
         "line": "   *"
       },
       {
-        "lineNumber": 1087,
+        "lineNumber": 1082,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 1088,
+        "lineNumber": 1083,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1089,
+        "lineNumber": 1084,
         "line": "   */"
       },
       {
-        "lineNumber": 1090,
+        "lineNumber": 1085,
         "line": "  onChange(flags, changed) {"
       }
     ],
@@ -163,87 +163,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 1263,
+        "lineNumber": 1258,
         "line": "  /**"
       },
       {
-        "lineNumber": 1264,
+        "lineNumber": 1259,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 1265,
+        "lineNumber": 1260,
         "line": "   *"
       },
       {
-        "lineNumber": 1266,
+        "lineNumber": 1261,
         "line": "   * @example"
       },
       {
-        "lineNumber": 1267,
+        "lineNumber": 1262,
         "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
-        "lineNumber": 1268,
+        "lineNumber": 1263,
         "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
-        "lineNumber": 1269,
+        "lineNumber": 1264,
         "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
-        "lineNumber": 1270,
+        "lineNumber": 1265,
         "line": "   * form.submission = {data: {"
       },
       {
-        "lineNumber": 1271,
+        "lineNumber": 1266,
         "line": "   *   firstName: 'Joe',"
       },
       {
-        "lineNumber": 1272,
+        "lineNumber": 1267,
         "line": "   *   lastName: 'Smith',"
       },
       {
-        "lineNumber": 1273,
+        "lineNumber": 1268,
         "line": "   *   email: 'joe@example.com'"
       },
       {
-        "lineNumber": 1274,
+        "lineNumber": 1269,
         "line": "   * }};"
       },
       {
-        "lineNumber": 1275,
+        "lineNumber": 1270,
         "line": "   * form.submit().then((submission) => {"
       },
       {
-        "lineNumber": 1276,
+        "lineNumber": 1271,
         "line": "   *   console.log(submission);"
       },
       {
-        "lineNumber": 1277,
+        "lineNumber": 1272,
         "line": "   * });"
       },
       {
-        "lineNumber": 1278,
+        "lineNumber": 1273,
         "line": "   *"
       },
       {
-        "lineNumber": 1279,
+        "lineNumber": 1274,
         "line": "   * @param {boolean} before - If this submission occured from the before handlers."
       },
       {
-        "lineNumber": 1280,
+        "lineNumber": 1275,
         "line": "   *"
       },
       {
-        "lineNumber": 1281,
+        "lineNumber": 1276,
         "line": "   * @returns {Promise} - A promise when the form is done submitting."
       },
       {
-        "lineNumber": 1282,
+        "lineNumber": 1277,
         "line": "   */"
       },
       {
-        "lineNumber": 1283,
+        "lineNumber": 1278,
         "line": "  submit(before, options) {"
       }
     ],
