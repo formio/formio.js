@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed the calendar widget configurations.
  - Fixed builder styles to be more consistent with legacy builder
  - Issues with the Tabs component in builder mode duplicating components.
+ - Adding validate required to value for radio configuration.
  
 ### Changed
  - Upgraded tooltip.js@1.3.3, karma@4.4.0, moment-timezone@0.5.27
