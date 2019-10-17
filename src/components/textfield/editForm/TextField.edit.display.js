@@ -29,12 +29,12 @@ export default [
     type: 'textarea',
     key: 'widget',
     label: 'Widget Settings',
-    // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
+    clearOnHide: false,
+    allowCalculateOverride: true,
     calculateValue: (context) => {
-      if (!context.instance.calculatedValue && _.isEmpty(_.omit(context.data.widget, 'type'))) {
+      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
         let settings = {};
         const existWidget = context.instance._currentForm.options.editComponent.widget;
-
         if (existWidget && !_.isEmpty(_.omit(existWidget, 'type'))) {
           settings = _.omit(context.instance._currentForm.options.editComponent.widget, 'language');
         }
