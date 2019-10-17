@@ -41,6 +41,9 @@ export default [
         else if (context.data.widget && context.data.widget.type) {
           settings = _.omit(Widgets[context.data.widget.type].defaultSettings, 'language');
         }
+        else if (context.data.widget && !context.data.widget.type ) {
+          settings = _.omit(Widgets['calendar'].defaultSettings, 'language');
+        }
         if (settings) {
           return settings;
         }
