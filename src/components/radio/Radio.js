@@ -8,6 +8,7 @@ export default class RadioComponent extends Field {
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
+      uncheckable: false,
       values: [{ label: '', value: '' }],
       fieldSet: false
     }, ...extend);
@@ -22,6 +23,11 @@ export default class RadioComponent extends Field {
       documentation: 'http://help.form.io/userguide/#radio',
       schema: RadioComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.previousValue = null;
   }
 
   get defaultSchema() {
@@ -59,6 +65,13 @@ export default class RadioComponent extends Field {
       }));
       this.addShortcut(input, this.component.values[index].shortcut);
     });
+
+    if (this.component.uncheckable) {
+      this.refs.input.forEach((input) => {
+        input.checked = (this.dataValue === input.value);
+      });
+    }
+
     return super.attach(element);
   }
 
@@ -121,6 +134,22 @@ export default class RadioComponent extends Field {
         }
       });
     }
+
+    if (this.component.uncheckable) {
+      this.currentValue = this.dataValue;
+
+      if (this.previousValue === this.currentValue && !(flags && flags.noUpdateEvent) && this.refs.input) {
+        this.refs.input.forEach((input) => {
+          if (input.value === this.currentValue) {
+            this.resetValue();
+          }
+        });
+      }
+      else {
+        this.previousValue = this.dataValue;
+      }
+    }
+
     return changed;
   }
 

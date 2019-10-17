@@ -28,5 +28,13 @@ export default [
     label: 'Inline Layout',
     tooltip: 'Displays the checkboxes/radios horizontally.',
     weight: 650
+  },
+  {
+    key: 'uncheckable',
+    label: 'Uncheckable',
+    type: 'checkbox',
+    input: true,
+    tooltip: 'Gives possibility to uncheck value once it\'s set.',
+    weight: 700,
   }
 ];
