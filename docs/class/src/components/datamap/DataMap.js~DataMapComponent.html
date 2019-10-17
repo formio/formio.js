@@ -48,8 +48,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-widgetcomponent">components/_classes/widgetcomponent</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/widgetcomponent/WidgetComponent.js~WidgetComponent.html">WidgetComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-WidgetComponent">WidgetComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
@@ -155,10 +153,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dynamicMonthLength">dynamicMonthLength</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-monthFormatCorrector">monthFormatCorrector</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
@@ -850,7 +845,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-createRows">createRows</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getColumns">getColumns</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -878,7 +873,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getColumns">getColumns</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-getRowValues">getRowValues</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1090,6 +1085,34 @@
         
         <div data-ice="description"><p>Provides a table view for this component.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-get-allowData">allowData</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -8196,6 +8219,34 @@ within other container based components.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-allowData">allowData</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-allowReorder">allowReorder</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -9043,6 +9094,34 @@ within other container based components.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getRowValues">getRowValues</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getRows">getRows</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
@@ -9728,7 +9807,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber51">source</a></span></span>
     </span>
   </h3>
 
@@ -9775,7 +9854,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber55">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber57">source</a></span></span>
     </span>
   </h3>
 
@@ -9818,7 +9897,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber76">source</a></span></span>
     </span>
   </h3>
 
@@ -9862,7 +9941,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber87">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber89">source</a></span></span>
     </span>
   </h3>
 
@@ -9906,7 +9985,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber66">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber68">source</a></span></span>
     </span>
   </h3>
 
@@ -9949,7 +10028,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber91">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber93">source</a></span></span>
     </span>
   </h3>
 
@@ -9992,7 +10071,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
@@ -10036,7 +10115,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber99">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber101">source</a></span></span>
     </span>
   </h3>
 
@@ -10079,7 +10158,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber57">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
@@ -10122,7 +10201,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber56">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber58">source</a></span></span>
     </span>
   </h3>
 
@@ -10208,7 +10287,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber51">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber53">source</a></span></span>
     </span>
   </h3>
 
@@ -10251,7 +10330,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber109">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber111">source</a></span></span>
     </span>
   </h3>
 
@@ -10294,7 +10373,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber59">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
@@ -10340,7 +10419,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber188">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber183">source</a></span></span>
     </span>
   </h3>
 
@@ -10383,7 +10462,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber214">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber209">source</a></span></span>
     </span>
   </h3>
 
@@ -10438,7 +10517,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber150">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber145">source</a></span></span>
     </span>
   </h3>
 
@@ -10504,18 +10583,18 @@ within other container based components.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-createRows">
+  <h3 data-ice="anchor" id="instance-method-getColumns">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">createRows</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">getColumns</span><span class="code" data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber113">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 
@@ -10524,12 +10603,24 @@ within other container based components.</p>
   
   
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-createRows">DataGridComponent#createRows</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getColumns">DataGridComponent#getColumns</a></span></div>
 
   <div data-ice="properties">
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -10547,18 +10638,18 @@ within other container based components.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-getColumns">
+  <h3 data-ice="anchor" id="instance-method-getRowValues">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">getColumns</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="code" data-ice="name">getRowValues</span><span class="code" data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber140">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber115">source</a></span></span>
     </span>
   </h3>
 
@@ -10567,7 +10658,7 @@ within other container based components.</p>
   
   
 
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getColumns">DataGridComponent#getColumns</a></span></div>
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getRowValues">DataGridComponent#getRowValues</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -10613,7 +10704,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber130">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber125">source</a></span></span>
     </span>
   </h3>
 
@@ -10668,7 +10759,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber134">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber129">source</a></span></span>
     </span>
   </h3>
 
@@ -10723,7 +10814,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber54">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber56">source</a></span></span>
     </span>
   </h3>
 
@@ -10766,7 +10857,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber198">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber193">source</a></span></span>
     </span>
   </h3>
 
@@ -10825,7 +10916,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber206">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datamap/DataMap.js.html#lineNumber201">source</a></span></span>
     </span>
   </h3>
 

@@ -87,6 +87,10 @@ export default class EditGridComponent extends NestedComponent {
     return _.get(this.component, 'validate.minLength', 0);
   }
 
+  get allowData() {
+    return true;
+  }
+
   get data() {
     return this._data;
   }

@@ -845,10 +845,12 @@ export default class WebformBuilder extends Component {
     const index = parent.formioContainer.indexOf(component);
     if (remove && index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
-      this.emit('removeComponent', component, parent.formioComponent.component, path, index);
       parent.formioContainer.splice(index, 1);
-      parent.formioComponent.rebuild();
-      this.emit('change', this.form);
+      const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
+      rebuild.then(() => {
+        this.emit('removeComponent', component, parent.formioComponent.component, path, index);
+        this.emit('change', this.form);
+      });
     }
     return remove;
   }

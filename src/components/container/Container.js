@@ -48,6 +48,10 @@ export default class ContainerComponent extends NestedComponent {
     return 'container';
   }
 
+  get allowData() {
+    return true;
+  }
+
   get data() {
     return this._data;
   }
