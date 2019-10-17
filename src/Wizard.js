@@ -297,7 +297,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkValidity(this.submission.data, true)) {
+    if (this.checkValidity(this.submission.data, true, true)) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -468,15 +468,15 @@ export default class Wizard extends Webform {
     return this.redraw();
   }
 
-  checkValidity(data, dirty) {
+  checkValidity(data, dirty, currentPageOnly) {
     if (!this.checkCondition(null, data)) {
       this.setCustomValidity('');
       return true;
     }
 
-    const components = !this.isLastPage()
-      ? this.currentPage.components
-      : this.getComponents();
+    const components = !currentPageOnly || this.isLastPage()
+      ? this.getComponents()
+      : this.currentPage.components;
 
     return components.reduce(
       (check, comp) => comp.checkValidity(data, dirty) && check,

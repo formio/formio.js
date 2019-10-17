@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Wizard's ```checkValidity``` method checking only current page instead of all pages
+
 ## 4.4.0
 ### Reverted
  - Refactoring of widgets and localization of calendar widget.
