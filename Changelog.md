@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.4.1
+### Added
+ - Added ability to deselect radio value.
+
 ### Fixed
  - Fixing the dataValue initialization for Containers and other data types.
  - Wizard's ```checkValidity``` method checking only current page instead of all pages
