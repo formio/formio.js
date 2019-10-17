@@ -4,10 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.4.1
 ### Fixed
+ - Fixing the dataValue initialization for Containers and other data types.
  - Wizard's ```checkValidity``` method checking only current page instead of all pages
-
+ - Make sure to redraw after reordering DataGrid.
+ - Fixed the calendar widget configurations.
+ - Fixed builder styles to be more consistent with legacy builder
+ - Issues with the Tabs component in builder mode duplicating components.
+ 
+### Changed
+ - Upgraded tooltip.js@1.3.3, karma@4.4.0, moment-timezone@0.5.27
+ - Updated timezone DST information file to latest 2019c version.
+ 
 ## 4.4.0
 ### Reverted
  - Refactoring of widgets and localization of calendar widget.
