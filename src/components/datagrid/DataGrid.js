@@ -330,6 +330,7 @@ export default class DataGridComponent extends NestedComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue);
+    this.redraw();
   }
 
   addRow() {
