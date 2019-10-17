@@ -24,11 +24,6 @@ export default class RadioComponent extends Field {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-    this.previousValue = null;
-  }
-
   get defaultSchema() {
     return RadioComponent.schema();
   }
@@ -63,9 +58,7 @@ export default class RadioComponent extends Field {
         modified: true
       }));
       this.addShortcut(input, this.component.values[index].shortcut);
-      input.checked = (this.dataValue === input.value);
     });
-
     return super.attach(element);
   }
 
@@ -112,8 +105,6 @@ export default class RadioComponent extends Field {
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
-    this.currentValue = this.dataValue;
-
     if (changed && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
@@ -130,17 +121,6 @@ export default class RadioComponent extends Field {
         }
       });
     }
-
-    const shouldResetValue = !(flags && flags.noUpdateEvent)
-      && this.previousValue === this.currentValue;
-
-    if (shouldResetValue) {
-      this.resetValue();
-    }
-    else {
-      this.previousValue = this.dataValue;
-    }
-
     return changed;
   }
 
