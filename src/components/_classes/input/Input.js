@@ -95,12 +95,15 @@ export default class Input extends Multivalue {
     }
     // This should be in the calendar widget but it doesn't have access to renderTemplate.
     if (this.component.widget && this.component.widget.type === 'calendar') {
-      this.component.suffix = this.renderTemplate('icon', {
+      const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
         className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
         styles: '',
         content: ''
-      });
+      }).trim();
+      if (this.component.prefix !== calendarIcon) {
+        this.component.suffix = calendarIcon;
+      }
     }
 
     return this.isMultipleMasksField

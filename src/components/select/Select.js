@@ -128,6 +128,10 @@ export default class SelectComponent extends Field {
     return this.isSelectResource || this.isSelectURL;
   }
 
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
+  }
+
   itemTemplate(data) {
     if (!data) {
       return '';
@@ -895,7 +899,7 @@ export default class SelectComponent extends Field {
     }
 
     // Force the disabled state with getters and setters.
-    this.disabled = this.disabled;
+    this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
   }
