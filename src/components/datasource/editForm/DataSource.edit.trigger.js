@@ -50,5 +50,4 @@ export default [
     tooltip: 'The event to fire when triggered.',
     description: 'When in a datagrid or editgrid, { { rowIndex } } is available for interpolation to target a specific row.'
   },
-
 ];

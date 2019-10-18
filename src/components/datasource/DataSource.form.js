@@ -2,7 +2,6 @@ import componentEditForm from '../_classes/component/Component.form';
 import DataSourceEditData from './editForm/DataSource.edit.data';
 import DataSourceEditTrigger from './editForm/DataSource.edit.trigger';
 import DataSourceEditFetch from './editForm/DataSource.edit.fetch';
-import DataSourceEditAssign from './editForm/DataSource.edit.assign';
 
 export default function(...extend) {
   return componentEditForm([
