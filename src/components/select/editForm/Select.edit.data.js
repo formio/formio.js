@@ -271,6 +271,7 @@ export default [
           [
             'json',
             'url',
+            'custom'
           ],
         ],
       },

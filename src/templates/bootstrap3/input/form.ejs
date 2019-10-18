@@ -2,7 +2,7 @@
 <div class="input-group">
 {% } %}
 {% if (ctx.component.prefix) { %}
-<div class="input-group-addon">{{ctx.component.prefix}}</div>
+<div class="input-group-addon" ref="prefix">{{ctx.component.prefix}}</div>
 {% } %}
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
@@ -17,7 +17,7 @@
 <span class="text-muted pull-right" ref="wordcount"></span>
 {% } %}
 {% if (ctx.component.suffix) { %}
-<div class="input-group-addon">{{ctx.component.suffix}}</div>
+<div class="input-group-addon" ref="suffix">{{ctx.component.suffix}}</div>
 {% } %}
 {% if (ctx.component.prefix || ctx.component.suffix) { %}
 </div>

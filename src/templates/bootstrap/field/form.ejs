@@ -3,7 +3,7 @@
 {% } %}
 {{ctx.element}}
 {% if (ctx.label.labelPosition === 'bottom') { %}
-  <label class="{{ctx.label.className}} {{ctx.label.hidden ? 'sr-only' : ''}}" for="{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.label)}}
+  <label class="{{ctx.label.className}} {{ctx.label.hidden ? 'sr-only' : ''}}" for="{{ctx.instance.id}}-{{ctx.component.key}}{{ctx.component.multiple ? `-${ctx.index}` : ''}}">{{ctx.t(ctx.component.label)}}
   {% if (ctx.component.tooltip) { %}
     <i role="tooltip" ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
   {% } %}

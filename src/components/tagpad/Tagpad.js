@@ -228,6 +228,10 @@ export default class Tagpad extends NestedComponent {
     }
   }
 
+  get allowData() {
+    return true;
+  }
+
   get dataReady() {
     return this.backgroundReady.promise;
   }

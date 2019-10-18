@@ -43,6 +43,10 @@ export default class DataGridComponent extends NestedComponent {
     this.checkColumns(this.dataValue);
   }
 
+  get allowData() {
+    return true;
+  }
+
   get dataValue() {
     const dataValue = super.dataValue;
     if (!dataValue || !Array.isArray(dataValue)) {
@@ -330,6 +334,7 @@ export default class DataGridComponent extends NestedComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue);
+    this.redraw();
   }
 
   addRow() {
@@ -345,17 +350,22 @@ export default class DataGridComponent extends NestedComponent {
     this.redraw();
   }
 
+  getRowValues() {
+    return this.dataValue;
+  }
+
   createRows(init) {
     let added = false;
+    const rowValues = this.getRowValues();
     // Create any missing rows.
-    this.dataValue.forEach((row, index) => {
+    rowValues.forEach((row, index) => {
       if (!this.rows[index]) {
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
     });
     // Delete any extra rows.
-    this.rows.splice(this.dataValue.length);
+    this.rows.splice(rowValues.length);
     if (!init && added) {
       this.redraw();
     }
@@ -497,6 +507,12 @@ export default class DataGridComponent extends NestedComponent {
         this.createRows();
         value = [{}];
       }
+    }
+
+    // Make sure we always have at least one row.
+    // NOTE: Removing this will break "Public Configurations" in portal. ;)
+    if (value && !value.length) {
+      value.push({});
     }
 
     const changed = this.hasChanged(value, this.dataValue);

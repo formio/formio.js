@@ -1,3 +1,4 @@
+{{console.log(ctx)}}
 {% if (ctx.component.prefix || ctx.component.suffix) { %}
 <div class="input-group">
 {% } %}
@@ -16,11 +17,15 @@
     {% } %}
 
     {% if (!ctx.input.attr.id) { %}
-    id="{{ctx.instance.id}}-{{ctx.component.key}}"
+    id="{{ctx.instance.id}}-{{ctx.component.key}}{{ctx.component.multiple? `-${ctx.index}` : ''}}"
     {% } %}
 
     {% if (ctx.component.hideLabel && ctx.component.type !== "day") { %}
     aria-label="{{ctx.component.label}}"
+    {% } %}
+
+    {% if (ctx.component.multiple) { %}
+    aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
 
     aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}
