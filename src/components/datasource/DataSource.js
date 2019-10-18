@@ -13,6 +13,7 @@ export default class DataSourceComponent extends Component {
       label: 'Data Source',
       key: 'dataSource',
       type: 'datasource',
+      persistent: 'client-only'
     }, ...extend);
   }
 

@@ -1,5 +1,3 @@
-import EditFormUtils from '../../_classes/component/editForm/utils';
-
 export default [
   {
     type: 'select',
