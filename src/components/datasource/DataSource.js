@@ -32,7 +32,9 @@ export default class DataSourceComponent extends Component {
   }
 
   init() {
-    // TODO: Implement custom trigger.
+    if (_.get(this.component, 'trigger.init', false)) {
+      this.refresh();
+    }
     return super.init();
   }
 
@@ -75,7 +77,7 @@ export default class DataSourceComponent extends Component {
     // Add custom headers to the url.
     if (this.component.fetch && this.component.fetch.headers) {
       try {
-        _.each(this.component.fetch.headers, (header) => {
+        this.component.fetch.headers.forEach((header) => {
           if (header.key) {
             headers.set(header.key, this.interpolate(header.value));
           }
@@ -86,16 +88,24 @@ export default class DataSourceComponent extends Component {
       }
     }
 
+    if (this.component.fetch && this.component.fetch.authenticate) {
+      headers.set('x-jwt-token', Formio.getToken());
+    }
+
     return headers;
   }
 
   assign(data) {
-    (this.component.assign || []).forEach((assign) => {
-      const instance = this.parent.getComponent(assign.component) || this.root.getComponent(assign.component);
-      if (instance) {
-        instance.setValue(_.get(data, assign.path, instance.defaultValue));
-      }
+    if (!_.isEqual(this.dataValue, data)) {
+      this.dataValue = data;
+      this.triggerChange();
+    }
+    this.emit(this.interpolate(this.component.event), this.data);
+    this.events.emit(this.interpolate(this.component.event), this.data);
+    this.emit('customEvent', {
+      type: this.interpolate(this.component.event),
+      component: this.component,
+      data: this.data,
     });
-    // TODO: Implement custom assign.
   }
 }

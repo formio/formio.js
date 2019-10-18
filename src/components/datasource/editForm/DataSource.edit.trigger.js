@@ -2,22 +2,27 @@ import EditFormUtils from '../../_classes/component/editForm/utils';
 
 export default [
   {
-    weight: 0,
-    type: 'textfield',
+    type: 'checkbox',
     input: true,
-    key: 'label',
-    label: 'Label',
-    placeholder: 'Field Label',
-    tooltip: 'The label for this field that will appear next to it.',
-    validate: {
-      required: true
-    }
+    key: 'trigger.init',
+    label: 'Trigger on form init',
+    tooltip: 'When enabled the request will be made when the form is initialized.',
+    weight: 15,
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    key: 'trigger.server',
+    label: 'Trigger on server',
+    tooltip: 'When enabled the request will be made on the server during validation.',
+    description: 'Async requests on the server can slow down processing since the server must wait for a response before proceeding. Do not add too many server side requests or performance will suffer.',
+    weight: 15,
   },
   {
     type: 'select',
     input: true,
     key: 'refreshOn',
-    label: 'Refresh Data On',
+    label: 'Trigger on Data change',
     weight: 10,
     tooltip: 'Refresh data when another field changes.',
     dataSrc: 'custom',
@@ -38,8 +43,14 @@ export default [
       }
     },
   },
-  EditFormUtils.javaScriptValue('Custom Refresh Data On', 'customRefreshOn', 'customRefreshOn', 20,
-    '<p><h4>Example:</h4><pre>refresh = data.age > 18</pre></p>',
-    '<p><h4>Example:</h4><pre>{ ">" : [{"var": "data.age"}, 18] }</pre>'
-  ),
+  {
+    type: 'textfield',
+    label: 'Fire Event',
+    key: 'event',
+    input: true,
+    weight: 120,
+    tooltip: 'The event to fire when triggered.',
+    description: 'When in a datagrid or editgrid, { { rowIndex } } is available for interpolation to target a specific row.'
+  },
+
 ];

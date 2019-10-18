@@ -13,7 +13,7 @@ export default [
     data: {
       values: [
         { label: 'URL', value: 'url' },
-        { label: 'Custom Javascript', value: 'custom' },
+        // { label: 'Custom Javascript', value: 'custom' },
       ],
     },
   },
@@ -92,8 +92,5 @@ export default [
       json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
     },
   },
-  EditFormUtils.javaScriptValue('Custom Refresh Data On', 'fetch.custom', 'fetchcustom', 20,
-    '<p><h4>Example:</h4><pre>data = {foo: "bar"}</pre></p>',
-    '<p><h4>Example:</h4><pre>{ ">" : [{"var": "data.age"}, 18] }</pre>'
-  ),
+  // TODO: Add custom calculation of value with async possibility.
 ];
