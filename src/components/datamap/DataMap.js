@@ -42,7 +42,9 @@ export default class DataMapComponent extends DataGridComponent {
 
   get schema() {
     const schema = super.schema;
-    schema.valueComponent = this.components[this.components.length - 1].schema;
+    if (this.components && (this.components.length > 0)) {
+      schema.valueComponent = this.components[this.components.length - 1].schema;
+    }
     return _.omit(schema, 'components');
   }
 
@@ -110,21 +112,14 @@ export default class DataMapComponent extends DataGridComponent {
     return this.component.valueComponent.key;
   }
 
-  createRows() {
-    const keys = Object.keys(this.dataValue);
-
-    keys.forEach((key, index) => {
-      if (!this.rows[index]) {
-        const row = {
-          key,
-          [this.valueKey]: this.dataValue[key]
-        };
-        this.rows[index] = this.createRowComponents(row, index);
-      }
+  getRowValues() {
+    const dataValue = this.dataValue;
+    return Object.keys(dataValue).map((key) => {
+      return {
+        key,
+        [this.valueKey]: dataValue[key]
+      };
     });
-
-    // Delete any extra rows.
-    this.rows.splice(keys.length);
   }
 
   hasHeader() {

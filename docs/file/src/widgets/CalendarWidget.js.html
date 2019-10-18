@@ -48,8 +48,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-widgetcomponent">components/_classes/widgetcomponent</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/widgetcomponent/WidgetComponent.js~WidgetComponent.html">WidgetComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-WidgetComponent">WidgetComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
@@ -155,10 +153,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dynamicMonthLength">dynamicMonthLength</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-monthFormatCorrector">monthFormatCorrector</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
@@ -252,11 +247,6 @@ import {
 } from &apos;../utils/utils&apos;;
 import moment from &apos;moment&apos;;
 import _ from &apos;lodash&apos;;
-import {
-  monthFormatCorrector,
-  dynamicMonthLength,
-  timeFormatLocaleCorrector,
-} from &apos;../utils/calendarUtils&apos;;
 const DEFAULT_FORMAT = &apos;yyyy-MM-dd hh:mm a&apos;;
 const ISO_8601_FORMAT = &apos;yyyy-MM-ddTHH:mm:ssZ&apos;;
 
@@ -301,15 +291,6 @@ export default class CalendarWidget extends InputWidget {
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, &apos;HH:mm&apos;);
     }
-
-    this.component.suffix = &apos;&apos;;
-
-    const { time_24hr: is24hours } = this.widgetLocale.currentLocale;
-    this.settings.format = timeFormatLocaleCorrector(is24hours, this.settings.format);
-
-    /*eslint-disable camelcase*/
-    this.settings.time_24hr = is24hours;
-    /*eslint-enable camelcase*/
   }
 
   /**
@@ -342,10 +323,7 @@ export default class CalendarWidget extends InputWidget {
       time: &apos;G:i K&apos;
     };
 
-    const { currentLocale } = this.widgetLocale;
-
     this.closedOn = 0;
-    this.settings.locale = currentLocale;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
@@ -360,62 +338,17 @@ export default class CalendarWidget extends InputWidget {
         this.emit(&apos;blur&apos;);
       }
     };
-
-    // Removes console errors from Flatpickr.
-    this.settings.errorHandler = () =&gt; null;
-
     this.settings.formatDate = (date, format) =&gt; {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly &amp;&amp; (format === this.settings.altFormat)) {
         if (this.settings.saveAs === &apos;text&apos; || this.loadZones()) {
-          return Flatpickr.formatDate(date, format, currentLocale);
+          return Flatpickr.formatDate(date, format);
         }
 
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone, currentLocale);
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
-      return Flatpickr.formatDate(date, format, currentLocale);
-    };
-
-    // Extension of the parseDate method for validating input data.
-    this.settings.parseDate = (inputDate, format) =&gt; {
-      this.enteredDate = inputDate;
-
-      if (this.calendar) {
-        this.calendar.clear();
-      }
-
-      // Check for validation errors.
-      if (this.component.checkDataValidity()) {
-        this.enteredDate = &apos;&apos;;
-        // Solving the problem with parsing dates with MMM or MMMM format.
-        if (!inputDate.match(/[a-z&#x430;-&#x44F;&#x451;\u00C0-\u017F]{3,}/gi)) {
-          if (format.indexOf(&apos;M&apos;) !== -1) {
-            format = format.replace(&apos;M&apos;, &apos;m&apos;);
-          }
-          else if (format.indexOf(&apos;F&apos;) !== -1) {
-            format = format.replace(&apos;F&apos;, &apos;m&apos;);
-          }
-        }
-
-        // Creates a date to prevent incorrect parsing of locations such as ru.
-        let correctDate = null;
-
-        if (format === this.settings.dateFormat) {
-          correctDate = moment(inputDate).toDate();
-        }
-        else {
-          correctDate = moment(inputDate, monthFormatCorrector(this.settings.format)).toDate();
-        }
-
-        return Flatpickr.parseDate(correctDate, format, currentLocale);
-      }
-
-      if (this.calendar) {
-        this.calendar.close();
-      }
-
-      return undefined;
+      return Flatpickr.formatDate(date, format);
     };
 
     if (this._input) {
@@ -429,39 +362,6 @@ export default class CalendarWidget extends InputWidget {
       this.addEventListener(this.calendar._input, &apos;blur&apos;, () =&gt;
         this.calendar.setDate(this.calendar._input.value, true, this.settings.altFormat)
       );
-
-      // Makes it possible to enter the month as text.
-      if (this.settings.format.match(/\bM{3}\b/gi)) {
-        this.addEventListener(this.calendar._input, &apos;keyup&apos;, (e) =&gt; {
-          let format = this.settings.format;
-          const value = e.target.value;
-          const monthIndex = format.indexOf(&apos;M&apos;);
-
-          if (value &amp;&amp; value[monthIndex].match(/\d/)) {
-            format = format.replace(&apos;MMM&apos;, &apos;MM&apos;);
-          }
-          else if (value &amp;&amp; value[monthIndex].match(/[a-z&#x430;-&#x44F;&#x451;\u00C0-\u017F]/i)) {
-            const month = value .match(/([a-z&#x430;-&#x44F;&#x451;\u00C0-\u017F]{2,})/gi);
-
-            if (month) {
-              const { monthsShort } = this.widgetLocale;
-              const monthLength = dynamicMonthLength(month[0], monthsShort);
-
-              if (monthLength) {
-                // Sets the dynamic length of the mask for the month.
-                format = format.replace(/M{3,}/g, _.fill(Array(monthLength), &apos;M&apos;).join(&apos;&apos;));
-              }
-            }
-            format = format.replace(/M/g, &apos;e&apos;);
-          }
-          if (this.inputMasks[0]) {
-            this.inputMasks[0].destroy();
-            this.inputMasks = [];
-          }
-
-          this.setInputMask(this.calendar._input, convertFormatToMask(format));
-        });
-      }
     }
     return superAttach;
   }
@@ -617,66 +517,6 @@ export default class CalendarWidget extends InputWidget {
     if (this.calendar) {
       this.calendar.destroy();
     }
-  }
-
-  get widgetLocale() {
-    let currentLocale = Flatpickr.l10ns.default;
-    let loc = this.i18next.language ? this.i18next.language.slice(-2) : null;
-
-    if (this.settings.useLocaleSettings) {
-      if (!Flatpickr.l10ns[loc]) {
-        console.warn(`Flatpickr localization ${loc} not found.`);
-      }
-      else {
-        currentLocale = Flatpickr.l10ns[loc];
-      }
-      if (!moment.locales().some(locale =&gt; locale === loc)) {
-        console.warn(`Moment localization ${loc} not found.`);
-      }
-    }
-    else {
-      loc !== &apos;en&apos; &amp;&amp; (loc = &apos;en&apos;);
-    }
-
-    const monthsShort = currentLocale.months.shorthand;
-    const monthsShortStrictRegex = new RegExp(`^(${monthsShort.join(&apos;|&apos;)})`, &apos;i&apos;);
-
-    return {
-      locale: loc,
-      monthsShort,
-      monthsShortStrictRegex,
-      currentLocale,
-    };
-  }
-
-  toggleInvalidClassForWidget(message) {
-    if (this.calendar &amp;&amp; this.calendar._input) {
-      const inputClasses = this._input.classList;
-      const calendarInputClasses = this.calendar._input.classList;
-      const invalidClass = &apos;is-invalid&apos;;
-
-      if (message &amp;&amp; !calendarInputClasses.contains(invalidClass)) {
-        this.calendar._input.classList.add(invalidClass);
-      }
-      else {
-        if (inputClasses.contains(invalidClass) &amp;&amp; !calendarInputClasses.contains(invalidClass)) {
-          this.calendar._input.classList.add(invalidClass);
-        }
-        else if (!inputClasses.contains(invalidClass) &amp;&amp; calendarInputClasses.contains(invalidClass)) {
-          this.calendar._input.classList.remove(invalidClass);
-        }
-      }
-    }
-  }
-
-  get widgetData() {
-    const { format, minDate, maxDate } = this.settings;
-    return {
-      enteredDate: this.enteredDate,
-      format,
-      minDate,
-      maxDate,
-    };
   }
 }
 </code></pre>

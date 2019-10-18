@@ -48,8 +48,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-widgetcomponent">components/_classes/widgetcomponent</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/widgetcomponent/WidgetComponent.js~WidgetComponent.html">WidgetComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-WidgetComponent">WidgetComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
@@ -155,10 +153,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dynamicMonthLength">dynamicMonthLength</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-monthFormatCorrector">monthFormatCorrector</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timeFormatLocaleCorrector">timeFormatLocaleCorrector</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
@@ -236,7 +231,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/calendarUtils.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import moment from &apos;moment&apos;;
 import _ from &apos;lodash&apos;;
-import { convertFormatToMoment } from &apos;./utils&apos;;
 
 export const CALENDAR_ERROR_MESSAGES = {
   INVALID: &apos;You entered the Invalid Date&apos;,
@@ -324,7 +318,7 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
   const isValidDate = date.isValid();
 
   if (!isValidDate) {
-    const delimeters = value.match(/[^a-z0-9&#x430;-&#x44F;&#x451;\u00C0-\u017F_]+/gi);
+    const delimeters = value.match(/[^a-z0-9_]/gi);
     const delimetersRegEx = new RegExp(delimeters.join(&apos;|&apos;), &apos;gi&apos;);
 
     const inputParts = value.replace(/_*/gi, &apos;&apos;).split(delimetersRegEx);
@@ -381,61 +375,6 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
   }
 
   return buildResponse(&apos;&apos;, true);
-}
-
-/**
- * If date format has long or shorthand months it generates format for numeric too.
- *
- * @param {String} format
- *   The format dste string.
- * * @return {[String]}
- */
-export function monthFormatCorrector(format) {
-  const momentFormat = [convertFormatToMoment(format)];
-
-  if (momentFormat[0].match(/M{3,}/g)) {
-    momentFormat.push(momentFormat[0].replace(/M{3,}/g, &apos;MM&apos;));
-  }
-  return momentFormat;
-}
-
-/**
- * Compares the entered month with an array of months.
- *
- * @param {String} value
- *   The entered month.
- * @param {[String]} monthsArray
- *   The array of months.
- * * @return {Number}
- */
-export function dynamicMonthLength(value, monthsArray) {
-  const lowerValue = value.toLowerCase();
-  const comparedMonth = _.find(monthsArray, month =&gt; month.toLowerCase().startsWith(lowerValue));
-
-  if (comparedMonth) {
-    return comparedMonth.length;
-  }
-  return 0;
-}
-
-/**
- * Corrects the time format depending on locale.
- *
- * @param {Boolean} is24hours
- *   The value from locale settings.
- * @param {String} format
- *   The format from settings.
- * * @return {String}
- */
-export function timeFormatLocaleCorrector(is24hours, format) {
-  if (is24hours &amp;&amp; format.match(/[ha]/g)) {
-    return format
-      .replace(/h/g, &apos;H&apos;)
-      .replace(/a/g, &apos;&apos;)
-      .trim();
-  }
-
-  return format;
 }
 </code></pre>
 
