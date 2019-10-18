@@ -11,6 +11,8 @@ import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
+import Templates from './templates/Templates';
+import Components from './components/Components';
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -1371,6 +1373,45 @@ export default class Formio {
   }
 }
 
+const registerPlugin = (plugin) => {
+  // Sanity check.
+  if (typeof plugin !== 'object') {
+    return;
+  }
+  // We need to set the base first as templates are overrides.
+  if (plugin.hasOwnProperty('framework')) {
+    Templates.framework = plugin.framework;
+  }
+  for (const key in Object.keys(plugin)) {
+    switch (key) {
+      case 'templates':
+        if (!plugin.templates[Templates.framework]) {
+          console.error('Unknown template in plugin for framework', Templates.framework);
+        }
+        else {
+          Templates.current = plugin.templates[Templates.framework];
+        }
+        break;
+      case 'components':
+        Components.setComponents(plugin.components);
+        break;
+      case 'framework':
+        // Already handled so ignore.
+        break;
+      case 'fetch':
+        for (const name in Object.keys(plugin.fetch)) {
+          Formio.registerPlugin(plugin.fetch[name], name);
+        }
+        break;
+      case 'providers':
+        // TODO: Implement custom providers
+        break;
+      default:
+        console.log('Unknown plugin option', key);
+    }
+  }
+};
+
 // Define all the static properties.
 Formio.libraries = {};
 Formio.Promise = NativePromise;
@@ -1387,6 +1428,22 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
+/**
+ * Allows passing in plugins as multiple arguments or an array of plugins.
+ *
+ * Formio.plugins(plugin1, plugin2, etc);
+ * Formio.plugins([plugin1, plugin2, etc]);
+ */
+Formio.use = (...plugins) => {
+  plugins.forEach((plugin) => {
+    if (Array.isArray(plugin)) {
+      plugin.forEach(p => registerPlugin(p));
+    }
+    else {
+      registerPlugin(plugin);
+    }
+  });
+};
 
 if (typeof global === 'object' && !global.Formio) {
   global.Formio = Formio;
