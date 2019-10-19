@@ -24,6 +24,11 @@ export default class RadioComponent extends Field {
     };
   }
 
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.previousValue = this.dataValue || null;
+  }
+
   get defaultSchema() {
     return RadioComponent.schema();
   }
@@ -39,6 +44,10 @@ export default class RadioComponent extends Field {
 
   get emptyValue() {
     return '';
+  }
+
+  get isRadio() {
+    return this.component.inputType === 'radio';
   }
 
   render() {
@@ -58,6 +67,10 @@ export default class RadioComponent extends Field {
         modified: true
       }));
       this.addShortcut(input, this.component.values[index].shortcut);
+
+      if (this.isRadio) {
+        input.checked = (this.dataValue === input.value);
+      }
     });
     return super.attach(element);
   }
@@ -121,6 +134,24 @@ export default class RadioComponent extends Field {
         }
       });
     }
+
+    if (!this.isRadio) {
+      return changed;
+    }
+
+    this.currentValue = this.dataValue;
+
+    const shouldResetValue = !(flags && flags.noUpdateEvent)
+      && this.previousValue === this.currentValue;
+
+    if (shouldResetValue) {
+      this.resetValue();
+      this.triggerChange();
+    }
+    else {
+      this.previousValue = this.dataValue;
+    }
+
     return changed;
   }
 
