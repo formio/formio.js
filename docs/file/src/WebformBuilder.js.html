@@ -1092,7 +1092,7 @@ export default class WebformBuilder extends Component {
       this.preview.form = { components: [_.omit(component, [
         &apos;hidden&apos;,
         &apos;conditional&apos;,
-        &apos;calculatedValue&apos;
+        &apos;calculateValue&apos;
       ])] };
       const previewElement = this.componentEdit.querySelector(&apos;[ref=&quot;preview&quot;]&apos;);
       if (previewElement) {
@@ -1220,7 +1220,7 @@ export default class WebformBuilder extends Component {
         &apos;builder&apos;,
         &apos;events&apos;,
         &apos;attachMode&apos;,
-        &apos;calculatedValue&apos;
+        &apos;calculateValue&apos;
       ]));
     }
 

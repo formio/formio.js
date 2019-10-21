@@ -236,6 +236,60 @@ import Formio from &apos;./Formio&apos;;
 Components.setComponents(AllComponents);
 Formio.Components = Components;
 Formio.Templates = Templates;
+const registerPlugin = (plugin) =&gt; {
+  // Sanity check.
+  if (typeof plugin !== &apos;object&apos;) {
+    return;
+  }
+  // We need to set the base first as templates are overrides.
+  if (plugin.hasOwnProperty(&apos;framework&apos;)) {
+    Templates.framework = plugin.framework;
+  }
+  for (const key in Object.keys(plugin)) {
+    switch (key) {
+      case &apos;templates&apos;:
+        if (!plugin.templates[Templates.framework]) {
+          console.error(&apos;Unknown template in plugin for framework&apos;, Templates.framework);
+        }
+        else {
+          Templates.current = plugin.templates[Templates.framework];
+        }
+        break;
+      case &apos;components&apos;:
+        Components.setComponents(plugin.components);
+        break;
+      case &apos;framework&apos;:
+        // Already handled so ignore.
+        break;
+      case &apos;fetch&apos;:
+        for (const name in Object.keys(plugin.fetch)) {
+          Formio.registerPlugin(plugin.fetch[name], name);
+        }
+        break;
+      case &apos;providers&apos;:
+        // TODO: Implement custom providers
+        break;
+      default:
+        console.log(&apos;Unknown plugin option&apos;, key);
+    }
+  }
+};
+/**
+ * Allows passing in plugins as multiple arguments or an array of plugins.
+ *
+ * Formio.plugins(plugin1, plugin2, etc);
+ * Formio.plugins([plugin1, plugin2, etc]);
+ */
+Formio.use = (...plugins) =&gt; {
+  plugins.forEach((plugin) =&gt; {
+    if (Array.isArray(plugin)) {
+      plugin.forEach(p =&gt; registerPlugin(p));
+    }
+    else {
+      registerPlugin(plugin);
+    }
+  });
+};
 export Form from &apos;./Form&apos;;
 export Utils from &apos;./utils&apos;;
 export { Components, Templates, Formio };
