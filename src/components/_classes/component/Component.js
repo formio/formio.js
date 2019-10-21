@@ -1487,7 +1487,9 @@ export default class Component extends Element {
     }
 
     if (this.component.onChange) {
-      this.evaluate(this.component.onChange);
+      this.evaluate(this.component.onChange, {
+        flags
+      });
     }
 
     // Set the changed variable.
