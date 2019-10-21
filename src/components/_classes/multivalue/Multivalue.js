@@ -212,6 +212,6 @@ export default class Multivalue extends Field {
       this.root.onChange();
     }
 
-    super.setFocusAt(this.dataValue.length - 1);
+    super.setFocusAt('input', this.dataValue.length - 1);
   }
 }

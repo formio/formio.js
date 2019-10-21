@@ -1155,12 +1155,15 @@ export default class Component extends Element {
     }
 
     if (this.dataValue.length > 0) {
-      this.setFocusAt(this.dataValue.length === index ? index - 1 : index);
+      this.setFocusAt('input', this.dataValue.length === index ? index - 1 : index);
+    }
+    else {
+      this.setFocusAt('addButton', 0);
     }
   }
 
-  setFocusAt(index) {
-    return this.refs.input[index].focus();
+  setFocusAt(elem, index) {
+    return this.refs[elem][index].focus();
   }
 
   iconClass(name, spinning) {
