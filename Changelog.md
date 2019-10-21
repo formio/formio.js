@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.2
+### Added
+ - New plugin capabilities. https://github.com/formio/formio.js/wiki/Plugins
+ 
+### Fixed
+ - Fixed issue where Select templates could not be overridden.
+ - Fix setting default value for multivalue 
+ 
+### Changed
+ - Made radio buttons uncheckable
+ - Updated karma@4.4.1, mocha@6.2.2
+
 ## 4.4.1
 ### Fixed
  - Fixing the dataValue initialization for Containers and other data types.

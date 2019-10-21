@@ -531,27 +531,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1863,
+        "lineNumber": 1867,
         "line": "  /**"
       },
       {
-        "lineNumber": 1864,
+        "lineNumber": 1868,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 1865,
+        "lineNumber": 1869,
         "line": "   *"
       },
       {
-        "lineNumber": 1866,
+        "lineNumber": 1870,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1867,
+        "lineNumber": 1871,
         "line": "   */"
       },
       {
-        "lineNumber": 1868,
+        "lineNumber": 1872,
         "line": "  updateComponentValue(value, flags) {"
       }
     ],
@@ -568,35 +568,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1938,
+        "lineNumber": 1942,
         "line": "  /**"
       },
       {
-        "lineNumber": 1939,
+        "lineNumber": 1943,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 1940,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1941,
-        "line": "   * @param data - The global data object."
-      },
-      {
-        "lineNumber": 1942,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1943,
-        "line": "   * @return {boolean} - If the value changed during calculation."
-      },
-      {
         "lineNumber": 1944,
-        "line": "   */"
+        "line": "   *"
       },
       {
         "lineNumber": 1945,
+        "line": "   * @param data - The global data object."
+      },
+      {
+        "lineNumber": 1946,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1947,
+        "line": "   * @return {boolean} - If the value changed during calculation."
+      },
+      {
+        "lineNumber": 1948,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1949,
         "line": "  calculateComponentValue(data, flags) {"
       }
     ],
@@ -613,35 +613,35 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2002,
+        "lineNumber": 2006,
         "line": "  /**"
       },
       {
-        "lineNumber": 2003,
+        "lineNumber": 2007,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2004,
+        "lineNumber": 2008,
         "line": "   *"
       },
       {
-        "lineNumber": 2005,
+        "lineNumber": 2009,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2006,
+        "lineNumber": 2010,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2007,
+        "lineNumber": 2011,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2008,
+        "lineNumber": 2012,
         "line": "   */"
       },
       {
-        "lineNumber": 2009,
+        "lineNumber": 2013,
         "line": "  invalidMessage(data, dirty, ignoreCondition) {"
       }
     ],

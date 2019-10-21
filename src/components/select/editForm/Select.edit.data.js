@@ -428,8 +428,9 @@ export default [
     rows: 3,
     weight: 18,
     tooltip: 'The HTML template for the result data items.',
+    allowCalculateOverride: true,
     calculateValue:(context) => {
-      if (!context.instance.calculatedValue) {
+      if (!context.data.template) {
         if (context.instance && context.instance._currentForm.options.editComponent) {
           return context.instance._currentForm.options.editComponent.template;
         }

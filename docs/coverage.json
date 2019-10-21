@@ -1,6 +1,6 @@
 {
-  "coverage": "15.46%",
-  "expectCount": 1953,
+  "coverage": "15.42%",
+  "expectCount": 1958,
   "actualCount": 302,
   "files": {
     "src/EventEmitter.js": {
@@ -501,30 +501,30 @@
         1645,
         1717,
         1828,
-        1891,
-        2064,
-        2087,
+        1895,
+        2068,
         2091,
         2095,
-        2108,
+        2099,
         2112,
-        2119,
-        2162,
-        2174,
-        2179,
-        2213,
-        2226,
-        2247,
-        2261,
-        2279,
-        2284,
+        2116,
+        2123,
+        2166,
+        2178,
+        2183,
+        2217,
+        2230,
+        2251,
+        2265,
+        2283,
         2288,
         2292,
         2296,
-        2347,
-        2353,
-        2361,
-        2437
+        2300,
+        2351,
+        2357,
+        2365,
+        2441
       ]
     },
     "src/components/_classes/component/editForm/utils.js": {
@@ -1404,22 +1404,26 @@
       ]
     },
     "src/components/radio/Radio.js": {
-      "expectCount": 14,
+      "expectCount": 18,
       "actualCount": 1,
       "undocumentLines": [
         4,
         5,
         16,
         27,
-        31,
-        40,
-        44,
-        54,
-        65,
-        73,
+        29,
+        32,
+        36,
+        45,
+        49,
+        53,
+        63,
+        78,
         86,
         99,
-        106
+        112,
+        119,
+        142
       ]
     },
     "src/components/recaptcha/ReCaptcha.form.js": {
@@ -2239,6 +2243,13 @@
         2,
         3,
         4
+      ]
+    },
+    "src/formio.form.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        8
       ]
     },
     "src/providers/storage/azure.js": {
