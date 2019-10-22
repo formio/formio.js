@@ -24,8 +24,12 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(component, options, data) {
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component && !component.hasOwnProperty('delimiter')) {
+      component.delimiter = true;
+    }
+    super(component, options, data);
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
@@ -69,7 +73,7 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  parseValue(value) {
+  formatValue(value) {
     try {
       if (this.prefix) {
         value = value.replace(this.prefix, '');
@@ -82,6 +86,6 @@ export default class CurrencyComponent extends NumberComponent {
       // If value doesn't have a replace method, continue on as before.
     }
 
-    return super.parseValue(value);
+    return super.formatValue(value);
   }
 }
