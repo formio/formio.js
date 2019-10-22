@@ -851,7 +851,7 @@ export default class Component extends Element {
     this.refs.tooltip.forEach((tooltip, index) => {
       const title = this.interpolate(tooltip.getAttribute('data-title') || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: 'hover click',
+        trigger: 'hover click focus',
         placement: 'right',
         html: true,
         title: title
