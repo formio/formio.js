@@ -142,4 +142,13 @@ export default class DateTimeComponent extends WidgetComponent {
   getView(value) {
     return this.widget.getValueAsString(value);
   }
+
+  focus() {
+    if (this.refs.input && this.refs.input[0]) {
+      const sibling = this.refs.input[0].nextSibling;
+      if (sibling) {
+        sibling.focus();
+      }
+    }
+  }
 }
