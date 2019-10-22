@@ -150,8 +150,12 @@ export default class NumberComponent extends Input {
     return value;
   }
 
-  setValueAt(index, value) {
-    return super.setValueAt(index, this.formatValue(this.parseValue(value)));
+  normalizeValue(value) {
+    value = super.normalizeValue(value);
+    if (Array.isArray(value)) {
+      return value.map(val => this.formatValue(this.parseValue(val)));
+    }
+    return this.formatValue(this.parseValue(value));
   }
 
   focus() {
