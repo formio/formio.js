@@ -14,7 +14,7 @@ const registerPlugin = (plugin) => {
   if (plugin.hasOwnProperty('framework')) {
     Templates.framework = plugin.framework;
   }
-  for (const key of Object.keys(plugin)) {
+  for (const key in Object.keys(plugin)) {
     switch (key) {
       case 'templates':
         if (!plugin.templates[Templates.framework]) {
