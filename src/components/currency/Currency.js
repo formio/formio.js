@@ -45,19 +45,6 @@ export default class CurrencyComponent extends NumberComponent {
     return CurrencyComponent.schema();
   }
 
-  parseNumber(value) {
-    // Strip out the prefix and suffix before parsing.
-    if (this.prefix) {
-      value = value.replace(this.prefix, '');
-    }
-
-    if (this.suffix) {
-      value = value.replace(this.suffix, '');
-    }
-
-    return super.parseNumber(value);
-  }
-
   setInputMask(input) {
     input.mask = maskInput({
       inputElement: input,
@@ -73,19 +60,32 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  formatValue(value) {
-    try {
-      if (this.prefix) {
-        value = value.replace(this.prefix, '');
-      }
-      if (this.suffix) {
-        value = value.replace(this.suffix, '');
-      }
-    }
-    catch (err) {
-      // If value doesn't have a replace method, continue on as before.
-    }
+  parseNumber(value) {
+    return super.parseNumber(this.stripPrefixSuffix(value));
+  }
 
-    return super.formatValue(value);
+  parseValue(value) {
+    return super.parseValue(this.stripPrefixSuffix(value));
+  }
+
+  formatValue(value) {
+    return super.formatValue(this.stripPrefixSuffix(value));
+  }
+
+  stripPrefixSuffix(value) {
+    if (typeof value === 'string') {
+      try {
+        if (this.prefix) {
+          value = value.replace(this.prefix, '');
+        }
+        if (this.suffix) {
+          value = value.replace(this.suffix, '');
+        }
+      }
+      catch (err) {
+        // If value doesn't have a replace method, continue on as before.
+      }
+    }
+    return value;
   }
 }
