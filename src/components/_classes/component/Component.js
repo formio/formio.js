@@ -1420,6 +1420,7 @@ export default class Component extends Element {
 
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, 'alert alert-warning');
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1448,6 +1449,7 @@ export default class Component extends Element {
 
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, 'alert alert-danger');
     }
     else {
       this.addClass(this.element, 'has-error');
