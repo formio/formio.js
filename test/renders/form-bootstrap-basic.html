@@ -1,9 +1,9 @@
 <div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
-  <label class="col-form-label  control-label--hidden sr-only" id="l--" for="-">
+  <label ref="label" class="col-form-label  control-label--hidden sr-only" id="l--" for="-">
   </label>
   <div class="formio-form" ref="webform" novalidate>
     <div id="text" class="form-group has-feedback formio-component formio-component-textfield formio-component-text  required" ref="component">
-      <label class="col-form-label  field-required " id="l-text-text" for="text-text">
+      <label ref="label" class="col-form-label  field-required " id="l-text-text" for="text-text">
         Text
       </label>
       <div ref="element">
@@ -14,26 +14,29 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="multiple" class="form-group has-feedback formio-component formio-component-textfield formio-component-multiple formio-component-multiple " ref="component">
-      <label class="col-form-label  " id="l-multiple-multiple" for="multiple-multiple">
+      <label ref="label" class="col-form-label  " id="l-multiple-multiple" for="multiple-multiple-undefined">
         Multiple
       </label>
-      <table class="table table-bordered">
+      <table class="table table-bordered" role="presentation">
         <tbody>
           <tr ref="row">
             <td>
-              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="multiple-multiple" aria-describedby="d-multiple-multiple
+              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="multiple-multiple-0" aria-labelledby="l-multiple-multiple" aria-describedby="d-multiple-multiple
       e-multiple-multiple
       " aria-required="false"></input>
             </td>
             <td>
-              <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+              <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Multiple row 1" title="Remove row">
                 <i class="fa fa-times-circle-o"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td colspan="2">
-              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+              <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-multiple-multiple">
+                <i class="fa fa-plus"></i>
+                Add Another
+              </button>
             </td>
           </tr>
         </tbody>
@@ -41,11 +44,11 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="everything" class="form-group has-feedback formio-component formio-component-textfield formio-component-everything formio-component-multiple CustomCssClass required" ref="component">
-      <label class="col-form-label  field-required " id="l-everything-everything" for="everything-everything">
+      <label ref="label" class="col-form-label  field-required " id="l-everything-everything" for="everything-everything-undefined">
         Everything
         <i ref="tooltip" class="fa fa-question-circle text-muted" tabindex="0" aria-label="Tooltip"></i>
       </label>
-      <table class="table table-bordered">
+      <table class="table table-bordered" role="presentation">
         <tbody>
           <tr ref="row">
             <td>
@@ -55,7 +58,7 @@
       Prefix
     </span>
                 </div>
-                <input ref="input" name="data[everything]" type="text" class="form-control" lang="en" placeholder="Placeholder" tabindex="1" spellcheck="true" value="" id="everything-everything" aria-describedby="d-everything-everything
+                <input ref="input" name="data[everything]" type="text" class="form-control" lang="en" placeholder="Placeholder" tabindex="1" spellcheck="true" value="" id="everything-everything-0" aria-labelledby="l-everything-everything" aria-describedby="d-everything-everything
       e-everything-everything
       " aria-required="true"></input>
                 <div class="input-group-append" ref="suffix">
@@ -66,14 +69,17 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+              <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Everything row 1" title="Remove row">
                 <i class="fa fa-times-circle-o"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td colspan="2">
-              <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+              <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-everything-everything">
+                <i class="fa fa-plus"></i>
+                Add Another
+              </button>
             </td>
           </tr>
         </tbody>
@@ -84,7 +90,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
-      <label class="col-form-label  " id="l-number-number" for="number-number">
+      <label ref="label" class="col-form-label  " id="l-number-number" for="number-number">
         Number
       </label>
       <div ref="element">
@@ -95,7 +101,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="password" class="form-group has-feedback formio-component formio-component-password formio-component-password " ref="component">
-      <label class="col-form-label  " id="l-password-password" for="password-password">
+      <label ref="label" class="col-form-label  " id="l-password-password" for="password-password">
         Password
       </label>
       <div ref="element">
@@ -106,7 +112,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea " ref="component">
-      <label class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea">
+      <label ref="label" class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea">
         Text Area
       </label>
       <div ref="element">
@@ -117,9 +123,6 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
-      <label class="col-form-label  sr-only" id="l-checkbox-checkbox" for="checkbox-checkbox">
-        Checkbox
-      </label>
       <div class="form-check checkbox">
         <label class=" form-check-label">
           <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-describedby="d-checkbox-checkbox"></input>
@@ -129,7 +132,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
-      <label class="col-form-label  " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
+      <label ref="label" class="col-form-label  " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
         Select Boxes
       </label>
       <div class="form-radio radio" role="group" aria-labelledby="l-selectBoxes-selectBoxes" aria-describedby="d-selectBoxes-selectBoxes">
@@ -155,14 +158,14 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
-      <label class="col-form-label  " id="l-select-select" for="select-select">
+      <label ref="label" class="col-form-label  " id="l-select-select" for="select-select">
         Select
       </label>
       <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-multiselectable="false" aria-describedby="d-select-select" aria-required="false"></select>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
-      <label class="col-form-label  " id="l-radio-radio" for="radio-radio">
+      <label ref="label" class="col-form-label  " id="l-radio-radio" for="radio-radio">
         Radio
       </label>
       <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radio-radio" aria-describedby="d-radio-radio">
@@ -188,7 +191,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="radioInline" class="form-group has-feedback formio-component formio-component-radio formio-component-radioInline " ref="component">
-      <label class="col-form-label  " id="l-radioInline-radioInline" for="radioInline-radioInline">
+      <label ref="label" class="col-form-label  " id="l-radioInline-radioInline" for="radioInline-radioInline">
         Radio Inline
       </label>
       <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radioInline-radioInline" aria-describedby="d-radioInline-radioInline">
@@ -224,7 +227,7 @@
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
-      <label class="col-form-label  sr-only" id="l-submit-submit" for="submit-submit">
+      <label ref="label" class="col-form-label  sr-only" id="l-submit-submit" for="submit-submit">
         Submit
       </label>
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">

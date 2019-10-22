@@ -1,24 +1,27 @@
 <div id="email" class="form-group has-feedback formio-component formio-component-email formio-component-email formio-component-multiple " ref="component">
-  <label class="col-form-label  " id="l-email-email" for="email-email">
+  <label ref="label" class="col-form-label  " id="l-email-email" for="email-email-undefined">
     Email
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[email]" type="email" class="form-control" lang="en" value="" id="email-email" aria-describedby="d-email-email
+          <input ref="input" name="data[email]" type="email" class="form-control" lang="en" value="" id="email-email-0" aria-labelledby="l-email-email" aria-describedby="d-email-email
       e-email-email
       " aria-required="false"></input>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Email row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-email-email">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>

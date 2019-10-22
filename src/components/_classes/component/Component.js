@@ -844,7 +844,8 @@ export default class Component extends Element {
 
     this.loadRefs(element, {
       messageContainer: 'single',
-      tooltip: 'multiple'
+      tooltip: 'multiple',
+      label: 'single',
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
@@ -1153,6 +1154,41 @@ export default class Component extends Element {
     if (this.root) {
       this.root.onChange();
     }
+
+    if (this.dataValue && this.dataValue.length > 0) {
+      this.setFocusAt('input', this.dataValue.length === index ? index - 1 : index);
+    }
+    else {
+      this.setFocusAt('addButton', 0);
+    }
+
+    this.addNotification('removal', { elem: 'Row', index: index + 1 });
+  }
+
+  setFocusAt(elem, index) {
+    if (this.refs[elem] && this.refs[elem][index]) {
+      this.refs[elem][index].focus();
+    }
+  }
+
+  addNotification(message, params) {
+    const span = document.createElement('span').classList.add('sr-only');
+    this.setContent(span, this.t(message, params));
+
+    const label = this.refs.label;
+    label.appendChild(span);
+
+    let focusedElem;
+    if (this.dataValue && this.dataValue.length > 0) {
+      focusedElem = this.refs.input[this.refs.input.length - 1];
+    }
+    else {
+      focusedElem = this.refs.addButton[0];
+    }
+
+    focusedElem.addEventListener('focusout', () => {
+      label.removeChild(span);
+    }, { once: true });
   }
 
   iconClass(name, spinning) {

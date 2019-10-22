@@ -1,24 +1,27 @@
 <div id="tags" class="form-group has-feedback formio-component formio-component-tags formio-component-tags formio-component-multiple " ref="component">
-  <label class="col-form-label  " id="l-tags-tags" for="tags-tags">
+  <label ref="label" class="col-form-label  " id="l-tags-tags" for="tags-tags-undefined">
     Tags
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="" id="tags-tags" aria-describedby="d-tags-tags
+          <input ref="input" name="data[tags]" type="text" class="form-control" lang="en" value="" id="tags-tags-0" aria-labelledby="l-tags-tags" aria-describedby="d-tags-tags
       e-tags-tags
       " aria-required="false"></input>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Tags row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-tags-tags">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>

@@ -1,24 +1,27 @@
 <div id="time" class="form-group has-feedback formio-component formio-component-time formio-component-time formio-component-multiple " ref="component">
-  <label class="col-form-label  " id="l-time-time" for="time-time">
+  <label ref="label" class="col-form-label  " id="l-time-time" for="time-time-undefined">
     Time
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[time]" type="time" class="form-control" lang="en" value="" id="time-time" aria-describedby="d-time-time
+          <input ref="input" name="data[time]" type="time" class="form-control" lang="en" value="" id="time-time-0" aria-labelledby="l-time-time" aria-describedby="d-time-time
       e-time-time
       " aria-required="false"></input>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Time row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-time-time">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>

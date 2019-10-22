@@ -1,24 +1,27 @@
 <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea formio-component-multiple " ref="component">
-  <label class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea">
+  <label ref="label" class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea-undefined">
     Text Area
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" rows="3" id="textArea-textArea" aria-describedby="d-textArea-textArea
+          <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" rows="3" id="textArea-textArea-0" aria-labelledby="l-textArea-textArea" aria-describedby="d-textArea-textArea
       e-textArea-textArea
       " aria-required="false"></textarea>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Text Area row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-textArea-textArea">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>
