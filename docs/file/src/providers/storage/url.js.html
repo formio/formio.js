@@ -307,14 +307,14 @@ const url = (formio) =&gt; {
   return {
     title: &apos;Url&apos;,
     name: &apos;url&apos;,
-    uploadFile(file, name, dir, progressCallback, url, options) {
+    uploadFile(file, name, dir, progressCallback, url, options, fileKey) {
       const uploadRequest = function(form) {
         return xhrRequest(url, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
           project: form ? form.project : &apos;&apos;,
           form: form ? form._id : &apos;&apos;
         }, {
-          file,
+          [fileKey]:file,
           name,
           dir
         }, options, progressCallback).then(response =&gt; {

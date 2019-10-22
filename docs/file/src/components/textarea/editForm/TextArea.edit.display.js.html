@@ -383,6 +383,34 @@ export default [
     }
   },
   {
+    type: &apos;textfield&apos;,
+    key: &apos;fileKey&apos;,
+    input: true,
+    label: &apos;File&#xA0;form-data&#xA0;Key&apos;,
+    tooltip: &apos;Key&#xA0;name&#xA0;that&#xA0;you&#xA0;would&#xA0;like&#xA0;to&#xA0;modify&#xA0;for&#xA0;the&#xA0;file&#xA0;while&#xA0;calling&#xA0;API&#xA0;request.&apos;,
+    rows: 5,
+    weight: 415.6,
+    placeholder: &apos;Enter&#xA0;the&#xA0;key&#xA0;name&#xA0;of&#xA0;a&#xA0;file&#xA0;for&#xA0;form&#xA0;data.&apos;,
+    conditional: {
+      json: {
+        and: [
+          { &apos;===&apos;: [
+            { var: &apos;data.editor&apos; },
+            &apos;quill&apos;
+          ] },
+          { &apos;===&apos;: [
+            { var: &apos;data.isUploadEnabled&apos; },
+            true
+          ] },
+          { &apos;===&apos;: [
+            { var: &apos;data.uploadStorage&apos; },
+            &apos;url&apos;
+          ] },
+        ]
+      }
+    }
+  },
+  {
     type: &apos;select&apos;,
     input: true,
     key: &apos;as&apos;,

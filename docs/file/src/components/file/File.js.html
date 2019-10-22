@@ -743,12 +743,13 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, url, options = {} } = this.component;
+          const fileKey = this.component.fileKey || &apos;file&apos;;
           fileService.uploadFile(storage, file, fileName, dir, evt =&gt; {
             fileUpload.status = &apos;progress&apos;;
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
-          }, url, options)
+          }, url, options, fileKey)
             .then(fileInfo =&gt; {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {

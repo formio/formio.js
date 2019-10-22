@@ -54,11 +54,19 @@ dialog.fixed {
   position: relative;
   min-height: 80px; }
 
+.formio-error-wrapper,
+.formio-warning-wrapper {
+  padding: 1em; }
+
 .formio-error-wrapper {
-  padding: 1em;
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb; }
+
+.formio-warning-wrapper {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba; }
 
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }

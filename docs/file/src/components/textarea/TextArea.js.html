@@ -234,6 +234,7 @@ import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import _ from &apos;lodash&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { uniqueName } from &apos;../../utils/utils&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -474,7 +475,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         }
 
         quillInstance.quill.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
         let requestData;
         this.root.formio
           .uploadFile(
@@ -484,7 +485,8 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadDir || &apos;&apos;, //should pass empty string if undefined
             null,
             uploadUrl,
-            uploadOptions
+            uploadOptions,
+            fileKey
           )
           .then(result =&gt; {
             requestData = result;

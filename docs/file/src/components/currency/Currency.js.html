@@ -255,8 +255,12 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(component, options, data) {
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component &amp;&amp; !component.hasOwnProperty(&apos;delimiter&apos;)) {
+      component.delimiter = true;
+    }
+    super(component, options, data);
     this.decimalLimit = _.get(this.component, &apos;decimalLimit&apos;, 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
@@ -270,19 +274,6 @@ export default class CurrencyComponent extends NumberComponent {
 
   get defaultSchema() {
     return CurrencyComponent.schema();
-  }
-
-  parseNumber(value) {
-    // Strip out the prefix and suffix before parsing.
-    if (this.prefix) {
-      value = value.replace(this.prefix, &apos;&apos;);
-    }
-
-    if (this.suffix) {
-      value = value.replace(this.suffix, &apos;&apos;);
-    }
-
-    return super.parseNumber(value);
   }
 
   setInputMask(input) {
@@ -300,20 +291,33 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  parseValue(value) {
-    try {
-      if (this.prefix) {
-        value = value.replace(this.prefix, &apos;&apos;);
-      }
-      if (this.suffix) {
-        value = value.replace(this.suffix, &apos;&apos;);
-      }
-    }
-    catch (err) {
-      // If value doesn&apos;t have a replace method, continue on as before.
-    }
+  parseNumber(value) {
+    return super.parseNumber(this.stripPrefixSuffix(value));
+  }
 
-    return super.parseValue(value);
+  parseValue(value) {
+    return super.parseValue(this.stripPrefixSuffix(value));
+  }
+
+  formatValue(value) {
+    return super.formatValue(this.stripPrefixSuffix(value));
+  }
+
+  stripPrefixSuffix(value) {
+    if (typeof value === &apos;string&apos;) {
+      try {
+        if (this.prefix) {
+          value = value.replace(this.prefix, &apos;&apos;);
+        }
+        if (this.suffix) {
+          value = value.replace(this.suffix, &apos;&apos;);
+        }
+      }
+      catch (err) {
+        // If value doesn&apos;t have a replace method, continue on as before.
+      }
+    }
+    return value;
   }
 }
 </code></pre>

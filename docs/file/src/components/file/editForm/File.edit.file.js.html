@@ -323,6 +323,22 @@ export default [
   {
     type: &apos;textfield&apos;,
     input: true,
+    key: &apos;fileKey&apos;,
+    label: &apos;File&#xA0;form-data&#xA0;key&apos;,
+    weight: 17,
+    placeholder: &apos;Enter&#xA0;the&#xA0;key&#xA0;name&#xA0;of&#xA0;a&#xA0;file&#xA0;for&#xA0;form&#xA0;data.&apos;,
+    tooltip: &apos;Key&#xA0;name&#xA0;that&#xA0;you&#xA0;would&#xA0;like&#xA0;to&#xA0;modify&#xA0;for&#xA0;the&#xA0;file&#xA0;while&#xA0;calling&#xA0;API&#xA0;request.&apos;,
+    conditional: {
+      json: {
+        &apos;===&apos;: [{
+          var: &apos;data.storage&apos;
+        }, &apos;url&apos;]
+      }
+    }
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
     key: &apos;dir&apos;,
     label: &apos;Directory&apos;,
     placeholder: &apos;(optional) Enter a directory for the files&apos;,
