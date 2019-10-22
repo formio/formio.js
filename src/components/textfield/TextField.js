@@ -83,12 +83,26 @@ export default class TextFieldComponent extends Input {
         maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
       };
     }
+    const maskName = value.maskName || '';
+
+    // Ensure we have an active mask.
+    if (!this.activeMask && maskName) {
+      const inputMask = this.component.inputMasks.find((mask) => mask.label === maskName);
+      if (inputMask) {
+        this.activeMask = inputMask.mask;
+      }
+    }
+
+    // Set the text input and mask inputs.
     const textValue = value.value || '';
-    const textInput = this.refs.mask[index];
-    const maskInput = this.refs.select[index];
-    if (textInput && maskInput) {
-      const mask = FormioUtils.getInputMask(this.activeMask);
-      textInput.value = conformToMask(textValue, mask).conformedValue;
+    const textInput = this.refs.mask ? this.refs.mask[index] : null;
+    const maskInput = this.refs.select ? this.refs.select[index]: null;
+    if (textInput && maskInput && this.activeMask) {
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(this.activeMask)).conformedValue;
+      maskInput.value = maskName;
+    }
+    else {
+      return super.setValueAt(index, textValue, flags);
     }
   }
 
@@ -96,18 +110,12 @@ export default class TextFieldComponent extends Input {
     if (!this.isMultipleMasksField) {
       return super.getValueAt(index);
     }
-    const textField = this.refs.input[index];
+    const textInput = this.refs.mask ? this.refs.mask[index] : null;
+    const maskInput = this.refs.select ? this.refs.select[index]: null;
     return {
-      value: textField && textField.text ? textField.text.value : undefined,
-      maskName: textField && textField.mask ? textField.mask.value : undefined
+      value: textInput ? textInput.value : undefined,
+      maskName: maskInput ? maskInput.value : undefined
     };
-  }
-
-  performInputMapping(input) {
-    if (!this.isMultipleMasksField) {
-      return super.performInputMapping(input);
-    }
-    return input && input.text ? input.text : input;
   }
 
   isEmpty(value = this.dataValue) {
@@ -115,21 +123,5 @@ export default class TextFieldComponent extends Input {
       return super.isEmpty((value || '').toString().trim());
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
-  }
-
-  createMaskInput(textInput) {
-    const id = `${this.key}-mask`;
-    const maskInput = this.ce('select', {
-      class: 'form-control formio-multiple-mask-select',
-      id
-    });
-    const self = this;
-    const maskOptions = this.maskOptions;
-    this.selectOptions(maskInput, 'maskOption', maskOptions);
-    // Change the text field mask when another mask is selected.
-    maskInput.onchange = function() {
-      self.updateMask(textInput, this.value);
-    };
-    return maskInput;
   }
 }
