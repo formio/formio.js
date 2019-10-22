@@ -135,15 +135,14 @@ export default class RadioComponent extends Field {
       });
     }
 
-    if (!this.isRadio) {
+    if (!flags || !flags.modified || !this.isRadio) {
       return changed;
     }
 
+    // If they clicked on the radio that is currently selected, it needs to reset the value.
     this.currentValue = this.dataValue;
-
     const shouldResetValue = !(flags && flags.noUpdateEvent)
       && this.previousValue === this.currentValue;
-
     if (shouldResetValue) {
       this.resetValue();
       this.triggerChange();
@@ -151,7 +150,6 @@ export default class RadioComponent extends Field {
     else {
       this.previousValue = this.dataValue;
     }
-
     return changed;
   }
 
