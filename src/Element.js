@@ -48,7 +48,6 @@ export default class Element {
     });
 
     this.defaultMask = null;
-    this.inputMasks = [];
   }
 
   /**
@@ -201,8 +200,6 @@ export default class Element {
       }
     });
     this.eventHandlers = [];
-    this.inputMasks.forEach(mask => mask.destroy());
-    this.inputMasks = [];
   }
 
   removeAllEvents(includeExternal) {
@@ -342,6 +339,10 @@ export default class Element {
       const mask = FormioUtils.getInputMask(inputMask);
       this.defaultMask = mask;
       try {
+        //destroy previous mask
+        if (input.mask) {
+          input.mask.destroy();
+        }
         input.mask = maskInput({
           inputElement: input,
           mask
@@ -357,10 +358,6 @@ export default class Element {
       }
       if (placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-      // prevent pushing undefined value to array in case of vanilla-text-mask error catched above
-      if (input.mask) {
-        this.inputMasks.push(input.mask);
       }
     }
   }

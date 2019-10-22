@@ -88,6 +88,24 @@ export default class Multivalue extends Field {
     return superAttach;
   }
 
+  detach() {
+    if (this.refs.input && this.refs.input.length) {
+      this.refs.input.forEach((input) => {
+        if (input.mask) {
+          input.mask.destroy();
+        }
+      });
+    }
+    if (this.refs.mask && this.refs.mask.length) {
+      this.refs.mask.forEach((input) => {
+        if (input.mask) {
+          input.mask.destroy();
+        }
+      });
+    }
+    super.detach();
+  }
+
   /**
    * Attach inputs to the element.
    *
@@ -162,10 +180,6 @@ export default class Multivalue extends Field {
 
   updateMask(input, mask) {
     this.activeMask = mask;
-    //destroy previous mask
-    if (input.mask) {
-      input.mask.destroy();
-    }
     //set new text field mask
     this.setInputMask(input, mask, !this.component.placeholder);
     //update text field value after new mask is applied
