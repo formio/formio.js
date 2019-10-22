@@ -952,6 +952,35 @@ div[data-oembed-url] {
   width: 100%;
 }
 
+.radio label.label-position-left, .checkbox label.label-position-left,
+.radio label.label-position-top, .checkbox label.label-position-top,
+.radio label.label-position-bottom, .checkbox label.label-position-bottom {
+  padding-left: 0;
+}
+
+.radio label.label-position-top span, .checkbox label.label-position-top span,
+.radio label.label-position-bottom span, .checkbox label.label-position-bottom span {
+  display: block;
+}
+
+.radio label.label-position-top input[type="radio"], .checkbox label.label-position-top input[type="checkbox"],
+.radio label.label-position-bottom input[type="radio"], .checkbox label.label-position-bottom input[type="checkbox"] {
+  position: relative;
+  margin-left: 0;
+}
+
+.radio label.label-position-top input[type="radio"], .checkbox label.label-position-top input[type="checkbox"] {
+  margin-top: 4px;
+}
+
+.radio label.label-position-bottom input[type="radio"], .checkbox label.label-position-bottom input[type="checkbox"] {
+  margin-bottom: 8px;
+}
+
+.radio label.label-position-left input[type="radio"], .checkbox label.label-position-left input[type="checkbox"] {
+  margin-left: 10px;
+}
+
 
 /* ckeditor5-image/theme/image.css */
 .formio-component-content .image {
