@@ -1419,7 +1419,7 @@ export default class Component extends Element {
       .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, this.options.componentWarningClass);
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1447,7 +1447,7 @@ export default class Component extends Element {
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, this.options.componentErrorClass);
     }
     else {
       this.addClass(this.element, 'has-error');

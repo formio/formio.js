@@ -18,6 +18,8 @@ export default class Element {
     this.options = Object.assign({
       language: 'en',
       highlightErrors: true,
+      componentErrorClass: 'formio-error-wrapper',
+      componentWarningClass: 'formio-warning-wrapper',
       row: '',
       namespace: 'formio'
     }, options || {});
