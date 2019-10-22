@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.4.3
+## 4.5.0
 ### Added
  - Upload FILE to URL- key 'file' in formData to be customizable
  - Ability to customize error message classes.
 
+### Changed
+ - Upgrade core-js@3.3.3, dompurify@2.0.7, choices.js@7.1.1, i18next@17.3.0
+ - Removed TagPad and SketchPad move them into our external plugin library.
+
 ### Fixed
+ - Fixes to the plugin architecture.
  - Fixed WizardBuilder schema to fix EditGrid within Wizards.
  - Fixing focus methods for DateTime and Select components.
  - Fixing issues with the multi mask support. 
