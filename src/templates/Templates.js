@@ -13,13 +13,17 @@ export default class Templates {
     Templates.templates[name] = template;
   }
 
+  static extendTemplate(name, template) {
+    Templates.template[name] = _.merge({}, Templates.template[name], template);
+  }
+
   static setTemplate(name, template) {
     Templates.addTemplate(name, template);
   }
 
   static set current(templates) {
     const defaultTemplates = Templates.current;
-    Templates._current = _.merge(defaultTemplates, templates);
+    Templates._current = _.merge({}, defaultTemplates, templates);
   }
 
   static get current() {
