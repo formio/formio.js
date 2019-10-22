@@ -93,7 +93,7 @@ export default [
     type: 'textfield',
     input: true,
     key: 'fileKey',
-    label: 'File form-data key',
+    label: 'File form-data Key',
     weight: 17,
     placeholder: 'Enter the key name of a file for form data.',
     tooltip: 'Key name that you would like to modify for the file while calling API request.',

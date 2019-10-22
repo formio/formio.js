@@ -496,6 +496,7 @@ export default class Formio {
       fileName: fileName,
       dir: dir
     };
+    fileKey = fileKey || 'file';
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
