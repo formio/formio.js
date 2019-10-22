@@ -181,14 +181,14 @@ gulp.task('build', gulp.series(
     'bootswatch'
   ),
   gulp.parallel(
-    // 'styles-form',
-    // 'styles-builder',
+    'styles-form',
+    'styles-builder',
     'styles-full',
-    // 'scripts-formio',
-    // 'scripts-utils',
-    // 'scripts-embed',
-    // 'scripts-contrib',
-    // 'scripts-form',
+    'scripts-formio',
+    'scripts-utils',
+    'scripts-embed',
+    'scripts-contrib',
+    'scripts-form',
     'scripts-full'
   ),
   'dist',

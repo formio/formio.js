@@ -845,7 +845,7 @@ export default class Component extends Element {
     this.loadRefs(element, {
       messageContainer: 'single',
       tooltip: 'multiple',
-      label: 'single'
+      label: 'single',
     });
 
     this.refs.tooltip.forEach((tooltip, index) => {
