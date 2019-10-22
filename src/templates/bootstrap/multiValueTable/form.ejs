@@ -1,13 +1,15 @@
-<table class="table table-bordered">
+<table class="table table-bordered" role="presentation">
+  <tbody>
   {{ctx.rows}}
   {% if (!ctx.disabled) { %}
   <tr>
     <td colspan="2">
-      <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-label="Add another {{ctx.component.label}}">
+      <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         <i class="{{ctx.iconClass('plus')}}"></i>
         {{ctx.t(ctx.addAnother)}}
       </button>
     </td>
   </tr>
   {% } %}
+  </tbody>
 </table>

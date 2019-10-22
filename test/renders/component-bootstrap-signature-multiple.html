@@ -1,12 +1,12 @@
 <div id="signature" class="form-group has-feedback formio-component formio-component-signature formio-component-signature formio-component-multiple  formio-component-label-hidden signature-pad" ref="component">
-  <label class="col-form-label  control-label--hidden sr-only" id="l-signature-signature" for="signature-signature">
+  <label ref="label" class="col-form-label  control-label--hidden sr-only" id="l-signature-signature" for="signature-signature-undefined">
     Signature
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No" id="signature-signature" aria-describedby="d-signature-signature
+          <input ref="input" name="data[signature]" type="hidden" class="form-control" lang="en" value="No" id="signature-signature-0" aria-labelledby="l-signature-signature" aria-describedby="d-signature-signature
       e-signature-signature
       " aria-required="false"></input>
           <div class="signature-pad-body" style="width: 100%;height: 150px;padding:0;margin:0;" tabindex="0" ref="padBody">
@@ -21,14 +21,17 @@
           </div>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Signature row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-signature-signature">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>

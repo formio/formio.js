@@ -1,24 +1,27 @@
 <div id="address" class="form-group has-feedback formio-component formio-component-address formio-component-address formio-component-multiple " ref="component">
-  <label class="col-form-label  " id="l-address-address" for="address-address">
+  <label ref="label" class="col-form-label  " id="l-address-address" for="address-address-undefined">
     Address
   </label>
-  <table class="table table-bordered">
+  <table class="table table-bordered" role="presentation">
     <tbody>
       <tr ref="row">
         <td>
-          <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value="" id="address-address" aria-describedby="d-address-address
+          <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value="" id="address-address-0" aria-labelledby="l-address-address" aria-describedby="d-address-address
       e-address-address
       " aria-required="false"></input>
         </td>
         <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove row">
+          <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Address row 1" title="Remove row">
             <i class="fa fa-times-circle-o"></i>
           </button>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+          <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-address-address">
+            <i class="fa fa-plus"></i>
+            Add Another
+          </button>
         </td>
       </tr>
     </tbody>

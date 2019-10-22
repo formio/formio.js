@@ -40,7 +40,9 @@ export default {
         next: 'Next',
         previous: 'Previous',
         cancel: 'Cancel',
-        submit: 'Submit Form'
+        submit: 'Submit Form',
+        removal: '{{elem}} {{index}} was removed',
+        addition: '{{elem}} was added'
       }
     }
   }
