@@ -10,10 +10,6 @@ const registerPlugin = (plugin) => {
   if (typeof plugin !== 'object') {
     return;
   }
-  // We need to set the base first as templates are overrides.
-  if (plugin.hasOwnProperty('framework')) {
-    Templates.framework = plugin.framework;
-  }
   for (const key of Object.keys(plugin)) {
     switch (key) {
       case 'templates':
@@ -28,7 +24,7 @@ const registerPlugin = (plugin) => {
         Components.setComponents(plugin.components);
         break;
       case 'framework':
-        // Already above handled so ignore.
+        Templates.framework = plugin.framework;
         break;
       case 'fetch':
         for (const name of Object.keys(plugin.fetch)) {
