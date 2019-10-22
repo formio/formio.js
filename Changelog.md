@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixing issues with the calculated overrides. Resolves problem where Radio "values" could not be modified in the builder.
  - Fixing issue where the Select template would get overridden in Resource components.
  - Fixed Tree component validation.
+ - Fixed the options label positions in Radio and Select boxes components.
+ - Fixed an issue where a Radio could uncheck itself once it is selected.
 
 ## 4.4.2
 ### Added
