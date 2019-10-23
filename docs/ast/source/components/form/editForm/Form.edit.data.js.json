@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 851,
+  "end": 849,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 851,
+    "end": 849,
     "loc": {
       "start": {
         "line": 1,
@@ -118,7 +118,7 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 98,
-        "end": 822,
+        "end": 820,
         "loc": {
           "start": {
             "line": 3,
@@ -132,7 +132,7 @@
         "declaration": {
           "type": "ArrayExpression",
           "start": 113,
-          "end": 821,
+          "end": 819,
           "loc": {
             "start": {
               "line": 3,
@@ -337,7 +337,7 @@
             {
               "type": "CallExpression",
               "start": 420,
-              "end": 819,
+              "end": 817,
               "loc": {
                 "start": {
                   "line": 8,
@@ -502,7 +502,7 @@
                 {
                   "type": "StringLiteral",
                   "start": 591,
-                  "end": 815,
+                  "end": 813,
                   "loc": {
                     "start": {
                       "line": 10,
@@ -510,14 +510,14 @@
                     },
                     "end": {
                       "line": 10,
-                      "column": 228
+                      "column": 226
                     }
                   },
                   "extra": {
-                    "rawValue": "<p><h4>Example:</h4><pre>{\"sum\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>",
-                    "raw": "'<p><h4>Example:</h4><pre>{\"sum\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>'"
+                    "rawValue": "<p><h4>Example:</h4><pre>{\"+\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>",
+                    "raw": "'<p><h4>Example:</h4><pre>{\"+\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>'"
                   },
-                  "value": "<p><h4>Example:</h4><pre>{\"sum\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>"
+                  "value": "<p><h4>Example:</h4><pre>{\"+\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>"
                 }
               ]
             }
@@ -544,8 +544,8 @@
             {
               "type": "CommentBlock",
               "value": " eslint-enable max-len ",
-              "start": 823,
-              "end": 850,
+              "start": 821,
+              "end": 848,
               "loc": {
                 "start": {
                   "line": 13,
@@ -581,8 +581,8 @@
           {
             "type": "CommentBlock",
             "value": " eslint-enable max-len ",
-            "start": 823,
-            "end": 850,
+            "start": 821,
+            "end": 848,
             "loc": {
               "start": {
                 "line": 13,
@@ -619,8 +619,8 @@
     {
       "type": "CommentBlock",
       "value": " eslint-enable max-len ",
-      "start": 823,
-      "end": 850,
+      "start": 821,
+      "end": 848,
       "loc": {
         "start": {
           "line": 13,
@@ -1692,9 +1692,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "<p><h4>Example:</h4><pre>{\"sum\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>",
+      "value": "<p><h4>Example:</h4><pre>{\"+\": [{\"var\": \"data.a\"}, {\"var\": \"data.b\"}, {\"var\": \"data.c\"}]}</pre><p><a target=\"_blank\" href=\"http://formio.github.io/formio.js/app/examples/calculated.html\">Click here for an example</a></p>",
       "start": 591,
-      "end": 815,
+      "end": 813,
       "loc": {
         "start": {
           "line": 10,
@@ -1702,7 +1702,7 @@
         },
         "end": {
           "line": 10,
-          "column": 228
+          "column": 226
         }
       }
     },
@@ -1718,8 +1718,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 818,
-      "end": 819,
+      "start": 816,
+      "end": 817,
       "loc": {
         "start": {
           "line": 11,
@@ -1744,8 +1744,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 820,
-      "end": 821,
+      "start": 818,
+      "end": 819,
       "loc": {
         "start": {
           "line": 12,
@@ -1770,8 +1770,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 821,
-      "end": 822,
+      "start": 819,
+      "end": 820,
       "loc": {
         "start": {
           "line": 12,
@@ -1786,8 +1786,8 @@
     {
       "type": "CommentBlock",
       "value": " eslint-enable max-len ",
-      "start": 823,
-      "end": 850,
+      "start": 821,
+      "end": 848,
       "loc": {
         "start": {
           "line": 13,
@@ -1812,8 +1812,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 851,
-      "end": 851,
+      "start": 849,
+      "end": 849,
       "loc": {
         "start": {
           "line": 14,

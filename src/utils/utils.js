@@ -21,7 +21,7 @@ export { BuilderUtils };
 export * from './formUtils';
 
 // Configure JsonLogic
-lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, (...args) => _[name](args)));
+lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
 jsonLogic.add_operation('getDate', (date) => {
