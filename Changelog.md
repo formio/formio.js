@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed Tree component validation.
  - Fixed the options label positions in Radio and Select boxes components.
  - Fixed an issue where a Radio could uncheck itself once it is selected.
+ - Fixed problems where certain Lodash methods would not work in JSONLogic (like _sum)
 
 ## 4.4.2
 ### Added

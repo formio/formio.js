@@ -286,53 +286,82 @@ export default class TextFieldComponent extends Input {
     return &apos;&apos;;
   }
 
+  /**
+   * Returns the mask value object.
+   *
+   * @param value
+   * @param flags
+   * @return {*}
+   */
+  maskValue(value, flags) {
+    flags = flags || {};
+
+    // Convert it into the correct format.
+    if (!value || (typeof value !== &apos;object&apos;)) {
+      value = {
+        value,
+        maskName: this.component.inputMasks[0].label
+      };
+    }
+
+    // If no value is provided, then set the defaultValue.
+    if (!value.value) {
+      const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
+      value.value = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+    }
+
+    return value;
+  }
+
+  /**
+   * Normalize the value set in the data object.
+   *
+   * @param value
+   * @param flags
+   * @return {*}
+   */
+  normalizeValue(value, flags) {
+    if (!this.isMultipleMasksField) {
+      return super.normalizeValue(value);
+    }
+    if (Array.isArray(value)) {
+      return super.normalizeValue(value.map((val) =&gt; this.maskValue(val, flags)));
+    }
+    return super.normalizeValue(this.maskValue(value, flags));
+  }
+
+  /**
+   * Sets the value at this index.
+   *
+   * @param index
+   * @param value
+   * @param flags
+   */
   setValueAt(index, value, flags) {
     flags = flags || {};
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value, flags);
     }
-    const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
-    if (!value) {
-      if (defaultValue) {
-        value = defaultValue;
-      }
-      else {
-        value = {
-          maskName: this.component.inputMasks[0].label
-        };
-      }
-    }
-    //if value is a string, treat it as text value itself and use default mask or first mask in the list
-    const defaultMaskName = _.get(defaultValue, &apos;maskName&apos;, &apos;&apos;);
-    if (typeof value === &apos;string&apos;) {
-      value = {
-        value: value,
-        maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
-      };
-    }
-    const maskName = value.maskName || &apos;&apos;;
-
-    // Ensure we have an active mask.
-    if (!this.activeMask &amp;&amp; maskName) {
-      const inputMask = this.component.inputMasks.find((mask) =&gt; mask.label === maskName);
-      if (inputMask) {
-        this.activeMask = inputMask.mask;
-      }
-    }
-
-    // Set the text input and mask inputs.
+    value = this.maskValue(value, flags);
     const textValue = value.value || &apos;&apos;;
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
     const maskInput = this.refs.select ? this.refs.select[index]: null;
-    if (textInput &amp;&amp; maskInput &amp;&amp; this.activeMask) {
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(this.activeMask)).conformedValue;
-      maskInput.value = maskName;
+    const mask = this.getMaskPattern(value.maskName);
+    if (textInput &amp;&amp; maskInput &amp;&amp; mask) {
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      maskInput.value = value.maskName;
     }
     else {
       return super.setValueAt(index, textValue, flags);
     }
   }
 
+  /**
+   * Returns the value at this index.
+   *
+   * @param index
+   * @return {*}
+   */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {
       return super.getValueAt(index);
