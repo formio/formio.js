@@ -3,11 +3,21 @@
   min-height: 80px;
 }
 
-.formio-error-wrapper {
+.formio-error-wrapper,
+.formio-warning-wrapper {
   padding: 1em;
+}
+
+.formio-error-wrapper {
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb;
+}
+
+.formio-warning-wrapper {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
 }
 
 .formio-disabled-input .form-control.flatpickr-input {
@@ -873,9 +883,6 @@ body.formio-dialog-open {
   }
 }
 
-.datagrid-group-label {
-}
-
 .formio-component.alert-danger .help-block,
 .formio-component.alert-warning .help-block {
   color: inherit;
@@ -944,6 +951,35 @@ body.formio-dialog-open {
 
 div[data-oembed-url] {
   width: 100%;
+}
+
+.radio label.label-position-left, .checkbox label.label-position-left,
+.radio label.label-position-top, .checkbox label.label-position-top,
+.radio label.label-position-bottom, .checkbox label.label-position-bottom {
+  padding-left: 0;
+}
+
+.radio label.label-position-top span, .checkbox label.label-position-top span,
+.radio label.label-position-bottom span, .checkbox label.label-position-bottom span {
+  display: block;
+}
+
+.radio label.label-position-top input[type="radio"], .checkbox label.label-position-top input[type="checkbox"],
+.radio label.label-position-bottom input[type="radio"], .checkbox label.label-position-bottom input[type="checkbox"] {
+  position: relative;
+  margin-left: 0;
+}
+
+.radio label.label-position-top input[type="radio"], .checkbox label.label-position-top input[type="checkbox"] {
+  margin-top: 4px;
+}
+
+.radio label.label-position-bottom input[type="radio"], .checkbox label.label-position-bottom input[type="checkbox"] {
+  margin-bottom: 8px;
+}
+
+.radio label.label-position-left input[type="radio"], .checkbox label.label-position-left input[type="checkbox"] {
+  margin-left: 10px;
 }
 
 

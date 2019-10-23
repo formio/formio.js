@@ -215,12 +215,14 @@ export default [
       return newItems;
     },
     onChange(context) {
-      const valueProp = context.instance.data.valueProperty;
-      const templateProp = valueProp ? valueProp : 'data';
-      const template = `<span>{{ item.${templateProp} }}</span>`;
-      const searchField = valueProp ? `${valueProp}__regex` : '';
-      context.instance.root.getComponent('template').setValue(template);
-      context.instance.root.getComponent('searchField').setValue(searchField);
+      if (context && context.flags && context.flags.modified) {
+        const valueProp = context.instance.data.valueProperty;
+        const templateProp = valueProp ? valueProp : 'data';
+        const template = `<span>{{ item.${templateProp} }}</span>`;
+        const searchField = valueProp ? `${valueProp}__regex` : '';
+        context.instance.root.getComponent('template').setValue(template);
+        context.instance.root.getComponent('searchField').setValue(searchField);
+      }
     },
     data: {
       url: '/form/{{ data.data.resource }}',

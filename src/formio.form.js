@@ -10,17 +10,13 @@ const registerPlugin = (plugin) => {
   if (typeof plugin !== 'object') {
     return;
   }
-  // We need to set the base first as templates are overrides.
-  if (plugin.hasOwnProperty('framework')) {
-    Templates.framework = plugin.framework;
-  }
-  for (const key in Object.keys(plugin)) {
+  for (const key of Object.keys(plugin)) {
     switch (key) {
       case 'templates':
-        if (!plugin.templates[Templates.framework]) {
-          console.error('Unknown template in plugin for framework', Templates.framework);
+        for (const framework of Object.keys(plugin.templates)) {
+          Templates.extendTemplate(framework, plugin.templates[framework]);
         }
-        else {
+        if (plugin.templates[Templates.framework]) {
           Templates.current = plugin.templates[Templates.framework];
         }
         break;
@@ -28,10 +24,10 @@ const registerPlugin = (plugin) => {
         Components.setComponents(plugin.components);
         break;
       case 'framework':
-        // Already handled so ignore.
+        Templates.framework = plugin.framework;
         break;
       case 'fetch':
-        for (const name in Object.keys(plugin.fetch)) {
+        for (const name of Object.keys(plugin.fetch)) {
           Formio.registerPlugin(plugin.fetch[name], name);
         }
         break;

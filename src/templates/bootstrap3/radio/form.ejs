@@ -1,7 +1,7 @@
 <div class="input-group">
   {% ctx.values.forEach(function(item) { %}
   <div class="{{ctx.input.attr.type}}{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="control-label form-check-label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
+    <label class="control-label form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
       {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
       <span>{{ctx.t(item.label)}}</span>
       {% } %}

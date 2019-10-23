@@ -100,7 +100,7 @@ export default [
   ),
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"sum": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
+    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
   ),
   {
     type: 'checkbox',

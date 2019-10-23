@@ -1455,7 +1455,7 @@ export default class Component extends Element {
       .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, this.options.componentWarningClass);
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1486,7 +1486,7 @@ export default class Component extends Element {
     });
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'formio-error-wrapper');
+      this.addClass(this.element, this.options.componentErrorClass);
     }
     else {
       this.addClass(this.element, 'has-error');
@@ -1526,7 +1526,9 @@ export default class Component extends Element {
     }
 
     if (this.component.onChange) {
-      this.evaluate(this.component.onChange);
+      this.evaluate(this.component.onChange, {
+        flags
+      });
     }
 
     // Set the changed variable.
@@ -1912,7 +1914,7 @@ export default class Component extends Element {
   updateComponentValue(value, flags) {
     flags = flags || {};
     let newValue = (value === undefined || value === null) ? this.getValue() : value;
-    newValue = this.normalizeValue(newValue);
+    newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
       this.dataValue = newValue;
@@ -1993,16 +1995,56 @@ export default class Component extends Element {
       return false;
     }
 
+    // If this component allows overrides.
+    const allowOverride = this.component.allowCalculateOverride;
+
     // Skip this operation if this component allows modification and it is no longer pristine.
-    if (this.component.allowCalculateOverride && !this.pristine) {
+    if (allowOverride && !this.pristine) {
+      return false;
+    }
+
+    let firstPass = false;
+    const dataValue = this.dataValue;
+
+    // First pass, the calculatedValue is undefined.
+    if (this.calculatedValue === undefined) {
+      firstPass = true;
+      this.calculatedValue = null;
+    }
+
+    // Check to ensure that the calculated value is different than the previously calculated value.
+    if (
+      allowOverride &&
+      (this.calculatedValue !== null) &&
+      !_.isEqual(dataValue, this.calculatedValue)
+    ) {
       return false;
     }
 
     // Calculate the new value.
-    return this.setValue(this.evaluate(this.component.calculateValue, {
-      value: this.dataValue,
+    const calculatedValue = this.evaluate(this.component.calculateValue, {
+      value: dataValue,
       data
-    }, 'value'), flags);
+    }, 'value');
+
+    // If this is the firstPass, and the dataValue is different than to the calculatedValue.
+    if (
+      allowOverride &&
+      firstPass &&
+      !this.isEmpty(dataValue) &&
+      !_.isEqual(dataValue, calculatedValue)
+    ) {
+      // Return that we have a change so it will perform another pass.
+      this.calculatedValue = calculatedValue;
+      return true;
+    }
+
+    // Calculate the new value.
+    flags = flags || {};
+    flags.noCheck = true;
+    const changed = this.setValue(calculatedValue, flags);
+    this.calculatedValue = this.dataValue;
+    return changed;
   }
 
   /**

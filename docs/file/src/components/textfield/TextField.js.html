@@ -104,16 +104,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -290,55 +286,92 @@ export default class TextFieldComponent extends Input {
     return &apos;&apos;;
   }
 
+  /**
+   * Returns the mask value object.
+   *
+   * @param value
+   * @param flags
+   * @return {*}
+   */
+  maskValue(value, flags) {
+    flags = flags || {};
+
+    // Convert it into the correct format.
+    if (!value || (typeof value !== &apos;object&apos;)) {
+      value = {
+        value,
+        maskName: this.component.inputMasks[0].label
+      };
+    }
+
+    // If no value is provided, then set the defaultValue.
+    if (!value.value) {
+      const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
+      value.value = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+    }
+
+    return value;
+  }
+
+  /**
+   * Normalize the value set in the data object.
+   *
+   * @param value
+   * @param flags
+   * @return {*}
+   */
+  normalizeValue(value, flags) {
+    if (!this.isMultipleMasksField) {
+      return super.normalizeValue(value);
+    }
+    if (Array.isArray(value)) {
+      return super.normalizeValue(value.map((val) =&gt; this.maskValue(val, flags)));
+    }
+    return super.normalizeValue(this.maskValue(value, flags));
+  }
+
+  /**
+   * Sets the value at this index.
+   *
+   * @param index
+   * @param value
+   * @param flags
+   */
   setValueAt(index, value, flags) {
     flags = flags || {};
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value, flags);
     }
-    const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
-    if (!value) {
-      if (defaultValue) {
-        value = defaultValue;
-      }
-      else {
-        value = {
-          maskName: this.component.inputMasks[0].label
-        };
-      }
-    }
-    //if value is a string, treat it as text value itself and use default mask or first mask in the list
-    const defaultMaskName = _.get(defaultValue, &apos;maskName&apos;, &apos;&apos;);
-    if (typeof value === &apos;string&apos;) {
-      value = {
-        value: value,
-        maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
-      };
-    }
+    value = this.maskValue(value, flags);
     const textValue = value.value || &apos;&apos;;
-    const textInput = this.refs.mask[index];
-    const maskInput = this.refs.select[index];
-    if (textInput &amp;&amp; maskInput) {
-      const mask = FormioUtils.getInputMask(this.activeMask);
-      textInput.value = conformToMask(textValue, mask).conformedValue;
+    const textInput = this.refs.mask ? this.refs.mask[index] : null;
+    const maskInput = this.refs.select ? this.refs.select[index]: null;
+    const mask = this.getMaskPattern(value.maskName);
+    if (textInput &amp;&amp; maskInput &amp;&amp; mask) {
+      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask)).conformedValue;
+      maskInput.value = value.maskName;
+    }
+    else {
+      return super.setValueAt(index, textValue, flags);
     }
   }
 
+  /**
+   * Returns the value at this index.
+   *
+   * @param index
+   * @return {*}
+   */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {
       return super.getValueAt(index);
     }
-    const textField = this.refs.input[index];
+    const textInput = this.refs.mask ? this.refs.mask[index] : null;
+    const maskInput = this.refs.select ? this.refs.select[index]: null;
     return {
-      value: textField &amp;&amp; textField.text ? textField.text.value : undefined,
-      maskName: textField &amp;&amp; textField.mask ? textField.mask.value : undefined
+      value: textInput ? textInput.value : undefined,
+      maskName: maskInput ? maskInput.value : undefined
     };
-  }
-
-  performInputMapping(input) {
-    if (!this.isMultipleMasksField) {
-      return super.performInputMapping(input);
-    }
-    return input &amp;&amp; input.text ? input.text : input;
   }
 
   isEmpty(value = this.dataValue) {
@@ -346,22 +379,6 @@ export default class TextFieldComponent extends Input {
       return super.isEmpty((value || &apos;&apos;).toString().trim());
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
-  }
-
-  createMaskInput(textInput) {
-    const id = `${this.key}-mask`;
-    const maskInput = this.ce(&apos;select&apos;, {
-      class: &apos;form-control formio-multiple-mask-select&apos;,
-      id
-    });
-    const self = this;
-    const maskOptions = this.maskOptions;
-    this.selectOptions(maskInput, &apos;maskOption&apos;, maskOptions);
-    // Change the text field mask when another mask is selected.
-    maskInput.onchange = function() {
-      self.updateMask(textInput, this.value);
-    };
-    return maskInput;
   }
 }
 </code></pre>

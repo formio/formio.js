@@ -104,16 +104,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
@@ -255,8 +251,12 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(component, options, data) {
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component &amp;&amp; !component.hasOwnProperty(&apos;delimiter&apos;)) {
+      component.delimiter = true;
+    }
+    super(component, options, data);
     this.decimalLimit = _.get(this.component, &apos;decimalLimit&apos;, 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
@@ -270,19 +270,6 @@ export default class CurrencyComponent extends NumberComponent {
 
   get defaultSchema() {
     return CurrencyComponent.schema();
-  }
-
-  parseNumber(value) {
-    // Strip out the prefix and suffix before parsing.
-    if (this.prefix) {
-      value = value.replace(this.prefix, &apos;&apos;);
-    }
-
-    if (this.suffix) {
-      value = value.replace(this.suffix, &apos;&apos;);
-    }
-
-    return super.parseNumber(value);
   }
 
   setInputMask(input) {
@@ -300,20 +287,33 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  parseValue(value) {
-    try {
-      if (this.prefix) {
-        value = value.replace(this.prefix, &apos;&apos;);
-      }
-      if (this.suffix) {
-        value = value.replace(this.suffix, &apos;&apos;);
-      }
-    }
-    catch (err) {
-      // If value doesn&apos;t have a replace method, continue on as before.
-    }
+  parseNumber(value) {
+    return super.parseNumber(this.stripPrefixSuffix(value));
+  }
 
-    return super.parseValue(value);
+  parseValue(value) {
+    return super.parseValue(this.stripPrefixSuffix(value));
+  }
+
+  formatValue(value) {
+    return super.formatValue(this.stripPrefixSuffix(value));
+  }
+
+  stripPrefixSuffix(value) {
+    if (typeof value === &apos;string&apos;) {
+      try {
+        if (this.prefix) {
+          value = value.replace(this.prefix, &apos;&apos;);
+        }
+        if (this.suffix) {
+          value = value.replace(this.suffix, &apos;&apos;);
+        }
+      }
+      catch (err) {
+        // If value doesn&apos;t have a replace method, continue on as before.
+      }
+    }
+    return value;
   }
 }
 </code></pre>
