@@ -152,6 +152,34 @@ export default [
     }
   },
   {
+    type: 'textfield',
+    key: 'fileKey',
+    input: true,
+    label: 'File form-data Key',
+    tooltip: 'Key name that you would like to modify for the file while calling API request.',
+    rows: 5,
+    weight: 415.6,
+    placeholder: 'Enter the key name of a file for form data.',
+    conditional: {
+      json: {
+        and: [
+          { '===': [
+            { var: 'data.editor' },
+            'quill'
+          ] },
+          { '===': [
+            { var: 'data.isUploadEnabled' },
+            true
+          ] },
+          { '===': [
+            { var: 'data.uploadStorage' },
+            'url'
+          ] },
+        ]
+      }
+    }
+  },
+  {
     type: 'select',
     input: true,
     key: 'as',

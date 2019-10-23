@@ -1259,7 +1259,9 @@ export default class SelectComponent extends Field {
   }
 
   focus() {
-    this.focusableElement.focus();
+    if (this.focusableElement) {
+      this.focusableElement.focus();
+    }
   }
 
   setCustomValidity(message, dirty, external) {

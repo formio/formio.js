@@ -24,8 +24,12 @@ export default class CurrencyComponent extends NumberComponent {
     };
   }
 
-  constructor(...args) {
-    super(...args);
+  constructor(component, options, data) {
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component && !component.hasOwnProperty('delimiter')) {
+      component.delimiter = true;
+    }
+    super(component, options, data);
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
@@ -39,19 +43,6 @@ export default class CurrencyComponent extends NumberComponent {
 
   get defaultSchema() {
     return CurrencyComponent.schema();
-  }
-
-  parseNumber(value) {
-    // Strip out the prefix and suffix before parsing.
-    if (this.prefix) {
-      value = value.replace(this.prefix, '');
-    }
-
-    if (this.suffix) {
-      value = value.replace(this.suffix, '');
-    }
-
-    return super.parseNumber(value);
   }
 
   setInputMask(input) {
@@ -69,19 +60,32 @@ export default class CurrencyComponent extends NumberComponent {
     });
   }
 
-  parseValue(value) {
-    try {
-      if (this.prefix) {
-        value = value.replace(this.prefix, '');
-      }
-      if (this.suffix) {
-        value = value.replace(this.suffix, '');
-      }
-    }
-    catch (err) {
-      // If value doesn't have a replace method, continue on as before.
-    }
+  parseNumber(value) {
+    return super.parseNumber(this.stripPrefixSuffix(value));
+  }
 
-    return super.parseValue(value);
+  parseValue(value) {
+    return super.parseValue(this.stripPrefixSuffix(value));
+  }
+
+  formatValue(value) {
+    return super.formatValue(this.stripPrefixSuffix(value));
+  }
+
+  stripPrefixSuffix(value) {
+    if (typeof value === 'string') {
+      try {
+        if (this.prefix) {
+          value = value.replace(this.prefix, '');
+        }
+        if (this.suffix) {
+          value = value.replace(this.suffix, '');
+        }
+      }
+      catch (err) {
+        // If value doesn't have a replace method, continue on as before.
+      }
+    }
+    return value;
   }
 }
