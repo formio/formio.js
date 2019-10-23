@@ -62,6 +62,15 @@
 <div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}">
   {{ content }}
 </div>
+<hr />
+<div>
+  <h4 class="text-center text-muted">powered by <img src="/app/logo.png" class="mr-2" style="height: 1.2em;" /></h4>
+  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2019. All rights reserved</p>
+</div>
+<p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
+<script type="text/javascript">
+  document.getElementById('renderer-version').innerHTML = Formio.version;
+</script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
