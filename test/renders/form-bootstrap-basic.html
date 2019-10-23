@@ -7,9 +7,7 @@
         Text
       </label>
       <div ref="element">
-        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="text-text" aria-describedby="d-text-text
-      e-text-text
-      " aria-required="true"></input>
+        <input ref="input" name="data[text]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="text-text" aria-required="true"></input>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -21,9 +19,7 @@
         <tbody>
           <tr ref="row">
             <td>
-              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="multiple-multiple-0" aria-labelledby="l-multiple-multiple" aria-describedby="d-multiple-multiple
-      e-multiple-multiple
-      " aria-required="false"></input>
+              <input ref="input" name="data[multiple]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="multiple-multiple-0" aria-labelledby="l-multiple-multiple" aria-required="false"></input>
             </td>
             <td>
               <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Multiple row 1" title="Remove row">
@@ -59,185 +55,178 @@
     </span>
                 </div>
                 <input ref="input" name="data[everything]" type="text" class="form-control" lang="en" placeholder="Placeholder" tabindex="1" spellcheck="true" value="" id="everything-everything-0" aria-labelledby="l-everything-everything" aria-describedby="d-everything-everything
-      e-everything-everything
       " aria-required="true"></input>
-                <div class="input-group-append" ref="suffix">
-                  <span class="input-group-text">
+                <span class="input-group-append" ref="suffix">
+    <span class="input-group-text">
       Suffix
     </span>
-                </div>
               </div>
-            </td>
-            <td>
-              <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Everything row 1" title="Remove row">
-                <i class="fa fa-times-circle-o"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-everything-everything">
-                <i class="fa fa-plus"></i>
-                Add Another
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="form-text text-muted">
-        <span id="d-everything-everything">Description</span>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
-      <label ref="label" class="col-form-label  " id="l-number-number" for="number-number">
-        Number
+    </td>
+    <td>
+      <button type="button" class="btn btn-secondary" ref="removeRow" aria-label="Remove Everything row 1" title="Remove row">
+        <i class="fa fa-times-circle-o"></i>
+      </button>
+    </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <button class="btn btn-primary formio-button-add-another" ref="addButton" aria-describedby="l-everything-everything">
+          <i class="fa fa-plus"></i>
+          Add Another
+        </button>
+      </td>
+    </tr>
+    </tbody>
+    </table>
+    <div class="form-text text-muted">
+      <span id="d-everything-everything">Description</span>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="number" class="form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
+    <label ref="label" class="col-form-label  " id="l-number-number" for="number-number">
+      Number
+    </label>
+    <div ref="element">
+      <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="number-number" aria-required="false"></input>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="password" class="form-group has-feedback formio-component formio-component-password formio-component-password " ref="component">
+    <label ref="label" class="col-form-label  " id="l-password-password" for="password-password">
+      Password
+    </label>
+    <div ref="element">
+      <input ref="input" name="data[password]" type="password" class="form-control" lang="en" value="" id="password-password" aria-required="false"></input>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea " ref="component">
+    <label ref="label" class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea">
+      Text Area
+    </label>
+    <div ref="element">
+      <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" spellcheck="true" rows="3" id="textArea-textArea" aria-required="false"></textarea>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
+    <div class="form-check checkbox">
+      <label class=" form-check-label">
+        <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-describedby="d-checkbox-checkbox"></input>
+        <span>Checkbox</span>
       </label>
-      <div ref="element">
-        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="numeric" value="" id="number-number" aria-describedby="d-number-number
-      e-number-number
-      " aria-required="false"></input>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="password" class="form-group has-feedback formio-component formio-component-password formio-component-password " ref="component">
-      <label ref="label" class="col-form-label  " id="l-password-password" for="password-password">
-        Password
-      </label>
-      <div ref="element">
-        <input ref="input" name="data[password]" type="password" class="form-control" lang="en" value="" id="password-password" aria-describedby="d-password-password
-      e-password-password
-      " aria-required="false"></input>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="textArea" class="form-group has-feedback formio-component formio-component-textarea formio-component-textArea " ref="component">
-      <label ref="label" class="col-form-label  " id="l-textArea-textArea" for="textArea-textArea">
-        Text Area
-      </label>
-      <div ref="element">
-        <textarea ref="input" name="data[textArea]" type="text" class="form-control" lang="en" spellcheck="true" rows="3" id="textArea-textArea" aria-describedby="d-textArea-textArea
-      e-textArea-textArea
-      " aria-required="false"></textarea>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
-      <div class="form-check checkbox">
-        <label class=" form-check-label">
-          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false" aria-describedby="d-checkbox-checkbox"></input>
-          <span>Checkbox</span>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
+    <label ref="label" class="col-form-label  " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
+      Select Boxes
+    </label>
+    <div class="form-radio radio" role="group" aria-labelledby="l-selectBoxes-selectBoxes" aria-describedby="d-selectBoxes-selectBoxes">
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" id="selectBoxes-one" aria-required="false">
+        <label class="form-check-label" for="selectBoxes-one">
+          <span>One</span>
         </label>
       </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
-      <label ref="label" class="col-form-label  " id="l-selectBoxes-selectBoxes" for="selectBoxes-selectBoxes">
-        Select Boxes
-      </label>
-      <div class="form-radio radio" role="group" aria-labelledby="l-selectBoxes-selectBoxes" aria-describedby="d-selectBoxes-selectBoxes">
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="one" id="selectBoxes-one" aria-required="false">
-          <label class="form-check-label" for="selectBoxes-one">
-            <span>One</span>
-          </label>
-        </div>
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="selectBoxes-two" aria-required="false">
-          <label class="form-check-label" for="selectBoxes-two">
-            <span>Two</span>
-          </label>
-        </div>
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" id="selectBoxes-three" aria-required="false">
-          <label class="form-check-label" for="selectBoxes-three">
-            <span>Three</span>
-          </label>
-        </div>
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="two" id="selectBoxes-two" aria-required="false">
+        <label class="form-check-label" for="selectBoxes-two">
+          <span>Two</span>
+        </label>
       </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
-      <label ref="label" class="col-form-label  " id="l-select-select" for="select-select">
-        Select
-      </label>
-      <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-multiselectable="false" aria-describedby="d-select-select" aria-required="false"></select>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
-      <label ref="label" class="col-form-label  " id="l-radio-radio" for="radio-radio">
-        Radio
-      </label>
-      <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radio-radio" aria-describedby="d-radio-radio">
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="one" id="radio-one" aria-required="false">
-          <label class="form-check-label" for="radio-one">
-            <span>One</span>
-          </label>
-        </div>
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="two" id="radio-two" aria-required="false">
-          <label class="form-check-label" for="radio-two">
-            <span>Two</span>
-          </label>
-        </div>
-        <div class="form-check" ref="wrapper">
-          <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="three" id="radio-three" aria-required="false">
-          <label class="form-check-label" for="radio-three">
-            <span>Three</span>
-          </label>
-        </div>
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" value="three" id="selectBoxes-three" aria-required="false">
+        <label class="form-check-label" for="selectBoxes-three">
+          <span>Three</span>
+        </label>
       </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="radioInline" class="form-group has-feedback formio-component formio-component-radio formio-component-radioInline " ref="component">
-      <label ref="label" class="col-form-label  " id="l-radioInline-radioInline" for="radioInline-radioInline">
-        Radio Inline
-      </label>
-      <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radioInline-radioInline" aria-describedby="d-radioInline-radioInline">
-        <div class="form-check-inline" ref="wrapper">
-          <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="one" id="radioInline-one" aria-required="false">
-          <label class="form-check-label" for="radioInline-one">
-            <span>One</span>
-          </label>
-        </div>
-        <div class="form-check-inline" ref="wrapper">
-          <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="two" id="radioInline-two" aria-required="false">
-          <label class="form-check-label" for="radioInline-two">
-            <span>Two</span>
-          </label>
-        </div>
-        <div class="form-check-inline" ref="wrapper">
-          <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="three" id="radioInline-three" aria-required="false">
-          <label class="form-check-label" for="radioInline-three">
-            <span>Three</span>
-          </label>
-        </div>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="content" class="formio-component formio-component-htmlelement formio-component-content  formio-component-label-hidden" ref="component">
-      <p class="cssclass" ref="html" attribute="value">HTML Content</p>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="content2" class="formio-component formio-component-content formio-component-content2  formio-component-label-hidden" ref="component">
-      <div class="" ref="html">
-        <p>Content <strong>Bold</strong></p>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
-    <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
-      <label ref="label" class="col-form-label  sr-only" id="l-submit-submit" for="submit-submit">
-        Submit
-      </label>
-      <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
-        Submit
-      </button>
-      <div ref="buttonMessageContainer">
-        <span class="help-block" ref="buttonMessage"></span>
-      </div>
-      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
-    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
   </div>
-  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
+    <label ref="label" class="col-form-label  " id="l-select-select" for="select-select">
+      Select
+    </label>
+    <select ref="selectContainer" name="data[select]" type="text" class="form-control" lang="en" id="select-select" aria-multiselectable="false" aria-describedby="d-select-select" aria-required="false"></select>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="radio" class="form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
+    <label ref="label" class="col-form-label  " id="l-radio-radio" for="radio-radio">
+      Radio
+    </label>
+    <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radio-radio" aria-describedby="d-radio-radio">
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="one" id="radio-one" aria-required="false">
+        <label class="form-check-label" for="radio-one">
+          <span>One</span>
+        </label>
+      </div>
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="two" id="radio-two" aria-required="false">
+        <label class="form-check-label" for="radio-two">
+          <span>Two</span>
+        </label>
+      </div>
+      <div class="form-check" ref="wrapper">
+        <input ref="input" name="data[radio][radio]" type="radio" class="form-check-input" lang="en" value="three" id="radio-three" aria-required="false">
+        <label class="form-check-label" for="radio-three">
+          <span>Three</span>
+        </label>
+      </div>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="radioInline" class="form-group has-feedback formio-component formio-component-radio formio-component-radioInline " ref="component">
+    <label ref="label" class="col-form-label  " id="l-radioInline-radioInline" for="radioInline-radioInline">
+      Radio Inline
+    </label>
+    <div class="form-radio radio" role="radiogroup" aria-labelledby="l-radioInline-radioInline" aria-describedby="d-radioInline-radioInline">
+      <div class="form-check-inline" ref="wrapper">
+        <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="one" id="radioInline-one" aria-required="false">
+        <label class="form-check-label" for="radioInline-one">
+          <span>One</span>
+        </label>
+      </div>
+      <div class="form-check-inline" ref="wrapper">
+        <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="two" id="radioInline-two" aria-required="false">
+        <label class="form-check-label" for="radioInline-two">
+          <span>Two</span>
+        </label>
+      </div>
+      <div class="form-check-inline" ref="wrapper">
+        <input ref="input" name="data[radioInline][radioInline]" type="radio" class="form-check-input" lang="en" value="three" id="radioInline-three" aria-required="false">
+        <label class="form-check-label" for="radioInline-three">
+          <span>Three</span>
+        </label>
+      </div>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="content" class="formio-component formio-component-htmlelement formio-component-content  formio-component-label-hidden" ref="component">
+    <p class="cssclass" ref="html" attribute="value">HTML Content</p>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="content2" class="formio-component formio-component-content formio-component-content2  formio-component-label-hidden" ref="component">
+    <div class="" ref="html">
+      <p>Content <strong>Bold</strong></p>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+  <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+    <label ref="label" class="col-form-label  sr-only" id="l-submit-submit" for="submit-submit">
+      Submit
+    </label>
+    <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
+      Submit
+    </button>
+    <div ref="buttonMessageContainer">
+      <span class="help-block" ref="buttonMessage"></span>
+    </div>
+    <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+  </div>
+</div>
+<div ref="messageContainer" class="formio-errors invalid-feedback"></div>
 </div>
