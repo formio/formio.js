@@ -1384,6 +1384,7 @@ Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
 Formio.providers = providers;
+Formio.version = '---VERSION---';
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
