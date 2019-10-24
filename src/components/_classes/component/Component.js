@@ -1486,7 +1486,7 @@ export default class Component extends Element {
 
       const descRefs = input.getAttribute('aria-describedby');
 
-      if (!descRefs || descRefs.search(/\b(e-)(?=[a-z0-9])/g) === -1) {
+      if (!descRefs || descRefs.search(/\b(e-\w*-\w*)/g) === -1) {
         super.addAttribute(this.performInputMapping(input), 'aria-describedby', `e-${this.id}-${this.component.key} ${descRefs ? descRefs : ''}`);
       }
     });
@@ -2239,7 +2239,7 @@ export default class Component extends Element {
 
           const descRefs = input.getAttribute('aria-describedby');
           // Removes an error message elem id
-          const updatedDescRefs = descRefs.replace(/\b(e-([a-z0-9-])*)\b/gi, '').trim();
+          const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
 
           if (updatedDescRefs) {
             super.addAttribute(this.performInputMapping(input), 'aria-describedby', updatedDescRefs);
