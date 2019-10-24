@@ -1479,10 +1479,16 @@ export default class Component extends Element {
       }));
     }
 
-    // Add error classes
+    // Add error classes and attributes
     elements.forEach((input) => {
       this.addClass(this.performInputMapping(input), 'is-invalid');
       super.addAttribute(this.performInputMapping(input), 'aria-invalid', 'true');
+
+      const descRefs = input.getAttribute('aria-describedby');
+
+      if (!descRefs || descRefs.search(/\b(e-\w*-\w*)/g) === -1) {
+        super.addAttribute(this.performInputMapping(input), 'aria-describedby', `e-${this.id}-${this.component.key} ${descRefs ? descRefs : ''}`);
+      }
     });
 
     if (dirty && this.options.highlightErrors) {
@@ -2230,6 +2236,17 @@ export default class Component extends Element {
         this.refs.input.forEach((input) => {
           this.removeClass(this.performInputMapping(input), 'is-invalid');
           super.addAttribute(this.performInputMapping(input), 'aria-invalid', 'false');
+
+          const descRefs = input.getAttribute('aria-describedby');
+          // Removes an error message elem id
+          const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+
+          if (updatedDescRefs) {
+            super.addAttribute(this.performInputMapping(input), 'aria-describedby', updatedDescRefs);
+          }
+          else {
+            input.removeAttribute('aria-describedby');
+          }
         });
         this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
       }

@@ -27,10 +27,12 @@
     aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
 
-    aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}
-      e-{{ctx.instance.id}}-{{ctx.component.key}}
-      {{ctx.component.showCharCount ? `cc-${ctx.instance.id}-${ctx.component.key}` : ''}}
-      {{ctx.component.showWordCount ? `wc-${ctx.instance.id}-${ctx.component.key}` : ''}}"
+    {% if (!!ctx.component.description || ctx.component.showCharCount || ctx.component.showWordCount) { %}
+    aria-describedby="{{ !!ctx.component.description ? `d-${ctx.instance.id}-${ctx.component.key}` : '' }}
+      {{ ctx.component.showCharCount ? `cc-${ctx.instance.id}-${ctx.component.key}` : '' }}
+      {{ ctx.component.showWordCount ? `wc-${ctx.instance.id}-${ctx.component.key}` : '' }}"
+    {% } %}
+
     aria-required="{{ctx.input.ref === 'input' || !ctx.input.ref ? ctx.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
   >{{ctx.input.content}}</{{ctx.input.type}}>
 
@@ -43,7 +45,7 @@
   {% } %}
 
   {% if (ctx.component.suffix) { %}
-  <div class="input-group-append" ref="suffix">
+  <span class="input-group-append" ref="suffix">
     <span class="input-group-text">
       {{ctx.component.suffix}}
     </span>
