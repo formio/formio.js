@@ -521,6 +521,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    this.dataValue = this.defaultValue;
     const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
     if (this.isPlain) {
