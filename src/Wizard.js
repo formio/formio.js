@@ -123,29 +123,33 @@ export default class Wizard extends Webform {
   }
 
   redrawNavigation() {
-    const navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
-    if (navElement) {
-      this.detachNav();
-      navElement.outerHTML = this.renderTemplate('wizardNav', this.renderContext);
-      this.loadRefs(navElement, {
-        [`${this.wizardKey}-cancel`]: 'single',
-        [`${this.wizardKey}-previous`]: 'single',
-        [`${this.wizardKey}-next`]: 'single',
-        [`${this.wizardKey}-submit`]: 'single',
-      });
-      this.attachNav();
+    if (this.element) {
+      const navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+      if (navElement) {
+        this.detachNav();
+        navElement.outerHTML = this.renderTemplate('wizardNav', this.renderContext);
+        this.loadRefs(navElement, {
+          [`${this.wizardKey}-cancel`]: 'single',
+          [`${this.wizardKey}-previous`]: 'single',
+          [`${this.wizardKey}-next`]: 'single',
+          [`${this.wizardKey}-submit`]: 'single',
+        });
+        this.attachNav();
+      }
     }
   }
 
   redrawHeader() {
-    const headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
-    if (headerElement) {
-      this.detachHeader();
-      headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
-      this.loadRefs(headerElement, {
-        [`${this.wizardKey}-link`]: 'multiple'
-      });
-      this.attachHeader();
+    if (this.element) {
+      const headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+      if (headerElement) {
+        this.detachHeader();
+        headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
+        this.loadRefs(headerElement, {
+          [`${this.wizardKey}-link`]: 'multiple'
+        });
+        this.attachHeader();
+      }
     }
   }
 
