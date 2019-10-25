@@ -427,6 +427,7 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.readOnly) {
       editRow.dirty = false;
       editRow.isOpen = false;
+      editRow.editing = false;
       this.buildTable();
       return;
     }
@@ -535,7 +536,7 @@ export default class EditGridComponent extends NestedComponent {
     }
 
     let rowsValid = true;
-    let rowsClosed = true;
+    let rowsEditing = false;
     this.editRows.forEach((editRow, rowIndex) => {
       // Trigger all errors on the row.
       const rowValid = this.validateRow(rowIndex, dirty);
@@ -549,16 +550,14 @@ export default class EditGridComponent extends NestedComponent {
       rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
-      if (dirty) {
-        rowsClosed &= !editRow.isOpen;
-      }
+      rowsEditing |= (dirty && (editRow.editing || editRow.isOpen));
     });
 
     if (!rowsValid) {
       this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
-    else if (!rowsClosed && !this.component.inlineEdit) {
+    else if (rowsEditing && !this.component.inlineEdit) {
       this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
