@@ -11,13 +11,14 @@ const registerPlugin = (plugin) => {
     return;
   }
   for (const key of Object.keys(plugin)) {
+    const current = Templates.framework || 'bootstrap';
     switch (key) {
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
           Templates.extendTemplate(framework, plugin.templates[framework]);
         }
-        if (plugin.templates[Templates.framework]) {
-          Templates.current = plugin.templates[Templates.framework];
+        if (plugin.templates[current]) {
+          Templates.current = plugin.templates[current];
         }
         break;
       case 'components':
