@@ -264,7 +264,7 @@ export default class EditGridComponent extends NestedComponent {
 
   checkData(data, flags = {}) {
     Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow, index) => this.checkRow(data[index], editRow, flags) && valid, true);
+    return this.editRows.reduce((valid, editRow) => this.checkRow(editRow.data, editRow, flags) && valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -335,7 +335,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(this.data, editRow);
+    this.checkRow(editRow.data, editRow);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -515,7 +515,7 @@ export default class EditGridComponent extends NestedComponent {
           this.triggerChange();
         }
         else {
-          this.checkRow(this.data, this.editRows[rowIndex]);
+          this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
         }
       };
       components.push(comp);
@@ -638,7 +638,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
-        this.checkRow(this.data, this.editRows[rowIndex]);
+        this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
       }
     });
     this.updateOnChange(flags, changed);
