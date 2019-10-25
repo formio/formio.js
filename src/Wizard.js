@@ -22,7 +22,6 @@ export default class Wizard extends Webform {
       options = arguments[0];
     }
     super(element, options);
-    this.panels = [];
     this.pages = [];
     this.globalComponents = [];
     this.components = [];
@@ -91,22 +90,63 @@ export default class Wizard extends Webform {
 
   get buttons() {
     const buttons = {};
-    ['cancel', 'previous', 'next', 'submit'].forEach((button) => {
-      if (this.hasButton(button)) {
-        buttons[button] = true;
+    [
+      { name: 'cancel',    method: 'cancel' },
+      { name: 'previous',  method: 'prevPage' },
+      { name: 'next',      method: 'nextPage' },
+      { name: 'submit',    method: 'submit' }
+    ].forEach((button) => {
+      if (this.hasButton(button.name)) {
+        buttons[button.name] = button;
       }
     });
     return buttons;
   }
 
-  render() {
-    return this.renderTemplate('wizard', {
+  get renderContext() {
+    return {
       wizardKey: this.wizardKey,
-      panels: this.panels,
+      panels: this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
+    };
+  }
+
+  render() {
+    const ctx = this.renderContext;
+    return this.renderTemplate('wizard', {
+      ...ctx,
+      wizardHeader: this.renderTemplate('wizardHeader', ctx),
+      wizardNav: this.renderTemplate('wizardNav', ctx),
       components: this.renderComponents([...this.globalComponents, ...this.currentPage.components]),
     }, this.builderMode ? 'builder' : 'form');
+  }
+
+  redrawNavigation() {
+    const navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+    if (navElement) {
+      this.detachNav();
+      navElement.outerHTML = this.renderTemplate('wizardNav', this.renderContext);
+      this.loadRefs(navElement, {
+        [`${this.wizardKey}-cancel`]: 'single',
+        [`${this.wizardKey}-previous`]: 'single',
+        [`${this.wizardKey}-next`]: 'single',
+        [`${this.wizardKey}-submit`]: 'single',
+      });
+      this.attachNav();
+    }
+  }
+
+  redrawHeader() {
+    const headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+    if (headerElement) {
+      this.detachHeader();
+      headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
+      this.loadRefs(headerElement, {
+        [`${this.wizardKey}-link`]: 'multiple'
+      });
+      this.attachHeader();
+    }
   }
 
   attach(element) {
@@ -121,15 +161,15 @@ export default class Wizard extends Webform {
     });
 
     const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
+    this.attachNav();
+    this.attachHeader();
+    return promises;
+  }
 
+  attachNav() {
     const isClickable = _.get(this.options, 'breadcrumbSettings.clickable', true);
     if (isClickable) {
-      [
-        { name: 'cancel',    method: 'cancel' },
-        { name: 'previous',  method: 'prevPage' },
-        { name: 'next',      method: 'nextPage' },
-        { name: 'submit',    method: 'submit' }
-      ].forEach((button) => {
+      _.each(this.buttons, (button) => {
         const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
         this.addEventListener(buttonElement, 'click', (event) => {
           event.preventDefault();
@@ -149,7 +189,9 @@ export default class Wizard extends Webform {
         });
       });
     }
+  }
 
+  attachHeader() {
     this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
       this.addEventListener(link, 'click', (event) => {
         this.emit('wizardNavigationClicked', this.pages[index]);
@@ -157,26 +199,54 @@ export default class Wizard extends Webform {
         this.setPage(index);
       });
     });
-
-    return promises;
   }
 
-  addComponents() {
+  detachNav() {
+    _.each(this.buttons, (button) => {
+      this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], 'click');
+    });
+  }
+
+  detachHeader() {
+    this.refs[`${this.wizardKey}-link`].forEach((link) => {
+      this.removeEventListener(link, 'click');
+    });
+  }
+
+  establishPages() {
     this.pages = [];
-    this.panels = [];
+    const visible = [];
+    const currentPages = {};
+    if (this.components && this.components.length) {
+      this.components.map(page => {
+        if (page.component.type === 'panel') {
+          currentPages[page.component.key || page.component.title] = page;
+        }
+      });
+    }
     _.each(this.originalComponents, (item) => {
       const pageOptions = _.clone(this.options);
       if (item.type === 'panel') {
-        if (checkCondition(item, this.data, this.data, this.component, this)) {
-          this.panels.push(item);
-          if (!item.key) {
-            item.key = item.title;
+        if (!item.key) {
+          item.key = item.title;
+        }
+        let page = currentPages[item.key];
+        const isVisible = checkCondition(item, this.data, this.data, this.component, this);
+        if (isVisible) {
+          visible.push(item);
+          if (page) {
+            this.pages.push(page);
           }
-          const page = this.createComponent(item, pageOptions);
+        }
+        if (!page && isVisible) {
+          page = this.createComponent(item, pageOptions);
           this.pages.push(page);
           page.eachComponent((component) => {
             component.page = this.page;
           });
+        }
+        else if (page && !isVisible) {
+          this.removeComponent(page);
         }
       }
       else if (item.type === 'hidden') {
@@ -184,6 +254,11 @@ export default class Wizard extends Webform {
         this.globalComponents.push(component);
       }
     });
+    return visible;
+  }
+
+  addComponents() {
+    this.establishPages();
   }
 
   setPage(num) {
@@ -211,7 +286,7 @@ export default class Wizard extends Webform {
 
   pageFieldLogic(page) {
     // Handle field logic on pages.
-    this.component = this.panels[page];
+    this.component = this.pages[page].component;
     this.originalComponent = _.cloneDeep(this.component);
     this.fieldLogic(this.data);
     // If disabled changed, be sure to distribute the setting.
@@ -224,7 +299,7 @@ export default class Wizard extends Webform {
 
   getNextPage() {
     const data = this.submission.data;
-    const form = this.panels[this.page];
+    const form = this.pages[this.page].component;
     // Check conditional nextPage
     if (form) {
       const page = this.page + 1;
@@ -329,8 +404,8 @@ export default class Wizard extends Webform {
 
   getPageIndexByKey(key) {
     let pageIndex = this.page;
-    this.panels.forEach((page, index) => {
-      if (page.key === key) {
+    this.pages.forEach((page, index) => {
+      if (page.component.key === key) {
         pageIndex = index;
         return false;
       }
@@ -429,43 +504,20 @@ export default class Wizard extends Webform {
     }
   }
 
-  calculateVisiblePanels() {
-    const visible = [];
-    _.each(this.wizard.components, (component) => {
-      if (component.type === 'panel') {
-        // Ensure that this page can be seen.
-        if (checkCondition(component, this.data, this.data, this.wizard, this)) {
-          if (!component.key) {
-            component.key = component.title;
-          }
-          visible.push(component);
-        }
-      }
-    });
-    return visible;
-  }
-
   onChange(flags, changed) {
     super.onChange(flags, changed);
 
-    // Only rebuild if there is a page visibility change.
-    const currentNextPage = this.currentNextPage;
-    const nextPage = this.getNextPage();
-    const currentPanels = this.panels.map(panel => panel.key);
-    const panels = this.calculateVisiblePanels().map(panel => panel.key);
-    if (
-      (nextPage !== currentNextPage) ||
-      !_.isEqual(panels, currentPanels)
-    ) {
-      // If visible panels changes we need to build this template again.
-      this.rebuild();
+    // If the next page changes, then make sure to redraw navigation.
+    if (this.currentNextPage !== this.getNextPage()) {
+      this.redrawNavigation();
     }
-  }
 
-  rebuild() {
-    this.destroyComponents();
-    this.addComponents();
-    return this.redraw();
+    // If the pages change, need to redraw the header.
+    const currentPanels = this.pages.map(page => page.component.key);
+    const panels = this.establishPages().map(panel => panel.key);
+    if (!_.isEqual(panels, currentPanels)) {
+      this.redrawHeader();
+    }
   }
 
   checkValidity(data, dirty, currentPageOnly) {

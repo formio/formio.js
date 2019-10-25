@@ -33,6 +33,8 @@ import table from './table';
 import warning from './warning';
 import well from './well';
 import wizard from './wizard';
+import wizardHeader from './wizardHeader';
+import wizardNav from './wizardNav';
 import cssClasses from './cssClasses';
 
 export default {
@@ -114,4 +116,6 @@ export default {
   warning,
   well,
   wizard,
+  wizardHeader,
+  wizardNav
 };
