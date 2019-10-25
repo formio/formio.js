@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.0
+### Fixed
+ - Problems where errors would show up in EditGrid for new rows.
+ 
+### Changed
+ - Upgrade tooltip.js@1.3.3, @babel/cli@7.6.4, @babel/core@7.6.4, @babel/preset-env@7.6.3, chance@1.1.3, mocha@6.2.2, webpack@4.41.2, choices.js@7.1.5, core-js@3.3.4, karma@4.4.1, i18next@18.0.0, moment-timezone@0.5.27
+ - Updated timezone files to incorporate new DST changes.
+
 ## 3.28.2
 ### Fixed
  - Fixed EditGrid to not validate when editing a row that has not been saved.
