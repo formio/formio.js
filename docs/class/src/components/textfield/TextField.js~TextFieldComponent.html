@@ -342,34 +342,6 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-member-activeMask">activeMask</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
       <span class="kind" data-ice="kind">get</span>
       
       <span class="override" data-ice="override"></span>
@@ -471,13 +443,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-getValueAt">getValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): {&quot;value&quot;: <span>*</span>, &quot;maskName&quot;: <span>*</span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-getValueAt">getValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Returns the value at this index.</p>
+</div>
       </div>
     </td>
     <td>
@@ -527,13 +500,72 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-maskValue">maskValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Returns the mask value object.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-normalizeValue">normalizeValue</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Normalize the value set in the data object.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html#instance-method-setValueAt">setValueAt</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>, value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Sets the value at this index.</p>
+</div>
       </div>
     </td>
     <td>
@@ -5838,7 +5870,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-member-activeMask">activeMask</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-member-multiMasks">multiMasks</a></span></span><span class="code" data-ice="signature">: {}</span>
         </p>
       </div>
       <div>
@@ -5981,7 +6013,63 @@ something changed.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-attachMultiMask">attachMultiMask</a></span></span><span class="code" data-ice="signature">(index: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-detach">detach</a></span></span><span class="code" data-ice="signature">()</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-getMaskPattern">getMaskPattern</a></span></span><span class="code" data-ice="signature">(maskName: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -6094,34 +6182,6 @@ something changed.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-renderRow">renderRow</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>, index: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-method-tryAttachMultipleMasksInput">tryAttachMultipleMasksInput</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -6944,49 +7004,6 @@ something changed.</p>
 <div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-activeMask">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">activeMask</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber92">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-member-activeMask">Multivalue#activeMask</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-defaultSchema">
     <span class="access" data-ice="access">public</span>
     
@@ -7127,18 +7144,18 @@ something changed.</p>
     
     
     
-    <span class="code" data-ice="name">getValueAt</span><span class="code" data-ice="signature">(index: <span>*</span>): {&quot;value&quot;: <span>*</span>, &quot;maskName&quot;: <span>*</span>}</span>
+    <span class="code" data-ice="name">getValueAt</span><span class="code" data-ice="signature">(index: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber109">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber138">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Get the value at a specific index.</p>
+  <div data-ice="description"><p>Returns the value at this index.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAt">Input#getValueAt</a></span></div>
@@ -7167,7 +7184,7 @@ something changed.</p>
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType">{&quot;value&quot;: <span>*</span>, &quot;maskName&quot;: <span>*</span>}</td>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
           
         </tr>
       </tbody>
@@ -7203,7 +7220,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber121">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber150">source</a></span></span>
     </span>
   </h3>
 
@@ -7263,6 +7280,162 @@ something changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-maskValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">maskValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber69">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns the mask value object.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">value</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">flags</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-normalizeValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">normalizeValue</span><span class="code" data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber96">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Normalize the value set in the data object.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-normalizeValue">Component#normalizeValue</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">value</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">flags</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-setValueAt">
     <span class="access" data-ice="access">public</span>
     
@@ -7274,14 +7447,14 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber62">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/textfield/TextField.js.html#lineNumber113">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Set the value at a specific index.</p>
+  <div data-ice="description"><p>Sets the value at this index.</p>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-setValueAt">Component#setValueAt</a></span></div>
