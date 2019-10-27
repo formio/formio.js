@@ -2005,9 +2005,7 @@ export default class Component extends Element {
       return true;
     }
 
-    // Calculate the new value.
-    flags = flags || {};
-    flags.noCheck = true;
+    // Set the new value.
     const changed = this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
     return changed;
