@@ -1,6 +1,7 @@
 import AllComponents from './components';
 import Components from './components/Components';
 import Templates from './templates/Templates';
+import Providers from './providers/Providers';
 import Formio from './Formio';
 Components.setComponents(AllComponents);
 Formio.Components = Components;
@@ -33,7 +34,9 @@ const registerPlugin = (plugin) => {
         }
         break;
       case 'providers':
-        // TODO: Implement custom providers
+        for (const type of Object.keys(plugin.providers)) {
+          Providers.addProviders(type, plugin.providers[type]);
+        }
         break;
       default:
         console.log('Unknown plugin option', key);
