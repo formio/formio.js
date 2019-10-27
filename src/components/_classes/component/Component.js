@@ -369,7 +369,9 @@ export default class Component extends Element {
           }
           else {
             // Ensure the dataValue is set.
+            /* eslint-disable  no-self-assign */
             this.dataValue = this.dataValue;
+            /* eslint-enable  no-self-assign */
           }
         }
       }

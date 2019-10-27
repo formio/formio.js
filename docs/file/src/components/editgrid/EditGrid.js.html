@@ -136,6 +136,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -268,9 +269,7 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) { %}
-      &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
-    {% } %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
   {% }) %}
 &lt;/div&gt;`;
   }
@@ -278,18 +277,15 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `&lt;div class=&quot;row&quot;&gt;
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty(&apos;tableView&apos;) || component.tableView) { %}
-      &lt;div class=&quot;col-sm-2&quot;&gt;
-        {{ getView(component, row[component.key]) }}
-      &lt;/div&gt;
-    {% } %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;
+      {{ getView(component, row[component.key]) }}
+    &lt;/div&gt;
   {% }) %}
-
-  {% if (!self.options.readOnly &amp;&amp; !self.originalComponent.disabled) { %}
+  {% if (!instance.options.readOnly &amp;&amp; !instance.originalComponent.disabled) { %}
     &lt;div class=&quot;col-sm-2&quot;&gt;
       &lt;div class=&quot;btn-group pull-right&quot;&gt;
         &lt;button class=&quot;btn btn-default btn-light btn-sm editRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;edit&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-        {% if (self.hasRemoveButtons()) { %}
+        {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
           &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;trash&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
         {% } %}
       &lt;/div&gt;
@@ -491,7 +487,7 @@ export default class EditGridComponent extends NestedComponent {
 
   checkData(data, flags = {}) {
     Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow, index) =&gt; this.checkRow(data[index], editRow, flags) &amp;&amp; valid, true);
+    return this.editRows.reduce((valid, editRow) =&gt; this.checkRow(editRow.data, editRow, flags) &amp;&amp; valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -562,7 +558,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(this.data, editRow);
+    this.checkRow(editRow.data, editRow);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -742,7 +738,7 @@ export default class EditGridComponent extends NestedComponent {
           this.triggerChange();
         }
         else {
-          this.checkRow(this.data, this.editRows[rowIndex]);
+          this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
         }
       };
       components.push(comp);
@@ -865,7 +861,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
-        this.checkRow(this.data, this.editRows[rowIndex]);
+        this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
       }
     });
     this.updateOnChange(flags, changed);
