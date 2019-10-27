@@ -2391,7 +2391,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus) {
+    if (this.component.autofocus && !this.builderMode) {
       this.on('render', () => this.focus(), true);
     }
   }
