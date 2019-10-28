@@ -53,7 +53,10 @@ export function evaluate(func, args, ret, tokenize) {
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
+
+  const originalArgs = args;
   const componentKey = component.key;
+
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
@@ -85,9 +88,30 @@ export function evaluate(func, args, ret, tokenize) {
       func = false;
     }
   }
+
   if (typeof func === 'function') {
     try {
-      returnVal = Array.isArray(args) ? func(...args) : func(args);
+      if (process) {
+        // Need to assume we're server side and limit ourselves to a sandbox VM
+        const vm = require('vm');
+        const sandbox = vm.createContext({ ...originalArgs, result: null });
+
+        // Build the arg string
+        let argStr = _.keys(originalArgs).join();
+
+        if (!Array.isArray(args)) {
+          argStr = `{${argStr}}`;
+        }
+
+        // Execute the script
+        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
+        script.runInContext(sandbox, { timeout: 250 });
+
+        returnVal = sandbox.result;
+      }
+      else {
+        returnVal = Array.isArray(args) ? func(...args) : func(args);
+      }
     }
     catch (err) {
       returnVal = null;

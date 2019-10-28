@@ -266,7 +266,7 @@ const Harness = {
       component.on('componentChange', (change) => {
         const valid = component.checkValidity();
         if (valid) {
-          assert.equal(change.value, value);
+          assert.equal(component.value, value);
           resolve();
         }
         else {
