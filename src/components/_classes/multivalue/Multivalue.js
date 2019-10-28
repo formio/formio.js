@@ -232,6 +232,9 @@ export default class Multivalue extends Field {
     }
 
     super.setFocusAt('input', this.dataValue.length - 1);
-    super.addNotification('addition', { elem: '', index: '' });
+
+    if (this.refs.label) {
+      super.addNotification('addition', { elem: '', index: '' });
+    }
   }
 }

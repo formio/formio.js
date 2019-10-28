@@ -1162,7 +1162,9 @@ export default class Component extends Element {
       this.setFocusAt('addButton', 0);
     }
 
-    this.addNotification('removal', { elem: 'Row', index: index + 1 });
+    if (this.refs.label) {
+      this.addNotification('removal', { elem: 'Row', index: index + 1 });
+    }
   }
 
   setFocusAt(elem, index) {
@@ -1172,7 +1174,8 @@ export default class Component extends Element {
   }
 
   addNotification(message, params) {
-    const span = document.createElement('span').classList.add('sr-only');
+    const span = document.createElement('span');
+    span.setAttribute('class', 'sr-only');
     this.setContent(span, this.t(message, params));
 
     const label = this.refs.label;
