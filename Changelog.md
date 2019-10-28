@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Fix Text Area component is not visible in read only
  - Initial focus should be disabled when in builder mode
+ - Issues where chained calculated values would not work.
+ - Fixed default values on form components getting set before the nested form is ready and established.
 
 ## 4.5.1
 ### Fixed
