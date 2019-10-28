@@ -31,24 +31,21 @@ export default [
     label: 'Widget Settings',
     refreshOn: 'wiget.type',
     clearOnHide: false,
-    allowCalculateOverride: true,
     // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
     calculateValue: (context) => {
-      if (_.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
+      if (
+        _.isEmpty(_.omit(context.data.widget, 'type')) ||
+        _.isEmpty(_.omit(context.instance.calculatedValue, 'type'))
+      ) {
         const existWidget = context.instance._currentForm.options.editComponent.widget;
-
         if (existWidget && !_.isEmpty(_.omit(existWidget, 'type'))) {
-          settings = _.omit(context.instance._currentForm.options.editComponent.widget, 'language');
+          return _.omit(context.instance._currentForm.options.editComponent.widget, 'language');
         }
         else if (context.data.widget && context.data.widget.type) {
-          settings = _.omit(Widgets[context.data.widget.type].defaultSettings, 'language');
+          return _.omit(Widgets[context.data.widget.type].defaultSettings, 'language');
         }
         else if (context.data.widget && !context.data.widget.type ) {
-          settings = _.omit(Widgets['calendar'].defaultSettings, 'language');
-        }
-        if (settings) {
-          return settings;
+          return _.omit(Widgets['calendar'].defaultSettings, 'language');
         }
       }
       return context.data.widget;
