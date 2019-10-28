@@ -137,7 +137,6 @@ gulp.task('formio.embed.js', () =>
     .pipe(rename('formio.embed.js'))
     .pipe(gulp.dest('dist')));
 gulp.task('scripts-embed', gulp.series('formio.embed.min.js', 'formio.embed.js'));
-gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 
 gulp.task('jquery', () => gulp.src('./node_modules/jquery/dist/**/*.*').pipe(gulp.dest('./app/jquery')));
 gulp.task('fontawesome', () => gulp.src('./node_modules/font-awesome/**/*.*').pipe(gulp.dest('./app/fontawesome')));
@@ -192,7 +191,6 @@ gulp.task('build', gulp.series(
     'scripts-formio',
     'scripts-utils',
     'scripts-embed',
-    'scripts-contrib',
     'scripts-form',
     'scripts-full'
   ),
@@ -208,7 +206,6 @@ gulp.task('rebuild-scripts', gulp.series(
     'scripts-formio',
     'scripts-utils',
     'scripts-embed',
-    'scripts-contrib',
     'scripts-form',
     'scripts-full'
   ),
