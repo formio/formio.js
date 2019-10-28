@@ -124,10 +124,11 @@ export default class Wizard extends Webform {
 
   redrawNavigation() {
     if (this.element) {
-      const navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+      let navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
       if (navElement) {
         this.detachNav();
         navElement.outerHTML = this.renderTemplate('wizardNav', this.renderContext);
+        navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
         this.loadRefs(navElement, {
           [`${this.wizardKey}-cancel`]: 'single',
           [`${this.wizardKey}-previous`]: 'single',
@@ -141,10 +142,11 @@ export default class Wizard extends Webform {
 
   redrawHeader() {
     if (this.element) {
-      const headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+      let headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
       if (headerElement) {
         this.detachHeader();
         headerElement.outerHTML = this.renderTemplate('wizardHeader', this.renderContext);
+        headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
         this.loadRefs(headerElement, {
           [`${this.wizardKey}-link`]: 'multiple'
         });
