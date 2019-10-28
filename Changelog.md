@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Reverted the change to EditGrid templates which was using TableView to determine visibility of sub-components. Having dual purpose flags is problematic.
 
 ### Fixed
+ - Fixing widget settings for textfields.
  - Fix Text Area component is not visible in read only
  - Initial focus should be disabled when in builder mode
  - Issues where chained calculated values would not work.
