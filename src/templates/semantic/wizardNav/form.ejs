@@ -1,0 +1,22 @@
+<div class="ui horizontal list" id="{{ ctx.wizardKey }}-nav">
+  {% if (ctx.buttons.cancel) { %}
+  <div class="item">
+    <button class="ui button secondary btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel">{{ctx.t('cancel')}}</button>
+  </div>
+  {% } %}
+  {% if (ctx.buttons.previous) { %}
+  <div class="item">
+    <button class="ui button primary btn-wizard-nav-previous" ref="{{ctx.wizardKey}}-previous">{{ctx.t('previous')}}</button>
+  </div>
+  {% } %}
+  {% if (ctx.buttons.next) { %}
+  <div class="item">
+    <button class="ui button primary btn-wizard-nav-next" ref="{{ctx.wizardKey}}-next">{{ctx.t('next')}}</button>
+  </div>
+  {% } %}
+  {% if (ctx.buttons.submit) { %}
+  <div class="item">
+    <button class="ui button primary btn-wizard-nav-submit" ref="{{ctx.wizardKey}}-submit">{{ctx.t('submit')}}</button>
+  </div>
+  {% } %}
+</div>

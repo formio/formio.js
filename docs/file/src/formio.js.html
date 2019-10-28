@@ -136,6 +136,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -233,7 +234,7 @@ import NativePromise from &apos;native-promise-only&apos;;
 import fetchPonyfill from &apos;fetch-ponyfill&apos;;
 import EventEmitter from &apos;./EventEmitter&apos;;
 import cookies from &apos;browser-cookies&apos;;
-import providers from &apos;./providers&apos;;
+import Providers from &apos;./providers&apos;;
 import _intersection from &apos;lodash/intersection&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
@@ -729,8 +730,9 @@ export default class Formio {
         return Formio.pluginGet(&apos;fileRequest&apos;, requestArgs)
           .then((result) =&gt; {
             if (storage &amp;&amp; isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(storage)) {
-                const provider = new Formio.providers.storage[storage](this);
+              const Provider = Providers.getProvider(&apos;storage&apos;, storage);
+              if (Provider) {
+                const provider = new Provider(this);
                 return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey);
               }
               else {
@@ -755,8 +757,9 @@ export default class Formio {
         return Formio.pluginGet(&apos;fileRequest&apos;, requestArgs)
           .then((result) =&gt; {
             if (file.storage &amp;&amp; isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-                const provider = new Formio.providers.storage[file.storage](this);
+              const Provider = Providers.getProvider(&apos;storage&apos;, file.storage);
+              if (Provider) {
+                const provider = new Provider(this);
                 return provider.downloadFile(file, options);
               }
               else {
@@ -1610,7 +1613,8 @@ Formio.authUrl = &apos;&apos;;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = providers;
+Formio.Providers = Providers;
+Formio.version = &apos;---VERSION---&apos;;
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0

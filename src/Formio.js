@@ -6,7 +6,7 @@ import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
-import providers from './providers';
+import Providers from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -502,8 +502,9 @@ export default class Formio {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
             if (storage && isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(storage)) {
-                const provider = new Formio.providers.storage[storage](this);
+              const Provider = Providers.getProvider('storage', storage);
+              if (Provider) {
+                const provider = new Provider(this);
                 return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey);
               }
               else {
@@ -528,8 +529,9 @@ export default class Formio {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
             if (file.storage && isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-                const provider = new Formio.providers.storage[file.storage](this);
+              const Provider = Providers.getProvider('storage', file.storage);
+              if (Provider) {
+                const provider = new Provider(this);
                 return provider.downloadFile(file, options);
               }
               else {
@@ -1383,7 +1385,7 @@ Formio.authUrl = '';
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = providers;
+Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.events = new EventEmitter({
   wildcard: false,

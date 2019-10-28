@@ -369,7 +369,9 @@ export default class Component extends Element {
           }
           else {
             // Ensure the dataValue is set.
+            /* eslint-disable  no-self-assign */
             this.dataValue = this.dataValue;
+            /* eslint-enable  no-self-assign */
           }
         }
       }
@@ -2045,9 +2047,7 @@ export default class Component extends Element {
       return true;
     }
 
-    // Calculate the new value.
-    flags = flags || {};
-    flags.noCheck = true;
+    // Set the new value.
     const changed = this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
     return changed;
@@ -2450,7 +2450,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus) {
+    if (this.component.autofocus && !this.builderMode) {
       this.on('render', () => this.focus(), true);
     }
   }

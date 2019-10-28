@@ -136,6 +136,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -258,24 +259,21 @@ export default [
     label: &apos;Widget Settings&apos;,
     refreshOn: &apos;wiget.type&apos;,
     clearOnHide: false,
-    allowCalculateOverride: true,
     // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
     calculateValue: (context) =&gt; {
-      if (_.isEmpty(_.omit(context.data.widget, &apos;type&apos;))) {
-        let settings = {};
+      if (
+        _.isEmpty(_.omit(context.data.widget, &apos;type&apos;)) ||
+        _.isEmpty(_.omit(context.instance.calculatedValue, &apos;type&apos;))
+      ) {
         const existWidget = context.instance._currentForm.options.editComponent.widget;
-
         if (existWidget &amp;&amp; !_.isEmpty(_.omit(existWidget, &apos;type&apos;))) {
-          settings = _.omit(context.instance._currentForm.options.editComponent.widget, &apos;language&apos;);
+          return _.omit(context.instance._currentForm.options.editComponent.widget, &apos;language&apos;);
         }
         else if (context.data.widget &amp;&amp; context.data.widget.type) {
-          settings = _.omit(Widgets[context.data.widget.type].defaultSettings, &apos;language&apos;);
+          return _.omit(Widgets[context.data.widget.type].defaultSettings, &apos;language&apos;);
         }
         else if (context.data.widget &amp;&amp; !context.data.widget.type ) {
-          settings = _.omit(Widgets[&apos;calendar&apos;].defaultSettings, &apos;language&apos;);
-        }
-        if (settings) {
-          return settings;
+          return _.omit(Widgets[&apos;calendar&apos;].defaultSettings, &apos;language&apos;);
         }
       }
       return context.data.widget;

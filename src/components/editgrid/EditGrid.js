@@ -41,9 +41,7 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultHeaderTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
-      <div class="col-sm-2">{{ component.label }}</div>
-    {% } %}
+    <div class="col-sm-2">{{ component.label }}</div>
   {% }) %}
 </div>`;
   }
@@ -51,18 +49,15 @@ export default class EditGridComponent extends NestedComponent {
   static get defaultRowTemplate() {
     return `<div class="row">
   {% util.eachComponent(components, function(component) { %}
-    {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
-      <div class="col-sm-2">
-        {{ getView(component, row[component.key]) }}
-      </div>
-    {% } %}
+    <div class="col-sm-2">
+      {{ getView(component, row[component.key]) }}
+    </div>
   {% }) %}
-
-  {% if (!self.options.readOnly && !self.originalComponent.disabled) { %}
+  {% if (!instance.options.readOnly && !instance.originalComponent.disabled) { %}
     <div class="col-sm-2">
       <div class="btn-group pull-right">
         <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
-        {% if (self.hasRemoveButtons()) { %}
+        {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
           <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
         {% } %}
       </div>
@@ -264,7 +259,7 @@ export default class EditGridComponent extends NestedComponent {
 
   checkData(data, flags = {}) {
     Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow, index) => this.checkRow(data[index], editRow, flags) && valid, true);
+    return this.editRows.reduce((valid, editRow) => this.checkRow(editRow.data, editRow, flags) && valid, true);
   }
 
   checkRow(data, editRow, flags = {}) {
@@ -335,7 +330,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(this.data, editRow);
+    this.checkRow(editRow.data, editRow);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -515,7 +510,7 @@ export default class EditGridComponent extends NestedComponent {
           this.triggerChange();
         }
         else {
-          this.checkRow(this.data, this.editRows[rowIndex]);
+          this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
         }
       };
       components.push(comp);
@@ -638,7 +633,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
-        this.checkRow(this.data, this.editRows[rowIndex]);
+        this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
       }
     });
     this.updateOnChange(flags, changed);

@@ -423,7 +423,7 @@ export default class DataGridComponent extends NestedComponent {
    * @param opts
    * @return {*|boolean}
    */
-  checkRows(method, data, opts) {
+  checkRows(method, data = this.data, opts) {
     return this.rows.reduce((valid, row, index) => this.checkRow(method, data[index], row, opts) && valid, true);
   }
 

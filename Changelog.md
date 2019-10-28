@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.6.0
+### Changed
+ - Wizard templates so that the header and navigation can be provided independently and fixes refresh issues.
+ - Make providers modular.
+ - Upgrade choices.js@7.1.5, core-js@3.3.4, eslint@6.6.0, i18next@18.0.1
+ - Reverted the change to EditGrid templates which was using TableView to determine visibility of sub-components. Having dual purpose flags is problematic.
+
+### Fixed
+ - Fixing widget settings for textfields.
+ - Initial focus should be disabled when in builder mode
+ - Issues where chained calculated values would not work.
+ - Fixed default values on form components getting set before the nested form is ready and established.
+
+## 4.5.1
+### Fixed
+ - Datagrid error around wrong data being passed.
+
 ## 4.5.0
 ### Added
  - Upload FILE to URL- key 'file' in formData to be customizable

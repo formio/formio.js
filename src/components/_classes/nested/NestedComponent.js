@@ -405,6 +405,7 @@ export default class NestedComponent extends Field {
    * @param {Array<Component>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
+    components = components || this.components;
     component.destroy();
     _.remove(components, { id: component.id });
   }
