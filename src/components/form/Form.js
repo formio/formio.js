@@ -93,6 +93,11 @@ export default class FormComponent extends Component {
     return this.subFormReady || NativePromise.resolve();
   }
 
+  get defaultValue() {
+    // Not not provide a default value unless the subform is ready so that it will initialize correctly.
+    return this.subForm ? super.defaultValue : null;
+  }
+
   get defaultSchema() {
     return FormComponent.schema();
   }
