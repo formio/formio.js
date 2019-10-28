@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.6.1
+### Fixed
+ - Fix json widget setting drop constantly
+
 ## 4.6.0
 ### Changed
  - Wizard templates so that the header and navigation can be provided independently and fixes refresh issues.
