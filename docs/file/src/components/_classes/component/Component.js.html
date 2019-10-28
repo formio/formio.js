@@ -2034,9 +2034,6 @@ export default class Component extends Element {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
-    if (this.disabled || this.options.readOnly) {
-      this.redraw();
-    }
     return changed;
   }
 

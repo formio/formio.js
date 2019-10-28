@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
  - Fixing widget settings for textfields.
- - Fix Text Area component is not visible in read only
  - Initial focus should be disabled when in builder mode
  - Issues where chained calculated values would not work.
  - Fixed default values on form components getting set before the nested form is ready and established.
