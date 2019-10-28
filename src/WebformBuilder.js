@@ -860,6 +860,7 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
         'hidden',
+        'autofocus',
         'conditional',
         'calculateValue'
       ])] };
