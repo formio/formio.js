@@ -14,7 +14,6 @@ import EditGridComponent from './editgrid/EditGrid';
 import EmailComponent from './email/Email';
 import FieldsetComponent from './fieldset/Fieldset';
 import FileComponent from './file/File';
-import FormComponent from './form/Form';
 import HiddenComponent from './hidden/Hidden';
 import Input from './_classes/input/Input';
 import Multivalue from './_classes/multivalue/Multivalue';
@@ -26,7 +25,6 @@ import PanelComponent from './panel/Panel';
 import PasswordComponent from './password/Password';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import RadioComponent from './radio/Radio';
-import ReCaptchaComponent from './recaptcha/ReCaptcha';
 import ResourceComponent from './resource/Resource';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SelectComponent from './select/Select';
@@ -63,7 +61,6 @@ export default {
   multivalue: Multivalue,
   fieldset: FieldsetComponent,
   file: FileComponent,
-  form: FormComponent,
   hidden: HiddenComponent,
   htmlelement: HTMLComponent,
   nested: NestedComponent,
@@ -72,7 +69,6 @@ export default {
   password: PasswordComponent,
   phoneNumber: PhoneNumberComponent,
   radio: RadioComponent,
-  recaptcha: ReCaptchaComponent,
   resource: ResourceComponent,
   select: SelectComponent,
   selectboxes: SelectBoxesComponent,
