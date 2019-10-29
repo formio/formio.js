@@ -419,7 +419,8 @@ export default class FormComponent extends Component {
   submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      return this.createSubForm().then(() => {
+      const subFormReady = this.subFormReady || this.createSubForm();
+      return subFormReady.then(() => {
         if (!this.subForm) {
           return this.dataValue;
         }
