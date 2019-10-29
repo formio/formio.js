@@ -210,17 +210,17 @@ export default class PDFBuilder extends WebformBuilder {
       body: formData
     })
       .then(response => {
-        if (response.status !== 200) {
+        if (response.status !== 201) {
           response.text().then(info => {
             this.setUploadError(`${response.statusText} - ${info}`);
           });
         }
         else {
           response.json().then(data => {
-            this.webform.form.settings.pdf = {
+            _.set(this.webform.form, 'settings.pdf', {
               id: data.file,
-              src: `${this.projectUrl}${data.path}`
-            };
+              src: `${data.filesServer}${data.path}`
+            });
             // Now that the settings are set, redraw to show the builder.
             this.redraw();
           });
