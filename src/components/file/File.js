@@ -525,6 +525,9 @@ export default class FileComponent extends Field {
                 this.statuses.splice(index, 1);
               }
               fileInfo.originalName = file.name;
+              if (!this.hasValue()) {
+                this.dataValue = [];
+              }
               this.dataValue.push(fileInfo);
               this.redraw();
               this.triggerChange();
