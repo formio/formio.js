@@ -525,6 +525,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     value = value || '';
     if (this.isPlain) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
+      if (this.disabled || this.options.readonly) {
+        this.triggerRedraw();
+      }
       return super.setValue(value, flags);
     }
 
