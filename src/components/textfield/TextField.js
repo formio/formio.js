@@ -153,4 +153,11 @@ export default class TextFieldComponent extends Input {
     }
     return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
   }
+
+  setValue(value, flags) {
+    if (this.widget) {
+      this.widget.setValue(value);
+    }
+    return super.setValue(value, flags);
+  }
 }
