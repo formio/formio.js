@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.1
+### Fixed
+ - Problems where required edit grid was invalidating at initial form load when it shouldn't have been.
+
 ## 3.29.0
 ### Fixed
  - Problems where errors would show up in EditGrid for new rows.

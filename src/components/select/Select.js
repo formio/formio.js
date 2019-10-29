@@ -781,7 +781,9 @@ export default class SelectComponent extends BaseComponent {
     }
 
     // Force the disabled state with getters and setters.
+    /* eslint-disable no-self-assign */
     this.disabled = this.disabled;
+    /* eslint-enable no-self-assign */
     this.triggerUpdate();
   }
 

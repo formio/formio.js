@@ -628,6 +628,8 @@ export default class EditGridComponent extends NestedComponent {
     this.updateValue();
     this.triggerChange();
     this.buildTable();
+    this.pristine = false;
+    this.checkValidity(this.data);
   }
 
   clearErrors(rowIndex) {
@@ -782,7 +784,7 @@ export default class EditGridComponent extends NestedComponent {
 
     const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
-    return true;
+    return !message;
   }
 
   setCustomValidity(message, dirty) {
@@ -794,7 +796,7 @@ export default class EditGridComponent extends NestedComponent {
     if (this.options.highlightErrors) {
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
     }
-    if (message) {
+    if (message &amp;&amp; (dirty || !this.pristine)) {
       this.emit(&apos;componentError&apos;, this.error);
       this.createErrorElement();
       const errorMessage = this.ce(&apos;p&apos;, {
