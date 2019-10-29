@@ -253,6 +253,11 @@ export default class HTMLComponent extends BaseComponent {
 
   build() {
     this.createElement();
+    // Do not allow script tags.
+    if (this.component.tag === &apos;script&apos;) {
+      this.component.tag = &apos;div&apos;;
+      this.component.content = this.t(&apos;Script not allowed&apos;);
+    }
     this.htmlElement = this.ce(this.component.tag, {
       id: this.id,
       class: this.component.className

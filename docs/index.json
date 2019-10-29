@@ -27936,7 +27936,7 @@
     "__docId__": 1453,
     "kind": "file",
     "name": "src/components/html/HTML.js",
-    "content": "import _ from 'lodash';\nimport BaseComponent from '../base/Base';\n\nexport default class HTMLComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      label: 'HTML',\n      type: 'htmlelement',\n      tag: 'p',\n      attrs: [],\n      content: '',\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'HTML Element',\n      group: 'advanced',\n      icon: 'fa fa-code',\n      weight: 90,\n      documentation: 'http://help.form.io/userguide/#html-element-component',\n      schema: HTMLComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HTMLComponent.schema();\n  }\n\n  setHTML() {\n    this.htmlElement.innerHTML = this.interpolate(this.component.content);\n  }\n\n  build() {\n    this.createElement();\n    this.htmlElement = this.ce(this.component.tag, {\n      id: this.id,\n      class: this.component.className\n    });\n    _.each(this.component.attrs, (attr) => {\n      if (attr.attr) {\n        this.htmlElement.setAttribute(attr.attr, this.interpolate(attr.value));\n      }\n    });\n    if (this.component.content) {\n      this.setHTML();\n    }\n    if (this.component.refreshOnChange) {\n      this.on('change', () => this.setHTML(), true);\n    }\n    this.element.appendChild(this.htmlElement);\n    this.attachLogic();\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport BaseComponent from '../base/Base';\n\nexport default class HTMLComponent extends BaseComponent {\n  static schema(...extend) {\n    return BaseComponent.schema({\n      label: 'HTML',\n      type: 'htmlelement',\n      tag: 'p',\n      attrs: [],\n      content: '',\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'HTML Element',\n      group: 'advanced',\n      icon: 'fa fa-code',\n      weight: 90,\n      documentation: 'http://help.form.io/userguide/#html-element-component',\n      schema: HTMLComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HTMLComponent.schema();\n  }\n\n  setHTML() {\n    this.htmlElement.innerHTML = this.interpolate(this.component.content);\n  }\n\n  build() {\n    this.createElement();\n    // Do not allow script tags.\n    if (this.component.tag === 'script') {\n      this.component.tag = 'div';\n      this.component.content = this.t('Script not allowed');\n    }\n    this.htmlElement = this.ce(this.component.tag, {\n      id: this.id,\n      class: this.component.className\n    });\n    _.each(this.component.attrs, (attr) => {\n      if (attr.attr) {\n        this.htmlElement.setAttribute(attr.attr, this.interpolate(attr.value));\n      }\n    });\n    if (this.component.content) {\n      this.setHTML();\n    }\n    if (this.component.refreshOnChange) {\n      this.on('change', () => this.setHTML(), true);\n    }\n    this.element.appendChild(this.htmlElement);\n    this.attachLogic();\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/html/HTML.js",
     "access": "public",
@@ -28069,7 +28069,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#htmlElement",
     "access": "public",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
