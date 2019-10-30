@@ -399,8 +399,7 @@ export default [
           { var: 'data.dataSrc' },
           [
             'url',
-            'resource',
-            'json',
+            'resource'
           ],
         ],
       },
