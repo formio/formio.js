@@ -184,6 +184,13 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
+  addInputError(message, dirty, elements) {
+    super.addInputError(message, dirty, [this.refs.day]);
+    super.addInputError(message, dirty, [this.refs.month]);
+    super.addInputError(message, dirty, [this.refs.year]);
+    super.addInputError(message, dirty, elements);
+  }
+
   init() {
     super.init();
     this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);
