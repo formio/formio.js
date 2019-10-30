@@ -1245,6 +1245,7 @@ export default class Component extends Element {
     if (!value) {
       return &apos;&apos;;
     }
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.join(&apos;, &apos;);
     }
@@ -2051,6 +2052,9 @@ export default class Component extends Element {
     const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
+    }
+    else if (input.widget &amp;&amp; input.widget.setValue) {
+      input.widget.setValue(value);
     }
     else {
       input.value = value;
