@@ -170,11 +170,7 @@ export default class NumberComponent extends Input {
     if (!value && value !== 0) {
       return '';
     }
-    const widget = this.widget;
-    if (widget && widget.getValueAsString) {
-      return widget.getValueAsString(value);
-    }
-
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }

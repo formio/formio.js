@@ -187,11 +187,61 @@ export default class Input extends Multivalue {
     return super.attach(element);
   }
 
+  getWidget(index) {
+    index = index || 0;
+    if (this.refs.input && this.refs.input[index]) {
+      return this.refs.input[index].widget;
+    }
+    return null;
+  }
+
+  /**
+   * Uses the widget to determine the output string.
+   *
+   * @param value
+   * @return {*}
+   */
+  getWidgetValueAsString(value) {
+    if (!value) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      if (
+        this.refs.input &&
+        this.refs.input[0] &&
+        this.refs.input[0].widget
+      ) {
+        const values = [];
+        value.forEach((val, index) => {
+          if (
+            this.refs.input &&
+            this.refs.input[index] &&
+            this.refs.input[index].widget
+          ) {
+            values.push(this.refs.input[index].widget.getValueAsString(val));
+          }
+        });
+        return values;
+      }
+    }
+    else if (
+      this.refs.input &&
+      this.refs.input[0] &&
+      this.refs.input[0].widget
+    ) {
+      return this.refs.input[0].widget.getValueAsString(value);
+    }
+    return value;
+  }
+
+  getValueAsString(value) {
+    return super.getValueAsString(this.getWidgetValueAsString(value));
+  }
+
   attachElement(element, index) {
     super.attachElement(element, index);
-
-    if (this.widget) {
-      this.widget.destroy();
+    if (element.widget) {
+      element.widget.destroy();
     }
     // Attach the widget.
     element.widget = this.createWidget(index);
@@ -221,18 +271,6 @@ export default class Input extends Multivalue {
   }
 
   /**
-   * Returns the instance of the widget for this component.
-   *
-   * @return {*}
-   */
-  get widget() {
-    if (this._widget) {
-      return this._widget;
-    }
-    return this.createWidget();
-  }
-
-  /**
    * Creates an instance of a widget for this component.
    *
    * @return {null}
@@ -259,7 +297,6 @@ export default class Input extends Multivalue {
       modified: true
     }, index), true);
     widget.on('redraw', () => this.redraw(), true);
-    this._widget = widget;
     return widget;
   }
 
