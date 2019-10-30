@@ -36,9 +36,14 @@ export default class SurveyComponent extends Field {
     this.loadRefs(element, { input: 'multiple' });
     const superAttach = super.attach(element);
     this.refs.input.forEach((input) => {
-      this.addEventListener(input, 'change', () => this.updateValue(null, {
-        modified: true
-      }));
+      if (this.disabled) {
+        input.setAttribute('disabled', 'disabled');
+      }
+      else {
+        this.addEventListener(input, 'change', () => this.updateValue(null, {
+          modified: true
+        }));
+      }
     });
     this.setValue(this.dataValue);
     return superAttach;

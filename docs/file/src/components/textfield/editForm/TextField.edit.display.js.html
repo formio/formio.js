@@ -261,19 +261,23 @@ export default [
     clearOnHide: false,
     // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
     calculateValue: (context) =&gt; {
+      const { calculatedValue } = context.instance;
+      const { type } = context.data.widget;
+
       if (
         _.isEmpty(_.omit(context.data.widget, &apos;type&apos;)) ||
-        _.isEmpty(_.omit(context.instance.calculatedValue, &apos;type&apos;))
+        _.isEmpty(_.omit(calculatedValue, &apos;type&apos;))
       ) {
+        if (calculatedValue &amp;&amp; !calculatedValue.type) {
+          return context.data.widget;
+        }
+
         const existWidget = context.instance._currentForm.options.editComponent.widget;
-        if (existWidget &amp;&amp; !_.isEmpty(_.omit(existWidget, &apos;type&apos;))) {
-          return _.omit(context.instance._currentForm.options.editComponent.widget, &apos;language&apos;);
+        if (existWidget &amp;&amp; !_.isEmpty(_.omit(existWidget, &apos;type&apos;)) &amp;&amp; type === existWidget.type) {
+          return _.omit(existWidget, &apos;language&apos;);
         }
-        else if (context.data.widget &amp;&amp; context.data.widget.type) {
-          return _.omit(Widgets[context.data.widget.type].defaultSettings, &apos;language&apos;);
-        }
-        else if (context.data.widget &amp;&amp; !context.data.widget.type ) {
-          return _.omit(Widgets[&apos;calendar&apos;].defaultSettings, &apos;language&apos;);
+        else if (type) {
+          return _.omit(Widgets[type].defaultSettings, &apos;language&apos;);
         }
       }
       return context.data.widget;
@@ -283,7 +287,7 @@ export default [
     editor: &apos;ace&apos;,
     as: &apos;json&apos;,
     conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.widget.type&apos; }, &apos;calendar&apos;] }
+      json: { &apos;!==&apos;: [{ var: &apos;data.widget.type&apos; }, &apos;input&apos;] }
     }
   },
   {
