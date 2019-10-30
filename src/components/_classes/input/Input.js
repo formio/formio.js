@@ -202,36 +202,19 @@ export default class Input extends Multivalue {
    * @return {*}
    */
   getWidgetValueAsString(value) {
-    if (!value) {
+    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
       return value;
     }
     if (Array.isArray(value)) {
-      if (
-        this.refs.input &&
-        this.refs.input[0] &&
-        this.refs.input[0].widget
-      ) {
-        const values = [];
-        value.forEach((val, index) => {
-          if (
-            this.refs.input &&
-            this.refs.input[index] &&
-            this.refs.input[index].widget
-          ) {
-            values.push(this.refs.input[index].widget.getValueAsString(val));
-          }
-        });
-        return values;
-      }
+      const values = [];
+      value.forEach((val, index) => {
+        if (this.refs.input[index] && this.refs.input[index].widget) {
+          values.push(this.refs.input[index].widget.getValueAsString(val));
+        }
+      });
+      return values;
     }
-    else if (
-      this.refs.input &&
-      this.refs.input[0] &&
-      this.refs.input[0].widget
-    ) {
-      return this.refs.input[0].widget.getValueAsString(value);
-    }
-    return value;
+    return this.refs.input[0].widget.getValueAsString(value);
   }
 
   getValueAsString(value) {
