@@ -560,7 +560,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
