@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.7.0
+## WIP: 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.
  - Upgrade choices.js@8.0.0, i18next@19.0.0
