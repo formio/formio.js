@@ -97,7 +97,7 @@ export default class DateTimeComponent extends Input {
   }
 
   performInputMapping(input) {
-    if (input.widget && this.widget.settings) {
+    if (input.widget && input.widget.settings) {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
@@ -105,13 +105,6 @@ export default class DateTimeComponent extends Input {
 
   get defaultSchema() {
     return DateTimeComponent.schema();
-  }
-
-  setValue(value, flags) {
-    if (this.widget) {
-      this.widget.setValue(value);
-    }
-    return super.setValue(value, flags);
   }
 
   get emptyValue() {
@@ -136,14 +129,14 @@ export default class DateTimeComponent extends Input {
   }
 
   checkValidity(data, dirty, rowData) {
-    if (this._widget && this._widget.enteredDate) {
-      dirty = true;
+    if (this.refs.input) {
+      this.refs.input.forEach((input) => {
+        if (input.widget && input.widget.enteredDate) {
+          dirty = true;
+        }
+      });
     }
     return super.checkValidity(data, dirty, rowData);
-  }
-
-  getView(value) {
-    return this.widget.getValueAsString(value);
   }
 
   focus() {
