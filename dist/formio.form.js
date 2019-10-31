@@ -346,7 +346,7 @@ eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.filter */ \"./node_modules/core-js/modules/es.array.filter.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.from */ \"./node_modules/core-js/modules/es.array.from.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.includes */ \"./node_modules/core-js/modules/es.array.includes.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.slice */ \"./node_modules/core-js/modules/es.array.slice.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.splice */ \"./node_modules/core-js/modules/es.array.splice.js\");\n\n__webpack_require__(/*! core-js/modules/es.function.name */ \"./node_modules/core-js/modules/es.function.name.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptors */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptors.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.keys */ \"./node_modules/core-js/modules/es.object.keys.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ \"./node_modules/core-js/modules/web.dom-collections.for-each.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _dragula = _interopRequireDefault(__webpack_require__(/*! dragula/dist/dragula */ \"./node_modules/dragula/dist/dragula.js\"));\n\nvar _NestedComponent2 = _interopRequireDefault(__webpack_require__(/*! ../_classes/nested/NestedComponent */ \"./lib/components/_classes/nested/NestedComponent.js\"));\n\nvar _Component = _interopRequireDefault(__webpack_require__(/*! ../_classes/component/Component */ \"./lib/components/_classes/component/Component.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }\n\nfunction _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }\n\nfunction _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }\n\nfunction _nonIterableSpread() { throw new TypeError(\"Invalid attempt to spread non-iterable instance\"); }\n\nfunction _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === \"[object Arguments]\") return Array.from(iter); }\n\nfunction _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }\n\nfunction _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }\n\nfunction _nonIterableRest() { throw new TypeError(\"Invalid attempt to destructure non-iterable instance\"); }\n\nfunction _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === \"[object Arguments]\")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i[\"return\"] != null) _i[\"return\"](); } finally { if (_d) throw _e; } } return _arr; }\n\nfunction _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nvar DataGridComponent =\n/*#__PURE__*/\nfunction (_NestedComponent) {\n  _inherits(DataGridComponent, _NestedComponent);\n\n  _createClass(DataGridComponent, null, [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _NestedComponent2.default.schema.apply(_NestedComponent2.default, [{\n        label: 'Data Grid',\n        key: 'dataGrid',\n        type: 'datagrid',\n        clearOnHide: true,\n        input: true,\n        tree: true,\n        components: []\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Data Grid',\n        icon: 'th',\n        group: 'data',\n        documentation: 'http://help.form.io/userguide/#datagrid',\n        weight: 30,\n        schema: DataGridComponent.schema()\n      };\n    }\n  }]);\n\n  function DataGridComponent() {\n    var _getPrototypeOf2;\n\n    var _this;\n\n    _classCallCheck(this, DataGridComponent);\n\n    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {\n      args[_key2] = arguments[_key2];\n    }\n\n    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(DataGridComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));\n    _this.type = 'datagrid';\n    return _this;\n  }\n\n  _createClass(DataGridComponent, [{\n    key: \"init\",\n    value: function init() {\n      this.components = this.components || []; // Add new values based on minLength.\n\n      this.rows = [];\n      this.createRows(true);\n      this.visibleColumns = {};\n      this.checkColumns(this.dataValue);\n    }\n  }, {\n    key: \"getRowChunks\",\n\n    /**\n     * Split rows into chunks.\n     * @param {Number[]} groups - array of numbers where each item is size of group\n     * @param {Array<T>} rows - rows collection\n     * @return {Array<T[]>}\n     */\n    value: function getRowChunks(groups, rows) {\n      var _groups$reduce = groups.reduce(function (_ref, size) {\n        var _ref2 = _slicedToArray(_ref, 2),\n            startIndex = _ref2[0],\n            acc = _ref2[1];\n\n        var endIndex = startIndex + size;\n        return [endIndex, [].concat(_toConsumableArray(acc), [[startIndex, endIndex]])];\n      }, [0, []]),\n          _groups$reduce2 = _slicedToArray(_groups$reduce, 2),\n          chunks = _groups$reduce2[1];\n\n      return chunks.map(function (range) {\n        return _lodash.default.slice.apply(_lodash.default, [rows].concat(_toConsumableArray(range)));\n      });\n    }\n    /**\n     * Create groups object.\n     * Each key in object represents index of first row in group.\n     * @return {Object}\n     */\n\n  }, {\n    key: \"getGroups\",\n    value: function getGroups() {\n      var groups = _lodash.default.get(this.component, 'rowGroups', []);\n\n      var sizes = _lodash.default.map(groups, 'numberOfRows').slice(0, -1);\n\n      var indexes = sizes.reduce(function (groupIndexes, size) {\n        var last = groupIndexes[groupIndexes.length - 1];\n        return groupIndexes.concat(last + size);\n      }, [0]);\n      return groups.reduce(function (gidxs, group, idx) {\n        return _objectSpread({}, gidxs, _defineProperty({}, indexes[idx], group));\n      }, {});\n    }\n    /**\n     * Retrun group sizes.\n     * @return {Number[]}\n     */\n\n  }, {\n    key: \"getGroupSizes\",\n    value: function getGroupSizes() {\n      return _lodash.default.map(_lodash.default.get(this.component, 'rowGroups', []), 'numberOfRows');\n    }\n  }, {\n    key: \"hasRowGroups\",\n    value: function hasRowGroups() {\n      return _lodash.default.get(this, 'component.enableRowGroups', false) && !this.builderMode;\n    }\n  }, {\n    key: \"totalRowsNumber\",\n    value: function totalRowsNumber(groups) {\n      return _lodash.default.sum(_lodash.default.map(groups, 'numberOfRows'));\n    }\n  }, {\n    key: \"setStaticValue\",\n    value: function setStaticValue(n) {\n      this.dataValue = _lodash.default.range(n).map(function () {\n        return {};\n      });\n    }\n  }, {\n    key: \"hasAddButton\",\n    value: function hasAddButton() {\n      var maxLength = _lodash.default.get(this.component, 'validate.maxLength');\n\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode && !this.options.preview && (!maxLength || this.dataValue.length < maxLength);\n    }\n  }, {\n    key: \"hasExtraColumn\",\n    value: function hasExtraColumn() {\n      return this.hasRemoveButtons() || this.builderMode;\n    }\n  }, {\n    key: \"hasRemoveButtons\",\n    value: function hasRemoveButtons() {\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode && this.dataValue.length > _lodash.default.get(this.component, 'validate.minLength', 0);\n    }\n  }, {\n    key: \"hasTopSubmit\",\n    value: function hasTopSubmit() {\n      return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n    }\n  }, {\n    key: \"hasBottomSubmit\",\n    value: function hasBottomSubmit() {\n      return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n    }\n  }, {\n    key: \"hasChanged\",\n    value: function hasChanged(newValue, oldValue) {\n      return !_lodash.default.isEqual(newValue, oldValue);\n    }\n  }, {\n    key: \"render\",\n    value: function render() {\n      var columns = this.getColumns();\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"render\", this).call(this, this.renderTemplate('datagrid', {\n        rows: this.getRows(),\n        columns: columns,\n        groups: this.hasRowGroups() ? this.getGroups() : [],\n        visibleColumns: this.visibleColumns,\n        hasToggle: _lodash.default.get(this, 'component.groupToggle', false),\n        hasHeader: this.hasHeader(),\n        hasExtraColumn: this.hasExtraColumn(),\n        hasAddButton: this.hasAddButton(),\n        hasRemoveButtons: this.hasRemoveButtons(),\n        hasTopSubmit: this.hasTopSubmit(),\n        hasBottomSubmit: this.hasBottomSubmit(),\n        hasGroups: this.hasRowGroups(),\n        numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),\n        datagridKey: this.datagridKey,\n        allowReorder: this.allowReorder,\n        builder: this.builderMode,\n        placeholder: this.renderTemplate('builderPlaceholder', {\n          position: this.componentComponents.length\n        })\n      }));\n    }\n  }, {\n    key: \"getRows\",\n    value: function getRows() {\n      return this.rows.map(function (row) {\n        var components = {};\n\n        _lodash.default.each(row, function (col, key) {\n          components[key] = col.render();\n        });\n\n        return components;\n      });\n    }\n  }, {\n    key: \"getColumns\",\n    value: function getColumns() {\n      var _this2 = this;\n\n      return this.component.components.filter(function (comp) {\n        return !_this2.visibleColumns.hasOwnProperty(comp.key) || _this2.visibleColumns[comp.key];\n      });\n    }\n  }, {\n    key: \"hasHeader\",\n    value: function hasHeader() {\n      return this.component.components.reduce(function (hasHeader, col) {\n        // If any of the components has a title and it isn't hidden, display the header.\n        return hasHeader || (col.label || col.title) && !col.hideLabel;\n      }, false);\n    }\n  }, {\n    key: \"attach\",\n    value: function attach(element) {\n      var _this$loadRefs,\n          _this3 = this;\n\n      this.loadRefs(element, (_this$loadRefs = {}, _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-row\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-tbody\"), 'single'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-addRow\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-removeRow\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-group-header\"), 'multiple'), _defineProperty(_this$loadRefs, this.datagridKey, 'multiple'), _this$loadRefs));\n\n      if (this.allowReorder) {\n        this.refs[\"\".concat(this.datagridKey, \"-row\")].forEach(function (row, index) {\n          row.dragInfo = {\n            index: index\n          };\n        });\n        this.dragula = (0, _dragula.default)([this.refs[\"\".concat(this.datagridKey, \"-tbody\")]], {\n          moves: function moves(_draggedElement, _oldParent, clickedElement) {\n            return clickedElement.classList.contains('formio-drag-button');\n          }\n        }).on('drop', this.onReorder.bind(this));\n      }\n\n      this.refs[\"\".concat(this.datagridKey, \"-addRow\")].forEach(function (addButton) {\n        _this3.addEventListener(addButton, 'click', _this3.addRow.bind(_this3));\n      });\n      this.refs[\"\".concat(this.datagridKey, \"-removeRow\")].forEach(function (removeButton, index) {\n        _this3.addEventListener(removeButton, 'click', _this3.removeRow.bind(_this3, index));\n      });\n\n      if (this.hasRowGroups()) {\n        this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[\"\".concat(this.datagridKey, \"-row\")]);\n        this.refs[\"\".concat(this.datagridKey, \"-group-header\")].forEach(function (header, index) {\n          _this3.addEventListener(header, 'click', function () {\n            return _this3.toggleGroup(header, index);\n          });\n        });\n      }\n\n      var columns = this.getColumns();\n      var rowLength = columns.length;\n      this.rows.forEach(function (row, rowIndex) {\n        var columnIndex = 0;\n        columns.forEach(function (col) {\n          _this3.attachComponents(_this3.refs[_this3.datagridKey][rowIndex * rowLength + columnIndex], [_this3.rows[rowIndex][col.key]], _this3.component.components);\n\n          columnIndex++;\n        });\n      });\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"attach\", this).call(this, element);\n    }\n  }, {\n    key: \"onReorder\",\n    value: function onReorder(element, _target, _source, sibling) {\n      if (!element.dragInfo || sibling && !sibling.dragInfo) {\n        console.warn('There is no Drag Info available for either dragged or sibling element');\n        return;\n      }\n\n      var oldPosition = element.dragInfo.index; //should drop at next sibling position; no next sibling means drop to last position\n\n      var newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;\n      var movedBelow = newPosition > oldPosition;\n\n      var dataValue = _lodash.default.cloneDeep(this.dataValue);\n\n      var draggedRowData = dataValue[oldPosition]; //insert element at new position\n\n      dataValue.splice(newPosition, 0, draggedRowData); //remove element from old position (if was moved above, after insertion it's at +1 index)\n\n      dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1); //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)\n\n      this.setValue(dataValue);\n      this.redraw();\n    }\n  }, {\n    key: \"addRow\",\n    value: function addRow() {\n      this.dataValue.push({});\n      var index = this.rows.length;\n      this.rows[index] = this.createRowComponents(this.dataValue[index], index);\n      this.redraw();\n    }\n  }, {\n    key: \"removeRow\",\n    value: function removeRow(index) {\n      this.splice(index);\n      this.rows.splice(index, 1);\n      this.redraw();\n    }\n  }, {\n    key: \"getRowValues\",\n    value: function getRowValues() {\n      return this.dataValue;\n    }\n  }, {\n    key: \"createRows\",\n    value: function createRows(init) {\n      var _this4 = this;\n\n      var added = false;\n      var rowValues = this.getRowValues(); // Create any missing rows.\n\n      rowValues.forEach(function (row, index) {\n        if (!_this4.rows[index]) {\n          _this4.rows[index] = _this4.createRowComponents(row, index);\n          added = true;\n        }\n      }); // Delete any extra rows.\n\n      this.rows.splice(rowValues.length);\n\n      if (!init && added) {\n        this.redraw();\n      }\n\n      return added;\n    }\n  }, {\n    key: \"createRowComponents\",\n    value: function createRowComponents(row, rowIndex) {\n      var _this5 = this;\n\n      var components = {};\n      this.component.components.map(function (col, colIndex) {\n        var options = _lodash.default.clone(_this5.options);\n\n        options.name += \"[\".concat(rowIndex, \"]\");\n        options.row = \"\".concat(rowIndex, \"-\").concat(colIndex);\n        components[col.key] = _this5.createComponent(col, options, row);\n        components[col.key].rowIndex = rowIndex;\n        components[col.key].inDataGrid = true;\n      });\n      return components;\n    }\n    /**\n     * Checks the validity of this datagrid.\n     *\n     * @param data\n     * @param dirty\n     * @return {*}\n     */\n\n  }, {\n    key: \"checkValidity\",\n    value: function checkValidity(data, dirty) {\n      if (!this.checkCondition(null, data)) {\n        this.setCustomValidity('');\n        return true;\n      }\n\n      return this.checkRows('checkValidity', data, dirty);\n    }\n    /**\n     * Checks the data within each cell of the datagrid.\n     *\n     * @param data\n     * @param flags\n     * @return {*}\n     */\n\n  }, {\n    key: \"checkData\",\n    value: function checkData(data) {\n      var flags = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};\n\n      _Component.default.prototype.checkData.call(this, data, flags);\n\n      return this.checkRows('checkData', data, flags);\n    }\n    /**\n     * Checks all rows within the datagrid.\n     *\n     * @param method\n     * @param data\n     * @param opts\n     * @return {*|boolean}\n     */\n\n  }, {\n    key: \"checkRows\",\n    value: function checkRows(method, data, opts) {\n      var _this6 = this;\n\n      data = data || this.data;\n      return this.rows.reduce(function (valid, row, index) {\n        return _this6.checkRow(method, data[index], row, opts) && valid;\n      }, true);\n    }\n    /**\n     * Checks validity of each row according to a specific method.\n     *\n     * @param method\n     * @param rowData\n     * @param row\n     * @param opts\n     * @return {boolean}\n     */\n\n  }, {\n    key: \"checkRow\",\n    value: function checkRow(method, rowData, row, opts) {\n      var valid = true;\n\n      _lodash.default.each(row, function (col) {\n        valid = col[method](rowData, opts) && valid;\n      });\n\n      return valid;\n    }\n  }, {\n    key: \"checkColumns\",\n    value: function checkColumns(data) {\n      var show = false;\n\n      if (!this.rows || !this.rows.length) {\n        return {\n          rebuld: false,\n          show: false\n        };\n      }\n\n      if (this.builderMode) {\n        return {\n          rebuild: false,\n          show: true\n        };\n      }\n\n      var visibility = {};\n      this.rows.forEach(function (row) {\n        _lodash.default.each(row, function (col, key) {\n          if (col && typeof col.checkConditions === 'function') {\n            visibility[key] = !!visibility[key] || col.checkConditions(data) && col.type !== 'hidden';\n          }\n        });\n      });\n      var rebuild = !_lodash.default.isEqual(visibility, this.visibleColumns);\n\n      _lodash.default.each(visibility, function (col) {\n        show |= col;\n      });\n\n      this.visibleColumns = visibility;\n      return {\n        rebuild: rebuild,\n        show: show\n      };\n    }\n  }, {\n    key: \"checkComponentConditions\",\n    value: function checkComponentConditions(data) {\n      // If table isn't visible, don't bother calculating columns.\n      if (!_get(_getPrototypeOf(DataGridComponent.prototype), \"checkComponentConditions\", this).call(this, data)) {\n        return false;\n      }\n\n      var _this$checkColumns = this.checkColumns(data),\n          rebuild = _this$checkColumns.rebuild,\n          show = _this$checkColumns.show; // If a rebuild is needed, then rebuild the table.\n\n\n      if (rebuild) {\n        this.redraw();\n      } // Return if this table should show.\n\n\n      return show;\n    }\n  }, {\n    key: \"updateValue\",\n    value: function updateValue(value, flags) {\n      // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n      return _Component.default.prototype.updateValue.call(this, value, flags);\n    }\n  }, {\n    key: \"setValue\",\n    value: function setValue(value, flags) {\n      flags = flags || {};\n\n      if (!value) {\n        this.dataValue = this.defaultValue;\n        this.createRows();\n        return false;\n      }\n\n      if (!Array.isArray(value)) {\n        if (_typeof(value) === 'object') {\n          value = [value];\n        } else {\n          this.createRows();\n          value = [{}];\n        }\n      } // Make sure we always have at least one row.\n      // NOTE: Removing this will break \"Public Configurations\" in portal. ;)\n\n\n      if (value && !value.length) {\n        value.push({});\n      }\n\n      var changed = this.hasChanged(value, this.dataValue);\n      this.dataValue = value;\n      this.createRows();\n      this.rows.forEach(function (row, rowIndex) {\n        if (value.length <= rowIndex) {\n          return;\n        }\n\n        _lodash.default.each(row, function (col, key) {\n          if (col.type === 'components') {\n            col.data = value[rowIndex];\n            col.setValue(value[rowIndex], flags);\n          } else if (value[rowIndex].hasOwnProperty(key)) {\n            col.data = value[rowIndex];\n            col.setValue(value[rowIndex][key], flags);\n          } else {\n            col.data = value[rowIndex];\n            col.setValue(col.defaultValue, flags);\n          }\n        });\n      });\n      this.updateOnChange(flags, changed);\n      return changed;\n    }\n    /**\n     * Get the value of this component.\n     *\n     * @returns {*}\n     */\n\n  }, {\n    key: \"getValue\",\n    value: function getValue() {\n      return this.dataValue;\n    }\n  }, {\n    key: \"restoreComponentsContext\",\n    value: function restoreComponentsContext() {\n      var _this7 = this;\n\n      this.rows.forEach(function (row, index) {\n        return _lodash.default.forIn(row, function (component) {\n          return component.data = _this7.dataValue[index];\n        });\n      });\n    }\n  }, {\n    key: \"getComponent\",\n    value: function getComponent(path, fn) {\n      path = Array.isArray(path) ? path : [path];\n\n      var _path = path,\n          _path2 = _toArray(_path),\n          key = _path2[0],\n          remainingPath = _path2.slice(1);\n\n      var result = [];\n\n      if (!_lodash.default.isString(key)) {\n        return result;\n      }\n\n      this.everyComponent(function (component, components) {\n        if (component.component.key === key) {\n          var comp = component;\n\n          if (remainingPath.length > 0 && 'getComponent' in component) {\n            comp = component.getComponent(remainingPath, fn);\n          } else if (fn) {\n            fn(component, components);\n          }\n\n          result = result.concat(comp);\n        }\n      });\n      return result.length > 0 ? result : null;\n    }\n  }, {\n    key: \"toggleGroup\",\n    value: function toggleGroup(element, index) {\n      element.classList.toggle('collapsed');\n\n      _lodash.default.each(this.refs.chunks[index], function (row) {\n        row.classList.toggle('hidden');\n      });\n    }\n  }, {\n    key: \"allowData\",\n    get: function get() {\n      return true;\n    }\n  }, {\n    key: \"dataValue\",\n    get: function get() {\n      var dataValue = _get(_getPrototypeOf(DataGridComponent.prototype), \"dataValue\", this);\n\n      if (!dataValue || !Array.isArray(dataValue)) {\n        return this.emptyValue;\n      }\n\n      return dataValue;\n    },\n    set: function set(value) {\n      _set(_getPrototypeOf(DataGridComponent.prototype), \"dataValue\", value, this, true);\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DataGridComponent.schema();\n    }\n  }, {\n    key: \"emptyValue\",\n    get: function get() {\n      return [{}];\n    }\n  }, {\n    key: \"addAnotherPosition\",\n    get: function get() {\n      return _lodash.default.get(this.component, 'addAnotherPosition', 'bottom');\n    }\n  }, {\n    key: \"minLength\",\n    get: function get() {\n      if (this.hasRowGroups()) {\n        return _lodash.default.sum(this.getGroupSizes());\n      } else {\n        return _lodash.default.get(this.component, 'validate.minLength', 0);\n      }\n    }\n  }, {\n    key: \"defaultValue\",\n    get: function get() {\n      var value = _get(_getPrototypeOf(DataGridComponent.prototype), \"defaultValue\", this);\n\n      var defaultValue;\n\n      if (Array.isArray(value)) {\n        defaultValue = value;\n      } else if (value && _typeof(value) === 'object') {\n        defaultValue = [value];\n      } else {\n        defaultValue = this.emptyValue;\n      }\n\n      for (var dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {\n        defaultValue.push({});\n      }\n\n      return defaultValue;\n    }\n  }, {\n    key: \"disabled\",\n    set: function set(disabled) {\n      _set(_getPrototypeOf(DataGridComponent.prototype), \"disabled\", disabled, this, true);\n\n      _lodash.default.each(this.refs[\"\".concat(this.datagridKey, \"-addRow\")], function (button) {\n        button.disabled = disabled;\n      });\n\n      _lodash.default.each(this.refs[\"\".concat(this.datagridKey, \"-removeRow\")], function (button) {\n        button.disabled = disabled;\n      });\n    },\n    get: function get() {\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"disabled\", this);\n    }\n  }, {\n    key: \"datagridKey\",\n    get: function get() {\n      return \"datagrid-\".concat(this.key);\n    }\n  }, {\n    key: \"allowReorder\",\n    get: function get() {\n      return !this.options.readOnly && _lodash.default.get(this.component, 'reorder', false);\n    }\n  }]);\n\n  return DataGridComponent;\n}(_NestedComponent2.default);\n\nexports.default = DataGridComponent;\n\n//# sourceURL=webpack:///./lib/components/datagrid/DataGrid.js?");
+eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.filter */ \"./node_modules/core-js/modules/es.array.filter.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.from */ \"./node_modules/core-js/modules/es.array.from.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.includes */ \"./node_modules/core-js/modules/es.array.includes.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.slice */ \"./node_modules/core-js/modules/es.array.slice.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.splice */ \"./node_modules/core-js/modules/es.array.splice.js\");\n\n__webpack_require__(/*! core-js/modules/es.function.name */ \"./node_modules/core-js/modules/es.function.name.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptors */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptors.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.keys */ \"./node_modules/core-js/modules/es.object.keys.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ \"./node_modules/core-js/modules/web.dom-collections.for-each.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _dragula = _interopRequireDefault(__webpack_require__(/*! dragula/dist/dragula */ \"./node_modules/dragula/dist/dragula.js\"));\n\nvar _NestedComponent2 = _interopRequireDefault(__webpack_require__(/*! ../_classes/nested/NestedComponent */ \"./lib/components/_classes/nested/NestedComponent.js\"));\n\nvar _Component = _interopRequireDefault(__webpack_require__(/*! ../_classes/component/Component */ \"./lib/components/_classes/component/Component.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }\n\nfunction _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }\n\nfunction _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }\n\nfunction _nonIterableSpread() { throw new TypeError(\"Invalid attempt to spread non-iterable instance\"); }\n\nfunction _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === \"[object Arguments]\") return Array.from(iter); }\n\nfunction _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }\n\nfunction _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }\n\nfunction _nonIterableRest() { throw new TypeError(\"Invalid attempt to destructure non-iterable instance\"); }\n\nfunction _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === \"[object Arguments]\")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i[\"return\"] != null) _i[\"return\"](); } finally { if (_d) throw _e; } } return _arr; }\n\nfunction _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nvar DataGridComponent =\n/*#__PURE__*/\nfunction (_NestedComponent) {\n  _inherits(DataGridComponent, _NestedComponent);\n\n  _createClass(DataGridComponent, null, [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _NestedComponent2.default.schema.apply(_NestedComponent2.default, [{\n        label: 'Data Grid',\n        key: 'dataGrid',\n        type: 'datagrid',\n        clearOnHide: true,\n        input: true,\n        tree: true,\n        components: []\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Data Grid',\n        icon: 'th',\n        group: 'data',\n        documentation: 'http://help.form.io/userguide/#datagrid',\n        weight: 30,\n        schema: DataGridComponent.schema()\n      };\n    }\n  }]);\n\n  function DataGridComponent() {\n    var _getPrototypeOf2;\n\n    var _this;\n\n    _classCallCheck(this, DataGridComponent);\n\n    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {\n      args[_key2] = arguments[_key2];\n    }\n\n    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(DataGridComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));\n    _this.type = 'datagrid';\n    return _this;\n  }\n\n  _createClass(DataGridComponent, [{\n    key: \"init\",\n    value: function init() {\n      this.components = this.components || []; // Add new values based on minLength.\n\n      this.rows = [];\n      this.createRows(true);\n      this.visibleColumns = {};\n      this.checkColumns(this.dataValue);\n    }\n  }, {\n    key: \"getRowChunks\",\n\n    /**\n     * Split rows into chunks.\n     * @param {Number[]} groups - array of numbers where each item is size of group\n     * @param {Array<T>} rows - rows collection\n     * @return {Array<T[]>}\n     */\n    value: function getRowChunks(groups, rows) {\n      var _groups$reduce = groups.reduce(function (_ref, size) {\n        var _ref2 = _slicedToArray(_ref, 2),\n            startIndex = _ref2[0],\n            acc = _ref2[1];\n\n        var endIndex = startIndex + size;\n        return [endIndex, [].concat(_toConsumableArray(acc), [[startIndex, endIndex]])];\n      }, [0, []]),\n          _groups$reduce2 = _slicedToArray(_groups$reduce, 2),\n          chunks = _groups$reduce2[1];\n\n      return chunks.map(function (range) {\n        return _lodash.default.slice.apply(_lodash.default, [rows].concat(_toConsumableArray(range)));\n      });\n    }\n    /**\n     * Create groups object.\n     * Each key in object represents index of first row in group.\n     * @return {Object}\n     */\n\n  }, {\n    key: \"getGroups\",\n    value: function getGroups() {\n      var groups = _lodash.default.get(this.component, 'rowGroups', []);\n\n      var sizes = _lodash.default.map(groups, 'numberOfRows').slice(0, -1);\n\n      var indexes = sizes.reduce(function (groupIndexes, size) {\n        var last = groupIndexes[groupIndexes.length - 1];\n        return groupIndexes.concat(last + size);\n      }, [0]);\n      return groups.reduce(function (gidxs, group, idx) {\n        return _objectSpread({}, gidxs, _defineProperty({}, indexes[idx], group));\n      }, {});\n    }\n    /**\n     * Retrun group sizes.\n     * @return {Number[]}\n     */\n\n  }, {\n    key: \"getGroupSizes\",\n    value: function getGroupSizes() {\n      return _lodash.default.map(_lodash.default.get(this.component, 'rowGroups', []), 'numberOfRows');\n    }\n  }, {\n    key: \"hasRowGroups\",\n    value: function hasRowGroups() {\n      return _lodash.default.get(this, 'component.enableRowGroups', false) && !this.builderMode;\n    }\n  }, {\n    key: \"totalRowsNumber\",\n    value: function totalRowsNumber(groups) {\n      return _lodash.default.sum(_lodash.default.map(groups, 'numberOfRows'));\n    }\n  }, {\n    key: \"setStaticValue\",\n    value: function setStaticValue(n) {\n      this.dataValue = _lodash.default.range(n).map(function () {\n        return {};\n      });\n    }\n  }, {\n    key: \"hasAddButton\",\n    value: function hasAddButton() {\n      var maxLength = _lodash.default.get(this.component, 'validate.maxLength');\n\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode && !this.options.preview && (!maxLength || this.dataValue.length < maxLength);\n    }\n  }, {\n    key: \"hasExtraColumn\",\n    value: function hasExtraColumn() {\n      return this.hasRemoveButtons() || this.canAddColumn;\n    }\n  }, {\n    key: \"hasRemoveButtons\",\n    value: function hasRemoveButtons() {\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode && this.dataValue.length > _lodash.default.get(this.component, 'validate.minLength', 0);\n    }\n  }, {\n    key: \"hasTopSubmit\",\n    value: function hasTopSubmit() {\n      return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);\n    }\n  }, {\n    key: \"hasBottomSubmit\",\n    value: function hasBottomSubmit() {\n      return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);\n    }\n  }, {\n    key: \"hasChanged\",\n    value: function hasChanged(newValue, oldValue) {\n      return !_lodash.default.isEqual(newValue, oldValue);\n    }\n  }, {\n    key: \"render\",\n    value: function render() {\n      var columns = this.getColumns();\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"render\", this).call(this, this.renderTemplate('datagrid', {\n        rows: this.getRows(),\n        columns: columns,\n        groups: this.hasRowGroups() ? this.getGroups() : [],\n        visibleColumns: this.visibleColumns,\n        hasToggle: _lodash.default.get(this, 'component.groupToggle', false),\n        hasHeader: this.hasHeader(),\n        hasExtraColumn: this.hasExtraColumn(),\n        hasAddButton: this.hasAddButton(),\n        hasRemoveButtons: this.hasRemoveButtons(),\n        hasTopSubmit: this.hasTopSubmit(),\n        hasBottomSubmit: this.hasBottomSubmit(),\n        hasGroups: this.hasRowGroups(),\n        numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),\n        datagridKey: this.datagridKey,\n        allowReorder: this.allowReorder,\n        builder: this.builderMode,\n        canAddColumn: this.canAddColumn,\n        placeholder: this.renderTemplate('builderPlaceholder', {\n          position: this.componentComponents.length\n        })\n      }));\n    }\n  }, {\n    key: \"getRows\",\n    value: function getRows() {\n      return this.rows.map(function (row) {\n        var components = {};\n\n        _lodash.default.each(row, function (col, key) {\n          components[key] = col.render();\n        });\n\n        return components;\n      });\n    }\n  }, {\n    key: \"getColumns\",\n    value: function getColumns() {\n      var _this2 = this;\n\n      return this.component.components.filter(function (comp) {\n        return !_this2.visibleColumns.hasOwnProperty(comp.key) || _this2.visibleColumns[comp.key];\n      });\n    }\n  }, {\n    key: \"hasHeader\",\n    value: function hasHeader() {\n      return this.component.components.reduce(function (hasHeader, col) {\n        // If any of the components has a title and it isn't hidden, display the header.\n        return hasHeader || (col.label || col.title) && !col.hideLabel;\n      }, false);\n    }\n  }, {\n    key: \"attach\",\n    value: function attach(element) {\n      var _this$loadRefs,\n          _this3 = this;\n\n      this.loadRefs(element, (_this$loadRefs = {}, _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-row\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-tbody\"), 'single'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-addRow\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-removeRow\"), 'multiple'), _defineProperty(_this$loadRefs, \"\".concat(this.datagridKey, \"-group-header\"), 'multiple'), _defineProperty(_this$loadRefs, this.datagridKey, 'multiple'), _this$loadRefs));\n\n      if (this.allowReorder) {\n        this.refs[\"\".concat(this.datagridKey, \"-row\")].forEach(function (row, index) {\n          row.dragInfo = {\n            index: index\n          };\n        });\n        this.dragula = (0, _dragula.default)([this.refs[\"\".concat(this.datagridKey, \"-tbody\")]], {\n          moves: function moves(_draggedElement, _oldParent, clickedElement) {\n            return clickedElement.classList.contains('formio-drag-button');\n          }\n        }).on('drop', this.onReorder.bind(this));\n      }\n\n      this.refs[\"\".concat(this.datagridKey, \"-addRow\")].forEach(function (addButton) {\n        _this3.addEventListener(addButton, 'click', _this3.addRow.bind(_this3));\n      });\n      this.refs[\"\".concat(this.datagridKey, \"-removeRow\")].forEach(function (removeButton, index) {\n        _this3.addEventListener(removeButton, 'click', _this3.removeRow.bind(_this3, index));\n      });\n\n      if (this.hasRowGroups()) {\n        this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[\"\".concat(this.datagridKey, \"-row\")]);\n        this.refs[\"\".concat(this.datagridKey, \"-group-header\")].forEach(function (header, index) {\n          _this3.addEventListener(header, 'click', function () {\n            return _this3.toggleGroup(header, index);\n          });\n        });\n      }\n\n      var columns = this.getColumns();\n      var rowLength = columns.length;\n      this.rows.forEach(function (row, rowIndex) {\n        var columnIndex = 0;\n        columns.forEach(function (col) {\n          _this3.attachComponents(_this3.refs[_this3.datagridKey][rowIndex * rowLength + columnIndex], [_this3.rows[rowIndex][col.key]], _this3.component.components);\n\n          columnIndex++;\n        });\n      });\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"attach\", this).call(this, element);\n    }\n  }, {\n    key: \"onReorder\",\n    value: function onReorder(element, _target, _source, sibling) {\n      if (!element.dragInfo || sibling && !sibling.dragInfo) {\n        console.warn('There is no Drag Info available for either dragged or sibling element');\n        return;\n      }\n\n      var oldPosition = element.dragInfo.index; //should drop at next sibling position; no next sibling means drop to last position\n\n      var newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;\n      var movedBelow = newPosition > oldPosition;\n\n      var dataValue = _lodash.default.cloneDeep(this.dataValue);\n\n      var draggedRowData = dataValue[oldPosition]; //insert element at new position\n\n      dataValue.splice(newPosition, 0, draggedRowData); //remove element from old position (if was moved above, after insertion it's at +1 index)\n\n      dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1); //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)\n\n      this.setValue(dataValue);\n      this.redraw();\n    }\n  }, {\n    key: \"addRow\",\n    value: function addRow() {\n      this.dataValue.push({});\n      var index = this.rows.length;\n      this.rows[index] = this.createRowComponents(this.dataValue[index], index);\n      this.redraw();\n    }\n  }, {\n    key: \"removeRow\",\n    value: function removeRow(index) {\n      this.splice(index);\n      this.rows.splice(index, 1);\n      this.redraw();\n    }\n  }, {\n    key: \"getRowValues\",\n    value: function getRowValues() {\n      return this.dataValue;\n    }\n  }, {\n    key: \"createRows\",\n    value: function createRows(init) {\n      var _this4 = this;\n\n      var added = false;\n      var rowValues = this.getRowValues(); // Create any missing rows.\n\n      rowValues.forEach(function (row, index) {\n        if (!_this4.rows[index]) {\n          _this4.rows[index] = _this4.createRowComponents(row, index);\n          added = true;\n        }\n      }); // Delete any extra rows.\n\n      this.rows.splice(rowValues.length);\n\n      if (!init && added) {\n        this.redraw();\n      }\n\n      return added;\n    }\n  }, {\n    key: \"createRowComponents\",\n    value: function createRowComponents(row, rowIndex) {\n      var _this5 = this;\n\n      var components = {};\n      this.component.components.map(function (col, colIndex) {\n        var options = _lodash.default.clone(_this5.options);\n\n        options.name += \"[\".concat(rowIndex, \"]\");\n        options.row = \"\".concat(rowIndex, \"-\").concat(colIndex);\n        components[col.key] = _this5.createComponent(col, options, row);\n        components[col.key].rowIndex = rowIndex;\n        components[col.key].inDataGrid = true;\n      });\n      return components;\n    }\n    /**\n     * Checks the validity of this datagrid.\n     *\n     * @param data\n     * @param dirty\n     * @return {*}\n     */\n\n  }, {\n    key: \"checkValidity\",\n    value: function checkValidity(data, dirty) {\n      if (!this.checkCondition(null, data)) {\n        this.setCustomValidity('');\n        return true;\n      }\n\n      return this.checkRows('checkValidity', data, dirty);\n    }\n    /**\n     * Checks the data within each cell of the datagrid.\n     *\n     * @param data\n     * @param flags\n     * @return {*}\n     */\n\n  }, {\n    key: \"checkData\",\n    value: function checkData(data) {\n      var flags = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};\n\n      _Component.default.prototype.checkData.call(this, data, flags);\n\n      return this.checkRows('checkData', data, flags);\n    }\n    /**\n     * Checks all rows within the datagrid.\n     *\n     * @param method\n     * @param data\n     * @param opts\n     * @return {*|boolean}\n     */\n\n  }, {\n    key: \"checkRows\",\n    value: function checkRows(method, data, opts) {\n      var _this6 = this;\n\n      data = data || this.data;\n      return this.rows.reduce(function (valid, row, index) {\n        return _this6.checkRow(method, data[index], row, opts) && valid;\n      }, true);\n    }\n    /**\n     * Checks validity of each row according to a specific method.\n     *\n     * @param method\n     * @param rowData\n     * @param row\n     * @param opts\n     * @return {boolean}\n     */\n\n  }, {\n    key: \"checkRow\",\n    value: function checkRow(method, rowData, row, opts) {\n      var valid = true;\n\n      _lodash.default.each(row, function (col) {\n        valid = col[method](rowData, opts) && valid;\n      });\n\n      return valid;\n    }\n  }, {\n    key: \"checkColumns\",\n    value: function checkColumns(data) {\n      var show = false;\n\n      if (!this.rows || !this.rows.length) {\n        return {\n          rebuld: false,\n          show: false\n        };\n      }\n\n      if (this.builderMode) {\n        return {\n          rebuild: false,\n          show: true\n        };\n      }\n\n      var visibility = {};\n      this.rows.forEach(function (row) {\n        _lodash.default.each(row, function (col, key) {\n          if (col && typeof col.checkConditions === 'function') {\n            visibility[key] = !!visibility[key] || col.checkConditions(data) && col.type !== 'hidden';\n          }\n        });\n      });\n      var rebuild = !_lodash.default.isEqual(visibility, this.visibleColumns);\n\n      _lodash.default.each(visibility, function (col) {\n        show |= col;\n      });\n\n      this.visibleColumns = visibility;\n      return {\n        rebuild: rebuild,\n        show: show\n      };\n    }\n  }, {\n    key: \"checkComponentConditions\",\n    value: function checkComponentConditions(data) {\n      // If table isn't visible, don't bother calculating columns.\n      if (!_get(_getPrototypeOf(DataGridComponent.prototype), \"checkComponentConditions\", this).call(this, data)) {\n        return false;\n      }\n\n      var _this$checkColumns = this.checkColumns(data),\n          rebuild = _this$checkColumns.rebuild,\n          show = _this$checkColumns.show; // If a rebuild is needed, then rebuild the table.\n\n\n      if (rebuild) {\n        this.redraw();\n      } // Return if this table should show.\n\n\n      return show;\n    }\n  }, {\n    key: \"updateValue\",\n    value: function updateValue(value, flags) {\n      // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.\n      return _Component.default.prototype.updateValue.call(this, value, flags);\n    }\n  }, {\n    key: \"setValue\",\n    value: function setValue(value, flags) {\n      flags = flags || {};\n\n      if (!value) {\n        this.dataValue = this.defaultValue;\n        this.createRows();\n        return false;\n      }\n\n      if (!Array.isArray(value)) {\n        if (_typeof(value) === 'object') {\n          value = [value];\n        } else {\n          this.createRows();\n          value = [{}];\n        }\n      } // Make sure we always have at least one row.\n      // NOTE: Removing this will break \"Public Configurations\" in portal. ;)\n\n\n      if (value && !value.length) {\n        value.push({});\n      }\n\n      var changed = this.hasChanged(value, this.dataValue);\n      this.dataValue = value;\n      this.createRows();\n      this.rows.forEach(function (row, rowIndex) {\n        if (value.length <= rowIndex) {\n          return;\n        }\n\n        _lodash.default.each(row, function (col, key) {\n          if (col.type === 'components') {\n            col.data = value[rowIndex];\n            col.setValue(value[rowIndex], flags);\n          } else if (value[rowIndex].hasOwnProperty(key)) {\n            col.data = value[rowIndex];\n            col.setValue(value[rowIndex][key], flags);\n          } else {\n            col.data = value[rowIndex];\n            col.setValue(col.defaultValue, flags);\n          }\n        });\n      });\n      this.updateOnChange(flags, changed);\n      return changed;\n    }\n    /**\n     * Get the value of this component.\n     *\n     * @returns {*}\n     */\n\n  }, {\n    key: \"getValue\",\n    value: function getValue() {\n      return this.dataValue;\n    }\n  }, {\n    key: \"restoreComponentsContext\",\n    value: function restoreComponentsContext() {\n      var _this7 = this;\n\n      this.rows.forEach(function (row, index) {\n        return _lodash.default.forIn(row, function (component) {\n          return component.data = _this7.dataValue[index];\n        });\n      });\n    }\n  }, {\n    key: \"getComponent\",\n    value: function getComponent(path, fn) {\n      path = Array.isArray(path) ? path : [path];\n\n      var _path = path,\n          _path2 = _toArray(_path),\n          key = _path2[0],\n          remainingPath = _path2.slice(1);\n\n      var result = [];\n\n      if (!_lodash.default.isString(key)) {\n        return result;\n      }\n\n      this.everyComponent(function (component, components) {\n        if (component.component.key === key) {\n          var comp = component;\n\n          if (remainingPath.length > 0 && 'getComponent' in component) {\n            comp = component.getComponent(remainingPath, fn);\n          } else if (fn) {\n            fn(component, components);\n          }\n\n          result = result.concat(comp);\n        }\n      });\n      return result.length > 0 ? result : null;\n    }\n  }, {\n    key: \"toggleGroup\",\n    value: function toggleGroup(element, index) {\n      element.classList.toggle('collapsed');\n\n      _lodash.default.each(this.refs.chunks[index], function (row) {\n        row.classList.toggle('hidden');\n      });\n    }\n  }, {\n    key: \"allowData\",\n    get: function get() {\n      return true;\n    }\n  }, {\n    key: \"dataValue\",\n    get: function get() {\n      var dataValue = _get(_getPrototypeOf(DataGridComponent.prototype), \"dataValue\", this);\n\n      if (!dataValue || !Array.isArray(dataValue)) {\n        return this.emptyValue;\n      }\n\n      return dataValue;\n    },\n    set: function set(value) {\n      _set(_getPrototypeOf(DataGridComponent.prototype), \"dataValue\", value, this, true);\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DataGridComponent.schema();\n    }\n  }, {\n    key: \"emptyValue\",\n    get: function get() {\n      return [{}];\n    }\n  }, {\n    key: \"addAnotherPosition\",\n    get: function get() {\n      return _lodash.default.get(this.component, 'addAnotherPosition', 'bottom');\n    }\n  }, {\n    key: \"minLength\",\n    get: function get() {\n      if (this.hasRowGroups()) {\n        return _lodash.default.sum(this.getGroupSizes());\n      } else {\n        return _lodash.default.get(this.component, 'validate.minLength', 0);\n      }\n    }\n  }, {\n    key: \"defaultValue\",\n    get: function get() {\n      var value = _get(_getPrototypeOf(DataGridComponent.prototype), \"defaultValue\", this);\n\n      var defaultValue;\n\n      if (Array.isArray(value)) {\n        defaultValue = value;\n      } else if (value && _typeof(value) === 'object') {\n        defaultValue = [value];\n      } else {\n        defaultValue = this.emptyValue;\n      }\n\n      for (var dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {\n        defaultValue.push({});\n      }\n\n      return defaultValue;\n    }\n  }, {\n    key: \"disabled\",\n    set: function set(disabled) {\n      _set(_getPrototypeOf(DataGridComponent.prototype), \"disabled\", disabled, this, true);\n\n      _lodash.default.each(this.refs[\"\".concat(this.datagridKey, \"-addRow\")], function (button) {\n        button.disabled = disabled;\n      });\n\n      _lodash.default.each(this.refs[\"\".concat(this.datagridKey, \"-removeRow\")], function (button) {\n        button.disabled = disabled;\n      });\n    },\n    get: function get() {\n      return _get(_getPrototypeOf(DataGridComponent.prototype), \"disabled\", this);\n    }\n  }, {\n    key: \"datagridKey\",\n    get: function get() {\n      return \"datagrid-\".concat(this.key);\n    }\n  }, {\n    key: \"allowReorder\",\n    get: function get() {\n      return !this.options.readOnly && _lodash.default.get(this.component, 'reorder', false);\n    }\n  }, {\n    key: \"canAddColumn\",\n    get: function get() {\n      return this.builderMode;\n    }\n  }]);\n\n  return DataGridComponent;\n}(_NestedComponent2.default);\n\nexports.default = DataGridComponent;\n\n//# sourceURL=webpack:///./lib/components/datagrid/DataGrid.js?");
 
 /***/ }),
 
@@ -358,7 +358,7 @@ eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.splice */ \"./node_modules/core-js/modules/es.array.splice.js\");\n\n__webpack_require__(/*! core-js/modules/es.function.name */ \"./node_modules/core-js/modules/es.function.name.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.assign */ \"./node_modules/core-js/modules/es.object.assign.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.keys */ \"./node_modules/core-js/modules/es.object.keys.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _Component = _interopRequireDefault(__webpack_require__(/*! ../_classes/component/Component */ \"./lib/components/_classes/component/Component.js\"));\n\nvar _DataGrid = _interopRequireDefault(__webpack_require__(/*! ../datagrid/DataGrid */ \"./lib/components/datagrid/DataGrid.js\"));\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _eventemitter = _interopRequireDefault(__webpack_require__(/*! eventemitter2 */ \"./node_modules/eventemitter2/lib/eventemitter2.js\"));\n\nvar _utils = __webpack_require__(/*! ../../utils/utils */ \"./lib/utils/utils.js\");\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nvar DataMapComponent =\n/*#__PURE__*/\nfunction (_DataGridComponent) {\n  _inherits(DataMapComponent, _DataGridComponent);\n\n  _createClass(DataMapComponent, [{\n    key: \"schema\",\n    get: function get() {\n      var schema = _get(_getPrototypeOf(DataMapComponent.prototype), \"schema\", this);\n\n      if (this.components && this.components.length > 0) {\n        schema.valueComponent = this.components[this.components.length - 1].schema;\n      }\n\n      return _lodash.default.omit(schema, 'components');\n    }\n  }], [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _Component.default.schema.apply(_Component.default, [{\n        label: 'Data Map',\n        key: 'dataMap',\n        type: 'datamap',\n        clearOnHide: true,\n        addAnother: 'Add Another',\n        disableAddingRemovingRows: false,\n        keyBeforeValue: true,\n        valueComponent: {\n          type: 'textfield',\n          key: 'value',\n          label: 'Value',\n          defaultValue: 'Value',\n          input: true\n        },\n        input: true,\n        validate: {\n          maxLength: 0,\n          minLength: 0\n        }\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Data Map',\n        icon: 'th-list',\n        group: 'data',\n        documentation: 'http://help.form.io/userguide/#datamap',\n        weight: 20,\n        schema: DataMapComponent.schema()\n      };\n    }\n  }]);\n\n  function DataMapComponent(component, options, data) {\n    var _this;\n\n    _classCallCheck(this, DataMapComponent);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(DataMapComponent).call(this, component, options, data));\n    _this.type = 'datamap';\n    return _this;\n  }\n\n  _createClass(DataMapComponent, [{\n    key: \"init\",\n    value: function init() {\n      this.components = [];\n      this.rows = [];\n      this.rowKeys = [];\n      this.createRows();\n      this.visibleColumns = _defineProperty({\n        key: true\n      }, this.valueKey, true);\n      this.component.valueComponent.hideLabel = true;\n    }\n  }, {\n    key: \"getRowValues\",\n    value: function getRowValues() {\n      var _this2 = this;\n\n      var dataValue = this.dataValue;\n      return Object.keys(dataValue).map(function (key) {\n        return _defineProperty({\n          key: key\n        }, _this2.valueKey, dataValue[key]);\n      });\n    }\n  }, {\n    key: \"hasHeader\",\n    value: function hasHeader() {\n      return true;\n    }\n  }, {\n    key: \"hasRemoveButtons\",\n    value: function hasRemoveButtons() {\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode;\n    }\n  }, {\n    key: \"getColumns\",\n    value: function getColumns() {\n      var keySchema = Object.assign({}, this.keySchema);\n      var valueSchema = Object.assign({}, this.component.valueComponent);\n      keySchema.hideLabel = false;\n      valueSchema.hideLabel = false;\n      return this.component.keyBeforeValue ? [keySchema, valueSchema] : [valueSchema, keySchema];\n    }\n  }, {\n    key: \"createRowComponents\",\n    value: function createRowComponents(row, rowIndex) {\n      var _this3 = this;\n\n      // Store existing key name so we know what it is if it changes.\n      var key = row['key'];\n      this.rowKeys[rowIndex] = key; // Create a new event emitter since fields are isolated.\n\n      var options = _lodash.default.clone(this.options);\n\n      options.events = new _eventemitter.default({\n        wildcard: false,\n        maxListeners: 0\n      });\n      options.name += \"[\".concat(rowIndex, \"]\");\n      options.row = \"\".concat(rowIndex);\n      var components = {};\n      components['key'] = this.createComponent(this.keySchema, options, row);\n      components[this.valueKey] = this.createComponent(this.component.valueComponent, options, row); // Handle change event\n\n      options.events.on('formio.componentChange', function (event) {\n        if (event.component.key === 'key') {\n          var newKey = (0, _utils.uniqueKey)(_this3.dataValue, event.value);\n          _this3.dataValue[newKey] = _this3.dataValue[key];\n          delete _this3.dataValue[key];\n          key = newKey;\n          _this3.rowKeys[rowIndex] = newKey;\n\n          _this3.triggerChange();\n        } else if (event.component.key === _this3.valueKey) {\n          _this3.dataValue[key] = event.value;\n\n          _this3.triggerChange();\n        }\n      });\n      return components;\n    }\n  }, {\n    key: \"addRow\",\n    value: function addRow() {\n      var newKey = (0, _utils.uniqueKey)(this.dataValue, 'key');\n      this.dataValue[newKey] = 'Value';\n      var index = this.rows.length;\n      this.rows[index] = this.createRowComponents(_defineProperty({\n        key: newKey\n      }, this.valueKey, this.dataValue[newKey]), index);\n      this.rowKeys[index] = newKey;\n      this.redraw();\n      this.triggerChange();\n    }\n  }, {\n    key: \"removeRow\",\n    value: function removeRow(index) {\n      delete this.dataValue[this.rowKeys[index]];\n      this.rowKeys.splice(index, 1);\n      this.rows.splice(index, 1);\n      this.redraw();\n      this.triggerChange();\n    }\n  }, {\n    key: \"setValue\",\n    value: function setValue(value, flags) {\n      var changed = this.hasChanged(value, this.dataValue);\n      this.dataValue = value;\n      this.createRows();\n      this.updateOnChange(flags, changed);\n      return changed;\n    }\n  }, {\n    key: \"checkColumns\",\n    value: function checkColumns() {\n      return {\n        rebuild: false,\n        show: true\n      };\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DataMapComponent.schema();\n    }\n  }, {\n    key: \"emptyValue\",\n    get: function get() {\n      return {};\n    }\n  }, {\n    key: \"dataValue\",\n    get: function get() {\n      if (!this.key || !this.visible && this.component.clearOnHide) {\n        return this.emptyValue;\n      }\n\n      if (!this.hasValue()) {\n        this.dataValue = this.emptyValue;\n      }\n\n      return _lodash.default.get(this.data, this.key);\n    },\n    set: function set(value) {\n      _set(_getPrototypeOf(DataMapComponent.prototype), \"dataValue\", value, this, true);\n    }\n  }, {\n    key: \"defaultValue\",\n    get: function get() {\n      var value = _get(_getPrototypeOf(DataMapComponent.prototype), \"defaultValue\", this);\n\n      if (Array.isArray(value)) {\n        return value[0];\n      }\n\n      return this.emptyValue;\n    }\n  }, {\n    key: \"keySchema\",\n    get: function get() {\n      return {\n        type: 'textfield',\n        input: true,\n        hideLabel: true,\n        label: this.component.keyLabel || 'Key',\n        key: 'key'\n      };\n    }\n  }, {\n    key: \"valueKey\",\n    get: function get() {\n      return this.component.valueComponent.key;\n    }\n  }]);\n\n  return DataMapComponent;\n}(_DataGrid.default);\n\nexports.default = DataMapComponent;\n\n//# sourceURL=webpack:///./lib/components/datamap/DataMap.js?");
+eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.splice */ \"./node_modules/core-js/modules/es.array.splice.js\");\n\n__webpack_require__(/*! core-js/modules/es.function.name */ \"./node_modules/core-js/modules/es.function.name.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.assign */ \"./node_modules/core-js/modules/es.object.assign.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.keys */ \"./node_modules/core-js/modules/es.object.keys.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _Component = _interopRequireDefault(__webpack_require__(/*! ../_classes/component/Component */ \"./lib/components/_classes/component/Component.js\"));\n\nvar _DataGrid = _interopRequireDefault(__webpack_require__(/*! ../datagrid/DataGrid */ \"./lib/components/datagrid/DataGrid.js\"));\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _eventemitter = _interopRequireDefault(__webpack_require__(/*! eventemitter2 */ \"./node_modules/eventemitter2/lib/eventemitter2.js\"));\n\nvar _utils = __webpack_require__(/*! ../../utils/utils */ \"./lib/utils/utils.js\");\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nvar DataMapComponent =\n/*#__PURE__*/\nfunction (_DataGridComponent) {\n  _inherits(DataMapComponent, _DataGridComponent);\n\n  _createClass(DataMapComponent, [{\n    key: \"schema\",\n    get: function get() {\n      var schema = _get(_getPrototypeOf(DataMapComponent.prototype), \"schema\", this);\n\n      if (this.components && this.components.length > 0) {\n        schema.valueComponent = this.components[this.components.length - 1].schema;\n      }\n\n      return _lodash.default.omit(schema, 'components');\n    }\n  }], [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _Component.default.schema.apply(_Component.default, [{\n        label: 'Data Map',\n        key: 'dataMap',\n        type: 'datamap',\n        clearOnHide: true,\n        addAnother: 'Add Another',\n        disableAddingRemovingRows: false,\n        keyBeforeValue: true,\n        valueComponent: {\n          type: 'textfield',\n          key: 'value',\n          label: 'Value',\n          input: true\n        },\n        input: true,\n        validate: {\n          maxLength: 0,\n          minLength: 0\n        }\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Data Map',\n        icon: 'th-list',\n        group: 'data',\n        documentation: 'http://help.form.io/userguide/#datamap',\n        weight: 20,\n        schema: DataMapComponent.schema()\n      };\n    }\n  }]);\n\n  function DataMapComponent(component, options, data) {\n    var _this;\n\n    _classCallCheck(this, DataMapComponent);\n\n    _this = _possibleConstructorReturn(this, _getPrototypeOf(DataMapComponent).call(this, component, options, data));\n    _this.type = 'datamap';\n    return _this;\n  }\n\n  _createClass(DataMapComponent, [{\n    key: \"init\",\n    value: function init() {\n      this.components = [];\n      this.rows = [];\n      this.rowKeys = [];\n      this.createRows();\n      this.visibleColumns = _defineProperty({\n        key: true\n      }, this.valueKey, true);\n      this.component.valueComponent.hideLabel = true;\n    }\n  }, {\n    key: \"getRowValues\",\n    value: function getRowValues() {\n      var _this2 = this;\n\n      var dataValue = this.dataValue;\n      var keys = Object.keys(dataValue);\n\n      if (this.builderMode && !keys.length) {\n        dataValue = {\n          key: ''\n        };\n        keys = Object.keys(dataValue);\n      }\n\n      return keys.map(function (key) {\n        return _defineProperty({\n          key: key\n        }, _this2.valueKey, dataValue[key]);\n      });\n    }\n  }, {\n    key: \"hasHeader\",\n    value: function hasHeader() {\n      return true;\n    }\n  }, {\n    key: \"hasRemoveButtons\",\n    value: function hasRemoveButtons() {\n      return !this.component.disableAddingRemovingRows && !this.options.readOnly && !this.disabled && this.fullMode;\n    }\n  }, {\n    key: \"getColumns\",\n    value: function getColumns() {\n      var keySchema = Object.assign({}, this.keySchema);\n      var valueSchema = Object.assign({}, this.component.valueComponent);\n      keySchema.hideLabel = false;\n      valueSchema.hideLabel = false;\n      return this.component.keyBeforeValue ? [keySchema, valueSchema] : [valueSchema, keySchema];\n    }\n  }, {\n    key: \"createRowComponents\",\n    value: function createRowComponents(row, rowIndex) {\n      var _this3 = this;\n\n      // Store existing key name so we know what it is if it changes.\n      this.rowKeys[rowIndex] = row.key; // Create a new event emitter since fields are isolated.\n\n      var options = _lodash.default.clone(this.options);\n\n      options.events = new _eventemitter.default({\n        wildcard: false,\n        maxListeners: 0\n      });\n      options.name += \"[\".concat(rowIndex, \"]\");\n      options.row = \"\".concat(rowIndex);\n      var components = {};\n      components.key = this.createComponent(this.keySchema, options, {\n        key: row.key\n      });\n      components.key.on('componentChange', function (event) {\n        var newKey = (0, _utils.uniqueKey)(_this3.dataValue, event.value);\n        _this3.dataValue[newKey] = _this3.dataValue[row.key];\n        delete _this3.dataValue[row.key];\n        row.key = newKey;\n        _this3.rowKeys[rowIndex] = newKey;\n\n        _this3.triggerChange();\n      });\n\n      var valueComponent = _lodash.default.clone(this.component.valueComponent);\n\n      valueComponent.key = row.key;\n      components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);\n      return components;\n    }\n  }, {\n    key: \"addChildComponent\",\n    value: function addChildComponent(component) {\n      this.component.valueComponent = component;\n    }\n  }, {\n    key: \"saveChildComponent\",\n    value: function saveChildComponent(component) {\n      this.component.valueComponent = component;\n    }\n  }, {\n    key: \"removeChildComponent\",\n    value: function removeChildComponent() {\n      var defaultSchema = DataMapComponent.schema();\n      this.component.valueComponent = defaultSchema.valueComponent;\n    }\n  }, {\n    key: \"addRow\",\n    value: function addRow() {\n      var newKey = (0, _utils.uniqueKey)(this.dataValue, 'key');\n      var index = this.rows.length;\n      this.rows[index] = this.createRowComponents({\n        key: newKey\n      }, index);\n      this.redraw();\n      this.triggerChange();\n    }\n  }, {\n    key: \"removeRow\",\n    value: function removeRow(index) {\n      delete this.dataValue[this.rowKeys[index]];\n      this.rowKeys.splice(index, 1);\n      this.rows.splice(index, 1);\n      this.redraw();\n      this.triggerChange();\n    }\n  }, {\n    key: \"setValue\",\n    value: function setValue(value, flags) {\n      var changed = this.hasChanged(value, this.dataValue);\n      this.dataValue = value;\n      this.createRows();\n      this.updateOnChange(flags, changed);\n      return changed;\n    }\n  }, {\n    key: \"checkColumns\",\n    value: function checkColumns() {\n      return {\n        rebuild: false,\n        show: true\n      };\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DataMapComponent.schema();\n    }\n  }, {\n    key: \"emptyValue\",\n    get: function get() {\n      return {};\n    }\n  }, {\n    key: \"dataValue\",\n    get: function get() {\n      if (!this.key || !this.visible && this.component.clearOnHide) {\n        return this.emptyValue;\n      }\n\n      if (!this.hasValue()) {\n        this.dataValue = this.emptyValue;\n      }\n\n      return _lodash.default.get(this.data, this.key);\n    },\n    set: function set(value) {\n      _set(_getPrototypeOf(DataMapComponent.prototype), \"dataValue\", value, this, true);\n    }\n  }, {\n    key: \"defaultValue\",\n    get: function get() {\n      var value = _get(_getPrototypeOf(DataMapComponent.prototype), \"defaultValue\", this);\n\n      if (Array.isArray(value)) {\n        return value[0];\n      }\n\n      return this.emptyValue;\n    }\n  }, {\n    key: \"keySchema\",\n    get: function get() {\n      return {\n        type: 'textfield',\n        input: true,\n        hideLabel: true,\n        label: this.component.keyLabel || 'Key',\n        key: 'key'\n      };\n    }\n  }, {\n    key: \"valueKey\",\n    get: function get() {\n      return this.component.valueComponent.key;\n    }\n  }, {\n    key: \"canAddColumn\",\n    get: function get() {\n      return false;\n    }\n  }]);\n\n  return DataMapComponent;\n}(_DataGrid.default);\n\nexports.default = DataMapComponent;\n\n//# sourceURL=webpack:///./lib/components/datamap/DataMap.js?");
 
 /***/ }),
 
@@ -382,7 +382,7 @@ eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.pad-start */ \"./node_modules/core-js/modules/es.string.pad-start.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.split */ \"./node_modules/core-js/modules/es.string.split.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ \"./node_modules/core-js/modules/web.dom-collections.for-each.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _Field2 = _interopRequireDefault(__webpack_require__(/*! ../_classes/field/Field */ \"./lib/components/_classes/field/Field.js\"));\n\nvar _utils = __webpack_require__(/*! ../../utils/utils */ \"./lib/utils/utils.js\");\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }\n\nfunction _nonIterableRest() { throw new TypeError(\"Invalid attempt to destructure non-iterable instance\"); }\n\nfunction _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === \"[object Arguments]\")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i[\"return\"] != null) _i[\"return\"](); } finally { if (_d) throw _e; } } return _arr; }\n\nfunction _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nvar DayComponent =\n/*#__PURE__*/\nfunction (_Field) {\n  _inherits(DayComponent, _Field);\n\n  function DayComponent() {\n    _classCallCheck(this, DayComponent);\n\n    return _possibleConstructorReturn(this, _getPrototypeOf(DayComponent).apply(this, arguments));\n  }\n\n  _createClass(DayComponent, [{\n    key: \"inputDefinition\",\n    value: function inputDefinition(name) {\n      var min, max;\n\n      if (name === 'day') {\n        min = 1;\n        max = 31;\n      }\n\n      if (name === 'month') {\n        min = 1;\n        max = 12;\n      }\n\n      if (name === 'year') {\n        min = _lodash.default.get(this.component, 'fields.year.minYear', 1900) || 1900;\n        max = _lodash.default.get(this.component, 'fields.year.maxYear', 2030) || 1900;\n      }\n\n      return {\n        type: 'input',\n        ref: name,\n        attr: {\n          id: \"\".concat(this.component.key, \"-\").concat(name),\n          class: \"form-control \".concat(this.transform('class', \"formio-day-component-\".concat(name))),\n          type: this.component.fields[name].type === 'select' ? 'select' : 'number',\n          placeholder: this.component.fields[name].placeholder,\n          step: 1,\n          min: min,\n          max: max\n        }\n      };\n    }\n  }, {\n    key: \"selectDefinition\",\n    value: function selectDefinition(name) {\n      return {\n        multiple: false,\n        ref: name,\n        widget: 'html5',\n        attr: {\n          id: \"\".concat(this.component.key, \"-\").concat(name),\n          class: 'form-control',\n          name: name,\n          lang: this.options.language\n        }\n      };\n    }\n  }, {\n    key: \"init\",\n    value: function init() {\n      _get(_getPrototypeOf(DayComponent.prototype), \"init\", this).call(this);\n\n      this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);\n      var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(this.options.language);\n      this.dayFirst = this.component.useLocaleSettings ? dateFormatInfo.dayFirst : this.component.dayFirst;\n    }\n  }, {\n    key: \"render\",\n    value: function render() {\n      return _get(_getPrototypeOf(DayComponent.prototype), \"render\", this).call(this, this.renderTemplate('day', {\n        dayFirst: this.dayFirst,\n        showDay: this.showDay,\n        showMonth: this.showMonth,\n        showYear: this.showYear,\n        day: this.renderField('day'),\n        month: this.renderField('month'),\n        year: this.renderField('year')\n      }));\n    }\n  }, {\n    key: \"renderField\",\n    value: function renderField(name) {\n      var _this = this;\n\n      if (this.component.fields[name].type === 'select') {\n        return this.renderTemplate('select', {\n          input: this.selectDefinition(name),\n          selectOptions: this[\"\".concat(name, \"s\")].reduce(function (html, option) {\n            return html + _this.renderTemplate('selectOption', {\n              option: option,\n              selected: false,\n              attrs: {}\n            });\n          }, '')\n        });\n      } else {\n        return this.renderTemplate('input', {\n          input: this.inputDefinition(name)\n        });\n      }\n    }\n  }, {\n    key: \"attach\",\n    value: function attach(element) {\n      var _this2 = this;\n\n      this.loadRefs(element, {\n        day: 'single',\n        month: 'single',\n        year: 'single',\n        input: 'multiple'\n      });\n\n      var superAttach = _get(_getPrototypeOf(DayComponent.prototype), \"attach\", this).call(this, element);\n\n      if (this.shouldDisabled) {\n        this.setDisabled(this.refs.day, true);\n        this.setDisabled(this.refs.month, true);\n        this.setDisabled(this.refs.year, true);\n\n        if (this.refs.input) {\n          this.refs.input.forEach(function (input) {\n            return _this2.setDisabled(input, true);\n          });\n        }\n      } else {\n        this.addEventListener(this.refs.day, 'input', function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        }); // TODO: Need to rework this to work with day select as well.\n        // Change day max input when month changes.\n\n        this.addEventListener(this.refs.month, 'input', function () {\n          var maxDay = parseInt(new Date(_this2.refs.year.value, _this2.refs.month.value, 0).getDate(), 10);\n\n          var day = _this2.getFieldValue('day');\n\n          _this2.refs.day.max = maxDay;\n\n          if (day > maxDay) {\n            _this2.refs.day.value = _this2.refs.day.max;\n          }\n\n          _this2.updateValue(null, {\n            modified: true\n          });\n        });\n        this.addEventListener(this.refs.year, 'input', function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        });\n        this.addEventListener(this.refs.input, this.info.changeEvent, function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        });\n      }\n\n      this.setValue(this.dataValue);\n      return superAttach;\n    }\n  }, {\n    key: \"validateRequired\",\n    value: function validateRequired(setting, value) {\n      var _this$parts = this.parts,\n          day = _this$parts.day,\n          month = _this$parts.month,\n          year = _this$parts.year;\n\n      if (this.dayRequired && !day) {\n        return false;\n      }\n\n      if (this.monthRequired && !month) {\n        return false;\n      }\n\n      if (this.yearRequired && !year) {\n        return false;\n      }\n\n      if (!(0, _utils.boolValue)(setting)) {\n        return true;\n      }\n\n      return !this.isEmpty(value);\n    }\n  }, {\n    key: \"setValueAt\",\n\n    /**\n     * Set the value at a specific index.\n     *\n     * @param index\n     * @param value\n     */\n    value: function setValueAt(index, value) {\n      // temporary solution to avoid input reset\n      // on invalid date.\n      if (!value || value === 'Invalid date') {\n        return null;\n      }\n\n      var parts = value.split('/');\n      var day;\n\n      if (this.component.dayFirst) {\n        day = parts.shift();\n      }\n\n      var month = parts.shift();\n\n      if (!this.component.dayFirst) {\n        day = parts.shift();\n      }\n\n      var year = parts.shift();\n\n      if (this.refs.day && this.showDay) {\n        this.refs.day.value = day === '00' ? '' : parseInt(day, 10);\n      }\n\n      if (this.refs.month && this.showMonth) {\n        this.refs.month.value = month === '00' ? '' : parseInt(month, 10);\n      }\n\n      if (this.refs.year && this.showYear) {\n        this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);\n      }\n    }\n  }, {\n    key: \"getFieldValue\",\n    value: function getFieldValue(name) {\n      var parts = this.dataValue.split('/');\n      var val = 0;\n\n      switch (name) {\n        case 'month':\n          val = parts[this.dayFirst ? 1 : 0];\n          break;\n\n        case 'day':\n          val = parts[this.dayFirst ? 0 : 1];\n          break;\n\n        case 'year':\n          val = parts[2];\n          break;\n      }\n\n      val = parseInt(val, 10);\n      return !_lodash.default.isNaN(val) && _lodash.default.isNumber(val) ? val : 0;\n    }\n  }, {\n    key: \"getDate\",\n\n    /**\n     * Return the date for this component.\n     *\n     * @param value\n     * @return {*}\n     */\n    value: function getDate(value) {\n      var defaults = [],\n          day,\n          month,\n          year; // Map positions to identifiers to get default values for each part of day\n\n      var _ref = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2],\n          _ref2 = _slicedToArray(_ref, 3),\n          DAY = _ref2[0],\n          MONTH = _ref2[1],\n          YEAR = _ref2[2];\n\n      var defaultValue = value || this.component.defaultValue;\n\n      if (defaultValue) {\n        defaults = defaultValue.split('/').map(function (x) {\n          return parseInt(x, 10);\n        });\n      }\n\n      if (this.showDay && this.refs.day) {\n        day = parseInt(this.refs.day.value, 10);\n      }\n\n      if (day === undefined || _lodash.default.isNaN(day)) {\n        day = defaults[DAY] && !_lodash.default.isNaN(defaults[DAY]) ? defaults[DAY] : 0;\n      }\n\n      if (this.showMonth && this.refs.month) {\n        // Months are 0 indexed.\n        month = parseInt(this.refs.month.value, 10);\n      }\n\n      if (month === undefined || _lodash.default.isNaN(month)) {\n        month = defaults[MONTH] && !_lodash.default.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;\n      }\n\n      if (this.showYear && this.refs.year) {\n        year = parseInt(this.refs.year.value);\n      }\n\n      if (year === undefined || _lodash.default.isNaN(year)) {\n        year = defaults[YEAR] && !_lodash.default.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;\n      }\n\n      var result;\n\n      if (!day && !month && !year) {\n        return null;\n      } //add trailing zeros\n\n\n      day = day.toString().padStart(2, 0);\n      month = month.toString().padStart(2, 0);\n      year = year.toString().padStart(4, 0);\n\n      if (this.component.dayFirst) {\n        result = \"\".concat(day, \"/\").concat(month, \"/\").concat(year);\n      } else {\n        result = \"\".concat(month, \"/\").concat(day, \"/\").concat(year);\n      }\n\n      return result;\n    }\n    /**\n     * Return the date object for this component.\n     * @returns {Date}\n     */\n\n  }, {\n    key: \"getValue\",\n    value: function getValue() {\n      var result = _get(_getPrototypeOf(DayComponent.prototype), \"getValue\", this).call(this);\n\n      return !result ? this.dataValue : result;\n    }\n    /**\n     * Get the value at a specific index.\n     *\n     * @param index\n     * @returns {*}\n     */\n\n  }, {\n    key: \"getValueAt\",\n    value: function getValueAt(index) {\n      var date = this.date;\n\n      if (date) {\n        this.refs.input[index].value = date;\n        return this.refs.input[index].value;\n      } else {\n        this.refs.input[index].value = '';\n        return null;\n      }\n    }\n    /**\n     * Get the input value of the date.\n     *\n     * @param value\n     * @return {null}\n     */\n\n  }, {\n    key: \"getValueAsString\",\n    value: function getValueAsString(value) {\n      return this.getDate(value);\n    }\n  }, {\n    key: \"focus\",\n    value: function focus() {\n      if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {\n        this.refs.day.focus();\n      } else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {\n        this.refs.month.focus();\n      } else if (!this.showDay && !this.showDay && this.showYear) {\n        this.refs.year.focus();\n      }\n    }\n  }, {\n    key: \"isPartialDay\",\n    value: function isPartialDay(value) {\n      if (!value) {\n        return false;\n      }\n\n      var _ref3 = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2],\n          _ref4 = _slicedToArray(_ref3, 3),\n          DAY = _ref4[0],\n          MONTH = _ref4[1],\n          YEAR = _ref4[2];\n\n      var values = value.split('/');\n      return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';\n    }\n  }, {\n    key: \"emptyValue\",\n\n    /**\n     * The empty value for day component.\n     *\n     * @return {'00/00/0000'}\n     */\n    get: function get() {\n      return '00/00/0000';\n    }\n  }, {\n    key: \"dayRequired\",\n    get: function get() {\n      return this.showDay && _lodash.default.get(this.component, 'fields.day.required', false);\n    }\n  }, {\n    key: \"showDay\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.day.hide', false);\n    }\n  }, {\n    key: \"monthRequired\",\n    get: function get() {\n      return this.showMonth && _lodash.default.get(this.component, 'fields.month.required', false);\n    }\n  }, {\n    key: \"showMonth\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.month.hide', false);\n    }\n  }, {\n    key: \"yearRequired\",\n    get: function get() {\n      return this.showYear && _lodash.default.get(this.component, 'fields.year.required', false);\n    }\n  }, {\n    key: \"showYear\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.year.hide', false);\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DayComponent.schema();\n    }\n  }, {\n    key: \"inputInfo\",\n    get: function get() {\n      var info = _get(_getPrototypeOf(DayComponent.prototype), \"elementInfo\", this).call(this);\n\n      info.type = 'input';\n      info.attr.type = 'hidden';\n      info.changeEvent = 'input';\n      return info;\n    }\n  }, {\n    key: \"days\",\n    get: function get() {\n      if (this._days) {\n        return this._days;\n      }\n\n      this._days = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.day.placeholder', '')\n      }];\n\n      for (var x = 1; x <= 31; x++) {\n        this._days.push({\n          value: x,\n          label: x.toString()\n        });\n      }\n\n      return this._days;\n    }\n  }, {\n    key: \"months\",\n    get: function get() {\n      if (this._months) {\n        return this._months;\n      }\n\n      this._months = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')\n      }, {\n        value: 1,\n        label: 'January'\n      }, {\n        value: 2,\n        label: 'February'\n      }, {\n        value: 3,\n        label: 'March'\n      }, {\n        value: 4,\n        label: 'April'\n      }, {\n        value: 5,\n        label: 'May'\n      }, {\n        value: 6,\n        label: 'June'\n      }, {\n        value: 7,\n        label: 'July'\n      }, {\n        value: 8,\n        label: 'August'\n      }, {\n        value: 9,\n        label: 'September'\n      }, {\n        value: 10,\n        label: 'October'\n      }, {\n        value: 11,\n        label: 'November'\n      }, {\n        value: 12,\n        label: 'December'\n      }];\n      return this._months;\n    }\n  }, {\n    key: \"years\",\n    get: function get() {\n      if (this._years) {\n        return this._years;\n      }\n\n      this._years = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.year.placeholder', '')\n      }];\n      var minYears = _lodash.default.get(this.component, 'fields.year.minYear', 1900) || 1900;\n      var maxYears = _lodash.default.get(this.component, 'fields.year.maxYear', 2030) || 2030;\n\n      for (var x = minYears; x <= maxYears; x++) {\n        this._years.push({\n          value: x,\n          label: x.toString()\n        });\n      }\n\n      return this._years;\n    }\n  }, {\n    key: \"disabled\",\n    set: function set(disabled) {\n      _set(_getPrototypeOf(DayComponent.prototype), \"disabled\", disabled, this, true);\n\n      if (!this.refs.year || !this.refs.month || !this.refs.day) {\n        return;\n      }\n\n      if (disabled) {\n        this.refs.year.setAttribute('disabled', 'disabled');\n        this.refs.month.setAttribute('disabled', 'disabled');\n        this.refs.day.setAttribute('disabled', 'disabled');\n      } else {\n        this.refs.year.removeAttribute('disabled');\n        this.refs.month.removeAttribute('disabled');\n        this.refs.day.removeAttribute('disabled');\n      }\n    }\n  }, {\n    key: \"parts\",\n    get: function get() {\n      return {\n        day: this.getFieldValue('day'),\n        month: this.getFieldValue('month'),\n        year: this.getFieldValue('year')\n      };\n    }\n    /**\n     * Get the format for the value string.\n     * @returns {string}\n     */\n\n  }, {\n    key: \"format\",\n    get: function get() {\n      var format = '';\n\n      if (this.component.dayFirst && this.showDay) {\n        format += 'D/';\n      }\n\n      if (this.showMonth) {\n        format += 'M/';\n      }\n\n      if (!this.component.dayFirst && this.showDay) {\n        format += 'D/';\n      }\n\n      if (this.showYear) {\n        format += 'YYYY';\n        return format;\n      } else {\n        // Trim off the \"/\" from the end of the format string.\n        return format.length ? format.substring(0, format.length - 1) : format;\n      }\n    }\n  }, {\n    key: \"date\",\n    get: function get() {\n      return this.getDate();\n    }\n    /**\n     * Return the raw value.\n     *\n     * @returns {Date}\n     */\n\n  }, {\n    key: \"validationValue\",\n    get: function get() {\n      return this.dataValue;\n    }\n  }], [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _Field2.default.schema.apply(_Field2.default, [{\n        type: 'day',\n        label: 'Day',\n        key: 'day',\n        fields: {\n          day: {\n            type: 'number',\n            placeholder: '',\n            required: false\n          },\n          month: {\n            type: 'select',\n            placeholder: '',\n            required: false\n          },\n          year: {\n            type: 'number',\n            placeholder: '',\n            required: false\n          }\n        },\n        dayFirst: false\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Day',\n        group: 'advanced',\n        icon: 'calendar',\n        documentation: 'http://help.form.io/userguide/#day',\n        weight: 50,\n        schema: DayComponent.schema()\n      };\n    }\n  }]);\n\n  return DayComponent;\n}(_Field2.default);\n\nexports.default = DayComponent;\n\n//# sourceURL=webpack:///./lib/components/day/Day.js?");
+eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.description */ \"./node_modules/core-js/modules/es.symbol.description.js\");\n\n__webpack_require__(/*! core-js/modules/es.symbol.iterator */ \"./node_modules/core-js/modules/es.symbol.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.iterator */ \"./node_modules/core-js/modules/es.array.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.map */ \"./node_modules/core-js/modules/es.array.map.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-prototype-of */ \"./node_modules/core-js/modules/es.object.get-prototype-of.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.get */ \"./node_modules/core-js/modules/es.reflect.get.js\");\n\n__webpack_require__(/*! core-js/modules/es.reflect.set */ \"./node_modules/core-js/modules/es.reflect.set.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.iterator */ \"./node_modules/core-js/modules/es.string.iterator.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.pad-start */ \"./node_modules/core-js/modules/es.string.pad-start.js\");\n\n__webpack_require__(/*! core-js/modules/es.string.split */ \"./node_modules/core-js/modules/es.string.split.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ \"./node_modules/core-js/modules/web.dom-collections.for-each.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.iterator */ \"./node_modules/core-js/modules/web.dom-collections.iterator.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _lodash = _interopRequireDefault(__webpack_require__(/*! lodash */ \"./node_modules/lodash/lodash.js\"));\n\nvar _Field2 = _interopRequireDefault(__webpack_require__(/*! ../_classes/field/Field */ \"./lib/components/_classes/field/Field.js\"));\n\nvar _utils = __webpack_require__(/*! ../../utils/utils */ \"./lib/utils/utils.js\");\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _typeof(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof(obj); }\n\nfunction _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }\n\nfunction _nonIterableRest() { throw new TypeError(\"Invalid attempt to destructure non-iterable instance\"); }\n\nfunction _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === \"[object Arguments]\")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i[\"return\"] != null) _i[\"return\"](); } finally { if (_d) throw _e; } } return _arr; }\n\nfunction _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }\n\nfunction _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }\n\nfunction _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === \"object\" || typeof call === \"function\")) { return call; } return _assertThisInitialized(self); }\n\nfunction _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return self; }\n\nfunction set(target, property, value, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.set) { set = Reflect.set; } else { set = function set(target, property, value, receiver) { var base = _superPropBase(target, property); var desc; if (base) { desc = Object.getOwnPropertyDescriptor(base, property); if (desc.set) { desc.set.call(receiver, value); return true; } else if (!desc.writable) { return false; } } desc = Object.getOwnPropertyDescriptor(receiver, property); if (desc) { if (!desc.writable) { return false; } desc.value = value; Object.defineProperty(receiver, property, desc); } else { _defineProperty(receiver, property, value); } return true; }; } return set(target, property, value, receiver); }\n\nfunction _set(target, property, value, receiver, isStrict) { var s = set(target, property, value, receiver || target); if (!s && isStrict) { throw new Error('failed to set property'); } return value; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nfunction _get(target, property, receiver) { if (typeof Reflect !== \"undefined\" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }\n\nfunction _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }\n\nfunction _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function\"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }\n\nfunction _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }\n\nvar DayComponent =\n/*#__PURE__*/\nfunction (_Field) {\n  _inherits(DayComponent, _Field);\n\n  function DayComponent() {\n    _classCallCheck(this, DayComponent);\n\n    return _possibleConstructorReturn(this, _getPrototypeOf(DayComponent).apply(this, arguments));\n  }\n\n  _createClass(DayComponent, [{\n    key: \"inputDefinition\",\n    value: function inputDefinition(name) {\n      var min, max;\n\n      if (name === 'day') {\n        min = 1;\n        max = 31;\n      }\n\n      if (name === 'month') {\n        min = 1;\n        max = 12;\n      }\n\n      if (name === 'year') {\n        min = _lodash.default.get(this.component, 'fields.year.minYear', 1900) || 1900;\n        max = _lodash.default.get(this.component, 'fields.year.maxYear', 2030) || 1900;\n      }\n\n      return {\n        type: 'input',\n        ref: name,\n        attr: {\n          id: \"\".concat(this.component.key, \"-\").concat(name),\n          class: \"form-control \".concat(this.transform('class', \"formio-day-component-\".concat(name))),\n          type: this.component.fields[name].type === 'select' ? 'select' : 'number',\n          placeholder: this.component.fields[name].placeholder,\n          step: 1,\n          min: min,\n          max: max\n        }\n      };\n    }\n  }, {\n    key: \"selectDefinition\",\n    value: function selectDefinition(name) {\n      return {\n        multiple: false,\n        ref: name,\n        widget: 'html5',\n        attr: {\n          id: \"\".concat(this.component.key, \"-\").concat(name),\n          class: 'form-control',\n          name: name,\n          lang: this.options.language\n        }\n      };\n    }\n  }, {\n    key: \"addInputError\",\n    value: function addInputError(message, dirty, elements) {\n      _get(_getPrototypeOf(DayComponent.prototype), \"addInputError\", this).call(this, message, dirty, [this.refs.day, this.refs.month, this.refs.year]);\n\n      _get(_getPrototypeOf(DayComponent.prototype), \"addInputError\", this).call(this, message, dirty, elements);\n    }\n  }, {\n    key: \"init\",\n    value: function init() {\n      _get(_getPrototypeOf(DayComponent.prototype), \"init\", this).call(this);\n\n      this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);\n      var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(this.options.language);\n      this.dayFirst = this.component.useLocaleSettings ? dateFormatInfo.dayFirst : this.component.dayFirst;\n    }\n  }, {\n    key: \"render\",\n    value: function render() {\n      return _get(_getPrototypeOf(DayComponent.prototype), \"render\", this).call(this, this.renderTemplate('day', {\n        dayFirst: this.dayFirst,\n        showDay: this.showDay,\n        showMonth: this.showMonth,\n        showYear: this.showYear,\n        day: this.renderField('day'),\n        month: this.renderField('month'),\n        year: this.renderField('year')\n      }));\n    }\n  }, {\n    key: \"renderField\",\n    value: function renderField(name) {\n      var _this = this;\n\n      if (this.component.fields[name].type === 'select') {\n        return this.renderTemplate('select', {\n          input: this.selectDefinition(name),\n          selectOptions: this[\"\".concat(name, \"s\")].reduce(function (html, option) {\n            return html + _this.renderTemplate('selectOption', {\n              option: option,\n              selected: false,\n              attrs: {}\n            });\n          }, '')\n        });\n      } else {\n        return this.renderTemplate('input', {\n          input: this.inputDefinition(name)\n        });\n      }\n    }\n  }, {\n    key: \"attach\",\n    value: function attach(element) {\n      var _this2 = this;\n\n      this.loadRefs(element, {\n        day: 'single',\n        month: 'single',\n        year: 'single',\n        input: 'multiple'\n      });\n\n      var superAttach = _get(_getPrototypeOf(DayComponent.prototype), \"attach\", this).call(this, element);\n\n      if (this.shouldDisabled) {\n        this.setDisabled(this.refs.day, true);\n        this.setDisabled(this.refs.month, true);\n        this.setDisabled(this.refs.year, true);\n\n        if (this.refs.input) {\n          this.refs.input.forEach(function (input) {\n            return _this2.setDisabled(input, true);\n          });\n        }\n      } else {\n        this.addEventListener(this.refs.day, 'input', function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        }); // TODO: Need to rework this to work with day select as well.\n        // Change day max input when month changes.\n\n        this.addEventListener(this.refs.month, 'input', function () {\n          var maxDay = parseInt(new Date(_this2.refs.year.value, _this2.refs.month.value, 0).getDate(), 10);\n\n          var day = _this2.getFieldValue('day');\n\n          _this2.refs.day.max = maxDay;\n\n          if (day > maxDay) {\n            _this2.refs.day.value = _this2.refs.day.max;\n          }\n\n          _this2.updateValue(null, {\n            modified: true\n          });\n        });\n        this.addEventListener(this.refs.year, 'input', function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        });\n        this.addEventListener(this.refs.input, this.info.changeEvent, function () {\n          return _this2.updateValue(null, {\n            modified: true\n          });\n        });\n      }\n\n      this.setValue(this.dataValue);\n      return superAttach;\n    }\n  }, {\n    key: \"validateRequired\",\n    value: function validateRequired(setting, value) {\n      var _this$parts = this.parts,\n          day = _this$parts.day,\n          month = _this$parts.month,\n          year = _this$parts.year;\n\n      if (this.dayRequired && !day) {\n        return false;\n      }\n\n      if (this.monthRequired && !month) {\n        return false;\n      }\n\n      if (this.yearRequired && !year) {\n        return false;\n      }\n\n      if (!(0, _utils.boolValue)(setting)) {\n        return true;\n      }\n\n      return !this.isEmpty(value);\n    }\n  }, {\n    key: \"setValueAt\",\n\n    /**\n     * Set the value at a specific index.\n     *\n     * @param index\n     * @param value\n     */\n    value: function setValueAt(index, value) {\n      // temporary solution to avoid input reset\n      // on invalid date.\n      if (!value || value === 'Invalid date') {\n        return null;\n      }\n\n      var parts = value.split('/');\n      var day;\n\n      if (this.component.dayFirst) {\n        day = parts.shift();\n      }\n\n      var month = parts.shift();\n\n      if (!this.component.dayFirst) {\n        day = parts.shift();\n      }\n\n      var year = parts.shift();\n\n      if (this.refs.day && this.showDay) {\n        this.refs.day.value = day === '00' ? '' : parseInt(day, 10);\n      }\n\n      if (this.refs.month && this.showMonth) {\n        this.refs.month.value = month === '00' ? '' : parseInt(month, 10);\n      }\n\n      if (this.refs.year && this.showYear) {\n        this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);\n      }\n    }\n  }, {\n    key: \"getFieldValue\",\n    value: function getFieldValue(name) {\n      var parts = this.dataValue.split('/');\n      var val = 0;\n\n      switch (name) {\n        case 'month':\n          val = parts[this.dayFirst ? 1 : 0];\n          break;\n\n        case 'day':\n          val = parts[this.dayFirst ? 0 : 1];\n          break;\n\n        case 'year':\n          val = parts[2];\n          break;\n      }\n\n      val = parseInt(val, 10);\n      return !_lodash.default.isNaN(val) && _lodash.default.isNumber(val) ? val : 0;\n    }\n  }, {\n    key: \"getDate\",\n\n    /**\n     * Return the date for this component.\n     *\n     * @param value\n     * @return {*}\n     */\n    value: function getDate(value) {\n      var defaults = [],\n          day,\n          month,\n          year; // Map positions to identifiers to get default values for each part of day\n\n      var _ref = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2],\n          _ref2 = _slicedToArray(_ref, 3),\n          DAY = _ref2[0],\n          MONTH = _ref2[1],\n          YEAR = _ref2[2];\n\n      var defaultValue = value || this.component.defaultValue;\n\n      if (defaultValue) {\n        defaults = defaultValue.split('/').map(function (x) {\n          return parseInt(x, 10);\n        });\n      }\n\n      if (this.showDay && this.refs.day) {\n        day = parseInt(this.refs.day.value, 10);\n      }\n\n      if (day === undefined || _lodash.default.isNaN(day)) {\n        day = defaults[DAY] && !_lodash.default.isNaN(defaults[DAY]) ? defaults[DAY] : 0;\n      }\n\n      if (this.showMonth && this.refs.month) {\n        // Months are 0 indexed.\n        month = parseInt(this.refs.month.value, 10);\n      }\n\n      if (month === undefined || _lodash.default.isNaN(month)) {\n        month = defaults[MONTH] && !_lodash.default.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;\n      }\n\n      if (this.showYear && this.refs.year) {\n        year = parseInt(this.refs.year.value);\n      }\n\n      if (year === undefined || _lodash.default.isNaN(year)) {\n        year = defaults[YEAR] && !_lodash.default.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;\n      }\n\n      var result;\n\n      if (!day && !month && !year) {\n        return null;\n      } //add trailing zeros\n\n\n      day = day.toString().padStart(2, 0);\n      month = month.toString().padStart(2, 0);\n      year = year.toString().padStart(4, 0);\n\n      if (this.component.dayFirst) {\n        result = \"\".concat(day, \"/\").concat(month, \"/\").concat(year);\n      } else {\n        result = \"\".concat(month, \"/\").concat(day, \"/\").concat(year);\n      }\n\n      return result;\n    }\n    /**\n     * Return the date object for this component.\n     * @returns {Date}\n     */\n\n  }, {\n    key: \"getValue\",\n    value: function getValue() {\n      var result = _get(_getPrototypeOf(DayComponent.prototype), \"getValue\", this).call(this);\n\n      return !result ? this.dataValue : result;\n    }\n    /**\n     * Get the value at a specific index.\n     *\n     * @param index\n     * @returns {*}\n     */\n\n  }, {\n    key: \"getValueAt\",\n    value: function getValueAt(index) {\n      var date = this.date;\n\n      if (date) {\n        this.refs.input[index].value = date;\n        return this.refs.input[index].value;\n      } else {\n        this.refs.input[index].value = '';\n        return null;\n      }\n    }\n    /**\n     * Get the input value of the date.\n     *\n     * @param value\n     * @return {null}\n     */\n\n  }, {\n    key: \"getValueAsString\",\n    value: function getValueAsString(value) {\n      return this.getDate(value);\n    }\n  }, {\n    key: \"focus\",\n    value: function focus() {\n      if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {\n        this.refs.day.focus();\n      } else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {\n        this.refs.month.focus();\n      } else if (!this.showDay && !this.showDay && this.showYear) {\n        this.refs.year.focus();\n      }\n    }\n  }, {\n    key: \"isPartialDay\",\n    value: function isPartialDay(value) {\n      if (!value) {\n        return false;\n      }\n\n      var _ref3 = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2],\n          _ref4 = _slicedToArray(_ref3, 3),\n          DAY = _ref4[0],\n          MONTH = _ref4[1],\n          YEAR = _ref4[2];\n\n      var values = value.split('/');\n      return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';\n    }\n  }, {\n    key: \"emptyValue\",\n\n    /**\n     * The empty value for day component.\n     *\n     * @return {'00/00/0000'}\n     */\n    get: function get() {\n      return '00/00/0000';\n    }\n  }, {\n    key: \"dayRequired\",\n    get: function get() {\n      return this.showDay && _lodash.default.get(this.component, 'fields.day.required', false);\n    }\n  }, {\n    key: \"showDay\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.day.hide', false);\n    }\n  }, {\n    key: \"monthRequired\",\n    get: function get() {\n      return this.showMonth && _lodash.default.get(this.component, 'fields.month.required', false);\n    }\n  }, {\n    key: \"showMonth\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.month.hide', false);\n    }\n  }, {\n    key: \"yearRequired\",\n    get: function get() {\n      return this.showYear && _lodash.default.get(this.component, 'fields.year.required', false);\n    }\n  }, {\n    key: \"showYear\",\n    get: function get() {\n      return !_lodash.default.get(this.component, 'fields.year.hide', false);\n    }\n  }, {\n    key: \"defaultSchema\",\n    get: function get() {\n      return DayComponent.schema();\n    }\n  }, {\n    key: \"inputInfo\",\n    get: function get() {\n      var info = _get(_getPrototypeOf(DayComponent.prototype), \"elementInfo\", this).call(this);\n\n      info.type = 'input';\n      info.attr.type = 'hidden';\n      info.changeEvent = 'input';\n      return info;\n    }\n  }, {\n    key: \"days\",\n    get: function get() {\n      if (this._days) {\n        return this._days;\n      }\n\n      this._days = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.day.placeholder', '')\n      }];\n\n      for (var x = 1; x <= 31; x++) {\n        this._days.push({\n          value: x,\n          label: x.toString()\n        });\n      }\n\n      return this._days;\n    }\n  }, {\n    key: \"months\",\n    get: function get() {\n      if (this._months) {\n        return this._months;\n      }\n\n      this._months = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')\n      }, {\n        value: 1,\n        label: 'January'\n      }, {\n        value: 2,\n        label: 'February'\n      }, {\n        value: 3,\n        label: 'March'\n      }, {\n        value: 4,\n        label: 'April'\n      }, {\n        value: 5,\n        label: 'May'\n      }, {\n        value: 6,\n        label: 'June'\n      }, {\n        value: 7,\n        label: 'July'\n      }, {\n        value: 8,\n        label: 'August'\n      }, {\n        value: 9,\n        label: 'September'\n      }, {\n        value: 10,\n        label: 'October'\n      }, {\n        value: 11,\n        label: 'November'\n      }, {\n        value: 12,\n        label: 'December'\n      }];\n      return this._months;\n    }\n  }, {\n    key: \"years\",\n    get: function get() {\n      if (this._years) {\n        return this._years;\n      }\n\n      this._years = [{\n        value: '',\n        label: _lodash.default.get(this.component, 'fields.year.placeholder', '')\n      }];\n      var minYears = _lodash.default.get(this.component, 'fields.year.minYear', 1900) || 1900;\n      var maxYears = _lodash.default.get(this.component, 'fields.year.maxYear', 2030) || 2030;\n\n      for (var x = minYears; x <= maxYears; x++) {\n        this._years.push({\n          value: x,\n          label: x.toString()\n        });\n      }\n\n      return this._years;\n    }\n  }, {\n    key: \"disabled\",\n    set: function set(disabled) {\n      _set(_getPrototypeOf(DayComponent.prototype), \"disabled\", disabled, this, true);\n\n      if (!this.refs.year || !this.refs.month || !this.refs.day) {\n        return;\n      }\n\n      if (disabled) {\n        this.refs.year.setAttribute('disabled', 'disabled');\n        this.refs.month.setAttribute('disabled', 'disabled');\n        this.refs.day.setAttribute('disabled', 'disabled');\n      } else {\n        this.refs.year.removeAttribute('disabled');\n        this.refs.month.removeAttribute('disabled');\n        this.refs.day.removeAttribute('disabled');\n      }\n    }\n  }, {\n    key: \"parts\",\n    get: function get() {\n      return {\n        day: this.getFieldValue('day'),\n        month: this.getFieldValue('month'),\n        year: this.getFieldValue('year')\n      };\n    }\n    /**\n     * Get the format for the value string.\n     * @returns {string}\n     */\n\n  }, {\n    key: \"format\",\n    get: function get() {\n      var format = '';\n\n      if (this.component.dayFirst && this.showDay) {\n        format += 'D/';\n      }\n\n      if (this.showMonth) {\n        format += 'M/';\n      }\n\n      if (!this.component.dayFirst && this.showDay) {\n        format += 'D/';\n      }\n\n      if (this.showYear) {\n        format += 'YYYY';\n        return format;\n      } else {\n        // Trim off the \"/\" from the end of the format string.\n        return format.length ? format.substring(0, format.length - 1) : format;\n      }\n    }\n  }, {\n    key: \"date\",\n    get: function get() {\n      return this.getDate();\n    }\n    /**\n     * Return the raw value.\n     *\n     * @returns {Date}\n     */\n\n  }, {\n    key: \"validationValue\",\n    get: function get() {\n      return this.dataValue;\n    }\n  }], [{\n    key: \"schema\",\n    value: function schema() {\n      for (var _len = arguments.length, extend = new Array(_len), _key = 0; _key < _len; _key++) {\n        extend[_key] = arguments[_key];\n      }\n\n      return _Field2.default.schema.apply(_Field2.default, [{\n        type: 'day',\n        label: 'Day',\n        key: 'day',\n        fields: {\n          day: {\n            type: 'number',\n            placeholder: '',\n            required: false\n          },\n          month: {\n            type: 'select',\n            placeholder: '',\n            required: false\n          },\n          year: {\n            type: 'number',\n            placeholder: '',\n            required: false\n          }\n        },\n        dayFirst: false\n      }].concat(extend));\n    }\n  }, {\n    key: \"builderInfo\",\n    get: function get() {\n      return {\n        title: 'Day',\n        group: 'advanced',\n        icon: 'calendar',\n        documentation: 'http://help.form.io/userguide/#day',\n        weight: 50,\n        schema: DayComponent.schema()\n      };\n    }\n  }]);\n\n  return DayComponent;\n}(_Field2.default);\n\nexports.default = DayComponent;\n\n//# sourceURL=webpack:///./lib/components/day/Day.js?");
 
 /***/ }),
 
@@ -990,7 +990,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\">\\n    <div class=\"btn btn-xxs btn-danger component-settings-button component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-secondary component-settings-button component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/builderComponent/form.ejs.js?");
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\" data-noattach=\"true\">\\n    <div class=\"btn btn-xxs btn-danger component-settings-button component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-secondary component-settings-button component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/builderComponent/form.ejs.js?");
 
 /***/ }),
 
@@ -1323,7 +1323,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-sm' : '')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button btn btn-default fa fa-bars\"></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn btn-secondary formio-button-remove-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.builder) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/datagrid/form.ejs.js?");
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-sm' : '')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button btn btn-default fa fa-bars\"></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn btn-secondary formio-button-remove-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.canAddColumn) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap/datagrid/form.ejs.js?");
 
 /***/ }),
 
@@ -2346,912 +2346,6 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 
 /***/ }),
 
-/***/ "./lib/templates/bootstrap3/builder/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/bootstrap3/builder/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio builder row formbuilder\">\\n  <div class=\"col-xs-4 col-sm-3 col-md-2 formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"col-xs-8 col-sm-9 col-md-10 formarea\" ref=\"form\">\\n    ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builder/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builder/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/builder/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builder/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builder/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderComponent/form.ejs.js":
-/*!***************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderComponent/form.ejs.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\">\\n    <div class=\"btn btn-xxs btn-danger component-settings-button component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderComponent/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderComponent/index.js":
-/*!************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderComponent/index.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderComponent/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderComponent/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderComponents/form.ejs.js":
-/*!****************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderComponents/form.ejs.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-components drag-container formio-builder-' +\n((__t = (ctx.type)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderComponents/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderComponents/index.js":
-/*!*************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderComponents/index.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderComponents/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderComponents/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderEditForm/form.ejs.js":
-/*!**************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderEditForm/form.ejs.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"row\">\\n  <div class=\"col col-sm-6\">\\n    <p class=\"lead\">' +\n((__t = (ctx.t(ctx.componentInfo.title))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.t('Component'))) == null ? '' : __t) +\n'</p>\\n  </div>\\n  <div class=\"col col-sm-6\">\\n    <div class=\"pull-right\" style=\"margin-right: 20px; margin-top: 10px\">\\n      <a href=\"' +\n((__t = (ctx.componentInfo.documentation)) == null ? '' : __t) +\n'\" target=\"_blank\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('new-window'))) == null ? '' : __t) +\n'\"> ' +\n((__t = (ctx.t('Help'))) == null ? '' : __t) +\n'</i>\\n      </a>\\n    </div>\\n  </div>\\n</div>\\n<div class=\"row\">\\n  <div class=\"col ';\n if (ctx.preview) { ;\n__p += 'col-sm-6';\n } else { ;\n__p += 'col-sm-12';\n } ;\n__p += '\">\\n    <div ref=\"editForm\">\\n        ' +\n((__t = (ctx.editForm)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (!ctx.preview) { ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"btn btn-success\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-danger\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n    ';\n } ;\n__p += '\\n  </div>\\n  ';\n if (ctx.preview) { ;\n__p += '\\n  <div class=\"col col-sm-6\">\\n    <div class=\"panel panel-default preview-panel\">\\n      <div class=\"panel-heading\">\\n        <h3 class=\"panel-title\">' +\n((__t = (ctx.t('Preview'))) == null ? '' : __t) +\n'</h3>\\n      </div>\\n      <div class=\"panel-body\">\\n        <div class=\"component-preview\" ref=\"preview\">\\n          ' +\n((__t = (ctx.preview)) == null ? '' : __t) +\n'\\n        </div>\\n      </div>\\n    </div>\\n    ';\n if (ctx.componentInfo.help) { ;\n__p += '\\n    <div class=\"well formio-settings-help\">\\n      ' +\n((__t = ( ctx.componentInfo.help )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"btn btn-success\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-danger\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderEditForm/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderEditForm/index.js":
-/*!***********************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderEditForm/index.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderEditForm/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderEditForm/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderPlaceholder/form.ejs.js":
-/*!*****************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderPlaceholder/form.ejs.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div\\n  class=\"alert alert-info no-drag\"\\n  style=\"text-align:center; margin-bottom: 5px;\"\\n  role=\"alert\"\\n  data-noattach=\"true\"\\n  data-position=\"' +\n((__t = (ctx.position)) == null ? '' : __t) +\n'\"\\n>\\n  ' +\n((__t = (ctx.t('Drag and Drop a form component'))) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderPlaceholder/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderPlaceholder/index.js":
-/*!**************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderPlaceholder/index.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderPlaceholder/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderPlaceholder/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderSidebar/form.ejs.js":
-/*!*************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderSidebar/form.ejs.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\" class=\"panel-group builder-sidebar' +\n((__t = (ctx.scrollEnabled ? ' builder-sidebar_scroll' : '')) == null ? '' : __t) +\n'\" ref=\"sidebar\">\\n  ';\n ctx.groups.forEach(function(group) { ;\n__p += '\\n    ' +\n((__t = ( group )) == null ? '' : __t) +\n'\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderSidebar/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderSidebar/index.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderSidebar/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderSidebar/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderSidebar/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js":
-/*!******************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\">\\n  <div class=\"panel-heading form-builder-group-header\">\\n    <h5 class=\"panel-title\">\\n      <button\\n        class=\"btn btn-block builder-group-button\"\\n        type=\"button\"\\n        data-toggle=\"collapse\"\\n        data-target=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n        href=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        ref=\"sidebar-anchor\"\\n      >\\n        ' +\n((__t = (ctx.t(ctx.group.title))) == null ? '' : __t) +\n'\\n      </button>\\n    </h5>\\n  </div>\\n  <div\\n    id=\"group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n    class=\"panel-collapse collapse' +\n((__t = (ctx.group.default ? ' in' : '')) == null ? '' : __t) +\n'\"\\n    data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n    data-default=\"' +\n((__t = (ctx.group.default)) == null ? '' : __t) +\n'\"\\n    ref=\"sidebar-group\"\\n  >\\n    <div id=\"group-container-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\\n      ';\n ctx.group.componentOrder.forEach(function(componentKey) { ;\n__p += '\\n      <span\\n        data-group=\"' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-key=\"' +\n((__t = (ctx.group.components[componentKey].key)) == null ? '' : __t) +\n'\"\\n        data-type=\"' +\n((__t = (ctx.group.components[componentKey].schema.type)) == null ? '' : __t) +\n'\"\\n        class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\"\\n      >\\n        ';\n if (ctx.group.components[componentKey].icon) { ;\n__p += '\\n          <i class=\"' +\n((__t = (ctx.iconClass(ctx.group.components[componentKey].icon))) == null ? '' : __t) +\n'\" style=\"margin-right: 5px;\"></i>\\n        ';\n } ;\n__p += '\\n        ' +\n((__t = (ctx.t(ctx.group.components[componentKey].title))) == null ? '' : __t) +\n'\\n      </span>\\n      ';\n }) ;\n__p += '\\n      ' +\n((__t = (ctx.subgroups.join(''))) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/builderSidebarGroup/index.js":
-/*!***************************************************************!*\
-  !*** ./lib/templates/bootstrap3/builderSidebarGroup/index.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/builderSidebarGroup/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/columns/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/bootstrap3/columns/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.columns.forEach(function(column, index) { ;\n__p += '\\n<div class=\"col\\n    col-sm-' +\n((__t = (column.width)) == null ? '' : __t) +\n'\\n    col-sm-offset-' +\n((__t = (column.offset)) == null ? '' : __t) +\n'\\n    col-sm-push-' +\n((__t = (column.push)) == null ? '' : __t) +\n'\\n    col-sm-pull-' +\n((__t = (column.pull)) == null ? '' : __t) +\n'\\n  \" ref=\"' +\n((__t = (ctx.columnKey)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.columnComponents[index])) == null ? '' : __t) +\n'\\n</div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/columns/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/columns/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/columns/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/columns/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/columns/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/cssClasses.js":
-/*!************************************************!*\
-  !*** ./lib/templates/bootstrap3/cssClasses.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  'formio-tab-panel-active': 'active',\n  'formio-tab-link-active': 'active',\n  'formio-tab-link-container-active': 'active'\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/cssClasses.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/datagrid/form.ejs.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/datagrid/form.ejs.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button btn btn-default fa fa-bars\"></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn btn-default formio-button-remove-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.builder) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/datagrid/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/datagrid/html.ejs.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/datagrid/html.ejs.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n rows.forEach(function(row) { ;\n__p += '\\n    <tr>\\n      ';\n columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/datagrid/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/datagrid/index.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/datagrid/index.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/datagrid/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/datagrid/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/datagrid/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/day/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/day/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"row\">\\n  ';\n if (ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"form-group col col-xs-3\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"';\n if(ctx.component.fields.day.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showMonth) { ;\n__p += '\\n  <div class=\"form-group col col-xs-4\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-month\" class=\"';\n if(ctx.component.fields.month.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Month'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.month)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"form-group col col-xs-3\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"';\n if(ctx.component.fields.day.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showYear) { ;\n__p += '\\n  <div class=\"form-group col col-xs-5\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-year\" class=\"';\n if(ctx.component.fields.year.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Year'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.year)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n<input name=\"data[day]\" type=\"hidden\" class=\"form-control\" lang=\"en\" value=\"\" ref=\"input\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/day/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/day/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/bootstrap3/day/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/day/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/day/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/dialog/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/dialog/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-dialog formio-dialog-theme-default component-settings\">\\n  <div class=\"formio-dialog-overlay\" ref=\"dialogOverlay\"></div>\\n  <div class=\"formio-dialog-content\" ref=\"dialogContents\">\\n    <div ref=\"dialogContents\"></div>\\n    <button class=\"formio-dialog-close pull-right btn btn-default btn-xs\" aria-label=\"close\" ref=\"dialogClose\"></button>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/dialog/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/dialog/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/dialog/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/dialog/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/dialog/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/editgrid/form.ejs.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/editgrid/form.ejs.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"editgrid-listgroup list-group\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <li class=\"list-group-item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <li class=\"list-group-item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"btn btn-primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"btn btn-danger\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <li class=\"list-group-item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\n if (!ctx.readOnly && ctx.hasAddButton) { ;\n__p += '\\n<button class=\"btn btn-primary formio-button-add-another\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-addRow\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n</button>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/editgrid/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/editgrid/html.ejs.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/editgrid/html.ejs.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"editgrid-listgroup list-group\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-sm' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <li class=\"list-group-item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <li class=\"list-group-item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"btn btn-primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"btn btn-danger\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <li class=\"list-group-item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/editgrid/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/editgrid/index.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/editgrid/index.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/editgrid/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/editgrid/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/editgrid/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/field/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/field/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { ;\n__p += '\\n  ' +\n((__t = ( ctx.render('label', ctx) )) == null ? '' : __t) +\n'\\n';\n } ;\n__p += '\\n' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n';\n if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { ;\n__p += '\\n  <label class=\"control-label ' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.t(ctx.component.label))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.component.tooltip) { ;\n__p += '\\n    <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n  ';\n } ;\n__p += '\\n  </label>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.description) { ;\n__p += '\\n  <div class=\"help-block\">' +\n((__t = (ctx.t(ctx.component.description))) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/field/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/field/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/field/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/field/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/field/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/file/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/file/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.component.image) { ;\n__p += '\\n<ul class=\"list-group list-group-striped\">\\n  <li class=\"list-group-item list-group-header hidden-xs hidden-sm\">\\n    <div class=\"row\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"col-md-1\"></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"col-md-';\n if (ctx.self.hasTypes) { ;\n__p += '7';\n } else { ;\n__p += '9';\n } ;\n__p += '\"><strong>' +\n((__t = (ctx.t('File Name'))) == null ? '' : __t) +\n'</strong></div>\\n      <div class=\"col-md-2\"><strong>' +\n((__t = (ctx.t('Size'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"col-md-2\"><strong>' +\n((__t = (ctx.t('Type'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <li class=\"list-group-item\">\\n    <div class=\"row\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"col-md-1\"><i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"col-md-9\">\\n        ';\n if (ctx.component.uploadOnly) { ;\n__p += '\\n          ' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\\n        ';\n } else { ;\n__p += '\\n          <a href=\"' +\n((__t = (file.url)) == null ? '' : __t) +\n'\" target=\"_blank\" ref=\"fileLink\">' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'</a>\\n        ';\n } ;\n__p += '\\n      </div>\\n      <div class=\"col-md-2\">' +\n((__t = (ctx.fileSize(file.size))) == null ? '' : __t) +\n'</div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"col-md-2\">\\n          <select class=\"file-type\">\\n            ';\n ctx.component.fileTypes.map(function(type) { ;\n__p += '\\n              <option class=\"test\" value=\"' +\n((__t = ( type.value )) == null ? '' : __t) +\n'\" ';\n if (type.value === file.fileType) { ;\n__p += 'selected=\"selected\"';\n } ;\n__p += '>' +\n((__t = ( type.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n          </select>\\n        </div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</ul>\\n';\n } else { ;\n__p += '\\n<div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <div>\\n    <span>\\n      <img ref=\"fileImage\" src=\"\" alt=\"' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\" style=\"width:' +\n((__t = (ctx.component.imageSize)) == null ? '' : __t) +\n'px\" />\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i>\\n      ';\n } ;\n__p += '\\n    </span>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\n if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { ;\n__p += '\\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\\n';\n if (ctx.self.useWebViewCamera) { ;\n__p += '\\n<div class=\"fileSelector\">\\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> ' +\n((__t = (ctx.t('Gallery'))) == null ? '' : __t) +\n'</button>\\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Camera'))) == null ? '' : __t) +\n'</button>\\n</div>\\n';\n } else if (!ctx.self.cameraMode) { ;\n__p += '\\n<div class=\"fileSelector\" ref=\"fileDrop\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('cloud-upload'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Drop files to attach,'))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.image) { ;\n__p += '\\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Use Camera,'))) == null ? '' : __t) +\n'</a>\\n    ';\n } ;\n__p += '\\n    ' +\n((__t = (ctx.t('or'))) == null ? '' : __t) +\n' <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">' +\n((__t = (ctx.t('browse'))) == null ? '' : __t) +\n'</a>\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\\n</div>\\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Take Picture'))) == null ? '' : __t) +\n'</button>\\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">' +\n((__t = (ctx.t('Switch to file upload'))) == null ? '' : __t) +\n'</button>\\n';\n } ;\n__p += '\\n';\n } ;\n__p += '\\n';\n ctx.statuses.forEach(function(status) { ;\n__p += '\\n<div class=\"file ' +\n((__t = (ctx.statuses.status === 'error' ? ' has-error' : '')) == null ? '' : __t) +\n'\">\\n  <div class=\"row\">\\n    <div class=\"fileName control-label col-sm-10\">' +\n((__t = (status.originalName)) == null ? '' : __t) +\n' <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"fileStatusRemove\"></i></div>\\n    <div class=\"fileSize control-label col-sm-2 text-right\">' +\n((__t = (ctx.fileSize(status.size))) == null ? '' : __t) +\n'</div>\\n  </div>\\n  <div class=\"row\">\\n    <div class=\"col-sm-12\">\\n      ';\n if (status.status === 'progress') { ;\n__p += '\\n      <div class=\"progress\">\\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: ' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\">\\n          <span class=\"sr-only\">' +\n((__t = (status.progress)) == null ? '' : __t) +\n'% ' +\n((__t = (ctx.t('Complete'))) == null ? '' : __t) +\n'</span>\\n        </div>\\n      </div>\\n      ';\n } else { ;\n__p += '\\n      <div class=\"bg-' +\n((__t = (status.status)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(status.message))) == null ? '' : __t) +\n'</div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n</div>\\n';\n }) ;\n__p += '\\n';\n if (!ctx.component.storage || ctx.support.hasWarning) { ;\n__p += '\\n<div class=\"alert alert-warning\">\\n  ';\n if (!ctx.component.storage) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('No storage has been set for this field. File uploads are disabled until storage is set up.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.filereader) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('File API & FileReader API not supported.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.formdata) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's FormData is not supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.progress) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's upload progress isn't supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/file/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/file/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/bootstrap3/file/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/file/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/file/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/icon/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/icon/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<i ref=\"' +\n((__t = (ctx.ref)) == null ? '' : __t) +\n'\" class=\"' +\n((__t = (ctx.className)) == null ? '' : __t) +\n'\" style=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</i>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/icon/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/icon/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/bootstrap3/icon/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/icon/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/icon/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/iconClass.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/bootstrap3/iconClass.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.array.concat */ \"./node_modules/core-js/modules/es.array.concat.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _default = function _default(iconset, name, spinning) {\n  if (iconset === 'fa') {\n    switch (name) {\n      case 'save':\n        name = 'download';\n        break;\n\n      case 'zoom-in':\n        name = 'search-plus';\n        break;\n\n      case 'zoom-out':\n        name = 'search-minus';\n        break;\n\n      case 'question-sign':\n        name = 'question-circle';\n        break;\n\n      case 'remove-circle':\n        name = 'times-circle-o';\n        break;\n\n      case 'new-window':\n        name = 'window-restore';\n        break;\n\n      case 'move':\n        name = 'arrows';\n        break;\n    }\n  }\n\n  return spinning ? \"\".concat(iconset, \" \").concat(iconset, \"-\").concat(name, \" \").concat(iconset, \"-spin\") : \"\".concat(iconset, \" \").concat(iconset, \"-\").concat(name);\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/iconClass.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/index.js":
-/*!*******************************************!*\
-  !*** ./lib/templates/bootstrap3/index.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _resizeObserverPolyfill = _interopRequireDefault(__webpack_require__(/*! resize-observer-polyfill */ \"./node_modules/resize-observer-polyfill/dist/ResizeObserver.es.js\"));\n\nvar _builder = _interopRequireDefault(__webpack_require__(/*! ./builder */ \"./lib/templates/bootstrap3/builder/index.js\"));\n\nvar _builderComponent = _interopRequireDefault(__webpack_require__(/*! ./builderComponent */ \"./lib/templates/bootstrap3/builderComponent/index.js\"));\n\nvar _builderComponents = _interopRequireDefault(__webpack_require__(/*! ./builderComponents */ \"./lib/templates/bootstrap3/builderComponents/index.js\"));\n\nvar _builderEditForm = _interopRequireDefault(__webpack_require__(/*! ./builderEditForm */ \"./lib/templates/bootstrap3/builderEditForm/index.js\"));\n\nvar _builderPlaceholder = _interopRequireDefault(__webpack_require__(/*! ./builderPlaceholder */ \"./lib/templates/bootstrap3/builderPlaceholder/index.js\"));\n\nvar _builderSidebar = _interopRequireDefault(__webpack_require__(/*! ./builderSidebar */ \"./lib/templates/bootstrap3/builderSidebar/index.js\"));\n\nvar _builderSidebarGroup = _interopRequireDefault(__webpack_require__(/*! ./builderSidebarGroup */ \"./lib/templates/bootstrap3/builderSidebarGroup/index.js\"));\n\nvar _columns = _interopRequireDefault(__webpack_require__(/*! ./columns */ \"./lib/templates/bootstrap3/columns/index.js\"));\n\nvar _datagrid = _interopRequireDefault(__webpack_require__(/*! ./datagrid */ \"./lib/templates/bootstrap3/datagrid/index.js\"));\n\nvar _day = _interopRequireDefault(__webpack_require__(/*! ./day */ \"./lib/templates/bootstrap3/day/index.js\"));\n\nvar _dialog = _interopRequireDefault(__webpack_require__(/*! ./dialog */ \"./lib/templates/bootstrap3/dialog/index.js\"));\n\nvar _editgrid = _interopRequireDefault(__webpack_require__(/*! ./editgrid */ \"./lib/templates/bootstrap3/editgrid/index.js\"));\n\nvar _field = _interopRequireDefault(__webpack_require__(/*! ./field */ \"./lib/templates/bootstrap3/field/index.js\"));\n\nvar _file = _interopRequireDefault(__webpack_require__(/*! ./file */ \"./lib/templates/bootstrap3/file/index.js\"));\n\nvar _icon = _interopRequireDefault(__webpack_require__(/*! ./icon */ \"./lib/templates/bootstrap3/icon/index.js\"));\n\nvar _iconClass = _interopRequireDefault(__webpack_require__(/*! ./iconClass */ \"./lib/templates/bootstrap3/iconClass.js\"));\n\nvar _input = _interopRequireDefault(__webpack_require__(/*! ./input */ \"./lib/templates/bootstrap3/input/index.js\"));\n\nvar _label = _interopRequireDefault(__webpack_require__(/*! ./label */ \"./lib/templates/bootstrap3/label/index.js\"));\n\nvar _message = _interopRequireDefault(__webpack_require__(/*! ./message */ \"./lib/templates/bootstrap3/message/index.js\"));\n\nvar _modaldialog = _interopRequireDefault(__webpack_require__(/*! ./modaldialog */ \"./lib/templates/bootstrap3/modaldialog/index.js\"));\n\nvar _modaledit = _interopRequireDefault(__webpack_require__(/*! ./modaledit */ \"./lib/templates/bootstrap3/modaledit/index.js\"));\n\nvar _multiValueRow = _interopRequireDefault(__webpack_require__(/*! ./multiValueRow */ \"./lib/templates/bootstrap3/multiValueRow/index.js\"));\n\nvar _multiValueTable = _interopRequireDefault(__webpack_require__(/*! ./multiValueTable */ \"./lib/templates/bootstrap3/multiValueTable/index.js\"));\n\nvar _panel = _interopRequireDefault(__webpack_require__(/*! ./panel */ \"./lib/templates/bootstrap3/panel/index.js\"));\n\nvar _radio = _interopRequireDefault(__webpack_require__(/*! ./radio */ \"./lib/templates/bootstrap3/radio/index.js\"));\n\nvar _resourceAdd = _interopRequireDefault(__webpack_require__(/*! ./resourceAdd */ \"./lib/templates/bootstrap3/resourceAdd/index.js\"));\n\nvar _signature = _interopRequireDefault(__webpack_require__(/*! ./signature */ \"./lib/templates/bootstrap3/signature/index.js\"));\n\nvar _survey = _interopRequireDefault(__webpack_require__(/*! ./survey */ \"./lib/templates/bootstrap3/survey/index.js\"));\n\nvar _tab = _interopRequireDefault(__webpack_require__(/*! ./tab */ \"./lib/templates/bootstrap3/tab/index.js\"));\n\nvar _table = _interopRequireDefault(__webpack_require__(/*! ./table */ \"./lib/templates/bootstrap3/table/index.js\"));\n\nvar _warning = _interopRequireDefault(__webpack_require__(/*! ./warning */ \"./lib/templates/bootstrap3/warning/index.js\"));\n\nvar _well = _interopRequireDefault(__webpack_require__(/*! ./well */ \"./lib/templates/bootstrap3/well/index.js\"));\n\nvar _wizard = _interopRequireDefault(__webpack_require__(/*! ./wizard */ \"./lib/templates/bootstrap3/wizard/index.js\"));\n\nvar _wizardHeader = _interopRequireDefault(__webpack_require__(/*! ./wizardHeader */ \"./lib/templates/bootstrap3/wizardHeader/index.js\"));\n\nvar _wizardNav = _interopRequireDefault(__webpack_require__(/*! ./wizardNav */ \"./lib/templates/bootstrap3/wizardNav/index.js\"));\n\nvar _cssClasses = _interopRequireDefault(__webpack_require__(/*! ./cssClasses */ \"./lib/templates/bootstrap3/cssClasses.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  transform: function transform(type, text) {\n    if (!text) {\n      return text;\n    }\n\n    switch (type) {\n      case 'class':\n        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;\n    }\n\n    return text;\n  },\n  handleBuilderSidebarScroll: function handleBuilderSidebarScroll(builder) {\n    if (builder.scrollResizeObserver) {\n      builder.scrollResizeObserver.disconnect();\n    }\n\n    builder.scrollResizeObserver = new _resizeObserverPolyfill.default(function () {\n      setTimeout(function () {\n        var _builder$refs = builder.refs,\n            formHeight = _builder$refs.form.parentNode.clientHeight,\n            _builder$refs$sidebar = _builder$refs.sidebar,\n            sidebarHeight = _builder$refs$sidebar.clientHeight,\n            style = _builder$refs$sidebar.parentNode.style;\n        style.height = \"\".concat(Math.max(sidebarHeight + 20, formHeight), \"px\");\n      });\n    });\n    builder.scrollResizeObserver.observe(builder.refs.form);\n    builder.scrollResizeObserver.observe(builder.refs.sidebar);\n  },\n  clearBuilderSidebarScroll: function clearBuilderSidebarScroll(builder) {\n    if (builder.scrollResizeObserver) {\n      builder.scrollResizeObserver.disconnect();\n      builder.scrollResizeObserver = null;\n    }\n  },\n  defaultIconset: 'glyphicon',\n  iconClass: _iconClass.default,\n  cssClasses: _cssClasses.default,\n  builder: _builder.default,\n  builderComponent: _builderComponent.default,\n  builderComponents: _builderComponents.default,\n  builderEditForm: _builderEditForm.default,\n  builderPlaceholder: _builderPlaceholder.default,\n  builderSidebar: _builderSidebar.default,\n  builderSidebarGroup: _builderSidebarGroup.default,\n  columns: _columns.default,\n  datagrid: _datagrid.default,\n  day: _day.default,\n  dialog: _dialog.default,\n  editgrid: _editgrid.default,\n  field: _field.default,\n  file: _file.default,\n  icon: _icon.default,\n  input: _input.default,\n  label: _label.default,\n  message: _message.default,\n  modaldialog: _modaldialog.default,\n  modaledit: _modaledit.default,\n  multiValueRow: _multiValueRow.default,\n  multiValueTable: _multiValueTable.default,\n  panel: _panel.default,\n  radio: _radio.default,\n  resourceAdd: _resourceAdd.default,\n  signature: _signature.default,\n  survey: _survey.default,\n  tab: _tab.default,\n  table: _table.default,\n  warning: _warning.default,\n  well: _well.default,\n  wizard: _wizard.default,\n  wizardHeader: _wizardHeader.default,\n  wizardNav: _wizardNav.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/input/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/input/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.component.prefix || ctx.component.suffix) { ;\n__p += '\\n<div class=\"input-group\">\\n';\n } ;\n__p += '\\n';\n if (ctx.component.prefix) { ;\n__p += '\\n<div class=\"input-group-addon\" ref=\"prefix\">' +\n((__t = (ctx.component.prefix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'input')) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n';\n if (ctx.component.showCharCount) { ;\n__p += '\\n<span class=\"text-muted pull-right\" ref=\"charcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.showWordCount) { ;\n__p += '\\n<span class=\"text-muted pull-right\" ref=\"wordcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.suffix) { ;\n__p += '\\n<div class=\"input-group-addon\" ref=\"suffix\">' +\n((__t = (ctx.component.suffix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.prefix || ctx.component.suffix) { ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/input/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/input/html.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/input/html.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = (ctx.value)) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/input/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/input/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/input/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/input/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/input/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/input/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/label/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/label/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"control-label ' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ';\n if (!ctx.label.hidden) { ;\n__p += '\\n    ' +\n((__t = ( ctx.t(ctx.component.label) )) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.tooltip) { ;\n__p += '\\n      <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n    ';\n } ;\n__p += '\\n  ';\n } ;\n__p += '\\n</label>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/label/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/label/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/label/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/label/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/label/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/message/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/bootstrap3/message/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-errors invalid-feedback\">\\n  <p class=\"help-block\">' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'</p>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/message/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/message/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/message/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/message/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/message/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/modaldialog/form.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/bootstrap3/modaldialog/form.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-dialog formio-dialog-theme-default formio-modaledit-dialog\">\\n  <div ref=\"overlay\" class=\"formio-dialog-overlay\"></div>\\n  <div ref=\"content\" class=\"formio-modaledit-content\">\\n    <button\\n      ref=\"close\"\\n      type=\"button\"\\n      role=\"button\"\\n      class=\"btn btn-primary btn-xs formio-modaledit-close\">\\n      ' +\n((__t = (ctx.t('Close'))) == null ? '' : __t) +\n'\\n    </button>\\n    <div ref=\"inner\" class=\"reset-margins\"></div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/modaldialog/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/modaldialog/index.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/modaldialog/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/modaldialog/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/modaldialog/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/modaledit/form.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/modaledit/form.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div ref=\"container\" class=\"formio-modaledit-view-container\">\\n  <button\\n    ref=\"edit\"\\n    type=\"button\"\\n    role=\"button\"\\n    class=\"btn btn-xxs btn-warning formio-modaledit-edit\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('edit'))) == null ? '' : __t) +\n'\"></i>\\n  </button>\\n  <div ref=\"input\" class=\"modaledit-view-inner reset-margins\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/modaledit/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/modaledit/index.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/modaledit/index.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/modaledit/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/modaledit/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/multiValueRow/form.ejs.js":
-/*!************************************************************!*\
-  !*** ./lib/templates/bootstrap3/multiValueRow/form.ejs.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<tr ref=\"row\">\\n  <td>\\n    ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n  </td>\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <td>\\n    <button type=\"button\" class=\"btn btn-default\" ref=\"removeRow\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n    </button>\\n  </td>\\n  ';\n } ;\n__p += '\\n</tr>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/multiValueRow/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/multiValueRow/index.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/bootstrap3/multiValueRow/index.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/multiValueRow/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/multiValueRow/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/multiValueTable/form.ejs.js":
-/*!**************************************************************!*\
-  !*** ./lib/templates/bootstrap3/multiValueTable/form.ejs.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-bordered\">\\n  <tbody>\\n  ' +\n((__t = (ctx.rows)) == null ? '' : __t) +\n'\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <tr>\\n    <td colspan=\"2\">\\n      <button class=\"btn btn-primary formio-button-add-another\" ref=\"addButton\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.addAnother))) == null ? '' : __t) +\n'</button>\\n    </td>\\n  </tr>\\n  ';\n } ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/multiValueTable/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/multiValueTable/index.js":
-/*!***********************************************************!*\
-  !*** ./lib/templates/bootstrap3/multiValueTable/index.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/multiValueTable/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/multiValueTable/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/panel/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/panel/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"panel panel-' +\n((__t = (ctx.component.theme)) == null ? '' : __t) +\n'\">\\n  <div class=\"panel-heading\" ref=\"header\">\\n    <h4 class=\"mb-0 panel-title\">\\n      ';\n if (ctx.component.collapsible) { ;\n__p += '\\n        <i class=\"formio-collapse-icon ' +\n((__t = (ctx.iconClass(ctx.collapsed ? 'plus' : 'minus'))) == null ? '' : __t) +\n' text-muted\" data-title=\"Collapse Panel\"></i>\\n      ';\n } ;\n__p += '\\n      ' +\n((__t = (ctx.t(ctx.component.title))) == null ? '' : __t) +\n'\\n      ';\n if (ctx.component.tooltip) { ;\n__p += '\\n        <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n      ';\n } ;\n__p += '\\n    </h4>\\n  </div>\\n  ';\n if (!ctx.collapsed || ctx.builder) { ;\n__p += '\\n  <div class=\"panel-body\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/panel/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/panel/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/panel/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/panel/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/panel/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/radio/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/radio/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"input-group\">\\n  ';\n ctx.values.forEach(function(item) { ;\n__p += '\\n  <div class=\"' +\n((__t = (ctx.input.attr.type)) == null ? '' : __t) +\n'' +\n((__t = (ctx.inline ? '-inline' : '')) == null ? '' : __t) +\n'\" ref=\"wrapper\">\\n    <label class=\"control-label form-check-label label-position-' +\n((__t = ( ctx.component.optionsLabelPosition )) == null ? '' : __t) +\n'\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\">\\n      ';\n if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { ;\n__p += '\\n      <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      ';\n } ;\n__p += '\\n      <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n        ref=\"input\"\\n        ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n        ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n        ';\n } ;\n__p += '\\n        value=\"' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n        ';\n if (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])) { ;\n__p += '\\n          checked=true\\n        ';\n } ;\n__p += '\\n        id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n      >\\n      ';\n if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { ;\n__p += '\\n      <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      ';\n } ;\n__p += '\\n    </label>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/radio/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/radio/html.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/radio/html.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return ctx.t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/radio/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/radio/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/radio/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/radio/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/radio/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/radio/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/resourceAdd/form.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/bootstrap3/resourceAdd/form.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<table class=\"table table-bordered\">\\n  <tbody>\\n    <tr>\\n      <td>\\n        ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n      </td>\\n    </tr>\\n    <tr>\\n      <td colspan=\"2\">\\n        <button class=\"btn btn-primary formio-button-add-resource\" ref=\"addResource\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>\\n          ' +\n((__t = (ctx.t(ctx.component.addResourceLabel || 'Add Resource'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/resourceAdd/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/resourceAdd/index.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/bootstrap3/resourceAdd/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/resourceAdd/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/resourceAdd/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/signature/form.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/signature/form.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p +=\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n<div\\n  class=\"signature-pad-body\"\\n  style=\"width: ' +\n((__t = (ctx.component.width)) == null ? '' : __t) +\n';height: ' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n';padding:0;margin:0;\"\\n  tabindex=\"' +\n((__t = (ctx.component.tabindex || 0)) == null ? '' : __t) +\n'\"\\n  ref=\"padBody\"\\n>\\n\\n  <a class=\"btn btn-sm btn-default signature-pad-refresh\" ref=\"refresh\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('refresh'))) == null ? '' : __t) +\n'\"></i>\\n  </a>\\n  <canvas class=\"signature-pad-canvas\" height=\"' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n'\" ref=\"canvas\"></canvas>\\n  ';\n if (ctx.required) { ;\n__p += '\\n  <span class=\"form-control-feedback field-required-inline text-danger\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('asterisk'))) == null ? '' : __t) +\n'\"></i>\\n  </span>\\n  ';\n } ;\n__p += '\\n  <img style=\"width: 100%;display: none;\" ref=\"signatureImage\">\\n</div>\\n';\n if (ctx.component.footer) { ;\n__p += '\\n  <div class=\"signature-pad-footer\">\\n    ' +\n((__t = (ctx.t(ctx.component.footer))) == null ? '' : __t) +\n'\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/signature/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/signature/html.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/signature/html.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<img style=\"width: 100%;\" ref=\"signatureImage\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/signature/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/signature/index.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/signature/index.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/signature/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/signature/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/signature/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/survey/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/survey/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-striped table-bordered\">\\n  <thead>\\n    <tr>\\n      <th></th>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <th style=\"text-align: center;\">' +\n((__t = (ctx.t(value.label))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <td>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</td>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <td style=\"text-align: center;\">\\n        <input type=\"radio\" name=\"' +\n((__t = ( ctx.self.getInputName(question) )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" id=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-' +\n((__t = (question.value)) == null ? '' : __t) +\n'-' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" ref=\"input\">\\n      </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/survey/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/survey/html.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/survey/html.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-striped table-bordered\">\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <th>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</th>\\n      <td>\\n      ';\n ctx.component.values.forEach(function(item) { ;\n__p += '\\n        ';\n if (ctx.value && ctx.value.hasOwnProperty(question.value) && ctx.value[question.value] === item.value) { ;\n__p += '\\n          ' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'\\n        ';\n } ;\n__p += '\\n      ';\n }) ;\n__p += '\\n      </td>\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/survey/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/survey/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/survey/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/survey/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/bootstrap3/survey/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/survey/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/tab/flat.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/tab/flat.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <div class=\"panel panel-default\">\\n    <div class=\"panel-heading\">\\n      <h4 class=\"panel-title\">' +\n((__t = ( ctx.t(tab.label) )) == null ? '' : __t) +\n'</h4>\\n    </div>\\n    <div class=\"panel-body\">\\n      ' +\n((__t = ( ctx.tabComponents[index] )) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/tab/flat.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/tab/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/tab/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"nav nav-tabs\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <li class=\"nav-item' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" role=\"presentation\" ref=\"' +\n((__t = (ctx.tabLikey)) == null ? '' : __t) +\n'\">\\n    <a class=\"nav-link' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" href=\"#' +\n((__t = (tab.key)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabLinkKey)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(tab.label))) == null ? '' : __t) +\n'</a>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</ul>\\n<div class=\"tab-content\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <div role=\"tabpanel\" class=\"tab-pane' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabKey)) == null ? '' : __t) +\n'\"\">' +\n((__t = (ctx.tabComponents[index])) == null ? '' : __t) +\n'</div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/tab/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/tab/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/bootstrap3/tab/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _flat = _interopRequireDefault(__webpack_require__(/*! ./flat.ejs */ \"./lib/templates/bootstrap3/tab/flat.ejs.js\"));\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/tab/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  flat: _flat.default,\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/tab/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/table/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/bootstrap3/table/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n  \">\\n  ';\n if (ctx.component.header && ctx.component.header.length > 0) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.component.header.forEach(function(header) { ;\n__p += '\\n      <th>' +\n((__t = (ctx.t(header))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.tableComponents.forEach(function(row, rowIndex) { ;\n__p += '\\n    <tr ref=\"row-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n      ';\n row.forEach(function(column, colIndex) { ;\n__p += '\\n      <td ref=\"' +\n((__t = (ctx.tableKey)) == null ? '' : __t) +\n'-' +\n((__t = (rowIndex)) == null ? '' : __t) +\n'\"';\n if (ctx.cellClassName) { ;\n__p += ' class=\"' +\n((__t = (ctx.cellClassName)) == null ? '' : __t) +\n'\"';\n } ;\n__p += '>' +\n((__t = (column)) == null ? '' : __t) +\n'</td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/table/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/table/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/bootstrap3/table/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/table/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/table/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/warning/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/bootstrap3/warning/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-warnings invalid-feedback\">\\n    <p class=\"help-block\">' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'</p>\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/warning/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/warning/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/warning/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/warning/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/warning/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/well/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/bootstrap3/well/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"well\">\\n  <div ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/well/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/well/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/bootstrap3/well/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/well/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/well/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizard/builder.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizard/builder.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"text-muted text-center\">' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizard/builder.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizard/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizard/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div style=\"position: relative;\">\\n  ' +\n((__t = ( ctx.wizardHeader )) == null ? '' : __t) +\n'\\n  <div class=\"wizard-page\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.components)) == null ? '' : __t) +\n'\\n  </div>\\n  ' +\n((__t = ( ctx.wizardNav )) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizard/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizard/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizard/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/wizard/form.ejs.js\"));\n\nvar _builder = _interopRequireDefault(__webpack_require__(/*! ./builder.ejs */ \"./lib/templates/bootstrap3/wizard/builder.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  builder: _builder.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizard/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizardHeader/form.ejs.js":
-/*!***********************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizardHeader/form.ejs.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<nav aria-label=\"navigation\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-header\">\\n  <ul class=\"pagination\">\\n    ';\n ctx.panels.forEach(function(panel, index) { ;\n__p += '\\n    <li class=\"page-item' +\n((__t = (ctx.currentPage === index ? ' active' : '')) == null ? '' : __t) +\n'\" style=\"\">\\n      <span class=\"page-link\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-link\">' +\n((__t = (panel.title)) == null ? '' : __t) +\n'</span>\\n    </li>\\n    ';\n }) ;\n__p += '\\n  </ul>\\n</nav>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizardHeader/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizardHeader/index.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizardHeader/index.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/wizardHeader/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizardHeader/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizardNav/form.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizardNav/form.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"list-inline\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-nav\">\\n  ';\n if (ctx.buttons.cancel) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-default btn-wizard-nav-cancel\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-cancel\">' +\n((__t = (ctx.t('cancel'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.previous) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-previous\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-previous\">' +\n((__t = (ctx.t('previous'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.next) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-next\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-next\">' +\n((__t = (ctx.t('next'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.submit) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-submit\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-submit\">' +\n((__t = (ctx.t('submit'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizardNav/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/bootstrap3/wizardNav/index.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/bootstrap3/wizardNav/index.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/bootstrap3/wizardNav/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/bootstrap3/wizardNav/index.js?");
-
-/***/ }),
-
 /***/ "./lib/templates/index.js":
 /*!********************************!*\
   !*** ./lib/templates/index.js ***!
@@ -3260,1163 +2354,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _bootstrap = _interopRequireDefault(__webpack_require__(/*! ./bootstrap */ \"./lib/templates/bootstrap/index.js\"));\n\nvar _bootstrap2 = _interopRequireDefault(__webpack_require__(/*! ./bootstrap3 */ \"./lib/templates/bootstrap3/index.js\"));\n\nvar _semantic = _interopRequireDefault(__webpack_require__(/*! ./semantic */ \"./lib/templates/semantic/index.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  bootstrap: _bootstrap.default,\n  bootstrap3: _bootstrap2.default,\n  semantic: _semantic.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builder/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/semantic/builder/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio builder ui grid formbuilder\">\\n  <div class=\"four wide column formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"twelve wide column formarea\" ref=\"form\">\\n    ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builder/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builder/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/builder/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builder/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builder/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderComponent/form.ejs.js":
-/*!*************************************************************!*\
-  !*** ./lib/templates/semantic/builderComponent/form.ejs.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\">\\n    <div class=\"ui button mini icon primary component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon secondary component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderComponent/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderComponent/index.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/semantic/builderComponent/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderComponent/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderComponent/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderComponents/form.ejs.js":
-/*!**************************************************************!*\
-  !*** ./lib/templates/semantic/builderComponents/form.ejs.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-components drag-container ' +\n((__t = (ctx.type)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderComponents/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderComponents/index.js":
-/*!***********************************************************!*\
-  !*** ./lib/templates/semantic/builderComponents/index.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderComponents/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderComponents/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderEditForm/form.ejs.js":
-/*!************************************************************!*\
-  !*** ./lib/templates/semantic/builderEditForm/form.ejs.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  <div class=\"eight wide column\">\\n    <h3 class=\"lead\">' +\n((__t = (ctx.t(ctx.componentInfo.title))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.t('Component'))) == null ? '' : __t) +\n'</h3>\\n  </div>\\n  <div class=\"eight wide column\">\\n    <div class=\"right floated\" style=\"margin-right: 20px; margin-top: 10px\">\\n      <a href=\"' +\n((__t = (ctx.componentInfo.documentation)) == null ? '' : __t) +\n'\" target=\"_blank\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('new-window'))) == null ? '' : __t) +\n'\"> ' +\n((__t = (ctx.t('Help'))) == null ? '' : __t) +\n'</i>\\n      </a>\\n    </div>\\n  </div>\\n</div>\\n<div class=\"ui grid\">\\n  <div class=\"';\n if (ctx.preview) { ;\n__p += 'eight';\n } else { ;\n__p += 'sixteen';\n } ;\n__p += ' wide column\">\\n    <div ref=\"editForm\">\\n        ' +\n((__t = (ctx.editForm)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (!ctx.preview) { ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"ui button primary\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button negative\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n    ';\n } ;\n__p += '\\n  </div>\\n  ';\n if (ctx.preview) { ;\n__p += '\\n  <div class=\"eight wide column\">\\n    <div class=\"ui top attached block header\">\\n      ' +\n((__t = (ctx.t('Preview'))) == null ? '' : __t) +\n'\\n    </div>\\n    <div class=\"ui bottom attached segment\" ref=\"preview\">\\n      ' +\n((__t = (ctx.preview)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (ctx.componentInfo.help) { ;\n__p += '\\n    <div class=\"ui secondary segment formio-settings-help\">\\n      ' +\n((__t = ( ctx.componentInfo.help )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"ui button primary\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button negative\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderEditForm/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderEditForm/index.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/semantic/builderEditForm/index.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderEditForm/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderEditForm/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderPlaceholder/form.ejs.js":
-/*!***************************************************************!*\
-  !*** ./lib/templates/semantic/builderPlaceholder/form.ejs.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div\\n  class=\"ui info message no-drag\"\\n  style=\"text-align:center; margin-bottom: 5px;\"\\n  role=\"alert\"\\n  data-noattach=\"true\"\\n  data-position=\"' +\n((__t = (ctx.position)) == null ? '' : __t) +\n'\"\\n>\\n  Drag and Drop a form component\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderPlaceholder/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderPlaceholder/index.js":
-/*!************************************************************!*\
-  !*** ./lib/templates/semantic/builderPlaceholder/index.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderPlaceholder/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderPlaceholder/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderSidebar/form.ejs.js":
-/*!***********************************************************!*\
-  !*** ./lib/templates/semantic/builderSidebar/form.ejs.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"builder-sidebar-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\" class=\"ui segments\" ref=\"sidebar\">\\n  ';\n ctx.groups.forEach(function(group) { ;\n__p += '\\n    ' +\n((__t = ( group )) == null ? '' : __t) +\n'\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderSidebar/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderSidebar/index.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/semantic/builderSidebar/index.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderSidebar/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderSidebar/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderSidebarGroup/form.ejs.js":
-/*!****************************************************************!*\
-  !*** ./lib/templates/semantic/builderSidebarGroup/form.ejs.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui segment secondary form-builder-panel\" style=\"padding: 0\" ref=\"group-panel-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\">\\n  <div class=\"form-builder-group-header\">\\n    <h5 class=\"panel-title\">\\n      <button\\n        class=\"ui button basic fluid builder-group-button\"\\n        type=\"button\"\\n        data-toggle=\"collapse\"\\n        data-target=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-parent=\"' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n        ref=\"sidebar-anchor\"\\n      >\\n        ' +\n((__t = (ctx.t(ctx.group.title))) == null ? '' : __t) +\n'\\n      </button>\\n    </h5>\\n  </div>\\n</div>\\n<div class=\"ui segment\" style=\"padding: 0\">\\n  <div\\n    class=\"panel-collapse collapse ' +\n((__t = (ctx.group.default ? ' in' : '')) == null ? '' : __t) +\n'\"\\n    data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n    data-default=\"' +\n((__t = (ctx.group.default)) == null ? '' : __t) +\n'\"\\n    id=\"group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n    ref=\"sidebar-group\"\\n  >\\n    <div id=\"group-container-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\" class=\"card-body panel-body no-drop\" ref=\"sidebar-container\">\\n      ';\n ctx.group.componentOrder.forEach(function(componentKey) { ;\n__p += '\\n      <span\\n        data-group=\"' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-key=\"' +\n((__t = (ctx.group.components[componentKey].key)) == null ? '' : __t) +\n'\"\\n        data-type=\"' +\n((__t = (ctx.group.components[componentKey].schema.type)) == null ? '' : __t) +\n'\"\\n        class=\"ui button mini primary fluid formcomponent drag-copy\"\\n      >\\n        ';\n if (ctx.group.components[componentKey].icon) { ;\n__p += '\\n          <i class=\"' +\n((__t = (ctx.iconClass(ctx.group.components[componentKey].icon))) == null ? '' : __t) +\n'\" style=\"margin-right: 5px;\"></i>\\n        ';\n } ;\n__p += '\\n        ' +\n((__t = (ctx.t(ctx.group.components[componentKey].title))) == null ? '' : __t) +\n'\\n        </span>\\n      ';\n }) ;\n__p += '\\n      ' +\n((__t = (ctx.subgroups.join(''))) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderSidebarGroup/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderSidebarGroup/index.js":
-/*!*************************************************************!*\
-  !*** ./lib/templates/semantic/builderSidebarGroup/index.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderSidebarGroup/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderSidebarGroup/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderWizard/form.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/semantic/builderWizard/form.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"formio builder ui grid formbuilder\">\\n  <div class=\"four wide column formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"twelve wide column formarea\">\\n    <div class=\"ui breadcrumb\" style=\"margin-bottom: 0.5em\">\\n      ';\n ctx.pages.forEach(function(page, pageIndex) { ;\n__p += '\\n        <div title=\"' +\n((__t = (page.title)) == null ? '' : __t) +\n'\" class=\"';\n if (pageIndex === ctx.self.page) { ;\n__p += ' active section ';\n } else { ;\n__p += ' section ';\n } ;\n__p += ' wizard-page-label\" ref=\"gotoPage\">' +\n((__t = (page.title)) == null ? '' : __t) +\n'</div>\\n        <div class=\"divider\">/</div>\\n      ';\n }) ;\n__p += '\\n      <div title=\"' +\n((__t = (ctx.t('Create Page'))) == null ? '' : __t) +\n'\" class=\"section wizard-page-label\" ref=\"addPage\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Page'))) == null ? '' : __t) +\n'</div>\\n    </div>\\n    <div ref=\"form\">\\n      ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderWizard/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/builderWizard/index.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/semantic/builderWizard/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/builderWizard/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/builderWizard/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/button/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/button/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"button\"\\n  class=\"ui button ' +\n((__t = (ctx.transform('theme', ctx.component.theme))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.component.customClass)) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>\\n';\n if (ctx.component.leftIcon) { ;\n__p += '<i class=\"' +\n((__t = (ctx.component.leftIcon)) == null ? '' : __t) +\n'\"></i>&nbsp;';\n } ;\n__p += '\\n' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n';\n if (ctx.component.rightIcon) { ;\n__p += '&nbsp;<i class=\"' +\n((__t = (ctx.component.rightIcon)) == null ? '' : __t) +\n'\"></i>';\n } ;\n__p += '\\n</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n<div ref=\"buttonMessageContainer\">\\n  <span class=\"help-block\" ref=\"buttonMessage\"></span>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/button/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/button/html.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/button/html.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/button/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/button/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/button/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/button/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/button/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/button/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/checkbox/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/checkbox/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui checkbox\">\\n  <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n    ref=\"input\"\\n    id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\"\\n    ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n    ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.checked) { ;\n__p += 'checked=true';\n } ;\n__p += '\\n    >\\n  </' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n  <label class=\"' +\n((__t = (ctx.input.labelClass)) == null ? '' : __t) +\n'\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n    ';\n if (!ctx.self.labelIsHidden()) { ;\n__p += '<span>' +\n((__t = (ctx.input.label)) == null ? '' : __t) +\n'</span>';\n } ;\n__p += '\\n    ';\n if (ctx.tooltip) { ;\n__p += '\\n      <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n      </span>\\n    ';\n } ;\n__p += '\\n  </label>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/checkbox/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/checkbox/html.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/checkbox/html.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"' +\n((__t = (ctx.input.labelClass)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n    ';\n if (!ctx.self.labelIsHidden()) { ;\n__p += '<span>' +\n((__t = (ctx.input.label)) == null ? '' : __t) +\n'</span>';\n } ;\n__p += '\\n</label>\\n<div ref=\"value\">';\n if (ctx.checked) { ;\n__p += 'True';\n } else { ;\n__p += 'False';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/checkbox/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/checkbox/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/checkbox/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/checkbox/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/checkbox/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/checkbox/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/columns/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/semantic/columns/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\" style=\"width: 100%\">\\n    ';\n ctx.component.columns.forEach(function(column, index) { ;\n__p += '\\n    <div class=\"' +\n((__t = (ctx.transform('columns', column.width))) == null ? '' : __t) +\n' wide column\" ref=\"' +\n((__t = (ctx.columnKey)) == null ? '' : __t) +\n'\">\\n      ' +\n((__t = (ctx.columnComponents[index])) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/columns/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/columns/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/columns/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/columns/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/columns/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/component/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/component/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\" class=\"field ' +\n((__t = (ctx.classes)) == null ? '' : __t) +\n'\"';\n if (ctx.styles) { ;\n__p += ' styles=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\"';\n } ;\n__p += ' ref=\"component\">\\n  ';\n if (ctx.visible) { ;\n__p += '\\n  ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  <div ref=\"messageContainer\"></div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/component/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/component/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/component/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/component/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/component/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/cssClasses.js":
-/*!**********************************************!*\
-  !*** ./lib/templates/semantic/cssClasses.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\nvar _default = {\n  'has-error': 'error',\n  'is-invalid': 'error',\n  'formio-tab-panel-active': 'active',\n  'formio-tab-link-active': 'active',\n  'formio-tab-link-container-active': 'active'\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/cssClasses.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/datagrid/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/datagrid/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table datagrid-table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <span data-tooltip=\"' +\n((__t = (col.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n                      <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n            </span>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button ui icon button\"><i aria-hidden=\"true\" class=\"bars icon\"></i></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn-xss ui icon button secondary formio-' +\n((__t = ( ctx.component.type )) == null ? '' : __t) +\n'-remove\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.builder) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/datagrid/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/datagrid/html.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/datagrid/html.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table datagrid-table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.rows.forEach(function(row) { ;\n__p += '\\n    <tr>\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/datagrid/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/datagrid/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/datagrid/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/datagrid/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/datagrid/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/datagrid/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/day/form.ejs.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/day/form.ejs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  ';\n if (ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"four wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showMonth) { ;\n__p += '\\n  <div class=\"five wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-month\" class=\"\">' +\n((__t = (ctx.t('Month'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.month)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"four wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showYear) { ;\n__p += '\\n  <div class=\"seven wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-year\" class=\"\">' +\n((__t = (ctx.t('Year'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.year)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n<input name=\"data[day]\" type=\"hidden\" class=\"form-control\" lang=\"en\" value=\"\" ref=\"input\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/day/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/day/index.js":
-/*!*********************************************!*\
-  !*** ./lib/templates/semantic/day/index.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/day/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/day/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/editgrid/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/editgrid/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"editgrid-listgroup ui celled list\">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <div class=\"item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <div class=\"item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"ui button secondary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <div class=\"item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n if (!ctx.readOnly && ctx.hasAddButton) { ;\n__p += '\\n<button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-addRow\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n</button>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/editgrid/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/editgrid/html.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/editgrid/html.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"editgrid-listgroup ui celled list\">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <div class=\"item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <div class=\"item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"ui button secondary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <div class=\"item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/editgrid/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/editgrid/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/editgrid/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/editgrid/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/editgrid/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/editgrid/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/field/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/field/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { ;\n__p += '\\n  ' +\n((__t = ( ctx.render('label', ctx) )) == null ? '' : __t) +\n'\\n';\n } ;\n__p += '\\n' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n';\n if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { ;\n__p += '\\n  <label class=\"' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.t(ctx.component.label))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.tooltip) { ;\n__p += '\\n    <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n    </span>\\n  ';\n } ;\n__p += '\\n  </label>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.description) { ;\n__p += '\\n  <div class=\"help-block\">' +\n((__t = (ctx.t(ctx.component.description))) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/field/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/field/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/field/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/field/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/field/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/fieldset/form.ejs.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/fieldset/form.ejs.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<fieldset>\\n  <legend ref=\"header\" class=\"' +\n((__t = (ctx.component.collapsible ? 'formio-clickable' : '')) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.t(ctx.component.legend))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.tooltip) { ;\n__p += '\\n      <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n    ';\n } ;\n__p += '\\n  </legend>  ';\n if (!ctx.collapsed) { ;\n__p += '\\n  <div class=\"card-body\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</fieldset>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/fieldset/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/fieldset/index.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/fieldset/index.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/fieldset/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/fieldset/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/file/form.ejs.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/file/form.ejs.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.component.image) { ;\n__p += '\\n<div class=\"ui celled list\">\\n  <div class=\"item\">\\n    <div class=\"ui grid\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"one wide column\"></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"';\n if (ctx.self.hasTypes) { ;\n__p += 'nine';\n } else { ;\n__p += 'twelve';\n } ;\n__p += ' wide column\"><strong>' +\n((__t = (ctx.t('File Name'))) == null ? '' : __t) +\n'</strong></div>\\n      <div class=\"three wide column\"><strong>' +\n((__t = (ctx.t('Size'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"three wide column\"><strong>' +\n((__t = (ctx.t('Type'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <li class=\"list-group-item\">\\n    <div class=\"ui grid\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"one wide column\"><i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"twelve wide column\">\\n        ';\n if (ctx.component.uploadOnly) { ;\n__p += '\\n          ' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\\n        ';\n } else { ;\n__p += '\\n          <a href=\"' +\n((__t = (file.url)) == null ? '' : __t) +\n'\" target=\"_blank\" ref=\"fileLink\">' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'</a>\\n        ';\n } ;\n__p += '\\n      </div>\\n      <div class=\"three wide column\">' +\n((__t = (ctx.fileSize(file.size))) == null ? '' : __t) +\n'</div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"three wide column\">\\n          <select class=\"file-type\">\\n            ';\n ctx.component.fileTypes.map(function(type) { ;\n__p += '\\n              <option class=\"test\" value=\"' +\n((__t = ( type.value )) == null ? '' : __t) +\n'\" ';\n if (type.value === file.fileType) { ;\n__p += 'selected=\"selected\"';\n } ;\n__p += '>' +\n((__t = ( type.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n          </select>\\n        </div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <div>\\n    <span>\\n      <img ref=\"fileImage\" src=\"\" alt=\"' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\" style=\"width:' +\n((__t = (ctx.component.imageSize)) == null ? '' : __t) +\n'px\" />\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i>\\n      ';\n } ;\n__p += '\\n    </span>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\n if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { ;\n__p += '\\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\\n';\n if (ctx.self.useWebViewCamera) { ;\n__p += '\\n<div class=\"fileSelector\">\\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> ' +\n((__t = (ctx.t('Gallery'))) == null ? '' : __t) +\n'</button>\\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Camera'))) == null ? '' : __t) +\n'</button>\\n</div>\\n';\n } else if (!ctx.self.cameraMode) { ;\n__p += '\\n<div class=\"fileSelector\" ref=\"fileDrop\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('cloud-upload'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Drop files to attach,'))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.image) { ;\n__p += '\\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Use Camera,'))) == null ? '' : __t) +\n'</a>\\n    ';\n } ;\n__p += '\\n    ' +\n((__t = (ctx.t('or'))) == null ? '' : __t) +\n' <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">' +\n((__t = (ctx.t('browse'))) == null ? '' : __t) +\n'</a>\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\\n</div>\\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Take Picture'))) == null ? '' : __t) +\n'</button>\\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">' +\n((__t = (ctx.t('Switch to file upload'))) == null ? '' : __t) +\n'</button>\\n';\n } ;\n__p += '\\n';\n } ;\n__p += '\\n';\n ctx.statuses.forEach(function(status) { ;\n__p += '\\n<div class=\"file ' +\n((__t = (ctx.statuses.status === 'error' ? ' has-error' : '')) == null ? '' : __t) +\n'\">\\n  <div class=\"ui grid\">\\n    <div class=\"fileName control-label thirteen wide column\">' +\n((__t = (status.originalName)) == null ? '' : __t) +\n' <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"fileStatusRemove\"></i></div>\\n    <div class=\"fileSize control-label three wide column\">' +\n((__t = (ctx.fileSize(status.size))) == null ? '' : __t) +\n'</div>\\n  </div>\\n  <div class=\"ui grid\">\\n    <div class=\"thirteen wide column\">\\n      ';\n if (status.status === 'progress') { ;\n__p += '\\n      <div class=\"progress\">\\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: ' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\">\\n          <span class=\"sr-only\">' +\n((__t = (status.progress)) == null ? '' : __t) +\n'% ' +\n((__t = (ctx.t('Complete'))) == null ? '' : __t) +\n'</span>\\n        </div>\\n      </div>\\n      ';\n } else { ;\n__p += '\\n      <div class=\"bg-' +\n((__t = (status.status)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(status.message))) == null ? '' : __t) +\n'</div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n</div>\\n';\n }) ;\n__p += '\\n';\n if (!ctx.component.storage || ctx.support.hasWarning) { ;\n__p += '\\n<div class=\"alert alert-warning\">\\n  ';\n if (!ctx.component.storage) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('No storage has been set for this field. File uploads are disabled until storage is set up.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.filereader) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('File API & FileReader API not supported.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.formdata) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's FormData is not supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.progress) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's upload progress isn't supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/file/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/file/index.js":
-/*!**********************************************!*\
-  !*** ./lib/templates/semantic/file/index.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/file/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/file/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/icon/form.ejs.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/icon/form.ejs.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<i ref=\"' +\n((__t = (ctx.ref)) == null ? '' : __t) +\n'\" class=\"' +\n((__t = (ctx.className)) == null ? '' : __t) +\n'\" style=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</i>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/icon/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/icon/index.js":
-/*!**********************************************!*\
-  !*** ./lib/templates/semantic/icon/index.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/icon/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/icon/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/iconClass.js":
-/*!*********************************************!*\
-  !*** ./lib/templates/semantic/iconClass.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.string.replace */ \"./node_modules/core-js/modules/es.string.replace.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _default = function _default(iconset, name, spinning) {\n  var icons = {\n    'plus-squre-o': 'plus square outline',\n    'minus-squre-o': 'minus square outline',\n    'question-sign': 'question circle',\n    'remove-circle': 'trash alternate outline',\n    'new-window': 'external alternate',\n    'files-o': 'file outline',\n    'move': 'arrows alternate',\n    'link': 'linkify'\n  };\n\n  if (icons.hasOwnProperty(name)) {\n    name = icons[name];\n  }\n\n  name = name || '';\n  name = name.replace(/-/g, ' ');\n  name = name.replace(/ o$/, ' outline');\n  return spinning ? \"icon \".concat(name, \" loading\") : \"icon \".concat(name);\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/iconClass.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/index.js":
-/*!*****************************************!*\
-  !*** ./lib/templates/semantic/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\n__webpack_require__(/*! core-js/modules/es.symbol */ \"./node_modules/core-js/modules/es.symbol.js\");\n\n__webpack_require__(/*! core-js/modules/es.array.filter */ \"./node_modules/core-js/modules/es.array.filter.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptor */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptor.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.get-own-property-descriptors */ \"./node_modules/core-js/modules/es.object.get-own-property-descriptors.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.keys */ \"./node_modules/core-js/modules/es.object.keys.js\");\n\n__webpack_require__(/*! core-js/modules/es.object.to-string */ \"./node_modules/core-js/modules/es.object.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/es.regexp.to-string */ \"./node_modules/core-js/modules/es.regexp.to-string.js\");\n\n__webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ \"./node_modules/core-js/modules/web.dom-collections.for-each.js\");\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _builder = _interopRequireDefault(__webpack_require__(/*! ./builder */ \"./lib/templates/semantic/builder/index.js\"));\n\nvar _builderComponent = _interopRequireDefault(__webpack_require__(/*! ./builderComponent */ \"./lib/templates/semantic/builderComponent/index.js\"));\n\nvar _builderComponents = _interopRequireDefault(__webpack_require__(/*! ./builderComponents */ \"./lib/templates/semantic/builderComponents/index.js\"));\n\nvar _builderEditForm = _interopRequireDefault(__webpack_require__(/*! ./builderEditForm */ \"./lib/templates/semantic/builderEditForm/index.js\"));\n\nvar _builderPlaceholder = _interopRequireDefault(__webpack_require__(/*! ./builderPlaceholder */ \"./lib/templates/semantic/builderPlaceholder/index.js\"));\n\nvar _builderSidebar = _interopRequireDefault(__webpack_require__(/*! ./builderSidebar */ \"./lib/templates/semantic/builderSidebar/index.js\"));\n\nvar _builderSidebarGroup = _interopRequireDefault(__webpack_require__(/*! ./builderSidebarGroup */ \"./lib/templates/semantic/builderSidebarGroup/index.js\"));\n\nvar _builderWizard = _interopRequireDefault(__webpack_require__(/*! ./builderWizard */ \"./lib/templates/semantic/builderWizard/index.js\"));\n\nvar _button = _interopRequireDefault(__webpack_require__(/*! ./button */ \"./lib/templates/semantic/button/index.js\"));\n\nvar _checkbox = _interopRequireDefault(__webpack_require__(/*! ./checkbox */ \"./lib/templates/semantic/checkbox/index.js\"));\n\nvar _columns = _interopRequireDefault(__webpack_require__(/*! ./columns */ \"./lib/templates/semantic/columns/index.js\"));\n\nvar _component = _interopRequireDefault(__webpack_require__(/*! ./component */ \"./lib/templates/semantic/component/index.js\"));\n\nvar _datagrid = _interopRequireDefault(__webpack_require__(/*! ./datagrid */ \"./lib/templates/semantic/datagrid/index.js\"));\n\nvar _day = _interopRequireDefault(__webpack_require__(/*! ./day */ \"./lib/templates/semantic/day/index.js\"));\n\nvar _editgrid = _interopRequireDefault(__webpack_require__(/*! ./editgrid */ \"./lib/templates/semantic/editgrid/index.js\"));\n\nvar _field = _interopRequireDefault(__webpack_require__(/*! ./field */ \"./lib/templates/semantic/field/index.js\"));\n\nvar _fieldset = _interopRequireDefault(__webpack_require__(/*! ./fieldset */ \"./lib/templates/semantic/fieldset/index.js\"));\n\nvar _file = _interopRequireDefault(__webpack_require__(/*! ./file */ \"./lib/templates/semantic/file/index.js\"));\n\nvar _icon = _interopRequireDefault(__webpack_require__(/*! ./icon */ \"./lib/templates/semantic/icon/index.js\"));\n\nvar _iconClass = _interopRequireDefault(__webpack_require__(/*! ./iconClass */ \"./lib/templates/semantic/iconClass.js\"));\n\nvar _input = _interopRequireDefault(__webpack_require__(/*! ./input */ \"./lib/templates/semantic/input/index.js\"));\n\nvar _label = _interopRequireDefault(__webpack_require__(/*! ./label */ \"./lib/templates/semantic/label/index.js\"));\n\nvar _loader = _interopRequireDefault(__webpack_require__(/*! ./loader */ \"./lib/templates/semantic/loader/index.js\"));\n\nvar _loading = _interopRequireDefault(__webpack_require__(/*! ./loading */ \"./lib/templates/semantic/loading/index.js\"));\n\nvar _message = _interopRequireDefault(__webpack_require__(/*! ./message */ \"./lib/templates/semantic/message/index.js\"));\n\nvar _multiValueRow = _interopRequireDefault(__webpack_require__(/*! ./multiValueRow */ \"./lib/templates/semantic/multiValueRow/index.js\"));\n\nvar _multiValueTable = _interopRequireDefault(__webpack_require__(/*! ./multiValueTable */ \"./lib/templates/semantic/multiValueTable/index.js\"));\n\nvar _panel = _interopRequireDefault(__webpack_require__(/*! ./panel */ \"./lib/templates/semantic/panel/index.js\"));\n\nvar _radio = _interopRequireDefault(__webpack_require__(/*! ./radio */ \"./lib/templates/semantic/radio/index.js\"));\n\nvar _resourceAdd = _interopRequireDefault(__webpack_require__(/*! ./resourceAdd */ \"./lib/templates/semantic/resourceAdd/index.js\"));\n\nvar _select = _interopRequireDefault(__webpack_require__(/*! ./select */ \"./lib/templates/semantic/select/index.js\"));\n\nvar _selectOption = _interopRequireDefault(__webpack_require__(/*! ./selectOption */ \"./lib/templates/semantic/selectOption/index.js\"));\n\nvar _signature = _interopRequireDefault(__webpack_require__(/*! ./signature */ \"./lib/templates/semantic/signature/index.js\"));\n\nvar _survey = _interopRequireDefault(__webpack_require__(/*! ./survey */ \"./lib/templates/semantic/survey/index.js\"));\n\nvar _tab = _interopRequireDefault(__webpack_require__(/*! ./tab */ \"./lib/templates/semantic/tab/index.js\"));\n\nvar _table = _interopRequireDefault(__webpack_require__(/*! ./table */ \"./lib/templates/semantic/table/index.js\"));\n\nvar _tree = _interopRequireDefault(__webpack_require__(/*! ./tree */ \"./lib/templates/semantic/tree/index.js\"));\n\nvar _partials = _interopRequireDefault(__webpack_require__(/*! ./tree/partials */ \"./lib/templates/semantic/tree/partials/index.js\"));\n\nvar _webform = _interopRequireDefault(__webpack_require__(/*! ./webform */ \"./lib/templates/semantic/webform/index.js\"));\n\nvar _well = _interopRequireDefault(__webpack_require__(/*! ./well */ \"./lib/templates/semantic/well/index.js\"));\n\nvar _wizard = _interopRequireDefault(__webpack_require__(/*! ./wizard */ \"./lib/templates/semantic/wizard/index.js\"));\n\nvar _wizardHeader = _interopRequireDefault(__webpack_require__(/*! ./wizardHeader */ \"./lib/templates/semantic/wizardHeader/index.js\"));\n\nvar _wizardNav = _interopRequireDefault(__webpack_require__(/*! ./wizardNav */ \"./lib/templates/semantic/wizardNav/index.js\"));\n\nvar _cssClasses = _interopRequireDefault(__webpack_require__(/*! ./cssClasses */ \"./lib/templates/semantic/cssClasses.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }\n\nfunction _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }\n\nfunction _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }\n\nvar _default = _objectSpread({\n  transform: function transform(type, text) {\n    if (!text) {\n      return text;\n    }\n\n    var columns = {\n      '1': 'one',\n      '2': 'two',\n      '3': 'three',\n      '4': 'four',\n      '5': 'five',\n      '6': 'six',\n      '7': 'seven',\n      '8': 'eight',\n      '9': 'nine',\n      '10': 'ten',\n      '11': 'eleven',\n      '12': 'twelve',\n      '13': 'thirteen',\n      '14': 'fourteen',\n      '15': 'fifteen',\n      '16': 'sixteen'\n    };\n\n    switch (type) {\n      case 'columns':\n        return columns.hasOwnProperty(text.toString()) ? columns[text.toString()] : text;\n\n      case 'class':\n        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;\n    }\n\n    return text;\n  },\n  defaultIconset: 'icon',\n  iconClass: _iconClass.default,\n  cssClasses: _cssClasses.default,\n  builder: _builder.default,\n  builderComponent: _builderComponent.default,\n  builderComponents: _builderComponents.default,\n  builderEditForm: _builderEditForm.default,\n  builderPlaceholder: _builderPlaceholder.default,\n  builderSidebar: _builderSidebar.default,\n  builderSidebarGroup: _builderSidebarGroup.default,\n  builderWizard: _builderWizard.default,\n  button: _button.default,\n  checkbox: _checkbox.default,\n  columns: _columns.default,\n  component: _component.default,\n  datagrid: _datagrid.default,\n  day: _day.default,\n  editgrid: _editgrid.default,\n  field: _field.default,\n  fieldset: _fieldset.default,\n  file: _file.default,\n  icon: _icon.default,\n  input: _input.default,\n  label: _label.default,\n  loader: _loader.default,\n  loading: _loading.default,\n  message: _message.default,\n  multiValueRow: _multiValueRow.default,\n  multiValueTable: _multiValueTable.default,\n  panel: _panel.default,\n  radio: _radio.default,\n  resourceAdd: _resourceAdd.default,\n  select: _select.default,\n  selectOption: _selectOption.default,\n  signature: _signature.default,\n  survey: _survey.default,\n  tab: _tab.default,\n  tree: _tree.default\n}, _partials.default, {\n  table: _table.default,\n  webform: _webform.default,\n  well: _well.default,\n  wizard: _wizard.default,\n  wizardHeader: _wizardHeader.default,\n  wizardNav: _wizardNav.default\n});\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/input/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/input/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui ' +\n((__t = (ctx.component.editor ? '' : 'input')) == null ? '' : __t) +\n' fluid ' +\n((__t = ( ctx.component.suffix ? ' right' : '' )) == null ? '' : __t) +\n'' +\n((__t = ( (ctx.component.prefix || ctx.component.suffix) ? ' labeled' : '' )) == null ? '' : __t) +\n'\">\\n';\n if (ctx.component.prefix) { ;\n__p += '\\n<label class=\"ui label\" ref=\"prefix\">' +\n((__t = (ctx.component.prefix)) == null ? '' : __t) +\n'</label>\\n';\n } ;\n__p += '\\n<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'input')) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n';\n if (ctx.component.showCharCount) { ;\n__p += '\\n<span class=\"ui right floated\" ref=\"charcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.showWordCount) { ;\n__p += '\\n<span class=\"ui right floated\" ref=\"wordcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.suffix) { ;\n__p += '\\n<div class=\"ui label\" ref=\"suffix\">' +\n((__t = (ctx.component.suffix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/input/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/input/html.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/input/html.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = (ctx.value)) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/input/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/input/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/input/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/input/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/input/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/input/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/label/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/label/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ';\n if (!ctx.label.hidden) { ;\n__p += '\\n    ' +\n((__t = ( ctx.t(ctx.component.label) )) == null ? '' : __t) +\n'\\n    ';\n if (ctx.tooltip) { ;\n__p += '\\n      <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n      </span>\\n    ';\n } ;\n__p += '\\n  ';\n } ;\n__p += '\\n</label>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/label/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/label/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/label/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/label/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/label/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/loader/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/loader/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-loader\">\\n  <div class=\"loader-wrapper\">\\n    <div class=\"ui active centered inline loader\"></div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/loader/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/loader/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/loader/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/loader/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/loader/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/loading/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/semantic/loading/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += 'Loading...\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/loading/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/loading/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/loading/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/loading/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/loading/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/message/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/semantic/message/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui pointing red basic label\">\\n  ' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/message/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/message/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/message/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/message/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/message/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/multiValueRow/form.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/semantic/multiValueRow/form.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<tr ref=\"row\">\\n  <td>\\n    ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n  </td>\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <td>\\n    <button type=\"button\" class=\"ui icon button secondary\" ref=\"removeRow\">\\n      <i class=\"trash icon\"></i>\\n    </button>\\n  </td>\\n  ';\n } ;\n__p += '\\n</tr>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/multiValueRow/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/multiValueRow/index.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/semantic/multiValueRow/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/multiValueRow/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/multiValueRow/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/multiValueTable/form.ejs.js":
-/*!************************************************************!*\
-  !*** ./lib/templates/semantic/multiValueTable/form.ejs.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui celled table\">\\n  <tbody>\\n  ' +\n((__t = (ctx.rows)) == null ? '' : __t) +\n'\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <tr>\\n    <td colspan=\"2\">\\n      <button class=\"ui button primary\" ref=\"addButton\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.addAnother))) == null ? '' : __t) +\n'</button>\\n    </td>\\n  </tr>\\n  ';\n } ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/multiValueTable/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/multiValueTable/index.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/semantic/multiValueTable/index.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/multiValueTable/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/multiValueTable/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/panel/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/panel/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<h4 class=\"ui top attached block header ' +\n((__t = (ctx.component.className)) == null ? '' : __t) +\n'\" ref=\"header\">\\n  ';\n if (ctx.component.collapsible) { ;\n__p += '\\n    <i class=\"formio-collapse-icon ' +\n((__t = (ctx.iconClass(ctx.collapsed ? 'plus-square-o' : 'minus-square-o'))) == null ? '' : __t) +\n' text-muted\" data-title=\"Collapse Panel\"></i>\\n  ';\n } ;\n__p += '\\n  ' +\n((__t = (ctx.t(ctx.component.title))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.component.tooltip) { ;\n__p += '\\n    <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n  ';\n } ;\n__p += '\\n</h4>\\n';\n if (!ctx.collapsed || ctx.builder) { ;\n__p += '\\n<div class=\"ui bottom attached segment\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/panel/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/panel/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/panel/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/panel/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/panel/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/radio/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/radio/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"fields ' +\n((__t = (ctx.inline ? 'inline' : 'grouped')) == null ? '' : __t) +\n'\">\\n  ';\n ctx.values.forEach(function(item) { ;\n__p += '\\n  <div class=\"field\">\\n    <div class=\"ui ' +\n((__t = (ctx.input.attr.type==='radio' ? 'radio' : '')) == null ? '' : __t) +\n' checkbox\" ref=\"wrapper\">\\n      <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n        ref=\"input\"\\n        ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n        ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n        ';\n } ;\n__p += '\\n        value=\"' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n        ';\n if (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])) { ;\n__p += '\\n          checked=true\\n        ';\n } ;\n__p += '\\n        id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n      >\\n      <label class=\"\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\">\\n        <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      </label>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/radio/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/radio/html.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/radio/html.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/radio/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/radio/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/radio/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/radio/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/radio/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/radio/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/resourceAdd/form.ejs.js":
-/*!********************************************************!*\
-  !*** ./lib/templates/semantic/resourceAdd/form.ejs.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<table class=\"ui table celled\">\\n  <tbody>\\n    <tr>\\n      <td>\\n        ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n      </td>\\n    </tr>\\n    <tr>\\n      <td colspan=\"2\">\\n        <button class=\"ui button primary\" ref=\"addResource\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>\\n          ' +\n((__t = (ctx.t(ctx.component.addResourceLabel || 'Add Resource'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/resourceAdd/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/resourceAdd/index.js":
-/*!*****************************************************!*\
-  !*** ./lib/templates/semantic/resourceAdd/index.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/resourceAdd/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/resourceAdd/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/select/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/select/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<select\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'selectContainer')) == null ? '' : __t) +\n'\"\\n  class=\"ui search dropdown\"\\n  ' +\n((__t = ( ctx.input.multiple ? 'multiple' : '' )) == null ? '' : __t) +\n'\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.selectOptions)) == null ? '' : __t) +\n'</select>\\n<input type=\"text\"\\n       class=\"formio-select-autocomplete-input\"\\n       ref=\"autocompleteInput\"\\n       ';\n if (ctx.input.attr.autocomplete) { ;\n__p += '\\n       autocomplete=\"' +\n((__t = (ctx.input.attr.autocomplete)) == null ? '' : __t) +\n'\"\\n       ';\n } ;\n__p += '\\n       tabindex=\"-1\"\\n/>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/select/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/select/html.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/select/html.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = ( ctx.self.itemValue(ctx.value) )) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/select/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/select/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/select/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/select/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/select/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/select/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/selectOption/form.ejs.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/semantic/selectOption/form.ejs.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<option ' +\n((__t = ( ctx.selected ? 'selected=\"selected\"' : '' )) == null ? '' : __t) +\n'\\n  value=\"' +\n((__t = (ctx.option.value)) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.attrs) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.attrs[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n  >\\n  ' +\n((__t = (ctx.t(ctx.option.label))) == null ? '' : __t) +\n'\\n</option>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/selectOption/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/selectOption/html.ejs.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/semantic/selectOption/html.ejs.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.selected) { ;\n__p +=\n((__t = (ctx.t(ctx.option.label))) == null ? '' : __t);\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/selectOption/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/selectOption/index.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/selectOption/index.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/selectOption/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/selectOption/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/selectOption/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/signature/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/signature/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p +=\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n<div\\n  class=\"signature-pad-body\"\\n  style=\"width: ' +\n((__t = (ctx.component.width)) == null ? '' : __t) +\n';height: ' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n';padding:0;margin:0;\"\\n  tabindex=\"' +\n((__t = (ctx.component.tabindex || 0)) == null ? '' : __t) +\n'\"\\n  ref=\"padBody\"\\n>\\n\\n  <a class=\"ui basic button mini icon signature-pad-refresh\" ref=\"refresh\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('refresh'))) == null ? '' : __t) +\n'\"></i>\\n  </a>\\n  <canvas class=\"signature-pad-canvas\" height=\"' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n'\" ref=\"canvas\"></canvas>\\n  ';\n if (ctx.required) { ;\n__p += '\\n  <span class=\"form-control-feedback field-required-inline text-danger\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('asterisk'))) == null ? '' : __t) +\n'\"></i>\\n  </span>\\n  ';\n } ;\n__p += '\\n  <img style=\"width: 100%;display: none;\" ref=\"signatureImage\">\\n</div>\\n';\n if (ctx.component.footer) { ;\n__p += '\\n  <div class=\"signature-pad-footer\">\\n    ' +\n((__t = (ctx.t(ctx.component.footer))) == null ? '' : __t) +\n'\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/signature/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/signature/html.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/signature/html.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<img style=\"width: 100%;\" ref=\"signatureImage\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/signature/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/signature/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/signature/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/signature/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/signature/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/signature/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/survey/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/survey/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table striped celled\">\\n  <thead>\\n    <tr>\\n      <th></th>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <th style=\"text-align: center;\">' +\n((__t = (ctx.t(value.label))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <td>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</td>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <td style=\"text-align: center;\">\\n        <input type=\"radio\" name=\"' +\n((__t = ( ctx.self.getInputName(question) )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" id=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-' +\n((__t = (question.value)) == null ? '' : __t) +\n'-' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" ref=\"input\">\\n      </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/survey/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/survey/html.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/survey/html.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table striped celled\">\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <th>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</th>\\n      <td>\\n      ';\n ctx.component.values.forEach(function(item) { ;\n__p += '\\n        ';\n if (ctx.value && ctx.value.hasOwnProperty(question.value) && ctx.value[question.value] === item.value) { ;\n__p += '\\n          ' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'\\n        ';\n } ;\n__p += '\\n      ';\n }) ;\n__p += '\\n      </td>\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/survey/html.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/survey/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/survey/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/survey/form.ejs.js\"));\n\nvar _html = _interopRequireDefault(__webpack_require__(/*! ./html.ejs */ \"./lib/templates/semantic/survey/html.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  html: _html.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/survey/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tab/flat.ejs.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/tab/flat.ejs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <h4 class=\"ui top attached block header\">' +\n((__t = ( ctx.t(tab.label) )) == null ? '' : __t) +\n'</h4>\\n  <div class=\"ui bottom attached segment\">\\n    ' +\n((__t = ( ctx.tabComponents[index] )) == null ? '' : __t) +\n'\\n  </div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/tab/flat.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tab/form.ejs.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/tab/form.ejs.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui top attached tabular menu\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <a class=\"item' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" role=\"presentation\" ref=\"' +\n((__t = (ctx.tabLinkKey)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(tab.label))) == null ? '' : __t) +\n'</a>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n<div role=\"tabpanel\" class=\"ui bottom attached tab segment' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabKey)) == null ? '' : __t) +\n'\"\">' +\n((__t = (ctx.tabComponents[index])) == null ? '' : __t) +\n'</div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/tab/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tab/index.js":
-/*!*********************************************!*\
-  !*** ./lib/templates/semantic/tab/index.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _flat = _interopRequireDefault(__webpack_require__(/*! ./flat.ejs */ \"./lib/templates/semantic/tab/flat.ejs.js\"));\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/tab/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  flat: _flat.default,\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/tab/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/table/form.ejs.js":
-/*!**************************************************!*\
-  !*** ./lib/templates/semantic/table/form.ejs.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n  \">\\n  ';\n if (ctx.component.header && ctx.component.header.length > 0) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.component.header.forEach(function(header) { ;\n__p += '\\n      <th>' +\n((__t = (ctx.t(header))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.tableComponents.forEach(function(row, rowIndex) { ;\n__p += '\\n    <tr ref=\"row-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n      ';\n row.forEach(function(column, colIndex) { ;\n__p += '\\n      <td ref=\"' +\n((__t = (ctx.tableKey)) == null ? '' : __t) +\n'-' +\n((__t = (ctx.rowIndex)) == null ? '' : __t) +\n'\"';\n if (ctx.cellClassName) { ;\n__p += ' class=\"' +\n((__t = (ctx.cellClassName)) == null ? '' : __t) +\n'\"';\n } ;\n__p += '>' +\n((__t = (column)) == null ? '' : __t) +\n'</td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/table/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/table/index.js":
-/*!***********************************************!*\
-  !*** ./lib/templates/semantic/table/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/table/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/table/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tree/form.ejs.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/tree/form.ejs.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.node.isRoot) { ;\n__p += '\\n  <div class=\"ui relaxed list\">\\n  <div class=\"item\" ref=\"root\" role=\"listitem\">\\n  ';\n } else { ;\n__p += '\\n  <div ref=\"node\" class=\"item tree__level\" role=\"listitem\">\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.content) { ;\n__p += '\\n    <div ref=\"content\" class=\"tree__node-content content\">\\n      ' +\n((__t = ( ctx.content )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.childNodes && ctx.childNodes.length) { ;\n__p += '\\n    <div ref=\"childNodes\" class=\"tree__node-children list\" role=\"list\">\\n      ' +\n((__t = ( ctx.childNodes.join('') )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.node.isRoot) { ;\n__p += '\\n    </div>\\n  </div>\\n  ';\n } else { ;\n__p += '\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/tree/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tree/index.js":
-/*!**********************************************!*\
-  !*** ./lib/templates/semantic/tree/index.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/tree/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/tree/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tree/partials/edit.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/semantic/tree/partials/edit.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"node-edit\">\\n  <div ref=\"nodeEdit\">' +\n((__t = ( ctx.children )) == null ? '' : __t) +\n'</div>\\n  ';\n if (!ctx.readOnly) { ;\n__p += '\\n    <div class=\"node-actions\">\\n      <button ref=\"saveNode\" class=\"ui mini primary button saveNode\">' +\n((__t = ( ctx.t('Save') )) == null ? '' : __t) +\n'</button>\\n      <button ref=\"cancelNode\" class=\"ui mini negative button cancelNode\">' +\n((__t = ( ctx.t('Cancel') )) == null ? '' : __t) +\n'\\n    </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/tree/partials/edit.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tree/partials/index.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/semantic/tree/partials/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _edit = _interopRequireDefault(__webpack_require__(/*! ./edit.ejs */ \"./lib/templates/semantic/tree/partials/edit.ejs.js\"));\n\nvar _view = _interopRequireDefault(__webpack_require__(/*! ./view.ejs */ \"./lib/templates/semantic/tree/partials/view.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  treeView: {\n    form: _view.default\n  },\n  treeEdit: {\n    form: _edit.default\n  }\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/tree/partials/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/tree/partials/view.ejs.js":
-/*!**********************************************************!*\
-  !*** ./lib/templates/semantic/tree/partials/view.ejs.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  <div class=\"row\">\\n    ';\n ctx.values.forEach(function(value) { ;\n__p += '\\n    <div class=\"two wide column\">\\n      ' +\n((__t = ( value )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n }) ;\n__p += '\\n    <div class=\"five wide column\">\\n      <div class=\"ui mini right floated buttons\">\\n        ';\n if (ctx.node.hasChildren) { ;\n__p += '\\n        <button ref=\"toggleNode\" class=\"ui button toggleNode\">' +\n((__t = ( ctx.t(ctx.node.collapsed ? 'Expand' : 'Collapse') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        ';\n } ;\n__p += '\\n        ';\n if (!ctx.readOnly) { ;\n__p += '\\n        <button ref=\"addChild\" class=\"ui button primary addChild\">' +\n((__t = ( ctx.t('Add') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        <button ref=\"editNode\" class=\"ui button editNode\">' +\n((__t = ( ctx.t('Edit') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        <button ref=\"removeNode\" class=\"ui button negative removeNode\">' +\n((__t = ( ctx.t('Delete') )) == null ? '' : __t) +\n'</button>\\n        ';\n if (ctx.node.revertAvailable) { ;\n__p += '\\n        <div class=\"or\"></div>\\n        <button ref=\"revertNode\" class=\"ui button negative revertNode\">' +\n((__t = ( ctx.t('Revert') )) == null ? '' : __t) +\n'</button>\\n        ';\n } ;\n__p += '\\n        ';\n } ;\n__p += '\\n      </div>\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/tree/partials/view.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/webform/builder.ejs.js":
-/*!*******************************************************!*\
-  !*** ./lib/templates/semantic/webform/builder.ejs.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui visible message\"><p>' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</p></div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/webform/builder.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/webform/form.ejs.js":
-/*!****************************************************!*\
-  !*** ./lib/templates/semantic/webform/form.ejs.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"' +\n((__t = (ctx.classes)) == null ? '' : __t) +\n' ui form\" ref=\"webform\" novalidate>' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/webform/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/webform/index.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/webform/index.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/webform/form.ejs.js\"));\n\nvar _builder = _interopRequireDefault(__webpack_require__(/*! ./builder.ejs */ \"./lib/templates/semantic/webform/builder.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  builder: _builder.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/webform/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/well/form.ejs.js":
-/*!*************************************************!*\
-  !*** ./lib/templates/semantic/well/form.ejs.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui secondary segment\">\\n  <div class=\"content\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/well/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/well/index.js":
-/*!**********************************************!*\
-  !*** ./lib/templates/semantic/well/index.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/well/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/well/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizard/builder.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/wizard/builder.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-wizard-builder-component-title\">' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizard/builder.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizard/form.ejs.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/wizard/form.ejs.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-wizard-position\">\\n  ' +\n((__t = ( ctx.wizardHeader )) == null ? '' : __t) +\n'\\n  <div class=\"wizard-page\" ref=\"' +\n((__t = (wizardKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.components)) == null ? '' : __t) +\n'\\n  </div>\\n  ' +\n((__t = ( ctx.wizardNav )) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizard/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizard/index.js":
-/*!************************************************!*\
-  !*** ./lib/templates/semantic/wizard/index.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/wizard/form.ejs.js\"));\n\nvar _builder = _interopRequireDefault(__webpack_require__(/*! ./builder.ejs */ \"./lib/templates/semantic/wizard/builder.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default,\n  builder: _builder.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizard/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizardHeader/form.ejs.js":
-/*!*********************************************************!*\
-  !*** ./lib/templates/semantic/wizardHeader/form.ejs.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<nav aria-label=\"navigation\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-header\">\\n  <div class=\"ui steps\">\\n    ';\n ctx.panels.forEach(function(panel, index) { ;\n__p += '\\n    <a class=\"' +\n((__t = (ctx.currentPage === index ? ' active' : '')) == null ? '' : __t) +\n' step\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-link\">\\n      <div class=\"content\">\\n        <div class=\"title\">' +\n((__t = (panel.title)) == null ? '' : __t) +\n'</div>\\n      </div>\\n    </a>\\n    ';\n }) ;\n__p += '\\n  </div>\\n</nav>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizardHeader/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizardHeader/index.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/wizardHeader/index.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/wizardHeader/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizardHeader/index.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizardNav/form.ejs.js":
-/*!******************************************************!*\
-  !*** ./lib/templates/semantic/wizardNav/form.ejs.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui horizontal list\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-nav\">\\n  ';\n if (ctx.buttons.cancel) { ;\n__p += '\\n  <div class=\"item\">\\n    <button class=\"ui button secondary btn-wizard-nav-cancel\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-cancel\">' +\n((__t = (ctx.t('cancel'))) == null ? '' : __t) +\n'</button>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.previous) { ;\n__p += '\\n  <div class=\"item\">\\n    <button class=\"ui button primary btn-wizard-nav-previous\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-previous\">' +\n((__t = (ctx.t('previous'))) == null ? '' : __t) +\n'</button>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.next) { ;\n__p += '\\n  <div class=\"item\">\\n    <button class=\"ui button primary btn-wizard-nav-next\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-next\">' +\n((__t = (ctx.t('next'))) == null ? '' : __t) +\n'</button>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.submit) { ;\n__p += '\\n  <div class=\"item\">\\n    <button class=\"ui button primary btn-wizard-nav-submit\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-submit\">' +\n((__t = (ctx.t('submit'))) == null ? '' : __t) +\n'</button>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizardNav/form.ejs.js?");
-
-/***/ }),
-
-/***/ "./lib/templates/semantic/wizardNav/index.js":
-/*!***************************************************!*\
-  !*** ./lib/templates/semantic/wizardNav/index.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _form = _interopRequireDefault(__webpack_require__(/*! ./form.ejs */ \"./lib/templates/semantic/wizardNav/form.ejs.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = {\n  form: _form.default\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/semantic/wizardNav/index.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _bootstrap = _interopRequireDefault(__webpack_require__(/*! ./bootstrap */ \"./lib/templates/bootstrap/index.js\"));\n\nvar _bootstrap2 = _interopRequireDefault(__webpack_require__(/*! @formio/bootstrap3 */ \"./node_modules/@formio/bootstrap3/lib/index.js\"));\n\nvar _semantic = _interopRequireDefault(__webpack_require__(/*! @formio/semantic */ \"./node_modules/@formio/semantic/lib/index.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// Deprecated. Semantic and bootstrap3 will be removed in 5.x.\n// Use external modules instead.\nvar _default = {\n  bootstrap: _bootstrap.default,\n  bootstrap3: _bootstrap2.default.templates.bootstrap3,\n  semantic: _semantic.default.templates.semantic\n};\nexports.default = _default;\n\n//# sourceURL=webpack:///./lib/templates/index.js?");
 
 /***/ }),
 
@@ -4765,6 +2703,2070 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return _typeof; });\nfunction _typeof2(obj) { if (typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : typeof obj; }; } return _typeof2(obj); }\n\nfunction _typeof(obj) {\n  if (typeof Symbol === \"function\" && _typeof2(Symbol.iterator) === \"symbol\") {\n    _typeof = function _typeof(obj) {\n      return _typeof2(obj);\n    };\n  } else {\n    _typeof = function _typeof(obj) {\n      return obj && typeof Symbol === \"function\" && obj.constructor === Symbol && obj !== Symbol.prototype ? \"symbol\" : _typeof2(obj);\n    };\n  }\n\n  return _typeof(obj);\n}\n\n//# sourceURL=webpack:///./node_modules/@babel/runtime/helpers/esm/typeof.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/index.js":
+/*!******************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/index.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst templates_1 = __webpack_require__(/*! ./templates */ \"./node_modules/@formio/bootstrap3/lib/templates/index.js\");\nexports.default = {\n    framework: 'bootstrap3',\n    templates: templates_1.default,\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/form.ejs.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/form.ejs.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio builder row formbuilder\">\\n  <div class=\"col-xs-4 col-sm-3 col-md-2 formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"col-xs-8 col-sm-9 col-md-10 formarea\" ref=\"form\">\\n    ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/form.ejs.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/form.ejs.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\" data-noattach=\"true\">\\n    <div class=\"btn btn-xxs btn-danger component-settings-button component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"btn btn-xxs btn-default component-settings-button component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/index.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/index.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/form.ejs.js":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/form.ejs.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-components drag-container formio-builder-' +\n((__t = (ctx.type)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/index.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/index.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/form.ejs.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/form.ejs.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"row\">\\n  <div class=\"col col-sm-6\">\\n    <p class=\"lead\">' +\n((__t = (ctx.t(ctx.componentInfo.title))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.t('Component'))) == null ? '' : __t) +\n'</p>\\n  </div>\\n  <div class=\"col col-sm-6\">\\n    <div class=\"pull-right\" style=\"margin-right: 20px; margin-top: 10px\">\\n      <a href=\"' +\n((__t = (ctx.componentInfo.documentation)) == null ? '' : __t) +\n'\" target=\"_blank\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('new-window'))) == null ? '' : __t) +\n'\"> ' +\n((__t = (ctx.t('Help'))) == null ? '' : __t) +\n'</i>\\n      </a>\\n    </div>\\n  </div>\\n</div>\\n<div class=\"row\">\\n  <div class=\"col ';\n if (ctx.preview) { ;\n__p += 'col-sm-6';\n } else { ;\n__p += 'col-sm-12';\n } ;\n__p += '\">\\n    <div ref=\"editForm\">\\n        ' +\n((__t = (ctx.editForm)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (!ctx.preview) { ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"btn btn-success\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-danger\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n    ';\n } ;\n__p += '\\n  </div>\\n  ';\n if (ctx.preview) { ;\n__p += '\\n  <div class=\"col col-sm-6\">\\n    <div class=\"panel panel-default preview-panel\">\\n      <div class=\"panel-heading\">\\n        <h3 class=\"panel-title\">' +\n((__t = (ctx.t('Preview'))) == null ? '' : __t) +\n'</h3>\\n      </div>\\n      <div class=\"panel-body\">\\n        <div class=\"component-preview\" ref=\"preview\">\\n          ' +\n((__t = (ctx.preview)) == null ? '' : __t) +\n'\\n        </div>\\n      </div>\\n    </div>\\n    ';\n if (ctx.componentInfo.help) { ;\n__p += '\\n    <div class=\"well formio-settings-help\">\\n      ' +\n((__t = ( ctx.componentInfo.help )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"btn btn-success\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"btn btn-danger\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/index.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/index.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/form.ejs.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/form.ejs.js ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div\\n  class=\"alert alert-info no-drag\"\\n  style=\"text-align:center; margin-bottom: 5px;\"\\n  role=\"alert\"\\n  data-noattach=\"true\"\\n  data-position=\"' +\n((__t = (ctx.position)) == null ? '' : __t) +\n'\"\\n>\\n  ' +\n((__t = (ctx.t('Drag and Drop a form component'))) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/index.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/index.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/form.ejs.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/form.ejs.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\" class=\"panel-group builder-sidebar' +\n((__t = (ctx.scrollEnabled ? ' builder-sidebar_scroll' : '')) == null ? '' : __t) +\n'\" ref=\"sidebar\">\\n  ';\n ctx.groups.forEach(function(group) { ;\n__p += '\\n    ' +\n((__t = ( group )) == null ? '' : __t) +\n'\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/index.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/index.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js":
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\">\\n  <div class=\"panel-heading form-builder-group-header\">\\n    <h5 class=\"panel-title\">\\n      <button\\n        class=\"btn btn-block builder-group-button\"\\n        type=\"button\"\\n        data-toggle=\"collapse\"\\n        data-target=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n        href=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        ref=\"sidebar-anchor\"\\n      >\\n        ' +\n((__t = (ctx.t(ctx.group.title))) == null ? '' : __t) +\n'\\n      </button>\\n    </h5>\\n  </div>\\n  <div\\n    id=\"group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n    class=\"panel-collapse collapse' +\n((__t = (ctx.group.default ? ' in' : '')) == null ? '' : __t) +\n'\"\\n    data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n    data-default=\"' +\n((__t = (ctx.group.default)) == null ? '' : __t) +\n'\"\\n    ref=\"sidebar-group\"\\n  >\\n    <div id=\"group-container-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\\n      ';\n ctx.group.componentOrder.forEach(function(componentKey) { ;\n__p += '\\n      <span\\n        data-group=\"' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-key=\"' +\n((__t = (ctx.group.components[componentKey].key)) == null ? '' : __t) +\n'\"\\n        data-type=\"' +\n((__t = (ctx.group.components[componentKey].schema.type)) == null ? '' : __t) +\n'\"\\n        class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\"\\n      >\\n        ';\n if (ctx.group.components[componentKey].icon) { ;\n__p += '\\n          <i class=\"' +\n((__t = (ctx.iconClass(ctx.group.components[componentKey].icon))) == null ? '' : __t) +\n'\" style=\"margin-right: 5px;\"></i>\\n        ';\n } ;\n__p += '\\n        ' +\n((__t = (ctx.t(ctx.group.components[componentKey].title))) == null ? '' : __t) +\n'\\n      </span>\\n      ';\n }) ;\n__p += '\\n      ' +\n((__t = (ctx.subgroups.join(''))) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/index.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/index.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/form.ejs.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/form.ejs.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.columns.forEach(function(column, index) { ;\n__p += '\\n<div class=\"col\\n    col-sm-' +\n((__t = (column.width)) == null ? '' : __t) +\n'\\n    col-sm-offset-' +\n((__t = (column.offset)) == null ? '' : __t) +\n'\\n    col-sm-push-' +\n((__t = (column.push)) == null ? '' : __t) +\n'\\n    col-sm-pull-' +\n((__t = (column.pull)) == null ? '' : __t) +\n'\\n  \" ref=\"' +\n((__t = (ctx.columnKey)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.columnComponents[index])) == null ? '' : __t) +\n'\\n</div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/cssClasses.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/cssClasses.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.default = {\n    'formio-tab-panel-active': 'active',\n    'formio-tab-link-active': 'active',\n    'formio-tab-link-container-active': 'active',\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/cssClasses.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/form.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/form.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button btn btn-default fa fa-bars\"></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn btn-default formio-button-remove-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.canAddColumn) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"btn btn-primary formio-button-add-row\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/html.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/html.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table datagrid-table table-bordered\\n    ' +\n((__t = ( component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n rows.forEach(function(row) { ;\n__p += '\\n    <tr>\\n      ';\n columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/index.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"row\">\\n  ';\n if (ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"form-group col col-xs-3\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"';\n if(ctx.component.fields.day.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showMonth) { ;\n__p += '\\n  <div class=\"form-group col col-xs-4\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-month\" class=\"';\n if(ctx.component.fields.month.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Month'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.month)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"form-group col col-xs-3\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"';\n if(ctx.component.fields.day.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showYear) { ;\n__p += '\\n  <div class=\"form-group col col-xs-5\">\\n    ';\n if (!ctx.component.hideInputLabels) { ;\n__p += '\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-year\" class=\"';\n if(ctx.component.fields.year.required) { ;\n__p += 'field-required';\n } ;\n__p += '\">' +\n((__t = (ctx.t('Year'))) == null ? '' : __t) +\n'</label>\\n    ';\n } ;\n__p += '\\n    <div>' +\n((__t = (ctx.year)) == null ? '' : __t) +\n'</div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n<input name=\"data[day]\" type=\"hidden\" class=\"form-control\" lang=\"en\" value=\"\" ref=\"input\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/form.ejs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/form.ejs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-dialog formio-dialog-theme-default component-settings\">\\n  <div class=\"formio-dialog-overlay\" ref=\"dialogOverlay\"></div>\\n  <div class=\"formio-dialog-content\" ref=\"dialogContents\">\\n    <div ref=\"dialogContents\"></div>\\n    <button class=\"formio-dialog-close pull-right btn btn-default btn-xs\" aria-label=\"close\" ref=\"dialogClose\"></button>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/index.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/index.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/form.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/form.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"editgrid-listgroup list-group\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <li class=\"list-group-item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <li class=\"list-group-item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"btn btn-primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"btn btn-danger\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <li class=\"list-group-item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\n if (!ctx.readOnly && ctx.hasAddButton) { ;\n__p += '\\n<button class=\"btn btn-primary formio-button-add-another\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-addRow\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n</button>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/html.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/html.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"editgrid-listgroup list-group\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-sm' : '')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <li class=\"list-group-item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <li class=\"list-group-item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"btn btn-primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"btn btn-danger\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <li class=\"list-group-item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/index.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { ;\n__p += '\\n  ' +\n((__t = ( ctx.render('label', ctx) )) == null ? '' : __t) +\n'\\n';\n } ;\n__p += '\\n' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n';\n if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { ;\n__p += '\\n  <label class=\"control-label ' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.t(ctx.component.label))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.component.tooltip) { ;\n__p += '\\n    <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n  ';\n } ;\n__p += '\\n  </label>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.description) { ;\n__p += '\\n  <div class=\"help-block\">' +\n((__t = (ctx.t(ctx.component.description))) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.component.image) { ;\n__p += '\\n<ul class=\"list-group list-group-striped\">\\n  <li class=\"list-group-item list-group-header hidden-xs hidden-sm\">\\n    <div class=\"row\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"col-md-1\"></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"col-md-';\n if (ctx.self.hasTypes) { ;\n__p += '7';\n } else { ;\n__p += '9';\n } ;\n__p += '\"><strong>' +\n((__t = (ctx.t('File Name'))) == null ? '' : __t) +\n'</strong></div>\\n      <div class=\"col-md-2\"><strong>' +\n((__t = (ctx.t('Size'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"col-md-2\"><strong>' +\n((__t = (ctx.t('Type'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <li class=\"list-group-item\">\\n    <div class=\"row\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"col-md-1\"><i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"col-md-9\">\\n        ';\n if (ctx.component.uploadOnly) { ;\n__p += '\\n          ' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\\n        ';\n } else { ;\n__p += '\\n          <a href=\"' +\n((__t = (file.url)) == null ? '' : __t) +\n'\" target=\"_blank\" ref=\"fileLink\">' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'</a>\\n        ';\n } ;\n__p += '\\n      </div>\\n      <div class=\"col-md-2\">' +\n((__t = (ctx.fileSize(file.size))) == null ? '' : __t) +\n'</div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"col-md-2\">\\n          <select class=\"file-type\">\\n            ';\n ctx.component.fileTypes.map(function(type) { ;\n__p += '\\n              <option class=\"test\" value=\"' +\n((__t = ( type.value )) == null ? '' : __t) +\n'\" ';\n if (type.value === file.fileType) { ;\n__p += 'selected=\"selected\"';\n } ;\n__p += '>' +\n((__t = ( type.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n          </select>\\n        </div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</ul>\\n';\n } else { ;\n__p += '\\n<div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <div>\\n    <span>\\n      <img ref=\"fileImage\" src=\"\" alt=\"' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\" style=\"width:' +\n((__t = (ctx.component.imageSize)) == null ? '' : __t) +\n'px\" />\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i>\\n      ';\n } ;\n__p += '\\n    </span>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\n if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { ;\n__p += '\\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\\n';\n if (ctx.self.useWebViewCamera) { ;\n__p += '\\n<div class=\"fileSelector\">\\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> ' +\n((__t = (ctx.t('Gallery'))) == null ? '' : __t) +\n'</button>\\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Camera'))) == null ? '' : __t) +\n'</button>\\n</div>\\n';\n } else if (!ctx.self.cameraMode) { ;\n__p += '\\n<div class=\"fileSelector\" ref=\"fileDrop\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('cloud-upload'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Drop files to attach,'))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.image) { ;\n__p += '\\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Use Camera,'))) == null ? '' : __t) +\n'</a>\\n    ';\n } ;\n__p += '\\n    ' +\n((__t = (ctx.t('or'))) == null ? '' : __t) +\n' <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">' +\n((__t = (ctx.t('browse'))) == null ? '' : __t) +\n'</a>\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\\n</div>\\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Take Picture'))) == null ? '' : __t) +\n'</button>\\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">' +\n((__t = (ctx.t('Switch to file upload'))) == null ? '' : __t) +\n'</button>\\n';\n } ;\n__p += '\\n';\n } ;\n__p += '\\n';\n ctx.statuses.forEach(function(status) { ;\n__p += '\\n<div class=\"file ' +\n((__t = (ctx.statuses.status === 'error' ? ' has-error' : '')) == null ? '' : __t) +\n'\">\\n  <div class=\"row\">\\n    <div class=\"fileName control-label col-sm-10\">' +\n((__t = (status.originalName)) == null ? '' : __t) +\n' <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"fileStatusRemove\"></i></div>\\n    <div class=\"fileSize control-label col-sm-2 text-right\">' +\n((__t = (ctx.fileSize(status.size))) == null ? '' : __t) +\n'</div>\\n  </div>\\n  <div class=\"row\">\\n    <div class=\"col-sm-12\">\\n      ';\n if (status.status === 'progress') { ;\n__p += '\\n      <div class=\"progress\">\\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: ' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\">\\n          <span class=\"sr-only\">' +\n((__t = (status.progress)) == null ? '' : __t) +\n'% ' +\n((__t = (ctx.t('Complete'))) == null ? '' : __t) +\n'</span>\\n        </div>\\n      </div>\\n      ';\n } else { ;\n__p += '\\n      <div class=\"bg-' +\n((__t = (status.status)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(status.message))) == null ? '' : __t) +\n'</div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n</div>\\n';\n }) ;\n__p += '\\n';\n if (!ctx.component.storage || ctx.support.hasWarning) { ;\n__p += '\\n<div class=\"alert alert-warning\">\\n  ';\n if (!ctx.component.storage) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('No storage has been set for this field. File uploads are disabled until storage is set up.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.filereader) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('File API & FileReader API not supported.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.formdata) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's FormData is not supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.progress) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's upload progress isn't supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<i ref=\"' +\n((__t = (ctx.ref)) == null ? '' : __t) +\n'\" class=\"' +\n((__t = (ctx.className)) == null ? '' : __t) +\n'\" style=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</i>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/iconClass.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/iconClass.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.default = (iconset, name, spinning) => {\n    if (iconset === 'fa') {\n        switch (name) {\n            case 'save':\n                name = 'download';\n                break;\n            case 'zoom-in':\n                name = 'search-plus';\n                break;\n            case 'zoom-out':\n                name = 'search-minus';\n                break;\n            case 'question-sign':\n                name = 'question-circle';\n                break;\n            case 'remove-circle':\n                name = 'times-circle-o';\n                break;\n            case 'new-window':\n                name = 'window-restore';\n                break;\n            case 'move':\n                name = 'arrows';\n                break;\n        }\n    }\n    return spinning ? `${iconset} ${iconset}-${name} ${iconset}-spin` : `${iconset} ${iconset}-${name}`;\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/iconClass.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/index.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/index.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst resize_observer_polyfill_1 = __webpack_require__(/*! resize-observer-polyfill */ \"./node_modules/resize-observer-polyfill/dist/ResizeObserver.es.js\");\nconst builder_1 = __webpack_require__(/*! ./builder */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builder/index.js\");\nconst builderComponent_1 = __webpack_require__(/*! ./builderComponent */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponent/index.js\");\nconst builderComponents_1 = __webpack_require__(/*! ./builderComponents */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderComponents/index.js\");\nconst builderEditForm_1 = __webpack_require__(/*! ./builderEditForm */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderEditForm/index.js\");\nconst builderPlaceholder_1 = __webpack_require__(/*! ./builderPlaceholder */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderPlaceholder/index.js\");\nconst builderSidebar_1 = __webpack_require__(/*! ./builderSidebar */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebar/index.js\");\nconst builderSidebarGroup_1 = __webpack_require__(/*! ./builderSidebarGroup */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/builderSidebarGroup/index.js\");\nconst columns_1 = __webpack_require__(/*! ./columns */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/columns/index.js\");\nconst cssClasses_1 = __webpack_require__(/*! ./cssClasses */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/cssClasses.js\");\nconst datagrid_1 = __webpack_require__(/*! ./datagrid */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/datagrid/index.js\");\nconst day_1 = __webpack_require__(/*! ./day */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/day/index.js\");\nconst dialog_1 = __webpack_require__(/*! ./dialog */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/dialog/index.js\");\nconst editgrid_1 = __webpack_require__(/*! ./editgrid */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/editgrid/index.js\");\nconst field_1 = __webpack_require__(/*! ./field */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/field/index.js\");\nconst file_1 = __webpack_require__(/*! ./file */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/file/index.js\");\nconst icon_1 = __webpack_require__(/*! ./icon */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/icon/index.js\");\nconst iconClass_1 = __webpack_require__(/*! ./iconClass */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/iconClass.js\");\nconst input_1 = __webpack_require__(/*! ./input */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/index.js\");\nconst label_1 = __webpack_require__(/*! ./label */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/index.js\");\nconst message_1 = __webpack_require__(/*! ./message */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/index.js\");\nconst modaldialog_1 = __webpack_require__(/*! ./modaldialog */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/index.js\");\nconst modaledit_1 = __webpack_require__(/*! ./modaledit */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/index.js\");\nconst multiValueRow_1 = __webpack_require__(/*! ./multiValueRow */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/index.js\");\nconst multiValueTable_1 = __webpack_require__(/*! ./multiValueTable */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/index.js\");\nconst panel_1 = __webpack_require__(/*! ./panel */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/index.js\");\nconst radio_1 = __webpack_require__(/*! ./radio */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/index.js\");\nconst resourceAdd_1 = __webpack_require__(/*! ./resourceAdd */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/index.js\");\nconst signature_1 = __webpack_require__(/*! ./signature */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/index.js\");\nconst survey_1 = __webpack_require__(/*! ./survey */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/index.js\");\nconst tab_1 = __webpack_require__(/*! ./tab */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/index.js\");\nconst table_1 = __webpack_require__(/*! ./table */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/index.js\");\nconst warning_1 = __webpack_require__(/*! ./warning */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/index.js\");\nconst well_1 = __webpack_require__(/*! ./well */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/index.js\");\nconst wizard_1 = __webpack_require__(/*! ./wizard */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/index.js\");\nconst wizardHeader_1 = __webpack_require__(/*! ./wizardHeader */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/index.js\");\nconst wizardNav_1 = __webpack_require__(/*! ./wizardNav */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/index.js\");\nexports.default = {\n    transform(type, text) {\n        if (!text) {\n            return text;\n        }\n        switch (type) {\n            case 'class':\n                return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;\n        }\n        return text;\n    },\n    handleBuilderSidebarScroll(builder) {\n        if (builder.scrollResizeObserver) {\n            builder.scrollResizeObserver.disconnect();\n        }\n        builder.scrollResizeObserver = new resize_observer_polyfill_1.default(() => {\n            setTimeout(() => {\n                const { form: { parentNode: { clientHeight: formHeight, }, }, sidebar: { clientHeight: sidebarHeight, parentNode: { style, }, }, } = builder.refs;\n                style.height = `${Math.max(sidebarHeight + 20, formHeight)}px`;\n            });\n        });\n        builder.scrollResizeObserver.observe(builder.refs.form);\n        builder.scrollResizeObserver.observe(builder.refs.sidebar);\n    },\n    clearBuilderSidebarScroll(builder) {\n        if (builder.scrollResizeObserver) {\n            builder.scrollResizeObserver.disconnect();\n            builder.scrollResizeObserver = null;\n        }\n    },\n    defaultIconset: 'glyphicon',\n    iconClass: iconClass_1.default,\n    cssClasses: cssClasses_1.default,\n    builder: builder_1.default,\n    builderComponent: builderComponent_1.default,\n    builderComponents: builderComponents_1.default,\n    builderEditForm: builderEditForm_1.default,\n    builderPlaceholder: builderPlaceholder_1.default,\n    builderSidebar: builderSidebar_1.default,\n    builderSidebarGroup: builderSidebarGroup_1.default,\n    columns: columns_1.default,\n    datagrid: datagrid_1.default,\n    day: day_1.default,\n    dialog: dialog_1.default,\n    editgrid: editgrid_1.default,\n    field: field_1.default,\n    file: file_1.default,\n    icon: icon_1.default,\n    input: input_1.default,\n    label: label_1.default,\n    message: message_1.default,\n    modaldialog: modaldialog_1.default,\n    modaledit: modaledit_1.default,\n    multiValueRow: multiValueRow_1.default,\n    multiValueTable: multiValueTable_1.default,\n    panel: panel_1.default,\n    radio: radio_1.default,\n    resourceAdd: resourceAdd_1.default,\n    signature: signature_1.default,\n    survey: survey_1.default,\n    tab: tab_1.default,\n    table: table_1.default,\n    warning: warning_1.default,\n    well: well_1.default,\n    wizard: wizard_1.default,\n    wizardHeader: wizardHeader_1.default,\n    wizardNav: wizardNav_1.default,\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.component.prefix || ctx.component.suffix) { ;\n__p += '\\n<div class=\"input-group\">\\n';\n } ;\n__p += '\\n';\n if (ctx.component.prefix) { ;\n__p += '\\n<div class=\"input-group-addon\" ref=\"prefix\">' +\n((__t = (ctx.component.prefix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'input')) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n';\n if (ctx.component.showCharCount) { ;\n__p += '\\n<span class=\"text-muted pull-right\" ref=\"charcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.showWordCount) { ;\n__p += '\\n<span class=\"text-muted pull-right\" ref=\"wordcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.suffix) { ;\n__p += '\\n<div class=\"input-group-addon\" ref=\"suffix\">' +\n((__t = (ctx.component.suffix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.prefix || ctx.component.suffix) { ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/html.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/html.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = (ctx.value)) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/input/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"control-label ' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ';\n if (!ctx.label.hidden) { ;\n__p += '\\n    ' +\n((__t = ( ctx.t(ctx.component.label) )) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.tooltip) { ;\n__p += '\\n      <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n    ';\n } ;\n__p += '\\n  ';\n } ;\n__p += '\\n</label>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/label/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/form.ejs.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/form.ejs.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-errors invalid-feedback\">\\n  <p class=\"help-block\">' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'</p>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/message/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/form.ejs.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/form.ejs.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-dialog formio-dialog-theme-default formio-modaledit-dialog\">\\n  <div ref=\"overlay\" class=\"formio-dialog-overlay\"></div>\\n  <div ref=\"content\" class=\"formio-modaledit-content\">\\n    <button\\n      ref=\"close\"\\n      type=\"button\"\\n      role=\"button\"\\n      class=\"btn btn-primary btn-xs formio-modaledit-close\">\\n      ' +\n((__t = (ctx.t('Close'))) == null ? '' : __t) +\n'\\n    </button>\\n    <div ref=\"inner\" class=\"reset-margins\"></div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/index.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/index.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaldialog/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/form.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/form.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div ref=\"container\" class=\"formio-modaledit-view-container\">\\n  <button\\n    ref=\"edit\"\\n    type=\"button\"\\n    role=\"button\"\\n    class=\"btn btn-xxs btn-warning formio-modaledit-edit\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('edit'))) == null ? '' : __t) +\n'\"></i>\\n  </button>\\n  <div ref=\"input\" class=\"modaledit-view-inner reset-margins\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/modaledit/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/form.ejs.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/form.ejs.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<tr ref=\"row\">\\n  <td>\\n    ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n  </td>\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <td>\\n    <button type=\"button\" class=\"btn btn-default\" ref=\"removeRow\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove-circle'))) == null ? '' : __t) +\n'\"></i>\\n    </button>\\n  </td>\\n  ';\n } ;\n__p += '\\n</tr>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/index.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/index.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueRow/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/form.ejs.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/form.ejs.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-bordered\">\\n  <tbody>\\n  ' +\n((__t = (ctx.rows)) == null ? '' : __t) +\n'\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <tr>\\n    <td colspan=\"2\">\\n      <button class=\"btn btn-primary formio-button-add-another\" ref=\"addButton\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.addAnother))) == null ? '' : __t) +\n'</button>\\n    </td>\\n  </tr>\\n  ';\n } ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/index.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/index.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/multiValueTable/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"panel panel-' +\n((__t = (ctx.component.theme)) == null ? '' : __t) +\n'\">\\n  <div class=\"panel-heading\" ref=\"header\">\\n    <h4 class=\"mb-0 panel-title\">\\n      ';\n if (ctx.component.collapsible) { ;\n__p += '\\n        <i class=\"formio-collapse-icon ' +\n((__t = (ctx.iconClass(ctx.collapsed ? 'plus' : 'minus'))) == null ? '' : __t) +\n' text-muted\" data-title=\"Collapse Panel\"></i>\\n      ';\n } ;\n__p += '\\n      ' +\n((__t = (ctx.t(ctx.component.title))) == null ? '' : __t) +\n'\\n      ';\n if (ctx.component.tooltip) { ;\n__p += '\\n        <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n      ';\n } ;\n__p += '\\n    </h4>\\n  </div>\\n  ';\n if (!ctx.collapsed || ctx.builder) { ;\n__p += '\\n  <div class=\"panel-body\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/panel/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"input-group\">\\n  ';\n ctx.values.forEach(function(item) { ;\n__p += '\\n  <div class=\"' +\n((__t = (ctx.input.attr.type)) == null ? '' : __t) +\n'' +\n((__t = (ctx.inline ? '-inline' : '')) == null ? '' : __t) +\n'\" ref=\"wrapper\">\\n    <label class=\"control-label form-check-label label-position-' +\n((__t = ( ctx.component.optionsLabelPosition )) == null ? '' : __t) +\n'\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\">\\n      ';\n if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { ;\n__p += '\\n      <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      ';\n } ;\n__p += '\\n      <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n        ref=\"input\"\\n        ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n        ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n        ';\n } ;\n__p += '\\n        value=\"' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n        ';\n if (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])) { ;\n__p += '\\n          checked=true\\n        ';\n } ;\n__p += '\\n        id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n      >\\n      ';\n if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { ;\n__p += '\\n      <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      ';\n } ;\n__p += '\\n    </label>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/html.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/html.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return ctx.t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/radio/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/form.ejs.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/form.ejs.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<table class=\"table table-bordered\">\\n  <tbody>\\n    <tr>\\n      <td>\\n        ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n      </td>\\n    </tr>\\n    <tr>\\n      <td colspan=\"2\">\\n        <button class=\"btn btn-primary formio-button-add-resource\" ref=\"addResource\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>\\n          ' +\n((__t = (ctx.t(ctx.component.addResourceLabel || 'Add Resource'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/index.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/index.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/resourceAdd/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/form.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/form.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p +=\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n<div\\n  class=\"signature-pad-body\"\\n  style=\"width: ' +\n((__t = (ctx.component.width)) == null ? '' : __t) +\n';height: ' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n';padding:0;margin:0;\"\\n  tabindex=\"' +\n((__t = (ctx.component.tabindex || 0)) == null ? '' : __t) +\n'\"\\n  ref=\"padBody\"\\n>\\n\\n  <a class=\"btn btn-sm btn-default signature-pad-refresh\" ref=\"refresh\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('refresh'))) == null ? '' : __t) +\n'\"></i>\\n  </a>\\n  <canvas class=\"signature-pad-canvas\" height=\"' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n'\" ref=\"canvas\"></canvas>\\n  ';\n if (ctx.required) { ;\n__p += '\\n  <span class=\"form-control-feedback field-required-inline text-danger\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('asterisk'))) == null ? '' : __t) +\n'\"></i>\\n  </span>\\n  ';\n } ;\n__p += '\\n  <img style=\"width: 100%;display: none;\" ref=\"signatureImage\">\\n</div>\\n';\n if (ctx.component.footer) { ;\n__p += '\\n  <div class=\"signature-pad-footer\">\\n    ' +\n((__t = (ctx.t(ctx.component.footer))) == null ? '' : __t) +\n'\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/html.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/html.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<img style=\"width: 100%;\" ref=\"signatureImage\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/signature/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/form.ejs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/form.ejs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-striped table-bordered\">\\n  <thead>\\n    <tr>\\n      <th></th>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <th style=\"text-align: center;\">' +\n((__t = (ctx.t(value.label))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <td>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</td>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <td style=\"text-align: center;\">\\n        <input type=\"radio\" name=\"' +\n((__t = ( ctx.self.getInputName(question) )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" id=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-' +\n((__t = (question.value)) == null ? '' : __t) +\n'-' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" ref=\"input\">\\n      </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/html.ejs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/html.ejs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table table-striped table-bordered\">\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <th>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</th>\\n      <td>\\n      ';\n ctx.component.values.forEach(function(item) { ;\n__p += '\\n        ';\n if (ctx.value && ctx.value.hasOwnProperty(question.value) && ctx.value[question.value] === item.value) { ;\n__p += '\\n          ' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'\\n        ';\n } ;\n__p += '\\n      ';\n }) ;\n__p += '\\n      </td>\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/index.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/index.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/survey/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/flat.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/flat.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <div class=\"panel panel-default\">\\n    <div class=\"panel-heading\">\\n      <h4 class=\"panel-title\">' +\n((__t = ( ctx.t(tab.label) )) == null ? '' : __t) +\n'</h4>\\n    </div>\\n    <div class=\"panel-body\">\\n      ' +\n((__t = ( ctx.tabComponents[index] )) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/flat.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"nav nav-tabs\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <li class=\"nav-item' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" role=\"presentation\" ref=\"' +\n((__t = (ctx.tabLikey)) == null ? '' : __t) +\n'\">\\n    <a class=\"nav-link' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" href=\"#' +\n((__t = (tab.key)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabLinkKey)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(tab.label))) == null ? '' : __t) +\n'</a>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</ul>\\n<div class=\"tab-content\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <div role=\"tabpanel\" class=\"tab-pane' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabKey)) == null ? '' : __t) +\n'\"\">' +\n((__t = (ctx.tabComponents[index])) == null ? '' : __t) +\n'</div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst flat_ejs_1 = __webpack_require__(/*! ./flat.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/flat.ejs.js\");\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/form.ejs.js\");\nexports.default = { flat: flat_ejs_1.default, form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/tab/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"table\\n    ' +\n((__t = ( ctx.component.striped ? 'table-striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'table-bordered' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'table-hover' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'table-condensed' : '')) == null ? '' : __t) +\n'\\n  \">\\n  ';\n if (ctx.component.header && ctx.component.header.length > 0) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.component.header.forEach(function(header) { ;\n__p += '\\n      <th>' +\n((__t = (ctx.t(header))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.tableComponents.forEach(function(row, rowIndex) { ;\n__p += '\\n    <tr ref=\"row-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n      ';\n row.forEach(function(column, colIndex) { ;\n__p += '\\n      <td ref=\"' +\n((__t = (ctx.tableKey)) == null ? '' : __t) +\n'-' +\n((__t = (rowIndex)) == null ? '' : __t) +\n'\"';\n if (ctx.cellClassName) { ;\n__p += ' class=\"' +\n((__t = (ctx.cellClassName)) == null ? '' : __t) +\n'\"';\n } ;\n__p += '>' +\n((__t = (column)) == null ? '' : __t) +\n'</td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/table/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/form.ejs.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/form.ejs.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-warnings invalid-feedback\">\\n    <p class=\"help-block\">' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'</p>\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/warning/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"well\">\\n  <div ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/well/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/builder.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/builder.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"text-muted text-center\">' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/builder.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/form.ejs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/form.ejs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div style=\"position: relative;\">\\n  ' +\n((__t = ( ctx.wizardHeader )) == null ? '' : __t) +\n'\\n  <div class=\"wizard-page\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.components)) == null ? '' : __t) +\n'\\n  </div>\\n  ' +\n((__t = ( ctx.wizardNav )) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/index.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/index.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst builder_ejs_1 = __webpack_require__(/*! ./builder.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/builder.ejs.js\");\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/form.ejs.js\");\nexports.default = { form: form_ejs_1.default, builder: builder_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizard/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/form.ejs.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/form.ejs.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<nav aria-label=\"navigation\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-header\">\\n  <ul class=\"pagination\">\\n    ';\n ctx.panels.forEach(function(panel, index) { ;\n__p += '\\n    <li class=\"page-item' +\n((__t = (ctx.currentPage === index ? ' active' : '')) == null ? '' : __t) +\n'\" style=\"\">\\n      <span class=\"page-link\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-link\">' +\n((__t = (panel.title)) == null ? '' : __t) +\n'</span>\\n    </li>\\n    ';\n }) ;\n__p += '\\n  </ul>\\n</nav>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/index.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/index.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardHeader/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/form.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/form.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<ul class=\"list-inline\" id=\"' +\n((__t = ( ctx.wizardKey )) == null ? '' : __t) +\n'-nav\">\\n  ';\n if (ctx.buttons.cancel) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-default btn-wizard-nav-cancel\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-cancel\">' +\n((__t = (ctx.t('cancel'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.previous) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-previous\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-previous\">' +\n((__t = (ctx.t('previous'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.next) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-next\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-next\">' +\n((__t = (ctx.t('next'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.buttons.submit) { ;\n__p += '\\n  <li class=\"list-inline-item\">\\n    <button class=\"btn btn-primary btn-wizard-nav-submit\" ref=\"' +\n((__t = (ctx.wizardKey)) == null ? '' : __t) +\n'-submit\">' +\n((__t = (ctx.t('submit'))) == null ? '' : __t) +\n'</button>\\n  </li>\\n  ';\n } ;\n__p += '\\n</ul>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/wizardNav/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/bootstrap3/lib/templates/index.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@formio/bootstrap3/lib/templates/index.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst bootstrap3_1 = __webpack_require__(/*! ./bootstrap3 */ \"./node_modules/@formio/bootstrap3/lib/templates/bootstrap3/index.js\");\nexports.default = {\n    bootstrap3: bootstrap3_1.default,\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/bootstrap3/lib/templates/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/index.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst templates_1 = __webpack_require__(/*! ./templates */ \"./node_modules/@formio/semantic/lib/templates/index.js\");\nexports.default = {\n    framework: 'semantic',\n    templates: templates_1.default,\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/index.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/index.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst semantic_1 = __webpack_require__(/*! ./semantic */ \"./node_modules/@formio/semantic/lib/templates/semantic/index.js\");\nexports.default = {\n    semantic: semantic_1.default,\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builder/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builder/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio builder ui grid formbuilder\">\\n  <div class=\"four wide column formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"twelve wide column formarea\" ref=\"form\">\\n    ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builder/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builder/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builder/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builder/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builder/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/form.ejs.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/form.ejs.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-component\" ref=\"dragComponent\">\\n  <div class=\"component-btn-group\" data-noattach=\"true\">\\n    <div class=\"ui button mini icon primary component-settings-button-edit\", ref=\"editComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('cog'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-copy\" ref=\"copyComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('copy'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-paste\" ref=\"pasteComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('save'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-edit-json\" ref=\"editJson\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('wrench'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon component-settings-button-move\" ref=\"moveComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('move'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n    <div class=\"ui button mini icon secondary component-settings-button-remove\" ref=\"removeComponent\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n    </div>\\n  </div>\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/index.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/index.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/form.ejs.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/form.ejs.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"builder-components drag-container ' +\n((__t = (ctx.type)) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n  ' +\n((__t = (ctx.html)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/index.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/index.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/form.ejs.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/form.ejs.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  <div class=\"eight wide column\">\\n    <h3 class=\"lead\">' +\n((__t = (ctx.t(ctx.componentInfo.title))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.t('Component'))) == null ? '' : __t) +\n'</h3>\\n  </div>\\n  <div class=\"eight wide column\">\\n    <div class=\"right floated\" style=\"margin-right: 20px; margin-top: 10px\">\\n      <a href=\"' +\n((__t = (ctx.componentInfo.documentation)) == null ? '' : __t) +\n'\" target=\"_blank\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('new-window'))) == null ? '' : __t) +\n'\"> ' +\n((__t = (ctx.t('Help'))) == null ? '' : __t) +\n'</i>\\n      </a>\\n    </div>\\n  </div>\\n</div>\\n<div class=\"ui grid\">\\n  <div class=\"';\n if (ctx.preview) { ;\n__p += 'eight';\n } else { ;\n__p += 'sixteen';\n } ;\n__p += ' wide column\">\\n    <div ref=\"editForm\">\\n        ' +\n((__t = (ctx.editForm)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (!ctx.preview) { ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"ui button primary\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button negative\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n    ';\n } ;\n__p += '\\n  </div>\\n  ';\n if (ctx.preview) { ;\n__p += '\\n  <div class=\"eight wide column\">\\n    <div class=\"ui top attached block header\">\\n      ' +\n((__t = (ctx.t('Preview'))) == null ? '' : __t) +\n'\\n    </div>\\n    <div class=\"ui bottom attached segment\" ref=\"preview\">\\n      ' +\n((__t = (ctx.preview)) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n if (ctx.componentInfo.help) { ;\n__p += '\\n    <div class=\"ui secondary segment formio-settings-help\">\\n      ' +\n((__t = ( ctx.componentInfo.help )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div style=\"margin-top: 10px;\">\\n      <button class=\"ui button primary\" style=\"margin-right: 10px;\" ref=\"saveButton\">' +\n((__t = (ctx.t('Save'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button default\" style=\"margin-right: 10px;\" ref=\"cancelButton\">' +\n((__t = (ctx.t('Cancel'))) == null ? '' : __t) +\n'</button>\\n      <button class=\"ui button negative\" ref=\"removeButton\">' +\n((__t = (ctx.t('Remove'))) == null ? '' : __t) +\n'</button>\\n    </div>\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/index.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/index.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/form.ejs.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/form.ejs.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div\\n  class=\"ui info message no-drag\"\\n  style=\"text-align:center; margin-bottom: 5px;\"\\n  role=\"alert\"\\n  data-noattach=\"true\"\\n  data-position=\"' +\n((__t = (ctx.position)) == null ? '' : __t) +\n'\"\\n>\\n  Drag and Drop a form component\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/index.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/index.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/form.ejs.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/form.ejs.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"builder-sidebar-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\" class=\"ui segments\" ref=\"sidebar\">\\n  ';\n ctx.groups.forEach(function(group) { ;\n__p += '\\n    ' +\n((__t = ( group )) == null ? '' : __t) +\n'\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/index.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/index.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/form.ejs.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/form.ejs.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui segment secondary form-builder-panel\" style=\"padding: 0\" ref=\"group-panel-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\">\\n  <div class=\"form-builder-group-header\">\\n    <h5 class=\"panel-title\">\\n      <button\\n        class=\"ui button basic fluid builder-group-button\"\\n        type=\"button\"\\n        data-toggle=\"collapse\"\\n        data-target=\"#group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-parent=\"' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n        ref=\"sidebar-anchor\"\\n      >\\n        ' +\n((__t = (ctx.t(ctx.group.title))) == null ? '' : __t) +\n'\\n      </button>\\n    </h5>\\n  </div>\\n</div>\\n<div class=\"ui segment\" style=\"padding: 0\">\\n  <div\\n    class=\"panel-collapse collapse ' +\n((__t = (ctx.group.default ? ' in' : '')) == null ? '' : __t) +\n'\"\\n    data-parent=\"#' +\n((__t = (ctx.groupId)) == null ? '' : __t) +\n'\"\\n    data-default=\"' +\n((__t = (ctx.group.default)) == null ? '' : __t) +\n'\"\\n    id=\"group-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n    ref=\"sidebar-group\"\\n  >\\n    <div id=\"group-container-' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\" class=\"card-body panel-body no-drop\" ref=\"sidebar-container\">\\n      ';\n ctx.group.componentOrder.forEach(function(componentKey) { ;\n__p += '\\n      <span\\n        data-group=\"' +\n((__t = (ctx.groupKey)) == null ? '' : __t) +\n'\"\\n        data-key=\"' +\n((__t = (ctx.group.components[componentKey].key)) == null ? '' : __t) +\n'\"\\n        data-type=\"' +\n((__t = (ctx.group.components[componentKey].schema.type)) == null ? '' : __t) +\n'\"\\n        class=\"ui button mini primary fluid formcomponent drag-copy\"\\n      >\\n        ';\n if (ctx.group.components[componentKey].icon) { ;\n__p += '\\n          <i class=\"' +\n((__t = (ctx.iconClass(ctx.group.components[componentKey].icon))) == null ? '' : __t) +\n'\" style=\"margin-right: 5px;\"></i>\\n        ';\n } ;\n__p += '\\n        ' +\n((__t = (ctx.t(ctx.group.components[componentKey].title))) == null ? '' : __t) +\n'\\n        </span>\\n      ';\n }) ;\n__p += '\\n      ' +\n((__t = (ctx.subgroups.join(''))) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/index.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/index.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/form.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/form.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"formio builder ui grid formbuilder\">\\n  <div class=\"four wide column formcomponents\">\\n    ' +\n((__t = (ctx.sidebar)) == null ? '' : __t) +\n'\\n  </div>\\n  <div class=\"twelve wide column formarea\">\\n    <div class=\"ui breadcrumb\" style=\"margin-bottom: 0.5em\">\\n      ';\n ctx.pages.forEach(function(page, pageIndex) { ;\n__p += '\\n        <div title=\"' +\n((__t = (page.title)) == null ? '' : __t) +\n'\" class=\"';\n if (pageIndex === ctx.self.page) { ;\n__p += ' active section ';\n } else { ;\n__p += ' section ';\n } ;\n__p += ' wizard-page-label\" ref=\"gotoPage\">' +\n((__t = (page.title)) == null ? '' : __t) +\n'</div>\\n        <div class=\"divider\">/</div>\\n      ';\n }) ;\n__p += '\\n      <div title=\"' +\n((__t = (ctx.t('Create Page'))) == null ? '' : __t) +\n'\" class=\"section wizard-page-label\" ref=\"addPage\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Page'))) == null ? '' : __t) +\n'</div>\\n    </div>\\n    <div ref=\"form\">\\n      ' +\n((__t = (ctx.form)) == null ? '' : __t) +\n'\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/button/form.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/button/form.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"button\"\\n  class=\"ui button ' +\n((__t = (ctx.transform('theme', ctx.component.theme))) == null ? '' : __t) +\n' ' +\n((__t = (ctx.component.customClass)) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>\\n';\n if (ctx.component.leftIcon) { ;\n__p += '<i class=\"' +\n((__t = (ctx.component.leftIcon)) == null ? '' : __t) +\n'\"></i>&nbsp;';\n } ;\n__p += '\\n' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n';\n if (ctx.component.rightIcon) { ;\n__p += '&nbsp;<i class=\"' +\n((__t = (ctx.component.rightIcon)) == null ? '' : __t) +\n'\"></i>';\n } ;\n__p += '\\n</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n<div ref=\"buttonMessageContainer\">\\n  <span class=\"help-block\" ref=\"buttonMessage\"></span>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/button/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/button/html.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/button/html.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/button/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/button/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/button/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/button/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/button/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/button/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/checkbox/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/checkbox/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui checkbox\">\\n  <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n    ref=\"input\"\\n    id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\"\\n    ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n    ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.checked) { ;\n__p += 'checked=true';\n } ;\n__p += '\\n    >\\n  </' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n  <label class=\"' +\n((__t = (ctx.input.labelClass)) == null ? '' : __t) +\n'\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n    ';\n if (!ctx.self.labelIsHidden()) { ;\n__p += '<span>' +\n((__t = (ctx.input.label)) == null ? '' : __t) +\n'</span>';\n } ;\n__p += '\\n    ';\n if (ctx.tooltip) { ;\n__p += '\\n      <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n      </span>\\n    ';\n } ;\n__p += '\\n  </label>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/checkbox/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/checkbox/html.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/checkbox/html.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"' +\n((__t = (ctx.input.labelClass)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'\\n    ';\n if (!ctx.self.labelIsHidden()) { ;\n__p += '<span>' +\n((__t = (ctx.input.label)) == null ? '' : __t) +\n'</span>';\n } ;\n__p += '\\n</label>\\n<div ref=\"value\">';\n if (ctx.checked) { ;\n__p += 'True';\n } else { ;\n__p += 'False';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/checkbox/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/checkbox/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/checkbox/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/checkbox/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/checkbox/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/checkbox/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/columns/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/columns/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\" style=\"width: 100%\">\\n    ';\n ctx.component.columns.forEach(function(column, index) { ;\n__p += '\\n    <div class=\"' +\n((__t = (ctx.transform('columns', column.width))) == null ? '' : __t) +\n' wide column\" ref=\"' +\n((__t = (ctx.columnKey)) == null ? '' : __t) +\n'\">\\n      ' +\n((__t = (ctx.columnComponents[index])) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/columns/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/columns/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/columns/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/columns/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/columns/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/component/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/component/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\" class=\"field ' +\n((__t = (ctx.classes)) == null ? '' : __t) +\n'\"';\n if (ctx.styles) { ;\n__p += ' styles=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\"';\n } ;\n__p += ' ref=\"component\">\\n  ';\n if (ctx.visible) { ;\n__p += '\\n  ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  <div ref=\"messageContainer\"></div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/component/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/component/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/component/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/component/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/component/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/cssClasses.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/cssClasses.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.default = {\n    'has-error': 'error',\n    'is-invalid': 'error',\n    'formio-tab-panel-active': 'active',\n    'formio-tab-link-active': 'active',\n    'formio-tab-link-container-active': 'active',\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/cssClasses.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/datagrid/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/datagrid/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table datagrid-table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n    \" ';\n if (ctx.component.layoutFixed) { ;\n__p += 'style=\"table-layout: fixed;\"';\n } ;\n__p += '>\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n if (ctx.component.reorder) { ;\n__p += '<th></th>';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <span data-tooltip=\"' +\n((__t = (col.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n                      <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n            </span>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n      <th>\\n        ';\n if (ctx.hasAddButton && ctx.hasTopSubmit) { ;\n__p += '\\n        <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n        ';\n } ;\n__p += '\\n      </th>\\n      ';\n } ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-tbody\">\\n    ';\n ctx.rows.forEach(function(row, index) { ;\n__p += '\\n    ';\n if (ctx.hasGroups && ctx.groups[index]) { ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-header\" class=\"datagrid-group-header' +\n((__t = (ctx.hasToggle ? ' clickable' : '')) == null ? '' : __t) +\n'\">\\n      <td\\n        ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-group-label\"\\n        colspan=\"' +\n((__t = (ctx.numColumns)) == null ? '' : __t) +\n'\"\\n        class=\"datagrid-group-label\">' +\n((__t = (ctx.groups[index].label)) == null ? '' : __t) +\n'</td>\\n    </tr>\\n    ';\n } ;\n__p += '\\n    <tr ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-row\">\\n      ';\n if (ctx.component.reorder) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"formio-drag-button ui icon button\"><i aria-hidden=\"true\" class=\"bars icon\"></i></button>\\n        </td>\\n      ';\n } ;\n__p += '\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n      ';\n if (ctx.hasExtraColumn) { ;\n__p += '\\n        ';\n if (!ctx.builder && ctx.hasRemoveButtons) { ;\n__p += '\\n        <td>\\n          <button type=\"button\" class=\"btn-xss ui icon button secondary formio-' +\n((__t = ( ctx.component.type )) == null ? '' : __t) +\n'-remove\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-removeRow\">\\n            <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\"></i>\\n          </button>\\n        </td>\\n        ';\n } ;\n__p += '\\n        ';\n if (ctx.canAddColumn) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-container\">\\n          ' +\n((__t = (ctx.placeholder)) == null ? '' : __t) +\n'\\n        </td>\\n        ';\n } ;\n__p += '\\n      ';\n } ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n  ';\n if (ctx.hasAddButton && ctx.hasBottomSubmit) { ;\n__p += '\\n  <tfoot>\\n    <tr>\\n      <td colspan=\"' +\n((__t = (ctx.numColumns + 1)) == null ? '' : __t) +\n'\">\\n        <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'-addRow\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tfoot>\\n  ';\n } ;\n__p += '\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/datagrid/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/datagrid/html.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/datagrid/html.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table datagrid-table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n    \">\\n  ';\n if (ctx.hasHeader) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <th class=\"' +\n((__t = (col.validate && col.validate.required ? 'field-required' : '')) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = ( col.hideLabel ? '' : ctx.t(col.label || col.title) )) == null ? '' : __t) +\n'\\n          ';\n if (col.tooltip) { ;\n__p += ' <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>';\n } ;\n__p += '\\n        </th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.rows.forEach(function(row) { ;\n__p += '\\n    <tr>\\n      ';\n ctx.columns.forEach(function(col) { ;\n__p += '\\n        <td ref=\"' +\n((__t = (ctx.datagridKey)) == null ? '' : __t) +\n'\">\\n          ' +\n((__t = (row[col.key])) == null ? '' : __t) +\n'\\n        </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/datagrid/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/datagrid/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/datagrid/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/datagrid/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/datagrid/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/datagrid/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/day/form.ejs.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/day/form.ejs.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  ';\n if (ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"four wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showMonth) { ;\n__p += '\\n  <div class=\"five wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-month\" class=\"\">' +\n((__t = (ctx.t('Month'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.month)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.dayFirst && ctx.showDay) { ;\n__p += '\\n  <div class=\"four wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-day\" class=\"\">' +\n((__t = (ctx.t('Day'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.day)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n if (ctx.showYear) { ;\n__p += '\\n  <div class=\"seven wide column\">\\n    <label for=\"' +\n((__t = (ctx.component.key)) == null ? '' : __t) +\n'-year\" class=\"\">' +\n((__t = (ctx.t('Year'))) == null ? '' : __t) +\n'</label>\\n    ' +\n((__t = (ctx.year)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n<input name=\"data[day]\" type=\"hidden\" class=\"form-control\" lang=\"en\" value=\"\" ref=\"input\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/day/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/day/index.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/day/index.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/day/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/day/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/editgrid/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/editgrid/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"editgrid-listgroup ui celled list\">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <div class=\"item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <div class=\"item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"ui button secondary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <div class=\"item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n if (!ctx.readOnly && ctx.hasAddButton) { ;\n__p += '\\n<button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-addRow\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.component.addAnother || 'Add Another'))) == null ? '' : __t) +\n'\\n</button>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/editgrid/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/editgrid/html.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/editgrid/html.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"editgrid-listgroup ui celled list\">\\n  ';\n if (ctx.header) { ;\n__p += '\\n  <div class=\"item list-group-header\">\\n    ' +\n((__t = (ctx.header)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n  ';\n ctx.rows.forEach(function(row, rowIndex) { ;\n__p += '\\n  <div class=\"item\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (row)) == null ? '' : __t) +\n'\\n    ';\n if (ctx.openRows[rowIndex] && !ctx.readOnly) { ;\n__p += '\\n    <div class=\"editgrid-actions\">\\n      <button class=\"ui button primary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-saveRow\">' +\n((__t = (ctx.t(ctx.component.saveRow || 'Save'))) == null ? '' : __t) +\n'</button>\\n      ';\n if (ctx.component.removeRow) { ;\n__p += '\\n      <button class=\"ui button secondary\" ref=\"' +\n((__t = (ctx.editgridKey)) == null ? '' : __t) +\n'-cancelRow\">' +\n((__t = (ctx.t(ctx.component.removeRow || 'Cancel'))) == null ? '' : __t) +\n'</button>\\n      ';\n } ;\n__p += '\\n    </div>\\n    ';\n } ;\n__p += '\\n    <div class=\"has-error\">\\n      <div class=\"editgrid-row-error help-block\">\\n        ' +\n((__t = (ctx.errors[rowIndex])) == null ? '' : __t) +\n'\\n      </div>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n  ';\n if (ctx.footer) { ;\n__p += '\\n  <div class=\"item list-group-footer\">\\n    ' +\n((__t = (ctx.footer)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/editgrid/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/editgrid/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/editgrid/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/editgrid/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/editgrid/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/editgrid/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/field/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/field/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { ;\n__p += '\\n  ' +\n((__t = ( ctx.render('label', ctx) )) == null ? '' : __t) +\n'\\n';\n } ;\n__p += '\\n' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n';\n if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { ;\n__p += '\\n  <label class=\"' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.t(ctx.component.label))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.tooltip) { ;\n__p += '\\n    <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n      <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n    </span>\\n  ';\n } ;\n__p += '\\n  </label>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.description) { ;\n__p += '\\n  <div class=\"help-block\">' +\n((__t = (ctx.t(ctx.component.description))) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/field/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/field/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/field/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/field/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/field/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/fieldset/form.ejs.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/fieldset/form.ejs.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<fieldset>\\n  <legend ref=\"header\" class=\"' +\n((__t = (ctx.component.collapsible ? 'formio-clickable' : '')) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.t(ctx.component.legend))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.tooltip) { ;\n__p += '\\n      <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n    ';\n } ;\n__p += '\\n  </legend>  ';\n if (!ctx.collapsed) { ;\n__p += '\\n  <div class=\"card-body\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n  ';\n } ;\n__p += '\\n</fieldset>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/fieldset/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/fieldset/index.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/fieldset/index.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/fieldset/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/fieldset/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/file/form.ejs.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/file/form.ejs.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (!ctx.component.image) { ;\n__p += '\\n<div class=\"ui celled list\">\\n  <div class=\"item\">\\n    <div class=\"ui grid\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"one wide column\"></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"';\n if (ctx.self.hasTypes) { ;\n__p += 'nine';\n } else { ;\n__p += 'twelve';\n } ;\n__p += ' wide column\"><strong>' +\n((__t = (ctx.t('File Name'))) == null ? '' : __t) +\n'</strong></div>\\n      <div class=\"three wide column\"><strong>' +\n((__t = (ctx.t('Size'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"three wide column\"><strong>' +\n((__t = (ctx.t('Type'))) == null ? '' : __t) +\n'</strong></div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <li class=\"list-group-item\">\\n    <div class=\"ui grid\">\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <div class=\"one wide column\"><i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i></div>\\n      ';\n } ;\n__p += '\\n      <div class=\"twelve wide column\">\\n        ';\n if (ctx.component.uploadOnly) { ;\n__p += '\\n          ' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\\n        ';\n } else { ;\n__p += '\\n          <a href=\"' +\n((__t = (file.url)) == null ? '' : __t) +\n'\" target=\"_blank\" ref=\"fileLink\">' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'</a>\\n        ';\n } ;\n__p += '\\n      </div>\\n      <div class=\"three wide column\">' +\n((__t = (ctx.fileSize(file.size))) == null ? '' : __t) +\n'</div>\\n      ';\n if (ctx.self.hasTypes) { ;\n__p += '\\n        <div class=\"three wide column\">\\n          <select class=\"file-type\">\\n            ';\n ctx.component.fileTypes.map(function(type) { ;\n__p += '\\n              <option class=\"test\" value=\"' +\n((__t = ( type.value )) == null ? '' : __t) +\n'\" ';\n if (type.value === file.fileType) { ;\n__p += 'selected=\"selected\"';\n } ;\n__p += '>' +\n((__t = ( type.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n          </select>\\n        </div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </li>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  ';\n ctx.files.forEach(function(file) { ;\n__p += '\\n  <div>\\n    <span>\\n      <img ref=\"fileImage\" src=\"\" alt=\"' +\n((__t = (file.originalName || file.name)) == null ? '' : __t) +\n'\" style=\"width:' +\n((__t = (ctx.component.imageSize)) == null ? '' : __t) +\n'px\" />\\n      ';\n if (!ctx.disabled) { ;\n__p += '\\n      <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"removeLink\"></i>\\n      ';\n } ;\n__p += '\\n    </span>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\n if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { ;\n__p += '\\n<input type=\"file\" style=\"opacity: 0; position: absolute;\" tabindex=\"-1\" ref=\"hiddenFileInputElement\">\\n';\n if (ctx.self.useWebViewCamera) { ;\n__p += '\\n<div class=\"fileSelector\">\\n  <button class=\"btn btn-primary\" ref=\"galleryButton\"><i class=\"fa fa-book\"></i> ' +\n((__t = (ctx.t('Gallery'))) == null ? '' : __t) +\n'</button>\\n  <button class=\"btn btn-primary\" ref=\"cameraButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Camera'))) == null ? '' : __t) +\n'</button>\\n</div>\\n';\n } else if (!ctx.self.cameraMode) { ;\n__p += '\\n<div class=\"fileSelector\" ref=\"fileDrop\">\\n  <i class=\"' +\n((__t = (ctx.iconClass('cloud-upload'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t('Drop files to attach,'))) == null ? '' : __t) +\n'\\n    ';\n if (ctx.component.image) { ;\n__p += '\\n      <a href=\"#\" ref=\"toggleCameraMode\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Use Camera,'))) == null ? '' : __t) +\n'</a>\\n    ';\n } ;\n__p += '\\n    ' +\n((__t = (ctx.t('or'))) == null ? '' : __t) +\n' <a href=\"#\" ref=\"fileBrowse\" class=\"browse\">' +\n((__t = (ctx.t('browse'))) == null ? '' : __t) +\n'</a>\\n</div>\\n';\n } else { ;\n__p += '\\n<div>\\n  <video class=\"video\" autoplay=\"true\" ref=\"videoPlayer\"></video>\\n  <canvas style=\"display: none\" ref=\"videoCanvas\"></canvas>\\n</div>\\n<button class=\"btn btn-primary\" ref=\"takePictureButton\"><i class=\"fa fa-camera\"></i> ' +\n((__t = (ctx.t('Take Picture'))) == null ? '' : __t) +\n'</button>\\n<button class=\"btn btn-primary\" ref=\"toggleCameraMode\">' +\n((__t = (ctx.t('Switch to file upload'))) == null ? '' : __t) +\n'</button>\\n';\n } ;\n__p += '\\n';\n } ;\n__p += '\\n';\n ctx.statuses.forEach(function(status) { ;\n__p += '\\n<div class=\"file ' +\n((__t = (ctx.statuses.status === 'error' ? ' has-error' : '')) == null ? '' : __t) +\n'\">\\n  <div class=\"ui grid\">\\n    <div class=\"fileName control-label thirteen wide column\">' +\n((__t = (status.originalName)) == null ? '' : __t) +\n' <i class=\"' +\n((__t = (ctx.iconClass('remove'))) == null ? '' : __t) +\n'\" ref=\"fileStatusRemove\"></i></div>\\n    <div class=\"fileSize control-label three wide column\">' +\n((__t = (ctx.fileSize(status.size))) == null ? '' : __t) +\n'</div>\\n  </div>\\n  <div class=\"ui grid\">\\n    <div class=\"thirteen wide column\">\\n      ';\n if (status.status === 'progress') { ;\n__p += '\\n      <div class=\"progress\">\\n        <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: ' +\n((__t = (status.progress)) == null ? '' : __t) +\n'\">\\n          <span class=\"sr-only\">' +\n((__t = (status.progress)) == null ? '' : __t) +\n'% ' +\n((__t = (ctx.t('Complete'))) == null ? '' : __t) +\n'</span>\\n        </div>\\n      </div>\\n      ';\n } else { ;\n__p += '\\n      <div class=\"bg-' +\n((__t = (status.status)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(status.message))) == null ? '' : __t) +\n'</div>\\n      ';\n } ;\n__p += '\\n    </div>\\n  </div>\\n</div>\\n';\n }) ;\n__p += '\\n';\n if (!ctx.component.storage || ctx.support.hasWarning) { ;\n__p += '\\n<div class=\"alert alert-warning\">\\n  ';\n if (!ctx.component.storage) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('No storage has been set for this field. File uploads are disabled until storage is set up.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.filereader) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t('File API & FileReader API not supported.'))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.formdata) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's FormData is not supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n  ';\n if (!ctx.support.progress) { ;\n__p += '\\n    <p>' +\n((__t = (ctx.t(\"XHR2's upload progress isn't supported.\"))) == null ? '' : __t) +\n'</p>\\n  ';\n } ;\n__p += '\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/file/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/file/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/file/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/file/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/file/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/icon/form.ejs.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/icon/form.ejs.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<i ref=\"' +\n((__t = (ctx.ref)) == null ? '' : __t) +\n'\" class=\"' +\n((__t = (ctx.className)) == null ? '' : __t) +\n'\" style=\"' +\n((__t = (ctx.styles)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.content)) == null ? '' : __t) +\n'</i>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/icon/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/icon/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/icon/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/icon/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/icon/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/iconClass.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/iconClass.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.default = (iconset, name, spinning) => {\n    const icons = {\n        'plus-squre-o': 'plus square outline',\n        'minus-squre-o': 'minus square outline',\n        'question-sign': 'question circle',\n        'remove-circle': 'trash alternate outline',\n        'new-window': 'external alternate',\n        'files-o': 'file outline',\n        'move': 'arrows alternate',\n        'link': 'linkify',\n    };\n    if (icons.hasOwnProperty(name)) {\n        name = icons[name];\n    }\n    name = name || '';\n    name = name.replace(/-/g, ' ');\n    name = name.replace(/ o$/, ' outline');\n    return spinning ? `icon ${name} loading` : `icon ${name}`;\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/iconClass.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/index.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/index.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst builder_1 = __webpack_require__(/*! ./builder */ \"./node_modules/@formio/semantic/lib/templates/semantic/builder/index.js\");\nconst builderComponent_1 = __webpack_require__(/*! ./builderComponent */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderComponent/index.js\");\nconst builderComponents_1 = __webpack_require__(/*! ./builderComponents */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderComponents/index.js\");\nconst builderEditForm_1 = __webpack_require__(/*! ./builderEditForm */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderEditForm/index.js\");\nconst builderPlaceholder_1 = __webpack_require__(/*! ./builderPlaceholder */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderPlaceholder/index.js\");\nconst builderSidebar_1 = __webpack_require__(/*! ./builderSidebar */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderSidebar/index.js\");\nconst builderSidebarGroup_1 = __webpack_require__(/*! ./builderSidebarGroup */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderSidebarGroup/index.js\");\nconst builderWizard_1 = __webpack_require__(/*! ./builderWizard */ \"./node_modules/@formio/semantic/lib/templates/semantic/builderWizard/index.js\");\nconst button_1 = __webpack_require__(/*! ./button */ \"./node_modules/@formio/semantic/lib/templates/semantic/button/index.js\");\nconst checkbox_1 = __webpack_require__(/*! ./checkbox */ \"./node_modules/@formio/semantic/lib/templates/semantic/checkbox/index.js\");\nconst columns_1 = __webpack_require__(/*! ./columns */ \"./node_modules/@formio/semantic/lib/templates/semantic/columns/index.js\");\nconst component_1 = __webpack_require__(/*! ./component */ \"./node_modules/@formio/semantic/lib/templates/semantic/component/index.js\");\nconst cssClasses_1 = __webpack_require__(/*! ./cssClasses */ \"./node_modules/@formio/semantic/lib/templates/semantic/cssClasses.js\");\nconst datagrid_1 = __webpack_require__(/*! ./datagrid */ \"./node_modules/@formio/semantic/lib/templates/semantic/datagrid/index.js\");\nconst day_1 = __webpack_require__(/*! ./day */ \"./node_modules/@formio/semantic/lib/templates/semantic/day/index.js\");\nconst editgrid_1 = __webpack_require__(/*! ./editgrid */ \"./node_modules/@formio/semantic/lib/templates/semantic/editgrid/index.js\");\nconst field_1 = __webpack_require__(/*! ./field */ \"./node_modules/@formio/semantic/lib/templates/semantic/field/index.js\");\nconst fieldset_1 = __webpack_require__(/*! ./fieldset */ \"./node_modules/@formio/semantic/lib/templates/semantic/fieldset/index.js\");\nconst file_1 = __webpack_require__(/*! ./file */ \"./node_modules/@formio/semantic/lib/templates/semantic/file/index.js\");\nconst icon_1 = __webpack_require__(/*! ./icon */ \"./node_modules/@formio/semantic/lib/templates/semantic/icon/index.js\");\nconst iconClass_1 = __webpack_require__(/*! ./iconClass */ \"./node_modules/@formio/semantic/lib/templates/semantic/iconClass.js\");\nconst input_1 = __webpack_require__(/*! ./input */ \"./node_modules/@formio/semantic/lib/templates/semantic/input/index.js\");\nconst label_1 = __webpack_require__(/*! ./label */ \"./node_modules/@formio/semantic/lib/templates/semantic/label/index.js\");\nconst loader_1 = __webpack_require__(/*! ./loader */ \"./node_modules/@formio/semantic/lib/templates/semantic/loader/index.js\");\nconst loading_1 = __webpack_require__(/*! ./loading */ \"./node_modules/@formio/semantic/lib/templates/semantic/loading/index.js\");\nconst message_1 = __webpack_require__(/*! ./message */ \"./node_modules/@formio/semantic/lib/templates/semantic/message/index.js\");\nconst multiValueRow_1 = __webpack_require__(/*! ./multiValueRow */ \"./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/index.js\");\nconst multiValueTable_1 = __webpack_require__(/*! ./multiValueTable */ \"./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/index.js\");\nconst panel_1 = __webpack_require__(/*! ./panel */ \"./node_modules/@formio/semantic/lib/templates/semantic/panel/index.js\");\nconst radio_1 = __webpack_require__(/*! ./radio */ \"./node_modules/@formio/semantic/lib/templates/semantic/radio/index.js\");\nconst resourceAdd_1 = __webpack_require__(/*! ./resourceAdd */ \"./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/index.js\");\nconst select_1 = __webpack_require__(/*! ./select */ \"./node_modules/@formio/semantic/lib/templates/semantic/select/index.js\");\nconst selectOption_1 = __webpack_require__(/*! ./selectOption */ \"./node_modules/@formio/semantic/lib/templates/semantic/selectOption/index.js\");\nconst signature_1 = __webpack_require__(/*! ./signature */ \"./node_modules/@formio/semantic/lib/templates/semantic/signature/index.js\");\nconst survey_1 = __webpack_require__(/*! ./survey */ \"./node_modules/@formio/semantic/lib/templates/semantic/survey/index.js\");\nconst tab_1 = __webpack_require__(/*! ./tab */ \"./node_modules/@formio/semantic/lib/templates/semantic/tab/index.js\");\nconst table_1 = __webpack_require__(/*! ./table */ \"./node_modules/@formio/semantic/lib/templates/semantic/table/index.js\");\nconst tree_1 = __webpack_require__(/*! ./tree */ \"./node_modules/@formio/semantic/lib/templates/semantic/tree/index.js\");\nconst partials_1 = __webpack_require__(/*! ./tree/partials */ \"./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/index.js\");\nconst webform_1 = __webpack_require__(/*! ./webform */ \"./node_modules/@formio/semantic/lib/templates/semantic/webform/index.js\");\nconst well_1 = __webpack_require__(/*! ./well */ \"./node_modules/@formio/semantic/lib/templates/semantic/well/index.js\");\nconst wizard_1 = __webpack_require__(/*! ./wizard */ \"./node_modules/@formio/semantic/lib/templates/semantic/wizard/index.js\");\nexports.default = Object.assign(Object.assign({ transform(type, text) {\n        if (!text) {\n            return text;\n        }\n        const columns = {\n            1: 'one',\n            2: 'two',\n            3: 'three',\n            4: 'four',\n            5: 'five',\n            6: 'six',\n            7: 'seven',\n            8: 'eight',\n            9: 'nine',\n            10: 'ten',\n            11: 'eleven',\n            12: 'twelve',\n            13: 'thirteen',\n            14: 'fourteen',\n            15: 'fifteen',\n            16: 'sixteen',\n        };\n        switch (type) {\n            case 'columns':\n                return columns.hasOwnProperty(text.toString()) ? columns[text.toString()] : text;\n            case 'class':\n                return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;\n        }\n        return text;\n    }, defaultIconset: 'icon', iconClass: iconClass_1.default,\n    cssClasses: cssClasses_1.default,\n    builder: builder_1.default,\n    builderComponent: builderComponent_1.default,\n    builderComponents: builderComponents_1.default,\n    builderEditForm: builderEditForm_1.default,\n    builderPlaceholder: builderPlaceholder_1.default,\n    builderSidebar: builderSidebar_1.default,\n    builderSidebarGroup: builderSidebarGroup_1.default,\n    builderWizard: builderWizard_1.default,\n    button: button_1.default,\n    checkbox: checkbox_1.default,\n    columns: columns_1.default,\n    component: component_1.default,\n    datagrid: datagrid_1.default,\n    day: day_1.default,\n    editgrid: editgrid_1.default,\n    field: field_1.default,\n    fieldset: fieldset_1.default,\n    file: file_1.default,\n    icon: icon_1.default,\n    input: input_1.default,\n    label: label_1.default,\n    loader: loader_1.default,\n    loading: loading_1.default,\n    message: message_1.default,\n    multiValueRow: multiValueRow_1.default,\n    multiValueTable: multiValueTable_1.default,\n    panel: panel_1.default,\n    radio: radio_1.default,\n    resourceAdd: resourceAdd_1.default,\n    select: select_1.default,\n    selectOption: selectOption_1.default,\n    signature: signature_1.default,\n    survey: survey_1.default,\n    tab: tab_1.default,\n    tree: tree_1.default }, partials_1.default), { table: table_1.default,\n    webform: webform_1.default,\n    well: well_1.default,\n    wizard: wizard_1.default });\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/input/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/input/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui ' +\n((__t = (ctx.component.editor ? '' : 'input')) == null ? '' : __t) +\n' fluid ' +\n((__t = ( ctx.component.suffix ? ' right' : '' )) == null ? '' : __t) +\n'' +\n((__t = ( (ctx.component.prefix || ctx.component.suffix) ? ' labeled' : '' )) == null ? '' : __t) +\n'\">\\n';\n if (ctx.component.prefix) { ;\n__p += '\\n<label class=\"ui label\" ref=\"prefix\">' +\n((__t = (ctx.component.prefix)) == null ? '' : __t) +\n'</label>\\n';\n } ;\n__p += '\\n<' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'input')) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.input.content)) == null ? '' : __t) +\n'</' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'>\\n';\n if (ctx.component.showCharCount) { ;\n__p += '\\n<span class=\"ui right floated\" ref=\"charcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.showWordCount) { ;\n__p += '\\n<span class=\"ui right floated\" ref=\"wordcount\"></span>\\n';\n } ;\n__p += '\\n';\n if (ctx.component.suffix) { ;\n__p += '\\n<div class=\"ui label\" ref=\"suffix\">' +\n((__t = (ctx.component.suffix)) == null ? '' : __t) +\n'</div>\\n';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/input/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/input/html.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/input/html.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = (ctx.value)) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/input/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/input/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/input/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/input/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/input/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/input/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/label/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/label/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<label class=\"' +\n((__t = (ctx.label.className)) == null ? '' : __t) +\n'\">\\n  ';\n if (!ctx.label.hidden) { ;\n__p += '\\n    ' +\n((__t = ( ctx.t(ctx.component.label) )) == null ? '' : __t) +\n'\\n    ';\n if (ctx.tooltip) { ;\n__p += '\\n      <span data-tooltip=\"' +\n((__t = (ctx.tooltip)) == null ? '' : __t) +\n'\" data-position=\"right center\">\\n        <i class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n'\"></i>\\n      </span>\\n    ';\n } ;\n__p += '\\n  ';\n } ;\n__p += '\\n</label>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/label/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/label/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/label/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/label/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/label/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/loader/form.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/loader/form.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-loader\">\\n  <div class=\"loader-wrapper\">\\n    <div class=\"ui active centered inline loader\"></div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/loader/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/loader/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/loader/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/loader/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/loader/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/loading/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/loading/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += 'Loading...\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/loading/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/loading/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/loading/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/loading/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/loading/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/message/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/message/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui pointing red basic label\">\\n  ' +\n((__t = (ctx.message)) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/message/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/message/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/message/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/message/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/message/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/form.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/form.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<tr ref=\"row\">\\n  <td>\\n    ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n  </td>\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <td>\\n    <button type=\"button\" class=\"ui icon button secondary\" ref=\"removeRow\">\\n      <i class=\"trash icon\"></i>\\n    </button>\\n  </td>\\n  ';\n } ;\n__p += '\\n</tr>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/multiValueRow/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/form.ejs.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/form.ejs.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui celled table\">\\n  <tbody>\\n  ' +\n((__t = (ctx.rows)) == null ? '' : __t) +\n'\\n  ';\n if (!ctx.disabled) { ;\n__p += '\\n  <tr>\\n    <td colspan=\"2\">\\n      <button class=\"ui button primary\" ref=\"addButton\"><i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i> ' +\n((__t = (ctx.t(ctx.addAnother))) == null ? '' : __t) +\n'</button>\\n    </td>\\n  </tr>\\n  ';\n } ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/index.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/index.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/multiValueTable/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/panel/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/panel/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<h4 class=\"ui top attached block header ' +\n((__t = (ctx.component.className)) == null ? '' : __t) +\n'\" ref=\"header\">\\n  ';\n if (ctx.component.collapsible) { ;\n__p += '\\n    <i class=\"formio-collapse-icon ' +\n((__t = (ctx.iconClass(ctx.collapsed ? 'plus-square-o' : 'minus-square-o'))) == null ? '' : __t) +\n' text-muted\" data-title=\"Collapse Panel\"></i>\\n  ';\n } ;\n__p += '\\n  ' +\n((__t = (ctx.t(ctx.component.title))) == null ? '' : __t) +\n'\\n  ';\n if (ctx.component.tooltip) { ;\n__p += '\\n    <i ref=\"tooltip\" class=\"' +\n((__t = (ctx.iconClass('question-sign'))) == null ? '' : __t) +\n' text-muted\"></i>\\n  ';\n } ;\n__p += '\\n</h4>\\n';\n if (!ctx.collapsed || ctx.builder) { ;\n__p += '\\n<div class=\"ui bottom attached segment\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n  ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n</div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/panel/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/panel/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/panel/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/panel/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/panel/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/radio/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/radio/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"fields ' +\n((__t = (ctx.inline ? 'inline' : 'grouped')) == null ? '' : __t) +\n'\">\\n  ';\n ctx.values.forEach(function(item) { ;\n__p += '\\n  <div class=\"field\">\\n    <div class=\"ui ' +\n((__t = (ctx.input.attr.type==='radio' ? 'radio' : '')) == null ? '' : __t) +\n' checkbox\" ref=\"wrapper\">\\n      <' +\n((__t = (ctx.input.type)) == null ? '' : __t) +\n'\\n        ref=\"input\"\\n        ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n        ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n        ';\n } ;\n__p += '\\n        value=\"' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n        ';\n if (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])) { ;\n__p += '\\n          checked=true\\n        ';\n } ;\n__p += '\\n        id=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\"\\n      >\\n      <label class=\"\" for=\"' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'' +\n((__t = (ctx.row)) == null ? '' : __t) +\n'-' +\n((__t = (item.value)) == null ? '' : __t) +\n'\">\\n        <span>' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'</span>\\n      </label>\\n    </div>\\n  </div>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/radio/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/radio/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/radio/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/radio/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/radio/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/form.ejs.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/form.ejs.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<table class=\"ui table celled\">\\n  <tbody>\\n    <tr>\\n      <td>\\n        ' +\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n      </td>\\n    </tr>\\n    <tr>\\n      <td colspan=\"2\">\\n        <button class=\"ui button primary\" ref=\"addResource\">\\n          <i class=\"' +\n((__t = (ctx.iconClass('plus'))) == null ? '' : __t) +\n'\"></i>\\n          ' +\n((__t = (ctx.t(ctx.component.addResourceLabel || 'Add Resource'))) == null ? '' : __t) +\n'\\n        </button>\\n      </td>\\n    </tr>\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/resourceAdd/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/select/form.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/select/form.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<select\\n  ref=\"' +\n((__t = (ctx.input.ref ? ctx.input.ref : 'selectContainer')) == null ? '' : __t) +\n'\"\\n  class=\"ui search dropdown\"\\n  ' +\n((__t = ( ctx.input.multiple ? 'multiple' : '' )) == null ? '' : __t) +\n'\\n  ';\n for (var attr in ctx.input.attr) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.input.attr[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n>' +\n((__t = (ctx.selectOptions)) == null ? '' : __t) +\n'</select>\\n<input type=\"text\"\\n       class=\"formio-select-autocomplete-input\"\\n       ref=\"autocompleteInput\"\\n       ';\n if (ctx.input.attr.autocomplete) { ;\n__p += '\\n       autocomplete=\"' +\n((__t = (ctx.input.attr.autocomplete)) == null ? '' : __t) +\n'\"\\n       ';\n } ;\n__p += '\\n       tabindex=\"-1\"\\n/>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/select/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">';\n if (ctx.value) { ;\n__p +=\n((__t = ( ctx.self.itemValue(ctx.value) )) == null ? '' : __t);\n } else { ;\n__p += '-';\n } ;\n__p += '</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/select/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/select/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/select/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/select/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/select/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/selectOption/form.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/selectOption/form.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<option ' +\n((__t = ( ctx.selected ? 'selected=\"selected\"' : '' )) == null ? '' : __t) +\n'\\n  value=\"' +\n((__t = (ctx.option.value)) == null ? '' : __t) +\n'\"\\n  ';\n for (var attr in ctx.attrs) { ;\n__p += '\\n  ' +\n((__t = (attr)) == null ? '' : __t) +\n'=\"' +\n((__t = (ctx.attrs[attr])) == null ? '' : __t) +\n'\"\\n  ';\n } ;\n__p += '\\n  >\\n  ' +\n((__t = (ctx.t(ctx.option.label))) == null ? '' : __t) +\n'\\n</option>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/selectOption/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/selectOption/html.ejs.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/selectOption/html.ejs.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.selected) { ;\n__p +=\n((__t = (ctx.t(ctx.option.label))) == null ? '' : __t);\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/selectOption/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/selectOption/index.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/selectOption/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/selectOption/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/selectOption/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/selectOption/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/signature/form.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/signature/form.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p +=\n((__t = (ctx.element)) == null ? '' : __t) +\n'\\n<div\\n  class=\"signature-pad-body\"\\n  style=\"width: ' +\n((__t = (ctx.component.width)) == null ? '' : __t) +\n';height: ' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n';padding:0;margin:0;\"\\n  tabindex=\"' +\n((__t = (ctx.component.tabindex || 0)) == null ? '' : __t) +\n'\"\\n  ref=\"padBody\"\\n>\\n\\n  <a class=\"ui basic button mini icon signature-pad-refresh\" ref=\"refresh\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('refresh'))) == null ? '' : __t) +\n'\"></i>\\n  </a>\\n  <canvas class=\"signature-pad-canvas\" height=\"' +\n((__t = (ctx.component.height)) == null ? '' : __t) +\n'\" ref=\"canvas\"></canvas>\\n  ';\n if (ctx.required) { ;\n__p += '\\n  <span class=\"form-control-feedback field-required-inline text-danger\">\\n    <i class=\"' +\n((__t = (ctx.iconClass('asterisk'))) == null ? '' : __t) +\n'\"></i>\\n  </span>\\n  ';\n } ;\n__p += '\\n  <img style=\"width: 100%;display: none;\" ref=\"signatureImage\">\\n</div>\\n';\n if (ctx.component.footer) { ;\n__p += '\\n  <div class=\"signature-pad-footer\">\\n    ' +\n((__t = (ctx.t(ctx.component.footer))) == null ? '' : __t) +\n'\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/signature/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/signature/html.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/signature/html.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<img style=\"width: 100%;\" ref=\"signatureImage\">\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/signature/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/signature/index.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/signature/index.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/signature/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/signature/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/signature/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/survey/form.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/survey/form.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table striped celled\">\\n  <thead>\\n    <tr>\\n      <th></th>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <th style=\"text-align: center;\">' +\n((__t = (ctx.t(value.label))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <td>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</td>\\n      ';\n ctx.component.values.forEach(function(value) { ;\n__p += '\\n      <td style=\"text-align: center;\">\\n        <input type=\"radio\" name=\"' +\n((__t = ( ctx.self.getInputName(question) )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" id=\"' +\n((__t = (ctx.key)) == null ? '' : __t) +\n'-' +\n((__t = (question.value)) == null ? '' : __t) +\n'-' +\n((__t = (value.value)) == null ? '' : __t) +\n'\" ref=\"input\">\\n      </td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/survey/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/survey/html.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/survey/html.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table striped celled\">\\n  <tbody>\\n    ';\n ctx.component.questions.forEach(function(question) { ;\n__p += '\\n    <tr>\\n      <th>' +\n((__t = (ctx.t(question.label))) == null ? '' : __t) +\n'</th>\\n      <td>\\n      ';\n ctx.component.values.forEach(function(item) { ;\n__p += '\\n        ';\n if (ctx.value && ctx.value.hasOwnProperty(question.value) && ctx.value[question.value] === item.value) { ;\n__p += '\\n          ' +\n((__t = (ctx.t(item.label))) == null ? '' : __t) +\n'\\n        ';\n } ;\n__p += '\\n      ';\n }) ;\n__p += '\\n      </td>\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/survey/html.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/survey/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/survey/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/survey/form.ejs.js\");\nconst html_ejs_1 = __webpack_require__(/*! ./html.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/survey/html.ejs.js\");\nexports.default = { form: form_ejs_1.default, html: html_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/survey/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tab/flat.ejs.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tab/flat.ejs.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <h4 class=\"ui top attached block header\">' +\n((__t = ( ctx.t(tab.label) )) == null ? '' : __t) +\n'</h4>\\n  <div class=\"ui bottom attached segment\">\\n    ' +\n((__t = ( ctx.tabComponents[index] )) == null ? '' : __t) +\n'\\n  </div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tab/flat.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tab/form.ejs.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tab/form.ejs.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui top attached tabular menu\">\\n  ';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n  <a class=\"item' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" role=\"presentation\" ref=\"' +\n((__t = (ctx.tabLinkKey)) == null ? '' : __t) +\n'\">' +\n((__t = (ctx.t(tab.label))) == null ? '' : __t) +\n'</a>\\n  ';\n }) ;\n__p += '\\n</div>\\n';\n ctx.component.components.forEach(function(tab, index) { ;\n__p += '\\n<div role=\"tabpanel\" class=\"ui bottom attached tab segment' +\n((__t = ( ctx.currentTab === index ? ' active' : '')) == null ? '' : __t) +\n'\" ref=\"' +\n((__t = (ctx.tabKey)) == null ? '' : __t) +\n'\"\">' +\n((__t = (ctx.tabComponents[index])) == null ? '' : __t) +\n'</div>\\n';\n }) ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tab/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tab/index.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tab/index.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst flat_ejs_1 = __webpack_require__(/*! ./flat.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/tab/flat.ejs.js\");\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/tab/form.ejs.js\");\nexports.default = { flat: flat_ejs_1.default, form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tab/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/table/form.ejs.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/table/form.ejs.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<table class=\"ui table\\n    ' +\n((__t = ( ctx.component.striped ? 'striped' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.bordered ? 'celled' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.hover ? 'selectable' : '')) == null ? '' : __t) +\n'\\n    ' +\n((__t = ( ctx.component.condensed ? 'compact' : 'padded')) == null ? '' : __t) +\n'\\n  \">\\n  ';\n if (ctx.component.header && ctx.component.header.length > 0) { ;\n__p += '\\n  <thead>\\n    <tr>\\n      ';\n ctx.component.header.forEach(function(header) { ;\n__p += '\\n      <th>' +\n((__t = (ctx.t(header))) == null ? '' : __t) +\n'</th>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n  </thead>\\n  ';\n } ;\n__p += '\\n  <tbody>\\n    ';\n ctx.tableComponents.forEach(function(row, rowIndex) { ;\n__p += '\\n    <tr ref=\"row-' +\n((__t = (ctx.id)) == null ? '' : __t) +\n'\">\\n      ';\n row.forEach(function(column, colIndex) { ;\n__p += '\\n      <td ref=\"' +\n((__t = (ctx.tableKey)) == null ? '' : __t) +\n'-' +\n((__t = (ctx.rowIndex)) == null ? '' : __t) +\n'\"';\n if (ctx.cellClassName) { ;\n__p += ' class=\"' +\n((__t = (ctx.cellClassName)) == null ? '' : __t) +\n'\"';\n } ;\n__p += '>' +\n((__t = (column)) == null ? '' : __t) +\n'</td>\\n      ';\n }) ;\n__p += '\\n    </tr>\\n    ';\n }) ;\n__p += '\\n  </tbody>\\n</table>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/table/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/table/index.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/table/index.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/table/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/table/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tree/form.ejs.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tree/form.ejs.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n\n if (ctx.node.isRoot) { ;\n__p += '\\n  <div class=\"ui relaxed list\">\\n  <div class=\"item\" ref=\"root\" role=\"listitem\">\\n  ';\n } else { ;\n__p += '\\n  <div ref=\"node\" class=\"item tree__level\" role=\"listitem\">\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.content) { ;\n__p += '\\n    <div ref=\"content\" class=\"tree__node-content content\">\\n      ' +\n((__t = ( ctx.content )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.childNodes && ctx.childNodes.length) { ;\n__p += '\\n    <div ref=\"childNodes\" class=\"tree__node-children list\" role=\"list\">\\n      ' +\n((__t = ( ctx.childNodes.join('') )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n } ;\n__p += '\\n    ';\n if (ctx.node.isRoot) { ;\n__p += '\\n    </div>\\n  </div>\\n  ';\n } else { ;\n__p += '\\n  </div>\\n';\n } ;\n__p += '\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tree/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tree/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tree/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/tree/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tree/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/edit.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/edit.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"node-edit\">\\n  <div ref=\"nodeEdit\">' +\n((__t = ( ctx.children )) == null ? '' : __t) +\n'</div>\\n  ';\n if (!ctx.readOnly) { ;\n__p += '\\n    <div class=\"node-actions\">\\n      <button ref=\"saveNode\" class=\"ui mini primary button saveNode\">' +\n((__t = ( ctx.t('Save') )) == null ? '' : __t) +\n'</button>\\n      <button ref=\"cancelNode\" class=\"ui mini negative button cancelNode\">' +\n((__t = ( ctx.t('Cancel') )) == null ? '' : __t) +\n'\\n    </div>\\n  ';\n } ;\n__p += '\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/edit.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/index.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/index.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst edit_ejs_1 = __webpack_require__(/*! ./edit.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/edit.ejs.js\");\nconst view_ejs_1 = __webpack_require__(/*! ./view.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/view.ejs.js\");\nexports.default = {\n    treeView: {\n        form: view_ejs_1.default,\n    },\n    treeEdit: {\n        form: edit_ejs_1.default,\n    },\n};\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/view.ejs.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/view.ejs.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div class=\"ui grid\">\\n  <div class=\"row\">\\n    ';\n ctx.values.forEach(function(value) { ;\n__p += '\\n    <div class=\"two wide column\">\\n      ' +\n((__t = ( value )) == null ? '' : __t) +\n'\\n    </div>\\n    ';\n }) ;\n__p += '\\n    <div class=\"five wide column\">\\n      <div class=\"ui mini right floated buttons\">\\n        ';\n if (ctx.node.hasChildren) { ;\n__p += '\\n        <button ref=\"toggleNode\" class=\"ui button toggleNode\">' +\n((__t = ( ctx.t(ctx.node.collapsed ? 'Expand' : 'Collapse') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        ';\n } ;\n__p += '\\n        ';\n if (!ctx.readOnly) { ;\n__p += '\\n        <button ref=\"addChild\" class=\"ui button primary addChild\">' +\n((__t = ( ctx.t('Add') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        <button ref=\"editNode\" class=\"ui button editNode\">' +\n((__t = ( ctx.t('Edit') )) == null ? '' : __t) +\n'</button>\\n        <div class=\"or\"></div>\\n        <button ref=\"removeNode\" class=\"ui button negative removeNode\">' +\n((__t = ( ctx.t('Delete') )) == null ? '' : __t) +\n'</button>\\n        ';\n if (ctx.node.revertAvailable) { ;\n__p += '\\n        <div class=\"or\"></div>\\n        <button ref=\"revertNode\" class=\"ui button negative revertNode\">' +\n((__t = ( ctx.t('Revert') )) == null ? '' : __t) +\n'</button>\\n        ';\n } ;\n__p += '\\n        ';\n } ;\n__p += '\\n      </div>\\n    </div>\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/tree/partials/view.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/webform/builder.ejs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/webform/builder.ejs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui visible message\"><p>' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</p></div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/webform/builder.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/webform/form.ejs.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/webform/form.ejs.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"' +\n((__t = (ctx.classes)) == null ? '' : __t) +\n' ui form\" ref=\"webform\" novalidate>' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/webform/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/webform/index.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/webform/index.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst builder_ejs_1 = __webpack_require__(/*! ./builder.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/webform/builder.ejs.js\");\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/webform/form.ejs.js\");\nexports.default = { form: form_ejs_1.default, builder: builder_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/webform/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/well/form.ejs.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/well/form.ejs.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"ui secondary segment\">\\n  <div class=\"content\" ref=\"' +\n((__t = (ctx.nestedKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.children)) == null ? '' : __t) +\n'\\n  </div>\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/well/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/well/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/well/index.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/well/form.ejs.js\");\nexports.default = { form: form_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/well/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/wizard/builder.ejs.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/wizard/builder.ejs.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-wizard-builder-component-title\">' +\n((__t = ( ctx.t(ctx.component.title) )) == null ? '' : __t) +\n'</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/wizard/builder.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/wizard/form.ejs.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/wizard/form.ejs.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '';\n__p += '<div class=\"formio-wizard-position\">\\n  ' +\n((__t = ( ctx.wizardHeader )) == null ? '' : __t) +\n'\\n  <div class=\"wizard-page\" ref=\"' +\n((__t = (wizardKey)) == null ? '' : __t) +\n'\">\\n    ' +\n((__t = (ctx.components)) == null ? '' : __t) +\n'\\n  </div>\\n  ' +\n((__t = ( ctx.wizardNav )) == null ? '' : __t) +\n'\\n</div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/wizard/form.ejs.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@formio/semantic/lib/templates/semantic/wizard/index.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formio/semantic/lib/templates/semantic/wizard/index.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst builder_ejs_1 = __webpack_require__(/*! ./builder.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/wizard/builder.ejs.js\");\nconst form_ejs_1 = __webpack_require__(/*! ./form.ejs */ \"./node_modules/@formio/semantic/lib/templates/semantic/wizard/form.ejs.js\");\nexports.default = { form: form_ejs_1.default, builder: builder_ejs_1.default };\n\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/wizard/index.js?");
 
 /***/ }),
 
