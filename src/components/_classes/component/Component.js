@@ -1457,6 +1457,13 @@ export default class Component extends Element {
     }
   }
 
+  removeInputError(elements) {
+    if (elements && Array.isArray(elements)) {
+      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+    }
+  }
+
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
@@ -2191,10 +2198,7 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
-      }
+      this.removeInputError(this.refs.input);
       this.clearErrorClasses();
     }
 
