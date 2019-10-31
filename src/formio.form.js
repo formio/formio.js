@@ -3,8 +3,6 @@ import Components from './components/Components';
 import Templates from './templates/Templates';
 import Providers from './providers/Providers';
 import Formio from './Formio';
-import bootstrap3 from '@formio/bootstrap3';
-import semantic from '@formio/semantic';
 Components.setComponents(AllComponents);
 Formio.Components = Components;
 Formio.Templates = Templates;
@@ -64,12 +62,3 @@ Formio.use = (...plugins) => {
 export Form from './Form';
 export Utils from './utils';
 export { Components, Templates, Formio };
-
-// Deprecated. Semantic and bootstrap3 will be removed in 5.x.
-// Use external modules instead.
-Formio.use({
-  templates: {
-    bootstrap3: bootstrap3.templates.bootstrap3,
-    semantic: semantic.templates.semantic,
-  }
-});
