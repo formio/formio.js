@@ -1134,7 +1134,7 @@ export default class WebformBuilder extends Component {
     let container = element;
     do {
       container = container.parentNode;
-    } while (container && !container.formioContainer);
+    } while (container && !container.formioComponent);
     return container;
   }
 
