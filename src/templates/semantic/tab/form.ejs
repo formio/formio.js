@@ -1,8 +1,0 @@
-<div class="ui top attached tabular menu">
-  {% ctx.component.components.forEach(function(tab, index) { %}
-  <a class="item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLinkKey}}">{{ctx.t(tab.label)}}</a>
-  {% }) %}
-</div>
-{% ctx.component.components.forEach(function(tab, index) { %}
-<div role="tabpanel" class="ui bottom attached tab segment{{ ctx.currentTab === index ? ' active' : ''}}" ref="{{ctx.tabKey}}"">{{ctx.tabComponents[index]}}</div>
-{% }) %}
