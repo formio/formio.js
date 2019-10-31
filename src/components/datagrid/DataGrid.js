@@ -194,7 +194,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.builderMode);
+    return (this.hasRemoveButtons() || this.canAddColumn);
   }
 
   hasRemoveButtons() {
@@ -217,6 +217,10 @@ export default class DataGridComponent extends NestedComponent {
     return !_.isEqual(newValue, oldValue);
   }
 
+  get canAddColumn() {
+    return this.builderMode;
+  }
+
   render() {
     const columns = this.getColumns();
     return super.render(this.renderTemplate('datagrid', {
@@ -236,6 +240,7 @@ export default class DataGridComponent extends NestedComponent {
       datagridKey: this.datagridKey,
       allowReorder: this.allowReorder,
       builder: this.builderMode,
+      canAddColumn: this.canAddColumn,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
