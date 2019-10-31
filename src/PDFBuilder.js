@@ -221,6 +221,7 @@ export default class PDFBuilder extends WebformBuilder {
               id: data.file,
               src: `${data.filesServer}${data.path}`
             });
+            this.emit('updateComponent');
             // Now that the settings are set, redraw to show the builder.
             this.redraw();
           });
