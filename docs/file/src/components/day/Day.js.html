@@ -456,28 +456,38 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: &apos;single&apos;, month: &apos;single&apos;, year: &apos;single&apos;, input: &apos;multiple&apos; });
     const superAttach = super.attach(element);
-    this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
-    // TODO: Need to rework this to work with day select as well.
-    // Change day max input when month changes.
-    this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
-      const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
-      const day = this.getFieldValue(&apos;day&apos;);
-      this.refs.day.max = maxDay;
-      if (day &gt; maxDay) {
-        this.refs.day.value = this.refs.day.max;
+    if (this.shouldDisabled) {
+      this.setDisabled(this.refs.day, true);
+      this.setDisabled(this.refs.month, true);
+      this.setDisabled(this.refs.year, true);
+      if (this.refs.input) {
+        this.refs.input.forEach((input) =&gt; this.setDisabled(input, true));
       }
-      this.updateValue(null, {
+    }
+    else {
+      this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
         modified: true
+      }));
+      // TODO: Need to rework this to work with day select as well.
+      // Change day max input when month changes.
+      this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
+        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const day = this.getFieldValue(&apos;day&apos;);
+        this.refs.day.max = maxDay;
+        if (day &gt; maxDay) {
+          this.refs.day.value = this.refs.day.max;
+        }
+        this.updateValue(null, {
+          modified: true
+        });
       });
-    });
-    this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
-    this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
+      this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+      this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+    }
     this.setValue(this.dataValue);
     return superAttach;
   }

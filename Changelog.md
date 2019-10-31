@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## WIP: 4.7.0
+### Changed
+ - Refactored the widget logic to work with multiple inputs.
+ - Upgrade choices.js@8.0.0, i18next@19.0.0
+
+## 4.6.2
+### Fixed
+ - Fix initial focus on Preview Mode
+ - Fix Textarea not displaying on read only mode.
+ - Fixing issues with select dynamic filtering.
+ - Fixed issue where the file uploads would not work when conditionally set
+ - Fixing an issue where if you uncheck a radio, you cannot re-check the radio
+ - Fixing issues where nested forms would get in a detached state when errors occur on the form.
+ - Fixed the survey component when disabled.
+ - Fixing day component disabled state.
+ - Fixed issue where multivalue may throw an error about dataValue.map not defined.
+ - Fix select limit for json
+
+### Added
+ - Adding Default data value to DataGrid
+
+### Changed
+ - Updated core-js@3.3.5
+
 ## 4.6.1
 ### Fixed
  - Fix json widget setting drop constantly

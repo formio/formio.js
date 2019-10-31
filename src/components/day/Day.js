@@ -184,6 +184,11 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
+  addInputError(message, dirty, elements) {
+    super.addInputError(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
+    super.addInputError(message, dirty, elements);
+  }
+
   init() {
     super.init();
     this.validators = this.validators.concat(['day', 'maxDate', 'minDate']);
@@ -228,28 +233,38 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     const superAttach = super.attach(element);
-    this.addEventListener(this.refs.day, 'input', () => this.updateValue(null, {
-      modified: true
-    }));
-    // TODO: Need to rework this to work with day select as well.
-    // Change day max input when month changes.
-    this.addEventListener(this.refs.month, 'input', () => {
-      const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
-      const day = this.getFieldValue('day');
-      this.refs.day.max = maxDay;
-      if (day > maxDay) {
-        this.refs.day.value = this.refs.day.max;
+    if (this.shouldDisabled) {
+      this.setDisabled(this.refs.day, true);
+      this.setDisabled(this.refs.month, true);
+      this.setDisabled(this.refs.year, true);
+      if (this.refs.input) {
+        this.refs.input.forEach((input) => this.setDisabled(input, true));
       }
-      this.updateValue(null, {
+    }
+    else {
+      this.addEventListener(this.refs.day, 'input', () => this.updateValue(null, {
         modified: true
+      }));
+      // TODO: Need to rework this to work with day select as well.
+      // Change day max input when month changes.
+      this.addEventListener(this.refs.month, 'input', () => {
+        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const day = this.getFieldValue('day');
+        this.refs.day.max = maxDay;
+        if (day > maxDay) {
+          this.refs.day.value = this.refs.day.max;
+        }
+        this.updateValue(null, {
+          modified: true
+        });
       });
-    });
-    this.addEventListener(this.refs.year, 'input', () => this.updateValue(null, {
-      modified: true
-    }));
-    this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
-      modified: true
-    }));
+      this.addEventListener(this.refs.year, 'input', () => this.updateValue(null, {
+        modified: true
+      }));
+      this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
+        modified: true
+      }));
+    }
     this.setValue(this.dataValue);
     return superAttach;
   }
