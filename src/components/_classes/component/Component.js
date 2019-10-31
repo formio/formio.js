@@ -1018,6 +1018,7 @@ export default class Component extends Element {
     if (!value) {
       return '';
     }
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1871,6 +1872,9 @@ export default class Component extends Element {
     const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
+    }
+    else if (input.widget && input.widget.setValue) {
+      input.widget.setValue(value);
     }
     else {
       input.value = value;

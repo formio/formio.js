@@ -18,7 +18,6 @@ export default class DataMapComponent extends DataGridComponent {
         type: 'textfield',
         key: 'value',
         label: 'Value',
-        defaultValue: 'Value',
         input: true
       },
       input: true,
@@ -113,8 +112,13 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   getRowValues() {
-    const dataValue = this.dataValue;
-    return Object.keys(dataValue).map((key) => {
+    let dataValue = this.dataValue;
+    let keys = Object.keys(dataValue);
+    if (this.builderMode && !keys.length) {
+      dataValue = { key: '' };
+      keys = Object.keys(dataValue);
+    }
+    return keys.map((key) => {
       return {
         key,
         [this.valueKey]: dataValue[key]
@@ -145,8 +149,7 @@ export default class DataMapComponent extends DataGridComponent {
 
   createRowComponents(row, rowIndex) {
     // Store existing key name so we know what it is if it changes.
-    let key = row['key'];
-    this.rowKeys[rowIndex] = key;
+    this.rowKeys[rowIndex] = row.key;
 
     // Create a new event emitter since fields are isolated.
     const options = _.clone(this.options);
@@ -158,35 +161,43 @@ export default class DataMapComponent extends DataGridComponent {
     options.row = `${rowIndex}`;
 
     const components = {};
-
-    components['key'] = this.createComponent(this.keySchema, options, row);
-    components[this.valueKey] = this.createComponent(this.component.valueComponent, options, row);
-
-    // Handle change event
-    options.events.on('formio.componentChange', (event) => {
-      if (event.component.key === 'key') {
-        const newKey = uniqueKey(this.dataValue, event.value);
-        this.dataValue[newKey] = this.dataValue[key];
-        delete this.dataValue[key];
-        key = newKey;
-        this.rowKeys[rowIndex] = newKey;
-        this.triggerChange();
-      }
-      else if (event.component.key === this.valueKey) {
-        this.dataValue[key] = event.value;
-        this.triggerChange();
-      }
+    components.key = this.createComponent(this.keySchema, options, { key: row.key });
+    components.key.on('componentChange', (event) => {
+      const newKey = uniqueKey(this.dataValue, event.value);
+      this.dataValue[newKey] = this.dataValue[row.key];
+      delete this.dataValue[row.key];
+      row.key = newKey;
+      this.rowKeys[rowIndex] = newKey;
+      this.triggerChange();
     });
 
+    const valueComponent = _.clone(this.component.valueComponent);
+    valueComponent.key = row.key;
+    components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);
     return components;
+  }
+
+  get canAddColumn() {
+    return false;
+  }
+
+  addChildComponent(component) {
+    this.component.valueComponent = component;
+  }
+
+  saveChildComponent(component) {
+    this.component.valueComponent = component;
+  }
+
+  removeChildComponent() {
+    const defaultSchema = DataMapComponent.schema();
+    this.component.valueComponent = defaultSchema.valueComponent;
   }
 
   addRow() {
     const newKey = uniqueKey(this.dataValue, 'key');
-    this.dataValue[newKey] = 'Value';
     const index = this.rows.length;
-    this.rows[index] = this.createRowComponents({ key: newKey, [this.valueKey]: this.dataValue[newKey] }, index);
-    this.rowKeys[index] = newKey;
+    this.rows[index] = this.createRowComponents({ key: newKey }, index);
     this.redraw();
     this.triggerChange();
   }

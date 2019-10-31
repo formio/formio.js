@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -415,11 +413,44 @@ export default class Input extends Multivalue {
     return super.attach(element);
   }
 
+  getWidget(index) {
+    index = index || 0;
+    if (this.refs.input &amp;&amp; this.refs.input[index]) {
+      return this.refs.input[index].widget;
+    }
+    return null;
+  }
+
+  /**
+   * Uses the widget to determine the output string.
+   *
+   * @param value
+   * @return {*}
+   */
+  getWidgetValueAsString(value) {
+    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      const values = [];
+      value.forEach((val, index) =&gt; {
+        if (this.refs.input[index] &amp;&amp; this.refs.input[index].widget) {
+          values.push(this.refs.input[index].widget.getValueAsString(val));
+        }
+      });
+      return values;
+    }
+    return this.refs.input[0].widget.getValueAsString(value);
+  }
+
+  getValueAsString(value) {
+    return super.getValueAsString(this.getWidgetValueAsString(value));
+  }
+
   attachElement(element, index) {
     super.attachElement(element, index);
-
-    if (this.widget) {
-      this.widget.destroy();
+    if (element.widget) {
+      element.widget.destroy();
     }
     // Attach the widget.
     element.widget = this.createWidget(index);
@@ -449,18 +480,6 @@ export default class Input extends Multivalue {
   }
 
   /**
-   * Returns the instance of the widget for this component.
-   *
-   * @return {*}
-   */
-  get widget() {
-    if (this._widget) {
-      return this._widget;
-    }
-    return this.createWidget();
-  }
-
-  /**
    * Creates an instance of a widget for this component.
    *
    * @return {null}
@@ -487,7 +506,6 @@ export default class Input extends Multivalue {
       modified: true
     }, index), true);
     widget.on(&apos;redraw&apos;, () =&gt; this.redraw(), true);
-    this._widget = widget;
     return widget;
   }
 

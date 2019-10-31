@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -325,7 +323,7 @@ export default class DateTimeComponent extends Input {
   }
 
   performInputMapping(input) {
-    if (input.widget &amp;&amp; this.widget.settings) {
+    if (input.widget &amp;&amp; input.widget.settings) {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
@@ -333,13 +331,6 @@ export default class DateTimeComponent extends Input {
 
   get defaultSchema() {
     return DateTimeComponent.schema();
-  }
-
-  setValue(value, flags) {
-    if (this.widget) {
-      this.widget.setValue(value);
-    }
-    return super.setValue(value, flags);
   }
 
   get emptyValue() {
@@ -364,14 +355,14 @@ export default class DateTimeComponent extends Input {
   }
 
   checkValidity(data, dirty, rowData) {
-    if (this._widget &amp;&amp; this._widget.enteredDate) {
-      dirty = true;
+    if (this.refs.input) {
+      this.refs.input.forEach((input) =&gt; {
+        if (input.widget &amp;&amp; input.widget.enteredDate) {
+          dirty = true;
+        }
+      });
     }
     return super.checkValidity(data, dirty, rowData);
-  }
-
-  getView(value) {
-    return this.widget.getValueAsString(value);
   }
 
   focus() {

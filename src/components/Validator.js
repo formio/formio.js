@@ -16,30 +16,30 @@ export default {
   get: _.get,
   each: _.each,
   has: _.has,
-  checkValidator(component, validator, setting, value, data) {
+  checkValidator(component, validator, setting, value, data, index) {
     let result = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      result = component[validator.method](setting, value, data);
+      result = component[validator.method](setting, value, data, index);
     }
     else {
-      result = validator.check.call(this, component, setting, value, data);
+      result = validator.check.call(this, component, setting, value, data, index);
     }
     if (typeof result === 'string') {
       return result;
     }
     if (!result) {
-      return validator.message.call(this, component, setting);
+      return validator.message.call(this, component, setting, index);
     }
     return '';
   },
-  validate(component, validator, value, data) {
+  validate(component, validator, value, data, index) {
     if (validator.key && _.has(component.component, validator.key)) {
       const setting = this.get(component.component, validator.key);
-      return this.checkValidator(component, validator, setting, value, data);
+      return this.checkValidator(component, validator, setting, value, data, index);
     }
-    return this.checkValidator(component, validator, null, value, data);
+    return this.checkValidator(component, validator, null, value, data, index);
   },
   check(component, data) {
     let result = '';
@@ -49,8 +49,8 @@ export default {
       if (this.validators.hasOwnProperty(name)) {
         const validator = this.validators[name];
         if (component.validateMultiple(value)) {
-          _.each(value, (val) => {
-            result = this.validate(component, validator, val, data);
+          _.each(value, (val, index) => {
+            result = this.validate(component, validator, val, data, index);
             if (result) {
               return false;
             }
@@ -450,9 +450,13 @@ export default {
           maxDate: moment(component.dataValue).format(component.format),
         });
       },
-      check(component, setting, value) {
+      check(component, setting, value, data, index) {
         this.validators.calendar.messageText = '';
-        const { settings, enteredDate } = component._widget;
+        const widget = component.getWidget(index);
+        if (!widget) {
+          return true;
+        }
+        const { settings, enteredDate } = widget;
         const { minDate, maxDate, format } = settings;
         const momentFormat = [convertFormatToMoment(format)];
 
@@ -475,7 +479,7 @@ export default {
             return false;
           }
           else {
-            component._widget.enteredDate = '';
+            widget.enteredDate = '';
             return true;
           }
         }

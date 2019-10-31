@@ -972,18 +972,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/templates/bootstrap3/iconclass.js~iconclass",
-    "function/index.html#static-function-iconClass",
-    "<span>iconClass</span> <span class=\"search-result-import-path\">formiojs/src/templates/bootstrap3/iconClass.js</span>",
-    "function"
-  ],
-  [
-    "formiojs/src/templates/semantic/iconclass.js~iconclass",
-    "function/index.html#static-function-iconClass",
-    "<span>iconClass</span> <span class=\"search-result-import-path\">formiojs/src/templates/semantic/iconClass.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/providers/storage/indexeddb.js~indexeddb",
     "function/index.html#static-function-indexeddb",
     "<span>indexeddb</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/indexeddb.js</span>",
@@ -1507,13 +1495,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/form.js~form#form",
-    "class/src/Form.js~Form.html#instance-set-form",
+    "class/src/Form.js~Form.html#instance-get-form",
     "src/Form.js~Form#form",
     "member"
   ],
   [
     "src/form.js~form#form",
-    "class/src/Form.js~Form.html#instance-get-form",
+    "class/src/Form.js~Form.html#instance-set-form",
     "src/Form.js~Form#form",
     "member"
   ],
@@ -2677,13 +2665,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2941,25 +2929,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
-    "src/Webform.js~Webform#src",
-    "member"
-  ],
-  [
-    "src/webform.js~webform#src",
     "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
-    "src/webform.js~webform#submission",
-    "class/src/Webform.js~Webform.html#instance-get-submission",
-    "src/Webform.js~Webform#submission",
+    "src/webform.js~webform#src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
+    "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#submission",
     "class/src/Webform.js~Webform.html#instance-set-submission",
+    "src/Webform.js~Webform#submission",
+    "member"
+  ],
+  [
+    "src/webform.js~webform#submission",
+    "class/src/Webform.js~Webform.html#instance-get-submission",
     "src/Webform.js~Webform#submission",
     "member"
   ],
@@ -3037,13 +3025,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3193,13 +3181,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webformbuilder.js~webformbuilder#form",
-    "class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form",
     "src/WebformBuilder.js~WebformBuilder#form",
     "member"
   ],
   [
     "src/webformbuilder.js~webformbuilder#form",
-    "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form",
     "src/WebformBuilder.js~WebformBuilder#form",
     "member"
   ],
@@ -3481,13 +3469,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizard.js~wizard#form",
-    "class/src/Wizard.js~Wizard.html#instance-get-form",
+    "class/src/Wizard.js~Wizard.html#instance-set-form",
     "src/Wizard.js~Wizard#form",
     "member"
   ],
   [
     "src/wizard.js~wizard#form",
-    "class/src/Wizard.js~Wizard.html#instance-set-form",
+    "class/src/Wizard.js~Wizard.html#instance-get-form",
     "src/Wizard.js~Wizard#form",
     "member"
   ],
@@ -3715,13 +3703,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
@@ -4525,25 +4513,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#parentdisabled",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentDisabled",
-    "src/components/_classes/component/Component.js~Component#parentDisabled",
-    "member"
-  ],
-  [
-    "src/components/_classes/component/component.js~component#parentdisabled",
     "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentDisabled",
     "src/components/_classes/component/Component.js~Component#parentDisabled",
     "member"
   ],
   [
-    "src/components/_classes/component/component.js~component#parentvisible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentVisible",
-    "src/components/_classes/component/Component.js~Component#parentVisible",
+    "src/components/_classes/component/component.js~component#parentdisabled",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentDisabled",
+    "src/components/_classes/component/Component.js~Component#parentDisabled",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#parentvisible",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
+    "src/components/_classes/component/Component.js~Component#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#parentvisible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentVisible",
     "src/components/_classes/component/Component.js~Component#parentVisible",
     "member"
   ],
@@ -4885,13 +4873,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#visible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-visible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-visible",
     "src/components/_classes/component/Component.js~Component#visible",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#visible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-visible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-visible",
     "src/components/_classes/component/Component.js~Component#visible",
     "member"
   ],
@@ -5016,12 +5004,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/_classes/input/input.js~input#_widget",
-    "class/src/components/_classes/input/Input.js~Input.html#instance-member-_widget",
-    "src/components/_classes/input/Input.js~Input#_widget",
-    "member"
-  ],
-  [
     "src/components/_classes/input/input.js~input#addfocusblurevents",
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-addFocusBlurEvents",
     "src/components/_classes/input/Input.js~Input#addFocusBlurEvents",
@@ -5070,9 +5052,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/input/input.js~input#getvalueasstring",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAsString",
+    "src/components/_classes/input/Input.js~Input#getValueAsString",
+    "method"
+  ],
+  [
     "src/components/_classes/input/input.js~input#getvalueat",
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-getValueAt",
     "src/components/_classes/input/Input.js~Input#getValueAt",
+    "method"
+  ],
+  [
+    "src/components/_classes/input/input.js~input#getwidget",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-method-getWidget",
+    "src/components/_classes/input/Input.js~Input#getWidget",
+    "method"
+  ],
+  [
+    "src/components/_classes/input/input.js~input#getwidgetvalueasstring",
+    "class/src/components/_classes/input/Input.js~Input.html#instance-method-getWidgetValueAsString",
+    "src/components/_classes/input/Input.js~Input#getWidgetValueAsString",
     "method"
   ],
   [
@@ -5140,12 +5140,6 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/input/Input.js~Input.html#instance-method-updateValueAt",
     "src/components/_classes/input/Input.js~Input#updateValueAt",
     "method"
-  ],
-  [
-    "src/components/_classes/input/input.js~input#widget",
-    "class/src/components/_classes/input/Input.js~Input.html#instance-get-widget",
-    "src/components/_classes/input/Input.js~Input#widget",
-    "member"
   ],
   [
     "src/components/_classes/input/input.js~input.schema",
@@ -5401,25 +5395,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#currentform",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#currentForm",
-    "member"
-  ],
-  [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#currentform",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-currentForm",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
   [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#data",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-data",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#data",
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#currentform",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-currentForm",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#currentForm",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#data",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-data",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#data",
+    "member"
+  ],
+  [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#data",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-data",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#data",
     "member"
   ],
@@ -5455,13 +5449,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#disabled",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-disabled",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-disabled",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#disabled",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#disabled",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-disabled",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-disabled",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#disabled",
     "member"
   ],
@@ -5557,25 +5551,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentdisabled",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-parentDisabled",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentDisabled",
-    "member"
-  ],
-  [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentdisabled",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-parentDisabled",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentDisabled",
     "member"
   ],
   [
-    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentvisible",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
-    "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentVisible",
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentdisabled",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-parentDisabled",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentDisabled",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentvisible",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-parentVisible",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentvisible",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-parentVisible",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentVisible",
     "member"
   ],
@@ -6457,13 +6451,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-data",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-set-data",
     "src/components/container/Container.js~ContainerComponent#data",
     "member"
   ],
   [
     "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-set-data",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-data",
     "src/components/container/Container.js~ContainerComponent#data",
     "member"
   ],
@@ -6804,6 +6798,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#canaddcolumn",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-canAddColumn",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#canAddColumn",
+    "member"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#checkcolumns",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkColumns",
     "src/components/datagrid/DataGrid.js~DataGridComponent#checkColumns",
@@ -6865,13 +6865,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#datavalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-dataValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-dataValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#dataValue",
     "member"
   ],
@@ -6895,13 +6895,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#disabled",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-disabled",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-disabled",
     "src/components/datagrid/DataGrid.js~DataGridComponent#disabled",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#disabled",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-disabled",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-disabled",
     "src/components/datagrid/DataGrid.js~DataGridComponent#disabled",
     "member"
   ],
@@ -7170,10 +7170,22 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datamap/datamap.js~datamapcomponent#addchildcomponent",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-addChildComponent",
+    "src/components/datamap/DataMap.js~DataMapComponent#addChildComponent",
+    "method"
+  ],
+  [
     "src/components/datamap/datamap.js~datamapcomponent#addrow",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-addRow",
     "src/components/datamap/DataMap.js~DataMapComponent#addRow",
     "method"
+  ],
+  [
+    "src/components/datamap/datamap.js~datamapcomponent#canaddcolumn",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-canAddColumn",
+    "src/components/datamap/DataMap.js~DataMapComponent#canAddColumn",
+    "member"
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#checkcolumns",
@@ -7201,13 +7213,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-set-dataValue",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-dataValue",
     "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
     "member"
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-dataValue",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-set-dataValue",
     "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
     "member"
   ],
@@ -7266,6 +7278,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/datamap/datamap.js~datamapcomponent#removechildcomponent",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-removeChildComponent",
+    "src/components/datamap/DataMap.js~DataMapComponent#removeChildComponent",
+    "method"
+  ],
+  [
     "src/components/datamap/datamap.js~datamapcomponent#removerow",
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-removeRow",
     "src/components/datamap/DataMap.js~DataMapComponent#removeRow",
@@ -7282,6 +7300,12 @@ window.esdocSearchIndex = [
     "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-member-rows",
     "src/components/datamap/DataMap.js~DataMapComponent#rows",
     "member"
+  ],
+  [
+    "src/components/datamap/datamap.js~datamapcomponent#savechildcomponent",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-method-saveChildComponent",
+    "src/components/datamap/DataMap.js~DataMapComponent#saveChildComponent",
+    "method"
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#schema",
@@ -7404,12 +7428,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#getview",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getView",
-    "src/components/datetime/DateTime.js~DateTimeComponent#getView",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#isempty",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-isEmpty",
     "src/components/datetime/DateTime.js~DateTimeComponent#isEmpty",
@@ -7425,12 +7443,6 @@ window.esdocSearchIndex = [
     "src/components/datetime/datetime.js~datetimecomponent#performinputmapping",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-performInputMapping",
     "src/components/datetime/DateTime.js~DateTimeComponent#performInputMapping",
-    "method"
-  ],
-  [
-    "src/components/datetime/datetime.js~datetimecomponent#setvalue",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-setValue",
-    "src/components/datetime/DateTime.js~DateTimeComponent#setValue",
     "method"
   ],
   [
@@ -7516,6 +7528,12 @@ window.esdocSearchIndex = [
     "class/src/components/day/Day.js~DayComponent.html#instance-member-_years",
     "src/components/day/Day.js~DayComponent#_years",
     "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#addinputerror",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-addInputError",
+    "src/components/day/Day.js~DayComponent#addInputError",
+    "method"
   ],
   [
     "src/components/day/day.js~daycomponent#attach",
@@ -8803,13 +8821,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#visible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-visible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-visible",
     "src/components/form/Form.js~FormComponent#visible",
     "member"
   ],
@@ -10099,13 +10117,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
     "src/components/select/Select.js~SelectComponent#serverCount",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#servercount",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-get-serverCount",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-serverCount",
     "src/components/select/Select.js~SelectComponent#serverCount",
     "member"
   ],
@@ -10561,13 +10579,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-set-disabled",
+    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-disabled",
     "src/components/survey/Survey.js~SurveyComponent#disabled",
     "member"
   ],
   [
     "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-disabled",
+    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-set-disabled",
     "src/components/survey/Survey.js~SurveyComponent#disabled",
     "member"
   ],
@@ -10951,13 +10969,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/tags/tags.js~tagscomponent#disabled",
-    "class/src/components/tags/Tags.js~TagsComponent.html#instance-get-disabled",
+    "class/src/components/tags/Tags.js~TagsComponent.html#instance-set-disabled",
     "src/components/tags/Tags.js~TagsComponent#disabled",
     "member"
   ],
   [
     "src/components/tags/tags.js~tagscomponent#disabled",
-    "class/src/components/tags/Tags.js~TagsComponent.html#instance-set-disabled",
+    "class/src/components/tags/Tags.js~TagsComponent.html#instance-get-disabled",
     "src/components/tags/Tags.js~TagsComponent#disabled",
     "member"
   ],
@@ -12937,13 +12955,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/templates/templates.js~templates.current",
-    "class/src/templates/Templates.js~Templates.html#static-get-current",
+    "class/src/templates/Templates.js~Templates.html#static-set-current",
     "src/templates/Templates.js~Templates.current",
     "member"
   ],
   [
     "src/templates/templates.js~templates.current",
-    "class/src/templates/Templates.js~Templates.html#static-set-current",
+    "class/src/templates/Templates.js~Templates.html#static-get-current",
     "src/templates/Templates.js~Templates.current",
     "member"
   ],
@@ -12961,13 +12979,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-get-framework",
+    "class/src/templates/Templates.js~Templates.html#static-set-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-set-framework",
+    "class/src/templates/Templates.js~Templates.html#static-get-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
@@ -13332,507 +13350,9 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/templates/bootstrap3/builder/index.js",
-    "file/src/templates/bootstrap3/builder/index.js.html",
-    "src/templates/bootstrap3/builder/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/buildercomponent/index.js",
-    "file/src/templates/bootstrap3/builderComponent/index.js.html",
-    "src/templates/bootstrap3/builderComponent/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/buildercomponents/index.js",
-    "file/src/templates/bootstrap3/builderComponents/index.js.html",
-    "src/templates/bootstrap3/builderComponents/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/buildereditform/index.js",
-    "file/src/templates/bootstrap3/builderEditForm/index.js.html",
-    "src/templates/bootstrap3/builderEditForm/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/builderplaceholder/index.js",
-    "file/src/templates/bootstrap3/builderPlaceholder/index.js.html",
-    "src/templates/bootstrap3/builderPlaceholder/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/buildersidebar/index.js",
-    "file/src/templates/bootstrap3/builderSidebar/index.js.html",
-    "src/templates/bootstrap3/builderSidebar/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/buildersidebargroup/index.js",
-    "file/src/templates/bootstrap3/builderSidebarGroup/index.js.html",
-    "src/templates/bootstrap3/builderSidebarGroup/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/columns/index.js",
-    "file/src/templates/bootstrap3/columns/index.js.html",
-    "src/templates/bootstrap3/columns/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/cssclasses.js",
-    "file/src/templates/bootstrap3/cssClasses.js.html",
-    "src/templates/bootstrap3/cssClasses.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/datagrid/index.js",
-    "file/src/templates/bootstrap3/datagrid/index.js.html",
-    "src/templates/bootstrap3/datagrid/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/day/index.js",
-    "file/src/templates/bootstrap3/day/index.js.html",
-    "src/templates/bootstrap3/day/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/dialog/index.js",
-    "file/src/templates/bootstrap3/dialog/index.js.html",
-    "src/templates/bootstrap3/dialog/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/editgrid/index.js",
-    "file/src/templates/bootstrap3/editgrid/index.js.html",
-    "src/templates/bootstrap3/editgrid/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/field/index.js",
-    "file/src/templates/bootstrap3/field/index.js.html",
-    "src/templates/bootstrap3/field/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/file/index.js",
-    "file/src/templates/bootstrap3/file/index.js.html",
-    "src/templates/bootstrap3/file/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/icon/index.js",
-    "file/src/templates/bootstrap3/icon/index.js.html",
-    "src/templates/bootstrap3/icon/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/iconclass.js",
-    "file/src/templates/bootstrap3/iconClass.js.html",
-    "src/templates/bootstrap3/iconClass.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/index.js",
-    "file/src/templates/bootstrap3/index.js.html",
-    "src/templates/bootstrap3/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/input/index.js",
-    "file/src/templates/bootstrap3/input/index.js.html",
-    "src/templates/bootstrap3/input/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/label/index.js",
-    "file/src/templates/bootstrap3/label/index.js.html",
-    "src/templates/bootstrap3/label/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/message/index.js",
-    "file/src/templates/bootstrap3/message/index.js.html",
-    "src/templates/bootstrap3/message/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/modaldialog/index.js",
-    "file/src/templates/bootstrap3/modaldialog/index.js.html",
-    "src/templates/bootstrap3/modaldialog/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/modaledit/index.js",
-    "file/src/templates/bootstrap3/modaledit/index.js.html",
-    "src/templates/bootstrap3/modaledit/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/multivaluerow/index.js",
-    "file/src/templates/bootstrap3/multiValueRow/index.js.html",
-    "src/templates/bootstrap3/multiValueRow/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/multivaluetable/index.js",
-    "file/src/templates/bootstrap3/multiValueTable/index.js.html",
-    "src/templates/bootstrap3/multiValueTable/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/panel/index.js",
-    "file/src/templates/bootstrap3/panel/index.js.html",
-    "src/templates/bootstrap3/panel/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/pdf/index.js",
-    "file/src/templates/bootstrap3/pdf/index.js.html",
-    "src/templates/bootstrap3/pdf/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/radio/index.js",
-    "file/src/templates/bootstrap3/radio/index.js.html",
-    "src/templates/bootstrap3/radio/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/resourceadd/index.js",
-    "file/src/templates/bootstrap3/resourceAdd/index.js.html",
-    "src/templates/bootstrap3/resourceAdd/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/signature/index.js",
-    "file/src/templates/bootstrap3/signature/index.js.html",
-    "src/templates/bootstrap3/signature/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/survey/index.js",
-    "file/src/templates/bootstrap3/survey/index.js.html",
-    "src/templates/bootstrap3/survey/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/tab/index.js",
-    "file/src/templates/bootstrap3/tab/index.js.html",
-    "src/templates/bootstrap3/tab/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/table/index.js",
-    "file/src/templates/bootstrap3/table/index.js.html",
-    "src/templates/bootstrap3/table/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/warning/index.js",
-    "file/src/templates/bootstrap3/warning/index.js.html",
-    "src/templates/bootstrap3/warning/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/well/index.js",
-    "file/src/templates/bootstrap3/well/index.js.html",
-    "src/templates/bootstrap3/well/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/wizard/index.js",
-    "file/src/templates/bootstrap3/wizard/index.js.html",
-    "src/templates/bootstrap3/wizard/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/wizardheader/index.js",
-    "file/src/templates/bootstrap3/wizardHeader/index.js.html",
-    "src/templates/bootstrap3/wizardHeader/index.js",
-    "file"
-  ],
-  [
-    "src/templates/bootstrap3/wizardnav/index.js",
-    "file/src/templates/bootstrap3/wizardNav/index.js.html",
-    "src/templates/bootstrap3/wizardNav/index.js",
-    "file"
-  ],
-  [
     "src/templates/index.js",
     "file/src/templates/index.js.html",
     "src/templates/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/builder/index.js",
-    "file/src/templates/semantic/builder/index.js.html",
-    "src/templates/semantic/builder/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/buildercomponent/index.js",
-    "file/src/templates/semantic/builderComponent/index.js.html",
-    "src/templates/semantic/builderComponent/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/buildercomponents/index.js",
-    "file/src/templates/semantic/builderComponents/index.js.html",
-    "src/templates/semantic/builderComponents/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/buildereditform/index.js",
-    "file/src/templates/semantic/builderEditForm/index.js.html",
-    "src/templates/semantic/builderEditForm/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/builderplaceholder/index.js",
-    "file/src/templates/semantic/builderPlaceholder/index.js.html",
-    "src/templates/semantic/builderPlaceholder/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/buildersidebar/index.js",
-    "file/src/templates/semantic/builderSidebar/index.js.html",
-    "src/templates/semantic/builderSidebar/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/buildersidebargroup/index.js",
-    "file/src/templates/semantic/builderSidebarGroup/index.js.html",
-    "src/templates/semantic/builderSidebarGroup/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/builderwizard/index.js",
-    "file/src/templates/semantic/builderWizard/index.js.html",
-    "src/templates/semantic/builderWizard/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/button/index.js",
-    "file/src/templates/semantic/button/index.js.html",
-    "src/templates/semantic/button/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/checkbox/index.js",
-    "file/src/templates/semantic/checkbox/index.js.html",
-    "src/templates/semantic/checkbox/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/columns/index.js",
-    "file/src/templates/semantic/columns/index.js.html",
-    "src/templates/semantic/columns/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/component/index.js",
-    "file/src/templates/semantic/component/index.js.html",
-    "src/templates/semantic/component/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/cssclasses.js",
-    "file/src/templates/semantic/cssClasses.js.html",
-    "src/templates/semantic/cssClasses.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/datagrid/index.js",
-    "file/src/templates/semantic/datagrid/index.js.html",
-    "src/templates/semantic/datagrid/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/day/index.js",
-    "file/src/templates/semantic/day/index.js.html",
-    "src/templates/semantic/day/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/editgrid/index.js",
-    "file/src/templates/semantic/editgrid/index.js.html",
-    "src/templates/semantic/editgrid/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/field/index.js",
-    "file/src/templates/semantic/field/index.js.html",
-    "src/templates/semantic/field/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/fieldset/index.js",
-    "file/src/templates/semantic/fieldset/index.js.html",
-    "src/templates/semantic/fieldset/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/file/index.js",
-    "file/src/templates/semantic/file/index.js.html",
-    "src/templates/semantic/file/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/icon/index.js",
-    "file/src/templates/semantic/icon/index.js.html",
-    "src/templates/semantic/icon/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/iconclass.js",
-    "file/src/templates/semantic/iconClass.js.html",
-    "src/templates/semantic/iconClass.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/index.js",
-    "file/src/templates/semantic/index.js.html",
-    "src/templates/semantic/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/input/index.js",
-    "file/src/templates/semantic/input/index.js.html",
-    "src/templates/semantic/input/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/label/index.js",
-    "file/src/templates/semantic/label/index.js.html",
-    "src/templates/semantic/label/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/loader/index.js",
-    "file/src/templates/semantic/loader/index.js.html",
-    "src/templates/semantic/loader/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/loading/index.js",
-    "file/src/templates/semantic/loading/index.js.html",
-    "src/templates/semantic/loading/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/message/index.js",
-    "file/src/templates/semantic/message/index.js.html",
-    "src/templates/semantic/message/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/multivaluerow/index.js",
-    "file/src/templates/semantic/multiValueRow/index.js.html",
-    "src/templates/semantic/multiValueRow/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/multivaluetable/index.js",
-    "file/src/templates/semantic/multiValueTable/index.js.html",
-    "src/templates/semantic/multiValueTable/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/panel/index.js",
-    "file/src/templates/semantic/panel/index.js.html",
-    "src/templates/semantic/panel/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/radio/index.js",
-    "file/src/templates/semantic/radio/index.js.html",
-    "src/templates/semantic/radio/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/resourceadd/index.js",
-    "file/src/templates/semantic/resourceAdd/index.js.html",
-    "src/templates/semantic/resourceAdd/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/select/index.js",
-    "file/src/templates/semantic/select/index.js.html",
-    "src/templates/semantic/select/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/selectoption/index.js",
-    "file/src/templates/semantic/selectOption/index.js.html",
-    "src/templates/semantic/selectOption/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/signature/index.js",
-    "file/src/templates/semantic/signature/index.js.html",
-    "src/templates/semantic/signature/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/survey/index.js",
-    "file/src/templates/semantic/survey/index.js.html",
-    "src/templates/semantic/survey/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/tab/index.js",
-    "file/src/templates/semantic/tab/index.js.html",
-    "src/templates/semantic/tab/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/table/index.js",
-    "file/src/templates/semantic/table/index.js.html",
-    "src/templates/semantic/table/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/tree/index.js",
-    "file/src/templates/semantic/tree/index.js.html",
-    "src/templates/semantic/tree/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/tree/partials/index.js",
-    "file/src/templates/semantic/tree/partials/index.js.html",
-    "src/templates/semantic/tree/partials/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/webform/index.js",
-    "file/src/templates/semantic/webform/index.js.html",
-    "src/templates/semantic/webform/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/well/index.js",
-    "file/src/templates/semantic/well/index.js.html",
-    "src/templates/semantic/well/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/wizard/index.js",
-    "file/src/templates/semantic/wizard/index.js.html",
-    "src/templates/semantic/wizard/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/wizardheader/index.js",
-    "file/src/templates/semantic/wizardHeader/index.js.html",
-    "src/templates/semantic/wizardHeader/index.js",
-    "file"
-  ],
-  [
-    "src/templates/semantic/wizardnav/index.js",
-    "file/src/templates/semantic/wizardNav/index.js.html",
-    "src/templates/semantic/wizardNav/index.js",
     "file"
   ],
   [
