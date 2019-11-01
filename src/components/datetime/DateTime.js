@@ -125,6 +125,11 @@ export default class DateTimeComponent extends Input {
     return super.isEmpty(value);
   }
 
+  formatValue(input) {
+    const format = FormioUtils.convertFormatToMoment(this.component.format);
+    return moment.utc(input).format(format);
+  }
+
   isEqual(valueA, valueB = this.dataValue) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
