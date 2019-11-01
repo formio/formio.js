@@ -23975,7 +23975,7 @@
     "__docId__": 1212,
     "kind": "file",
     "name": "src/components/datamap/DataMap.js",
-    "content": "import Component from '../_classes/component/Component';\nimport DataGridComponent from '../datagrid/DataGrid';\nimport _ from 'lodash';\nimport EventEmitter from 'eventemitter2';\nimport { uniqueKey } from '../../utils/utils';\n\nexport default class DataMapComponent extends DataGridComponent {\n  static schema(...extend) {\n    return Component.schema({\n      label: 'Data Map',\n      key: 'dataMap',\n      type: 'datamap',\n      clearOnHide: true,\n      addAnother: 'Add Another',\n      disableAddingRemovingRows: false,\n      keyBeforeValue: true,\n      valueComponent: {\n        type: 'textfield',\n        key: 'value',\n        label: 'Value',\n        input: true\n      },\n      input: true,\n      validate: {\n        maxLength: 0,\n        minLength: 0\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Map',\n      icon: 'th-list',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datamap',\n      weight: 20,\n      schema: DataMapComponent.schema()\n    };\n  }\n\n  get schema() {\n    const schema = super.schema;\n    if (this.components && (this.components.length > 0)) {\n      schema.valueComponent = this.components[this.components.length - 1].schema;\n    }\n    return _.omit(schema, 'components');\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'datamap';\n  }\n\n  init() {\n    this.components = [];\n    this.rows = [];\n    this.createRows();\n    this.visibleColumns = {\n      key: true,\n      [this.valueKey]: true\n    };\n    this.component.valueComponent.hideLabel = true;\n  }\n\n  get defaultSchema() {\n    return DataMapComponent.schema();\n  }\n\n  get emptyValue() {\n    return {};\n  }\n\n  get dataValue() {\n    if (\n      !this.key ||\n      (!this.visible && this.component.clearOnHide)\n    ) {\n      return this.emptyValue;\n    }\n    if (!this.hasValue()) {\n      this.dataValue = this.emptyValue;\n    }\n    return _.get(this.data, this.key);\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    if (Array.isArray(value)) {\n      return value[0];\n    }\n    return this.emptyValue;\n  }\n\n  get keySchema() {\n    return {\n      type: 'textfield',\n      input: true,\n      hideLabel: true,\n      label: this.component.keyLabel || 'Key',\n      key: '__key',\n    };\n  }\n\n  get valueKey() {\n    return this.component.valueComponent.key;\n  }\n\n  getRowValues() {\n    const dataValue = this.dataValue;\n    if (this.builderMode) {\n      return [dataValue];\n    }\n    if (_.isEmpty(dataValue)) {\n      return [];\n    }\n    return Object.keys(dataValue).map(key => dataValue);\n  }\n\n  hasHeader() {\n    return true;\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.options.readOnly &&\n      !this.disabled &&\n      this.fullMode;\n  }\n\n  getColumns() {\n    const keySchema = Object.assign({}, this.keySchema);\n    const valueSchema = Object.assign({}, this.component.valueComponent);\n    keySchema.hideLabel = false;\n    valueSchema.hideLabel = false;\n    return this.component.keyBeforeValue ?\n      [keySchema, valueSchema] :\n      [valueSchema, keySchema];\n  }\n\n  getRowKey(rowIndex) {\n    const keys = Object.keys(this.dataValue);\n    if (!keys[rowIndex]) {\n      keys[rowIndex] = uniqueKey(this.dataValue, 'key');\n    }\n    return keys[rowIndex];\n  }\n\n  createValueComponent(key) {\n    const valueComponent = _.clone(this.component.valueComponent);\n    valueComponent.key = key;\n    return this.createComponent(valueComponent, this.options, this.dataValue);\n  }\n\n  createRowComponents(row, rowIndex) {\n    let key = this.getRowKey(rowIndex);\n\n    // Create a new event emitter since fields are isolated.\n    const options = _.clone(this.options);\n    options.events = new EventEmitter({\n      wildcard: false,\n      maxListeners: 0\n    });\n    options.name += `[${rowIndex}]`;\n    options.row = `${rowIndex}`;\n\n    const components = {};\n    components['__key'] = this.createComponent(this.keySchema, options, { __key: key });\n    components['__key'].on('componentChange', (event) => {\n      const dataValue = this.dataValue;\n      const newKey = uniqueKey(dataValue, event.value);\n      dataValue[newKey] = dataValue[key];\n      delete dataValue[key];\n      components[this.valueKey].component.key = newKey;\n      key = newKey;\n    });\n\n    components[this.valueKey] = this.createValueComponent(key);\n    return components;\n  }\n\n  get canAddColumn() {\n    return false;\n  }\n\n  addChildComponent(component) {\n    this.component.valueComponent = component;\n  }\n\n  saveChildComponent(component) {\n    this.component.valueComponent = component;\n  }\n\n  removeChildComponent() {\n    const defaultSchema = DataMapComponent.schema();\n    this.component.valueComponent = defaultSchema.valueComponent;\n  }\n\n  addRow() {\n    const newKey = uniqueKey(this.dataValue, 'key');\n    const index = this.rows.length;\n    this.rows[index] = this.createRowComponents(this.dataValue, index);\n    this.redraw();\n    this.triggerChange();\n  }\n\n  removeRow(index) {\n    const keys = Object.keys(this.dataValue);\n    if (keys[index]) {\n      delete this.dataValue[keys[index]];\n    }\n    this.rows.splice(index, 1);\n    this.redraw();\n    this.triggerChange();\n  }\n\n  setValue(value, flags) {\n    const changed = this.hasChanged(value, this.dataValue);\n    this.dataValue = value;\n    this.createRows();\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  checkColumns() {\n    return { rebuild: false, show: true };\n  }\n}\n",
+    "content": "import Component from '../_classes/component/Component';\nimport DataGridComponent from '../datagrid/DataGrid';\nimport _ from 'lodash';\nimport EventEmitter from 'eventemitter2';\nimport { uniqueKey } from '../../utils/utils';\n\nexport default class DataMapComponent extends DataGridComponent {\n  static schema(...extend) {\n    return Component.schema({\n      label: 'Data Map',\n      key: 'dataMap',\n      type: 'datamap',\n      clearOnHide: true,\n      addAnother: 'Add Another',\n      disableAddingRemovingRows: false,\n      keyBeforeValue: true,\n      valueComponent: {\n        type: 'textfield',\n        key: 'value',\n        label: 'Value',\n        input: true\n      },\n      input: true,\n      validate: {\n        maxLength: 0,\n        minLength: 0\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Data Map',\n      icon: 'th-list',\n      group: 'data',\n      documentation: 'http://help.form.io/userguide/#datamap',\n      weight: 20,\n      schema: DataMapComponent.schema()\n    };\n  }\n\n  get schema() {\n    const schema = super.schema;\n    if (this.components && (this.components.length > 0)) {\n      schema.valueComponent = this.components[this.components.length - 1].schema;\n    }\n    return _.omit(schema, 'components');\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    this.type = 'datamap';\n  }\n\n  init() {\n    this.components = [];\n    this.rows = [];\n    this.createRows();\n    this.visibleColumns = {\n      key: true,\n      [this.valueKey]: true\n    };\n    this.component.valueComponent.hideLabel = true;\n  }\n\n  get defaultSchema() {\n    return DataMapComponent.schema();\n  }\n\n  get emptyValue() {\n    return {};\n  }\n\n  get dataValue() {\n    if (\n      !this.key ||\n      (!this.visible && this.component.clearOnHide)\n    ) {\n      return this.emptyValue;\n    }\n    if (!this.hasValue()) {\n      this.dataValue = this.emptyValue;\n    }\n    return _.get(this.data, this.key);\n  }\n\n  set dataValue(value) {\n    super.dataValue = value;\n  }\n\n  get defaultValue() {\n    const value = super.defaultValue;\n    if (Array.isArray(value)) {\n      return value[0];\n    }\n    return this.emptyValue;\n  }\n\n  get keySchema() {\n    return {\n      type: 'textfield',\n      input: true,\n      hideLabel: true,\n      label: this.component.keyLabel || 'Key',\n      key: 'key',\n    };\n  }\n\n  get valueKey() {\n    return this.component.valueComponent.key;\n  }\n\n  getRowValues() {\n    const dataValue = this.dataValue;\n    if (this.builderMode) {\n      return [dataValue];\n    }\n    if (_.isEmpty(dataValue)) {\n      return [];\n    }\n    return Object.keys(dataValue).map(key => dataValue);\n  }\n\n  hasHeader() {\n    return true;\n  }\n\n  hasRemoveButtons() {\n    return !this.component.disableAddingRemovingRows &&\n      !this.options.readOnly &&\n      !this.disabled &&\n      this.fullMode;\n  }\n\n  getColumns() {\n    const keySchema = Object.assign({}, this.keySchema);\n    const valueSchema = Object.assign({}, this.component.valueComponent);\n    keySchema.hideLabel = false;\n    valueSchema.hideLabel = false;\n    return this.component.keyBeforeValue ?\n      [keySchema, valueSchema] :\n      [valueSchema, keySchema];\n  }\n\n  getRowKey(rowIndex) {\n    const keys = Object.keys(this.dataValue);\n    if (!keys[rowIndex]) {\n      keys[rowIndex] = uniqueKey(this.dataValue, 'key');\n    }\n    return keys[rowIndex];\n  }\n\n  createRowComponents(row, rowIndex) {\n    let key = this.getRowKey(rowIndex);\n\n    // Create a new event emitter since fields are isolated.\n    const options = _.clone(this.options);\n    options.events = new EventEmitter({\n      wildcard: false,\n      maxListeners: 0\n    });\n    options.name += `[${rowIndex}]`;\n    options.row = `${rowIndex}`;\n\n    const components = {};\n    components.key = this.createComponent(this.keySchema, options, { key });\n    components.key.on('componentChange', (event) => {\n      const dataValue = this.dataValue;\n      const newKey = uniqueKey(dataValue, event.value);\n      dataValue[newKey] = dataValue[key];\n      delete dataValue[key];\n      components[this.valueKey].component.key = newKey;\n      key = newKey;\n    });\n\n    const valueComponent = _.clone(this.component.valueComponent);\n    valueComponent.key = key;\n    components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);\n    return components;\n  }\n\n  get canAddColumn() {\n    return false;\n  }\n\n  addChildComponent(component) {\n    this.component.valueComponent = component;\n  }\n\n  saveChildComponent(component) {\n    this.component.valueComponent = component;\n  }\n\n  removeChildComponent() {\n    const defaultSchema = DataMapComponent.schema();\n    this.component.valueComponent = defaultSchema.valueComponent;\n  }\n\n  addRow() {\n    const newKey = uniqueKey(this.dataValue, 'key');\n    const index = this.rows.length;\n    this.rows[index] = this.createRowComponents(this.dataValue, index);\n    this.redraw();\n    this.triggerChange();\n  }\n\n  removeRow(index) {\n    const keys = Object.keys(this.dataValue);\n    if (keys[index]) {\n      delete this.dataValue[keys[index]];\n    }\n    this.rows.splice(index, 1);\n    this.redraw();\n    this.triggerChange();\n  }\n\n  setValue(value, flags) {\n    const changed = this.hasChanged(value, this.dataValue);\n    this.dataValue = value;\n    this.createRows();\n    this.updateOnChange(flags, changed);\n    return changed;\n  }\n\n  checkColumns() {\n    return { rebuild: false, show: true };\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datamap/DataMap.js",
     "access": "public",
@@ -24403,33 +24403,6 @@
   {
     "__docId__": 1236,
     "kind": "method",
-    "name": "createValueComponent",
-    "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/components/datamap/DataMap.js~DataMapComponent#createValueComponent",
-    "access": "public",
-    "description": null,
-    "lineNumber": 153,
-    "undocument": true,
-    "params": [
-      {
-        "name": "key",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 1237,
-    "kind": "method",
     "name": "createRowComponents",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
     "generator": false,
@@ -24438,7 +24411,7 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#createRowComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 159,
+    "lineNumber": 153,
     "undocument": true,
     "params": [
       {
@@ -24461,7 +24434,7 @@
     }
   },
   {
-    "__docId__": 1238,
+    "__docId__": 1237,
     "kind": "get",
     "name": "canAddColumn",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24471,7 +24444,7 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#canAddColumn",
     "access": "public",
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 182,
     "undocument": true,
     "type": {
       "types": [
@@ -24480,7 +24453,7 @@
     }
   },
   {
-    "__docId__": 1239,
+    "__docId__": 1238,
     "kind": "method",
     "name": "addChildComponent",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24488,6 +24461,29 @@
     "async": false,
     "static": false,
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#addChildComponent",
+    "access": "public",
+    "description": null,
+    "lineNumber": 186,
+    "undocument": true,
+    "params": [
+      {
+        "name": "component",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 1239,
+    "kind": "method",
+    "name": "saveChildComponent",
+    "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/components/datamap/DataMap.js~DataMapComponent#saveChildComponent",
     "access": "public",
     "description": null,
     "lineNumber": 190,
@@ -24505,29 +24501,6 @@
   {
     "__docId__": 1240,
     "kind": "method",
-    "name": "saveChildComponent",
-    "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/components/datamap/DataMap.js~DataMapComponent#saveChildComponent",
-    "access": "public",
-    "description": null,
-    "lineNumber": 194,
-    "undocument": true,
-    "params": [
-      {
-        "name": "component",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 1241,
-    "kind": "method",
     "name": "removeChildComponent",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
     "generator": false,
@@ -24536,13 +24509,13 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#removeChildComponent",
     "access": "public",
     "description": null,
-    "lineNumber": 198,
+    "lineNumber": 194,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 1242,
+    "__docId__": 1241,
     "kind": "method",
     "name": "addRow",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24552,13 +24525,13 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#addRow",
     "access": "public",
     "description": null,
-    "lineNumber": 203,
+    "lineNumber": 199,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 1243,
+    "__docId__": 1242,
     "kind": "method",
     "name": "removeRow",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24568,7 +24541,7 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#removeRow",
     "access": "public",
     "description": null,
-    "lineNumber": 211,
+    "lineNumber": 207,
     "undocument": true,
     "params": [
       {
@@ -24581,7 +24554,7 @@
     "return": null
   },
   {
-    "__docId__": 1244,
+    "__docId__": 1243,
     "kind": "method",
     "name": "setValue",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24591,7 +24564,7 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 221,
+    "lineNumber": 217,
     "undocument": true,
     "params": [
       {
@@ -24614,7 +24587,7 @@
     }
   },
   {
-    "__docId__": 1246,
+    "__docId__": 1245,
     "kind": "method",
     "name": "checkColumns",
     "memberof": "src/components/datamap/DataMap.js~DataMapComponent",
@@ -24624,7 +24597,7 @@
     "longname": "src/components/datamap/DataMap.js~DataMapComponent#checkColumns",
     "access": "public",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 225,
     "undocument": true,
     "params": [],
     "return": {
@@ -24634,7 +24607,7 @@
     }
   },
   {
-    "__docId__": 1247,
+    "__docId__": 1246,
     "kind": "file",
     "name": "src/components/datamap/DataMap.unit.js",
     "content": "import Harness from '../../../test/harness';\nimport DataMapComponent from './DataMap';\nimport { comp1 } from './fixtures';\n\ndescribe('DataMap Component', () => {\n  it('Should build a data map component', () => {\n    return Harness.testCreate(DataMapComponent, comp1);\n  });\n\n  it('Should get and set values within the datamap.', () => {\n    return Harness.testCreate(DataMapComponent, comp1).then((component) => {\n      Harness.testSetGet(component, {\n        one: 'One',\n        two: 'Two',\n        three: 'Three'\n      });\n    });\n  });\n});\n",
@@ -24645,7 +24618,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1248,
+    "__docId__": 1247,
     "kind": "file",
     "name": "src/components/datamap/editForm/DataMap.edit.data.js",
     "content": "export default [\n  {\n    key: 'multiple',\n    ignore: true,\n  },\n  {\n    key: 'defaultValue',\n    ignore: true,\n  }\n];\n",
@@ -24656,7 +24629,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1249,
+    "__docId__": 1248,
     "kind": "file",
     "name": "src/components/datamap/editForm/DataMap.edit.display.js",
     "content": "export default [\n  {\n    key: 'placeholder',\n    ignore: true\n  },\n  {\n    key: 'tabindex',\n    ignore: true\n  },\n  {\n    type: 'textfield',\n    label: 'Label for Key column',\n    key: 'keyLabel',\n    tooltip: 'Provide a label text for Key column (otherwise \\'Key\\' will be used)',\n    weight: 404,\n    input: true\n  },\n  {\n    type: 'checkbox',\n    label: 'Disable Adding / Removing Rows',\n    key: 'disableAddingRemovingRows',\n    tooltip: 'Check if you want to hide Add Another button and Remove Row button',\n    weight: 405,\n    input: true\n  },\n  {\n    type: 'checkbox',\n    label: 'Show key column before value',\n    key: 'keyBeforeValue',\n    tooltip: 'Check if you would like to show the Key before the Value column.',\n    weight: 406,\n    input: true\n  },\n  {\n    type: 'textfield',\n    label: 'Add Another Text',\n    key: 'addAnother',\n    tooltip: 'Set the text of the Add Another button.',\n    placeholder: 'Add Another',\n    weight: 410,\n    input: true,\n    customConditional(context) {\n      return !context.data.disableAddingRemovingRows;\n    }\n  }\n];\n",
@@ -24667,7 +24640,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1250,
+    "__docId__": 1249,
     "kind": "file",
     "name": "src/components/datamap/fixtures/comp1.js",
     "content": "export default {\n  type: 'datamap',\n  key: 'properties',\n  label: 'Properties',\n  input: true,\n  valueComponent: {\n    type: 'textfield',\n    key: 'value',\n    label: 'Value',\n    defaultValue: 'Value',\n    input: true\n  }\n};\n",
@@ -24678,7 +24651,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1251,
+    "__docId__": 1250,
     "kind": "file",
     "name": "src/components/datamap/fixtures/index.js",
     "content": "export comp1 from './comp1';\n",
@@ -24689,7 +24662,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1252,
+    "__docId__": 1251,
     "kind": "file",
     "name": "src/components/datetime/DateTime.form.js",
     "content": "import baseEditForm from '../_classes/component/Component.form';\n\nimport DateTimeEditData from './editForm/DateTime.edit.data';\nimport DateTimeEditDate from './editForm/DateTime.edit.date';\nimport DateTimeEditDisplay from './editForm/DateTime.edit.display';\nimport DateTimeEditTime from './editForm/DateTime.edit.time';\n\nexport default function(...extend) {\n  return baseEditForm([\n    {\n      key: 'display',\n      components: DateTimeEditDisplay\n    },\n    {\n      label: 'Date',\n      key: 'date',\n      weight: 1,\n      components: DateTimeEditDate\n    },\n    {\n      label: 'Time',\n      key: 'time',\n      weight: 2,\n      components: DateTimeEditTime\n    },\n    {\n      key: 'data',\n      components: DateTimeEditData\n    }\n  ], ...extend);\n}\n",
@@ -24700,7 +24673,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1253,
+    "__docId__": 1252,
     "kind": "function",
     "name": "DateTime",
     "memberof": "src/components/datetime/DateTime.form.js",
@@ -24731,10 +24704,10 @@
     }
   },
   {
-    "__docId__": 1254,
+    "__docId__": 1253,
     "kind": "file",
     "name": "src/components/datetime/DateTime.js",
-    "content": "import _ from 'lodash';\nimport moment from 'moment';\nimport Input from '../_classes/input/Input';\nimport FormioUtils from '../../utils';\nexport default class DateTimeComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'datetime',\n      label: 'Date / Time',\n      key: 'dateTime',\n      format: 'yyyy-MM-dd hh:mm a',\n      useLocaleSettings: false,\n      allowInput: true,\n      enableDate: true,\n      enableTime: true,\n      defaultValue: '',\n      displayInTimezone: 'viewer',\n      timezone: '',\n      datepickerMode: 'day',\n      datePicker: {\n        showWeeks: true,\n        startingDay: 0,\n        initDate: '',\n        minMode: 'day',\n        maxMode: 'year',\n        yearRows: 4,\n        yearColumns: 5,\n        minDate: null,\n        maxDate: null\n      },\n      timePicker: {\n        hourStep: 1,\n        minuteStep: 1,\n        showMeridian: true,\n        readonlyInput: false,\n        mousewheel: true,\n        arrowkeys: true\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Date / Time',\n      group: 'advanced',\n      icon: 'calendar',\n      documentation: 'http://help.form.io/userguide/#datetime',\n      weight: 40,\n      schema: DateTimeComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    const timezone = (this.component.timezone || this.options.timezone);\n    const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);\n\n    // Change the format to map to the settings.\n    if (!this.component.enableDate) {\n      this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.component.enableTime) {\n      this.component.format = this.component.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (time24hr) {\n      this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n    else {\n      this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');\n    }\n\n    /* eslint-disable camelcase */\n    this.component.widget = {\n      type: 'calendar',\n      timezone,\n      displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),\n      submissionTimezone: this.submissionTimezone,\n      language: this.options.language,\n      useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),\n      allowInput: _.get(this.component, 'allowInput', true),\n      mode: this.component.multiple ? 'multiple' : 'single',\n      enableTime: _.get(this.component, 'enableTime', true),\n      noCalendar: !_.get(this.component, 'enableDate', true),\n      format: this.component.format,\n      defaultValue: this.component.defaultValue,\n      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),\n      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),\n      time_24hr: time24hr,\n      readOnly: this.options.readOnly,\n      minDate: _.get(this.component, 'datePicker.minDate'),\n      maxDate: _.get(this.component, 'datePicker.maxDate')\n    };\n    /* eslint-enable camelcase */\n\n    // Add the validators date.\n    this.validators.push('date');\n  }\n\n  performInputMapping(input) {\n    if (input.widget && input.widget.settings) {\n      input.widget.settings.submissionTimezone = this.submissionTimezone;\n    }\n    return input;\n  }\n\n  get defaultSchema() {\n    return DateTimeComponent.schema();\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  isEmpty(value = this.dataValue) {\n    if (value && (value.toString() === 'Invalid Date')) {\n      return true;\n    }\n    return super.isEmpty(value);\n  }\n\n  isEqual(valueA, valueB = this.dataValue) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    return (this.isEmpty(valueA) && this.isEmpty(valueB))\n      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  checkValidity(data, dirty, rowData) {\n    if (this.refs.input) {\n      this.refs.input.forEach((input) => {\n        if (input.widget && input.widget.enteredDate) {\n          dirty = true;\n        }\n      });\n    }\n    return super.checkValidity(data, dirty, rowData);\n  }\n\n  focus() {\n    if (this.refs.input && this.refs.input[0]) {\n      const sibling = this.refs.input[0].nextSibling;\n      if (sibling) {\n        sibling.focus();\n      }\n    }\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport moment from 'moment';\nimport Input from '../_classes/input/Input';\nimport FormioUtils from '../../utils';\nexport default class DateTimeComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'datetime',\n      label: 'Date / Time',\n      key: 'dateTime',\n      format: 'yyyy-MM-dd hh:mm a',\n      useLocaleSettings: false,\n      allowInput: true,\n      enableDate: true,\n      enableTime: true,\n      defaultValue: '',\n      displayInTimezone: 'viewer',\n      timezone: '',\n      datepickerMode: 'day',\n      datePicker: {\n        showWeeks: true,\n        startingDay: 0,\n        initDate: '',\n        minMode: 'day',\n        maxMode: 'year',\n        yearRows: 4,\n        yearColumns: 5,\n        minDate: null,\n        maxDate: null\n      },\n      timePicker: {\n        hourStep: 1,\n        minuteStep: 1,\n        showMeridian: true,\n        readonlyInput: false,\n        mousewheel: true,\n        arrowkeys: true\n      }\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Date / Time',\n      group: 'advanced',\n      icon: 'calendar',\n      documentation: 'http://help.form.io/userguide/#datetime',\n      weight: 40,\n      schema: DateTimeComponent.schema()\n    };\n  }\n\n  constructor(component, options, data) {\n    super(component, options, data);\n    const timezone = (this.component.timezone || this.options.timezone);\n    const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);\n\n    // Change the format to map to the settings.\n    if (!this.component.enableDate) {\n      this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');\n    }\n    if (!this.component.enableTime) {\n      this.component.format = this.component.format.replace(/ hh:mm a$/g, '');\n    }\n    else if (time24hr) {\n      this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');\n    }\n    else {\n      this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');\n    }\n\n    /* eslint-disable camelcase */\n    this.component.widget = {\n      type: 'calendar',\n      timezone,\n      displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),\n      submissionTimezone: this.submissionTimezone,\n      language: this.options.language,\n      useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),\n      allowInput: _.get(this.component, 'allowInput', true),\n      mode: this.component.multiple ? 'multiple' : 'single',\n      enableTime: _.get(this.component, 'enableTime', true),\n      noCalendar: !_.get(this.component, 'enableDate', true),\n      format: this.component.format,\n      defaultValue: this.component.defaultValue,\n      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),\n      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),\n      time_24hr: time24hr,\n      readOnly: this.options.readOnly,\n      minDate: _.get(this.component, 'datePicker.minDate'),\n      maxDate: _.get(this.component, 'datePicker.maxDate')\n    };\n    /* eslint-enable camelcase */\n\n    // Add the validators date.\n    this.validators.push('date');\n  }\n\n  performInputMapping(input) {\n    if (input.widget && input.widget.settings) {\n      input.widget.settings.submissionTimezone = this.submissionTimezone;\n    }\n    return input;\n  }\n\n  get defaultSchema() {\n    return DateTimeComponent.schema();\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  isEmpty(value = this.dataValue) {\n    if (value && (value.toString() === 'Invalid Date')) {\n      return true;\n    }\n    return super.isEmpty(value);\n  }\n\n  formatValue(input) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    const result = moment.utc(input).format(format);\n    return result === 'Invalid date' ? input : result;\n  }\n\n  isEqual(valueA, valueB = this.dataValue) {\n    const format = FormioUtils.convertFormatToMoment(this.component.format);\n    return (this.isEmpty(valueA) && this.isEmpty(valueB))\n      || moment.utc(valueA).format(format) === moment.utc(valueB).format(format);\n  }\n\n  createWrapper() {\n    return false;\n  }\n\n  checkValidity(data, dirty, rowData) {\n    if (this.refs.input) {\n      this.refs.input.forEach((input) => {\n        if (input.widget && input.widget.enteredDate) {\n          dirty = true;\n        }\n      });\n    }\n    return super.checkValidity(data, dirty, rowData);\n  }\n\n  focus() {\n    if (this.refs.input && this.refs.input[0]) {\n      const sibling = this.refs.input[0].nextSibling;\n      if (sibling) {\n        sibling.focus();\n      }\n    }\n  }\n}\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/components/datetime/DateTime.js",
     "access": "public",
@@ -24742,7 +24715,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1255,
+    "__docId__": 1254,
     "kind": "class",
     "name": "DateTimeComponent",
     "memberof": "src/components/datetime/DateTime.js",
@@ -24761,7 +24734,7 @@
     ]
   },
   {
-    "__docId__": 1256,
+    "__docId__": 1255,
     "kind": "method",
     "name": "schema",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24789,7 +24762,7 @@
     }
   },
   {
-    "__docId__": 1257,
+    "__docId__": 1256,
     "kind": "get",
     "name": "builderInfo",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24808,7 +24781,7 @@
     }
   },
   {
-    "__docId__": 1258,
+    "__docId__": 1257,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24822,7 +24795,7 @@
     "undocument": true
   },
   {
-    "__docId__": 1259,
+    "__docId__": 1258,
     "kind": "method",
     "name": "performInputMapping",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24849,7 +24822,7 @@
     }
   },
   {
-    "__docId__": 1260,
+    "__docId__": 1259,
     "kind": "get",
     "name": "defaultSchema",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24868,7 +24841,7 @@
     }
   },
   {
-    "__docId__": 1261,
+    "__docId__": 1260,
     "kind": "get",
     "name": "emptyValue",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24887,7 +24860,7 @@
     }
   },
   {
-    "__docId__": 1262,
+    "__docId__": 1261,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
@@ -24915,6 +24888,33 @@
     }
   },
   {
+    "__docId__": 1262,
+    "kind": "method",
+    "name": "formatValue",
+    "memberof": "src/components/datetime/DateTime.js~DateTimeComponent",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/components/datetime/DateTime.js~DateTimeComponent#formatValue",
+    "access": "public",
+    "description": null,
+    "lineNumber": 121,
+    "undocument": true,
+    "params": [
+      {
+        "name": "input",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "__docId__": 1263,
     "kind": "method",
     "name": "isEqual",
@@ -24925,7 +24925,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#isEqual",
     "access": "public",
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 127,
     "undocument": true,
     "params": [
       {
@@ -24959,7 +24959,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#createWrapper",
     "access": "public",
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 133,
     "undocument": true,
     "params": [],
     "return": {
@@ -24979,7 +24979,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#checkValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 137,
     "undocument": true,
     "params": [
       {
@@ -25018,7 +25018,7 @@
     "longname": "src/components/datetime/DateTime.js~DateTimeComponent#focus",
     "access": "public",
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 148,
     "undocument": true,
     "params": [],
     "return": null
