@@ -328,7 +328,7 @@ export default class DataMapComponent extends DataGridComponent {
       input: true,
       hideLabel: true,
       label: this.component.keyLabel || &apos;Key&apos;,
-      key: &apos;key&apos;,
+      key: &apos;__key&apos;,
     };
   }
 
@@ -389,8 +389,8 @@ export default class DataMapComponent extends DataGridComponent {
     options.row = `${rowIndex}`;
 
     const components = {};
-    components.key = this.createComponent(this.keySchema, options, { key });
-    components.key.on(&apos;componentChange&apos;, (event) =&gt; {
+    components[&apos;__key&apos;] = this.createComponent(this.keySchema, options, { __key: key });
+    components[&apos;__key&apos;].on(&apos;componentChange&apos;, (event) =&gt; {
       const dataValue = this.dataValue;
       const newKey = uniqueKey(dataValue, event.value);
       dataValue[newKey] = dataValue[key];
