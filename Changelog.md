@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Add invalid classes to day components.
 
+## 4.6.3
+### Fixed
+ - Datetime not formatting value initially when using date only and getting messed up in flatpickr.
+
 ## 4.6.2
 ### Fixed
  - Fix initial focus on Preview Mode
