@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix textarea upper and lowercase
  - PDF uploading issues.
 
+## 4.6.4
+### Fixed
+ - Datetime not handling empty case correctly after last fix.
+
 ## 4.6.3
 ### Fixed
  - Datetime not formatting value initially when using date only and getting messed up in flatpickr.
