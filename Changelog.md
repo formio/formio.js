@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Upgrade choices.js@8.0.0, i18next@19.0.0
  
 ### Fixed
+ - Fixing problem where columns component would get in a bad state by including 'components' in the schema.
  - Add invalid classes to day components.
  - Fixed page copying for wizard
  - Fix validation flags reset
