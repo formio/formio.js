@@ -120,7 +120,8 @@ export default class DateTimeComponent extends Input {
 
   formatValue(input) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
-    return moment.utc(input).format(format);
+    const result = moment.utc(input).format(format);
+    return result === 'Invalid date' ? input : result;
   }
 
   isEqual(valueA, valueB = this.dataValue) {
