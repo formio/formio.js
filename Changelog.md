@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## WIP: 4.7.0
+## 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.
  - Refactored DataMap to allow complex value components.
