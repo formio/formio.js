@@ -102,7 +102,7 @@ export default class DataMapComponent extends DataGridComponent {
       input: true,
       hideLabel: true,
       label: this.component.keyLabel || 'Key',
-      key: '__key',
+      key: 'key',
     };
   }
 
@@ -150,12 +150,6 @@ export default class DataMapComponent extends DataGridComponent {
     return keys[rowIndex];
   }
 
-  createValueComponent(key) {
-    const valueComponent = _.clone(this.component.valueComponent);
-    valueComponent.key = key;
-    return this.createComponent(valueComponent, this.options, this.dataValue);
-  }
-
   createRowComponents(row, rowIndex) {
     let key = this.getRowKey(rowIndex);
 
@@ -169,8 +163,8 @@ export default class DataMapComponent extends DataGridComponent {
     options.row = `${rowIndex}`;
 
     const components = {};
-    components['__key'] = this.createComponent(this.keySchema, options, { __key: key });
-    components['__key'].on('componentChange', (event) => {
+    components.key = this.createComponent(this.keySchema, options, { key });
+    components.key.on('componentChange', (event) => {
       const dataValue = this.dataValue;
       const newKey = uniqueKey(dataValue, event.value);
       dataValue[newKey] = dataValue[key];
@@ -179,7 +173,9 @@ export default class DataMapComponent extends DataGridComponent {
       key = newKey;
     });
 
-    components[this.valueKey] = this.createValueComponent(key);
+    const valueComponent = _.clone(this.component.valueComponent);
+    valueComponent.key = key;
+    components[this.valueKey] = this.createComponent(valueComponent, this.options, this.dataValue);
     return components;
   }
 

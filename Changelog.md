@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - Add invalid classes to day components.
- - Fixed page copying for wizzard
+ - Fixed page copying for wizard
  - Fix validation flags reset
  - Remove error classes from day components.
  - Fix textarea upper and lowercase
