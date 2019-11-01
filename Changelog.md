@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - Add invalid classes to day components.
+ - Fixed page copying for wizzard
+ - Fix validation flags reset
+ - Remove error classes from day components.
+ - Fix textarea upper and lowercase
+ - PDF uploading issues.
 
 ## 4.6.3
 ### Fixed
