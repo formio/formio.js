@@ -262,6 +262,10 @@ export default class ColumnsComponent extends NestedComponent {
     this.rows = [];
   }
 
+  get schema() {
+    return _.omit(super.schema, &apos;components&apos;);
+  }
+
   get defaultSchema() {
     return ColumnsComponent.schema();
   }
