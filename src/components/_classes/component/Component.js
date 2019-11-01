@@ -324,6 +324,10 @@ export default class Component extends Element {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
       }
+      if (_.isEmpty(args[0]) && lastChanged) {
+        // Set the flags if it is empty and lastChanged exists.
+        args[0] = lastChanged.flags;
+      }
       lastChanged = null;
       return this.onChange(...args);
     }, 100);
