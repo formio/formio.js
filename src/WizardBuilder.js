@@ -58,8 +58,13 @@ export default class WizardBuilder extends WebformBuilder {
 
     // Wizard pages don't replace themselves in the right array. Do that here.
     this.on('saveComponent', (component, originalComponent) => {
+      const webformComponents = this.webform.components.map(({ component }) => component);
       if (this._form.components.includes(originalComponent)) {
         this._form.components[this._form.components.indexOf(originalComponent)] = component;
+        this.rebuild();
+      }
+      else if (webformComponents.includes(originalComponent)) {
+        this._form.components.push(component);
         this.rebuild();
       }
     }, true);
@@ -196,5 +201,12 @@ export default class WizardBuilder extends WebformBuilder {
       key: `page${index}`,
       components,
     };
+  }
+
+  pasteComponent(component) {
+    if (component instanceof WizardBuilder) {
+      return;
+    }
+    return super.pasteComponent(component);
   }
 }
