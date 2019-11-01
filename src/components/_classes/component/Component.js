@@ -1462,7 +1462,7 @@ export default class Component extends Element {
   }
 
   removeInputError(elements) {
-    if (elements && Array.isArray(elements)) {
+    if (elements) {
       elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
       elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
     }
