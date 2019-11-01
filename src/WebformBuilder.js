@@ -188,7 +188,7 @@ export default class WebformBuilder extends Component {
       }
 
       // If this is an existing datagrid element, don't make it draggable.
-      if (component.type === 'datagrid' && components.length > 0) {
+      if ((component.type === 'datagrid' || component.type === 'datamap') && components.length > 0) {
         return element;
       }
 
