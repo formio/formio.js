@@ -550,6 +550,10 @@ export default class Component extends Element {
         // Set the changed component if one isn&apos;t provided.
         args[1] = lastChanged;
       }
+      if (_.isEmpty(args[0]) &amp;&amp; lastChanged) {
+        // Set the flags if it is empty and lastChanged exists.
+        args[0] = lastChanged.flags;
+      }
       lastChanged = null;
       return this.onChange(...args);
     }, 100);
@@ -1683,6 +1687,13 @@ export default class Component extends Element {
     }
   }
 
+  removeInputError(elements) {
+    if (elements) {
+      elements.forEach((element) =&gt; this.removeClass(this.performInputMapping(element), &apos;is-invalid&apos;));
+      elements.forEach((element) =&gt; this.removeClass(this.performInputMapping(element), &apos;is-warning&apos;));
+    }
+  }
+
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
@@ -2417,10 +2428,7 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-invalid&apos;));
-        this.refs.input.forEach((input) =&gt; this.removeClass(this.performInputMapping(input), &apos;is-warning&apos;));
-      }
+      this.removeInputError(this.refs.input);
       this.clearErrorClasses();
     }
 

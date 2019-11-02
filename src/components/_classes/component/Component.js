@@ -324,6 +324,10 @@ export default class Component extends Element {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
       }
+      if (_.isEmpty(args[0]) && lastChanged) {
+        // Set the flags if it is empty and lastChanged exists.
+        args[0] = lastChanged.flags;
+      }
       lastChanged = null;
       return this.onChange(...args);
     }, 100);
@@ -1505,6 +1509,27 @@ export default class Component extends Element {
     }
   }
 
+  removeInputError(elements) {
+    if (elements) {
+      elements.forEach((element) => {
+        this.removeClass(this.performInputMapping(element), 'is-invalid');
+        super.addAttribute(this.performInputMapping(element), 'aria-invalid', 'false');
+
+        const descRefs = element.getAttribute('aria-describedby');
+        // Removes an error message elem id
+        const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+
+        if (updatedDescRefs) {
+          super.addAttribute(this.performInputMapping(element), 'aria-describedby', updatedDescRefs);
+        }
+        else {
+          element.removeAttribute('aria-describedby');
+        }
+      });
+      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+    }
+  }
+
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
@@ -2239,24 +2264,9 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.refs.input.forEach((input) => {
-          this.removeClass(this.performInputMapping(input), 'is-invalid');
-          super.addAttribute(this.performInputMapping(input), 'aria-invalid', 'false');
 
-          const descRefs = input.getAttribute('aria-describedby');
-          // Removes an error message elem id
-          const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+      this.removeInputError(this.refs.input);
 
-          if (updatedDescRefs) {
-            super.addAttribute(this.performInputMapping(input), 'aria-describedby', updatedDescRefs);
-          }
-          else {
-            input.removeAttribute('aria-describedby');
-          }
-        });
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-warning'));
-      }
       this.clearErrorClasses();
     }
 

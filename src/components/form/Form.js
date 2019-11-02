@@ -560,6 +560,7 @@ export default class FormComponent extends Component {
       case 'restoreDraft':
       case 'saveDraft':
       case 'saveComponent':
+      case 'pdfUploaded':
         return true;
       default:
         return false;

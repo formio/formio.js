@@ -443,6 +443,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       default:
+        super.attachElement(element, index);
         this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
           this.updateValue(null, {
             modified: true

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## WIP: 4.7.0
+## 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.
  - Refactored DataMap to allow complex value components.
@@ -12,7 +12,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Upgrade choices.js@8.0.0, i18next@19.0.0
  
 ### Fixed
+ - Fixing problem where columns component would get in a bad state by including 'components' in the schema.
  - Add invalid classes to day components.
+ - Fixed page copying for wizard
+ - Fix validation flags reset
+ - Remove error classes from day components.
+ - Fix textarea upper and lowercase
+ - PDF uploading issues.
+
+## 4.6.4
+### Fixed
+ - Datetime not handling empty case correctly after last fix.
+
+## 4.6.3
+### Fixed
+ - Datetime not formatting value initially when using date only and getting messed up in flatpickr.
 
 ## 4.6.2
 ### Fixed
