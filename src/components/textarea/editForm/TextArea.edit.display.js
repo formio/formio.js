@@ -28,6 +28,7 @@ export default [
     type: 'checkbox',
     input: true,
     key: 'spellcheck',
+    defaultValue: true,
     label: 'Allow Spellcheck'
   },
   {
