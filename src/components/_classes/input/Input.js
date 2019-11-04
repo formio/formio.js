@@ -283,6 +283,15 @@ export default class Input extends Multivalue {
     return widget;
   }
 
+  destroy() {
+    for (let i = 0; i <= this.refs.input.length; i++) {
+      const widget = this.getWidget(i);
+      if (widget) {
+        widget.destroy();
+      }
+    }
+  }
+
   addFocusBlurEvents(element) {
     this.addEventListener(element, 'focus', () => {
       if (this.root.focusedComponent !== this) {
