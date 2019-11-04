@@ -81,6 +81,13 @@ export default [
     label: 'Allow Multiple Masks'
   },
   {
+    weight: 1350,
+    type: 'checkbox',
+    input: true,
+    key: 'spellcheck',
+    label: 'Allow Spellcheck'
+  },
+  {
     weight: 417,
     type: 'datagrid',
     input: true,

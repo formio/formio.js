@@ -24,6 +24,13 @@ export default [
     placeholder: 'Enter the amount of rows'
   },
   {
+    weight: 1350,
+    type: 'checkbox',
+    input: true,
+    key: 'spellcheck',
+    label: 'Allow Spellcheck'
+  },
+  {
     type: 'select',
     input: true,
     key: 'editor',
