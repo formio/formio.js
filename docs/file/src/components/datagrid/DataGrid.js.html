@@ -633,7 +633,7 @@ export default class DataGridComponent extends NestedComponent {
       return true;
     }
 
-    return this.checkRows(&apos;checkValidity&apos;, data, dirty, row);
+    return this.checkRows(&apos;checkValidity&apos;, data, dirty, this.dataValue);
   }
 
   /**
@@ -647,7 +647,7 @@ export default class DataGridComponent extends NestedComponent {
     data = data || this.rootValue;
     row = row || this.data;
     Component.prototype.checkData.call(this, data, flags, row);
-    return this.checkRows(&apos;checkData&apos;, data, flags, row);
+    return this.checkRows(&apos;checkData&apos;, data, flags, this.dataValue);
   }
 
   /**
@@ -682,10 +682,9 @@ export default class DataGridComponent extends NestedComponent {
     return valid;
   }
 
-  checkColumns(data, flags, rowData) {
-    data = data || this.rowValue;
+  checkColumns(data, flags) {
+    data = data || this.rootValue;
     flags = flags || {};
-    rowData = rowData || this.data;
     let show = false;
 
     if (!this.rows || !this.rows.length) {
@@ -698,10 +697,12 @@ export default class DataGridComponent extends NestedComponent {
 
     const visibility = {};
 
-    this.rows.forEach((row) =&gt; {
+    const dataValue = this.dataValue;
+    this.rows.forEach((row, rowIndex) =&gt; {
       _.each(row, (col, key) =&gt; {
         if (col &amp;&amp; (typeof col.checkConditions === &apos;function&apos;)) {
-          visibility[key] = !!visibility[key] || (col.checkConditions(data, flags, rowData) &amp;&amp; col.type !== &apos;hidden&apos;);
+          visibility[key] = !!visibility[key] ||
+            (col.checkConditions(data, flags, dataValue[rowIndex]) &amp;&amp; col.type !== &apos;hidden&apos;);
         }
       });
     });
@@ -720,7 +721,7 @@ export default class DataGridComponent extends NestedComponent {
       return false;
     }
 
-    const { rebuild, show } = this.checkColumns(data, flags, row);
+    const { rebuild, show } = this.checkColumns(data, flags);
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
       this.redraw();
