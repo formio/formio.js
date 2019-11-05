@@ -2154,7 +2154,9 @@ export default class Component extends Element {
    * @return boolean - If component is valid or not.
    */
   checkData(data, flags, row) {
+    data = data || this.rootValue;
     flags = flags || {};
+    row = row || this.data;
     if (flags.noCheck) {
       return true;
     }

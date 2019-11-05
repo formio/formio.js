@@ -465,6 +465,9 @@ export default class NestedComponent extends Field {
   }
 
   checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
     components = components || this.getComponents();
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, row) && valid;
