@@ -1080,7 +1080,7 @@ export default class Webform extends NestedComponent {
       this.submit(false, options).catch(e =&gt; e !== false &amp;&amp; console.log(e));
     }, true);
 
-    this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(null, true, data), true);
+    this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(data, true, data), true);
     this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)), true);
     this.on(&apos;resetForm&apos;, () =&gt; this.resetValue(), true);
     this.on(&apos;deleteSubmission&apos;, () =&gt; this.deleteSubmission(), true);
@@ -1412,7 +1412,7 @@ export default class Webform extends NestedComponent {
           return reject(&apos;Invalid Submission&apos;);
         }
 
-        if (!isDraft &amp;&amp; !this.checkValidity(submission.data, true)) {
+        if (!isDraft &amp;&amp; !this.checkValidity(submission.data, true, submission.data)) {
           return reject();
         }
 

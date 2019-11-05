@@ -226,6 +226,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/WizardBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import WebformBuilder from &apos;./WebformBuilder&apos;;
 import Webform from &apos;./Webform&apos;;
+import BuilderUtils from &apos;./utils/builder&apos;;
 import _ from &apos;lodash&apos;;
 
 export default class WizardBuilder extends WebformBuilder {
@@ -388,6 +389,7 @@ export default class WizardBuilder extends WebformBuilder {
   addPage() {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
+    BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
     this.emit(&apos;saveComponent&apos;, newPage);
     return this.rebuild();

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.2
+### Fixed
+ - Fixing calculateValue and checkConditionals to use correct context variables "row" and "data" for EditGrid and DataGrid.
+ - Fix unchecked deep access in WebformBuilder. Fixes https://github.com/formio/formio.js/issues/1920
+ - Added uniqification for pages in wizard builder.
+ - Fixed problem where inputs were not getting destroyed properly causing memory leaks.
+
+### Changed
+ - Upgrade @babel/cli@7.7.0, @babel/core@7.7.0, @babel/plugin-proposal-class-properties@7.7.0, @babel/polyfill@7.7.0, @babel/preset-env@7.7.1, @babel/register@7.7.0, browser-env@3.3.0
+
 ## 4.7.1
 ### Fixed
  - The default value configuration to reflect the component instance type.

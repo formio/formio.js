@@ -978,7 +978,8 @@ export default class WebformBuilder extends Component {
     if (target.formioContainer) {
       if (sibling) {
         if (!sibling.getAttribute(&apos;data-noattach&apos;)) {
-          index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
+          index = _.findIndex(target.formioContainer, { key: _.get(sibling, &apos;formioComponent.component.key&apos;) });
+          index = (index === -1) ? 0 : index;
         }
         else {
           index = sibling.getAttribute(&apos;data-position&apos;);
@@ -1328,7 +1329,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;saveButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
         this.editForm.setPristine(false);
         this.editForm.showErrors();
         return false;
