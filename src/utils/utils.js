@@ -1069,3 +1069,28 @@ export function isInputComponent(componentJson) {
       return true;
   }
 }
+/**
+ * Gets all data from each row.
+ *
+ * @param {number} index - row index.
+ * @param {Object} data - data.
+ * @returns {Object}
+ */
+export function getDataFromGridComponent(index, data) {
+  return Object.keys(data).reduce((acc, key) => {
+    let field = {};
+
+    if (_.isArray(data[key]) && _.isObject(data[key][0])) {
+      if (data[key][index]) {
+        field = data[key][index];
+      }
+      else {
+        field = index && data[key].length ? _.last(data[key]) : {};
+      }
+    }
+    else {
+      field[key] = data[key];
+    }
+    return { ...acc, ...field };
+  },{});
+}

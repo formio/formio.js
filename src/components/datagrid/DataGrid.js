@@ -3,6 +3,7 @@ import _ from 'lodash';
 import dragula from 'dragula/dist/dragula';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
+import { getDataFromGridComponent } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -430,7 +431,10 @@ export default class DataGridComponent extends NestedComponent {
    */
   checkRows(method, data, opts) {
     data = data || this.data;
-    return this.rows.reduce((valid, row, index) => this.checkRow(method, data[index], row, opts) && valid, true);
+    return this.rows.reduce((valid, row, index) => {
+      const rowData = getDataFromGridComponent(index, data);
+      return this.checkRow(method, rowData, row, opts) && valid;
+    }, true);
   }
 
   /**
@@ -463,10 +467,11 @@ export default class DataGridComponent extends NestedComponent {
 
     const visibility = {};
 
-    this.rows.forEach((row) => {
+    this.rows.forEach((row, index) => {
+      const rowData = getDataFromGridComponent(index, data);
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
-          visibility[key] = !!visibility[key] || (col.checkConditions(data) && col.type !== 'hidden');
+          visibility[key] = !!visibility[key] || (col.checkConditions(rowData) && col.type !== 'hidden');
         }
       });
     });

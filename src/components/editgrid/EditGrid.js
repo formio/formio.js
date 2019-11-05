@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal';
 
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
-import { Evaluator } from '../../utils/utils';
+import { Evaluator, getDataFromGridComponent } from '../../utils/utils';
 import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
@@ -259,11 +259,12 @@ export default class EditGridComponent extends NestedComponent {
 
   checkData(data, flags = {}) {
     Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow) => this.checkRow(editRow.data, editRow, flags) && valid, true);
+    return this.editRows.reduce((valid, editRow, rowIndex) => this.checkRow(rowIndex, editRow, flags) && valid, true);
   }
 
-  checkRow(data, editRow, flags = {}) {
-    return super.checkData(data, flags, editRow.components);
+  checkRow(rowIndex, editRow, flags = {}) {
+    const rowData = getDataFromGridComponent(rowIndex, this.data);
+    return super.checkData(rowData, flags, editRow.components);
   }
 
   everyComponent(fn, rowIndex) {
@@ -330,7 +331,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(editRow.data, editRow);
+    this.checkRow(rowIndex, editRow);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -434,7 +435,7 @@ export default class EditGridComponent extends NestedComponent {
       return;
     }
     editRow.dirty = true;
-    if (!!this.validateRow(editRow, true) !== true) {
+    if (!!this.validateRow(editRow, true, rowIndex) !== true) {
       return false;
     }
 
@@ -510,7 +511,7 @@ export default class EditGridComponent extends NestedComponent {
           this.triggerChange();
         }
         else {
-          this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
+          this.checkRow(rowIndex, this.editRows[rowIndex]);
         }
       };
       components.push(comp);
@@ -518,13 +519,14 @@ export default class EditGridComponent extends NestedComponent {
     return components;
   }
 
-  validateRow(editRow, dirty) {
+  validateRow(editRow, dirty, rowIndex) {
     let valid = true;
     const isDirty = dirty || !!editRow.dirty;
+    const rowData = getDataFromGridComponent(rowIndex, this.data);
     if (editRow.editing || isDirty) {
       editRow.components.forEach(comp => {
         comp.setPristine(!isDirty);
-        valid &= comp.checkValidity(null, isDirty, editRow.data);
+        valid &= comp.checkValidity(rowData, isDirty, editRow.data);
       });
     }
 
@@ -560,9 +562,9 @@ export default class EditGridComponent extends NestedComponent {
 
     let rowsValid = true;
     let rowsEditing = false;
-    this.editRows.forEach((editRow) => {
+    this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowValid = this.validateRow(editRow, dirty);
+      const rowValid = this.validateRow(editRow, dirty, index);
 
       rowsValid &= rowValid;
 
@@ -633,7 +635,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
-        this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
+        this.checkRow(rowIndex, this.editRows[rowIndex]);
       }
     });
     this.updateOnChange(flags, changed);
