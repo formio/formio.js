@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.1
+### Fixed
+ - The default value configuration to reflect the component instance type.
+ - The default date setting to allow for "moment" type of default dates.
+ - Issue where a memory leak was caused by widgets not getting properly destroyed.
+
+### Added
+ - Spellcheck configurations
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.2, jsdom@15.2.1
+
 ## 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.
