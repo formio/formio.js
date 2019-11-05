@@ -752,7 +752,8 @@ export default class WebformBuilder extends Component {
     if (target.formioContainer) {
       if (sibling) {
         if (!sibling.getAttribute('data-noattach')) {
-          index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
+          index = _.findIndex(target.formioContainer, { key: _.get(sibling, 'formioComponent.component.key') });
+          index = (index === -1) ? 0 : index;
         }
         else {
           index = sibling.getAttribute('data-position');
