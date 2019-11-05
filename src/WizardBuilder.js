@@ -1,5 +1,6 @@
 import WebformBuilder from './WebformBuilder';
 import Webform from './Webform';
+import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
@@ -162,6 +163,7 @@ export default class WizardBuilder extends WebformBuilder {
   addPage() {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
+    BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
     return this.rebuild();
