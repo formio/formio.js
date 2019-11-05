@@ -284,10 +284,13 @@ export default class Input extends Multivalue {
   }
 
   destroy() {
-    for (let i = 0; i <= this.refs.input.length; i++) {
-      const widget = this.getWidget(i);
-      if (widget) {
-        widget.destroy();
+    super.destroy();
+    if (this.refs && this.refs.input) {
+      for (let i = 0; i <= this.refs.input.length; i++) {
+        const widget = this.getWidget(i);
+        if (widget) {
+          widget.destroy();
+        }
       }
     }
   }
