@@ -486,7 +486,7 @@ export default class EditGridComponent extends NestedComponent {
     this.updateValue();
     this.triggerChange();
     this.checkValidity(null, true);
-    this.checkData(this.data);
+    this.checkData();
     this.redraw();
   }
 
