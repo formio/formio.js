@@ -854,7 +854,7 @@ export default class Webform extends NestedComponent {
       this.submit(false, options).catch(e => e !== false && console.log(e));
     }, true);
 
-    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
+    this.on('checkValidity', (data) => this.checkValidity(data, true, data), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
@@ -1186,7 +1186,7 @@ export default class Webform extends NestedComponent {
           return reject('Invalid Submission');
         }
 
-        if (!isDraft && !this.checkValidity(submission.data, true)) {
+        if (!isDraft && !this.checkValidity(submission.data, true, submission.data)) {
           return reject();
         }
 
