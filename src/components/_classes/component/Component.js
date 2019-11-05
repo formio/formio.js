@@ -1017,6 +1017,28 @@ export default class Component extends Element {
     return '-';
   }
 
+  /**
+   * Uses the widget to determine the output string.
+   *
+   * @param value
+   * @return {*}
+   */
+  getWidgetValueAsString(value) {
+    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      const values = [];
+      value.forEach((val, index) => {
+        if (this.refs.input[index] && this.refs.input[index].widget) {
+          values.push(this.refs.input[index].widget.getValueAsString(val));
+        }
+      });
+      return values;
+    }
+    return this.refs.input[0].widget.getValueAsString(value);
+  }
+
   getValueAsString(value) {
     if (!value) {
       return '';
