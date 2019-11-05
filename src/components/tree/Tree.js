@@ -420,14 +420,14 @@ export default class TreeComponent extends NestedComponent {
     this.redraw();
   }
 
-  checkData(data, flags = {}) {
-    return this.checkNode(data, this.tree, flags);
+  checkData(data, flags, row) {
+    return this.checkNode(data, this.tree, flags, row);
   }
 
-  checkNode(data, node, flags = {}) {
+  checkNode(data, node, flags, row) {
     return node.children.reduce(
-      (result, child) => this.checkNode(data, child, flags) && result,
-      super.checkData(data, flags, node.components),
+      (result, child) => this.checkNode(data, child, flags, row) && result,
+      super.checkData(data, flags, row, node.components),
     );
   }
 }

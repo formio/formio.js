@@ -1102,7 +1102,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
         this.editForm.setPristine(false);
         this.editForm.showErrors();
         return false;

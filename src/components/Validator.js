@@ -16,48 +16,49 @@ export default {
   get: _.get,
   each: _.each,
   has: _.has,
-  checkValidator(component, validator, setting, value, data, index) {
+  checkValidator(component, validator, setting, value, data, index, row) {
     let result = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      result = component[validator.method](setting, value, data, index);
+      result = component[validator.method](setting, value, data, index, row);
     }
     else {
-      result = validator.check.call(this, component, setting, value, data, index);
+      result = validator.check.call(this, component, setting, value, data, index, row);
     }
     if (typeof result === 'string') {
       return result;
     }
     if (!result) {
-      return validator.message.call(this, component, setting, index);
+      return validator.message.call(this, component, setting, index, row);
     }
     return '';
   },
-  validate(component, validator, value, data, index) {
+  validate(component, validator, value, data, index, row) {
     if (validator.key && _.has(component.component, validator.key)) {
       const setting = this.get(component.component, validator.key);
-      return this.checkValidator(component, validator, setting, value, data, index);
+      return this.checkValidator(component, validator, setting, value, data, index, row);
     }
-    return this.checkValidator(component, validator, null, value, data, index);
+    return this.checkValidator(component, validator, null, value, data, index, row);
   },
-  check(component, data) {
+  check(component, data, row) {
     let result = '';
     const value = component.validationValue;
-    data = data || component.data;
+    data = data || component.rootValue;
+    row = row || component.data;
     _.each(component.validators, (name) => {
       if (this.validators.hasOwnProperty(name)) {
         const validator = this.validators[name];
         if (component.validateMultiple(value)) {
           _.each(value, (val, index) => {
-            result = this.validate(component, validator, val, data, index);
+            result = this.validate(component, validator, val, data, index, row);
             if (result) {
               return false;
             }
           });
         }
         else {
-          result = this.validate(component, validator, value, data);
+          result = this.validate(component, validator, value, data, 0, row);
         }
         if (result) {
           return false;
@@ -70,7 +71,8 @@ export default {
     if (result && (customErrorMessage || validateCustom)) {
       result = component.t(customErrorMessage || result, {
         field: component.errorLabel,
-        data: component.data
+        data,
+        row
       });
     }
     return result;
@@ -321,12 +323,14 @@ export default {
     },
     json: {
       key: 'validate.json',
-      check(component, setting, value, data) {
+      check(component, setting, value, data, index, row) {
         if (!setting) {
           return true;
         }
         const valid = component.evaluate(setting, {
           data,
+          row,
+          rowIndex: index,
           input: value
         });
         if (valid === null) {
@@ -373,13 +377,15 @@ export default {
           data: component.data
         });
       },
-      check(component, setting, value, data) {
+      check(component, setting, value, data, index, row) {
         if (!setting) {
           return true;
         }
         const valid = component.evaluate(setting, {
           valid: true,
           data,
+          rowIndex: index,
+          row,
           input: value
         }, 'valid', true);
         if (valid === null) {

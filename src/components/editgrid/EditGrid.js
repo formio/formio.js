@@ -142,7 +142,7 @@ export default class EditGridComponent extends NestedComponent {
       data: row,
       components: this.createRowComponents(row, rowIndex),
     }));
-    this.checkData(this.data);
+    this.checkData();
   }
 
   render(children) {
@@ -257,13 +257,19 @@ export default class EditGridComponent extends NestedComponent {
     }
   }
 
-  checkData(data, flags = {}) {
-    Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow) => this.checkRow(editRow.data, editRow, flags) && valid, true);
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    Component.prototype.checkData.call(this, data, flags, row);
+    return this.editRows.reduce(
+      (valid, editRow) => this.checkRow(data, editRow, flags, editRow.data) && valid,
+      true
+    );
   }
 
-  checkRow(data, editRow, flags = {}) {
-    return super.checkData(data, flags, editRow.components);
+  checkRow(data, editRow, flags, row) {
+    return super.checkData(data, flags, row, editRow.components);
   }
 
   everyComponent(fn, rowIndex) {
@@ -421,7 +427,7 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows.splice(rowIndex, 1);
     }
 
-    this.checkValidity(this.data, true);
+    this.checkValidity(null, true);
     this.redraw();
   }
 
@@ -457,7 +463,7 @@ export default class EditGridComponent extends NestedComponent {
     editRow.editing = false;
     this.updateValue();
     this.triggerChange();
-    this.checkValidity(this.data, true);
+    this.checkValidity(null, true);
     this.redraw();
 
     return true;
@@ -479,7 +485,7 @@ export default class EditGridComponent extends NestedComponent {
     this.updateRowsComponents(rowIndex);
     this.updateValue();
     this.triggerChange();
-    this.checkValidity(this.data, true);
+    this.checkValidity(null, true);
     this.checkData(this.data);
     this.redraw();
   }
@@ -548,12 +554,14 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
-  checkValidity(data, dirty) {
-    return this.checkComponentValidity(data, dirty);
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    return this.checkComponentValidity(data, dirty, row);
   }
 
-  checkComponentValidity(data, dirty) {
-    if (!this.checkCondition(null, data)) {
+  checkComponentValidity(data, dirty, row) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
