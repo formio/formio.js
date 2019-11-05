@@ -407,7 +407,7 @@ export default class DataGridComponent extends NestedComponent {
       return true;
     }
 
-    return this.checkRows('checkValidity', data, dirty, row);
+    return this.checkRows('checkValidity', data, dirty, this.dataValue);
   }
 
   /**
@@ -421,7 +421,7 @@ export default class DataGridComponent extends NestedComponent {
     data = data || this.rootValue;
     row = row || this.data;
     Component.prototype.checkData.call(this, data, flags, row);
-    return this.checkRows('checkData', data, flags, row);
+    return this.checkRows('checkData', data, flags, this.dataValue);
   }
 
   /**
@@ -456,10 +456,9 @@ export default class DataGridComponent extends NestedComponent {
     return valid;
   }
 
-  checkColumns(data, flags, rowData) {
-    data = data || this.rowValue;
+  checkColumns(data, flags) {
+    data = data || this.rootValue;
     flags = flags || {};
-    rowData = rowData || this.data;
     let show = false;
 
     if (!this.rows || !this.rows.length) {
@@ -472,10 +471,12 @@ export default class DataGridComponent extends NestedComponent {
 
     const visibility = {};
 
-    this.rows.forEach((row) => {
+    const dataValue = this.dataValue;
+    this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
-          visibility[key] = !!visibility[key] || (col.checkConditions(data, flags, rowData) && col.type !== 'hidden');
+          visibility[key] = !!visibility[key] ||
+            (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
         }
       });
     });
@@ -494,7 +495,7 @@ export default class DataGridComponent extends NestedComponent {
       return false;
     }
 
-    const { rebuild, show } = this.checkColumns(data, flags, row);
+    const { rebuild, show } = this.checkColumns(data, flags);
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
       this.redraw();
