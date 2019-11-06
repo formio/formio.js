@@ -216,6 +216,19 @@ export default class TextAreaComponent extends TextFieldComponent {
             return editor;
           });
         break;
+      case 'tiny':
+        if (!settings) {
+          settings = {};
+        }
+        settings.mode = this.component.as || 'javascript';
+        this.addTiny(element, settings, (newValue) => this.updateEditorValue(newValue))
+          .then((tiny) => {
+          this.editor = tiny;
+          this.editor.setContent(this.setConvertedValue(this.dataValue));
+          this.editorReadyResolve(tiny);
+          return tiny;
+        }).catch(err => console.warn(err));
+        break;
       default:
         super.attachElement(element, index);
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
@@ -325,6 +338,9 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
             case 'ckeditor':
               editor.data.set(this.setConvertedValue(value));
+              break;
+            case 'tiny':
+              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }

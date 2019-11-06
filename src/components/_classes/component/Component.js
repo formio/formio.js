@@ -12,6 +12,7 @@ import Element from '../../../Element';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
+const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -1629,6 +1630,21 @@ export default class Component extends Element {
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
+      });
+  }
+
+  addTiny(element, settings, onChange) {
+    return Formio.requireLibrary('tinymce', 'tinymce', TINYMCE_URL.replace('no-api-key', settings.tinyApiKey), true)
+      .then((editor) => {
+        return editor.init({
+          ...settings,
+          target: element,
+          theme: 'silver',
+          // eslint-disable-next-line camelcase
+          init_instance_callback: (editor) => {
+            editor.on('Change', () => onChange(editor.getContent()));
+          },
+        });
       });
   }
 

@@ -1327,7 +1327,8 @@ export default class Formio {
                 src: lib.src,
                 type: 'text/javascript',
                 defer: true,
-                async: true
+                async: true,
+                referrerpolicy: 'origin',
               };
               break;
             case 'styles':
