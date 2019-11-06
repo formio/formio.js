@@ -1414,7 +1414,7 @@ export default class Component extends Element {
       switch (action.type) {
         case 'property':
           FormioUtils.setActionProperty(newComponent, action, row, data, newComponent, result, this);
-          if (!_.isEqual(this, newComponent)) {
+          if (!_.isEqual(this.component, newComponent)) {
             changed = true;
           }
           break;
