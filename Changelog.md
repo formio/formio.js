@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.7.3
 ### Fixed
+ - Avoid JS errors when using autoAdjust columns.
  - Focus shifting when typing in fields with Field Logic
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.3
 
 ## 4.7.2
 ### Fixed
