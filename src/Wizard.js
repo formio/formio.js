@@ -197,7 +197,6 @@ export default class Wizard extends Webform {
         });
       });
     });
-
   }
 
   attachHeader() {

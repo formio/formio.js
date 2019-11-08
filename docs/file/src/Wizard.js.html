@@ -332,6 +332,7 @@ export default class Wizard extends Webform {
   get renderContext() {
     return {
       wizardKey: this.wizardKey,
+      isBreadcrumbClickable: this.isBreadcrumbClickable(),
       panels: this.pages.map(page =&gt; page.component),
       buttons: this.buttons,
       currentPage: this.page,
@@ -398,39 +399,42 @@ export default class Wizard extends Webform {
     return promises;
   }
 
+  isBreadcrumbClickable() {
+    return _.get(this.options, &apos;breadcrumbSettings.clickable&apos;, true);
+  }
+
   attachNav() {
-    const isClickable = _.get(this.options, &apos;breadcrumbSettings.clickable&apos;, true);
-    if (isClickable) {
-      _.each(this.buttons, (button) =&gt; {
-        const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
-        this.addEventListener(buttonElement, &apos;click&apos;, (event) =&gt; {
-          event.preventDefault();
+    _.each(this.buttons, (button) =&gt; {
+      const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
+      this.addEventListener(buttonElement, &apos;click&apos;, (event) =&gt; {
+        event.preventDefault();
 
-          // Disable the button until done.
-          buttonElement.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
-          this.setLoading(buttonElement, true);
+        // Disable the button until done.
+        buttonElement.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+        this.setLoading(buttonElement, true);
 
-          // Call the button method, then re-enable the button.
-          this[button.method]().then(() =&gt; {
-            buttonElement.removeAttribute(&apos;disabled&apos;);
-            this.setLoading(buttonElement, false);
-          }).catch(() =&gt; {
-            buttonElement.removeAttribute(&apos;disabled&apos;);
-            this.setLoading(buttonElement, false);
-          });
+        // Call the button method, then re-enable the button.
+        this[button.method]().then(() =&gt; {
+          buttonElement.removeAttribute(&apos;disabled&apos;);
+          this.setLoading(buttonElement, false);
+        }).catch(() =&gt; {
+          buttonElement.removeAttribute(&apos;disabled&apos;);
+          this.setLoading(buttonElement, false);
         });
       });
-    }
+    });
   }
 
   attachHeader() {
-    this.refs[`${this.wizardKey}-link`].forEach((link, index) =&gt; {
-      this.addEventListener(link, &apos;click&apos;, (event) =&gt; {
-        this.emit(&apos;wizardNavigationClicked&apos;, this.pages[index]);
-        event.preventDefault();
-        this.setPage(index);
+    if (this.isBreadcrumbClickable()) {
+      this.refs[`${this.wizardKey}-link`].forEach((link, index) =&gt; {
+        this.addEventListener(link, &apos;click&apos;, (event) =&gt; {
+          this.emit(&apos;wizardNavigationClicked&apos;, this.pages[index]);
+          event.preventDefault();
+          this.setPage(index);
+        });
       });
-    });
+    }
   }
 
   detachNav() {

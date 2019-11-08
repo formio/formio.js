@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.4
+### Fixed
+ - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
+ - Fixing issues where modified flag is propogating and setting other elements to modified.
+ - isBreadcrumbClickable moved to top nav instead of buttons
+
+### Changed
+ - Update @babel/core@7.7.2, core-js@3.4.0
+
 ## 4.7.3
 ### Fixed
  - Avoid JS errors when using autoAdjust columns.

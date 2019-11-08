@@ -1096,7 +1096,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component) {
+  updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -1113,7 +1113,8 @@ export default class WebformBuilder extends Component {
 
     // Change the &quot;default value&quot; field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, &apos;defaultValue&apos;);
-    if (defaultValueComponent) {
+    const defaultChanged = changed &amp;&amp; changed.component &amp;&amp; changed.component.key === &apos;defaultValue&apos;;
+    if (defaultValueComponent &amp;&amp; !defaultChanged) {
       _.assign(defaultValueComponent.component, _.omit(component, [
         &apos;key&apos;,
         &apos;label&apos;,
@@ -1143,6 +1144,7 @@ export default class WebformBuilder extends Component {
         const sibling = parentComponent.tabs[tabIndex][index + 1];
         parentComponent.removeComponent(defaultValueComponent);
         const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+        _.pull(newComp.validators, &apos;required&apos;);
         parentComponent.tabs[tabIndex].splice(index, 1, newComp);
         newComp.build(defaultValueComponent.element);
       }
@@ -1308,7 +1310,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data);
+        this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;cancelButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
