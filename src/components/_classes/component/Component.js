@@ -1551,9 +1551,16 @@ export default class Component extends Element {
     // Emit the change.
     this.emit('componentChange', changed);
 
+    // Do not propogate the modified flag.
+    let modified = false;
+    if (flags.modified) {
+      modified = true;
+      delete flags.modified;
+    }
+
     // Bubble this change up to the top.
     if (this.root && !fromRoot) {
-      this.root.triggerChange(flags, changed);
+      this.root.triggerChange(flags, changed, modified);
     }
     return changed;
   }
