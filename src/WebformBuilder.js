@@ -870,7 +870,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component) {
+  updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -887,7 +887,8 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    if (defaultValueComponent) {
+    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
+    if (defaultValueComponent && !defaultChanged) {
       _.assign(defaultValueComponent.component, _.omit(component, [
         'key',
         'label',
@@ -917,6 +918,7 @@ export default class WebformBuilder extends Component {
         const sibling = parentComponent.tabs[tabIndex][index + 1];
         parentComponent.removeComponent(defaultValueComponent);
         const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+        _.pull(newComp.validators, 'required');
         parentComponent.tabs[tabIndex].splice(index, 1, newComp);
         newComp.build(defaultValueComponent.element);
       }
@@ -1082,7 +1084,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data);
+        this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
