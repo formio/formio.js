@@ -1083,7 +1083,7 @@ export default class Webform extends NestedComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed) {
+  onChange(flags, changed, modified) {
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
@@ -1099,7 +1099,7 @@ export default class Webform extends NestedComponent {
       this.showErrors();
     }
     // See if we need to save the draft of the form.
-    if (flags && flags.modified && this.options.saveDraft) {
+    if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
