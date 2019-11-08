@@ -1525,6 +1525,7 @@ export default class Component extends Element {
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
+      delete flags.modified;
       this.pristine = false;
       this.addClass(this.getElement(), 'formio-modified');
     }
