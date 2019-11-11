@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Focus shifting when typing in fields with multiple actions Field Logic
+
 ## 4.7.4
 ### Fixed
  - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
