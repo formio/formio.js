@@ -4,6 +4,7 @@ import Calculated from './calculatedfields';
 import FieldLogic from './fieldLogic';
 import ClearOnHide from './clearOnHide';
 // import ClearOnHide2 from './clearOnHide2';
+import DateFields from './datefields';
 import SubmissionSetter from './submissionSetter';
 // import NestedFormTests from './nested-form-tests';
 // import NestedFormNoSubmit from './nested-nosubmit.js';
@@ -17,6 +18,7 @@ export default [
   SubmissionSetter,
   Conditions,
   Calculated,
+  DateFields,
   FieldLogic,
   ClearOnHide,
   // ClearOnHide2,

@@ -464,16 +464,19 @@ export default class NestedComponent extends Field {
     return false;
   }
 
-  checkData(data, flags, components) {
+  checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
     components = components || this.getComponents();
     return components.reduce((valid, comp) => {
-      return comp.checkData(data, flags) && valid;
-    }, super.checkData(data, flags));
+      return comp.checkData(data, flags, row) && valid;
+    }, super.checkData(data, flags, row));
   }
 
-  checkConditions(data) {
-    this.getComponents().forEach(comp => comp.checkConditions(data));
-    return super.checkConditions(data);
+  checkConditions(data, flags, row) {
+    this.getComponents().forEach(comp => comp.checkConditions(data, flags, row));
+    return super.checkConditions(data, flags, row);
   }
 
   clearOnHide(show) {
@@ -506,14 +509,14 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
     if (!this.conditionallyVisible()) {
       return false;
     }
     return this.getComponents().reduce(
-      (changed, comp) => comp.calculateValue(data, flags) || changed,
-      super.calculateValue(data, flags)
+      (changed, comp) => comp.calculateValue(data, flags, row) || changed,
+      super.calculateValue(data, flags, row)
     );
   }
 
@@ -528,15 +531,15 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkValidity(data, dirty) {
-    if (!this.checkCondition(null, data)) {
+  checkValidity(data, dirty, row) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
 
     return this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty) && check,
-      super.checkValidity(data, dirty)
+      (check, comp) => comp.checkValidity(data, dirty, row) && check,
+      super.checkValidity(data, dirty, row)
     );
   }
 

@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.4
+### Fixed
+ - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
+ - Fixing issues where modified flag is propogating and setting other elements to modified.
+ - isBreadcrumbClickable moved to top nav instead of buttons
+
+### Changed
+ - Update @babel/core@7.7.2, core-js@3.4.0
+
+## 4.7.3
+### Fixed
+ - Avoid JS errors when using autoAdjust columns.
+ - Focus shifting when typing in fields with Field Logic
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.3
+
+## 4.7.2
+### Fixed
+ - Fixing calculateValue and checkConditionals to use correct context variables "row" and "data" for EditGrid and DataGrid.
+ - Fix unchecked deep access in WebformBuilder. Fixes https://github.com/formio/formio.js/issues/1920
+ - Added uniqification for pages in wizard builder.
+ - Fixed problem where inputs were not getting destroyed properly causing memory leaks.
+ - Problem where getWidgetValueAsString is undefined.
+
+### Changed
+ - Upgrade @babel/cli@7.7.0, @babel/core@7.7.0, @babel/plugin-proposal-class-properties@7.7.0, @babel/polyfill@7.7.0, @babel/preset-env@7.7.1, @babel/register@7.7.0, browser-env@3.3.0
+
+## 4.7.1
+### Fixed
+ - The default value configuration to reflect the component instance type.
+ - The default date setting to allow for "moment" type of default dates.
+ - Issue where a memory leak was caused by widgets not getting properly destroyed.
+
+### Added
+ - Spellcheck configurations
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.2, jsdom@15.2.1
+
 ## 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.

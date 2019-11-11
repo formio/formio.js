@@ -690,16 +690,19 @@ export default class NestedComponent extends Field {
     return false;
   }
 
-  checkData(data, flags, components) {
+  checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
     components = components || this.getComponents();
     return components.reduce((valid, comp) =&gt; {
-      return comp.checkData(data, flags) &amp;&amp; valid;
-    }, super.checkData(data, flags));
+      return comp.checkData(data, flags, row) &amp;&amp; valid;
+    }, super.checkData(data, flags, row));
   }
 
-  checkConditions(data) {
-    this.getComponents().forEach(comp =&gt; comp.checkConditions(data));
-    return super.checkConditions(data);
+  checkConditions(data, flags, row) {
+    this.getComponents().forEach(comp =&gt; comp.checkConditions(data, flags, row));
+    return super.checkConditions(data, flags, row);
   }
 
   clearOnHide(show) {
@@ -732,14 +735,14 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
     if (!this.conditionallyVisible()) {
       return false;
     }
     return this.getComponents().reduce(
-      (changed, comp) =&gt; comp.calculateValue(data, flags) || changed,
-      super.calculateValue(data, flags)
+      (changed, comp) =&gt; comp.calculateValue(data, flags, row) || changed,
+      super.calculateValue(data, flags, row)
     );
   }
 
@@ -754,15 +757,15 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkValidity(data, dirty) {
-    if (!this.checkCondition(null, data)) {
+  checkValidity(data, dirty, row) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
     }
 
     return this.getComponents().reduce(
-      (check, comp) =&gt; comp.checkValidity(data, dirty) &amp;&amp; check,
-      super.checkValidity(data, dirty)
+      (check, comp) =&gt; comp.checkValidity(data, dirty, row) &amp;&amp; check,
+      super.checkValidity(data, dirty, row)
     );
   }
 

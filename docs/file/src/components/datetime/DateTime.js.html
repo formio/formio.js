@@ -240,6 +240,7 @@ export default class DateTimeComponent extends Input {
       enableDate: true,
       enableTime: true,
       defaultValue: &apos;&apos;,
+      defaultDate: &apos;&apos;,
       displayInTimezone: &apos;viewer&apos;,
       timezone: &apos;&apos;,
       datepickerMode: &apos;day&apos;,
@@ -308,7 +309,6 @@ export default class DateTimeComponent extends Input {
       enableTime: _.get(this.component, &apos;enableTime&apos;, true),
       noCalendar: !_.get(this.component, &apos;enableDate&apos;, true),
       format: this.component.format,
-      defaultValue: this.component.defaultValue,
       hourIncrement: _.get(this.component, &apos;timePicker.hourStep&apos;, 1),
       minuteIncrement: _.get(this.component, &apos;timePicker.minuteStep&apos;, 5),
       time_24hr: time24hr,
@@ -333,6 +333,15 @@ export default class DateTimeComponent extends Input {
     return DateTimeComponent.schema();
   }
 
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue &amp;&amp; this.component.defaultDate) {
+      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);
+      defaultValue = defaultValue ? defaultValue.toISOString() : &apos;&apos;;
+    }
+    return defaultValue;
+  }
+
   get emptyValue() {
     return &apos;&apos;;
   }
@@ -345,8 +354,7 @@ export default class DateTimeComponent extends Input {
   }
 
   formatValue(input) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
-    const result = moment.utc(input).format(format);
+    const result = moment.utc(input).toISOString();
     return result === &apos;Invalid date&apos; ? input : result;
   }
 

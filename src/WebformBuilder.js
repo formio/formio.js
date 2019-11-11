@@ -752,7 +752,8 @@ export default class WebformBuilder extends Component {
     if (target.formioContainer) {
       if (sibling) {
         if (!sibling.getAttribute('data-noattach')) {
-          index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
+          index = _.findIndex(target.formioContainer, { key: _.get(sibling, 'formioComponent.component.key') });
+          index = (index === -1) ? 0 : index;
         }
         else {
           index = sibling.getAttribute('data-position');
@@ -869,7 +870,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component) {
+  updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -885,8 +886,10 @@ export default class WebformBuilder extends Component {
     }
 
     // Change the "default value" field to be reflective of this component.
-    if (this.defaultValueComponent) {
-      _.assign(this.defaultValueComponent.component, _.omit(component, [
+    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
+    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
+    if (defaultValueComponent && !defaultChanged) {
+      _.assign(defaultValueComponent.component, _.omit(component, [
         'key',
         'label',
         'placeholder',
@@ -897,6 +900,28 @@ export default class WebformBuilder extends Component {
         'customDefaultValue',
         'calculateValue'
       ]));
+      const parentComponent = defaultValueComponent.parent;
+      let tabIndex = -1;
+      let index = -1;
+      parentComponent.tabs.some((tab, tIndex) => {
+        tab.some((comp, compIndex) => {
+          if (comp.id === defaultValueComponent.id) {
+            tabIndex = tIndex;
+            index = compIndex;
+            return true;
+          }
+          return false;
+        });
+      });
+
+      if (tabIndex !== -1 && index !== -1) {
+        const sibling = parentComponent.tabs[tabIndex][index + 1];
+        parentComponent.removeComponent(defaultValueComponent);
+        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+        _.pull(newComp.validators, 'required');
+        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+        newComp.build(defaultValueComponent.element);
+      }
     }
 
     // Called when we update a component.
@@ -1025,9 +1050,6 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
-
-    this.defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
@@ -1062,7 +1084,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data);
+        this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
@@ -1083,7 +1105,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
         this.editForm.setPristine(false);
         this.editForm.showErrors();
         return false;
