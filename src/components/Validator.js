@@ -775,7 +775,7 @@ class ValidationChecker {
     }
 
     data = data || component.rootValue;
-    row = row || component.data
+    row = row || component.data;
 
     const values = (component.component.multiple && Array.isArray(component.validationValue))
       ? component.validationValue
