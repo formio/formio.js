@@ -127,6 +127,11 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
+          // Skip multiple validation if the component tells us to
+          if (!component.validateMultiple()) {
+            return true;
+          }
+
           const shouldBeArray = boolValue(setting);
           const canBeArray = ['file', 'selectboxes'].includes(component.component.type);
           const isArray = Array.isArray(value);

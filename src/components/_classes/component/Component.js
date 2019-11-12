@@ -2216,8 +2216,8 @@ export default class Component extends Element {
    *
    * @return {boolean}
    */
-  validateMultiple(value) {
-    return this.component.multiple && Array.isArray(value);
+  validateMultiple() {
+    return true;
   }
 
   get errors() {
