@@ -111,6 +111,7 @@ export default class NumberComponent extends Input {
     }
     else {
       info.attr.type = 'text';
+      info.attr['aria-label']=`${this.component.label}, numeric only`;
     }
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';
