@@ -36,9 +36,15 @@ export default class Multivalue extends Field {
       return super.render(`<div ref="element">${this.renderElement(this.dataValue)}</div>`);
     }
 
+    // Make sure dataValue is in the correct array format.
+    let dataValue = this.dataValue;
+    if (!Array.isArray(dataValue)) {
+      dataValue = dataValue ? [dataValue] : [];
+    }
+
     // If multiple value field.
     return super.render(this.renderTemplate('multiValueTable', {
-      rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
+      rows: dataValue.map(this.renderRow.bind(this)).join(''),
       disabled: this.disabled,
       addAnother: this.addAnother,
     }));
@@ -88,6 +94,27 @@ export default class Multivalue extends Field {
     return superAttach;
   }
 
+  detach() {
+    if (this.refs.input && this.refs.input.length) {
+      this.refs.input.forEach((input) => {
+        if (input.mask) {
+          input.mask.destroy();
+        }
+        if (input.widget) {
+          input.widget.destroy();
+        }
+      });
+    }
+    if (this.refs.mask && this.refs.mask.length) {
+      this.refs.mask.forEach((input) => {
+        if (input.mask) {
+          input.mask.destroy();
+        }
+      });
+    }
+    super.detach();
+  }
+
   /**
    * Attach inputs to the element.
    *
@@ -98,6 +125,7 @@ export default class Multivalue extends Field {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
       // Delay update slightly to give input mask a chance to run.
       const textCase = _.get(this.component, 'case', 'mixed');
+
       if (textCase !== 'mixed') {
         const {
           selectionStart,
@@ -111,53 +139,64 @@ export default class Multivalue extends Field {
           element.value = element.value.toLowerCase();
         }
 
-        element.selectionStart = selectionStart;
-        element.selectionEnd = selectionEnd;
+        if (element.selectionStart && element.selectionEnd) {
+          element.selectionStart = selectionStart;
+          element.selectionEnd = selectionEnd;
+        }
       }
-      setTimeout(() => {
+      // If a mask is present, delay the update to allow mask to update first.
+      if (element.mask) {
+        setTimeout(() => {
+          return this.updateValue(null, {
+            modified: true
+          }, index);
+        }, 1);
+      }
+      else {
         return this.updateValue(null, {
           modified: true
         }, index);
-      }, 1);
+      }
     });
 
-    if (!this.tryAttachMultipleMasksInput()) {
+    if (!this.attachMultiMask(index)) {
       this.setInputMask(this.refs.input[index]);
     }
   }
 
   onSelectMaskHandler(event) {
-    const mask = this.component.inputMasks
-      .find(inputMask => inputMask.label === event.target.value);
-
-    if (mask) {
-      this.updateMask(this.refs.mask[0], mask.mask);
-    }
+    this.updateMask(event.target.maskInput, this.getMaskPattern(event.target.value));
   }
 
-  tryAttachMultipleMasksInput() {
+  getMaskPattern(maskName) {
+    if (!this.multiMasks) {
+      this.multiMasks = {};
+    }
+    if (this.multiMasks[maskName]) {
+      return this.multiMasks[maskName];
+    }
+    const mask = this.component.inputMasks.find(inputMask => inputMask.label === maskName);
+    this.multiMasks[maskName] = mask ? mask.mask : this.component.inputMasks[0].mask;
+    return this.multiMasks[maskName];
+  }
+
+  attachMultiMask(index) {
     if (!(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)) {
       return false;
     }
 
-    this.refs.select[0].onchange = this.onSelectMaskHandler.bind(this);
-    const input = this.refs.mask[0];
-    const mask = this.activeMask || this.component.inputMasks[0].mask;
-    this.activeMask = mask;
-    this.setInputMask(input, mask);
-
+    const maskSelect = this.refs.select[index];
+    maskSelect.onchange = this.onSelectMaskHandler.bind(this);
+    maskSelect.maskInput = this.refs.mask[index];
+    this.setInputMask(maskSelect.maskInput, this.component.inputMasks[0].mask);
     return true;
   }
 
   updateMask(input, mask) {
-    this.activeMask = mask;
-    //destroy previous mask
-    if (input.mask) {
-      input.mask.destroy();
+    if (!mask) {
+      return;
     }
-    //set new text field mask
     this.setInputMask(input, mask, !this.component.placeholder);
-    //update text field value after new mask is applied
     this.updateValue();
   }
 
@@ -193,7 +232,7 @@ export default class Multivalue extends Field {
   addValue() {
     this.addNewValue();
     this.redraw();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     if (!this.isEmpty(this.dataValue)) {
       this.restoreValue();
     }

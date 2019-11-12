@@ -1,6 +1,5 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { convertFormatToMoment } from './utils';
 
 export const CALENDAR_ERROR_MESSAGES = {
   INVALID: 'You entered the Invalid Date',
@@ -88,7 +87,7 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
   const isValidDate = date.isValid();
 
   if (!isValidDate) {
-    const delimeters = value.match(/[^a-z0-9а-яё\u00C0-\u017F_]+/gi);
+    const delimeters = value.match(/[^a-z0-9_]/gi);
     const delimetersRegEx = new RegExp(delimeters.join('|'), 'gi');
 
     const inputParts = value.replace(/_*/gi, '').split(delimetersRegEx);
@@ -145,59 +144,4 @@ export function checkInvalidDate(value, format, minDate, maxDate) {
   }
 
   return buildResponse('', true);
-}
-
-/**
- * If date format has long or shorthand months it generates format for numeric too.
- *
- * @param {String} format
- *   The format dste string.
- * * @return {[String]}
- */
-export function monthFormatCorrector(format) {
-  const momentFormat = [convertFormatToMoment(format)];
-
-  if (momentFormat[0].match(/M{3,}/g)) {
-    momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));
-  }
-  return momentFormat;
-}
-
-/**
- * Compares the entered month with an array of months.
- *
- * @param {String} value
- *   The entered month.
- * @param {[String]} monthsArray
- *   The array of months.
- * * @return {Number}
- */
-export function dynamicMonthLength(value, monthsArray) {
-  const lowerValue = value.toLowerCase();
-  const comparedMonth = _.find(monthsArray, month => month.toLowerCase().startsWith(lowerValue));
-
-  if (comparedMonth) {
-    return comparedMonth.length;
-  }
-  return 0;
-}
-
-/**
- * Corrects the time format depending on locale.
- *
- * @param {Boolean} is24hours
- *   The value from locale settings.
- * @param {String} format
- *   The format from settings.
- * * @return {String}
- */
-export function timeFormatLocaleCorrector(is24hours, format) {
-  if (is24hours && format.match(/[ha]/g)) {
-    return format
-      .replace(/h/g, 'H')
-      .replace(/a/g, '')
-      .trim();
-  }
-
-  return format;
 }

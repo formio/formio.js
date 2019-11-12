@@ -24,6 +24,14 @@ export default [
     placeholder: 'Enter the amount of rows'
   },
   {
+    weight: 1350,
+    type: 'checkbox',
+    input: true,
+    key: 'spellcheck',
+    defaultValue: true,
+    label: 'Allow Spellcheck'
+  },
+  {
     type: 'select',
     input: true,
     key: 'editor',
@@ -87,7 +95,7 @@ export default [
     dataSrc: 'custom',
     data: {
       custom() {
-        return _.map(Formio.providers.storage, (storage, key) => ({
+        return _.map(Formio.Providers.getProviders('storage'), (storage, key) => ({
           label: storage.title,
           value: key
         }));
@@ -147,6 +155,34 @@ export default [
         '===': [
           { var: 'data.isUploadEnabled' },
           true
+        ]
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    key: 'fileKey',
+    input: true,
+    label: 'File form-data Key',
+    tooltip: 'Key name that you would like to modify for the file while calling API request.',
+    rows: 5,
+    weight: 415.6,
+    placeholder: 'Enter the key name of a file for form data.',
+    conditional: {
+      json: {
+        and: [
+          { '===': [
+            { var: 'data.editor' },
+            'quill'
+          ] },
+          { '===': [
+            { var: 'data.isUploadEnabled' },
+            true
+          ] },
+          { '===': [
+            { var: 'data.uploadStorage' },
+            'url'
+          ] },
         ]
       }
     }

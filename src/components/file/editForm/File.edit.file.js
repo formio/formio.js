@@ -14,7 +14,7 @@ export default [
     dataSrc: 'custom',
     data: {
       custom() {
-        return _.map(Formio.providers.storage, (storage, key) => ({
+        return _.map(Formio.Providers.getProviders('storage'), (storage, key) => ({
           label: storage.title,
           value: key
         }));
@@ -81,6 +81,22 @@ export default [
     placeholder: `{
   "withCredentials": true
 }`,
+    conditional: {
+      json: {
+        '===': [{
+          var: 'data.storage'
+        }, 'url']
+      }
+    }
+  },
+  {
+    type: 'textfield',
+    input: true,
+    key: 'fileKey',
+    label: 'File form-data key',
+    weight: 17,
+    placeholder: 'Enter the key name of a file for form data.',
+    tooltip: 'Key name that you would like to modify for the file while calling API request.',
     conditional: {
       json: {
         '===': [{

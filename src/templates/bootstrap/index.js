@@ -40,15 +40,17 @@ import resourceAdd from './resourceAdd';
 import select from './select';
 import selectOption from './selectOption';
 import signature from './signature';
-import sketchpad from './sketchpad';
 import survey from './survey';
 import tab from './tab';
 import table from './table';
 import tree from './tree';
 import treePartials from './tree/partials';
+import warning from './warning';
 import webform from './webform';
 import well from './well';
 import wizard from './wizard';
+import wizardHeader from './wizardHeader';
+import wizardNav from './wizardNav';
 import cssClasses from './cssClasses';
 
 export default {
@@ -106,13 +108,15 @@ export default {
   select,
   selectOption,
   signature,
-  sketchpad,
   survey,
   tab,
   table,
   tree,
   ...treePartials,
+  warning,
   webform,
   well,
   wizard,
+  wizardHeader,
+  wizardNav
 };

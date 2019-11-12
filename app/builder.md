@@ -56,7 +56,7 @@ lib: builder
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4"><a href="https://github.com/formio/formio" target="_blank"><img class="img-responsive" src="https://form.io/assets/images/github-logo.png"></a></div>
+      <div class="col-md-4"><a href="https://github.com/formio/formio" target="_blank"><img style="width: 100%" class="img-responsive" src="https://github.githubassets.com/images/modules/logos_page/Octocat.png"></a></div>
       <div class="col-md-8">
         <p>Getting started is as easy as...</p>
         <pre style="background-color: white;">git clone https://github.com/formio/formio.git

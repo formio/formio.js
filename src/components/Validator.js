@@ -10,9 +10,8 @@ import {
 } from '../utils/utils';
 import moment from 'moment';
 import {
-  CALENDAR_ERROR_MESSAGES,
   checkInvalidDate,
-  monthFormatCorrector,
+  CALENDAR_ERROR_MESSAGES
 } from '../utils/calendarUtils';
 
 class ValidationChecker {
@@ -534,12 +533,14 @@ class ValidationChecker {
       },
       json: {
         key: 'validate.json',
-        check(component, setting, value, data) {
+        check(component, setting, value, data, index, row) {
           if (!setting) {
             return true;
           }
           const valid = component.evaluate(setting, {
             data,
+            row,
+            rowIndex: index,
             input: value
           });
           if (valid === null) {
@@ -582,13 +583,15 @@ class ValidationChecker {
             data: component.data
           });
         },
-        check(component, setting, value, data) {
+        check(component, setting, value, data, index, row) {
           if (!setting) {
             return true;
           }
           const valid = component.evaluate(setting, {
             valid: true,
             data,
+            rowIndex: index,
+            row,
             input: value
           }, 'valid', true);
           if (valid === null) {
@@ -659,9 +662,13 @@ class ValidationChecker {
             maxDate: moment(component.dataValue).format(component.format),
           });
         },
-        check(component, setting, value) {
+        check(component, setting, value, data, index) {
           this.validators.calendar.messageText = '';
-          const { settings, enteredDate } = component._widget;
+          const widget = component.getWidget(index);
+          if (!widget) {
+            return true;
+          }
+          const { settings, enteredDate } = widget;
           const { minDate, maxDate, format } = settings;
           const momentFormat = [convertFormatToMoment(format)];
 
@@ -684,54 +691,7 @@ class ValidationChecker {
               return false;
             }
             else {
-              component._widget.enteredDate = '';
-              return true;
-            }
-          }
-        }
-      },
-      strictDateValidation: {
-        key: 'validate.strictDateValidation',
-        messageText: '',
-        message(component) {
-          return component.t(component.errorMessage(this.validators.strictDateValidation.messageText), {
-            field: component.errorLabel,
-            maxDate: moment(component.dataValue).format(component.format),
-          });
-        },
-        check(component, setting, value) {
-          this.validators.strictDateValidation.messageText = '';
-          if (!component.widgetData) {
-            return true;
-          }
-          const { minDate, maxDate, format, enteredDate } = component.widgetData;
-          const momentFormat = monthFormatCorrector(format);
-
-          if (component.widgetLocale) {
-            const { locale, monthsShort, monthsShortStrictRegex } = component.widgetLocale;
-
-            moment.updateLocale(locale, {
-              monthsShort,
-              monthsShortStrictRegex,
-            });
-          }
-
-          if (!value && enteredDate) {
-            const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
-
-            if (!result) {
-              this.validators.strictDateValidation.messageText = message;
-              return result;
-            }
-          }
-
-          if (value && enteredDate) {
-            if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() && enteredDate.match(/_/gi)) {
-              this.validators.strictDateValidation.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
-              return false;
-            }
-            else {
-              component._widget.enteredDate = '';
+              widget.enteredDate = '';
               return true;
             }
           }
@@ -740,15 +700,15 @@ class ValidationChecker {
     };
   }
 
-  checkValidator(component, validator, setting, value, data) {
+  checkValidator(component, validator, setting, value, data, index, row) {
     let resultOrPromise = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      resultOrPromise = component[validator.method](setting, value, data);
+      resultOrPromise = component[validator.method](setting, value, data, index, row);
     }
     else {
-      resultOrPromise = validator.check.call(this, component, setting, value, data);
+      resultOrPromise = validator.check.call(this, component, setting, value, data, index, row);
     }
 
     const processResult = result => {
@@ -757,7 +717,7 @@ class ValidationChecker {
       }
 
       if (!result) {
-        return validator.message.call(this, component, setting);
+        return validator.message.call(this, component, setting, index, row);
       }
 
       return '';
@@ -771,7 +731,7 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data) {
+  validate(component, validatorName, value, data, index, row) {
     // Skip validation for conditionally hidden components
     if (!component.conditionallyVisible()) {
       return false;
@@ -779,7 +739,7 @@ class ValidationChecker {
 
     const validator       = this.validators[validatorName];
     const setting         = _.get(component.component, validator.key, null);
-    const resultOrPromise = this.checkValidator(component, validator, setting, value, data);
+    const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row);
 
     const processResult = result => {
       return result ? {
@@ -808,13 +768,14 @@ class ValidationChecker {
     }
   }
 
-  checkComponent(component, data, includeWarnings = false) {
+  checkComponent(component, data, row, includeWarnings = false) {
     // If we're server-side and it's not a persistent component, don't run validation at all
     if (_.get(process, 'release.name') === 'node' && !_.defaultTo(component.component.persistent, true)) {
       return [];
     }
 
-    data = data || component.data;
+    data = data || component.rootValue;
+    row = row || component.data
 
     const values = (component.component.multiple && Array.isArray(component.validationValue))
       ? component.validationValue
@@ -843,7 +804,7 @@ class ValidationChecker {
           };
         }
 
-        return _.map(values, value => this.validate(component, validatorName, value, data));
+        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row));
       })
       .flatten()
       .value();
@@ -866,7 +827,8 @@ class ValidationChecker {
         _.each(results, result => {
           result.message = component.t(customErrorMessage || result.message, {
             field: component.errorLabel,
-            data: component.data,
+            data,
+            row,
             error: result
           });
         });

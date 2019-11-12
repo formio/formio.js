@@ -38,9 +38,13 @@ export default class DataGridComponent extends NestedComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.createRows();
+    this.createRows(true);
     this.visibleColumns = {};
-    this.checkColumns(this.dataValue);
+    this.checkColumns();
+  }
+
+  get allowData() {
+    return true;
   }
 
   get dataValue() {
@@ -182,6 +186,7 @@ export default class DataGridComponent extends NestedComponent {
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
+      !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
       !this.options.preview &&
@@ -189,11 +194,12 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.builderMode);
+    return (this.hasRemoveButtons() || this.canAddColumn);
   }
 
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
+      !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
@@ -211,10 +217,15 @@ export default class DataGridComponent extends NestedComponent {
     return !_.isEqual(newValue, oldValue);
   }
 
+  get canAddColumn() {
+    return this.builderMode;
+  }
+
   render() {
+    const columns = this.getColumns();
     return super.render(this.renderTemplate('datagrid', {
       rows: this.getRows(),
-      columns: this.getColumns(),
+      columns: columns,
       groups: this.hasRowGroups() ? this.getGroups() : [],
       visibleColumns: this.visibleColumns,
       hasToggle: _.get(this, 'component.groupToggle', false),
@@ -225,10 +236,11 @@ export default class DataGridComponent extends NestedComponent {
       hasTopSubmit: this.hasTopSubmit(),
       hasBottomSubmit: this.hasBottomSubmit(),
       hasGroups: this.hasRowGroups(),
-      numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
+      numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
       allowReorder: this.allowReorder,
       builder: this.builderMode,
+      canAddColumn: this.canAddColumn,
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.componentComponents.length,
       }),
@@ -246,7 +258,9 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   getColumns() {
-    return this.component.components;
+    return this.component.components.filter((comp) => {
+      return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
+    });
   }
 
   hasHeader() {
@@ -291,18 +305,17 @@ export default class DataGridComponent extends NestedComponent {
       });
      }
 
-    const rowLength = _.filter(this.visibleColumns).length;
+    const columns = this.getColumns();
+    const rowLength = columns.length;
     this.rows.forEach((row, rowIndex) => {
       let columnIndex = 0;
-      this.getColumns().forEach((col) => {
-        if (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]) {
-          this.attachComponents(
-            this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
-            [this.rows[rowIndex][col.key]],
-            this.component.components
-          );
-          columnIndex++;
-        }
+      columns.forEach((col) => {
+        this.attachComponents(
+          this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+          [this.rows[rowIndex][col.key]],
+          this.component.components
+        );
+        columnIndex++;
       });
     });
     return super.attach(element);
@@ -328,6 +341,7 @@ export default class DataGridComponent extends NestedComponent {
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue);
+    this.redraw();
   }
 
   addRow() {
@@ -343,15 +357,26 @@ export default class DataGridComponent extends NestedComponent {
     this.redraw();
   }
 
-  createRows() {
+  getRowValues() {
+    return this.dataValue;
+  }
+
+  createRows(init) {
+    let added = false;
+    const rowValues = this.getRowValues();
     // Create any missing rows.
-    this.dataValue.forEach((row, index) => {
+    rowValues.forEach((row, index) => {
       if (!this.rows[index]) {
         this.rows[index] = this.createRowComponents(row, index);
+        added = true;
       }
     });
     // Delete any extra rows.
-    this.rows.splice(this.dataValue.length);
+    this.rows.splice(rowValues.length);
+    if (!init && added) {
+      this.redraw();
+    }
+    return added;
   }
 
   createRowComponents(row, rowIndex) {
@@ -367,19 +392,91 @@ export default class DataGridComponent extends NestedComponent {
     return components;
   }
 
-  checkColumns(data) {
+  /**
+   * Checks the validity of this datagrid.
+   *
+   * @param data
+   * @param dirty
+   * @return {*}
+   */
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
+    return this.checkRows('checkValidity', data, dirty, this.dataValue);
+  }
+
+  /**
+   * Checks the data within each cell of the datagrid.
+   *
+   * @param data
+   * @param flags
+   * @return {*}
+   */
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    Component.prototype.checkData.call(this, data, flags, row);
+    return this.checkRows('checkData', data, flags, this.dataValue);
+  }
+
+  /**
+   * Checks all rows within the datagrid.
+   *
+   * @param method
+   * @param data
+   * @param opts
+   * @return {*|boolean}
+   */
+  checkRows(method, data, opts, rowData) {
+    return this.rows.reduce((valid, row, index) =>
+      this.checkRow(method, data, rowData[index], row, opts) && valid,
+      true
+    );
+  }
+
+  /**
+   * Checks validity of each row according to a specific method.
+   *
+   * @param method
+   * @param rowData
+   * @param row
+   * @param opts
+   * @return {boolean}
+   */
+  checkRow(method, data, rowData, row, opts) {
+    let valid = true;
+    _.each(row, (col) => {
+      valid = col[method](data, opts, rowData) && valid;
+    });
+    return valid;
+  }
+
+  checkColumns(data, flags) {
+    data = data || this.rootValue;
+    flags = flags || {};
     let show = false;
 
     if (!this.rows || !this.rows.length) {
       return { rebuld: false, show: false };
     }
 
+    if (this.builderMode) {
+      return { rebuild: false, show: true };
+    }
+
     const visibility = {};
 
-    this.rows.forEach((row) => {
+    const dataValue = this.dataValue;
+    this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
-          visibility[key] = !!visibility[key] || (col.checkConditions(data) && col.type !== 'hidden');
+          visibility[key] = !!visibility[key] ||
+            (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
         }
       });
     });
@@ -392,13 +489,13 @@ export default class DataGridComponent extends NestedComponent {
     return { rebuild, show };
   }
 
-  checkComponentConditions(data) {
+  checkComponentConditions(data, flags, row) {
     // If table isn't visible, don't bother calculating columns.
-    if (!super.checkComponentConditions(data)) {
+    if (!super.checkComponentConditions(data, flags, row)) {
       return false;
     }
 
-    const { rebuild, show } = this.checkColumns(data);
+    const { rebuild, show } = this.checkColumns(data, flags);
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
       this.redraw();
@@ -428,6 +525,12 @@ export default class DataGridComponent extends NestedComponent {
         this.createRows();
         value = [{}];
       }
+    }
+
+    // Make sure we always have at least one row.
+    // NOTE: Removing this will break "Public Configurations" in portal. ;)
+    if (value && !value.length) {
+      value.push({});
     }
 
     const changed = this.hasChanged(value, this.dataValue);

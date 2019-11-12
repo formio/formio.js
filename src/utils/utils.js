@@ -15,6 +15,9 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
+import BuilderUtils from './builder';
+export { BuilderUtils };
+
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -611,12 +614,12 @@ export function formatDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatOffset(formatFn, date, format, timezone, locale) {
+export function formatOffset(formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
-    return formatFn(date, format, locale);
+    return formatFn(date, format);
   }
   if (timezone === 'UTC') {
-    return `${formatFn(offsetDate(date, 'UTC').date, format, locale)} UTC`;
+    return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
   }
 
   // Load the zones since we need timezone information.
@@ -736,11 +739,7 @@ export function getInputMask(mask) {
         break;
       case '*':
         maskArray.numeric = false;
-        maskArray.push(/[a-zA-Zа-яА-ЯёЁ0-9\u00C0-\u017F]/);
-        break;
-      case 'Q':
-        maskArray.numeric = false;
-        maskArray.push(/[a-zа-яё\u00C0-\u017F]/i);
+        maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
         maskArray.push(mask[i]);
@@ -782,6 +781,9 @@ export function getNumberSeparators(lang = 'en') {
 }
 
 export function getNumberDecimalLimit(component) {
+  if (_.has(component, 'decimalLimit')) {
+    return _.get(component, 'decimalLimit');
+  }
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
   let decimalLimit = 20;
   const step = _.get(component, 'validate.step', 'any');
@@ -797,11 +799,11 @@ export function getNumberDecimalLimit(component) {
 }
 
 export function getCurrencyAffixes({
-                                     currency = 'USD',
-                                     decimalLimit,
-                                     decimalSeparator,
-                                     lang,
-                                   }) {
+   currency = 'USD',
+   decimalLimit,
+   decimalSeparator,
+   lang,
+ }) {
   // Get the prefix and suffix from the localized string.
   let regex = '(.*)?100';
   if (decimalLimit) {

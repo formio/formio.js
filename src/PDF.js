@@ -66,6 +66,10 @@ export default class PDF extends Webform {
       // Post the form to the iframe
       this.postMessage({ name: 'form', data: this.form });
 
+      // Hide the submit button if the associated component is hidden
+      const submitButton = this.components.find(c => c.element === this.refs.submitButton);
+      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);
+
       // Submit the form if they click the submit button.
       this.addEventListener(this.refs.submitButton, 'click', () => this.submit());
 

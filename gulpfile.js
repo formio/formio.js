@@ -12,6 +12,7 @@ const cleanCSS = require('gulp-clean-css');
 const eslint = require('gulp-eslint');
 const insert = require('gulp-insert');
 const template = require('gulp-template');
+const packageJson = require('./package.json');
 
 // Clean lib folder.
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
@@ -26,7 +27,11 @@ gulp.task('eslint', function eslintTask() {
 
 // Run babel on source code.
 gulp.task('babel', gulp.series('eslint', function babelTask() {
+  const FormioFilter = filter('**/Formio.js', { restore: true });
   return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+    .pipe(FormioFilter)
+    .pipe(replace('---VERSION---', packageJson.version))
+    .pipe(FormioFilter.restore)
     .pipe(babel())
     .pipe(gulp.dest('lib'));
 }));
@@ -158,6 +163,9 @@ gulp.task('types-index', () => gulp.src(['index.d.ts']).pipe(gulp.dest('lib')));
 gulp.task('types-folder', () => gulp.src(['types/**/*.*']).pipe(gulp.dest('lib/types')));
 gulp.task('types', gulp.parallel('types-index', 'types-folder'));
 
+// Copy over the readme and changelog files
+gulp.task('readme', () => gulp.src(['README.md', 'Changelog.md']).pipe(gulp.dest('lib')));
+
 // Watch for changes.
 gulp.task('watch', () => gulp.watch(['./src/*.js', './src/**/*.js'], gulp.series('scripts-full')));
 
@@ -189,7 +197,8 @@ gulp.task('build', gulp.series(
     'scripts-full'
   ),
   'dist',
-  'types'
+  'types',
+  'readme'
 ));
 
 // Create a new build (scripts only)

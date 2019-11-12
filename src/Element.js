@@ -18,6 +18,8 @@ export default class Element {
     this.options = Object.assign({
       language: 'en',
       highlightErrors: true,
+      componentErrorClass: 'formio-error-wrapper',
+      componentWarningClass: 'formio-warning-wrapper',
       row: '',
       namespace: 'formio'
     }, options || {});
@@ -48,7 +50,6 @@ export default class Element {
     });
 
     this.defaultMask = null;
-    this.inputMasks = [];
   }
 
   /**
@@ -174,10 +175,15 @@ export default class Element {
    * @param obj
    * @param type
    */
-  removeEventListener(obj, type) {
+  removeEventListener(obj, type, func = null) {
     const indexes = [];
     this.eventHandlers.forEach((handler, index) => {
-      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+      if (
+        (handler.id === this.id)
+        && obj.removeEventListener
+        && (handler.type === type)
+        && (!func || handler.func === func)
+      ) {
         obj.removeEventListener(type, handler.func);
         indexes.push(index);
       }
@@ -196,8 +202,6 @@ export default class Element {
       }
     });
     this.eventHandlers = [];
-    this.inputMasks.forEach(mask => mask.destroy());
-    this.inputMasks = [];
   }
 
   removeAllEvents(includeExternal) {
@@ -337,6 +341,10 @@ export default class Element {
       const mask = FormioUtils.getInputMask(inputMask);
       this.defaultMask = mask;
       try {
+        //destroy previous mask
+        if (input.mask) {
+          input.mask.destroy();
+        }
         input.mask = maskInput({
           inputElement: input,
           mask
@@ -352,10 +360,6 @@ export default class Element {
       }
       if (placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-      // prevent pushing undefined value to array in case of vanilla-text-mask error catched above
-      if (input.mask) {
-        this.inputMasks.push(input.mask);
       }
     }
   }

@@ -70,7 +70,19 @@ export default class TableComponent extends NestedComponent {
   }
 
   get className() {
-    return `table-responsive ${super.className}`;
+    let name = `table-responsive ${super.className}`;
+    if (!this.component.bordered) {
+      name += ' no-top-border-table';
+    }
+    return name;
+  }
+
+  get cellClassName() {
+    let name = '';
+    if (this.component.cellAlignment) {
+      name = `cell-align-${this.component.cellAlignment}`;
+    }
+    return name;
   }
 
   get tableKey() {
@@ -111,6 +123,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('table', {
+      cellClassName: this.cellClassName,
       tableKey: this.tableKey,
       tableComponents: this.table.map(row =>
         row.map(column =>

@@ -3,7 +3,7 @@ import assert from 'power-assert';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 
-describe('Formio Form Builder tests', () => {
+describe('WebformBuilder tests', () => {
   before((done) => Harness.builderBefore(done));
   after(() => Harness.builderAfter());
   it('Should create a new form builder class', (done) => {

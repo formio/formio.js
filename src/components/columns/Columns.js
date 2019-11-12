@@ -36,6 +36,10 @@ export default class ColumnsComponent extends NestedComponent {
     this.rows = [];
   }
 
+  get schema() {
+    return _.omit(super.schema, 'components');
+  }
+
   get defaultSchema() {
     return ColumnsComponent.schema();
   }
@@ -110,7 +114,9 @@ export default class ColumnsComponent extends NestedComponent {
       _.last(visible).component.width += span;
 
       _.each(visible, col => {
-        col.element.setAttribute('class', col.className);
+        if (col.element) {
+          col.element.setAttribute('class', col.className);
+        }
       });
     }
   }
@@ -142,14 +148,14 @@ export default class ColumnsComponent extends NestedComponent {
     _.each(this.columns, this.justifyRow.bind(this));
   }
 
-  checkComponentConditions(data) {
+  checkComponentConditions(data, flags, row) {
     if (this.component.autoAdjust) {
-      const result = super.checkComponentConditions(data);
+      const result = super.checkComponentConditions(data, flags, row);
       this.justify();
       return result;
     }
     else {
-      return super.checkComponentConditions(data);
+      return super.checkComponentConditions(data, flags, row);
     }
   }
 

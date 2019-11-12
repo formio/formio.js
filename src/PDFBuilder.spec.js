@@ -32,7 +32,7 @@ describe('Formio PDF Form Builder tests', () => {
     const element = document.createElement('div');
     document.body.appendChild(element);
     const builder = new FormBuilder(element, form, {});
-    builder.render()
+    builder.ready
       .then(function(builder) {
         let isPfdFormInitilized = false;
         builder.on('change', function() {

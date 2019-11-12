@@ -89,18 +89,21 @@ export default class Input extends Multivalue {
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(value);
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));
     if (this.isMultipleMasksField) {
       info.attr.class += ' formio-multiple-mask-input';
     }
     // This should be in the calendar widget but it doesn't have access to renderTemplate.
     if (this.component.widget && this.component.widget.type === 'calendar') {
-      this.component.suffix = this.renderTemplate('icon', {
+      const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
         className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
         styles: '',
         content: ''
-      });
+      }).trim();
+      if (this.component.prefix !== calendarIcon) {
+        this.component.suffix = calendarIcon;
+      }
     }
 
     return this.isMultipleMasksField
@@ -112,7 +115,7 @@ export default class Input extends Multivalue {
       })
       : this.renderTemplate('input', {
         input: info,
-        value,
+        value: this.formatValue(this.parseValue(value)),
         index
       });
   }
@@ -166,6 +169,14 @@ export default class Input extends Multivalue {
     return changed;
   }
 
+  parseValue(value) {
+    return value;
+  }
+
+  formatValue(value) {
+    return value;
+  }
+
   attach(element) {
     this.loadRefs(element, {
       charcount: 'multiple',
@@ -176,9 +187,23 @@ export default class Input extends Multivalue {
     return super.attach(element);
   }
 
+  getWidget(index) {
+    index = index || 0;
+    if (this.refs.input && this.refs.input[index]) {
+      return this.refs.input[index].widget;
+    }
+    return null;
+  }
+
+  getValueAsString(value) {
+    return super.getValueAsString(this.getWidgetValueAsString(value));
+  }
+
   attachElement(element, index) {
     super.attachElement(element, index);
-
+    if (element.widget) {
+      element.widget.destroy();
+    }
     // Attach the widget.
     element.widget = this.createWidget(index);
     if (element.widget) {
@@ -204,18 +229,6 @@ export default class Input extends Multivalue {
         }
       });
     }
-  }
-
-  /**
-   * Returns the instance of the widget for this component.
-   *
-   * @return {*}
-   */
-  get widget() {
-    if (this._widget) {
-      return this._widget;
-    }
-    return this.createWidget();
   }
 
   /**
@@ -245,8 +258,19 @@ export default class Input extends Multivalue {
       modified: true
     }, index), true);
     widget.on('redraw', () => this.redraw(), true);
-    this._widget = widget;
     return widget;
+  }
+
+  detach() {
+    super.detach();
+    if (this.refs && this.refs.input) {
+      for (let i = 0; i <= this.refs.input.length; i++) {
+        const widget = this.getWidget(i);
+        if (widget) {
+          widget.destroy();
+        }
+      }
+    }
   }
 
   addFocusBlurEvents(element) {

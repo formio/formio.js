@@ -706,14 +706,9 @@ export default class Webform extends NestedComponent {
   setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () => {
-        // If nothing changed, still trigger an update.
         this.submissionSet = true;
-        if (!this.setValue(submission, flags)) {
-          this.triggerChange();
-        }
-        else {
-          this.redraw();
-        }
+        this.setValue(submission, flags);
+        this.triggerChange();
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
@@ -859,7 +854,7 @@ export default class Webform extends NestedComponent {
       this.submit(false, options).catch(e => e !== false && console.log(e));
     }, true);
 
-    this.on('checkValidity', (data) => this.checkValidity(null, true, data), true);
+    this.on('checkValidity', (data) => this.checkValidity(data, true, data), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
@@ -1088,7 +1083,7 @@ export default class Webform extends NestedComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed) {
+  onChange(flags, changed, modified) {
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
@@ -1104,7 +1099,7 @@ export default class Webform extends NestedComponent {
       this.showErrors();
     }
     // See if we need to save the draft of the form.
-    if (flags && flags.modified && this.options.saveDraft) {
+    if (modified && this.options.saveDraft) {
       this.triggerSaveDraft();
     }
 
@@ -1191,7 +1186,7 @@ export default class Webform extends NestedComponent {
           return reject('Invalid Submission');
         }
 
-        if (!isDraft && !this.checkValidity(submission.data, true)) {
+        if (!isDraft && !this.checkValidity(submission.data, true, submission.data)) {
           return reject();
         }
 

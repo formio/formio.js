@@ -242,8 +242,8 @@
     label: &apos;Enable Strict Date Validation&apos;,
     tooltip: &apos;Makes sure the date inputted for this field is full and valid.&apos;,
     weight: 50,
-    customCoditional(context) {
-      return context.data.weight.type === &apos;calendar&apos;;
+    customConditional(context) {
+      return context.data.widget &amp;&amp; (context.data.widget.type === &apos;calendar&apos;);
     }
   }
 ];

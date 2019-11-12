@@ -1,11 +1,10 @@
 import _ from 'lodash';
 import moment from 'moment';
-import WidgetComponent from '../_classes/widgetcomponent/WidgetComponent';
+import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
-
-export default class DateTimeComponent extends WidgetComponent {
+export default class DateTimeComponent extends Input {
   static schema(...extend) {
-    return WidgetComponent.schema({
+    return Input.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -15,6 +14,7 @@ export default class DateTimeComponent extends WidgetComponent {
       enableDate: true,
       enableTime: true,
       defaultValue: '',
+      defaultDate: '',
       displayInTimezone: 'viewer',
       timezone: '',
       datepickerMode: 'day',
@@ -83,7 +83,6 @@ export default class DateTimeComponent extends WidgetComponent {
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
       format: this.component.format,
-      defaultValue: this.component.defaultValue,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       time_24hr: time24hr,
@@ -91,10 +90,14 @@ export default class DateTimeComponent extends WidgetComponent {
       minDate: _.get(this.component, 'datePicker.minDate'),
       maxDate: _.get(this.component, 'datePicker.maxDate')
     };
+    /* eslint-enable camelcase */
+
+    // Add the validators date.
+    this.validators.push('date');
   }
 
   performInputMapping(input) {
-    if (input.widget && this.widget.settings) {
+    if (input.widget && input.widget.settings) {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
@@ -104,11 +107,13 @@ export default class DateTimeComponent extends WidgetComponent {
     return DateTimeComponent.schema();
   }
 
-  setValue(value, flags) {
-    if (this.widget) {
-      this.widget.setValue(value);
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultDate) {
+      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);
+      defaultValue = defaultValue ? defaultValue.toISOString() : '';
     }
-    return super.setValue(value, flags);
+    return defaultValue;
   }
 
   get emptyValue() {
@@ -122,6 +127,11 @@ export default class DateTimeComponent extends WidgetComponent {
     return super.isEmpty(value);
   }
 
+  formatValue(input) {
+    const result = moment.utc(input).toISOString();
+    return result === 'Invalid date' ? input : result;
+  }
+
   isEqual(valueA, valueB = this.dataValue) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
@@ -133,13 +143,22 @@ export default class DateTimeComponent extends WidgetComponent {
   }
 
   checkValidity(data, dirty, rowData) {
-    if (this._widget && this._widget.enteredDate) {
-      dirty = true;
+    if (this.refs.input) {
+      this.refs.input.forEach((input) => {
+        if (input.widget && input.widget.enteredDate) {
+          dirty = true;
+        }
+      });
     }
     return super.checkValidity(data, dirty, rowData);
   }
 
-  getView(value) {
-    return this.widget.getValueAsString(value);
+  focus() {
+    if (this.refs.input && this.refs.input[0]) {
+      const sibling = this.refs.input[0].nextSibling;
+      if (sibling) {
+        sibling.focus();
+      }
+    }
   }
 }

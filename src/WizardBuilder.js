@@ -1,4 +1,6 @@
 import WebformBuilder from './WebformBuilder';
+import Webform from './Webform';
+import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
@@ -57,8 +59,13 @@ export default class WizardBuilder extends WebformBuilder {
 
     // Wizard pages don't replace themselves in the right array. Do that here.
     this.on('saveComponent', (component, originalComponent) => {
+      const webformComponents = this.webform.components.map(({ component }) => component);
       if (this._form.components.includes(originalComponent)) {
         this._form.components[this._form.components.indexOf(originalComponent)] = component;
+        this.rebuild();
+      }
+      else if (webformComponents.includes(originalComponent)) {
+        this._form.components.push(component);
         this.rebuild();
       }
     }, true);
@@ -69,7 +76,8 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get currentPage() {
-    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : null;
+    const pages = this.pages;
+    return (pages && (pages.length >= this.page)) ? pages[this.page] : null;
   }
 
   set form(value) {
@@ -90,7 +98,10 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get schema() {
-    return this._form;
+    _.assign(this._form.components[this.page], this.webform._form.components[0]);
+    const webform = new Webform(this.options);
+    webform.form = this._form;
+    return webform.schema;
   }
 
   render() {
@@ -152,6 +163,7 @@ export default class WizardBuilder extends WebformBuilder {
   addPage() {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
+    BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
     return this.rebuild();
@@ -191,5 +203,12 @@ export default class WizardBuilder extends WebformBuilder {
       key: `page${index}`,
       components,
     };
+  }
+
+  pasteComponent(component) {
+    if (component instanceof WizardBuilder) {
+      return;
+    }
+    return super.pasteComponent(component);
   }
 }

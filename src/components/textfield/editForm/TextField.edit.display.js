@@ -29,20 +29,27 @@ export default [
     type: 'textarea',
     key: 'widget',
     label: 'Widget Settings',
+    refreshOn: 'wiget.type',
+    clearOnHide: false,
     // Deleted clearOnHide and refreshOn to make possible to change exist widget settings.
     calculateValue: (context) => {
-      if (!context.instance.calculatedValue && _.isEmpty(_.omit(context.data.widget, 'type'))) {
-        let settings = {};
-        const existWidget = context.instance._currentForm.options.editComponent.widget;
+      const { calculatedValue } = context.instance;
+      const { type } = context.data.widget;
 
-        if (existWidget && !_.isEmpty(_.omit(existWidget, 'type'))) {
-          settings = _.omit(context.instance._currentForm.options.editComponent.widget, 'language');
+      if (
+        _.isEmpty(_.omit(context.data.widget, 'type')) ||
+        _.isEmpty(_.omit(calculatedValue, 'type'))
+      ) {
+        if (calculatedValue && !calculatedValue.type) {
+          return context.data.widget;
         }
-        else if (context.data.widget && context.data.widget.type) {
-          settings = _.omit(Widgets[context.data.widget.type].defaultSettings, 'language');
+
+        const existWidget = context.instance._currentForm.options.editComponent.widget;
+        if (existWidget && !_.isEmpty(_.omit(existWidget, 'type')) && type === existWidget.type) {
+          return _.omit(existWidget, 'language');
         }
-        if (settings) {
-          return settings;
+        else if (type) {
+          return _.omit(Widgets[type].defaultSettings, 'language');
         }
       }
       return context.data.widget;
@@ -52,7 +59,7 @@ export default [
     editor: 'ace',
     as: 'json',
     conditional: {
-      json: { '===': [{ var: 'data.widget.type' }, 'calendar'] }
+      json: { '!==': [{ var: 'data.widget.type' }, 'input'] }
     }
   },
   {
@@ -72,6 +79,14 @@ export default [
     input: true,
     key: 'allowMultipleMasks',
     label: 'Allow Multiple Masks'
+  },
+  {
+    weight: 1350,
+    type: 'checkbox',
+    input: true,
+    key: 'spellcheck',
+    defaultValue: true,
+    label: 'Allow Spellcheck'
   },
   {
     weight: 417,

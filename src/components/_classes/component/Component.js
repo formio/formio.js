@@ -143,7 +143,12 @@ export default class Component extends Element {
         /**
          * If the custom validation should remain private (only the backend will see it and execute it).
          */
-        customPrivate: false
+        customPrivate: false,
+
+        /**
+         * If this component should implement a strict date validation if the Calendar widget is implemented.
+         */
+        strictDateValidation: false
       },
 
       /**
@@ -319,6 +324,10 @@ export default class Component extends Element {
         // Set the changed component if one isn't provided.
         args[1] = lastChanged;
       }
+      if (_.isEmpty(args[0]) && lastChanged) {
+        // Set the flags if it is empty and lastChanged exists.
+        args[0] = lastChanged.flags;
+      }
       lastChanged = null;
       return this.onChange(...args);
     }, 100);
@@ -355,7 +364,7 @@ export default class Component extends Element {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.hasInput && this.key) {
+      if (this.allowData && this.key) {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
         if (this.visible || !this.component.clearOnHide) {
@@ -364,7 +373,9 @@ export default class Component extends Element {
           }
           else {
             // Ensure the dataValue is set.
+            /* eslint-disable  no-self-assign */
             this.dataValue = this.dataValue;
+            /* eslint-enable  no-self-assign */
           }
         }
       }
@@ -428,6 +439,10 @@ export default class Component extends Element {
 
   get isInputComponent() {
     return !this.component.hasOwnProperty('input') || this.component.input;
+  }
+
+  get allowData() {
+    return this.hasInput;
   }
 
   get hasInput() {
@@ -1002,10 +1017,33 @@ export default class Component extends Element {
     return '-';
   }
 
+  /**
+   * Uses the widget to determine the output string.
+   *
+   * @param value
+   * @return {*}
+   */
+  getWidgetValueAsString(value) {
+    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      const values = [];
+      value.forEach((val, index) => {
+        if (this.refs.input[index] && this.refs.input[index].widget) {
+          values.push(this.refs.input[index].widget.getValueAsString(val));
+        }
+      });
+      return values;
+    }
+    return this.refs.input[0].widget.getValueAsString(value);
+  }
+
   getValueAsString(value) {
     if (!value) {
       return '';
     }
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.join(', ');
     }
@@ -1259,17 +1297,20 @@ export default class Component extends Element {
    * @param data
    * @return {boolean}
    */
-  conditionallyVisible(data) {
+  conditionallyVisible(data, row) {
     data = data || this.rootValue;
+    row = row || this.data;
     if (this.builderMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
-    return this.checkCondition(null, data);
+    return this.checkCondition(row, data);
   }
 
   /**
    * Checks the condition of this component.
+   *
+   * TODO: Switch row and data parameters to be consistent with other methods.
    *
    * @param row - The row contextual data.
    * @param data - The global data object.
@@ -1288,12 +1329,14 @@ export default class Component extends Element {
   /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
-  checkComponentConditions(data) {
+  checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
 
     // Check advanced conditions
-    const visible = this.conditionallyVisible(data);
-    if (!this.builderMode && this.fieldLogic(data)) {
+    const visible = this.conditionallyVisible(data, row);
+    if (!this.builderMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
@@ -1309,8 +1352,11 @@ export default class Component extends Element {
    * @param args
    * @return {boolean}
    */
-  checkConditions(...args) {
-    return this.checkComponentConditions(...args);
+  checkConditions(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    return this.checkComponentConditions(data, flags, row);
   }
 
   get logic() {
@@ -1322,8 +1368,9 @@ export default class Component extends Element {
    *
    * @param data
    */
-  fieldLogic(data) {
+  fieldLogic(data, row) {
     data = data || this.rootValue;
+    row = row || this.data;
     const logics = this.logic;
 
     // If there aren't logic, don't go further.
@@ -1337,14 +1384,14 @@ export default class Component extends Element {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
-        this.data,
+        row,
         data,
         this.root ? this.root._form : {},
         this
       );
 
       if (result) {
-        changed |= this.applyActions(logic.actions, result, data, newComponent);
+        changed |= this.applyActions(logic.actions, result, data, newComponent, row);
       }
       return changed;
     }, false);
@@ -1360,11 +1407,16 @@ export default class Component extends Element {
     return changed;
   }
 
-  applyActions(actions, result, data, newComponent) {
+  applyActions(actions, result, data, newComponent, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
     return actions.reduce((changed, action) => {
       switch (action.type) {
         case 'property':
-          FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
+          FormioUtils.setActionProperty(newComponent, action, row, data, newComponent, result, this);
+          if (!_.isEqual(this.component, newComponent)) {
+            changed = true;
+          }
           break;
         case 'value': {
           const oldValue = this.getValue();
@@ -1373,6 +1425,7 @@ export default class Component extends Element {
             {
               value: _.clone(oldValue),
               data,
+              row,
               component: newComponent,
               result
             },
@@ -1397,6 +1450,28 @@ export default class Component extends Element {
     }, false);
   }
 
+  addInputWarning(message, dirty, elements) {
+    if (!message) {
+      return;
+    }
+
+    if (this.refs.messageContainer) {
+      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
+        message
+      }));
+    }
+
+    elements
+      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
+
+    if (dirty && this.options.highlightErrors) {
+      this.addClass(this.element, this.options.componentWarningClass);
+    }
+    else {
+      this.addClass(this.element, 'has-error');
+    }
+  }
+
   /**
    * Add a new input error to this element.
    *
@@ -1418,10 +1493,17 @@ export default class Component extends Element {
     elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
 
     if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, 'alert alert-danger');
+      this.addClass(this.element, this.options.componentErrorClass);
     }
     else {
       this.addClass(this.element, 'has-error');
+    }
+  }
+
+  removeInputError(elements) {
+    if (elements) {
+      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
     }
   }
 
@@ -1458,7 +1540,9 @@ export default class Component extends Element {
     }
 
     if (this.component.onChange) {
-      this.evaluate(this.component.onChange);
+      this.evaluate(this.component.onChange, {
+        flags
+      });
     }
 
     // Set the changed variable.
@@ -1472,9 +1556,16 @@ export default class Component extends Element {
     // Emit the change.
     this.emit('componentChange', changed);
 
+    // Do not propogate the modified flag.
+    let modified = false;
+    if (flags.modified) {
+      modified = true;
+      delete flags.modified;
+    }
+
     // Bubble this change up to the top.
     if (this.root && !fromRoot) {
-      this.root.triggerChange(flags, changed);
+      this.root.triggerChange(flags, changed, modified);
     }
     return changed;
   }
@@ -1791,6 +1882,9 @@ export default class Component extends Element {
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }
+    else if (input.widget && input.widget.setValue) {
+      input.widget.setValue(value);
+    }
     else {
       input.value = value;
     }
@@ -1810,7 +1904,11 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple ? [] : this.defaultValue;
+      const defaultValue = this.component.multiple
+        ? this.dataValue.length
+          ? [this.defaultValue]
+          : []
+        : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
@@ -1840,7 +1938,7 @@ export default class Component extends Element {
   updateComponentValue(value, flags) {
     flags = flags || {};
     let newValue = (value === undefined || value === null) ? this.getValue() : value;
-    newValue = this.normalizeValue(newValue);
+    newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
       this.dataValue = newValue;
@@ -1914,20 +2012,23 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
-  calculateComponentValue(data, flags) {
+  calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
       return false;
     }
 
-    // Get the dataValue.
-    let firstPass = false;
-    let dataValue = null;
+    // If this component allows overrides.
     const allowOverride = this.component.allowCalculateOverride;
-    if (allowOverride) {
-      dataValue = this.dataValue;
+
+    // Skip this operation if this component allows modification and it is no longer pristine.
+    if (allowOverride && !this.pristine) {
+      return false;
     }
+
+    let firstPass = false;
+    const dataValue = this.dataValue;
 
     // First pass, the calculatedValue is undefined.
     if (this.calculatedValue === undefined) {
@@ -1946,8 +2047,9 @@ export default class Component extends Element {
 
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
-      value: this.defaultValue,
-      data
+      value: dataValue,
+      data,
+      row: row || this.data
     }, 'value');
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
@@ -1962,6 +2064,7 @@ export default class Component extends Element {
       return true;
     }
 
+    // Set the new value.
     const changed = this.setValue(calculatedValue, flags);
     this.calculatedValue = this.dataValue;
     return changed;
@@ -1973,8 +2076,11 @@ export default class Component extends Element {
    * @param args
    * @return {boolean}
    */
-  calculateValue(...args) {
-    return this.calculateComponentValue(...args);
+  calculateValue(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    return this.calculateComponentValue(data, flags, row);
   }
 
   /**
@@ -2012,8 +2118,8 @@ export default class Component extends Element {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty, ignoreCondition) {
-    if (!ignoreCondition && !this.checkCondition(null, data)) {
+  invalidMessage(data, dirty, ignoreCondition, row) {
+    if (!ignoreCondition && !this.checkCondition(row, data)) {
       return '';
     }
 
@@ -2046,18 +2152,18 @@ export default class Component extends Element {
    *
    * @param data
    * @param dirty
-   * @param rowData
+   * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, rowData) {
-    if (this.shouldSkipValidation(data, dirty, rowData)) {
+  checkComponentValidity(data, dirty, row) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return true;
     }
 
     const errors = Validator.checkComponent(this, data);
     if (errors.length && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true);
+      const message = this.invalidMessage(data, dirty, true, row);
       this.setCustomValidity(message, dirty);
     }
     else {
@@ -2066,27 +2172,31 @@ export default class Component extends Element {
     return !errors.length;
   }
 
-  checkValidity(...args) {
-    return this.checkComponentValidity(...args);
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    return this.checkComponentValidity(data, dirty, row);
   }
 
   /**
    * Check the conditions, calculations, and validity of a single component and triggers an update if
    * something changed.
    *
-   * @param data - The contextual data of the change event.
+   * @param data - The root data of the change event.
    * @param flags - The flags from this change event.
    *
    * @return boolean - If component is valid or not.
    */
-  checkData(data, flags) {
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
     flags = flags || {};
+    row = row || this.data;
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data);
-    this.checkComponentConditions(data);
-    return flags.noValidate ? true : this.checkComponentValidity(data);
+    this.calculateComponentValue(data, flags, row);
+    this.checkComponentConditions(data, flags, row);
+    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
   }
 
   get validationValue() {
@@ -2114,7 +2224,14 @@ export default class Component extends Element {
     return this.error ? [this.error] : [];
   }
 
-  setCustomValidity(message, dirty, external) {
+  clearErrorClasses() {
+    this.removeClass(this.element, 'formio-error-wrapper');
+    this.removeClass(this.element, 'alert alert-danger');
+    this.removeClass(this.element, 'alert alert-warning');
+    this.removeClass(this.element, 'has-error');
+  }
+
+  setCustomValidity(message, dirty, external, isWarning = false) {
     if (message) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -2126,7 +2243,12 @@ export default class Component extends Element {
       };
       this.emit('componentError', this.error);
       if (this.refs.input) {
-        this.addInputError(message, dirty, this.refs.input);
+        if (isWarning) {
+          this.addInputWarning(message, dirty, this.refs.input);
+        }
+        else {
+          this.addInputError(message, dirty, this.refs.input);
+        }
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2134,11 +2256,8 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      if (this.refs.input) {
-        this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
-      }
-      this.removeClass(this.element, 'alert alert-danger');
-      this.removeClass(this.element, 'has-error');
+      this.removeInputError(this.refs.input);
+      this.clearErrorClasses();
     }
 
     if (!this.refs.input) {
@@ -2152,12 +2271,12 @@ export default class Component extends Element {
     });
   }
 
-  shouldSkipValidation(data, dirty, rowData) {
+  shouldSkipValidation(data, dirty, row) {
     const rules = [
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
-      () => !this.checkCondition(rowData, data)
+      () => !this.checkCondition(row, data)
     ];
 
     return rules.some(pred => pred());
@@ -2292,7 +2411,7 @@ export default class Component extends Element {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
           const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, args, this.data, newComponent)) {
+          if (this.applyActions(logic.actions, args, null, newComponent, null)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
@@ -2338,7 +2457,7 @@ export default class Component extends Element {
   }
 
   autofocus() {
-    if (this.component.autofocus) {
+    if (this.component.autofocus && !this.builderMode) {
       this.on('render', () => this.focus(), true);
     }
   }

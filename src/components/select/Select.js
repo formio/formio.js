@@ -128,6 +128,10 @@ export default class SelectComponent extends Field {
     return this.isSelectResource || this.isSelectURL;
   }
 
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
+  }
+
   itemTemplate(data) {
     if (!data) {
       return '';
@@ -184,7 +188,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: value,
+      value: _.isObject(value) ? value : String(value),
       label: label
     };
 
@@ -556,7 +560,7 @@ export default class SelectComponent extends Field {
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
-        if (this.additionalResourcesAvailable) {
+        if (forceUpdate || this.additionalResourcesAvailable) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
@@ -772,10 +776,14 @@ export default class SelectComponent extends Field {
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
       searchFields: _.get(this, 'component.searchFields', ['label']),
-      fuseOptions: Object.assign({
-        include: 'score',
-        threshold: _.get(this, 'component.searchThreshold', 0.3),
-      }, _.get(this, 'component.fuseOptions', {})),
+      fuseOptions: Object.assign(
+        {},
+        _.get(this, 'component.fuseOptions', {}),
+        {
+          include: 'score',
+          threshold: _.get(this, 'component.searchThreshold', 0.3),
+        }
+      ),
       itemComparer: _.isEqual,
       resetScrollPosition: false,
       ...customOptions,
@@ -891,7 +899,7 @@ export default class SelectComponent extends Field {
     }
 
     // Force the disabled state with getters and setters.
-    this.disabled = this.disabled;
+    this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
   }
@@ -1251,7 +1259,9 @@ export default class SelectComponent extends Field {
   }
 
   focus() {
-    this.focusableElement.focus();
+    if (this.focusableElement) {
+      this.focusableElement.focus();
+    }
   }
 
   setCustomValidity(message, dirty, external) {
@@ -1269,14 +1279,13 @@ export default class SelectComponent extends Field {
         this.addInputError(message, dirty, [this.refs.selectContainer]);
       }
     }
-    else if (this.error && this.error.external === external) {
+    else if (this.error && this.error.external === !!external) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
       this.removeClass(this.refs.selectContainer, 'is-invalid');
-      this.removeClass(this.element, 'alert alert-danger');
-      this.removeClass(this.element, 'has-error');
+      this.clearErrorClasses();
     }
   }
 }

@@ -12,6 +12,16 @@
   border: dotted 2px #ccc;
 }
 
+.drag-container.formio-builder-form,
+.drag-container.formio-builder-form:hover,
+.panel-body > .drag-container.formio-builder-components,
+.panel-body > .drag-container.formio-builder-components:hover,
+.tab-pane > .drag-container.formio-builder-components,
+.tab-pane > .drag-container.formio-builder-components:hover {
+  padding: 0;
+  border: none;
+}
+
 .component-btn-group {
   position: absolute;
   right: 0;
@@ -77,11 +87,6 @@
   padding-top: 0.5em;
 }
 
-.formbuilder .row.formio-component-columns {
-  margin-left: 0;
-  margin-right: 0;
-}
-
 .btn-xxs, .btn-group-xxs > .btn, .component-btn-group .component-settings-button {
   padding: 2px 2px;
   font-size: 10px;
@@ -134,6 +139,7 @@
 
 .wizard-page-label {
   cursor: pointer;
+  border-radius: 0;
 }
 
 .panel-body .drag-and-drop-alert {
@@ -162,4 +168,12 @@
   background-color: #fcf8e3;
   border-color: #faebcc;
   margin-top: 10px;
+}
+
+.help-block {
+  margin: 0px;
+}
+
+.builder-sidebar .btn {
+  white-space: normal;
 }

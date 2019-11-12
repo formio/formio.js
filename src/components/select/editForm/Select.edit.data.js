@@ -215,12 +215,14 @@ export default [
       return newItems;
     },
     onChange(context) {
-      const valueProp = context.instance.data.valueProperty;
-      const templateProp = valueProp ? valueProp : 'data';
-      const template = `<span>{{ item.${templateProp} }}</span>`;
-      const searchField = valueProp ? `${valueProp}__regex` : '';
-      context.instance.root.getComponent('template').setValue(template);
-      context.instance.root.getComponent('searchField').setValue(searchField);
+      if (context && context.flags && context.flags.modified) {
+        const valueProp = context.instance.data.valueProperty;
+        const templateProp = valueProp ? valueProp : 'data';
+        const template = `<span>{{ item.${templateProp} }}</span>`;
+        const searchField = valueProp ? `${valueProp}__regex` : '';
+        context.instance.root.getComponent('template').setValue(template);
+        context.instance.root.getComponent('searchField').setValue(searchField);
+      }
     },
     data: {
       url: '/form/{{ data.data.resource }}',
@@ -271,6 +273,7 @@ export default [
           [
             'json',
             'url',
+            'custom'
           ],
         ],
       },
@@ -396,8 +399,7 @@ export default [
           { var: 'data.dataSrc' },
           [
             'url',
-            'resource',
-            'json',
+            'resource'
           ],
         ],
       },
@@ -427,6 +429,16 @@ export default [
     rows: 3,
     weight: 18,
     tooltip: 'The HTML template for the result data items.',
+    allowCalculateOverride: true,
+    calculateValue:(context) => {
+      if (!context.data.template) {
+        if (context.instance && context.instance._currentForm.options.editComponent) {
+          return context.instance._currentForm.options.editComponent.template;
+        }
+      }
+
+      return context.data.template;
+    }
   },
   {
     type: 'select',

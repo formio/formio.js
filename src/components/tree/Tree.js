@@ -125,6 +125,7 @@ export default class TreeComponent extends NestedComponent {
     return this.renderTemplate('treeView', {
       values: this.viewComponents.map((component) => {
         component.data = node.data;
+        component.checkComponentConditions(node.data);
         return component.getView(component.dataValue);
       }),
       nodeData: node.data,
@@ -419,12 +420,15 @@ export default class TreeComponent extends NestedComponent {
     this.redraw();
   }
 
-  checkData(data, flags = {}) {
-    return this.tree.children.reduce((valid, child) => this.checkNode(data, child, flags) && valid, true);
+  checkData(data, flags, row) {
+    return this.checkNode(data, this.tree, flags, row);
   }
 
-  checkNode(data, node, flags = {}) {
-    return super.checkData(data, flags, node.components);
+  checkNode(data, node, flags, row) {
+    return node.children.reduce(
+      (result, child) => this.checkNode(data, child, flags, row) && result,
+      super.checkData(data, flags, row, node.components),
+    );
   }
 }
 

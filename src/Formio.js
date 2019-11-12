@@ -6,7 +6,7 @@ import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
-import providers from './providers';
+import Providers from './providers';
 import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -488,7 +488,7 @@ export default class Formio {
     });
   }
 
-  uploadFile(storage, file, fileName, dir, progressCallback, url, options) {
+  uploadFile(storage, file, fileName, dir, progressCallback, url, options, fileKey) {
     const requestArgs = {
       provider: storage,
       method: 'upload',
@@ -496,14 +496,16 @@ export default class Formio {
       fileName: fileName,
       dir: dir
     };
+    fileKey = fileKey || 'file';
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
             if (storage && isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(storage)) {
-                const provider = new Formio.providers.storage[storage](this);
-                return provider.uploadFile(file, fileName, dir, progressCallback, url, options);
+              const Provider = Providers.getProvider('storage', storage);
+              if (Provider) {
+                const provider = new Provider(this);
+                return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey);
               }
               else {
                 throw ('Storage provider not found');
@@ -527,8 +529,9 @@ export default class Formio {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
             if (file.storage && isNil(result)) {
-              if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-                const provider = new Formio.providers.storage[file.storage](this);
+              const Provider = Providers.getProvider('storage', file.storage);
+              if (Provider) {
+                const provider = new Provider(this);
                 return provider.downloadFile(file, options);
               }
               else {
@@ -703,6 +706,15 @@ export default class Formio {
     const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
     requestArgs.opts = requestArgs.opts || {};
     requestArgs.opts.formio = formio;
+
+    //for Formio requests default Accept and Content-type headers
+    if (!requestArgs.opts.headers) {
+      requestArgs.opts.headers = {};
+    }
+    requestArgs.opts.headers = _defaults(requestArgs.opts.headers, {
+      'Accept': 'application/json',
+      'Content-type': 'application/json'
+    });
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => Formio.pluginGet('request', requestArgs)
         .then((result) => {
@@ -739,10 +751,10 @@ export default class Formio {
     }
 
     // Set up and fetch request
-    const headers = header || new Headers(_defaults(opts.headers, {
+    const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
-      'Content-type': 'application/json; charset=UTF-8'
-    }));
+      'Content-type': 'application/json'
+    });
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
       headers.append('x-jwt-token', token);
@@ -1379,7 +1391,8 @@ Formio.authUrl = '';
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = providers;
+Formio.Providers = Providers;
+Formio.version = '---VERSION---';
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0

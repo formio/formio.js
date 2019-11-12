@@ -19,8 +19,7 @@ const visibleData = {
     tablefield: '',
     visible: true,
     wellfield: ''
-  },
-  metadata: {}
+  }
 };
 
 const hiddenData = {

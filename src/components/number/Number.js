@@ -123,10 +123,14 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val ? this.parseNumber(val) : val;
+    return val ? this.parseNumber(val) : null;
   }
 
-  clearInput(input) {
+  setValueAt(index, value, flags) {
+    return super.setValueAt(index, this.formatValue(this.parseValue(value)), flags);
+  }
+
+  parseValue(input) {
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
@@ -144,14 +148,10 @@ export default class NumberComponent extends Input {
       return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
     }
     else if (this.component.requireDecimal && value && value.includes(this.decimalSeparator)) {
-      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)})}`;
+      return `${value}${_.repeat('0', this.decimalLimit - value.split(this.decimalSeparator)[1].length)}`;
     }
 
     return value;
-  }
-
-  setValueAt(index, value) {
-    return super.setValueAt(index, this.formatValue(this.clearInput(value)));
   }
 
   focus() {
@@ -170,11 +170,7 @@ export default class NumberComponent extends Input {
     if (!value && value !== 0) {
       return '';
     }
-    const widget = this.widget;
-    if (widget && widget.getValueAsString) {
-      return widget.getValueAsString(value);
-    }
-
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }

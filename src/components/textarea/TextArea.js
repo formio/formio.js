@@ -3,6 +3,7 @@ import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
+import Formio from '../../Formio';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -216,6 +217,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       default:
+        super.attachElement(element, index);
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
           this.updateValue(null, {
             modified: true
@@ -243,7 +245,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         }
 
         quillInstance.quill.enable(false);
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir } = this.component;
+        const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
         let requestData;
         this.root.formio
           .uploadFile(
@@ -253,7 +255,8 @@ export default class TextAreaComponent extends TextFieldComponent {
             uploadDir || '', //should pass empty string if undefined
             null,
             uploadUrl,
-            uploadOptions
+            uploadOptions,
+            fileKey
           )
           .then(result => {
             requestData = result;
@@ -523,7 +526,11 @@ export default class TextAreaComponent extends TextFieldComponent {
     value = value || '';
     if (this.isPlain) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
-      return super.setValue(value, flags);
+      const changed = super.setValue(value, flags);
+      if (changed && (this.disabled || this.options.readOnly)) {
+        this.triggerRedraw();
+      }
+      return changed;
     }
 
     // Set the value when the editor is ready.

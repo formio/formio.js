@@ -3,9 +3,10 @@ import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import Formio from '../../Formio';
+import NativePromise from 'native-promise-only';
+
 let Camera;
 const webViewCamera = navigator.camera || Camera;
-import NativePromise from 'native-promise-only';
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -221,7 +222,7 @@ export default class FileComponent extends Field {
 
     if (this.refs.fileDrop) {
       const element = this;
-      this.addEventListener(this.refs.fileDrop, 'dragOver', function(event) {
+      this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
         this.className = 'fileSelector fileDragOver';
         event.preventDefault();
       });
@@ -265,8 +266,15 @@ export default class FileComponent extends Field {
     this.refs.removeLink.forEach((removeLink, index) => {
       this.addEventListener(removeLink, 'click', (event) => {
         const fileInfo = this.dataValue[index];
+
         if (fileInfo && (this.component.storage === 'url')) {
-          this.options.formio.makeRequest('', fileInfo.url, 'delete');
+          const fileService = this.fileService;
+          if (fileService && typeof fileService.deleteFile === 'function') {
+            fileService.deleteFile(fileInfo);
+          }
+          else {
+            this.options.formio.makeRequest('', fileInfo.url, 'delete');
+          }
         }
         event.preventDefault();
         this.splice(index);
@@ -355,6 +363,7 @@ export default class FileComponent extends Field {
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
+
   /* eslint-enable max-len */
 
   /* eslint-disable max-depth */
@@ -394,6 +403,7 @@ export default class FileComponent extends Field {
     }
     return { regexp: regexp, excludes: excludes };
   }
+
   /* eslint-enable max-depth */
 
   translateScalars(str) {
@@ -502,18 +512,22 @@ export default class FileComponent extends Field {
             file.private = true;
           }
           const { storage, url, options = {} } = this.component;
+          const fileKey = this.component.fileKey || 'file';
           fileService.uploadFile(storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
-          }, url, options)
+          }, url, options, fileKey)
             .then(fileInfo => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
                 this.statuses.splice(index, 1);
               }
               fileInfo.originalName = file.name;
+              if (!this.hasValue()) {
+                this.dataValue = [];
+              }
               this.dataValue.push(fileInfo);
               this.redraw();
               this.triggerChange();
