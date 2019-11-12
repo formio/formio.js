@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.5
+### Fixed
+ - Issues where the bootstrap and semantic templates were not compiled to ES5 to work with IE11.
+ 
+### Changed
+ - Upgrade core-js@3.4.1
+
 ## 4.7.4
 ### Fixed
  - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
