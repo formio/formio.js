@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - The min validation to not fire if the field is empty. You can use "required" validation for this.
  - Fixed the currency component to work with viewAsHTML to show the currency symbol.
  - Fixed tooltips for components inside datagrid.
+ - Fixed problem where nested Containers, Data Grids, and EditGrids were not setting nested data correctly.
 
 ## 4.7.5
 ### Fixed
