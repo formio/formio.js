@@ -1799,11 +1799,11 @@ export default class Component extends Element {
       return this.emptyValue;
     }
     if (!this.hasValue()) {
-      const empty = this.component.multiple ? [] : this.emptyValue;
+      const defaultValue = this.component.multiple ? [] : this.defaultValue;
       if (!this.rootPristine) {
-        this.dataValue = empty;
+        this.dataValue = defaultValue;
       }
-      return empty;
+      return defaultValue;
     }
     return _.get(this.data, this.key);
   }

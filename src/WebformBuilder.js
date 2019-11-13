@@ -878,6 +878,7 @@ export default class WebformBuilder extends Component {
   }
 
   updateComponent(component, changed) {
+    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -890,13 +891,15 @@ export default class WebformBuilder extends Component {
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
+        if (defaultValueComponent) {
+          this.preview.components[0].setValue(defaultValueComponent.data.defaultValue);
+        }
         this.setContent(previewElement, this.preview.render());
         this.preview.attach(previewElement);
       }
     }
 
     // Change the "default value" field to be reflective of this component.
-    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
     const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
     if (defaultValueComponent && !defaultChanged) {
       _.assign(defaultValueComponent.component, _.omit(component, [
@@ -962,6 +965,7 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       if (parentContainer) {
         parentContainer[index] = submissionData;
+        parentComponent.components[index].setValue(submissionData.defaultValue);
       }
       else if (parentComponent && parentComponent.saveChildComponent) {
         parentComponent.saveChildComponent(submissionData);
