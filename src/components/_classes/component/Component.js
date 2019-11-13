@@ -1528,10 +1528,18 @@ export default class Component extends Element {
       this.addClass(this.performInputMapping(input), 'is-invalid');
       super.addAttribute(this.performInputMapping(input), 'aria-invalid', 'true');
 
+      if (input.type === 'textarea') {
+        const labelRefs = input.getAttribute('aria-labelledby');
+
+        if (!labelRefs || labelRefs.search(/\b(e-\w*-\w*)/g) === -1) {
+          super.addAttribute(this.performInputMapping(input), 'aria-labelledby', `${labelRefs ? `${labelRefs} ` : ''}e-${this.id}-${this.component.key}`);
+        }
+      }
+
       const descRefs = input.getAttribute('aria-describedby');
 
       if (!descRefs || descRefs.search(/\b(e-\w*-\w*)/g) === -1) {
-        super.addAttribute(this.performInputMapping(input), 'aria-describedby', `e-${this.id}-${this.component.key} ${descRefs ? descRefs : ''}`);
+        super.addAttribute(this.performInputMapping(input), 'aria-describedby', `${descRefs ? `${descRefs} ` : ''}e-${this.id}-${this.component.key}`);
       }
     });
 
@@ -1549,15 +1557,26 @@ export default class Component extends Element {
         this.removeClass(this.performInputMapping(element), 'is-invalid');
         super.addAttribute(this.performInputMapping(element), 'aria-invalid', 'false');
 
+        if (element.type === 'textarea') {
+          const labelRefs = element.getAttribute('aria-labelledby');
+          const updatedlabelRefs = labelRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+
+          if (updatedlabelRefs) {
+            super.addAttribute(this.performInputMapping(element), 'aria-labelledby', updatedlabelRefs);
+          }
+        }
+
         const descRefs = element.getAttribute('aria-describedby');
         // Removes an error message elem id
-        const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+        if (descRefs) {
+          const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
 
-        if (updatedDescRefs) {
-          super.addAttribute(this.performInputMapping(element), 'aria-describedby', updatedDescRefs);
-        }
-        else {
-          element.removeAttribute('aria-describedby');
+          if (updatedDescRefs) {
+            super.addAttribute(this.performInputMapping(element), 'aria-describedby', updatedDescRefs);
+          }
+          else {
+            element.removeAttribute('aria-describedby');
+          }
         }
       });
       elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
