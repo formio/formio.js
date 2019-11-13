@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Focus shifting when typing in fields with multiple actions Field Logic
 
+## 4.7.5
+### Fixed
+ - Issues where the bootstrap and semantic templates were not compiled to ES5 to work with IE11.
+ 
+### Changed
+ - Upgrade core-js@3.4.1
+
 ## 4.7.4
 ### Fixed
  - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
