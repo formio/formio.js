@@ -859,7 +859,12 @@ export default class Component extends Element {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title: title
+        title: title,
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
       });
     });
 
