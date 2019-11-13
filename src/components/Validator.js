@@ -144,7 +144,7 @@ export default {
       },
       check(component, setting, value) {
         const minLength = parseInt(setting, 10);
-        if (!minLength || (typeof value !== 'string') || !value.length) {
+        if (!minLength || (typeof value !== 'string') || component.isEmpty(value)) {
           return true;
         }
         return (value.length >= minLength);
