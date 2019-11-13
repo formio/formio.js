@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Focus shifting when typing in fields with multiple actions Field Logic
+
 ## 4.7.5
 ### Fixed
  - Issues where the bootstrap and semantic templates were not compiled to ES5 to work with IE11.
