@@ -1,6 +1,11 @@
 {% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { %}
   {{ ctx.render('label', ctx) }}
 {% } %}
+
+{% if (ctx.label.hidden && ctx.label.className && ctx.component.validate.required) { %}
+  <label class="{{ctx.label.className}}"></label>
+{% } %}
+
 {{ctx.element}}
 {% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}
   <label class="{{ctx.label.className}}">{{ctx.t(ctx.component.label)}}
