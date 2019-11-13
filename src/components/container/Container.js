@@ -29,6 +29,10 @@ export default class ContainerComponent extends NestedComponent {
 
   constructor(...args) {
     super(...args);
+    // Always make sure containers have data associated with them.
+    if (!this.hasValue()) {
+      this.dataValue = this.defaultValue;
+    }
     this.type = 'container';
   }
 
