@@ -1122,8 +1122,11 @@ export default class SelectComponent extends Field {
       }
     }
 
+    const forceClearValue = this.component.clearOnRefresh
+      && _.isEqual(value, this.emptyValue);
+
     // Do not set the value if we are loading... that will happen after it is done.
-    if (this.loading) {
+    if (this.loading && !forceClearValue) {
       return changed;
     }
 
