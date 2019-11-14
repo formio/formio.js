@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 
-import Harness from '../test/harness';
-import WebformBuilder from './WebformBuilder';
+import Harness from '../../../test/harness';
+import WebformBuilder from '../../WebformBuilder';
 
 describe('WebformBuilder tests', () => {
   before((done) => Harness.builderBefore(done));

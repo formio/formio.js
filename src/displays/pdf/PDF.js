@@ -1,8 +1,8 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
-import Formio from './Formio';
-import Webform from './Webform';
+import Formio from '../../Formio';
+import Webform from '../webform/Webform';
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -190,7 +190,7 @@ export default class PDF extends Webform {
               target: '_blank',
               style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
             }, this.ce('img', {
-              src: require('./pdf.image'),
+              src: require('../../pdf.image'),
               style: 'width:3em;'
             }));
             this.element.insertBefore(this.downloadButton, this.iframe);

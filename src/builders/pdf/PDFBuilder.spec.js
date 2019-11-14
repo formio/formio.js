@@ -1,4 +1,4 @@
-import FormBuilder from './FormBuilder';
+import FormBuilder from '../../FormBuilder';
 
 describe('Formio PDF Form Builder tests', () => {
   it('Should emit change event when component position changed', (done) => {

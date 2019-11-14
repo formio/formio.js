@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from './EventEmitter';
+import EventEmitter from '../../EventEmitter';
 import i18next from 'i18next';
-import Formio from './Formio';
+import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
-import Components from './components/Components';
-import NestedComponent from './components/_classes/nested/NestedComponent';
-import { currentTimezone } from './utils/utils';
+import Components from '../../components/Components';
+import NestedComponent from '../../components/_classes/nested/NestedComponent';
+import { currentTimezone } from '../../utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -78,7 +78,7 @@ export default class Webform extends NestedComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n').default;
+    let i18n = require('../../i18n').default;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
