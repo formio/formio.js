@@ -146,12 +146,13 @@
       },
       {
         "lineNumber": 1085,
-        "line": "  onChange(flags, changed) {"
+        "line": "  onChange(flags, changed, modified) {"
       }
     ],
     "codeParams": [
       "flags",
-      "changed"
+      "changed",
+      "modified"
     ],
     "docParams": [
       "changed",
@@ -260,35 +261,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 905,
+        "lineNumber": 930,
         "line": "  /**"
       },
       {
-        "lineNumber": 906,
+        "lineNumber": 931,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 907,
+        "lineNumber": 932,
         "line": "   *"
       },
       {
-        "lineNumber": 908,
+        "lineNumber": 933,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 909,
+        "lineNumber": 934,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 910,
+        "lineNumber": 935,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 911,
+        "lineNumber": 936,
         "line": "   */"
       },
       {
-        "lineNumber": 912,
+        "lineNumber": 937,
         "line": "  saveComponent(component, parent, isNew) {"
       }
     ],
@@ -441,35 +442,151 @@
     ]
   },
   {
+    "name": "Component#conditionallyVisible",
+    "filePath": "src/components/_classes/component/Component.js",
+    "lines": [
+      {
+        "lineNumber": 1298,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1299,
+        "line": "   * Check if this component is conditionally visible."
+      },
+      {
+        "lineNumber": 1300,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1301,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 1302,
+        "line": "   * @return {boolean}"
+      },
+      {
+        "lineNumber": 1303,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1304,
+        "line": "  conditionallyVisible(data, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "row"
+    ],
+    "docParams": [
+      "data"
+    ]
+  },
+  {
+    "name": "Component#checkConditions",
+    "filePath": "src/components/_classes/component/Component.js",
+    "lines": [
+      {
+        "lineNumber": 1354,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1355,
+        "line": "   * Checks conditions for this component and any sub components."
+      },
+      {
+        "lineNumber": 1356,
+        "line": "   * @param args"
+      },
+      {
+        "lineNumber": 1357,
+        "line": "   * @return {boolean}"
+      },
+      {
+        "lineNumber": 1358,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1359,
+        "line": "  checkConditions(data, flags, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags",
+      "row"
+    ],
+    "docParams": [
+      "args"
+    ]
+  },
+  {
+    "name": "Component#fieldLogic",
+    "filePath": "src/components/_classes/component/Component.js",
+    "lines": [
+      {
+        "lineNumber": 1370,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1371,
+        "line": "   * Check all triggers and apply necessary actions."
+      },
+      {
+        "lineNumber": 1372,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1373,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 1374,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1375,
+        "line": "  fieldLogic(data, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "row"
+    ],
+    "docParams": [
+      "data"
+    ]
+  },
+  {
     "name": "Component#addInputError",
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1435,
+        "lineNumber": 1474,
         "line": "  /**"
       },
       {
-        "lineNumber": 1436,
+        "lineNumber": 1475,
         "line": "   * Add a new input error to this element."
       },
       {
-        "lineNumber": 1437,
+        "lineNumber": 1476,
         "line": "   *"
       },
       {
-        "lineNumber": 1438,
+        "lineNumber": 1477,
         "line": "   * @param message"
       },
       {
-        "lineNumber": 1439,
+        "lineNumber": 1478,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 1440,
+        "lineNumber": 1479,
         "line": "   */"
       },
       {
-        "lineNumber": 1441,
+        "lineNumber": 1480,
         "line": "  addInputError(message, dirty, elements) {"
       }
     ],
@@ -488,31 +605,31 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1823,
+        "lineNumber": 1869,
         "line": "  /**"
       },
       {
-        "lineNumber": 1824,
+        "lineNumber": 1870,
         "line": "   * Set the value at a specific index."
       },
       {
-        "lineNumber": 1825,
+        "lineNumber": 1871,
         "line": "   *"
       },
       {
-        "lineNumber": 1826,
+        "lineNumber": 1872,
         "line": "   * @param index"
       },
       {
-        "lineNumber": 1827,
+        "lineNumber": 1873,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 1828,
+        "lineNumber": 1874,
         "line": "   */"
       },
       {
-        "lineNumber": 1829,
+        "lineNumber": 1875,
         "line": "  setValueAt(index, value, flags) {"
       }
     ],
@@ -531,27 +648,27 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1886,
+        "lineNumber": 1932,
         "line": "  /**"
       },
       {
-        "lineNumber": 1887,
+        "lineNumber": 1933,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 1888,
+        "lineNumber": 1934,
         "line": "   *"
       },
       {
-        "lineNumber": 1889,
+        "lineNumber": 1935,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 1890,
+        "lineNumber": 1936,
         "line": "   */"
       },
       {
-        "lineNumber": 1891,
+        "lineNumber": 1937,
         "line": "  updateComponentValue(value, flags) {"
       }
     ],
@@ -568,44 +685,87 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 1961,
+        "lineNumber": 2007,
         "line": "  /**"
       },
       {
-        "lineNumber": 1962,
+        "lineNumber": 2008,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 1963,
+        "lineNumber": 2009,
         "line": "   *"
       },
       {
-        "lineNumber": 1964,
+        "lineNumber": 2010,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 1965,
+        "lineNumber": 2011,
         "line": "   *"
       },
       {
-        "lineNumber": 1966,
+        "lineNumber": 2012,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 1967,
+        "lineNumber": 2013,
         "line": "   */"
       },
       {
-        "lineNumber": 1968,
-        "line": "  calculateComponentValue(data, flags) {"
+        "lineNumber": 2014,
+        "line": "  calculateComponentValue(data, flags, row) {"
       }
     ],
     "codeParams": [
       "data",
-      "flags"
+      "flags",
+      "row"
     ],
     "docParams": [
       "data"
+    ]
+  },
+  {
+    "name": "Component#calculateValue",
+    "filePath": "src/components/_classes/component/Component.js",
+    "lines": [
+      {
+        "lineNumber": 2072,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 2073,
+        "line": "   * Performs calculations in this component plus any child components."
+      },
+      {
+        "lineNumber": 2074,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 2075,
+        "line": "   * @param args"
+      },
+      {
+        "lineNumber": 2076,
+        "line": "   * @return {boolean}"
+      },
+      {
+        "lineNumber": 2077,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2078,
+        "line": "  calculateValue(data, flags, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags",
+      "row"
+    ],
+    "docParams": [
+      "args"
     ]
   },
   {
@@ -613,46 +773,102 @@
     "filePath": "src/components/_classes/component/Component.js",
     "lines": [
       {
-        "lineNumber": 2063,
+        "lineNumber": 2113,
         "line": "  /**"
       },
       {
-        "lineNumber": 2064,
+        "lineNumber": 2114,
         "line": "   * Returns the invalid message, or empty string if the component is valid."
       },
       {
-        "lineNumber": 2065,
+        "lineNumber": 2115,
         "line": "   *"
       },
       {
-        "lineNumber": 2066,
+        "lineNumber": 2116,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 2067,
+        "lineNumber": 2117,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 2068,
+        "lineNumber": 2118,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 2069,
+        "lineNumber": 2119,
         "line": "   */"
       },
       {
-        "lineNumber": 2070,
-        "line": "  invalidMessage(data, dirty, ignoreCondition) {"
+        "lineNumber": 2120,
+        "line": "  invalidMessage(data, dirty, ignoreCondition, row) {"
       }
     ],
     "codeParams": [
       "data",
       "dirty",
-      "ignoreCondition"
+      "ignoreCondition",
+      "row"
     ],
     "docParams": [
       "data",
       "dirty"
+    ]
+  },
+  {
+    "name": "Component#checkData",
+    "filePath": "src/components/_classes/component/Component.js",
+    "lines": [
+      {
+        "lineNumber": 2180,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 2181,
+        "line": "   * Check the conditions, calculations, and validity of a single component and triggers an update if"
+      },
+      {
+        "lineNumber": 2182,
+        "line": "   * something changed."
+      },
+      {
+        "lineNumber": 2183,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 2184,
+        "line": "   * @param data - The root data of the change event."
+      },
+      {
+        "lineNumber": 2185,
+        "line": "   * @param flags - The flags from this change event."
+      },
+      {
+        "lineNumber": 2186,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 2187,
+        "line": "   * @return boolean - If component is valid or not."
+      },
+      {
+        "lineNumber": 2188,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 2189,
+        "line": "  checkData(data, flags, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags",
+      "row"
+    ],
+    "docParams": [
+      "data",
+      "flags"
     ]
   },
   {
@@ -838,6 +1054,212 @@
       "component",
       "data",
       "before"
+    ]
+  },
+  {
+    "name": "DataGridComponent#checkValidity",
+    "filePath": "src/components/datagrid/DataGrid.js",
+    "lines": [
+      {
+        "lineNumber": 394,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 395,
+        "line": "   * Checks the validity of this datagrid."
+      },
+      {
+        "lineNumber": 396,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 397,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 398,
+        "line": "   * @param dirty"
+      },
+      {
+        "lineNumber": 399,
+        "line": "   * @return {*}"
+      },
+      {
+        "lineNumber": 400,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 401,
+        "line": "  checkValidity(data, dirty, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "dirty",
+      "row"
+    ],
+    "docParams": [
+      "data",
+      "dirty"
+    ]
+  },
+  {
+    "name": "DataGridComponent#checkData",
+    "filePath": "src/components/datagrid/DataGrid.js",
+    "lines": [
+      {
+        "lineNumber": 412,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 413,
+        "line": "   * Checks the data within each cell of the datagrid."
+      },
+      {
+        "lineNumber": 414,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 415,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 416,
+        "line": "   * @param flags"
+      },
+      {
+        "lineNumber": 417,
+        "line": "   * @return {*}"
+      },
+      {
+        "lineNumber": 418,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 419,
+        "line": "  checkData(data, flags, row) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags",
+      "row"
+    ],
+    "docParams": [
+      "data",
+      "flags"
+    ]
+  },
+  {
+    "name": "DataGridComponent#checkRows",
+    "filePath": "src/components/datagrid/DataGrid.js",
+    "lines": [
+      {
+        "lineNumber": 426,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 427,
+        "line": "   * Checks all rows within the datagrid."
+      },
+      {
+        "lineNumber": 428,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 429,
+        "line": "   * @param method"
+      },
+      {
+        "lineNumber": 430,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 431,
+        "line": "   * @param opts"
+      },
+      {
+        "lineNumber": 432,
+        "line": "   * @return {*|boolean}"
+      },
+      {
+        "lineNumber": 433,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 434,
+        "line": "  checkRows(method, data, opts, rowData) {"
+      }
+    ],
+    "codeParams": [
+      "method",
+      "data",
+      "opts",
+      "rowData"
+    ],
+    "docParams": [
+      "method",
+      "data",
+      "opts"
+    ]
+  },
+  {
+    "name": "DataGridComponent#checkRow",
+    "filePath": "src/components/datagrid/DataGrid.js",
+    "lines": [
+      {
+        "lineNumber": 441,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 442,
+        "line": "   * Checks validity of each row according to a specific method."
+      },
+      {
+        "lineNumber": 443,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 444,
+        "line": "   * @param method"
+      },
+      {
+        "lineNumber": 445,
+        "line": "   * @param rowData"
+      },
+      {
+        "lineNumber": 446,
+        "line": "   * @param row"
+      },
+      {
+        "lineNumber": 447,
+        "line": "   * @param opts"
+      },
+      {
+        "lineNumber": 448,
+        "line": "   * @return {boolean}"
+      },
+      {
+        "lineNumber": 449,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 450,
+        "line": "  checkRow(method, data, rowData, row, opts) {"
+      }
+    ],
+    "codeParams": [
+      "method",
+      "data",
+      "rowData",
+      "row",
+      "opts"
+    ],
+    "docParams": [
+      "method",
+      "rowData",
+      "row",
+      "opts"
     ]
   },
   {

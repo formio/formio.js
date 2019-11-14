@@ -458,7 +458,7 @@ export default class Multivalue extends Field {
   addValue() {
     this.addNewValue();
     this.redraw();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     if (!this.isEmpty(this.dataValue)) {
       this.restoreValue();
     }
