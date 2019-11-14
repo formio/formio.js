@@ -4,7 +4,7 @@ import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import { expect } from 'chai';
 
-import i18Defaults from '../lib/i18n';
+import i18Defaults from '../lib/displays/webform/i18n';
 import WebformBuilder from '../lib/builders/webform/WebformBuilder';
 import AllComponents from '../lib/components';
 import Components from '../lib/components/Components';
