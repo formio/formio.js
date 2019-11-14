@@ -78,7 +78,7 @@ export default class Webform extends NestedComponent {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('../../i18n').default;
+    let i18n = require('./i18n').default;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {

@@ -190,7 +190,7 @@ export default class PDF extends Webform {
               target: '_blank',
               style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
             }, this.ce('img', {
-              src: require('../../pdf.image'),
+              src: require('./pdf.image'),
               style: 'width:3em;'
             }));
             this.element.insertBefore(this.downloadButton, this.iframe);
