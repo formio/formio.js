@@ -1484,6 +1484,32 @@ export default class Component extends Element {
     }, false);
   }
 
+  isIE() {
+    const userAgent = window.navigator.userAgent;
+
+    const msie = userAgent.indexOf('MSIE ');
+    if (msie > 0) {
+      // IE 10 or older => return version number
+      return parseInt(userAgent.substring(msie + 5, userAgent.indexOf('.', msie)), 10);
+    }
+
+    const trident = userAgent.indexOf('Trident/');
+    if (trident > 0) {
+      // IE 11 => return version number
+      const rv = userAgent.indexOf('rv:');
+      return parseInt(userAgent.substring(rv + 3, userAgent.indexOf('.', rv)), 10);
+    }
+
+    const edge = userAgent.indexOf('Edge/');
+    if (edge > 0) {
+      // IE 12 (aka Edge) => return version number
+      return parseInt(userAgent.substring(edge + 5, userAgent.indexOf('.', edge)), 10);
+    }
+
+    // other browser
+    return false;
+  }
+
   addInputWarning(message, dirty, elements) {
     if (!message) {
       return;
@@ -1528,10 +1554,14 @@ export default class Component extends Element {
       this.addClass(this.performInputMapping(input), 'is-invalid');
       super.addAttribute(this.performInputMapping(input), 'aria-invalid', 'true');
 
+      if (this.isIE() && input.type === 'textarea') {
+        super.addAttribute(this.performInputMapping(input), 'aria-labelledby', `l-${this.id}-${this.component.key} e-${this.id}-${this.component.key}`);
+      }
+
       const descRefs = input.getAttribute('aria-describedby');
 
       if (!descRefs || descRefs.search(/\b(e-\w*-\w*)/g) === -1) {
-        super.addAttribute(this.performInputMapping(input), 'aria-describedby', `e-${this.id}-${this.component.key} ${descRefs ? descRefs : ''}`);
+        super.addAttribute(this.performInputMapping(input), 'aria-describedby', `${descRefs ? `${descRefs} ` : ''}e-${this.id}-${this.component.key}`);
       }
     });
 
@@ -1549,15 +1579,21 @@ export default class Component extends Element {
         this.removeClass(this.performInputMapping(element), 'is-invalid');
         super.addAttribute(this.performInputMapping(element), 'aria-invalid', 'false');
 
+        if (this.isIE() && element.type === 'textarea') {
+          element.removeAttribute('aria-labelledby');
+        }
+
         const descRefs = element.getAttribute('aria-describedby');
         // Removes an error message elem id
-        const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
+        if (descRefs) {
+          const updatedDescRefs = descRefs.replace(/\b(e-\w*-\w*)/g, '').trim();
 
-        if (updatedDescRefs) {
-          super.addAttribute(this.performInputMapping(element), 'aria-describedby', updatedDescRefs);
-        }
-        else {
-          element.removeAttribute('aria-describedby');
+          if (updatedDescRefs) {
+            super.addAttribute(this.performInputMapping(element), 'aria-describedby', updatedDescRefs);
+          }
+          else {
+            element.removeAttribute('aria-describedby');
+          }
         }
       });
       elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
