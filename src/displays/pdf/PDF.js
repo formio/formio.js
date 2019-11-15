@@ -1,8 +1,8 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
-import Formio from './Formio';
-import Webform from './Webform';
+import Formio from '../../Formio';
+import Webform from '../webform/Webform';
 
 export default class PDF extends Webform {
   constructor(element, options) {

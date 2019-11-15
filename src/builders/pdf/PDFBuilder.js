@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
-import Formio from './Formio';
+import Formio from '../../Formio';
 
-import WebformBuilder from './WebformBuilder';
-import { getElementRect } from './utils/utils';
-import BuilderUtils from './utils/builder';
-import PDF from './PDF';
+import WebformBuilder from '../webform/WebformBuilder';
+import { getElementRect } from '../../utils/utils';
+import BuilderUtils from '../../utils/builder';
+import PDF from '../../displays/pdf/PDF';
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });

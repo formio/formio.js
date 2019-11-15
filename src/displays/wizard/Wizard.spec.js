@@ -1,7 +1,7 @@
 import each from 'lodash/each';
 import { expect } from 'chai';
 
-import WizardTests from '../test/wizards';
+import WizardTests from '../../../test/wizards';
 import Wizard from './Wizard';
 
 describe('Wizard Component', () => {

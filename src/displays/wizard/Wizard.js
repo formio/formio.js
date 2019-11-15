@@ -1,8 +1,8 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
-import Webform from './Webform';
-import Formio from './Formio';
-import { checkCondition, firstNonNil } from './utils/utils';
+import Webform from '../webform/Webform';
+import Formio from '../../Formio';
+import { checkCondition, firstNonNil } from '../../utils/utils';
 
 export default class Wizard extends Webform {
   /**

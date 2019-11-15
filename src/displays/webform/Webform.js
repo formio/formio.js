@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import moment from 'moment';
-import EventEmitter from './EventEmitter';
+import EventEmitter from '../../EventEmitter';
 import i18next from 'i18next';
-import Formio from './Formio';
+import Formio from '../../Formio';
 import NativePromise from 'native-promise-only';
-import Components from './components/Components';
-import NestedComponent from './components/_classes/nested/NestedComponent';
-import { currentTimezone } from './utils/utils';
+import Components from '../../components/Components';
+import NestedComponent from '../../components/_classes/nested/NestedComponent';
+import { currentTimezone } from '../../utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};

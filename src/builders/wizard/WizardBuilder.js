@@ -1,6 +1,6 @@
-import WebformBuilder from './WebformBuilder';
-import Webform from './Webform';
-import BuilderUtils from './utils/builder';
+import WebformBuilder from '../webform/WebformBuilder';
+import Webform from '../../displays/webform/Webform';
+import BuilderUtils from '../../utils/builder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
