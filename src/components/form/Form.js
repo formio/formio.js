@@ -351,16 +351,16 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
-  checkComponentValidity(data, dirty) {
+  checkComponentValidity(data, dirty, row) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkComponentValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty, row);
   }
 
-  checkComponentConditions(data) {
-    const visible = super.checkComponentConditions(data);
+  checkComponentConditions(data, flags, row) {
+    const visible = super.checkComponentConditions(data, flags, row);
 
     // Return if already hidden
     if (!visible) {
@@ -374,12 +374,12 @@ export default class FormComponent extends Component {
     return visible;
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     if (this.subForm) {
       return this.subForm.calculateValue(this.dataValue.data, flags);
     }
 
-    return super.calculateValue(data, flags);
+    return super.calculateValue(data, flags, row);
   }
 
   setPristine(pristine) {

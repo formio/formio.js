@@ -340,7 +340,9 @@ export default class ColumnsComponent extends NestedComponent {
       _.last(visible).component.width += span;
 
       _.each(visible, col =&gt; {
-        col.element.setAttribute(&apos;class&apos;, col.className);
+        if (col.element) {
+          col.element.setAttribute(&apos;class&apos;, col.className);
+        }
       });
     }
   }
@@ -372,14 +374,14 @@ export default class ColumnsComponent extends NestedComponent {
     _.each(this.columns, this.justifyRow.bind(this));
   }
 
-  checkComponentConditions(data) {
+  checkComponentConditions(data, flags, row) {
     if (this.component.autoAdjust) {
-      const result = super.checkComponentConditions(data);
+      const result = super.checkComponentConditions(data, flags, row);
       this.justify();
       return result;
     }
     else {
-      return super.checkComponentConditions(data);
+      return super.checkComponentConditions(data, flags, row);
     }
   }
 

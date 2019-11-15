@@ -195,28 +195,6 @@ export default class Input extends Multivalue {
     return null;
   }
 
-  /**
-   * Uses the widget to determine the output string.
-   *
-   * @param value
-   * @return {*}
-   */
-  getWidgetValueAsString(value) {
-    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
-      return value;
-    }
-    if (Array.isArray(value)) {
-      const values = [];
-      value.forEach((val, index) => {
-        if (this.refs.input[index] && this.refs.input[index].widget) {
-          values.push(this.refs.input[index].widget.getValueAsString(val));
-        }
-      });
-      return values;
-    }
-    return this.refs.input[0].widget.getValueAsString(value);
-  }
-
   getValueAsString(value) {
     return super.getValueAsString(this.getWidgetValueAsString(value));
   }
@@ -281,6 +259,18 @@ export default class Input extends Multivalue {
     }, index), true);
     widget.on('redraw', () => this.redraw(), true);
     return widget;
+  }
+
+  detach() {
+    super.detach();
+    if (this.refs && this.refs.input) {
+      for (let i = 0; i <= this.refs.input.length; i++) {
+        const widget = this.getWidget(i);
+        if (widget) {
+          widget.destroy();
+        }
+      }
+    }
   }
 
   addFocusBlurEvents(element) {

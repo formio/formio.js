@@ -978,7 +978,8 @@ export default class WebformBuilder extends Component {
     if (target.formioContainer) {
       if (sibling) {
         if (!sibling.getAttribute(&apos;data-noattach&apos;)) {
-          index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
+          index = _.findIndex(target.formioContainer, { key: _.get(sibling, &apos;formioComponent.component.key&apos;) });
+          index = (index === -1) ? 0 : index;
         }
         else {
           index = sibling.getAttribute(&apos;data-position&apos;);
@@ -1095,7 +1096,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component) {
+  updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -1111,8 +1112,10 @@ export default class WebformBuilder extends Component {
     }
 
     // Change the &quot;default value&quot; field to be reflective of this component.
-    if (this.defaultValueComponent) {
-      _.assign(this.defaultValueComponent.component, _.omit(component, [
+    const defaultValueComponent = getComponent(this.editForm.components, &apos;defaultValue&apos;);
+    const defaultChanged = changed &amp;&amp; changed.component &amp;&amp; changed.component.key === &apos;defaultValue&apos;;
+    if (defaultValueComponent &amp;&amp; !defaultChanged) {
+      _.assign(defaultValueComponent.component, _.omit(component, [
         &apos;key&apos;,
         &apos;label&apos;,
         &apos;placeholder&apos;,
@@ -1123,6 +1126,28 @@ export default class WebformBuilder extends Component {
         &apos;customDefaultValue&apos;,
         &apos;calculateValue&apos;
       ]));
+      const parentComponent = defaultValueComponent.parent;
+      let tabIndex = -1;
+      let index = -1;
+      parentComponent.tabs.some((tab, tIndex) =&gt; {
+        tab.some((comp, compIndex) =&gt; {
+          if (comp.id === defaultValueComponent.id) {
+            tabIndex = tIndex;
+            index = compIndex;
+            return true;
+          }
+          return false;
+        });
+      });
+
+      if (tabIndex !== -1 &amp;&amp; index !== -1) {
+        const sibling = parentComponent.tabs[tabIndex][index + 1];
+        parentComponent.removeComponent(defaultValueComponent);
+        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+        _.pull(newComp.validators, &apos;required&apos;);
+        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+        newComp.build(defaultValueComponent.element);
+      }
     }
 
     // Called when we update a component.
@@ -1251,9 +1276,6 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector(&apos;[ref=&quot;editForm&quot;]&apos;));
-
-    this.defaultValueComponent = getComponent(this.editForm.components, &apos;defaultValue&apos;);
-
     this.updateComponent(componentCopy);
 
     this.editForm.on(&apos;change&apos;, (event) =&gt; {
@@ -1288,7 +1310,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data);
+        this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;cancelButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
@@ -1309,7 +1331,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;saveButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
         this.editForm.setPristine(false);
         this.editForm.showErrors();
         return false;

@@ -149,7 +149,10 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: '', label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      {
+        value: '',
+        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')
+      },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
       { value: 3, label: 'March' },
@@ -346,7 +349,7 @@ export default class DayComponent extends Field {
   }
 
   getFieldValue(name) {
-    const parts = this.dataValue.split('/');
+    const parts = this.dataValue ? this.dataValue.split('/') : [];
     let val = 0;
 
     switch (name) {

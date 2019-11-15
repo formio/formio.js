@@ -106,6 +106,7 @@ export default class Wizard extends Webform {
   get renderContext() {
     return {
       wizardKey: this.wizardKey,
+      isBreadcrumbClickable: this.isBreadcrumbClickable(),
       panels: this.pages.map(page => page.component),
       buttons: this.buttons,
       currentPage: this.page,
@@ -172,39 +173,42 @@ export default class Wizard extends Webform {
     return promises;
   }
 
+  isBreadcrumbClickable() {
+    return _.get(this.options, 'breadcrumbSettings.clickable', true);
+  }
+
   attachNav() {
-    const isClickable = _.get(this.options, 'breadcrumbSettings.clickable', true);
-    if (isClickable) {
-      _.each(this.buttons, (button) => {
-        const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
-        this.addEventListener(buttonElement, 'click', (event) => {
-          event.preventDefault();
+    _.each(this.buttons, (button) => {
+      const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
+      this.addEventListener(buttonElement, 'click', (event) => {
+        event.preventDefault();
 
-          // Disable the button until done.
-          buttonElement.setAttribute('disabled', 'disabled');
-          this.setLoading(buttonElement, true);
+        // Disable the button until done.
+        buttonElement.setAttribute('disabled', 'disabled');
+        this.setLoading(buttonElement, true);
 
-          // Call the button method, then re-enable the button.
-          this[button.method]().then(() => {
-            buttonElement.removeAttribute('disabled');
-            this.setLoading(buttonElement, false);
-          }).catch(() => {
-            buttonElement.removeAttribute('disabled');
-            this.setLoading(buttonElement, false);
-          });
+        // Call the button method, then re-enable the button.
+        this[button.method]().then(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
+        }).catch(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
         });
       });
-    }
+    });
   }
 
   attachHeader() {
-    this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
-      this.addEventListener(link, 'click', (event) => {
-        this.emit('wizardNavigationClicked', this.pages[index]);
-        event.preventDefault();
-        this.setPage(index);
+    if (this.isBreadcrumbClickable()) {
+      this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
+        this.addEventListener(link, 'click', (event) => {
+          this.emit('wizardNavigationClicked', this.pages[index]);
+          event.preventDefault();
+          this.setPage(index);
+        });
       });
-    });
+    }
   }
 
   detachNav() {
@@ -378,7 +382,7 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkValidity(this.submission.data, true, true)) {
+    if (this.checkValidity(this.submission.data, true, this.submission.data, true)) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -526,8 +530,8 @@ export default class Wizard extends Webform {
     }
   }
 
-  checkValidity(data, dirty, currentPageOnly) {
-    if (!this.checkCondition(null, data)) {
+  checkValidity(data, dirty, row, currentPageOnly) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
@@ -537,7 +541,7 @@ export default class Wizard extends Webform {
       : this.currentPage.components;
 
     return components.reduce(
-      (check, comp) => comp.checkValidity(data, dirty) && check,
+      (check, comp) => comp.checkValidity(data, dirty, row) && check,
       true
     );
   }

@@ -457,34 +457,6 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-member-defaultValueComponent">defaultValueComponent</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
           <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-member-dialog">dialog</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -615,7 +587,7 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">set</span>
+      <span class="kind" data-ice="kind">get</span>
       
       <span class="override" data-ice="override"></span>
     </td>
@@ -625,7 +597,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form">form</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form">form</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -643,7 +615,7 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">get</span>
+      <span class="kind" data-ice="kind">set</span>
       
       <span class="override" data-ice="override"></span>
     </td>
@@ -653,7 +625,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form">form</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form">form</a></span></span>
         </p>
       </div>
       <div>
@@ -1589,7 +1561,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-method-updateComponent">updateComponent</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html#instance-method-updateComponent">updateComponent</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, changed: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -4067,7 +4039,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-applyActions">applyActions</a></span></span><span class="code" data-ice="signature">(actions: <span>*</span>, result: <span>*</span>, data: <span>*</span>, newComponent: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-applyActions">applyActions</a></span></span><span class="code" data-ice="signature">(actions: <span>*</span>, result: <span>*</span>, data: <span>*</span>, newComponent: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4438,7 +4410,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions">checkComponentConditions</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, flags: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -4467,7 +4439,7 @@ to perform special async functions.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentValidity">checkComponentValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, row: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -4640,7 +4612,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-checkValidity">checkValidity</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5331,6 +5303,35 @@ something changed.</p>
         
         
         
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getWidgetValueAsString">getWidgetValueAsString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Uses the widget to determine the output string.</p>
+</div>
       </div>
     </td>
     <td>
@@ -6516,7 +6517,7 @@ something changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-shouldSkipValidation">shouldSkipValidation</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, rowData: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-shouldSkipValidation">shouldSkipValidation</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>, row: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -6913,7 +6914,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1017">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1042">source</a></span></span>
     </span>
   </h3>
 
@@ -7031,49 +7032,6 @@ something changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-defaultValueComponent">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">defaultValueComponent</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1029">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-dialog">
     <span class="access" data-ice="access">public</span>
     
@@ -7085,7 +7043,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1024">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1049">source</a></span></span>
     </span>
   </h3>
 
@@ -7214,7 +7172,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber974">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber999">source</a></span></span>
     </span>
   </h3>
 
@@ -7289,18 +7247,18 @@ something changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-set-form">
+  <h3 data-ice="anchor" id="instance-get-form">
     <span class="access" data-ice="access">public</span>
     
-    <span class="kind" data-ice="kind">set</span>
+    <span class="kind" data-ice="kind">get</span>
     
     
     
-    <span class="code" data-ice="name">form</span>
+    <span class="code" data-ice="name">form</span><span class="code" data-ice="signature">: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber449">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber441">source</a></span></span>
     </span>
   </h3>
 
@@ -7332,18 +7290,18 @@ something changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-get-form">
+  <h3 data-ice="anchor" id="instance-set-form">
     <span class="access" data-ice="access">public</span>
     
-    <span class="kind" data-ice="kind">get</span>
+    <span class="kind" data-ice="kind">set</span>
     
     
     
-    <span class="code" data-ice="name">form</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">form</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber441">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber449">source</a></span></span>
     </span>
   </h3>
 
@@ -7472,7 +7430,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1008">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1033">source</a></span></span>
     </span>
   </h3>
 
@@ -7790,7 +7748,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1169">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1191">source</a></span></span>
     </span>
   </h3>
 
@@ -7861,7 +7819,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1189">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1211">source</a></span></span>
     </span>
   </h3>
 
@@ -8056,7 +8014,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1119">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1141">source</a></span></span>
     </span>
   </h3>
 
@@ -8199,7 +8157,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1182">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1204">source</a></span></span>
     </span>
   </h3>
 
@@ -8286,7 +8244,7 @@ something changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber947">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber972">source</a></span></span>
     </span>
   </h3>
 
@@ -8590,7 +8548,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1161">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1183">source</a></span></span>
     </span>
   </h3>
 
@@ -8805,7 +8763,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1133">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1155">source</a></span></span>
     </span>
   </h3>
 
@@ -9003,7 +8961,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber838">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber839">source</a></span></span>
     </span>
   </h3>
 
@@ -9135,7 +9093,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber913">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber938">source</a></span></span>
     </span>
   </h3>
 
@@ -9213,7 +9171,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber811">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber812">source</a></span></span>
     </span>
   </h3>
 
@@ -9284,7 +9242,7 @@ so we can calculate this correctly.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1200">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber1222">source</a></span></span>
     </span>
   </h3>
 
@@ -9345,11 +9303,11 @@ so we can calculate this correctly.</p>
     
     
     
-    <span class="code" data-ice="name">updateComponent</span><span class="code" data-ice="signature">(component: <span>*</span>)</span>
+    <span class="code" data-ice="name">updateComponent</span><span class="code" data-ice="signature">(component: <span>*</span>, changed: <span>*</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber872">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/WebformBuilder.js.html#lineNumber873">source</a></span></span>
     </span>
   </h3>
 
@@ -9370,6 +9328,12 @@ so we can calculate this correctly.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">component</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">changed</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
