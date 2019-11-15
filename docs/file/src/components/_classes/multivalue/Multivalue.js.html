@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -264,9 +262,15 @@ export default class Multivalue extends Field {
       return super.render(`&lt;div ref=&quot;element&quot;&gt;${this.renderElement(this.dataValue)}&lt;/div&gt;`);
     }
 
+    // Make sure dataValue is in the correct array format.
+    let dataValue = this.dataValue;
+    if (!Array.isArray(dataValue)) {
+      dataValue = dataValue ? [dataValue] : [];
+    }
+
     // If multiple value field.
     return super.render(this.renderTemplate(&apos;multiValueTable&apos;, {
-      rows: this.dataValue.map(this.renderRow.bind(this)).join(&apos;&apos;),
+      rows: dataValue.map(this.renderRow.bind(this)).join(&apos;&apos;),
       disabled: this.disabled,
       addAnother: this.addAnother,
     }));
@@ -321,6 +325,9 @@ export default class Multivalue extends Field {
       this.refs.input.forEach((input) =&gt; {
         if (input.mask) {
           input.mask.destroy();
+        }
+        if (input.widget) {
+          input.widget.destroy();
         }
       });
     }
@@ -451,7 +458,7 @@ export default class Multivalue extends Field {
   addValue() {
     this.addNewValue();
     this.redraw();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     if (!this.isEmpty(this.dataValue)) {
       this.restoreValue();
     }

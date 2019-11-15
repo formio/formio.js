@@ -36,9 +36,15 @@ export default class Multivalue extends Field {
       return super.render(`<div ref="element">${this.renderElement(this.dataValue)}</div>`);
     }
 
+    // Make sure dataValue is in the correct array format.
+    let dataValue = this.dataValue;
+    if (!Array.isArray(dataValue)) {
+      dataValue = dataValue ? [dataValue] : [];
+    }
+
     // If multiple value field.
     return super.render(this.renderTemplate('multiValueTable', {
-      rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
+      rows: dataValue.map(this.renderRow.bind(this)).join(''),
       disabled: this.disabled,
       addAnother: this.addAnother,
     }));
@@ -93,6 +99,9 @@ export default class Multivalue extends Field {
       this.refs.input.forEach((input) => {
         if (input.mask) {
           input.mask.destroy();
+        }
+        if (input.widget) {
+          input.widget.destroy();
         }
       });
     }
@@ -223,7 +232,7 @@ export default class Multivalue extends Field {
   addValue() {
     this.addNewValue();
     this.redraw();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     if (!this.isEmpty(this.dataValue)) {
       this.restoreValue();
     }

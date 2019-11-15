@@ -188,7 +188,7 @@ export default class WebformBuilder extends Component {
       }
 
       // If this is an existing datagrid element, don't make it draggable.
-      if (component.type === 'datagrid' && components.length > 0) {
+      if ((component.type === 'datagrid' || component.type === 'datamap') && components.length > 0) {
         return element;
       }
 
@@ -713,7 +713,7 @@ export default class WebformBuilder extends Component {
     const key = element.getAttribute('data-key');
     const type = element.getAttribute('data-type');
     const group = element.getAttribute('data-group');
-    let info, isNew;
+    let info, isNew, path, index;
 
     if (key) {
       // This is a new component.
@@ -723,8 +723,8 @@ export default class WebformBuilder extends Component {
       }
       isNew = true;
     }
-    else {
-      const index = _.findIndex(source.formioContainer, { key: element.formioComponent.component.key });
+    else if (source.formioContainer) {
+      index = _.findIndex(source.formioContainer, { key: element.formioComponent.component.key });
       if (index !== -1) {
         // Grab and remove the component from the source container.
         info = source.formioContainer.splice(
@@ -746,24 +746,34 @@ export default class WebformBuilder extends Component {
       BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
     }
 
+    const parent = target.formioComponent;
+
     // Insert in the new container.
-    if (sibling) {
-      let index = 0;
-      if (!sibling.getAttribute('data-noattach')) {
-        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key }) || 0;
+    if (target.formioContainer) {
+      if (sibling) {
+        if (!sibling.getAttribute('data-noattach')) {
+          index = _.findIndex(target.formioContainer, { key: _.get(sibling, 'formioComponent.component.key') });
+          index = (index === -1) ? 0 : index;
+        }
+        else {
+          index = sibling.getAttribute('data-position');
+        }
+        if (index !== -1) {
+          target.formioContainer.splice(index, 0, info);
+        }
       }
       else {
-        index = sibling.getAttribute('data-position');
+        target.formioContainer.push(info);
       }
-      target.formioContainer.splice(index, 0, info);
+      path = this.getComponentsPath(info, parent.component);
+      index = _.findIndex(_.get(parent.schema, path), { key: info.key });
+      if (index === -1) {
+        index = 0;
+      }
     }
-    else {
-      target.formioContainer.push(info);
+    else if (parent && parent.addChildComponent) {
+      parent.addChildComponent(info, element, target, source, sibling);
     }
-
-    const parent = target.formioComponent;
-    const path = this.getComponentsPath(info, parent.component);
-    const index = _.findIndex(_.get(parent.schema, path), { key: info.key }) || 0;
 
     if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
@@ -842,10 +852,15 @@ export default class WebformBuilder extends Component {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
-    const index = parent.formioContainer.indexOf(component);
+    const index = parent.formioContainer ? parent.formioContainer.indexOf(component) : 0;
     if (remove && index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
-      parent.formioContainer.splice(index, 1);
+      if (parent.formioContainer) {
+        parent.formioContainer.splice(index, 1);
+      }
+      else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
+        parent.formioComponent.removeChildComponent(component);
+      }
       const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
       rebuild.then(() => {
         this.emit('removeComponent', component, parent.formioComponent.component, path, index);
@@ -855,7 +870,7 @@ export default class WebformBuilder extends Component {
     return remove;
   }
 
-  updateComponent(component) {
+  updateComponent(component, changed) {
     // Update the preview.
     if (this.preview) {
       this.preview.form = { components: [_.omit(component, [
@@ -871,8 +886,10 @@ export default class WebformBuilder extends Component {
     }
 
     // Change the "default value" field to be reflective of this component.
-    if (this.defaultValueComponent) {
-      _.assign(this.defaultValueComponent.component, _.omit(component, [
+    const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
+    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
+    if (defaultValueComponent && !defaultChanged) {
+      _.assign(defaultValueComponent.component, _.omit(component, [
         'key',
         'label',
         'placeholder',
@@ -883,6 +900,28 @@ export default class WebformBuilder extends Component {
         'customDefaultValue',
         'calculateValue'
       ]));
+      const parentComponent = defaultValueComponent.parent;
+      let tabIndex = -1;
+      let index = -1;
+      parentComponent.tabs.some((tab, tIndex) => {
+        tab.some((comp, compIndex) => {
+          if (comp.id === defaultValueComponent.id) {
+            tabIndex = tIndex;
+            index = compIndex;
+            return true;
+          }
+          return false;
+        });
+      });
+
+      if (tabIndex !== -1 && index !== -1) {
+        const sibling = parentComponent.tabs[tabIndex][index + 1];
+        parentComponent.removeComponent(defaultValueComponent);
+        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+        _.pull(newComp.validators, 'required');
+        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+        newComp.build(defaultValueComponent.element);
+      }
     }
 
     // Called when we update a component.
@@ -900,17 +939,24 @@ export default class WebformBuilder extends Component {
     this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
-    const path = this.getComponentsPath(component, parentComponent.component);
-    const index = parentContainer.indexOf(component);
     this.dialog.close();
+    const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
+    const index = parentContainer ? parentContainer.indexOf(component) : 0;
     if (index !== -1) {
-      const originalComponent = parentContainer[index];
-      const submissionData = this.editForm.submission.data;
-      parentContainer[index] = submissionData.componentJson || submissionData;
+      let originalComponent = component;
+      let submissionData = this.editForm.submission.data;
+      submissionData = submissionData.componentJson || submissionData;
+      if (parentContainer) {
+        originalComponent = parentContainer[index];
+        parentContainer[index] = submissionData;
+      }
+      else if (parentComponent && parentComponent.saveChildComponent) {
+        parentComponent.saveChildComponent(submissionData);
+      }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
         this.emit('saveComponent',
-          parentContainer[index],
+          parentContainer ? parentContainer[index] : [],
           originalComponent,
           parentComponent.component,
           path,
@@ -1004,9 +1050,6 @@ export default class WebformBuilder extends Component {
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
-
-    this.defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-
     this.updateComponent(componentCopy);
 
     this.editForm.on('change', (event) => {
@@ -1041,7 +1084,7 @@ export default class WebformBuilder extends Component {
         }
 
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data);
+        this.updateComponent(event.data.componentJson || event.data, event.changed);
       }
     });
     this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
@@ -1062,7 +1105,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
-      if (!this.editForm.checkValidity(this.editForm.data, true)) {
+      if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
         this.editForm.setPristine(false);
         this.editForm.showErrors();
         return false;
@@ -1120,9 +1163,16 @@ export default class WebformBuilder extends Component {
         const schema = JSON.parse(data);
         const parent = this.getParentElement(component.element);
         BuilderUtils.uniquify(this.findNamespaceRoot(parent.formioComponent.component), schema);
-        const index = parent.formioContainer.indexOf(component.component);
-        const path = this.getComponentsPath(schema, parent.formioComponent.component);
-        parent.formioContainer.splice(index + 1, 0, schema);
+        let path = '';
+        let index = 0;
+        if (parent.formioContainer) {
+          index = parent.formioContainer.indexOf(component.component);
+          path = this.getComponentsPath(schema, parent.formioComponent.component);
+          parent.formioContainer.splice(index + 1, 0, schema);
+        }
+        else if (parent.formioComponent && parent.formioComponent.saveChildComponent) {
+          parent.formioComponent.saveChildComponent(schema, false);
+        }
         parent.formioComponent.rebuild();
         this.emit('saveComponent', schema, schema, parent.formioComponent.components, path, (index + 1), true);
         this.emit('change', this.form);
@@ -1134,7 +1184,7 @@ export default class WebformBuilder extends Component {
     let container = element;
     do {
       container = container.parentNode;
-    } while (container && !container.formioContainer);
+    } while (container && !container.formioComponent);
     return container;
   }
 

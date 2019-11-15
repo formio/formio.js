@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -226,8 +224,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;vanilla-text-mask&apos;;
-import { createNumberMask } from &apos;text-mask-addons&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { createNumberMask } from &apos;text-mask-addons&apos;;
 import _ from &apos;lodash&apos;;
 import { getCurrencyAffixes } from &apos;../../utils/utils&apos;;
 import NumberComponent from &apos;../number/Number&apos;;
@@ -258,34 +255,36 @@ export default class CurrencyComponent extends NumberComponent {
       component.delimiter = true;
     }
     super(component, options, data);
-    this.decimalLimit = _.get(this.component, &apos;decimalLimit&apos;, 2);
+  }
+
+  /**
+   * Creates the number mask for currency numbers.
+   *
+   * @return {*}
+   */
+  createNumberMask() {
+    const decimalLimit = _.get(this.component, &apos;decimalLimit&apos;, 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
-      decimalLimit: this.decimalLimit,
+      decimalLimit: decimalLimit,
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language
     });
     this.prefix = this.options.prefix || affixes.prefix;
     this.suffix = this.options.suffix || affixes.suffix;
+    return createNumberMask({
+      prefix: this.prefix,
+      suffix: this.suffix,
+      thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
+      decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
+      decimalLimit: decimalLimit,
+      allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
+      allowDecimal: _.get(this.component, &apos;allowDecimal&apos;, true)
+    });
   }
 
   get defaultSchema() {
     return CurrencyComponent.schema();
-  }
-
-  setInputMask(input) {
-    input.mask = maskInput({
-      inputElement: input,
-      mask: createNumberMask({
-        prefix: this.prefix,
-        suffix: this.suffix,
-        thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
-        decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
-        decimalLimit: this.decimalLimit,
-        allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
-        allowDecimal: _.get(this.component, &apos;allowDecimal&apos;, true)
-      })
-    });
   }
 
   parseNumber(value) {

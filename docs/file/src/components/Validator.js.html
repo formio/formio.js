@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -244,48 +242,49 @@ export default {
   get: _.get,
   each: _.each,
   has: _.has,
-  checkValidator(component, validator, setting, value, data) {
+  checkValidator(component, validator, setting, value, data, index, row) {
     let result = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method &amp;&amp; (typeof component[validator.method] === &apos;function&apos;)) {
-      result = component[validator.method](setting, value, data);
+      result = component[validator.method](setting, value, data, index, row);
     }
     else {
-      result = validator.check.call(this, component, setting, value, data);
+      result = validator.check.call(this, component, setting, value, data, index, row);
     }
     if (typeof result === &apos;string&apos;) {
       return result;
     }
     if (!result) {
-      return validator.message.call(this, component, setting);
+      return validator.message.call(this, component, setting, index, row);
     }
     return &apos;&apos;;
   },
-  validate(component, validator, value, data) {
+  validate(component, validator, value, data, index, row) {
     if (validator.key &amp;&amp; _.has(component.component, validator.key)) {
       const setting = this.get(component.component, validator.key);
-      return this.checkValidator(component, validator, setting, value, data);
+      return this.checkValidator(component, validator, setting, value, data, index, row);
     }
-    return this.checkValidator(component, validator, null, value, data);
+    return this.checkValidator(component, validator, null, value, data, index, row);
   },
-  check(component, data) {
+  check(component, data, row) {
     let result = &apos;&apos;;
     const value = component.validationValue;
-    data = data || component.data;
+    data = data || component.rootValue;
+    row = row || component.data;
     _.each(component.validators, (name) =&gt; {
       if (this.validators.hasOwnProperty(name)) {
         const validator = this.validators[name];
         if (component.validateMultiple(value)) {
-          _.each(value, (val) =&gt; {
-            result = this.validate(component, validator, val, data);
+          _.each(value, (val, index) =&gt; {
+            result = this.validate(component, validator, val, data, index, row);
             if (result) {
               return false;
             }
           });
         }
         else {
-          result = this.validate(component, validator, value, data);
+          result = this.validate(component, validator, value, data, 0, row);
         }
         if (result) {
           return false;
@@ -298,7 +297,8 @@ export default {
     if (result &amp;&amp; (customErrorMessage || validateCustom)) {
       result = component.t(customErrorMessage || result, {
         field: component.errorLabel,
-        data: component.data
+        data,
+        row
       });
     }
     return result;
@@ -370,7 +370,7 @@ export default {
       },
       check(component, setting, value) {
         const minLength = parseInt(setting, 10);
-        if (!minLength || (typeof value !== &apos;string&apos;)) {
+        if (!minLength || (typeof value !== &apos;string&apos;) || component.isEmpty(value)) {
           return true;
         }
         return (value.length &gt;= minLength);
@@ -549,12 +549,14 @@ export default {
     },
     json: {
       key: &apos;validate.json&apos;,
-      check(component, setting, value, data) {
+      check(component, setting, value, data, index, row) {
         if (!setting) {
           return true;
         }
         const valid = component.evaluate(setting, {
           data,
+          row,
+          rowIndex: index,
           input: value
         });
         if (valid === null) {
@@ -601,13 +603,15 @@ export default {
           data: component.data
         });
       },
-      check(component, setting, value, data) {
+      check(component, setting, value, data, index, row) {
         if (!setting) {
           return true;
         }
         const valid = component.evaluate(setting, {
           valid: true,
           data,
+          rowIndex: index,
+          row,
           input: value
         }, &apos;valid&apos;, true);
         if (valid === null) {
@@ -678,9 +682,13 @@ export default {
           maxDate: moment(component.dataValue).format(component.format),
         });
       },
-      check(component, setting, value) {
+      check(component, setting, value, data, index) {
         this.validators.calendar.messageText = &apos;&apos;;
-        const { settings, enteredDate } = component._widget;
+        const widget = component.getWidget(index);
+        if (!widget) {
+          return true;
+        }
+        const { settings, enteredDate } = widget;
         const { minDate, maxDate, format } = settings;
         const momentFormat = [convertFormatToMoment(format)];
 
@@ -703,7 +711,7 @@ export default {
             return false;
           }
           else {
-            component._widget.enteredDate = &apos;&apos;;
+            widget.enteredDate = &apos;&apos;;
             return true;
           }
         }

@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -228,6 +226,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/WizardBuilder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import WebformBuilder from &apos;./WebformBuilder&apos;;
 import Webform from &apos;./Webform&apos;;
+import BuilderUtils from &apos;./utils/builder&apos;;
 import _ from &apos;lodash&apos;;
 
 export default class WizardBuilder extends WebformBuilder {
@@ -286,8 +285,13 @@ export default class WizardBuilder extends WebformBuilder {
 
     // Wizard pages don&apos;t replace themselves in the right array. Do that here.
     this.on(&apos;saveComponent&apos;, (component, originalComponent) =&gt; {
+      const webformComponents = this.webform.components.map(({ component }) =&gt; component);
       if (this._form.components.includes(originalComponent)) {
         this._form.components[this._form.components.indexOf(originalComponent)] = component;
+        this.rebuild();
+      }
+      else if (webformComponents.includes(originalComponent)) {
+        this._form.components.push(component);
         this.rebuild();
       }
     }, true);
@@ -385,6 +389,7 @@ export default class WizardBuilder extends WebformBuilder {
   addPage() {
     const pageNum = (this.pages.length + 1);
     const newPage = this.getPageConfig(pageNum);
+    BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
     this.emit(&apos;saveComponent&apos;, newPage);
     return this.rebuild();
@@ -424,6 +429,13 @@ export default class WizardBuilder extends WebformBuilder {
       key: `page${index}`,
       components,
     };
+  }
+
+  pasteComponent(component) {
+    if (component instanceof WizardBuilder) {
+      return;
+    }
+    return super.pasteComponent(component);
   }
 }
 </code></pre>

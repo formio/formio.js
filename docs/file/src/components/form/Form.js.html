@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -579,16 +577,16 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
-  checkComponentValidity(data, dirty) {
+  checkComponentValidity(data, dirty, row) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkComponentValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty, row);
   }
 
-  checkComponentConditions(data) {
-    const visible = super.checkComponentConditions(data);
+  checkComponentConditions(data, flags, row) {
+    const visible = super.checkComponentConditions(data, flags, row);
 
     // Return if already hidden
     if (!visible) {
@@ -602,12 +600,12 @@ export default class FormComponent extends Component {
     return visible;
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     if (this.subForm) {
       return this.subForm.calculateValue(this.dataValue.data, flags);
     }
 
-    return super.calculateValue(data, flags);
+    return super.calculateValue(data, flags, row);
   }
 
   setPristine(pristine) {
@@ -647,7 +645,8 @@ export default class FormComponent extends Component {
   submitSubForm(rejectOnError) {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
-      return this.createSubForm().then(() =&gt; {
+      const subFormReady = this.subFormReady || this.createSubForm();
+      return subFormReady.then(() =&gt; {
         if (!this.subForm) {
           return this.dataValue;
         }
@@ -787,6 +786,7 @@ export default class FormComponent extends Component {
       case &apos;restoreDraft&apos;:
       case &apos;saveDraft&apos;:
       case &apos;saveComponent&apos;:
+      case &apos;pdfUploaded&apos;:
         return true;
       default:
         return false;

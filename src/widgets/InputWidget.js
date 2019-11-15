@@ -37,10 +37,6 @@ export default class InputWidget extends Element {
     return this._input;
   }
 
-  get defaultValue() {
-    return '';
-  }
-
   getValue() {
     return this._input.value;
   }
@@ -61,7 +57,7 @@ export default class InputWidget extends Element {
     return null;
   }
 
-  setValue() {
-    return null;
+  setValue(value) {
+    this._input.value = value;
   }
 }

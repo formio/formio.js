@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -692,22 +690,30 @@ export default class NestedComponent extends Field {
     return false;
   }
 
-  checkData(data, flags, components) {
+  checkData(data, flags, row, components) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
     components = components || this.getComponents();
     return components.reduce((valid, comp) =&gt; {
-      return comp.checkData(data, flags) &amp;&amp; valid;
-    }, super.checkData(data, flags));
+      return comp.checkData(data, flags, row) &amp;&amp; valid;
+    }, super.checkData(data, flags, row));
   }
 
-  checkConditions(data) {
-    this.getComponents().forEach(comp =&gt; comp.checkConditions(data));
-    return super.checkConditions(data);
+  checkConditions(data, flags, row) {
+    this.getComponents().forEach(comp =&gt; comp.checkConditions(data, flags, row));
+    return super.checkConditions(data, flags, row);
   }
 
   clearOnHide(show) {
     super.clearOnHide(show);
-    if (this.component.clearOnHide &amp;&amp; this.hasValue()) {
-      this.restoreComponentsContext();
+    if (this.component.clearOnHide) {
+      if (this.allowData &amp;&amp; !this.hasValue()) {
+        this.dataValue = this.defaultValue;
+      }
+      if (this.hasValue()) {
+        this.restoreComponentsContext();
+      }
     }
     this.getComponents().forEach(component =&gt; component.clearOnHide(show));
   }
@@ -734,14 +740,14 @@ export default class NestedComponent extends Field {
     return NativePromise.all(this.getComponents().map((comp) =&gt; comp.beforeSubmit()));
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
     if (!this.conditionallyVisible()) {
       return false;
     }
     return this.getComponents().reduce(
-      (changed, comp) =&gt; comp.calculateValue(data, flags) || changed,
-      super.calculateValue(data, flags)
+      (changed, comp) =&gt; comp.calculateValue(data, flags, row) || changed,
+      super.calculateValue(data, flags, row)
     );
   }
 
@@ -756,15 +762,15 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkValidity(data, dirty) {
-    if (!this.checkCondition(null, data)) {
+  checkValidity(data, dirty, row) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity(&apos;&apos;);
       return true;
     }
 
     return this.getComponents().reduce(
-      (check, comp) =&gt; comp.checkValidity(data, dirty) &amp;&amp; check,
-      super.checkValidity(data, dirty)
+      (check, comp) =&gt; comp.checkValidity(data, dirty, row) &amp;&amp; check,
+      super.checkValidity(data, dirty, row)
     );
   }
 

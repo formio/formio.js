@@ -16,6 +16,9 @@ if (process) {
   process.on('unhandledRejection', (err, p) => {});
 }
 
+// Make sure that the Option is available from the window.
+global.Option = global.window.Option;
+
 // Stub out the toLocaleString method so it works in mocha.
 Number.prototype.toLocaleString = function(local, options) {
   if (options && options.style === 'currency') {

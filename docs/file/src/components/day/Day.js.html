@@ -146,8 +146,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
@@ -377,7 +375,10 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;) },
+      {
+        value: &apos;&apos;,
+        label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;)
+      },
       { value: 1, label: &apos;January&apos; },
       { value: 2, label: &apos;February&apos; },
       { value: 3, label: &apos;March&apos; },
@@ -410,6 +411,16 @@ export default class DayComponent extends Field {
       });
     }
     return this._years;
+  }
+
+  addInputError(message, dirty, elements) {
+    super.addInputError(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
+    super.addInputError(message, dirty, elements);
+  }
+
+  removeInputError(elements) {
+    super.removeInputError([this.refs.day, this.refs.month, this.refs.year]);
+    super.removeInputError(elements);
   }
 
   init() {
@@ -456,28 +467,38 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: &apos;single&apos;, month: &apos;single&apos;, year: &apos;single&apos;, input: &apos;multiple&apos; });
     const superAttach = super.attach(element);
-    this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
-    // TODO: Need to rework this to work with day select as well.
-    // Change day max input when month changes.
-    this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
-      const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
-      const day = this.getFieldValue(&apos;day&apos;);
-      this.refs.day.max = maxDay;
-      if (day &gt; maxDay) {
-        this.refs.day.value = this.refs.day.max;
+    if (this.shouldDisabled) {
+      this.setDisabled(this.refs.day, true);
+      this.setDisabled(this.refs.month, true);
+      this.setDisabled(this.refs.year, true);
+      if (this.refs.input) {
+        this.refs.input.forEach((input) =&gt; this.setDisabled(input, true));
       }
-      this.updateValue(null, {
+    }
+    else {
+      this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
         modified: true
+      }));
+      // TODO: Need to rework this to work with day select as well.
+      // Change day max input when month changes.
+      this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
+        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const day = this.getFieldValue(&apos;day&apos;);
+        this.refs.day.max = maxDay;
+        if (day &gt; maxDay) {
+          this.refs.day.value = this.refs.day.max;
+        }
+        this.updateValue(null, {
+          modified: true
+        });
       });
-    });
-    this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
-    this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
-      modified: true
-    }));
+      this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+      this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+    }
     this.setValue(this.dataValue);
     return superAttach;
   }
@@ -554,7 +575,7 @@ export default class DayComponent extends Field {
   }
 
   getFieldValue(name) {
-    const parts = this.dataValue.split(&apos;/&apos;);
+    const parts = this.dataValue ? this.dataValue.split(&apos;/&apos;) : [];
     let val = 0;
 
     switch (name) {

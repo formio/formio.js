@@ -4,6 +4,108 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.7
+### Changed
+ - Upgraded @formio/bootstrap3@1.1.2
+
+## 4.7.6
+### Fixed
+ - Focus shifting when typing in fields with multiple actions Field Logic
+ - The min validation to not fire if the field is empty. You can use "required" validation for this.
+ - Fixed the currency component to work with viewAsHTML to show the currency symbol.
+ - Fixed tooltips for components inside datagrid.
+ - Fixed problem where nested Containers, Data Grids, and EditGrids were not setting nested data correctly.
+
+## 4.7.5
+### Fixed
+ - Issues where the bootstrap and semantic templates were not compiled to ES5 to work with IE11.
+ 
+### Changed
+ - Upgrade core-js@3.4.1
+
+## 4.7.4
+### Fixed
+ - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
+ - Fixing issues where modified flag is propogating and setting other elements to modified.
+ - isBreadcrumbClickable moved to top nav instead of buttons
+
+### Changed
+ - Update @babel/core@7.7.2, core-js@3.4.0
+
+## 4.7.3
+### Fixed
+ - Avoid JS errors when using autoAdjust columns.
+ - Focus shifting when typing in fields with Field Logic
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.3
+
+## 4.7.2
+### Fixed
+ - Fixing calculateValue and checkConditionals to use correct context variables "row" and "data" for EditGrid and DataGrid.
+ - Fix unchecked deep access in WebformBuilder. Fixes https://github.com/formio/formio.js/issues/1920
+ - Added uniqification for pages in wizard builder.
+ - Fixed problem where inputs were not getting destroyed properly causing memory leaks.
+ - Problem where getWidgetValueAsString is undefined.
+
+### Changed
+ - Upgrade @babel/cli@7.7.0, @babel/core@7.7.0, @babel/plugin-proposal-class-properties@7.7.0, @babel/polyfill@7.7.0, @babel/preset-env@7.7.1, @babel/register@7.7.0, browser-env@3.3.0
+
+## 4.7.1
+### Fixed
+ - The default value configuration to reflect the component instance type.
+ - The default date setting to allow for "moment" type of default dates.
+ - Issue where a memory leak was caused by widgets not getting properly destroyed.
+
+### Added
+ - Spellcheck configurations
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.2, jsdom@15.2.1
+
+## 4.7.0
+### Changed
+ - Refactored the widget logic to work with multiple inputs.
+ - Refactored DataMap to allow complex value components.
+ - Moved extra templates to external modules.
+ - Upgrade choices.js@8.0.0, i18next@19.0.0
+ 
+### Fixed
+ - Fixing problem where columns component would get in a bad state by including 'components' in the schema.
+ - Add invalid classes to day components.
+ - Fixed page copying for wizard
+ - Fix validation flags reset
+ - Remove error classes from day components.
+ - Fix textarea upper and lowercase
+ - PDF uploading issues.
+
+## 4.6.4
+### Fixed
+ - Datetime not handling empty case correctly after last fix.
+
+## 4.6.3
+### Fixed
+ - Datetime not formatting value initially when using date only and getting messed up in flatpickr.
+
+## 4.6.2
+### Fixed
+ - Fix initial focus on Preview Mode
+ - Fix Textarea not displaying on read only mode.
+ - Fixing issues with select dynamic filtering.
+ - Fixed issue where the file uploads would not work when conditionally set
+ - Fixing an issue where if you uncheck a radio, you cannot re-check the radio
+ - Fixing issues where nested forms would get in a detached state when errors occur on the form.
+ - Fixed the survey component when disabled.
+ - Fixing day component disabled state.
+ - Fixed issue where multivalue may throw an error about dataValue.map not defined.
+ - Fix select limit for json
+
+### Added
+ - Adding Default data value to DataGrid
+
+### Changed
+ - Updated core-js@3.3.5
+
 ## 4.6.1
 ### Fixed
  - Fix json widget setting drop constantly

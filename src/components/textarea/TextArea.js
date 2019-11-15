@@ -217,6 +217,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           });
         break;
       default:
+        super.attachElement(element, index);
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
           this.updateValue(null, {
             modified: true
@@ -525,7 +526,11 @@ export default class TextAreaComponent extends TextFieldComponent {
     value = value || '';
     if (this.isPlain) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
-      return super.setValue(value, flags);
+      const changed = super.setValue(value, flags);
+      if (changed && (this.disabled || this.options.readOnly)) {
+        this.triggerRedraw();
+      }
+      return changed;
     }
 
     // Set the value when the editor is ready.

@@ -62,4 +62,3 @@ Formio.use = (...plugins) => {
 export Form from './Form';
 export Utils from './utils';
 export { Components, Templates, Formio };
-

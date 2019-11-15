@@ -14,6 +14,7 @@ export default class DateTimeComponent extends Input {
       enableDate: true,
       enableTime: true,
       defaultValue: '',
+      defaultDate: '',
       displayInTimezone: 'viewer',
       timezone: '',
       datepickerMode: 'day',
@@ -82,7 +83,6 @@ export default class DateTimeComponent extends Input {
       enableTime: _.get(this.component, 'enableTime', true),
       noCalendar: !_.get(this.component, 'enableDate', true),
       format: this.component.format,
-      defaultValue: this.component.defaultValue,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       time_24hr: time24hr,
@@ -97,7 +97,7 @@ export default class DateTimeComponent extends Input {
   }
 
   performInputMapping(input) {
-    if (input.widget && this.widget.settings) {
+    if (input.widget && input.widget.settings) {
       input.widget.settings.submissionTimezone = this.submissionTimezone;
     }
     return input;
@@ -107,11 +107,13 @@ export default class DateTimeComponent extends Input {
     return DateTimeComponent.schema();
   }
 
-  setValue(value, flags) {
-    if (this.widget) {
-      this.widget.setValue(value);
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (!defaultValue && this.component.defaultDate) {
+      defaultValue = FormioUtils.getDateSetting(this.component.defaultDate);
+      defaultValue = defaultValue ? defaultValue.toISOString() : '';
     }
-    return super.setValue(value, flags);
+    return defaultValue;
   }
 
   get emptyValue() {
@@ -125,6 +127,11 @@ export default class DateTimeComponent extends Input {
     return super.isEmpty(value);
   }
 
+  formatValue(input) {
+    const result = moment.utc(input).toISOString();
+    return result === 'Invalid date' ? input : result;
+  }
+
   isEqual(valueA, valueB = this.dataValue) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
@@ -136,14 +143,14 @@ export default class DateTimeComponent extends Input {
   }
 
   checkValidity(data, dirty, rowData) {
-    if (this._widget && this._widget.enteredDate) {
-      dirty = true;
+    if (this.refs.input) {
+      this.refs.input.forEach((input) => {
+        if (input.widget && input.widget.enteredDate) {
+          dirty = true;
+        }
+      });
     }
     return super.checkValidity(data, dirty, rowData);
-  }
-
-  getView(value) {
-    return this.widget.getValueAsString(value);
   }
 
   focus() {

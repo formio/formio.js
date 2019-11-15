@@ -58,7 +58,16 @@ export default class NumberComponent extends Input {
       this.decimalSeparator = override.decimalSeparator;
       this.delimiter = override.delimiter;
     }
-    this.numberMask = createNumberMask({
+    this.numberMask = this.createNumberMask();
+  }
+
+  /**
+   * Creates the number mask for normal numbers.
+   *
+   * @return {*}
+   */
+  createNumberMask() {
+    return createNumberMask({
       prefix: '',
       suffix: '',
       requireDecimal: _.get(this.component, 'requireDecimal', false),
@@ -97,7 +106,6 @@ export default class NumberComponent extends Input {
 
   setInputMask(input) {
     input.setAttribute('pattern', '\\d*');
-
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask
@@ -170,11 +178,7 @@ export default class NumberComponent extends Input {
     if (!value && value !== 0) {
       return '';
     }
-    const widget = this.widget;
-    if (widget && widget.getValueAsString) {
-      return widget.getValueAsString(value);
-    }
-
+    value = this.getWidgetValueAsString(value);
     if (Array.isArray(value)) {
       return value.map(this.getMaskedValue).join(', ');
     }
