@@ -1,8 +1,6 @@
 import Element from './Element';
 import Formio from './Formio';
-import Wizard from './Wizard';
-import PDF from './PDF';
-import Webform from './Webform';
+import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
@@ -67,13 +65,12 @@ export default class Form extends Element {
       display = 'form';
     }
     this.display = display;
-    switch (display) {
-      case 'wizard':
-        return new Wizard(this.element, this.options);
-      case 'pdf':
-        return new PDF(this.element, this.options);
-      default:
-        return new Webform(this.element, this.options);
+    if (Displays.displays[display]) {
+      return new Displays.displays[display](this.element, this.options);
+    }
+    else {
+      // eslint-disable-next-line new-cap
+      return new Displays.displays['webform'](this.element, this.options);
     }
   }
 

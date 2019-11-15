@@ -1,5 +1,7 @@
 import AllComponents from './components';
+import Builders from './builders/Builders';
 import Components from './components/Components';
+import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers/Providers';
 import Formio from './Formio';
@@ -37,6 +39,12 @@ const registerPlugin = (plugin) => {
         for (const type of Object.keys(plugin.providers)) {
           Providers.addProviders(type, plugin.providers[type]);
         }
+        break;
+      case 'displays':
+        Displays.addDisplays(plugin.displays);
+        break;
+      case 'builders':
+        Builders.addBuilders(plugin.builders);
         break;
       default:
         console.log('Unknown plugin option', key);
