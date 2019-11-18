@@ -477,15 +477,16 @@ export default class SelectComponent extends Field {
   }
 
   refresh() {
+    if (this.component.clearOnRefresh) {
+      this.setValue(this.emptyValue);
+    }
+
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
     }
 
-    if (this.component.clearOnRefresh) {
-      this.setValue(this.emptyValue);
-    }
     this.updateItems(null, true);
   }
 
@@ -1122,11 +1123,8 @@ export default class SelectComponent extends Field {
       }
     }
 
-    const forceClearValue = this.component.clearOnRefresh
-      && _.isEqual(value, this.emptyValue);
-
     // Do not set the value if we are loading... that will happen after it is done.
-    if (this.loading && !forceClearValue) {
+    if (this.loading) {
       return changed;
     }
 
