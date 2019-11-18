@@ -43,6 +43,20 @@ export default class DataGridComponent extends NestedComponent {
     this.checkColumns();
   }
 
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+    const componentData = this.component && this.component.key ? this._data[this.component.key] : this._data;
+    if (this.rows) {
+      this.rows.forEach((row, rowIndex) => {
+        Object.entries(row).forEach(([key, component]) => component.data = componentData[rowIndex]);
+      });
+    }
+  }
+
   get allowData() {
     return true;
   }
@@ -354,6 +368,8 @@ export default class DataGridComponent extends NestedComponent {
   removeRow(index) {
     this.splice(index);
     this.rows.splice(index, 1);
+    // Splice the components Array when the row is spliced
+    this.components.splice(index, 1);
     this.redraw();
   }
 

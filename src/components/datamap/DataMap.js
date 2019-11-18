@@ -63,6 +63,18 @@ export default class DataMapComponent extends DataGridComponent {
     this.component.valueComponent.hideLabel = true;
   }
 
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+    this.eachComponent((component) => {
+      const rowData = this.component && this.component.key ? this._data[this.component.key] : this._data;
+      component.data = component.data['__key']  ?   component.data :  rowData;
+    });
+  }
+
   get defaultSchema() {
     return DataMapComponent.schema();
   }
@@ -210,6 +222,9 @@ export default class DataMapComponent extends DataGridComponent {
       delete this.dataValue[keys[index]];
     }
     this.rows.splice(index, 1);
+    // Splice the components Array when the row is spliced
+    // this.components is a flat array,  with 2 components for each row, index should be incremented
+    this.components.splice(index++, 2);
     this.redraw();
     this.triggerChange();
   }
