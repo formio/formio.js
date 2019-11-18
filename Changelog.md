@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.7.7
+### Changed
+ - Upgraded @formio/bootstrap3@1.1.2
+
 ## 4.7.6
 ### Fixed
  - Focus shifting when typing in fields with multiple actions Field Logic
