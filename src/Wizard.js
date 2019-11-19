@@ -23,7 +23,8 @@ export default class Wizard extends Webform {
     }
     super(element, options);
     this.pages = [];
-    this.globalComponents = [];
+    this.prefixComps = [];
+    this.suffixComps = [];
     this.components = [];
     this.page = 0;
     this.currentNextPage = 0;
@@ -120,7 +121,6 @@ export default class Wizard extends Webform {
       wizardHeader: this.renderTemplate('wizardHeader', ctx),
       wizardNav: this.renderTemplate('wizardNav', ctx),
       components: this.renderComponents([
-        ...this.globalComponents,
         ...this.prefixComps,
         ...this.currentPage.components,
         ...this.suffixComps
@@ -172,7 +172,11 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [
+      ...this.prefixComps,
+      ...this.currentPage.components,
+      ...this.suffixComps
+    ]);
     this.attachNav();
     this.attachHeader();
     return promises;
@@ -265,9 +269,6 @@ export default class Wizard extends Webform {
         else if (page && !isVisible) {
           this.removeComponent(page);
         }
-      }
-      else if (item.type === 'hidden') {
-        this.globalComponents.push(this.createComponent(item, pageOptions));
       }
       else if (item.type !== 'button') {
         if (!this.pages.length) {
