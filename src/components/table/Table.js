@@ -26,6 +26,7 @@ export default class TableComponent extends NestedComponent {
       rows: TableComponent.emptyTable(3, 3),
       header: [],
       caption: '',
+      cloneRows: false,
       striped: false,
       bordered: false,
       hover: false,
