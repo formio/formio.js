@@ -23,7 +23,7 @@ export default (iconset, name, spinning) => {
         name = 'arrows';
         break;
       case 'time':
-        name = 'clock-0';
+        name = 'clock-o';
         break;
     }
   }

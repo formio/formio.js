@@ -86,10 +86,6 @@ export default class Input extends Multivalue {
     return maxWords - wordCount;
   }
 
-  getDateTimeIcon() {
-    return this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time';
-  }
-
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};
