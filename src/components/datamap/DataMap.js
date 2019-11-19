@@ -70,7 +70,7 @@ export default class DataMapComponent extends DataGridComponent {
   set data(value) {
     this._data = value;
     this.eachComponent((component) => {
-      const rowData = this.component && this.component.key ? this._data[this.component.key] : this._data;
+      const rowData = this.component && this.component.key ? _.get(this._data, this.component.key) : this._data;
       component.data = component.data['__key']  ?   component.data :  rowData;
     });
   }

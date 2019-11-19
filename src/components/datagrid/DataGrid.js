@@ -49,7 +49,7 @@ export default class DataGridComponent extends NestedComponent {
 
   set data(value) {
     this._data = value;
-    const componentData = this.component && this.component.key ? this._data[this.component.key] : this._data;
+    const componentData = this.component && this.component.key ? _.get(this._data, this.component.key) : this._data;
     if (this.rows) {
       this.rows.forEach((row, rowIndex) => {
         Object.entries(row).forEach(([key, component]) => component.data = componentData[rowIndex]);
