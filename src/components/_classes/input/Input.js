@@ -86,6 +86,10 @@ export default class Input extends Multivalue {
     return maxWords - wordCount;
   }
 
+  getDateTimeIcon() {
+    return this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time';
+  }
+
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};
@@ -97,7 +101,7 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
+        className: this.iconClass(this.getDateTimeIcon()),
         styles: '',
         content: ''
       }).trim();
