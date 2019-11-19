@@ -14,7 +14,7 @@ const registerPlugin = (plugin) => {
     return;
   }
   for (const key of Object.keys(plugin)) {
-    const current = Templates.framework || 'bootstrap';
+    const current = plugin.framework || Templates.framework || 'bootstrap';
     switch (key) {
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
@@ -69,4 +69,4 @@ Formio.use = (...plugins) => {
 };
 export Form from './Form';
 export Utils from './utils';
-export { Components, Templates, Formio };
+export { Builders, Components, Displays, Providers, Templates, Formio };
