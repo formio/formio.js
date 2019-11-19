@@ -101,7 +101,7 @@ export default class Input extends Multivalue {
     if (this.component.widget && this.component.widget.type === 'calendar') {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
-        className: this.iconClass(this.getDateTimeIcon()),
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'time'),
         styles: '',
         content: ''
       }).trim();
