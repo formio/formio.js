@@ -267,8 +267,7 @@ export default class Wizard extends Webform {
         }
       }
       else if (item.type === 'hidden') {
-        const component = this.createComponent(item, pageOptions);
-        this.globalComponents.push(component);
+        this.globalComponents.push(this.createComponent(item, pageOptions));
       }
       else if (item.type !== 'button') {
         if (!this.pages.length) {
