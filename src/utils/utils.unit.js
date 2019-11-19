@@ -409,36 +409,40 @@ describe('Util Tests', () => {
     it('should set a boolean action property to true', () => {
       const component = {
         key: 'test',
-        disabled: false
+        disabled: false,
       };
       const action = {
         type: 'property',
         property: {
           label: 'Disabled',
           value: 'disabled',
-          type: 'boolean'
+          type: 'boolean',
         },
-        state: true
+        state: true,
       };
-      utils.setActionProperty(component, action, {}, {}, true);
+
+      utils.setActionProperty(component, action);
+
       expect(component.disabled).to.be.equal(true);
     });
 
     it('should set a boolean action property to false', () => {
       const component = {
         key: 'test',
-        disabled: true
+        disabled: true,
       };
       const action = {
         type: 'property',
         property: {
           label: 'Disabled',
           value: 'disabled',
-          type: 'boolean'
+          type: 'boolean',
         },
-        state: false
+        state: false,
       };
-      utils.setActionProperty(component, action, {}, {}, true);
+
+      utils.setActionProperty(component, action);
+
       expect(component.disabled).to.be.equal(false);
     });
 
@@ -446,118 +450,131 @@ describe('Util Tests', () => {
       const component = {
         key: 'test',
         validate: {
-          required: true
-        }
+          required: true,
+        },
       };
       const action = {
         type: 'property',
         property: {
           label: 'Required',
           value: 'validate.required',
-          type: 'boolean'
+          type: 'boolean',
         },
-        state: false
+        state: false,
       };
-      utils.setActionProperty(component, action, {}, {}, true);
+
+      utils.setActionProperty(component, action);
+
       expect(component.validate.required).to.be.equal(false);
     });
 
     it('should set a string action property', () => {
       const component = {
         key: 'test',
-        label: 'foo'
+        label: 'foo',
       };
       const action = {
         type: 'property',
         property: {
           label: 'Label',
           value: 'label',
-          type: 'string'
+          type: 'string',
         },
-        text: 'bar'
+        text: 'bar',
       };
-      utils.setActionProperty(component, action, {}, {}, true);
+
+      utils.setActionProperty(component, action);
+
       expect(component.label).to.be.equal('bar');
+    });
+
+    it('should set a string action property with result templating', () => {
+      const component = {
+        key: 'test',
+        label: 'foo',
+      };
+      const action = {
+        type: 'property',
+        property: {
+          label: 'Label',
+          value: 'label',
+          type: 'string',
+        },
+        text: 'bar {{ result }}',
+      };
+
+      utils.setActionProperty(component, action, 'baz');
+
+      expect(component.label).to.be.equal('bar baz');
     });
 
     it('should set a string action property with row templating', () => {
       const component = {
         key: 'test',
-        label: 'foo'
+        label: 'foo',
       };
       const action = {
         type: 'property',
         property: {
           label: 'Label',
           value: 'label',
-          type: 'string'
+          type: 'string',
         },
-        text: 'bar {{ row.field }}'
+        text: 'bar {{ row.field }}',
       };
-      utils.setActionProperty(component, action, { field: 'baz' }, {}, true);
+
+      utils.setActionProperty(component, action, true, { field: 'baz' });
+
       expect(component.label).to.be.equal('bar baz');
     });
 
     it('should set a string action property with data templating', () => {
       const component = {
         key: 'test',
-        label: 'foo'
+        label: 'foo',
       };
       const action = {
         type: 'property',
         property: {
           label: 'Label',
           value: 'label',
-          type: 'string'
+          type: 'string',
         },
-        text: 'bar {{ data.field }}'
+        text: 'bar {{ data.field }}',
       };
-      utils.setActionProperty(component, action, {}, { field: 'baz' }, true);
-      expect(component.label).to.be.equal('bar baz');
-    });
 
-    it('should set a string action property with result templating', () => {
-      const component = {
-        key: 'test',
-        label: 'foo'
-      };
-      const action = {
-        type: 'property',
-        property: {
-          label: 'Label',
-          value: 'label',
-          type: 'string'
-        },
-        text: 'bar {{ result }}'
-      };
-      utils.setActionProperty(component, action, {}, {}, 'baz');
+      utils.setActionProperty(component, action, true, {}, { field: 'baz' });
+
       expect(component.label).to.be.equal('bar baz');
     });
 
     it('should set a string action property with component templating', () => {
       const component = {
         key: 'test',
-        label: 'foo'
+        label: 'foo',
       };
       const action = {
         type: 'property',
         property: {
           label: 'Label',
           value: 'label',
-          type: 'string'
+          type: 'string',
         },
-        text: 'bar {{ component.key }}'
+        text: 'bar {{ component.key }}',
       };
-      utils.setActionProperty(component, action, {}, {}, 'baz');
+
+      utils.setActionProperty(component, action);
+
       expect(component.label).to.be.equal('bar test');
     });
 
     it('should do nothing with a bad request', () => {
       const component = {
         key: 'test',
-        label: 'foo'
+        label: 'foo',
       };
       const originalComponent = _.cloneDeep(component);
+
       expect(component).to.deep.equal(originalComponent);
     });
   });
