@@ -146,6 +146,11 @@ export default class SignatureComponent extends Input {
     const superAttach = super.attach(element);
 
     this.onDisabled();
+
+    if (this.refs.refresh && this.options.readOnly) {
+      this.refs.refresh.classList.add('disabled');
+    }
+
     // Create the signature pad.
     if (this.refs.canvas) {
       this.signaturePad = new SignaturePad(this.refs.canvas, {
