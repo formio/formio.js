@@ -1085,7 +1085,12 @@ export default class Component extends Element {
         trigger: &apos;hover click&apos;,
         placement: &apos;right&apos;,
         html: true,
-        title: title
+        title: title,
+        template: `
+          &lt;div class=&quot;tooltip&quot; style=&quot;opacity: 1;&quot; role=&quot;tooltip&quot;&gt;
+            &lt;div class=&quot;tooltip-arrow&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;tooltip-inner&quot;&gt;&lt;/div&gt;
+          &lt;/div&gt;`,
       });
     });
 
@@ -1640,7 +1645,7 @@ export default class Component extends Element {
       switch (action.type) {
         case &apos;property&apos;:
           FormioUtils.setActionProperty(newComponent, action, row, data, newComponent, result, this);
-          if (!_.isEqual(this.component, newComponent)) {
+          if (!_.isEqual(_.get(this.component, action.property.value), _.get(newComponent, action.property.value))) {
             changed = true;
           }
           break;

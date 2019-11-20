@@ -236,7 +236,7 @@ describe(&apos;Validator Tests&apos;, () =&gt; {
     assert.equal(Validator.validators.minLength.check(baseComponent, 4, &apos;test&apos;), true);
     assert.equal(Validator.validators.minLength.check(baseComponent, 3, &apos;test&apos;), true);
     assert.equal(Validator.validators.minLength.check(baseComponent, 6, &apos;test&apos;), false);
-    assert.equal(Validator.validators.minLength.check(baseComponent, 6, &apos;&apos;), false);
+    assert.equal(Validator.validators.minLength.check(baseComponent, 6, &apos;&apos;), true);
   });
 
   it(&apos;Should test for maxLength&apos;, () =&gt; {

@@ -46,6 +46,7 @@ import WellComponent from './well/Well';
 export default {
   address: AddressComponent,
   base: Component,
+  component: Component,
   button: ButtonComponent,
   checkbox: CheckBoxComponent,
   columns: ColumnsComponent,

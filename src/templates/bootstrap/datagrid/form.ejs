@@ -10,7 +10,7 @@
       {% ctx.columns.forEach(function(col) { %}
         <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
           {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
-          {% if (col.tooltip) { %} <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
+          {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
         </th>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
