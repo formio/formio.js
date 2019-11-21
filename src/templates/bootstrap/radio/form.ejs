@@ -14,6 +14,9 @@
         {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
           checked=true
         {% } %}
+        {% if (item.disabled) { %}
+          disabled=true
+        {% } %}
         id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
