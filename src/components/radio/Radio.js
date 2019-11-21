@@ -64,12 +64,21 @@ export default class RadioComponent extends Field {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach((input, index) => {
       this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true
+        modified: true,
       }));
       this.addShortcut(input, this.component.values[index].shortcut);
 
       if (this.isRadio) {
         input.checked = (this.dataValue === input.value);
+        this.addEventListener(input, 'keyup', (event) => {
+          if (event.key === ' ' && this.dataValue === input.value) {
+            event.preventDefault();
+
+            this.updateValue(null, {
+              modified: true,
+            });
+          }
+        });
       }
     });
     return super.attach(element);
@@ -183,7 +192,7 @@ export default class RadioComponent extends Field {
         }
         break;
       case 'boolean':
-        value = value.toString() !== 'false';
+        value = !(!value || value.toString() === 'false');
         break;
     }
     return super.normalizeValue(value);

@@ -1,5 +1,6 @@
 import baseEditForm from '../_classes/component/Component.form';
 
+import DayEditData from './editForm/Day.edit.data';
 import DayEditDisplay from './editForm/Day.edit.display';
 import DayEditValidation from './editForm/Day.edit.validation';
 import DayEditDay from './editForm/Day.edit.day';
@@ -11,6 +12,10 @@ export default function(...extend) {
     {
       key: 'display',
       components: DayEditDisplay
+    },
+    {
+      key: 'data',
+      components: DayEditData,
     },
     {
       key: 'validation',
