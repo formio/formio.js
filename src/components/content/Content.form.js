@@ -11,11 +11,11 @@ export default function(...extend) {
     },
     {
       key: 'data',
-      ignore: true
+      ignore: true,
     },
     {
       key: 'validation',
-      ignore: true
+      ignore: true,
     },
     {
       key: 'logic',
@@ -33,7 +33,7 @@ export default function(...extend) {
     key: 'html',
     as: 'html',
     rows: 3,
-    tooltip: 'The HTML template for the result data items.'
+    tooltip: 'The HTML template for the result data items.',
   }].concat(editForm.components);
   return editForm;
 }

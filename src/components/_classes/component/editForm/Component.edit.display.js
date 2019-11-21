@@ -117,14 +117,6 @@ export default [
     input: true
   },
   {
-    weight: 1450,
-    type: 'checkbox',
-    label: 'Always enabled',
-    tooltip: 'Make this field always enabled, even if the form is disabled',
-    key: 'alwaysEnabled',
-    input: true
-  },
-  {
     weight: 1500,
     type: 'checkbox',
     label: 'Table View',

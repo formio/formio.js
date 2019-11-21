@@ -23,7 +23,8 @@ export default class Wizard extends Webform {
     }
     super(element, options);
     this.pages = [];
-    this.globalComponents = [];
+    this.prefixComps = [];
+    this.suffixComps = [];
     this.components = [];
     this.page = 0;
     this.currentNextPage = 0;
@@ -119,7 +120,11 @@ export default class Wizard extends Webform {
       ...ctx,
       wizardHeader: this.renderTemplate('wizardHeader', ctx),
       wizardNav: this.renderTemplate('wizardNav', ctx),
-      components: this.renderComponents([...this.globalComponents, ...this.currentPage.components]),
+      components: this.renderComponents([
+        ...this.prefixComps,
+        ...this.currentPage.components,
+        ...this.suffixComps
+      ]),
     }, this.builderMode ? 'builder' : 'form');
   }
 
@@ -167,7 +172,11 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [
+      ...this.prefixComps,
+      ...this.currentPage.components,
+      ...this.suffixComps
+    ]);
     this.attachNav();
     this.attachHeader();
     return promises;
@@ -225,6 +234,8 @@ export default class Wizard extends Webform {
 
   establishPages() {
     this.pages = [];
+    this.prefixComps = [];
+    this.suffixComps = [];
     const visible = [];
     const currentPages = {};
     if (this.components && this.components.length) {
@@ -259,9 +270,13 @@ export default class Wizard extends Webform {
           this.removeComponent(page);
         }
       }
-      else if (item.type === 'hidden') {
-        const component = this.createComponent(item, pageOptions);
-        this.globalComponents.push(component);
+      else if (item.type !== 'button') {
+        if (!this.pages.length) {
+          this.prefixComps.push(this.createComponent(item, pageOptions));
+        }
+        else {
+          this.suffixComps.push(this.createComponent(item, pageOptions));
+        }
       }
     });
     return visible;

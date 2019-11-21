@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import BuilderUtils from '../../utils/builder';
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
@@ -25,6 +26,7 @@ export default class TableComponent extends NestedComponent {
       rows: TableComponent.emptyTable(3, 3),
       header: [],
       caption: '',
+      cloneRows: false,
       striped: false,
       bordered: false,
       hover: false,
@@ -106,11 +108,21 @@ export default class TableComponent extends NestedComponent {
     }
     this.component.rows = this.component.rows.slice(0, this.component.numRows);
 
-      this.table = [];
+    const lastNonEmptyRow = [];
+    this.table = [];
     _.each(this.component.rows, (row, rowIndex) => {
       this.table[rowIndex] = [];
       _.each(row, (column, colIndex) => {
         this.table[rowIndex][colIndex] = [];
+        if (this.component.cloneRows) {
+          if (column.components.length) {
+            lastNonEmptyRow[colIndex] = column;
+          }
+          else if (lastNonEmptyRow[colIndex]) {
+            column.components = _.cloneDeep(lastNonEmptyRow[colIndex].components);
+            BuilderUtils.uniquify(this.root._form.components, column);
+          }
+        }
         _.each(column.components, (comp) => {
           const component = this.createComponent(comp);
           component.tableRow = rowIndex;
