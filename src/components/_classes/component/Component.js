@@ -168,7 +168,6 @@ export default class Component extends Element {
       },
       allowCalculateOverride: false,
       encrypted: false,
-      alwaysEnabled: false,
       showCharCount: false,
       showWordCount: false,
       properties: {},
@@ -802,10 +801,6 @@ export default class Component extends Element {
   get submissionTimezone() {
     this.options.submissionTimezone = this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
     return this.options.submissionTimezone;
-  }
-
-  get canDisable() {
-    return !this.component.alwaysEnabled;
   }
 
   loadRefs(element, refs) {
@@ -2341,11 +2336,6 @@ export default class Component extends Element {
    * @param {boolean} disabled
    */
   set disabled(disabled) {
-    // Do not allow a component to be disabled if it should be always...
-    if (disabled && !this.canDisable) {
-      return;
-    }
-
     this._disabled = disabled;
   }
 
