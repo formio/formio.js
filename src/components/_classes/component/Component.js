@@ -1437,6 +1437,11 @@ export default class Component extends Element {
 
           if (!_.isEqual(oldValue, newValue)) {
             this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
             changed = true;
           }
 
@@ -2152,7 +2157,7 @@ export default class Component extends Element {
       return '';
     }
 
-    return Validator.check(this, data);
+    return _.map(Validator.checkComponent(this, data), 'message').join('\n\n');
   }
 
   /**
@@ -2180,15 +2185,15 @@ export default class Component extends Element {
       return true;
     }
 
-    const error = Validator.check(this, data);
-    if (error && (dirty || !this.pristine)) {
+    const errors = Validator.checkComponent(this, data);
+    if (errors.length && (dirty || !this.pristine)) {
       const message = this.invalidMessage(data, dirty, true, row);
       this.setCustomValidity(message, dirty);
     }
     else {
       this.setCustomValidity('');
     }
-    return !error;
+    return !errors.length;
   }
 
   checkValidity(data, dirty, row) {
@@ -2235,8 +2240,8 @@ export default class Component extends Element {
    *
    * @return {boolean}
    */
-  validateMultiple(value) {
-    return this.component.multiple && Array.isArray(value);
+  validateMultiple() {
+    return true;
   }
 
   get errors() {

@@ -266,34 +266,44 @@ const Harness = {
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {
+      let resolved = false;
       component.on('componentChange', (change) => {
+        if (resolved) {return}
         const valid = component.checkValidity();
         if (valid) {
-          assert.equal(change.value, value);
+          assert.equal(component.dataValue, value);
           resolve();
         }
         else {
           reject('Component should be valid');
         }
+        resolved = true;
       });
       component.setValue(value);
+      component.triggerChange();
     });
   },
-  testInvalid(component, value, field, error) {
+  testInvalid(component, value, field, expectedError) {
     return new Promise((resolve, reject) => {
+      let resolved = false;
       component.on('componentChange', (change) => {
+        if (resolved) {return}
         if(component.checkValidity()) {
           reject('Component should not be valid');
+          resolved = true;
         }
       });
       component.on('componentError', (error) => {
+        if (resolved) {return}
         assert.equal(error.component.key, field);
-        assert.equal(error.message, error);
+        assert.equal(error.message, expectedError);
         resolve();
+        resolved = true;
       });
 
       // Set the value.
       component.setValue(value);
+      component.triggerChange();
     });
   },
   testComponent(component, test, done) {
