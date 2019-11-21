@@ -894,6 +894,8 @@ export default class WebformBuilder extends Component {
         'label',
         'placeholder',
         'tooltip',
+        'hidden',
+        'autofocus',
         'validate',
         'disabled',
         'defaultValue',

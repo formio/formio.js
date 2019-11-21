@@ -281,7 +281,7 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
       data,
       row,
       form,
-      _
+      _,
     });
   }
   catch (err) {
@@ -307,10 +307,10 @@ export function checkCondition(component, row, data, form, instance) {
     return checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
   }
   else if (component.conditional && component.conditional.when) {
-    return checkSimpleConditional(component, component.conditional, row, data, true);
+    return checkSimpleConditional(component, component.conditional, row, data);
   }
   else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);
+    return checkJsonConditional(component, component.conditional.json, row, data, form, true);
   }
 
   // Default to show.
@@ -339,30 +339,41 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result, instance) {
+export function setActionProperty(component, action, result, row, data, instance) {
+  const property = action.property.value;
+
   switch (action.property.type) {
-    case 'boolean':
-      if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
-        _.set(component, action.property.value, action.state.toString() === 'true');
+    case 'boolean': {
+      const currentValue = _.get(component, property, false).toString();
+      const newValue = action.state.toString();
+
+      if (currentValue !== newValue) {
+        _.set(component, property, newValue === 'true');
       }
+
       break;
+    }
     case 'string': {
       const evalData = {
         data,
         row,
         component,
-        result
+        result,
       };
       const textValue = action.property.component ? action[action.property.component] : action.text;
-      const newValue = (instance && instance.interpolate) ?
-        instance.interpolate(textValue, evalData) :
-        Evaluator.interpolate(textValue, evalData);
-      if (newValue !== _.get(component, action.property.value, '')) {
-        _.set(component, action.property.value, newValue);
+      const currentValue = _.get(component, property, '');
+      const newValue = (instance && instance.interpolate)
+        ? instance.interpolate(textValue, evalData)
+        : Evaluator.interpolate(textValue, evalData);
+
+      if (newValue !== currentValue) {
+        _.set(component, property, newValue);
       }
+
       break;
     }
   }
+
   return component;
 }
 
@@ -1023,15 +1034,17 @@ export function observeOverload(callback, options = {}) {
 }
 
 export function getContextComponents(context) {
-  var values = [];
+  const values = [];
+
   context.utils.eachComponent(context.instance.options.editForm.components, (component) => {
     if (component.key !== context.data.key) {
       values.push({
         label: component.label || component.key,
-        value: component.key
+        value: component.key,
       });
     }
   });
+
   return values;
 }
 

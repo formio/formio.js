@@ -370,7 +370,7 @@ export default {
       },
       check(component, setting, value) {
         const minLength = parseInt(setting, 10);
-        if (!minLength || (typeof value !== &apos;string&apos;)) {
+        if (!minLength || (typeof value !== &apos;string&apos;) || component.isEmpty(value)) {
           return true;
         }
         return (value.length &gt;= minLength);

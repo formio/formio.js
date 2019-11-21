@@ -679,6 +679,11 @@ body.formio-dialog-open {
   z-index: 2;
 }
 
+.formio-component-hidden,
+.formio-component-datasource {
+  margin-bottom: 0;
+}
+
 .checkbox-inline label,
 .radio-inline label {
   font-weight: 400;
