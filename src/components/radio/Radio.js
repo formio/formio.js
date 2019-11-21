@@ -54,14 +54,8 @@ export default class RadioComponent extends Field {
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
-      values: this.component.values.map(({
-        label,
-        value
-      }) => ({
-        label,
-        value: encodeURIComponent(value),
-      })),
-      value: encodeURIComponent(this.dataValue),
+      values: this.component.values,
+      value: this.dataValue,
       row: this.row,
     }));
   }
@@ -105,7 +99,7 @@ export default class RadioComponent extends Field {
     let value = this.dataValue;
     this.refs.input.forEach((input) => {
       if (input.checked) {
-        value = decodeURIComponent(input.value);
+        value = input.value;
       }
     });
     return value;
@@ -126,7 +120,7 @@ export default class RadioComponent extends Field {
 
   setValueAt(index, value) {
     if (this.refs.input && this.refs.input[index] && value !== null && value !== undefined) {
-      const inputValue = decodeURIComponent(this.refs.input[index].value);
+      const inputValue = this.refs.input[index].value;
       this.refs.input[index].checked = (inputValue === value.toString());
     }
   }
@@ -140,7 +134,7 @@ export default class RadioComponent extends Field {
 
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        if (input && decodeURIComponent(input.value.toString()) === value.toString()) {
+        if (input && input.value.toString() === value.toString()) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
         }
