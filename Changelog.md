@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-beta.1
+### Changed
+ - Upgraded @formio/bootstrap3@1.1.3, @formio/semantic@1.2.2, core-js@3.4.2, i18next@19.0.1, file-loader@4.3.0, choices.js@9.0.1
+ - Adding major changes to validator to support Isomorphic Validation
+ - Adding Merge Component action to Logic settings.
+ - Allow "persistent" prefix and suffix components in wizard by adding components outside of root panels.
+
+### Added
+ - Added ability to render radio with some options disabled.
+ - Adding MinLength and MaxLength validation configuration to DataGrid.
+ - Adding ability to open first EditGrid row when it is empty.
+ - Adding a feature that will clone the rows of table components to quickly create input tables.
+
+### Fixed
+ - Fix required validation border is being removed after correcting one field
+ - Fix configurations for Add Another not changing on top.
+ - Fixed issues where default value component would be hidden on edit form.
+ - Fixed margins on invisible fields.
+ - Fix radio thinking false is true. 
+ - Fix quotes in input components.
+ - Bugfix/radio keyboard uncheck
+ - Fixed check node data for tree node
+ - Signature component fix 100% width issue
+ - Fixed placeholder on initial render in select component.
+ - Fix icon for time component
+ - Fix issue with Field Logic events accumulating.
+ - Fix clear on hide not working since root is never set to pristine.
+
+### Removed
+ - Remove unneeded settings from components.
+ - Removed "always enabled" configuration.
+ - Remove field logic validation.
+
 ## 4.7.8
 ### Fixed
  - Modules not setting default templates correctly.

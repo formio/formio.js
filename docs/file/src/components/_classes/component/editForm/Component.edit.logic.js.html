@@ -39,7 +39,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -136,6 +138,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -236,7 +239,7 @@ export default [
     templates: {
       header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;strong&gt;{{ value.length }} Advanced Logic Configured&lt;/strong&gt;\n  &lt;/div&gt;\n&lt;/div&gt;&apos;,
       row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
-      footer: &apos;&apos;
+      footer: &apos;&apos;,
     },
     type: &apos;editgrid&apos;,
     addAnother: &apos;Add Logic&apos;,
@@ -251,7 +254,7 @@ export default [
         validate: {
           required: true,
         },
-        type: &apos;textfield&apos;
+        type: &apos;textfield&apos;,
       },
       {
         weight: 10,
@@ -275,20 +278,20 @@ export default [
                   values: [
                     {
                       value: &apos;simple&apos;,
-                      label: &apos;Simple&apos;
+                      label: &apos;Simple&apos;,
                     },
                     {
                       value: &apos;javascript&apos;,
-                      label: &apos;Javascript&apos;
+                      label: &apos;Javascript&apos;,
                     },
                     {
                       value: &apos;json&apos;,
-                      label: &apos;JSON Logic&apos;
+                      label: &apos;JSON Logic&apos;,
                     },
                     {
                       value: &apos;event&apos;,
-                      label: &apos;Event&apos;
-                    }
+                      label: &apos;Event&apos;,
+                    },
                   ],
                 },
                 dataSrc: &apos;values&apos;,
@@ -301,8 +304,8 @@ export default [
                 key: &apos;simple&apos;,
                 type: &apos;container&apos;,
                 tableView: false,
-                customConditional(context) {
-                  return context.row.type === &apos;simple&apos;;
+                customConditional({ row }) {
+                  return row.type === &apos;simple&apos;;
                 },
                 components: [
                   {
@@ -311,7 +314,9 @@ export default [
                     label: &apos;Show&apos;,
                     type: &apos;hidden&apos;,
                     tableView: false,
-                    defaultValue: true
+                    calculateValue() {
+                      return true;
+                    },
                   },
                   {
                     type: &apos;select&apos;,
@@ -324,17 +329,17 @@ export default [
                     data: {
                       custom(context) {
                         return getContextComponents(context);
-                      }
-                    }
+                      },
+                    },
                   },
                   {
                     type: &apos;textfield&apos;,
                     input: true,
                     label: &apos;Has the value:&apos;,
                     key: &apos;eq&apos;,
-                    tableView: false
-                  }
-                ]
+                    tableView: false,
+                  },
+                ],
               },
               {
                 weight: 10,
@@ -346,9 +351,9 @@ export default [
                 tableView: false,
                 placeholder: `result = (data[&apos;mykey&apos;] &gt; 1);`,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, and &quot;component&quot; variables are available. Return &quot;result&quot;.&apos;,
-                customConditional(context) {
-                  return context.row.type === &apos;javascript&apos;;
-                }
+                customConditional({ row }) {
+                  return row.type === &apos;javascript&apos;;
+                },
               },
               {
                 weight: 10,
@@ -362,9 +367,9 @@ export default [
                 tableView: false,
                 placeholder: `{ ... }`,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, &quot;component&quot; and &quot;_&quot; variables are available. Return the result to be passed to the action if truthy.&apos;,
-                customConditional(context) {
-                  return context.row.type === &apos;json&apos;;
-                }
+                customConditional({ row }) {
+                  return row.type === &apos;json&apos;;
+                },
               },
               {
                 weight: 10,
@@ -374,14 +379,14 @@ export default [
                 placeholder: &apos;event&apos;,
                 description: &apos;The event that will trigger this logic. You can trigger events externally or via a button.&apos;,
                 tableView: false,
-                customConditional(context) {
-                  return context.row.type === &apos;event&apos;;
-                }
-              }
+                customConditional({ row }) {
+                  return row.type === &apos;event&apos;;
+                },
+              },
             ],
             key: &apos;trigger&apos;,
             type: &apos;container&apos;,
-          }
+          },
         ],
         type: &apos;panel&apos;,
       },
@@ -394,7 +399,7 @@ export default [
         templates: {
           header: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;&lt;strong&gt;{{ value.length }} actions&lt;/strong&gt;&lt;/div&gt;\n&lt;/div&gt;&apos;,
           row: &apos;&lt;div class=&quot;row&quot;&gt; \n  &lt;div class=&quot;col-sm-6&quot;&gt;\n    &lt;div&gt;{{ row.name }} &lt;/div&gt;\n  &lt;/div&gt;\n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
-          footer: &apos;&apos;
+          footer: &apos;&apos;,
         },
         type: &apos;editgrid&apos;,
         addAnother: &apos;Add Action&apos;,
@@ -427,16 +432,16 @@ export default [
                   values: [
                     {
                       value: &apos;property&apos;,
-                      label: &apos;Property&apos;
+                      label: &apos;Property&apos;,
                     },
                     {
                       value: &apos;value&apos;,
-                      label: &apos;Value&apos;
+                      label: &apos;Value&apos;,
                     },
                     {
-                      label: &apos;Validation&apos;,
-                      value: &apos;validation&apos;
-                    }
+                      label: &apos;Merge Component Schema&apos;,
+                      value: &apos;mergeComponentSchema&apos;,
+                    },
                   ],
                 },
                 dataSrc: &apos;values&apos;,
@@ -454,77 +459,76 @@ export default [
                     {
                       label: &apos;Hidden&apos;,
                       value: &apos;hidden&apos;,
-                      type: &apos;boolean&apos;
+                      type: &apos;boolean&apos;,
                     },
                     {
                       label: &apos;Required&apos;,
                       value: &apos;validate.required&apos;,
-                      type: &apos;boolean&apos;
+                      type: &apos;boolean&apos;,
                     },
                     {
                       label: &apos;Disabled&apos;,
                       value: &apos;disabled&apos;,
-                      type: &apos;boolean&apos;
+                      type: &apos;boolean&apos;,
                     },
                     {
                       label: &apos;Label&apos;,
                       value: &apos;label&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Title&apos;,
                       value: &apos;title&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Prefix&apos;,
                       value: &apos;prefix&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Suffix&apos;,
                       value: &apos;suffix&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Tooltip&apos;,
                       value: &apos;tooltip&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Description&apos;,
                       value: &apos;description&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Placeholder&apos;,
                       value: &apos;placeholder&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Input Mask&apos;,
                       value: &apos;inputMask&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;CSS Class&apos;,
                       value: &apos;className&apos;,
-                      type: &apos;string&apos;
+                      type: &apos;string&apos;,
                     },
                     {
                       label: &apos;Container Custom Class&apos;,
                       value: &apos;customClass&apos;,
-                      type: &apos;string&apos;
-                    }
+                      type: &apos;string&apos;,
+                    },
                   ],
-                  values: []
                 },
                 key: &apos;property&apos;,
                 label: &apos;Component Property&apos;,
                 input: true,
-                customConditional(context) {
-                  return context.row.type === &apos;property&apos;;
-                }
+                customConditional({ row }) {
+                  return row.type === &apos;property&apos;;
+                },
               },
               {
                 weight: 30,
@@ -536,22 +540,22 @@ export default [
                   values: [
                     {
                       label: &apos;True&apos;,
-                      value: &apos;true&apos;
+                      value: &apos;true&apos;,
                     },
                     {
                       label: &apos;False&apos;,
-                      value: &apos;false&apos;
-                    }
+                      value: &apos;false&apos;,
+                    },
                   ],
                 },
                 dataSrc: &apos;values&apos;,
                 template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
                 type: &apos;select&apos;,
-                customConditional(context) {
-                  return context.row.type === &apos;property&apos; &amp;&amp;
-                    context.row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
-                    context.row.property.type === &apos;boolean&apos;;
-                }
+                customConditional({ row }) {
+                  return row.type === &apos;property&apos; &amp;&amp;
+                    row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
+                    row.property.type === &apos;boolean&apos;;
+                },
               },
               {
                 weight: 30,
@@ -562,12 +566,12 @@ export default [
                 input: true,
                 tableView: false,
                 description: &apos;Can use templating with {{ data.myfield }}. &quot;data&quot;, &quot;row&quot;, &quot;component&quot; and &quot;result&quot; variables are available.&apos;,
-                customConditional(context) {
-                  return context.row.type === &apos;property&apos; &amp;&amp;
-                    context.row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
-                    context.row.property.type === &apos;string&apos; &amp;&amp;
-                    !context.row.property.component;
-                }
+                customConditional({ row }) {
+                  return row.type === &apos;property&apos; &amp;&amp;
+                    row.hasOwnProperty(&apos;property&apos;) &amp;&amp;
+                    row.property.type === &apos;string&apos; &amp;&amp;
+                    !row.property.component;
+                },
               },
               {
                 weight: 20,
@@ -580,16 +584,31 @@ export default [
                 type: &apos;textarea&apos;,
                 tableView: false,
                 description: &apos;&quot;row&quot;, &quot;data&quot;, &quot;component&quot;, and &quot;result&quot; variables are available. Return the value.&apos;,
-                customConditional(context) {
-                  return context.row.type === &apos;value&apos;;
-                }
-              }
+                customConditional({ row }) {
+                  return row.type === &apos;value&apos;;
+                },
+              },
+              {
+                weight: 20,
+                input: true,
+                label: &apos;Schema Defenition&apos;,
+                key: &apos;schemaDefinition&apos;,
+                editor: &apos;ace&apos;,
+                rows: 5,
+                placeholder: `schema = { label: &apos;Updated&apos; };`,
+                type: &apos;textarea&apos;,
+                tableView: false,
+                description: &apos;&quot;row&quot;, &quot;data&quot;, &quot;component&quot;, and &quot;result&quot; variables are available. Return the schema.&apos;,
+                customConditional({ row }) {
+                  return row.type === &apos;mergeComponentSchema&apos;;
+                },
+              },
             ],
-          }
+          },
         ],
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 /* eslint-enable quotes, max-len */
 </code></pre>

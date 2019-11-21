@@ -39,7 +39,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -136,6 +138,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
@@ -230,6 +233,8 @@ import {
   getInputMask,
   matchInputMask,
   getDateSetting,
+  escapeRegExCharacters,
+  interpolate,
   convertFormatToMoment
 } from &apos;../utils/utils&apos;;
 import moment from &apos;moment&apos;;
@@ -238,486 +243,865 @@ import {
   CALENDAR_ERROR_MESSAGES
 } from &apos;../utils/calendarUtils&apos;;
 
-export default {
-  get: _.get,
-  each: _.each,
-  has: _.has,
+class ValidationChecker {
+  constructor(config = {}) {
+    this.async = _.defaultTo(config.async, true);
+
+    this.validators = {
+      required: {
+        key: &apos;validate.required&apos;,
+        method: &apos;validateRequired&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;required&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          if (!boolValue(setting)) {
+            return true;
+          }
+
+          const isCalendar = component.validators.some(validator =&gt; validator === &apos;calendar&apos;);
+
+          if (!value &amp;&amp; isCalendar &amp;&amp; component.widget.enteredDate) {
+            return !this.validators.calendar.check.call(this, component, setting, value);
+          }
+
+          return !component.isEmpty(value);
+        }
+      },
+      unique: {
+        key: &apos;validate.unique&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;unique&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          // Skip if setting is falsy
+          if (!boolValue(setting)) {
+            return true;
+          }
+
+          // Skip if value is empty
+          if (!value || _.isEmpty(value)) {
+            return true;
+          }
+
+          // Skip if we don&apos;t have a database connection
+          if (!config.db) {
+            return true;
+          }
+
+          return new Promise(resolve =&gt; {
+            const form = config.form;
+            const submission = config.submission;
+            const path = `data.${component.path}`;
+
+            // Build the query
+            const query = { form: form._id };
+
+            if (_.isString(value)) {
+              query[path] = {
+                $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                $options: &apos;i&apos;
+              };
+            }
+            // FOR-213 - Pluck the unique location id
+            else if (_.isPlainObject(value) &amp;&amp; value.hasOwnProperty(&apos;address_components&apos;) &amp;&amp; value.hasOwnProperty(&apos;place_id&apos;)) {
+              query[`${path}.place_id`] = {
+                $regex: new RegExp(`^${escapeRegExCharacters(value.place_id)}$`),
+                $options: &apos;i&apos;
+              };
+            }
+            // Compare the contents of arrays vs the order.
+            else if (_.isArray(value)) {
+              query[path] = { $all: value };
+            }
+            else if (_.isObject(value)) {
+              query[path] = { $eq: value };
+            }
+
+            // Only search for non-deleted items
+            query.deleted = { $eq: null };
+
+            // Try to find an existing value within the form
+            config.db.models.submission.findOne(query, (err, result) =&gt; {
+              if (err) {
+                return resolve(false);
+              }
+              else if (result) {
+                // Only OK if it matches the current submission
+                return resolve(submission._id &amp;&amp; (result._id.toString() === submission._id));
+              }
+              else {
+                return resolve(true);
+              }
+            });
+          }).catch(() =&gt; false);
+        }
+      },
+      multiple: {
+        key: &apos;validate.multiple&apos;,
+        message(component) {
+          const shouldBeArray = boolValue(component.component.multiple) || component.component.type === &apos;file&apos;;
+          const isRequired = component.component.validate.required;
+          const messageKey = shouldBeArray ? (isRequired ? &apos;array_nonempty&apos; : &apos;array&apos;) : &apos;nonarray&apos;;
+
+          return component.t(component.errorMessage(messageKey), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          // Skip multiple validation if the component tells us to
+          if (!component.validateMultiple()) {
+            return true;
+          }
+
+          const shouldBeArray = boolValue(setting);
+          const canBeArray = [&apos;file&apos;, &apos;selectboxes&apos;].includes(component.component.type);
+          const isArray = Array.isArray(value);
+          const isRequired = component.component.validate.required;
+
+          if (shouldBeArray) {
+            if (isArray) {
+              return isRequired ? !!value.length : true;
+            }
+            else {
+              // Null/undefined is ok if this value isn&apos;t required; anything else should fail
+              return _.isNil(value) ? !isRequired : false;
+            }
+          }
+          else {
+            return canBeArray || !isArray;
+          }
+        }
+      },
+      select: {
+        key: &apos;validate.select&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;select&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          // Skip if setting is falsy
+          if (!boolValue(setting)) {
+            return true;
+          }
+
+          // Skip if value is empty
+          if (!value || _.isEmpty(value)) {
+            return true;
+          }
+
+          // Skip if we&apos;re not async-capable
+          if (!this.async) {
+            return true;
+          }
+
+          const schema = component.component;
+
+          // Initialize the request options
+          const requestOptions = {
+            url: setting,
+            method: &apos;GET&apos;,
+            qs: {},
+            json: true,
+            headers: {}
+          };
+
+          // If the url is a boolean value
+          if (_.isBoolean(requestOptions.url)) {
+            requestOptions.url = !!requestOptions.url;
+
+            if (
+              !requestOptions.url ||
+              schema.dataSrc !== &apos;url&apos; ||
+              !schema.data.url ||
+              !schema.searchField
+            ) {
+              return true;
+            }
+
+            // Get the validation url
+            requestOptions.url = schema.data.url;
+
+            // Add the search field
+            requestOptions.qs[schema.searchField] = value;
+
+            // Add the filters
+            if (schema.filter) {
+              requestOptions.url += (!requestOptions.url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + schema.filter;
+            }
+
+            // If they only wish to return certain fields.
+            if (schema.selectFields) {
+              requestOptions.qs.select = schema.selectFields;
+            }
+          }
+
+          if (!requestOptions.url) {
+            return true;
+          }
+
+          // Make sure to interpolate.
+          requestOptions.url = interpolate(requestOptions.url, { data: component.data });
+
+          // Add query string to URL
+          requestOptions.url += (requestOptions.url.includes(&apos;?&apos;) ? &apos;&amp;&apos; : &apos;?&apos;) + _.chain(requestOptions.qs)
+            .map((val, key) =&gt; `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
+            .join(&apos;&amp;&apos;)
+            .value();
+
+          // Set custom headers.
+          if (schema.data &amp;&amp; schema.data.headers) {
+            _.each(schema.data.headers, header =&gt; {
+              if (header.key) {
+                requestOptions.headers[header.key] = header.value;
+              }
+            });
+          }
+
+          // Set form.io authentication.
+          if (schema.authenticate &amp;&amp; config.token) {
+            requestOptions.headers[&apos;x-jwt-token&apos;] = config.token;
+          }
+
+          // Isomorphic fetch
+          const isofetch = (window &amp;&amp; window.fetch) ? { fetch, Headers, Request, Response } : require(&apos;fetch-ponyfill&apos;)();
+
+          const request = new isofetch.Request(requestOptions.url, {
+            headers: new isofetch.Headers(requestOptions.headers)
+          });
+
+          return isofetch.fetch(request)
+            .then(async response =&gt; {
+              if (!response.ok) {
+                return false;
+              }
+
+              const results = await response.json();
+              return results &amp;&amp; results.length;
+            })
+            .catch(() =&gt; false);
+        }
+      },
+      min: {
+        key: &apos;validate.min&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;min&apos;), {
+            field: component.errorLabel,
+            min: parseFloat(setting),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const min = parseFloat(setting);
+          if (Number.isNaN(min) || (!_.isNumber(value))) {
+            return true;
+          }
+          return parseFloat(value) &gt;= min;
+        }
+      },
+      max: {
+        key: &apos;validate.max&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;max&apos;), {
+            field: component.errorLabel,
+            max: parseFloat(setting),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const max = parseFloat(setting);
+          if (Number.isNaN(max) || (!_.isNumber(value))) {
+            return true;
+          }
+          return parseFloat(value) &lt;= max;
+        }
+      },
+      minSelectedCount: {
+        key: &apos;validate.minSelectedCount&apos;,
+        message(component, setting) {
+          return component.component.minSelectedCountMessage
+            ? component.component.minSelectedCountMessage
+            : component.t(component.errorMessage(&apos;minSelectedCount&apos;), {
+                minCount: parseFloat(setting),
+                data: component.data
+              });
+        },
+        check(component, setting, value) {
+          const min = parseFloat(setting);
+
+          if (!min) {
+            return true;
+          }
+          const count = Object.keys(value).reduce((total, key) =&gt;{
+            if (value[key]) {
+              total++;
+            }
+            return total;
+          }, 0);
+
+          return count &gt;= min;
+        }
+      },
+      maxSelectedCount: {
+        key: &apos;validate.maxSelectedCount&apos;,
+        message(component, setting) {
+          return component.component.maxSelectedCountMessage
+            ? component.component.maxSelectedCountMessage
+            : component.t(component.errorMessage(&apos;maxSelectedCount&apos;), {
+                minCount: parseFloat(setting),
+                data: component.data
+              });
+        },
+        check(component, setting, value) {
+          const max = parseFloat(setting);
+
+          if (!max) {
+            return true;
+          }
+          const count = Object.keys(value).reduce((total, key) =&gt;{
+            if (value[key]) {
+              total++;
+            }
+            return total;
+          }, 0);
+
+          return count &lt;= max;
+        }
+      },
+      minLength: {
+        key: &apos;validate.minLength&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;minLength&apos;), {
+            field: component.errorLabel,
+            length: (setting - 1),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const minLength = parseInt(setting, 10);
+          if (!minLength || (typeof value !== &apos;string&apos;) || component.isEmpty(value)) {
+            return true;
+          }
+          return (value.length &gt;= minLength);
+        }
+      },
+      maxLength: {
+        key: &apos;validate.maxLength&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;maxLength&apos;), {
+            field: component.errorLabel,
+            length: (setting + 1),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const maxLength = parseInt(setting, 10);
+          if (!maxLength || (typeof value !== &apos;string&apos;)) {
+            return true;
+          }
+          return (value.length &lt;= maxLength);
+        }
+      },
+      maxWords: {
+        key: &apos;validate.maxWords&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;maxWords&apos;), {
+            field: component.errorLabel,
+            length: (setting + 1),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const maxWords = parseInt(setting, 10);
+          if (!maxWords || (typeof value !== &apos;string&apos;)) {
+            return true;
+          }
+          return (value.trim().split(/\s+/).length &lt;= maxWords);
+        }
+      },
+      minWords: {
+        key: &apos;validate.minWords&apos;,
+        message(component, setting) {
+          return component.t(component.errorMessage(&apos;minWords&apos;), {
+            field: component.errorLabel,
+            length: (setting - 1),
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          const minWords = parseInt(setting, 10);
+          if (!minWords || (typeof value !== &apos;string&apos;)) {
+            return true;
+          }
+          return (value.trim().split(/\s+/).length &gt;= minWords);
+        }
+      },
+      email: {
+        message(component) {
+          return component.t(component.errorMessage(&apos;invalid_email&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          /* eslint-disable max-len */
+          // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+          const re = /^(([^&lt;&gt;()[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          /* eslint-enable max-len */
+
+          // Allow emails to be valid if the component is pristine and no value is provided.
+          return !value || re.test(value);
+        }
+      },
+      url: {
+        message(component) {
+          return component.t(component.errorMessage(&apos;invalid_url&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          /* eslint-disable max-len */
+          // From https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
+          const re = /[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&amp;//=]*)/;
+          /* eslint-enable max-len */
+
+          // Allow urls to be valid if the component is pristine and no value is provided.
+          return !value || re.test(value);
+        }
+      },
+      date: {
+        message(component) {
+          return component.t(component.errorMessage(&apos;invalid_date&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          return (value !== &apos;Invalid date&apos;);
+        }
+      },
+      day: {
+        message(component) {
+          return component.t(component.errorMessage(&apos;invalid_day&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          if (!value) {
+            return true;
+          }
+          const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+          const values = value.split(&apos;/&apos;).map(x =&gt; parseInt(x, 10)),
+            day = values[DAY],
+            month = values[MONTH],
+            year = values[YEAR],
+            maxDay = getDaysInMonthCount(month, year);
+
+          if (day &lt; 0 || day &gt; maxDay) {
+            return false;
+          }
+          if (month &lt; 0 || month &gt; 12) {
+            return false;
+          }
+          if (year &lt; 0 || year &gt; 9999) {
+            return false;
+          }
+          return true;
+
+          function isLeapYear(year) {
+            // Year is leap if it is evenly divisible by 400 or evenly divisible by 4 and not evenly divisible by 100.
+            return !(year % 400) || (!!(year % 100) &amp;&amp; !(year % 4));
+          }
+
+          function getDaysInMonthCount(month, year) {
+            switch (month) {
+              case 1:     // January
+              case 3:     // March
+              case 5:     // May
+              case 7:     // July
+              case 8:     // August
+              case 10:    // October
+              case 12:    // December
+                return 31;
+              case 4:     // April
+              case 6:     // June
+              case 9:     // September
+              case 11:    // November
+                return 30;
+              case 2:     // February
+                return isLeapYear(year) ? 29 : 28;
+              default:
+                return 31;
+            }
+          }
+        }
+      },
+      pattern: {
+        key: &apos;validate.pattern&apos;,
+        message(component, setting) {
+          return component.t(_.get(component, &apos;component.validate.patternMessage&apos;, component.errorMessage(&apos;pattern&apos;), {
+            field: component.errorLabel,
+            pattern: setting,
+            data: component.data
+          }));
+        },
+        check(component, setting, value) {
+          const pattern = setting;
+          if (!pattern) {
+            return true;
+          }
+          const regex = new RegExp(`^${pattern}$`);
+          return regex.test(value);
+        }
+      },
+      json: {
+        key: &apos;validate.json&apos;,
+        check(component, setting, value, data, index, row) {
+          if (!setting) {
+            return true;
+          }
+          const valid = component.evaluate(setting, {
+            data,
+            row,
+            rowIndex: index,
+            input: value
+          });
+          if (valid === null) {
+            return true;
+          }
+          return valid;
+        }
+      },
+      mask: {
+        message(component) {
+          return component.t(component.errorMessage(&apos;mask&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value) {
+          let inputMask;
+          if (component.isMultipleMasksField) {
+            const maskName = value ? value.maskName : undefined;
+            const formioInputMask = component.getMaskByName(maskName);
+            if (formioInputMask) {
+              inputMask = getInputMask(formioInputMask);
+            }
+            value = value ? value.value : value;
+          }
+          else {
+            inputMask = component._inputMask;
+          }
+          if (value &amp;&amp; inputMask) {
+            return matchInputMask(value, inputMask);
+          }
+          return true;
+        }
+      },
+      custom: {
+        key: &apos;validate.custom&apos;,
+        message(component) {
+          return component.t(component.errorMessage(&apos;custom&apos;), {
+            field: component.errorLabel,
+            data: component.data
+          });
+        },
+        check(component, setting, value, data, index, row) {
+          if (!setting) {
+            return true;
+          }
+          const valid = component.evaluate(setting, {
+            valid: true,
+            data,
+            rowIndex: index,
+            row,
+            input: value
+          }, &apos;valid&apos;, true);
+          if (valid === null) {
+            return true;
+          }
+          return valid;
+        }
+      },
+      maxDate: {
+        key: &apos;maxDate&apos;,
+        message(component, setting) {
+          const date = getDateSetting(setting);
+          return component.t(component.errorMessage(&apos;maxDate&apos;), {
+            field: component.errorLabel,
+            maxDate: moment(date).format(component.format),
+          });
+        },
+        check(component, setting, value) {
+          //if any parts of day are missing, skip maxDate validation
+          if (component.isPartialDay &amp;&amp; component.isPartialDay(value)) {
+            return true;
+          }
+          const date = moment(value);
+          const maxDate = getDateSetting(setting);
+
+          if (_.isNull(maxDate)) {
+            return true;
+          }
+          else {
+            maxDate.setHours(0, 0, 0, 0);
+          }
+
+          return date.isBefore(maxDate) || date.isSame(maxDate);
+        }
+      },
+      minDate: {
+        key: &apos;minDate&apos;,
+        message(component, setting) {
+          const date = getDateSetting(setting);
+          return component.t(component.errorMessage(&apos;minDate&apos;), {
+            field: component.errorLabel,
+            minDate: moment(date).format(component.format),
+          });
+        },
+        check(component, setting, value) {
+          //if any parts of day are missing, skip minDate validation
+          if (component.isPartialDay &amp;&amp; component.isPartialDay(value)) {
+            return true;
+          }
+          const date = moment(value);
+          const minDate = getDateSetting(setting);
+          if (_.isNull(minDate)) {
+            return true;
+          }
+          else {
+            minDate.setHours(0, 0, 0, 0);
+          }
+
+          return date.isAfter(minDate) || date.isSame(minDate);
+        }
+      },
+      calendar: {
+        key: &apos;validate.calendar&apos;,
+        messageText: &apos;&apos;,
+        message(component) {
+          return component.t(component.errorMessage(this.validators.calendar.messageText), {
+            field: component.errorLabel,
+            maxDate: moment(component.dataValue).format(component.format),
+          });
+        },
+        check(component, setting, value, data, index) {
+          this.validators.calendar.messageText = &apos;&apos;;
+          const widget = component.getWidget(index);
+          if (!widget) {
+            return true;
+          }
+          const { settings, enteredDate } = widget;
+          const { minDate, maxDate, format } = settings;
+          const momentFormat = [convertFormatToMoment(format)];
+
+          if (momentFormat[0].match(/M{3,}/g)) {
+            momentFormat.push(momentFormat[0].replace(/M{3,}/g, &apos;MM&apos;));
+          }
+
+          if (!value &amp;&amp; enteredDate) {
+            const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
+
+            if (!result) {
+              this.validators.calendar.messageText = message;
+              return result;
+            }
+          }
+
+          if (value &amp;&amp; enteredDate) {
+            if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() &amp;&amp; enteredDate.match(/_/gi)) {
+              this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
+              return false;
+            }
+            else {
+              widget.enteredDate = &apos;&apos;;
+              return true;
+            }
+          }
+        }
+      },
+    };
+  }
+
   checkValidator(component, validator, setting, value, data, index, row) {
-    let result = null;
+    let resultOrPromise = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method &amp;&amp; (typeof component[validator.method] === &apos;function&apos;)) {
-      result = component[validator.method](setting, value, data, index, row);
+      resultOrPromise = component[validator.method](setting, value, data, index, row);
     }
     else {
-      result = validator.check.call(this, component, setting, value, data, index, row);
+      resultOrPromise = validator.check.call(this, component, setting, value, data, index, row);
     }
-    if (typeof result === &apos;string&apos;) {
-      return result;
+
+    const processResult = result =&gt; {
+      if (typeof result === &apos;string&apos;) {
+        return result;
+      }
+
+      if (!result) {
+        return validator.message.call(this, component, setting, index, row);
+      }
+
+      return &apos;&apos;;
+    };
+
+    if (this.async) {
+      return Promise.resolve(resultOrPromise).then(processResult);
     }
-    if (!result) {
-      return validator.message.call(this, component, setting, index, row);
+    else {
+      return processResult(resultOrPromise);
     }
-    return &apos;&apos;;
-  },
-  validate(component, validator, value, data, index, row) {
-    if (validator.key &amp;&amp; _.has(component.component, validator.key)) {
-      const setting = this.get(component.component, validator.key);
-      return this.checkValidator(component, validator, setting, value, data, index, row);
+  }
+
+  validate(component, validatorName, value, data, index, row) {
+    // Skip validation for conditionally hidden components
+    if (!component.conditionallyVisible()) {
+      return false;
     }
-    return this.checkValidator(component, validator, null, value, data, index, row);
-  },
-  check(component, data, row) {
-    let result = &apos;&apos;;
-    const value = component.validationValue;
+
+    const validator       = this.validators[validatorName];
+    const setting         = _.get(component.component, validator.key, null);
+    const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row);
+
+    const processResult = result =&gt; {
+      return result ? {
+        message: _.get(result, &apos;message&apos;, result),
+        level: _.get(result, &apos;level&apos;) === &apos;warning&apos; ? &apos;warning&apos; : &apos;error&apos;,
+        path: (component.path || &apos;&apos;)
+          .replace(/[[\]]/g, &apos;.&apos;)
+          .replace(/\.\./g, &apos;.&apos;)
+          .split(&apos;.&apos;)
+          .map(part =&gt; _.defaultTo(_.toNumber(part), part)),
+        context: {
+          validator: validatorName,
+          setting,
+          key: component.key,
+          label: component.label,
+          value
+        }
+      } : false;
+    };
+
+    if (this.async) {
+      return Promise.resolve(resultOrPromise).then(processResult);
+    }
+    else {
+      return processResult(resultOrPromise);
+    }
+  }
+
+  checkComponent(component, data, row, includeWarnings = false) {
+    // If we&apos;re server-side and it&apos;s not a persistent component, don&apos;t run validation at all
+    if (_.get(process, &apos;release.name&apos;) === &apos;node&apos; &amp;&amp; !_.defaultTo(component.component.persistent, true)) {
+      return [];
+    }
+
     data = data || component.rootValue;
     row = row || component.data;
-    _.each(component.validators, (name) =&gt; {
-      if (this.validators.hasOwnProperty(name)) {
-        const validator = this.validators[name];
-        if (component.validateMultiple(value)) {
-          _.each(value, (val, index) =&gt; {
-            result = this.validate(component, validator, val, data, index, row);
-            if (result) {
-              return false;
-            }
-          });
-        }
-        else {
-          result = this.validate(component, validator, value, data, 0, row);
-        }
-        if (result) {
-          return false;
-        }
-      }
-    });
 
-    const validateCustom = _.get(component, &apos;component.validate.custom&apos;);
+    const values = (component.component.multiple &amp;&amp; Array.isArray(component.validationValue))
+      ? component.validationValue
+      : [component.validationValue];
+
+    const validateCustom     = _.get(component, &apos;component.validate.custom&apos;);
     const customErrorMessage = _.get(component, &apos;component.validate.customMessage&apos;);
-    if (result &amp;&amp; (customErrorMessage || validateCustom)) {
-      result = component.t(customErrorMessage || result, {
-        field: component.errorLabel,
-        data,
-        row
-      });
+
+    // Add the select validator for select components
+    if (component.component.type === &apos;select&apos; &amp;&amp; component.validators.indexOf(&apos;select&apos;) === -1) {
+      component.validators.push(&apos;select&apos;);
     }
-    return result;
-  },
-  validators: {
-    required: {
-      key: &apos;validate.required&apos;,
-      method: &apos;validateRequired&apos;,
-      message(component) {
-        return component.t(component.errorMessage(&apos;required&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        if (!boolValue(setting)) {
-          return true;
-        }
-        const isCalendar = component.validators.some(validator =&gt; validator === &apos;calendar&apos;);
 
-        if (!value &amp;&amp; isCalendar &amp;&amp; component.widget.enteredDate) {
-          return !this.validators.calendar.check.call(this, component, setting, value);
-        }
-        return !component.isEmpty(value);
-      }
-    },
-    min: {
-      key: &apos;validate.min&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;min&apos;), {
-          field: component.errorLabel,
-          min: parseFloat(setting),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const min = parseFloat(setting);
-        if (Number.isNaN(min) || (!_.isNumber(value))) {
-          return true;
-        }
-        return parseFloat(value) &gt;= min;
-      }
-    },
-    max: {
-      key: &apos;validate.max&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;max&apos;), {
-          field: component.errorLabel,
-          max: parseFloat(setting),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const max = parseFloat(setting);
-        if (Number.isNaN(max) || (!_.isNumber(value))) {
-          return true;
-        }
-        return parseFloat(value) &lt;= max;
-      }
-    },
-    minLength: {
-      key: &apos;validate.minLength&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;minLength&apos;), {
-          field: component.errorLabel,
-          length: (setting - 1),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const minLength = parseInt(setting, 10);
-        if (!minLength || (typeof value !== &apos;string&apos;) || component.isEmpty(value)) {
-          return true;
-        }
-        return (value.length &gt;= minLength);
-      }
-    },
-    maxLength: {
-      key: &apos;validate.maxLength&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;maxLength&apos;), {
-          field: component.errorLabel,
-          length: (setting + 1),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const maxLength = parseInt(setting, 10);
-        if (!maxLength || (typeof value !== &apos;string&apos;)) {
-          return true;
-        }
-        return (value.length &lt;= maxLength);
-      }
-    },
-    maxWords: {
-      key: &apos;validate.maxWords&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;maxWords&apos;), {
-          field: component.errorLabel,
-          length: (setting + 1),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const maxWords = parseInt(setting, 10);
-        if (!maxWords || (typeof value !== &apos;string&apos;)) {
-          return true;
-        }
-        return (_.words(value).length &lt;= maxWords);
-      }
-    },
-    minWords: {
-      key: &apos;validate.minWords&apos;,
-      message(component, setting) {
-        return component.t(component.errorMessage(&apos;minWords&apos;), {
-          field: component.errorLabel,
-          length: (setting - 1),
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        const minWords = parseInt(setting, 10);
-        if (!minWords || (typeof value !== &apos;string&apos;)) {
-          return true;
-        }
-        return (_.words(value).length &gt;= minWords);
-      }
-    },
-    email: {
-      message(component) {
-        return component.t(component.errorMessage(&apos;invalid_email&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        /* eslint-disable max-len */
-        // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        const re = /^(([^&lt;&gt;()[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        /* eslint-enable max-len */
-
-        // Allow emails to be valid if the component is pristine and no value is provided.
-        return !value || re.test(value);
-      }
-    },
-    url: {
-      message(component) {
-        return component.t(component.errorMessage(&apos;invalid_url&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        /* eslint-disable max-len */
-        // From https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
-        const re = /[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&amp;//=]*)/;
-        /* eslint-enable max-len */
-
-        // Allow urls to be valid if the component is pristine and no value is provided.
-        return !value || re.test(value);
-      }
-    },
-    date: {
-      message(component) {
-        return component.t(component.errorMessage(&apos;invalid_date&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        return (value !== &apos;Invalid date&apos;);
-      }
-    },
-    day: {
-      message(component) {
-        return component.t(component.errorMessage(&apos;invalid_day&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        if (!value) {
-          return true;
-        }
-        const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
-        const values = value.split(&apos;/&apos;).map(x =&gt; parseInt(x, 10)),
-          day = values[DAY],
-          month = values[MONTH],
-          year = values[YEAR],
-          maxDay = getDaysInMonthCount(month, year);
-
-        if (day &lt; 0 || day &gt; maxDay) {
-          return false;
-        }
-        if (month &lt; 0 || month &gt; 12) {
-          return false;
-        }
-        if (year &lt; 0 || year &gt; 9999) {
-          return false;
-        }
-        return true;
-
-        function isLeapYear(year) {
-          // Year is leap if it is evenly divisible by 400 or evenly divisible by 4 and not evenly divisible by 100.
-          return !(year % 400) || (!!(year % 100) &amp;&amp; !(year % 4));
+    // Run primary validators
+    const resultsOrPromises = _(component.validators).chain()
+      .map(validatorName =&gt; {
+        if (!this.validators.hasOwnProperty(validatorName)) {
+          return {
+            message: `Validator for &quot;${validatorName}&quot; is not defined`,
+            level: &apos;warning&apos;,
+            context: {
+              validator: validatorName,
+              key: component.key,
+              label: component.label
+            }
+          };
         }
 
-        function getDaysInMonthCount(month, year) {
-          switch (month) {
-            case 1:     // January
-            case 3:     // March
-            case 5:     // May
-            case 7:     // July
-            case 8:     // August
-            case 10:    // October
-            case 12:    // December
-              return 31;
-            case 4:     // April
-            case 6:     // June
-            case 9:     // September
-            case 11:    // November
-              return 30;
-            case 2:     // February
-              return isLeapYear(year) ? 29 : 28;
-            default:
-              return 31;
-          }
-        }
-      }
-    },
-    pattern: {
-      key: &apos;validate.pattern&apos;,
-      message(component, setting) {
-        return component.t(_.get(component, &apos;component.validate.patternMessage&apos;, component.errorMessage(&apos;pattern&apos;), {
-          field: component.errorLabel,
-          pattern: setting,
-          data: component.data
-        }));
-      },
-      check(component, setting, value) {
-        const pattern = setting;
-        if (!pattern) {
-          return true;
-        }
-        const regex = new RegExp(`^${pattern}$`);
-        return regex.test(value);
-      }
-    },
-    json: {
-      key: &apos;validate.json&apos;,
-      check(component, setting, value, data, index, row) {
-        if (!setting) {
-          return true;
-        }
-        const valid = component.evaluate(setting, {
-          data,
-          row,
-          rowIndex: index,
-          input: value
+        return _.map(values, (value, index) =&gt; this.validate(component, validatorName, value, data, index, row));
+      })
+      .flatten()
+      .value();
+
+    // Run the &quot;unique&quot; pseudo-validator
+    component.component.validate = component.component.validate || {};
+    component.component.validate.unique = component.component.unique;
+    resultsOrPromises.push(this.validate(component, &apos;unique&apos;, component.validationValue, data));
+
+    // Run the &quot;multiple&quot; pseudo-validator
+    component.component.validate.multiple = component.component.multiple;
+    resultsOrPromises.push(this.validate(component, &apos;multiple&apos;, component.validationValue, data));
+
+    // Define how results should be formatted
+    const formatResults = results =&gt; {
+      // Condense to a single flat array
+      results = _(results).chain().flatten().compact().value();
+
+      if (customErrorMessage || validateCustom) {
+        _.each(results, result =&gt; {
+          result.message = component.t(customErrorMessage || result.message, {
+            field: component.errorLabel,
+            data,
+            row,
+            error: result
+          });
         });
-        if (valid === null) {
-          return true;
-        }
-        return valid;
       }
-    },
-    mask: {
-      message(component) {
-        return component.t(component.errorMessage(&apos;mask&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value) {
-        if (component.skipMaskValidation) {
-          return true;
-        }
 
-        let inputMask;
-        if (component.isMultipleMasksField) {
-          const maskName = value ? value.maskName : undefined;
-          const formioInputMask = component.getMaskByName(maskName);
-          if (formioInputMask) {
-            inputMask = getInputMask(formioInputMask);
-          }
-          value = value ? value.value : value;
-        }
-        else {
-          inputMask = component.defaultMask;
-        }
-        if (value &amp;&amp; inputMask) {
-          return matchInputMask(value, inputMask);
-        }
-        return true;
-      }
-    },
-    custom: {
-      key: &apos;validate.custom&apos;,
-      message(component) {
-        return component.t(component.errorMessage(&apos;custom&apos;), {
-          field: component.errorLabel,
-          data: component.data
-        });
-      },
-      check(component, setting, value, data, index, row) {
-        if (!setting) {
-          return true;
-        }
-        const valid = component.evaluate(setting, {
-          valid: true,
-          data,
-          rowIndex: index,
-          row,
-          input: value
-        }, &apos;valid&apos;, true);
-        if (valid === null) {
-          return true;
-        }
-        return valid;
-      }
-    },
-    maxDate: {
-      key: &apos;maxDate&apos;,
-      message(component, setting) {
-        const date = getDateSetting(setting);
-        return component.t(component.errorMessage(&apos;maxDate&apos;), {
-          field: component.errorLabel,
-          maxDate: moment(date).format(component.format),
-        });
-      },
-      check(component, setting, value) {
-        //if any parts of day are missing, skip maxDate validation
-        if (component.isPartialDay &amp;&amp; component.isPartialDay(value)) {
-          return true;
-        }
-        const date = moment(value);
-        const maxDate = getDateSetting(setting);
+      return includeWarnings ? results : _.reject(results, result =&gt; result.level === &apos;warning&apos;);
+    };
 
-        if (_.isNull(maxDate)) {
-          return true;
-        }
-        else {
-          maxDate.setHours(0, 0, 0, 0);
-        }
-
-        return date.isBefore(maxDate) || date.isSame(maxDate);
-      }
-    },
-    minDate: {
-      key: &apos;minDate&apos;,
-      message(component, setting) {
-        const date = getDateSetting(setting);
-        return component.t(component.errorMessage(&apos;minDate&apos;), {
-          field: component.errorLabel,
-          minDate: moment(date).format(component.format),
-        });
-      },
-      check(component, setting, value) {
-        //if any parts of day are missing, skip minDate validation
-        if (component.isPartialDay &amp;&amp; component.isPartialDay(value)) {
-          return true;
-        }
-        const date = moment(value);
-        const minDate = getDateSetting(setting);
-        if (_.isNull(minDate)) {
-          return true;
-        }
-        else {
-          minDate.setHours(0, 0, 0, 0);
-        }
-
-        return date.isAfter(minDate) || date.isSame(minDate);
-      }
-    },
-    calendar: {
-      key: &apos;validate.calendar&apos;,
-      messageText: &apos;&apos;,
-      message(component) {
-        return component.t(component.errorMessage(this.validators.calendar.messageText), {
-          field: component.errorLabel,
-          maxDate: moment(component.dataValue).format(component.format),
-        });
-      },
-      check(component, setting, value, data, index) {
-        this.validators.calendar.messageText = &apos;&apos;;
-        const widget = component.getWidget(index);
-        if (!widget) {
-          return true;
-        }
-        const { settings, enteredDate } = widget;
-        const { minDate, maxDate, format } = settings;
-        const momentFormat = [convertFormatToMoment(format)];
-
-        if (momentFormat[0].match(/M{3,}/g)) {
-          momentFormat.push(momentFormat[0].replace(/M{3,}/g, &apos;MM&apos;));
-        }
-
-        if (!value &amp;&amp; enteredDate) {
-          const { message, result } = checkInvalidDate(enteredDate, momentFormat, minDate, maxDate);
-
-          if (!result) {
-            this.validators.calendar.messageText = message;
-            return result;
-          }
-        }
-
-        if (value &amp;&amp; enteredDate) {
-          if (moment(value).format() !== moment(enteredDate, momentFormat, true).format() &amp;&amp; enteredDate.match(/_/gi)) {
-            this.validators.calendar.messageText = CALENDAR_ERROR_MESSAGES.INCOMPLETE;
-            return false;
-          }
-          else {
-            widget.enteredDate = &apos;&apos;;
-            return true;
-          }
-        }
-      }
-    },
+    // Wait for results if using async mode, otherwise process and return immediately
+    if (this.async) {
+      return Promise.all(resultsOrPromises).then(formatResults);
+    }
+    else {
+      return formatResults(resultsOrPromises);
+    }
   }
+
+  get check() {
+    return this.checkComponent;
+  }
+
+  get() {
+    _.get.call(this, arguments);
+  }
+
+  each() {
+    _.each.call(this, arguments);
+  }
+
+  has() {
+    _.has.call(this, arguments);
+  }
+}
+
+const instance = new ValidationChecker({ async: false });
+
+export {
+  instance as default,
+  ValidationChecker
 };
 </code></pre>
 
