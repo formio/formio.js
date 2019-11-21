@@ -1442,9 +1442,6 @@ export default class Component extends Element {
 
           break;
         }
-        case 'validation':
-          // TODO
-          break;
         case 'mergeComponentSchema': {
           const schema = this.evaluate(
             action.schemaDefinition,

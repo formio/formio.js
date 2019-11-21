@@ -210,10 +210,6 @@ export default [
                       label: 'Value',
                     },
                     {
-                      label: 'Validation',
-                      value: 'validation',
-                    },
-                    {
                       label: 'Merge Component Schema',
                       value: 'mergeComponentSchema',
                     },
