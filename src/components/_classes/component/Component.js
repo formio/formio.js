@@ -1463,7 +1463,7 @@ export default class Component extends Element {
             'schema',
           );
 
-          _.merge(newComponent, schema);
+          _.assign(newComponent, schema);
 
           if (!_.isEqual(this.component, newComponent)) {
             changed = true;
