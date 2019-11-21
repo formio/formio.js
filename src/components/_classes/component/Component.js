@@ -915,6 +915,7 @@ export default class Component extends Element {
   detach() {
     this.refs = {};
     this.removeEventListeners();
+    this.detachLogic();
     if (this.tooltip) {
       this.tooltip.dispose();
     }
@@ -2403,6 +2404,15 @@ export default class Component extends Element {
 
   removeChild(element) {
     this.removeChildFrom(element, this.element);
+  }
+
+  detachLogic() {
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.off(event); // only applies to callbacks on this component
+      }
+    });
   }
 
   attachLogic() {
