@@ -17,6 +17,7 @@ export default class EditGridComponent extends NestedComponent {
       tree: true,
       removeRow: 'Cancel',
       defaultOpen: false,
+      openWhenEmpty: false,
       components: [],
       inlineEdit: false,
       templates: {
@@ -137,11 +138,23 @@ export default class EditGridComponent extends NestedComponent {
 
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
-    this.editRows = dataValue.map((row, rowIndex) => ({
-      isOpen: false,
-      data: row,
-      components: this.createRowComponents(row, rowIndex),
-    }));
+    const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
+    if (openWhenEmpty) {
+      const dataObj = {};
+      this.editRows = [{
+        isOpen: true,
+        data: dataObj,
+        emptyOpen: true,
+        components: this.createRowComponents(dataObj, 0),
+      }];
+    }
+    else {
+      this.editRows = dataValue.map((row, rowIndex) => ({
+        isOpen: false,
+        data: row,
+        components: this.createRowComponents(row, rowIndex),
+      }));
+    }
     this.checkData();
   }
 
@@ -629,10 +642,15 @@ export default class EditGridComponent extends NestedComponent {
       if (editRow) {
         editRow.data = row;
         if (editRow.isOpen) {
-          editRow.components.forEach(col => {
-            col.data = row;
-            col.setValue(row[col.key], flags);
-          });
+          if (editRow.emptyOpen) {
+            editRow.isOpen = false;
+          }
+          else {
+            editRow.components.forEach(col => {
+              col.data = row;
+              col.setValue(row[col.key], flags);
+            });
+          }
         }
       }
       else {

@@ -915,6 +915,7 @@ export default class Component extends Element {
   detach() {
     this.refs = {};
     this.removeEventListeners();
+    this.detachLogic();
     if (this.tooltip) {
       this.tooltip.dispose();
     }
@@ -1392,13 +1393,10 @@ export default class Component extends Element {
         row,
         data,
         this.root ? this.root._form : {},
-        this
+        this,
       );
 
-      if (result) {
-        changed |= this.applyActions(logic.actions, result, data, newComponent, row);
-      }
-      return changed;
+      return (result ? this.applyActions(newComponent, logic.actions, result, row, data) : false) || changed;
     }, false);
 
     // If component definition changed, replace and mark as changed.
@@ -1412,17 +1410,22 @@ export default class Component extends Element {
     return changed;
   }
 
-  applyActions(actions, result, data, newComponent, row) {
+  applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
+
     return actions.reduce((changed, action) => {
       switch (action.type) {
-        case 'property':
-          FormioUtils.setActionProperty(newComponent, action, row, data, newComponent, result, this);
-          if (!_.isEqual(_.get(this.component, action.property.value), _.get(newComponent, action.property.value))) {
+        case 'property': {
+          FormioUtils.setActionProperty(newComponent, action, result, row, data, this);
+
+          const property = action.property.value;
+          if (!_.isEqual(_.get(this.component, property), _.get(newComponent, property))) {
             changed = true;
           }
+
           break;
+        }
         case 'value': {
           const oldValue = this.getValue();
           const newValue = this.evaluate(
@@ -1432,20 +1435,44 @@ export default class Component extends Element {
               data,
               row,
               component: newComponent,
-              result
+              result,
             },
-            'value'
+            'value',
           );
+
           if (!_.isEqual(oldValue, newValue)) {
             this.setValue(newValue);
             changed = true;
           }
+
           break;
         }
         case 'validation':
           // TODO
           break;
+        case 'mergeComponentSchema': {
+          const schema = this.evaluate(
+            action.schemaDefinition,
+            {
+              value: _.clone(this.getValue()),
+              data,
+              row,
+              component: newComponent,
+              result,
+            },
+            'schema',
+          );
+
+          _.merge(newComponent, schema);
+
+          if (!_.isEqual(this.component, newComponent)) {
+            changed = true;
+          }
+
+          break;
+        }
       }
+
       return changed;
     }, false);
   }
@@ -2405,13 +2432,22 @@ export default class Component extends Element {
     this.removeChildFrom(element, this.element);
   }
 
-  attachLogic() {
+  detachLogic() {
     this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
+        this.off(event); // only applies to callbacks on this component
+      }
+    });
+  }
+
+  attachLogic() {
+    this.logic.forEach((logic) => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
           const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, args, null, newComponent, null)) {
+          if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
