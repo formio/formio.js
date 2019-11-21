@@ -48,4 +48,8 @@ export default [
     key: 'placeholder',
     ignore: true,
   },
+  {
+    key: 'autofocus',
+    ignore: true,
+  },
 ];
