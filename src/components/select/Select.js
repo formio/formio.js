@@ -855,18 +855,10 @@ export default class SelectComponent extends Field {
     });
 
     if (placeholderValue && this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(placeholderValue);
+
       this.addEventListener(input, 'removeItem', () => {
-        const items = this.choices._store.activeItems;
-        if (!items.length) {
-          this.choices._addItem({
-            value: placeholderValue,
-            label: placeholderValue,
-            choiceId: 0,
-            groupId: -1,
-            customProperties: null,
-            placeholder: true,
-            keyCode: null });
-        }
+        this.addPlaceholderItem(placeholderValue);
       });
     }
 
@@ -902,6 +894,20 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  addPlaceholderItem(placeholderValue) {
+    const items = this.choices._store.activeItems;
+    if (!items.length) {
+      this.choices._addItem({
+        value: placeholderValue,
+        label: placeholderValue,
+        choiceId: 0,
+        groupId: -1,
+        customProperties: null,
+        placeholder: true,
+        keyCode: null });
+    }
   }
 
   /* eslint-enable max-statements */
