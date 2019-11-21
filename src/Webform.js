@@ -1103,6 +1103,10 @@ export default class Webform extends NestedComponent {
       this.triggerSaveDraft();
     }
 
+    if (modified && this.pristine) {
+      this.pristine = false;
+    }
+
     if (!flags || !flags.noEmit) {
       this.emit('change', value);
       isChangeEventEmitted = true;
