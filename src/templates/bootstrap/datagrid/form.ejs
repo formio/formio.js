@@ -17,7 +17,7 @@
       <th>
         {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
         <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow">
-          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t('Add Another')}}
+          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another')}}
         </button>
         {% } %}
       </th>
