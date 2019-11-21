@@ -207,10 +207,6 @@ export default [
                       value: 'value',
                       label: 'Value'
                     },
-                    {
-                      label: 'Validation',
-                      value: 'validation'
-                    }
                   ],
                 },
                 dataSrc: 'values',
