@@ -192,7 +192,7 @@ export default class RadioComponent extends Field {
         }
         break;
       case 'boolean':
-        value = !!value;
+        value = !(!value || value.toString() === 'false');
         break;
     }
     return super.normalizeValue(value);
