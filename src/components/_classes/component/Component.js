@@ -302,13 +302,6 @@ export default class Component extends Element {
      */
     this.root = this.options.root;
 
-    /**
-     * Callback that will get called when a change event occurs.
-     */
-    if (!this.options.onChange) {
-      this.options.onChange = this.root ? this.root.triggerChange.bind(this.root) : _.noop;
-    }
-
     this.options.name = this.options.name || 'data';
 
     /**
@@ -1208,7 +1201,7 @@ export default class Component extends Element {
     this.splice(index);
     this.redraw();
     this.restoreValue();
-    this.options.onChange();
+    this.triggerRootChange();
   }
 
   iconClass(name, spinning) {
@@ -1577,6 +1570,15 @@ export default class Component extends Element {
     }
   }
 
+  triggerRootChange(...args) {
+    if (this.options.onChange) {
+      this.options.onChange(...args);
+    }
+    else if (this.root) {
+      this.root.triggerChange(...args);
+    }
+  }
+
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
@@ -1615,7 +1617,7 @@ export default class Component extends Element {
 
     // Bubble this change up to the top.
     if (!fromRoot) {
-      this.options.onChange(flags, changed, modified);
+      this.triggerRootChange(flags, changed, modified);
     }
     return changed;
   }
