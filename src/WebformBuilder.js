@@ -879,6 +879,7 @@ export default class WebformBuilder extends Component {
         'calculateValue',
         'logic',
         'autofocus',
+        'customConditional',
       ])] };
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
