@@ -794,6 +794,9 @@ export default class SelectComponent extends Field {
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
+    if (this.selectOptions && this.selectOptions.length) {
+      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+    }
 
     if (this.component.multiple) {
       this.focusableElement = this.choices.input.element;
@@ -864,10 +867,8 @@ export default class SelectComponent extends Field {
     }
 
     // Add value options.
-    if (this.addValueOptions()) {
-      this.choices.setChoiceByValue(this.dataValue);
-      // this.restoreValue();
-    }
+    this.addValueOptions();
+    this.setChoicesValue(this.dataValue);
 
     if (this.isSelectResource && this.refs.addResource) {
       this.addEventListener(this.refs.addResource, 'click', (event) => {
@@ -1151,7 +1152,13 @@ export default class SelectComponent extends Field {
 
     // Add the value options.
     this.addValueOptions();
+    this.setChoicesValue(value, hasPreviousValue);
+    return changed;
+  }
 
+  setChoicesValue(value, hasPreviousValue) {
+    const hasValue = Array.isArray(value) ? value.length : value;
+    hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
@@ -1189,8 +1196,6 @@ export default class SelectComponent extends Field {
         });
       }
     }
-
-    return changed;
   }
 
   /**
