@@ -63,6 +63,14 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
+    this.choices.input.element.addEventListener('blur', (target) => {
+      const value = this.choices.input.value;
+      if (value) {
+        this.choices.setValue([value]);
+        this.choices.clearInput();
+        this.choices.hideDropdown(true);
+      }
+    });
   }
 
   detach() {
@@ -76,7 +84,7 @@ export default class TagsComponent extends Input {
 
   setValue(value) {
     if (this.component.storeas === 'string' && (typeof value === 'string')) {
-      value = value.split(this.delimiter);
+      value = value.split(this.delimiter).filter();
     }
     if (value && !_.isArray(value)) {
       value = [value];
