@@ -310,6 +310,8 @@ export default class Component extends Element {
      */
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
 
+    this._path = '';
+
     /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
@@ -531,6 +533,30 @@ export default class Component extends Element {
 
   get builderMode() {
     return this.options.attachMode === 'builder';
+  }
+
+  get calculatedPath() {
+    if (this._path) {
+      return this._path;
+    }
+
+    this._path = this.key;
+
+    if (!this.root) {
+      return this._path;
+    }
+
+    let parent = this.parent;
+
+    while (parent && parent.id !== this.root.id) {
+      if (['datagrid', 'container', 'editgrid'].includes(parent.type) || parent.tree) {
+        this._path = `${parent.key}.${this._path}`;
+      }
+
+      parent = parent.parent;
+    }
+
+    return this._path;
   }
 
   /**
@@ -918,16 +944,16 @@ export default class Component extends Element {
 
   attachRefreshEvent(refreshData) {
     this.on('change', (event) => {
-      const changeKey = _.get(event, 'changed.component.key', false);
+      const changePath = _.get(event, 'changed.instance.calculatedPath', false);
       // Don't let components change themselves.
-      if (changeKey && this.key === changeKey) {
+      if (changePath && this.calculatedPath === changePath) {
         return;
       }
       if (refreshData === 'data') {
         this.refresh(this.data);
       }
       else if (
-        (changeKey && changeKey === refreshData) && event.changed && event.changed.instance &&
+        (changePath && changePath === refreshData) && event.changed && event.changed.instance &&
         // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
         // in fields inside EditGrids could alter their state from other rows (which is bad).
         this.inContext(event.changed.instance)

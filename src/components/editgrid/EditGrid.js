@@ -521,12 +521,14 @@ export default class EditGridComponent extends NestedComponent {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
+      const compTriggerChange = comp.triggerChange.bind(comp);
       // Don't bubble sub changes since they won't apply until pressing save.
       comp.triggerChange = () => {
         // Should we recalculate or something here?
         // TODO: Cause refreshOn to trigger.
         if (this.component.inlineEdit) {
           this.triggerChange();
+          compTriggerChange();
         }
         else {
           this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
