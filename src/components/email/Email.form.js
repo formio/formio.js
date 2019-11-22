@@ -1,5 +1,6 @@
 import baseEditForm from '../textfield/TextField.form';
 import EmailEditFormDisplay from './editForm/Email.edit.display';
+import EmailEditFormValidation from './editForm/Email.edit.validation';
 
 export default function(...extend) {
   return baseEditForm([
@@ -9,16 +10,7 @@ export default function(...extend) {
     },
     {
       key: 'validation',
-      components: [
-        {
-          key: 'validate.minWords',
-          ignore: true
-        },
-        {
-          key: 'validate.maxWords',
-          ignore: true
-        }
-      ]
+      components: EmailEditFormValidation,
     }
   ], ...extend);
 }

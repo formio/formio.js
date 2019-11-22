@@ -86,7 +86,7 @@ export default class TabsComponent extends NestedComponent {
       tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
       tabComponents: this.tabs.map(tab => this.renderComponents(tab))
-    }, (this.options.flatten ? 'flat' : 'form')));
+    }, (this.options.flatten ? 'flat' : null)));
   }
 
   attach(element) {
