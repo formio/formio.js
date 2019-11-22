@@ -91,7 +91,10 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (process) {
+      if (window) {
+        returnVal = Array.isArray(args) ? func(...args) : func(args);
+      }
+      else {
         // Need to assume we're server side and limit ourselves to a sandbox VM
         const vm = require('vm');
         const sandbox = vm.createContext({ ...originalArgs, result: null });
@@ -108,9 +111,6 @@ export function evaluate(func, args, ret, tokenize) {
         script.runInContext(sandbox, { timeout: 250 });
 
         returnVal = sandbox.result;
-      }
-      else {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
       }
     }
     catch (err) {
