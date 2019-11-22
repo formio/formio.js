@@ -124,7 +124,6 @@ export default class Webform extends NestedComponent {
     this._form = {};
     this.draftEnabled = false;
     this.savingDraft = true;
-    this.originalComponents = [];
     if (this.options.saveDraftThrottle) {
       this.triggerSaveDraft = _.throttle(this.saveDraft.bind(this), this.options.saveDraftThrottle);
     }
@@ -839,7 +838,6 @@ export default class Webform extends NestedComponent {
 
     if (this.component) {
       this.component.components = this.form ? this.form.components : [];
-      this.originalComponents = _.cloneDeep(this.component.components);
     }
     else {
       this.component = this.form;
