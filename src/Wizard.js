@@ -81,7 +81,7 @@ export default class Wizard extends Webform {
   }
 
   get wizardKey() {
-    return `wizard-${this.key}`;
+    return `wizard-${this.id}`;
   }
 
   get form() {
