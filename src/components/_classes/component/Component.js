@@ -302,6 +302,13 @@ export default class Component extends Element {
      */
     this.root = this.options.root;
 
+    /**
+     * Callback that will get called when a change event occurs.
+     */
+    if (!this.options.onChange) {
+      this.options.onChange = this.root ? this.root.triggerChange.bind(this.root) : _.noop;
+    }
+
     this.options.name = this.options.name || 'data';
 
     /**
@@ -424,9 +431,6 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
   }
 
   destroy() {
@@ -942,38 +946,36 @@ export default class Component extends Element {
     }
   }
 
-  attachRefreshEvent(refreshData) {
-    this.on('change', (event) => {
-      const changePath = _.get(event, 'changed.instance.calculatedPath', false);
-      // Don't let components change themselves.
-      if (changePath && this.calculatedPath === changePath) {
-        return;
-      }
-      if (refreshData === 'data') {
-        this.refresh(this.data);
-      }
-      else if (
-        (changePath && changePath === refreshData) && event.changed && event.changed.instance &&
-        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-        // in fields inside EditGrids could alter their state from other rows (which is bad).
-        this.inContext(event.changed.instance)
-      ) {
-        this.refresh(event.changed.value);
-      }
-    }, true);
+  checkRefresh(refreshData, changed) {
+    const changePath = _.get(changed, 'instance.calculatedPath', false);
+    // Don't let components change themselves.
+    if (changePath && this.calculatedPath === changePath) {
+      return;
+    }
+    if (refreshData === 'data') {
+      this.refresh(this.data);
+    }
+    else if (
+      (changePath && changePath === refreshData) && changed && changed.instance &&
+      // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+      // in fields inside EditGrids could alter their state from other rows (which is bad).
+      this.inContext(changed.instance)
+    ) {
+      this.refresh(changed.value);
+    }
   }
 
-  attachRefreshOn() {
+  checkRefreshOn(changed) {
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
         refreshOn.forEach(refreshData => {
-          this.attachRefreshEvent(refreshData);
+          this.checkRefresh(refreshData, changed);
         });
       }
       else {
-        this.attachRefreshEvent(refreshOn);
+        this.checkRefresh(refreshOn, changed);
       }
     }
   }
@@ -1206,9 +1208,7 @@ export default class Component extends Element {
     this.splice(index);
     this.redraw();
     this.restoreValue();
-    if (this.root) {
-      this.root.onChange();
-    }
+    this.options.onChange();
   }
 
   iconClass(name, spinning) {
@@ -1614,8 +1614,8 @@ export default class Component extends Element {
     }
 
     // Bubble this change up to the top.
-    if (this.root && !fromRoot) {
-      this.root.triggerChange(flags, changed, modified);
+    if (!fromRoot) {
+      this.options.onChange(flags, changed, modified);
     }
     return changed;
   }
@@ -2241,6 +2241,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
     }
