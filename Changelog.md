@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed the wizard to work with forms with duplicate panel keys.
  - Fixing the validator to be component type agnostic.
  - Fixed an issue where the wizard navigation would not show correctly if default submission is provided.
+ - Fixing issues where the select component would not default values in wizard mode.
 
 ### Removed
  - Remove unneeded settings from components.
