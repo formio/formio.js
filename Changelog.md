@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix issue with Field Logic events accumulating.
  - Fix clear on hide not working since root is never set to pristine.
  - Fixed the wizard to work with forms with duplicate panel keys.
+ - Fixing the validator to be component type agnostic.
 
 ### Removed
  - Remove unneeded settings from components.
