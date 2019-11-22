@@ -704,25 +704,31 @@ export default class FileComponent extends Field {
           name: fileName,
           size: file.size,
           status: &apos;info&apos;,
-          message: &apos;Starting upload&apos;
+          message: this.t(&apos;Starting upload&apos;),
         };
 
         // Check file pattern
         if (this.component.filePattern &amp;&amp; !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = `File is the wrong type; it must be ${this.component.filePattern}`;
+          fileUpload.message = this.t(&apos;File is the wrong type; it must be {{ pattern }}&apos;, {
+            pattern: this.component.filePattern,
+          });
         }
 
         // Check file minimum size
         if (this.component.fileMinSize &amp;&amp; !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = `File is too small; it must be at least ${this.component.fileMinSize}`;
+          fileUpload.message = this.t(&apos;File is too small; it must be at least {{ size }}&apos;, {
+            size: this.component.fileMinSize,
+          });
         }
 
         // Check file maximum size
         if (this.component.fileMaxSize &amp;&amp; !this.validateMaxSize(file, this.component.fileMaxSize)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = `File is too big; it must be at most ${this.component.fileMaxSize}`;
+          fileUpload.message = this.t(&apos;File is too big; it must be at most {{ size }}&apos;, {
+            size: this.component.fileMaxSize,
+          });
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
@@ -730,7 +736,7 @@ export default class FileComponent extends Field {
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = &apos;File Service not provided.&apos;;
+          fileUpload.message = this.t(&apos;File Service not provided.&apos;);
         }
 
         this.statuses.push(fileUpload);

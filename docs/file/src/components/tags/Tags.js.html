@@ -259,7 +259,7 @@ export default class TagsComponent extends Input {
   }
 
   get emptyValue() {
-    return &apos;&apos;;
+    return (this.component.storeas === &apos;string&apos;) ? &apos;&apos; : [];
   }
 
   get defaultSchema() {

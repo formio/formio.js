@@ -283,6 +283,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
+    this.validators = this.validators.concat([&apos;select&apos;]);
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -1022,6 +1023,9 @@ export default class SelectComponent extends Field {
     this.addPlaceholder();
     input.setAttribute(&apos;dir&apos;, this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
+    if (this.selectOptions &amp;&amp; this.selectOptions.length) {
+      this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+    }
 
     if (this.component.multiple) {
       this.focusableElement = this.choices.input.element;
@@ -1092,10 +1096,8 @@ export default class SelectComponent extends Field {
     }
 
     // Add value options.
-    if (this.addValueOptions()) {
-      this.choices.setChoiceByValue(this.dataValue);
-      // this.restoreValue();
-    }
+    this.addValueOptions();
+    this.setChoicesValue(this.dataValue);
 
     if (this.isSelectResource &amp;&amp; this.refs.addResource) {
       this.addEventListener(this.refs.addResource, &apos;click&apos;, (event) =&gt; {
@@ -1379,7 +1381,13 @@ export default class SelectComponent extends Field {
 
     // Add the value options.
     this.addValueOptions();
+    this.setChoicesValue(value, hasPreviousValue);
+    return changed;
+  }
 
+  setChoicesValue(value, hasPreviousValue) {
+    const hasValue = Array.isArray(value) ? value.length : value;
+    hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
@@ -1417,8 +1425,6 @@ export default class SelectComponent extends Field {
         });
       }
     }
-
-    return changed;
   }
 
   /**
