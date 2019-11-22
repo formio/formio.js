@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Adding ability to open first EditGrid row when it is empty.
  - Adding a feature that will clone the rows of table components to quickly create input tables.
  - Allow translation of file error messages
+ - Added ability to configure form builder options globally.
 
 ### Fixed
  - Fix required validation border is being removed after correcting one field
