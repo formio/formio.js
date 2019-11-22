@@ -30,7 +30,7 @@ export default class TagsComponent extends Input {
   }
 
   get emptyValue() {
-    return '';
+    return (this.component.storeas === 'string') ? '' : [];
   }
 
   get defaultSchema() {

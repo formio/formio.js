@@ -54,6 +54,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
+    this.validators = this.validators.concat(['select']);
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);

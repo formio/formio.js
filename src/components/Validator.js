@@ -117,7 +117,7 @@ class ValidationChecker {
       multiple: {
         key: 'validate.multiple',
         message(component) {
-          const shouldBeArray = boolValue(component.component.multiple) || component.component.type === 'file';
+          const shouldBeArray = boolValue(component.component.multiple) || Array.isArray(component.emptyValue);
           const isRequired = component.component.validate.required;
           const messageKey = shouldBeArray ? (isRequired ? 'array_nonempty' : 'array') : 'nonarray';
 
@@ -133,7 +133,7 @@ class ValidationChecker {
           }
 
           const shouldBeArray = boolValue(setting);
-          const canBeArray = ['file', 'selectboxes'].includes(component.component.type);
+          const canBeArray = Array.isArray(component.emptyValue);
           const isArray = Array.isArray(value);
           const isRequired = component.component.validate.required;
 
@@ -788,11 +788,6 @@ class ValidationChecker {
 
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-
-    // Add the select validator for select components
-    if (component.component.type === 'select' && component.validators.indexOf('select') === -1) {
-      component.validators.push('select');
-    }
 
     // Run primary validators
     const resultsOrPromises = _(component.validators).chain()
