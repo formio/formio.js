@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed an issue where the wizard navigation would not show correctly if default submission is provided.
  - Fixing issues where the select component would not default values in wizard mode.
  - Fixing the pattern attribute on Number components to also allow for comma's and decimals.
+ - Some Event Listener leaks.
 
 ### Removed
  - Remove unneeded settings from components.

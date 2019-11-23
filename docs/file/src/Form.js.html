@@ -290,7 +290,7 @@ export default class Form extends Element {
    * @return {*}
    */
   create(display) {
-    if (this.options &amp;&amp; this.options.flatten) {
+    if (this.options &amp;&amp; (this.options.flatten || this.options.renderMode === &apos;flat&apos;)) {
       display = &apos;form&apos;;
     }
     this.display = display;

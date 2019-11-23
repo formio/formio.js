@@ -539,6 +539,8 @@ export default class Component extends Element {
      */
     this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;minWords&apos;, &apos;maxWords&apos;, &apos;custom&apos;, &apos;pattern&apos;, &apos;json&apos;, &apos;mask&apos;];
 
+    this._path = &apos;&apos;;
+
     /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
@@ -651,9 +653,6 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
   }
 
   destroy() {
@@ -760,6 +759,30 @@ export default class Component extends Element {
 
   get builderMode() {
     return this.options.attachMode === &apos;builder&apos;;
+  }
+
+  get calculatedPath() {
+    if (this._path) {
+      return this._path;
+    }
+
+    this._path = this.key;
+
+    if (!this.root) {
+      return this._path;
+    }
+
+    let parent = this.parent;
+
+    while (parent &amp;&amp; parent.id !== this.root.id) {
+      if ([&apos;datagrid&apos;, &apos;container&apos;, &apos;editgrid&apos;].includes(parent.type) || parent.tree) {
+        this._path = `${parent.key}.${this._path}`;
+      }
+
+      parent = parent.parent;
+    }
+
+    return this._path;
   }
 
   /**
@@ -1145,38 +1168,36 @@ export default class Component extends Element {
     }
   }
 
-  attachRefreshEvent(refreshData) {
-    this.on(&apos;change&apos;, (event) =&gt; {
-      const changeKey = _.get(event, &apos;changed.component.key&apos;, false);
-      // Don&apos;t let components change themselves.
-      if (changeKey &amp;&amp; this.key === changeKey) {
-        return;
-      }
-      if (refreshData === &apos;data&apos;) {
-        this.refresh(this.data);
-      }
-      else if (
-        (changeKey &amp;&amp; changeKey === refreshData) &amp;&amp; event.changed &amp;&amp; event.changed.instance &amp;&amp;
-        // Make sure the changed component is not in a different &quot;context&quot;. Solves issues where refreshOn being set
-        // in fields inside EditGrids could alter their state from other rows (which is bad).
-        this.inContext(event.changed.instance)
-      ) {
-        this.refresh(event.changed.value);
-      }
-    }, true);
+  checkRefresh(refreshData, changed) {
+    const changePath = _.get(changed, &apos;instance.calculatedPath&apos;, false);
+    // Don&apos;t let components change themselves.
+    if (changePath &amp;&amp; this.calculatedPath === changePath) {
+      return;
+    }
+    if (refreshData === &apos;data&apos;) {
+      this.refresh(this.data);
+    }
+    else if (
+      (changePath &amp;&amp; changePath === refreshData) &amp;&amp; changed &amp;&amp; changed.instance &amp;&amp;
+      // Make sure the changed component is not in a different &quot;context&quot;. Solves issues where refreshOn being set
+      // in fields inside EditGrids could alter their state from other rows (which is bad).
+      this.inContext(changed.instance)
+    ) {
+      this.refresh(changed.value);
+    }
   }
 
-  attachRefreshOn() {
+  checkRefreshOn(changed) {
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
         refreshOn.forEach(refreshData =&gt; {
-          this.attachRefreshEvent(refreshData);
+          this.checkRefresh(refreshData, changed);
         });
       }
       else {
-        this.attachRefreshEvent(refreshOn);
+        this.checkRefresh(refreshOn, changed);
       }
     }
   }
@@ -1409,9 +1430,7 @@ export default class Component extends Element {
     this.splice(index);
     this.redraw();
     this.restoreValue();
-    if (this.root) {
-      this.root.onChange();
-    }
+    this.triggerRootChange();
   }
 
   iconClass(name, spinning) {
@@ -1780,6 +1799,15 @@ export default class Component extends Element {
     }
   }
 
+  triggerRootChange(...args) {
+    if (this.options.onChange) {
+      this.options.onChange(...args);
+    }
+    else if (this.root) {
+      this.root.triggerChange(...args);
+    }
+  }
+
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
@@ -1817,8 +1845,8 @@ export default class Component extends Element {
     }
 
     // Bubble this change up to the top.
-    if (this.root &amp;&amp; !fromRoot) {
-      this.root.triggerChange(flags, changed, modified);
+    if (!fromRoot) {
+      this.triggerRootChange(flags, changed, modified);
     }
     return changed;
   }
@@ -2444,6 +2472,7 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
     }

@@ -707,15 +707,16 @@ export default class SelectComponent extends Field {
   }
 
   refresh() {
+    if (this.component.clearOnRefresh) {
+      this.setValue(this.emptyValue);
+    }
+
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
     }
 
-    if (this.component.clearOnRefresh) {
-      this.setValue(this.emptyValue);
-    }
     this.updateItems(null, true);
   }
 
@@ -1055,7 +1056,7 @@ export default class SelectComponent extends Field {
           this.triggerUpdate(this.choices.input.element.value);
         }
       };
-      this.scrollList.addEventListener(&apos;scroll&apos;, this.onScroll);
+      this.addEventListener(this.scrollList, &apos;scroll&apos;, this.onScroll);
     }
 
     this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);

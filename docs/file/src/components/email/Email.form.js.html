@@ -229,6 +229,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/email/Email.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../textfield/TextField.form&apos;;
 import EmailEditFormDisplay from &apos;./editForm/Email.edit.display&apos;;
+import EmailEditFormValidation from &apos;./editForm/Email.edit.validation&apos;;
 
 export default function(...extend) {
   return baseEditForm([
@@ -238,16 +239,7 @@ export default function(...extend) {
     },
     {
       key: &apos;validation&apos;,
-      components: [
-        {
-          key: &apos;validate.minWords&apos;,
-          ignore: true
-        },
-        {
-          key: &apos;validate.maxWords&apos;,
-          ignore: true
-        }
-      ]
+      components: EmailEditFormValidation,
     }
   ], ...extend);
 }

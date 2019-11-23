@@ -1131,19 +1131,12 @@ export default class Webform extends NestedComponent {
     this.element = element;
     this.loadRefs(element, { webform: &apos;single&apos; });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.element.addEventListener(&apos;keydown&apos;, this.executeShortcuts);
+    this.addEventListener(this.element, &apos;keydown&apos;, this.executeShortcuts);
     this.currentForm = this;
     setTimeout(() =&gt; this.emit(&apos;render&apos;), 1);
     return childPromise.then(() =&gt; this.setValue(this._submission, {
       noUpdateEvent: true
     }));
-  }
-
-  detach() {
-    if (this.element) {
-      this.element.removeEventListener(&apos;keydown&apos;, this.executeShortcuts);
-    }
-    return super.detach();
   }
 
   resetValue() {
@@ -1311,6 +1304,7 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed, modified) {
+    flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed &amp;&amp; changed.component) {
@@ -1319,7 +1313,7 @@ export default class Webform extends NestedComponent {
 
     super.onChange(flags, true);
     const value = _.clone(this.submission);
-    value.changed = changed;
+    flags.changed = value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {

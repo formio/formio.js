@@ -457,7 +457,7 @@ export default class EditGridComponent extends NestedComponent {
         ].forEach(action =&gt; {
           const elements = row.getElementsByClassName(action.class);
           Array.prototype.forEach.call(elements, element =&gt; {
-            element.addEventListener(action.event, action.action);
+            this.addEventListener(element, action.event, action.action);
           });
         });
       }
@@ -746,21 +746,20 @@ export default class EditGridComponent extends NestedComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.onChange = (flags, changed, modified) =&gt; {
+        if (this.component.inlineEdit) {
+          this.options.onChange(flags, changed, modified);
+        }
+        else {
+          this.checkRow(null, this.editRows[rowIndex], {
+            changed
+          }, this.editRows[rowIndex].data);
+        }
+      };
       const comp = this.createComponent(_.assign({}, column, {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
-      // Don&apos;t bubble sub changes since they won&apos;t apply until pressing save.
-      comp.triggerChange = () =&gt; {
-        // Should we recalculate or something here?
-        // TODO: Cause refreshOn to trigger.
-        if (this.component.inlineEdit) {
-          this.triggerChange();
-        }
-        else {
-          this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
-        }
-      };
       components.push(comp);
     });
     return components;

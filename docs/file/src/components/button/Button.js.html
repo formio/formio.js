@@ -445,7 +445,8 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
-    if (this.disabled) {
+    // Don&apos;t click if disabled or in builder mode.
+    if (this.disabled || this.options.attachMode === &apos;builder&apos;) {
       return;
     }
     this.dataValue = true;

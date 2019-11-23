@@ -464,7 +464,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.setAttribute(&apos;type&apos;, &apos;file&apos;);
       fileInput.setAttribute(&apos;accept&apos;, &apos;image/*&apos;);
       fileInput.classList.add(&apos;ql-image&apos;);
-      fileInput.addEventListener(&apos;change&apos;, () =&gt; {
+      this.addEventListener(fileInput, &apos;change&apos;, () =&gt; {
         const files = fileInput.files;
         const range = quillInstance.quill.getSelection(true);
 
