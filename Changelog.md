@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Adding a feature that will clone the rows of table components to quickly create input tables.
  - Allow translation of file error messages
  - Added ability to configure form builder options globally.
+ - Add kickbox settings back.
 
 ### Fixed
  - Fix required validation border is being removed after correcting one field
@@ -38,12 +39,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed an issue where the wizard navigation would not show correctly if default submission is provided.
  - Fixing issues where the select component would not default values in wizard mode.
  - Fixing the pattern attribute on Number components to also allow for comma's and decimals.
+ - Fix flattened to support renderMode = 'flat' as well.
+ - Fix tags to not start with empty string and automatically add tags on blur.
+ - Disable button clicks in builder mode.
  - Some Event Listener leaks.
 
 ### Removed
  - Remove unneeded settings from components.
  - Removed "always enabled" configuration.
  - Remove field logic validation.
+ - Remove field logic from edit preview.
 
 ## 4.7.8
 ### Fixed
