@@ -63,7 +63,7 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
-    this.choices.input.element.addEventListener('blur', (target) => {
+    this.addEventListener(this.choices.input.element, 'blur', (target) => {
       const value = this.choices.input.value;
       if (value) {
         this.choices.setValue([value]);

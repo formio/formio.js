@@ -827,7 +827,7 @@ export default class SelectComponent extends Field {
           this.triggerUpdate(this.choices.input.element.value);
         }
       };
-      this.scrollList.addEventListener('scroll', this.onScroll);
+      this.addEventListener(this.scrollList, 'scroll', this.onScroll);
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);

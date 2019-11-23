@@ -228,7 +228,7 @@ export default class EditGridComponent extends NestedComponent {
         ].forEach(action => {
           const elements = row.getElementsByClassName(action.class);
           Array.prototype.forEach.call(elements, element => {
-            element.addEventListener(action.event, action.action);
+            this.addEventListener(element, action.event, action.action);
           });
         });
       }

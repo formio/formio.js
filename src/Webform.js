@@ -902,19 +902,12 @@ export default class Webform extends NestedComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.element.addEventListener('keydown', this.executeShortcuts);
+    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise.then(() => this.setValue(this._submission, {
       noUpdateEvent: true
     }));
-  }
-
-  detach() {
-    if (this.element) {
-      this.element.removeEventListener('keydown', this.executeShortcuts);
-    }
-    return super.detach();
   }
 
   resetValue() {
