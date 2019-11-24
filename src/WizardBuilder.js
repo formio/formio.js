@@ -71,6 +71,10 @@ export default class WizardBuilder extends WebformBuilder {
     }, true);
   }
 
+  shouldDrop(element, containerElement) {
+    return this.hasClass(containerElement, 'formio-builder-form') ? false : true;
+  }
+
   get pages() {
     return _.filter(this._form.components, { type: 'panel' });
   }
