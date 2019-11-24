@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fix tags to not start with empty string and automatically add tags on blur.
  - Disable button clicks in builder mode.
  - Some Event Listener leaks.
+ - An issue where you could drop a component outside of the wizard page in builder mode.
 
 ### Removed
  - Remove unneeded settings from components.
