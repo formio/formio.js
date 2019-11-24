@@ -1004,7 +1004,10 @@ class ValidationChecker {
 
   checkComponent(component, data, row, includeWarnings = false) {
     // If we&apos;re server-side and it&apos;s not a persistent component, don&apos;t run validation at all
-    if (_.get(process, &apos;release.name&apos;) === &apos;node&apos; &amp;&amp; !_.defaultTo(component.component.persistent, true)) {
+    if (
+      (_.get(process, &apos;release.name&apos;) === &apos;node&apos; &amp;&amp; !_.defaultTo(component.component.persistent, true)) ||
+      (component.component.validate === false)
+    ) {
       return [];
     }
 
