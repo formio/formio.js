@@ -40,8 +40,7 @@ export default [
       {
         type: 'hidden',
         key: 'components',
-        defaultValue: [],
-        validate: false
+        defaultValue: []
       },
       {
         type: 'number',

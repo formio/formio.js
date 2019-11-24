@@ -71,8 +71,8 @@ export default class WizardBuilder extends WebformBuilder {
     }, true);
   }
 
-  shouldDrop(element, containerElement) {
-    return this.hasClass(containerElement, 'formio-builder-form') ? false : true;
+  allowDrop(element) {
+    return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;
   }
 
   get pages() {

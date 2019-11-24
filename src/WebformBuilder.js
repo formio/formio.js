@@ -183,7 +183,7 @@ export default class WebformBuilder extends Component {
       containerElement.formioComponent = component;
 
       // Add container to draggable list.
-      if (this.dragula && this.shouldDrop(element, containerElement)) {
+      if (this.dragula && this.allowDrop(element)) {
         this.dragula.containers.push(containerElement);
       }
 
@@ -334,7 +334,7 @@ export default class WebformBuilder extends Component {
     this.webform = this.webform || this.createForm(this.options);
   }
 
-  shouldDrop() {
+  allowDrop() {
     return true;
   }
 
