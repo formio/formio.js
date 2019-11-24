@@ -2239,13 +2239,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-set-token",
+    "class/src/Formio.js~Formio.html#static-get-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
   [
     "src/formio.js~formio.token",
-    "class/src/Formio.js~Formio.html#static-get-token",
+    "class/src/Formio.js~Formio.html#static-set-token",
     "src/Formio.js~Formio.token",
     "member"
   ],
@@ -2683,13 +2683,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-set-form",
+    "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
   [
     "src/webform.js~webform#form",
-    "class/src/Webform.js~Webform.html#instance-get-form",
+    "class/src/Webform.js~Webform.html#instance-set-form",
     "src/Webform.js~Webform#form",
     "member"
   ],
@@ -2767,13 +2767,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-get-loading",
+    "class/src/Webform.js~Webform.html#instance-set-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
   [
     "src/webform.js~webform#loading",
-    "class/src/Webform.js~Webform.html#instance-set-loading",
+    "class/src/Webform.js~Webform.html#instance-get-loading",
     "src/Webform.js~Webform#loading",
     "member"
   ],
@@ -2797,13 +2797,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
   [
     "src/webform.js~webform#nosubmit",
-    "class/src/Webform.js~Webform.html#instance-get-nosubmit",
+    "class/src/Webform.js~Webform.html#instance-set-nosubmit",
     "src/Webform.js~Webform#nosubmit",
     "member"
   ],
@@ -2947,13 +2947,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -3043,13 +3043,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3193,13 +3193,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webformbuilder.js~webformbuilder#form",
-    "class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form",
     "src/WebformBuilder.js~WebformBuilder#form",
     "member"
   ],
   [
     "src/webformbuilder.js~webformbuilder#form",
-    "class/src/WebformBuilder.js~WebformBuilder.html#instance-get-form",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-set-form",
     "src/WebformBuilder.js~WebformBuilder#form",
     "member"
   ],
@@ -3309,6 +3309,12 @@ window.esdocSearchIndex = [
     "src/webformbuilder.js~webformbuilder#setform",
     "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-setForm",
     "src/WebformBuilder.js~WebformBuilder#setForm",
+    "method"
+  ],
+  [
+    "src/webformbuilder.js~webformbuilder#shoulddrop",
+    "class/src/WebformBuilder.js~WebformBuilder.html#instance-method-shouldDrop",
+    "src/WebformBuilder.js~WebformBuilder#shouldDrop",
     "method"
   ],
   [
@@ -3487,13 +3493,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizard.js~wizard#form",
-    "class/src/Wizard.js~Wizard.html#instance-get-form",
+    "class/src/Wizard.js~Wizard.html#instance-set-form",
     "src/Wizard.js~Wizard#form",
     "member"
   ],
   [
     "src/wizard.js~wizard#form",
-    "class/src/Wizard.js~Wizard.html#instance-set-form",
+    "class/src/Wizard.js~Wizard.html#instance-get-form",
     "src/Wizard.js~Wizard#form",
     "member"
   ],
@@ -3739,13 +3745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
     "src/WizardBuilder.js~WizardBuilder#form",
     "member"
   ],
@@ -3801,6 +3807,12 @@ window.esdocSearchIndex = [
     "src/wizardbuilder.js~wizardbuilder#setpage",
     "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-setPage",
     "src/WizardBuilder.js~WizardBuilder#setPage",
+    "method"
+  ],
+  [
+    "src/wizardbuilder.js~wizardbuilder#shoulddrop",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-shouldDrop",
+    "src/WizardBuilder.js~WizardBuilder#shouldDrop",
     "method"
   ],
   [
@@ -4297,13 +4309,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#datavalue",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-dataValue",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-dataValue",
     "src/components/_classes/component/Component.js~Component#dataValue",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#datavalue",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-dataValue",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-dataValue",
     "src/components/_classes/component/Component.js~Component#dataValue",
     "member"
   ],
@@ -4675,25 +4687,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#parentdisabled",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentDisabled",
-    "src/components/_classes/component/Component.js~Component#parentDisabled",
-    "member"
-  ],
-  [
-    "src/components/_classes/component/component.js~component#parentdisabled",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentDisabled",
     "src/components/_classes/component/Component.js~Component#parentDisabled",
     "member"
   ],
   [
-    "src/components/_classes/component/component.js~component#parentvisible",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
-    "src/components/_classes/component/Component.js~Component#parentVisible",
+    "src/components/_classes/component/component.js~component#parentdisabled",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentDisabled",
+    "src/components/_classes/component/Component.js~Component#parentDisabled",
     "member"
   ],
   [
     "src/components/_classes/component/component.js~component#parentvisible",
     "class/src/components/_classes/component/Component.js~Component.html#instance-set-parentVisible",
+    "src/components/_classes/component/Component.js~Component#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#parentvisible",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
     "src/components/_classes/component/Component.js~Component#parentVisible",
     "member"
   ],
@@ -5365,13 +5377,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-set-dataValue",
+    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-dataValue",
     "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
     "member"
   ],
   [
     "src/components/_classes/multivalue/multivalue.js~multivalue#datavalue",
-    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-get-dataValue",
+    "class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html#instance-set-dataValue",
     "src/components/_classes/multivalue/Multivalue.js~Multivalue#dataValue",
     "member"
   ],
@@ -5731,13 +5743,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentdisabled",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-parentDisabled",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-parentDisabled",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentDisabled",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#parentdisabled",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-parentDisabled",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-parentDisabled",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#parentDisabled",
     "member"
   ],
@@ -5803,13 +5815,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#rowindex",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-rowIndex",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-rowIndex",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#rowIndex",
     "member"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#rowindex",
-    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-set-rowIndex",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-rowIndex",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#rowIndex",
     "member"
   ],
@@ -6637,13 +6649,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-set-data",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-data",
     "src/components/container/Container.js~ContainerComponent#data",
     "member"
   ],
   [
     "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-data",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-set-data",
     "src/components/container/Container.js~ContainerComponent#data",
     "member"
   ],
@@ -7075,13 +7087,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#disabled",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-disabled",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-disabled",
     "src/components/datagrid/DataGrid.js~DataGridComponent#disabled",
     "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#disabled",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-set-disabled",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-disabled",
     "src/components/datagrid/DataGrid.js~DataGridComponent#disabled",
     "member"
   ],
@@ -7399,13 +7411,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-dataValue",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-set-dataValue",
     "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
     "member"
   ],
   [
     "src/components/datamap/datamap.js~datamapcomponent#datavalue",
-    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-set-dataValue",
+    "class/src/components/datamap/DataMap.js~DataMapComponent.html#instance-get-dataValue",
     "src/components/datamap/DataMap.js~DataMapComponent#dataValue",
     "member"
   ],
@@ -8965,13 +8977,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/form/form.js~formcomponent#parentvisible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-set-parentVisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
     "src/components/form/Form.js~FormComponent#parentVisible",
     "member"
   ],
   [
     "src/components/form/form.js~formcomponent#parentvisible",
-    "class/src/components/form/Form.js~FormComponent.html#instance-get-parentVisible",
+    "class/src/components/form/Form.js~FormComponent.html#instance-set-parentVisible",
     "src/components/form/Form.js~FormComponent#parentVisible",
     "member"
   ],
@@ -10135,25 +10147,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/select/select.js~selectcomponent#disabled",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-disabled",
-    "src/components/select/Select.js~SelectComponent#disabled",
-    "member"
-  ],
-  [
-    "src/components/select/select.js~selectcomponent#disabled",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-disabled",
     "src/components/select/Select.js~SelectComponent#disabled",
     "member"
   ],
   [
-    "src/components/select/select.js~selectcomponent#downloadedresources",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
-    "src/components/select/Select.js~SelectComponent#downloadedResources",
+    "src/components/select/select.js~selectcomponent#disabled",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-disabled",
+    "src/components/select/Select.js~SelectComponent#disabled",
     "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#downloadedresources",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-downloadedResources",
+    "src/components/select/Select.js~SelectComponent#downloadedResources",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#downloadedresources",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-set-downloadedResources",
     "src/components/select/Select.js~SelectComponent#downloadedResources",
     "member"
   ],
@@ -10819,13 +10831,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-disabled",
+    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-set-disabled",
     "src/components/survey/Survey.js~SurveyComponent#disabled",
     "member"
   ],
   [
     "src/components/survey/survey.js~surveycomponent#disabled",
-    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-set-disabled",
+    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-get-disabled",
     "src/components/survey/Survey.js~SurveyComponent#disabled",
     "member"
   ],
@@ -11209,13 +11221,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/tags/tags.js~tagscomponent#disabled",
-    "class/src/components/tags/Tags.js~TagsComponent.html#instance-get-disabled",
+    "class/src/components/tags/Tags.js~TagsComponent.html#instance-set-disabled",
     "src/components/tags/Tags.js~TagsComponent#disabled",
     "member"
   ],
   [
     "src/components/tags/tags.js~tagscomponent#disabled",
-    "class/src/components/tags/Tags.js~TagsComponent.html#instance-set-disabled",
+    "class/src/components/tags/Tags.js~TagsComponent.html#instance-get-disabled",
     "src/components/tags/Tags.js~TagsComponent#disabled",
     "member"
   ],
@@ -13273,13 +13285,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-get-framework",
+    "class/src/templates/Templates.js~Templates.html#static-set-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
   [
     "src/templates/templates.js~templates.framework",
-    "class/src/templates/Templates.js~Templates.html#static-set-framework",
+    "class/src/templates/Templates.js~Templates.html#static-get-framework",
     "src/templates/Templates.js~Templates.framework",
     "member"
   ],
