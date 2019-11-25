@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.8.0-beta.1
 ### Changed
- - Upgraded @formio/bootstrap3@1.1.3, @formio/semantic@1.2.2, core-js@3.4.2, i18next@19.0.1, file-loader@4.3.0, choices.js@9.0.1
+ - Upgraded @formio/bootstrap3@1.1.3, @formio/semantic@1.2.2, core-js@3.4.2, i18next@19.0.1, file-loader@4.3.0
  - Adding major changes to validator to support Isomorphic Validation
  - Adding Merge Component action to Logic settings.
  - Allow "persistent" prefix and suffix components in wizard by adding components outside of root panels.
