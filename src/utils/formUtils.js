@@ -149,7 +149,7 @@ export function matchComponent(component, query) {
 export function getComponent(components, key, includeAll) {
   let result;
   eachComponent(components, (component, path) => {
-    if (path === key) {
+    if (component.key === key) {
       component.path = path;
       result = component;
       return true;
