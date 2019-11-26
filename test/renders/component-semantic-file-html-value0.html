@@ -1,0 +1,23 @@
+<div id="file" class="field form-group has-feedback formio-component formio-component-file formio-component-file " ref="component">
+  <label class="">
+    Upload
+  </label>
+  <div class="ui celled list">
+    <div class="item">
+      <div class="ui grid">
+        <div class="one wide column"></div>
+        <div class="twelve wide column"><strong>File Name</strong></div>
+        <div class="three wide column"><strong>Size</strong></div>
+      </div>
+    </div>
+  </div>
+  <input type="file" style="opacity: 0; position: absolute;" tabindex="-1" ref="hiddenFileInputElement">
+  <div class="fileSelector" ref="fileDrop">
+    <i class="fa fa-cloud-upload"></i> Drop files to attach,
+    or <a href="#" ref="fileBrowse" class="browse">browse</a>
+  </div>
+  <div class="alert alert-warning">
+    <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>
+  </div>
+  <div ref="messageContainer"></div>
+</div>

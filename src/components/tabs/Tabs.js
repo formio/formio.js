@@ -9,6 +9,7 @@ export default class TabsComponent extends NestedComponent {
       input: false,
       key: 'tabs',
       persistent: false,
+      tableView: false,
       components: [
         {
           label: 'Tab 1',
