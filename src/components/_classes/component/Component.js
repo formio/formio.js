@@ -1087,8 +1087,8 @@ export default class Component extends Element {
     this.onChange(...args);
   }
 
-  createModal(element) {
-    const dialog = this.ce('div');
+  createModal(element, attr) {
+    const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
