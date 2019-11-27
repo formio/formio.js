@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.8.0-beta.2
+### Changed
+ - Updated semantic template to fix undefined method in radio html template.
+
 ### Fixed
  - Build issues when used within an angular application.
  - Fix datagrid, editgrid, container and tabs in data view.
