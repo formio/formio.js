@@ -521,7 +521,7 @@ export default class EditGridComponent extends NestedComponent {
         if (this.component.inlineEdit) {
           this.options.onChange(flags, changed, modified);
         }
-        else {
+        else if (this.editRows[rowIndex]) {
           this.checkRow(null, this.editRows[rowIndex], {
             changed
           }, this.editRows[rowIndex].data);
