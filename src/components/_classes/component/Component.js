@@ -14,7 +14,8 @@ const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
 
 /**
- * This is the Component class which all elements within the FormioForm derive from.
+ * This is the Component class
+ which all elements within the FormioForm derive from.
  */
 export default class Component extends Element {
   static schema(...sources) {
@@ -584,6 +585,7 @@ export default class Component extends Element {
         (!recursion && (key === 'key')) ||
         (!recursion && (key === 'label')) ||
         (!recursion && (key === 'input')) ||
+        (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
         (val !== '' && val !== defaultSchema[key])
       ) {
@@ -1072,6 +1074,9 @@ export default class Component extends Element {
     if (_.isPlainObject(value)) {
       return JSON.stringify(value);
     }
+    if (value === null || value === undefined) {
+      return '';
+    }
     return value.toString();
   }
 
@@ -1085,6 +1090,25 @@ export default class Component extends Element {
   updateItems(...args) {
     this.restoreValue();
     this.onChange(...args);
+  }
+
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
   }
 
   createModal(element, attr) {

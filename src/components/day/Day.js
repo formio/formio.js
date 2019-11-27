@@ -503,7 +503,7 @@ export default class DayComponent extends Field {
    * @return {null}
    */
   getValueAsString(value) {
-    return this.getDate(value);
+    return this.getDate(value) || '';
   }
 
   focus() {
