@@ -3,6 +3,7 @@ const forms = require('../../test/formtest');
 const pretty = require('pretty');
 import assert from 'power-assert';
 import i18next from 'i18next';
+import NativePromise from 'native-promise-only';
 
 const i18Defaults = require('../i18n');
 const AllComponents = require('../components').default;
@@ -28,7 +29,7 @@ const fixComponent = (instance, index = 0) => {
 
 describe('Rendering Tests', () => {
   before(() => {
-    return new Promise((resolve, reject) => {
+    return new NativePromise((resolve, reject) => {
       i18next.init(i18Defaults, (err) => {
         if (err) {
           return reject(err);

@@ -9,6 +9,7 @@ import {
   convertFormatToMoment
 } from '../utils/utils';
 import moment from 'moment';
+import NativePromise from 'native-promise-only';
 import {
   checkInvalidDate,
   CALENDAR_ERROR_MESSAGES
@@ -66,7 +67,7 @@ class ValidationChecker {
             return true;
           }
 
-          return new Promise(resolve => {
+          return new NativePromise(resolve => {
             const form = config.form;
             const submission = config.submission;
             const path = `data.${component.path}`;
@@ -729,7 +730,7 @@ class ValidationChecker {
     };
 
     if (this.async) {
-      return Promise.resolve(resultOrPromise).then(processResult);
+      return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
       return processResult(resultOrPromise);
@@ -766,7 +767,7 @@ class ValidationChecker {
     };
 
     if (this.async) {
-      return Promise.resolve(resultOrPromise).then(processResult);
+      return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
       return processResult(resultOrPromise);
@@ -842,7 +843,7 @@ class ValidationChecker {
 
     // Wait for results if using async mode, otherwise process and return immediately
     if (this.async) {
-      return Promise.all(resultsOrPromises).then(formatResults);
+      return NativePromise.all(resultsOrPromises).then(formatResults);
     }
     else {
       return formatResults(resultsOrPromises);
