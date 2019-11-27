@@ -6058,7 +6058,7 @@ eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexpo
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js?");
+eval("Object.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default=function(ctx) {\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n__p += '<div ref=\"value\">\\n  ';\n var filtered = ctx.values.filter(function(item) {return ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value])}).map(function(item) { return ctx.t(item.label)}).join(', ') ;\n__p += '\\n  ' +\n((__t = (filtered)) == null ? '' : __t) +\n'\\n  </div>\\n';\nreturn __p\n}\n\n//# sourceURL=webpack:///./node_modules/@formio/semantic/lib/templates/semantic/radio/html.ejs.js?");
 
 /***/ }),
 
