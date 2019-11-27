@@ -603,6 +603,19 @@ export default class Component extends Element {
   }
 
   /**
+   * Interpolate a template with data & row made available.
+   *
+   * @param {string} template - The template to interpolate.
+   */
+  i(template) {
+    const ctx = {
+      data: this.rootValue,
+      row:  this.data
+    };
+    return this.interpolate(template, ctx);
+  }
+
+  /**
    * Translate a text using the i18n system.
    *
    * @param {string} text - The i18n identifier.
@@ -709,6 +722,7 @@ export default class Component extends Element {
     data.options = this.options;
     data.readOnly = this.options.readOnly;
     data.iconClass = this.iconClass.bind(this);
+    data.i = this.i.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.transform;
     data.id = data.id || this.id;
@@ -2178,6 +2192,8 @@ export default class Component extends Element {
   set label(value) {
     this.component.label = value;
     if (this.labelElement) {
+      // How do we get here at all?
+      // Maybe this should be: ...= this.i(this.t(value));
       this.labelElement.innerText = value;
     }
   }
