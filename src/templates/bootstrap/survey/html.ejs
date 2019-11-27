@@ -2,11 +2,11 @@
   <tbody>
     {% ctx.component.questions.forEach(function(question) { %}
     <tr>
-      <th>{{ctx.t(question.label)}}</th>
+      <th>{{ctx.i(ctx.t(question.label))}}</th>
       <td>
       {% ctx.component.values.forEach(function(item) { %}
         {% if (ctx.value && ctx.value.hasOwnProperty(question.value) && ctx.value[question.value] === item.value) { %}
-          {{ctx.t(item.label)}}
+          {{ctx.i(ctx.t(item.label))}}
         {% } %}
       {% }) %}
       </td>

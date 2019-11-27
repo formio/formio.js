@@ -7,7 +7,7 @@
     id="{{ctx.key}}-mask"
     ref="select">
     {% ctx.selectOptions.forEach(function(option) { %}
-    <option value="{{option.value}}">{{option.label}}</option>
+    <option value="{{option.value}}">{{ctx.i(ctx.t(option.label))}}</option>
     {% }); %}
   </select>
   <input

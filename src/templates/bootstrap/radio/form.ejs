@@ -3,7 +3,7 @@
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
     <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">
       {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
-      <span>{{ctx.t(item.label)}}</span>
+      <span>{{ctx.i(ctx.t(item.label))}}</span>
       {% } %}
       <{{ctx.input.type}}
         ref="input"
@@ -20,7 +20,7 @@
         id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
-      <span>{{ctx.t(item.label)}}</span>
+      <span>{{ctx.i(ctx.t(item.label))}}</span>
       {% } %}
     </label>
   </div>

@@ -9,7 +9,7 @@
       {% if (ctx.component.reorder) { %}<th></th>{% } %}
       {% ctx.columns.forEach(function(col) { %}
         <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-          {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
+          {{ col.hideLabel ? '' : ctx.i(ctx.t(col.label || col.title)) }}
           {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
         </th>
       {% }) %}
@@ -32,7 +32,7 @@
       <td
         ref="{{ctx.datagridKey}}-group-label"
         colspan="{{ctx.numColumns}}"
-        class="datagrid-group-label">{{ctx.groups[index].label}}</td>
+        class="datagrid-group-label">{{ctx.i(ctx.t(ctx.groups[index].label))}}</td>
     </tr>
     {% } %}
     <tr ref="{{ctx.datagridKey}}-row">

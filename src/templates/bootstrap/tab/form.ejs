@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs card-header-tabs">
       {% ctx.component.components.forEach(function(tab, index) { %}
       <li class="nav-item{{ ctx.currentTab === index ? ' active' : ''}}" role="presentation" ref="{{ctx.tabLikey}}">
-        <a class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}" href="#{{tab.key}}" ref="{{ctx.tabLinkKey}}">{{ctx.t(tab.label)}}</a>
+        <a class="nav-link{{ ctx.currentTab === index ? ' active' : ''}}" href="#{{tab.key}}" ref="{{ctx.tabLinkKey}}">{{ctx.i(ctx.t(tab.label))}}</a>
       </li>
       {% }) %}
     </ul>

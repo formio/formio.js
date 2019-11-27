@@ -7,7 +7,7 @@
       {% } %}
       {% if (ctx.checked) { %}checked=true{% } %}
       >
-    {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.input.label}}</span>{% } %}
+    {% if (!ctx.self.labelIsHidden()) { %}<span>{{ctx.i(ctx.t(ctx.input.label))}}</span>{% } %}
     {% if (ctx.component.tooltip) { %}
       <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
     {% } %}

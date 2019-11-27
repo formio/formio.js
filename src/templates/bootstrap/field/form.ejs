@@ -8,7 +8,7 @@
 
 {{ctx.element}}
 {% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}
-  <label class="{{ctx.label.className}}">{{ctx.t(ctx.component.label)}}
+  <label class="{{ctx.label.className}}">{{ctx.i(ctx.t(ctx.component.label))}}
   {% if (ctx.component.tooltip) { %}
     <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
   {% } %}
