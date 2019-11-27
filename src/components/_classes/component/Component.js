@@ -14,7 +14,8 @@ const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
 
 /**
- * This is the Component class which all elements within the FormioForm derive from.
+ * This is the Component class
+ which all elements within the FormioForm derive from.
  */
 export default class Component extends Element {
   static schema(...sources) {
@@ -1110,8 +1111,8 @@ export default class Component extends Element {
     return data;
   }
 
-  createModal(element) {
-    const dialog = this.ce('div');
+  createModal(element, attr) {
+    const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
@@ -1672,7 +1673,8 @@ export default class Component extends Element {
       toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
       styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
     };
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
+    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', {}), settings);
+    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1686,6 +1688,7 @@ export default class Component extends Element {
 
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
     if (!settings.theme) {
@@ -1696,7 +1699,7 @@ export default class Component extends Element {
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', `${QUILL_URL}/quill.min.js`, true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1738,7 +1741,8 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    return Formio.requireLibrary('ace', 'ace', ACE_URL, true)
+    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
