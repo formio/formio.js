@@ -260,7 +260,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.schema, parent));
+          this.editComponent(component.schema, parent, false, false, component.component));
       }
 
       if (component.refs.editJson) {
@@ -271,7 +271,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.schema, parent, false, true));
+          this.editComponent(component.schema, parent, false, true, component.component));
       }
 
       if (component.refs.removeComponent) {
@@ -282,7 +282,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.schema, parent));
+          this.removeComponent(component.schema, parent, component.component));
       }
 
       return element;
@@ -840,7 +840,7 @@ export default class WebformBuilder extends Component {
     });
   }
 
-  removeComponent(component, parent) {
+  removeComponent(component, parent, original) {
     if (!parent) {
       return;
     }
@@ -856,8 +856,10 @@ export default class WebformBuilder extends Component {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
-    const originalComponent = parent.formioContainer.find((comp) => comp.key === component.key);
-    const index = parent.formioContainer ? parent.formioContainer.indexOf(originalComponent) : 0;
+    if (!original) {
+      original = parent.formioContainer.find((comp) => comp.key === component.key);
+    }
+    const index = parent.formioContainer ? parent.formioContainer.indexOf(original) : 0;
     if (remove && index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
       if (parent.formioContainer) {
@@ -945,14 +947,16 @@ export default class WebformBuilder extends Component {
    * @param component
    * @return {boolean}
    */
-  saveComponent(component, parent, isNew) {
+  saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
     this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
-    const originalComponent = parentContainer.find((comp) => comp.key = component.key);
-    const index = parentContainer ? parentContainer.indexOf(originalComponent) : 0;
+    if (!original) {
+      original = parent.formioContainer.find((comp) => comp.key === component.key);
+    }
+    const index = parentContainer ? parentContainer.indexOf(original) : 0;
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
@@ -984,7 +988,7 @@ export default class WebformBuilder extends Component {
     return NativePromise.resolve();
   }
 
-  editComponent(component, parent, isNew, isJsonEdit) {
+  editComponent(component, parent, isNew, isJsonEdit, original) {
     if (!component.key) {
       return;
     }
@@ -1114,7 +1118,7 @@ export default class WebformBuilder extends Component {
       // Since we are already removing the component, don't trigger another remove.
       saved = true;
       this.editForm.detach();
-      this.removeComponent(component, parent);
+      this.removeComponent(component, parent, original);
       this.dialog.close();
     });
 
@@ -1126,7 +1130,7 @@ export default class WebformBuilder extends Component {
         return false;
       }
       saved = true;
-      this.saveComponent(component, parent, isNew);
+      this.saveComponent(component, parent, isNew, original);
     });
 
     const dialogClose = () => {
@@ -1136,7 +1140,7 @@ export default class WebformBuilder extends Component {
         this.preview = null;
       }
       if (isNew && !saved) {
-        this.removeComponent(component, parent);
+        this.removeComponent(component, parent, original);
       }
       // Clean up.
       this.removeEventListener(this.dialog, 'close', dialogClose);
