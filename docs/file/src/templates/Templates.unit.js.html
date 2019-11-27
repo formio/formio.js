@@ -230,8 +230,10 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const renders = require(&apos;../../test/renders&apos;);
 const forms = require(&apos;../../test/formtest&apos;);
 const pretty = require(&apos;pretty&apos;);
+const fs = require(&apos;fs&apos;);
 import assert from &apos;power-assert&apos;;
 import i18next from &apos;i18next&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 const i18Defaults = require(&apos;../i18n&apos;);
 const AllComponents = require(&apos;../components&apos;).default;
@@ -239,6 +241,7 @@ const Components = require(&apos;../components/Components&apos;).default;
 const templates = require(&apos;./index&apos;).default;
 const Form = require(&apos;../Form&apos;).default;
 Components.setComponents(AllComponents);
+const componentDir = &apos;components&apos;;
 
 const fixComponent = (instance, index = 0) =&gt; {
   instance.id = instance.key;
@@ -257,7 +260,7 @@ const fixComponent = (instance, index = 0) =&gt; {
 
 describe(&apos;Rendering Tests&apos;, () =&gt; {
   before(() =&gt; {
-    return new Promise((resolve, reject) =&gt; {
+    return new NativePromise((resolve, reject) =&gt; {
       i18next.init(i18Defaults, (err) =&gt; {
         if (err) {
           return reject(err);
@@ -309,6 +312,42 @@ describe(&apos;Rendering Tests&apos;, () =&gt; {
             assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));
             done();
           });
+
+          if (fs.existsSync(`./lib/${componentDir}/${component}/fixtures/values.js`)) {
+            const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+
+            values.unshift(undefined);
+
+            values.forEach((value, index) =&gt; {
+              it(`Renders ${component} for ${framework} value ${index} as html`, (done) =&gt; {
+                const instance = new AllComponents[component]({}, {
+                  template: framework,
+                  flatten: true,
+                  renderMode: &apos;html&apos;,
+                });
+                instance.dataValue = value;
+                fixComponent(instance);
+                assert.equal(renders[`component-${framework}-${component}-html-value${index}`], pretty(instance.render(), { ocd: true }));
+                done();
+              });
+              it(`Renders ${component} for ${framework} value ${index} as string`, (done) =&gt; {
+                const instance = new AllComponents[component]({}, {
+                  template: framework,
+                  flatten: true,
+                  renderMode: &apos;html&apos;,
+                });
+                fixComponent(instance);
+                const file = renders[`component-${framework}-${component}-string-value${index}`];
+                const val = instance.getValueAsString(value);
+
+                if (val !== file) {
+                  console.log(&apos;er&apos;);
+                }
+                assert.equal(renders[`component-${framework}-${component}-string-value${index}`], pretty(instance.getValueAsString(value), { ocd: true }));
+                done();
+              });
+            });
+          }
         });
       });
     });

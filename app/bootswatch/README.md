@@ -42,6 +42,33 @@ and `_bootswatch.scss`!
 
 You can install as a package with the command `npm install bootswatch`.
 
+#### React Users (`create-react-app`, or similar bundler)
+
+Modern JavaScript bundlers (webpack, parcel, rollup) support `import`ing CSS from JS files. This can make it easier to deploy various 1st and 3rd party assets predictably. Note: _There are tradeoffs to the following method, research your tooling before deploying to production._
+
+Before continuing, ensure you've run `npm install bootswatch` in your local project folder. (Use either `npm` or `yarn`.)
+
+Add the following `import` to your top-level `index.js` (or `App.js`) file. Add it **before** any other `.css` imports.
+
+```js
+import "bootswatch/dist/[theme]/bootstrap.min.css"; 
+// TODO: Note: Replace ^[theme]^ (examples: darkly, slate, cosmo, spacelab, and superhero. See https://bootswatch.com for current theme names.)
+```
+
+
+Here's an example of updated `imports` in `App.js` to use "slate" theme (using a `create-react-app` fresh project.)
+
+```js
+import React from 'react';
+import logo from './logo.svg';
+import 'bootswatch/dist/slate/bootstrap.min.css'; // Added this :boom:
+import './App.css';
+
+function App() {
+...
+```
+
+
 ### Via Ruby Gem
 
 In your Ruby project, you can access the latest version of each theme by adding
@@ -94,7 +121,7 @@ It's through your contributions that Bootswatch will continue to improve. You ca
 
 **Code:** Make a fix and submit it as a pull request. When making changes, it's important to keep the CSS and SASS versions in sync. To do this, be sure to edit the SASS source files for the particular theme first, then run the  tasks `grunt swatch` to build the CSS.
 
-**Donation:** Donations are gratefully accepted via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=F22JEM3Q78JC2) and Bitcoin at [1EMqwwjqJrfyoPqmxNM7buzU6DmySZnHBK](bitcoin:1EMqwwjqJrfyoPqmxNM7buzU6DmySZnHBK).
+**Donation:** Donations are gratefully accepted via [GitHub](https://github.com/sponsors/thomaspark/) and [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PU2DH4BMF9MWS&source=url).
 
 
 ## Author
@@ -118,6 +145,6 @@ Thomas Park
 
 ## Copyright and License
 
-Copyright 2014-2018 Thomas Park
+Copyright 2014-2019 Thomas Park
 
 Code released under the MIT License.

@@ -266,7 +266,11 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get schema() {
-    return _.omit(super.schema, &apos;components&apos;);
+    const schema = _.omit(super.schema, [&apos;components&apos;]);
+    this.columns.map((column, index) =&gt; {
+      schema.columns[index].components = column.map((component) =&gt; component.schema);
+    });
+    return schema;
   }
 
   get defaultSchema() {

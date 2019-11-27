@@ -344,7 +344,7 @@ export default class RadioComponent extends Field {
 
     const option = _.find(this.component.values, (v) =&gt; v.value === value);
 
-    return _.get(option, &apos;label&apos;);
+    return _.get(option, &apos;label&apos;, &apos;&apos;);
   }
 
   setValueAt(index, value) {

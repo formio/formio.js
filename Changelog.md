@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-beta.2
+### Fixed
+ - Build issues when used within an angular application.
+ - Fix datagrid, editgrid, container and tabs in data view.
+ - Fixed issue if process is not defined.
+ 
+### Added
+ - Allow editor source url and settings to be provided in form options
+ - Allow attributes to be passed to modal creation in the form builder
+
 ## 4.8.0-beta.1
 ### Changed
  - Upgraded @formio/bootstrap3@1.1.3, @formio/semantic@1.2.2, core-js@3.4.2, i18next@19.0.1, file-loader@4.3.0

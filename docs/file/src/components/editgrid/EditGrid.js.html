@@ -341,6 +341,10 @@ export default class EditGridComponent extends NestedComponent {
     // this.editRows = [];
   }
 
+  getValueAsString(value) {
+    return &apos;[Complex Data]&apos;;
+  }
+
   hasAddButton() {
     const maxLength = _.get(this.component, &apos;validate.maxLength&apos;);
     return !this.component.disableAddingRemovingRows &amp;&amp;
@@ -750,7 +754,7 @@ export default class EditGridComponent extends NestedComponent {
         if (this.component.inlineEdit) {
           this.options.onChange(flags, changed, modified);
         }
-        else {
+        else if (this.editRows[rowIndex]) {
           this.checkRow(null, this.editRows[rowIndex], {
             changed
           }, this.editRows[rowIndex].data);

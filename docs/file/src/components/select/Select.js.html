@@ -392,25 +392,6 @@ export default class SelectComponent extends Field {
   }
 
   /**
-   * @param {*} data
-   * @param {boolean} [forceUseValue=false] - if true, return &apos;value&apos; property of the data
-   * @return {*}
-   */
-  itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
-      if (this.valueProperty) {
-        return _.get(data, this.valueProperty);
-      }
-
-      if (forceUseValue) {
-        return data.value;
-      }
-    }
-
-    return data;
-  }
-
-  /**
    * Adds an option to the select dropdown.
    *
    * @param value
