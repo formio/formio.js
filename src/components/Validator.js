@@ -775,11 +775,12 @@ class ValidationChecker {
   }
 
   checkComponent(component, data, row, includeWarnings = false) {
+    const isServerSidePersistent = typeof process !== 'undefined'
+      && _.get(process, 'release.name') === 'node'
+      && !_.defaultTo(component.component.persistent, true);
+
     // If we're server-side and it's not a persistent component, don't run validation at all
-    if (
-      (_.get(process, 'release.name') === 'node' && !_.defaultTo(component.component.persistent, true)) ||
-      (component.component.validate === false)
-    ) {
+    if (isServerSidePersistent || component.component.validate === false) {
       return [];
     }
 
