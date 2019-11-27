@@ -260,7 +260,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editComponent, 'click', () =>
-          this.editComponent(component.component, parent));
+          this.editComponent(component.schema, parent));
       }
 
       if (component.refs.editJson) {
@@ -271,7 +271,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.editJson, 'click', () =>
-          this.editComponent(component.component, parent, false, true));
+          this.editComponent(component.schema, parent, false, true));
       }
 
       if (component.refs.removeComponent) {
@@ -282,7 +282,7 @@ export default class WebformBuilder extends Component {
         });
 
         component.addEventListener(component.refs.removeComponent, 'click', () =>
-          this.removeComponent(component.component, parent));
+          this.removeComponent(component.schema, parent));
       }
 
       return element;
@@ -856,7 +856,8 @@ export default class WebformBuilder extends Component {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
-    const index = parent.formioContainer ? parent.formioContainer.indexOf(component) : 0;
+    const originalComponent = parent.formioContainer.find((comp) => comp.key === component.key);
+    const index = parent.formioContainer ? parent.formioContainer.indexOf(originalComponent) : 0;
     if (remove && index !== -1) {
       const path = this.getComponentsPath(component, parent.formioComponent.component);
       if (parent.formioContainer) {
@@ -867,7 +868,7 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
       rebuild.then(() => {
-        this.emit('removeComponent', component, parent.formioComponent.component, path, index);
+        this.emit('removeComponent', component, parent.formioComponent.schema, path, index);
         this.emit('change', this.form);
       });
     }
@@ -950,13 +951,12 @@ export default class WebformBuilder extends Component {
     const parentComponent = parent ? parent.formioComponent : this;
     this.dialog.close();
     const path = parentContainer ? this.getComponentsPath(component, parentComponent.component) : '';
-    const index = parentContainer ? parentContainer.indexOf(component) : 0;
+    const originalComponent = parentContainer.find((comp) => comp.key = component.key);
+    const index = parentContainer ? parentContainer.indexOf(originalComponent) : 0;
     if (index !== -1) {
-      let originalComponent = component;
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
       if (parentContainer) {
-        originalComponent = parentContainer[index];
         parentContainer[index] = submissionData;
       }
       else if (parentComponent && parentComponent.saveChildComponent) {
@@ -964,10 +964,16 @@ export default class WebformBuilder extends Component {
       }
       const rebuild = parentComponent.rebuild() || NativePromise.resolve();
       return rebuild.then(() => {
+        let schema = parentContainer ? parentContainer[index] : [];
+        parentComponent.getComponents().forEach((component) => {
+          if (component.key === schema.key) {
+            schema = component.schema;
+          }
+        });
         this.emit('saveComponent',
-          parentContainer ? parentContainer[index] : [],
-          originalComponent,
-          parentComponent.component,
+          schema,
+          component,
+          parentComponent.schema,
           path,
           index,
           isNew
