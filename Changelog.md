@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Select autocomplete input UI issues
+
 ## 4.8.0-beta.2
 ### Changed
  - Updated semantic template to fix undefined method in radio html template.
