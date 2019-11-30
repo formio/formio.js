@@ -347,6 +347,7 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.takePictureButton, 'click', (event) => {
         event.preventDefault();
         this.takePicture();
+        this.stopVideo();
       });
     }
 
