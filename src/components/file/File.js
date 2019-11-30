@@ -194,9 +194,7 @@ export default class FileComponent extends Field {
       : this.refs.videoPlayer.srcObject;
 
     if (stream) {
-      stream.getTracks().forEach(function(track) {
-        track.stop();
-      });
+      stream.getTracks().forEach(track => track.stop());
     }
   }
 
