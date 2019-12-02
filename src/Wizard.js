@@ -267,7 +267,7 @@ export default class Wizard extends Webform {
             page = this.createComponent(item, pageOptions);
             this.pages.push(page);
             page.eachComponent((component) => {
-              component.page = this.page;
+              component.page = (this.pages.length - 1);
             });
           }
           else if (page && !isVisible) {
