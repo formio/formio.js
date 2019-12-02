@@ -913,6 +913,7 @@ body.formio-dialog-open {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
   position: absolute;
+  z-index: -1;
 }
 
 .has-error > .help-block {

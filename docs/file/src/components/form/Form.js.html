@@ -411,21 +411,7 @@ export default class FormComponent extends Component {
     if (!value.data || !Object.keys(value.data).length) {
       return &apos;No data provided&apos;;
     }
-    const columns = Object.keys(value.data).map(column =&gt; {
-      return {
-        key: column,
-        label: column,
-        hideLabel: false
-      };
-    });
-
-    return super.render(this.renderTemplate(&apos;datagrid&apos;, {
-      rows: [value.data],
-      columns: columns,
-      visibleColumns: value.data,
-      hasHeader: true,
-      numColumns: Object.keys(value.data).length,
-    }));
+    return &apos;[Complex Data]&apos;;
   }
 
   attach(element) {

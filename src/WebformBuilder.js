@@ -1065,7 +1065,7 @@ export default class WebformBuilder extends Component {
       preview: this.preview ? this.preview.render() : false,
     }));
 
-    this.dialog = this.createModal(this.componentEdit);
+    this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
 
     // This is the attach step.
     this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));

@@ -243,7 +243,8 @@ const QUILL_URL = &apos;https://cdn.form.io/quill/1.3.6&apos;;
 const ACE_URL = &apos;https://cdn.form.io/ace/1.4.5/ace.js&apos;;
 
 /**
- * This is the Component class which all elements within the FormioForm derive from.
+ * This is the Component class
+ which all elements within the FormioForm derive from.
  */
 export default class Component extends Element {
   static schema(...sources) {
@@ -813,6 +814,7 @@ export default class Component extends Element {
         (!recursion &amp;&amp; (key === &apos;key&apos;)) ||
         (!recursion &amp;&amp; (key === &apos;label&apos;)) ||
         (!recursion &amp;&amp; (key === &apos;input&apos;)) ||
+        (!recursion &amp;&amp; (key === &apos;tableView&apos;)) ||
         (val !== &apos;&apos; &amp;&amp; !defaultSchema.hasOwnProperty(key)) ||
         (val !== &apos;&apos; &amp;&amp; val !== defaultSchema[key])
       ) {
@@ -1301,6 +1303,9 @@ export default class Component extends Element {
     if (_.isPlainObject(value)) {
       return JSON.stringify(value);
     }
+    if (value === null || value === undefined) {
+      return &apos;&apos;;
+    }
     return value.toString();
   }
 
@@ -1316,8 +1321,27 @@ export default class Component extends Element {
     this.onChange(...args);
   }
 
-  createModal(element) {
-    const dialog = this.ce(&apos;div&apos;);
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return &apos;value&apos; property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
+  }
+
+  createModal(element, attr) {
+    const dialog = this.ce(&apos;div&apos;, attr || {});
     this.setContent(dialog, this.renderTemplate(&apos;dialog&apos;));
 
     // Add refs to dialog, not &quot;this&quot;.
@@ -1878,7 +1902,8 @@ export default class Component extends Element {
       toolbar: [&apos;imageTextAlternative&apos;, &apos;|&apos;, &apos;imageStyle:full&apos;, &apos;imageStyle:alignLeft&apos;, &apos;imageStyle:alignCenter&apos;, &apos;imageStyle:alignRight&apos;],
       styles: [&apos;full&apos;, &apos;alignLeft&apos;, &apos;alignCenter&apos;, &apos;alignRight&apos;]
     };
-    return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, CKEDITOR, true)
+    settings = _.merge(_.get(this.options, &apos;editors.ckeditor.settings&apos;, {}), settings);
+    return Formio.requireLibrary(&apos;ckeditor&apos;, &apos;ClassicEditor&apos;, _.get(this.options, &apos;editors.ckeditor.src&apos;, CKEDITOR), true)
       .then(() =&gt; {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1892,6 +1917,7 @@ export default class Component extends Element {
 
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+    settings = _.merge(_.get(this.options, &apos;editors.quill.settings&apos;, {}), settings);
 
     // Lazy load the quill css.
     if (!settings.theme) {
@@ -1902,7 +1928,7 @@ export default class Component extends Element {
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, `${QUILL_URL}/quill.min.js`, true)
+    return Formio.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, _.get(this.options, &apos;editors.quill.src&apos;, `${QUILL_URL}/quill.min.js`), true)
       .then(() =&gt; {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1944,7 +1970,8 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, ACE_URL, true)
+    settings = _.merge(_.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
+    return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, _.get(this.options, &apos;editors.ace.src&apos;, ACE_URL), true)
       .then((editor) =&gt; {
         editor = editor.edit(element);
         editor.removeAllListeners(&apos;change&apos;);

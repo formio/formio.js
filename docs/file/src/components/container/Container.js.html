@@ -300,6 +300,10 @@ export default class ContainerComponent extends NestedComponent {
     return this.dataValue;
   }
 
+  getValueAsString(value) {
+    return &apos;[Complex Data]&apos;;
+  }
+
   updateValue(value, flags) {
     // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
     return Component.prototype.updateValue.call(this, value, flags);

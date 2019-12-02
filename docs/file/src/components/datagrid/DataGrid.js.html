@@ -352,6 +352,10 @@ export default class DataGridComponent extends NestedComponent {
     return !this.options.readOnly &amp;&amp; _.get(this.component, &apos;reorder&apos;, false);
   }
 
+  getValueAsString(value) {
+    return &apos;[Complex Data]&apos;;
+  }
+
   /**
    * Split rows into chunks.
    * @param {Number[]} groups - array of numbers where each item is size of group
