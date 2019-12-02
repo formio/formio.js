@@ -349,8 +349,13 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   addRow() {
-    this.dataValue.push({});
     const index = this.rows.length;
+
+    // Handle length mismatch between rows and dataValue
+    if (this.dataValue.length === index) {
+      this.dataValue.push({});
+    }
+
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
     this.redraw();
   }
