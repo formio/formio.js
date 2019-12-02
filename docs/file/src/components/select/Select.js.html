@@ -550,7 +550,7 @@ export default class SelectComponent extends Field {
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
+      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue);
       }

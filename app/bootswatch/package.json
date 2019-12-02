@@ -1,27 +1,27 @@
 {
-  "_from": "bootswatch@4.4.0",
-  "_id": "bootswatch@4.4.0",
+  "_from": "bootswatch@4.4.1",
+  "_id": "bootswatch@4.4.1",
   "_inBundle": false,
-  "_integrity": "sha512-Cj/Hz4L/epjDfrxdtqdBvkPWCQDFgZVN+5kkpcBtWkja+PPgeNwTTTjRHmjmD0yelYjnU26Vh2VV0Xwr1p1/lg==",
+  "_integrity": "sha512-Kx3z6+3Jpg9g6l/xZBCnc8d6KeJK0QawxCZWOomdcI5AuSZLZb+DoH5X9RJH+cOcSeMAxyzdIjkVUR01+Db5bQ==",
   "_location": "/bootswatch",
   "_phantomChildren": {},
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "bootswatch@4.4.0",
+    "raw": "bootswatch@4.4.1",
     "name": "bootswatch",
     "escapedName": "bootswatch",
-    "rawSpec": "4.4.0",
+    "rawSpec": "4.4.1",
     "saveSpec": null,
-    "fetchSpec": "4.4.0"
+    "fetchSpec": "4.4.1"
   },
   "_requiredBy": [
     "#DEV:/",
     "#USER"
   ],
-  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.4.0.tgz",
-  "_shasum": "8918b7bfe0d44df503ba071b9bfec7393b24be27",
-  "_spec": "bootswatch@4.4.0",
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-4.4.1.tgz",
+  "_shasum": "f270618b4ebe07de8e1748acd88f104cc31bfec3",
+  "_spec": "bootswatch@4.4.1",
   "_where": "/Users/travistidwell/Documents/formio/modules/formio.js",
   "author": {
     "name": "Thomas Park"
@@ -35,7 +35,7 @@
   "description": "Bootswatch is a collection of themes for Bootstrap.",
   "devDependencies": {
     "autoprefixer": "^7.1.2",
-    "bootstrap": "^4.4.0",
+    "bootstrap": "^4.4.1",
     "font-awesome": "~4.7.0",
     "grunt": "^1.0.4",
     "grunt-contrib-clean": "^1.0.0",
@@ -64,5 +64,5 @@
   "scripts": {
     "postcss": "postcss --no-map --use autoprefixer --config build/js/postcss.js --replace dist/*/bootstrap.css"
   },
-  "version": "4.4.0"
+  "version": "4.4.1"
 }

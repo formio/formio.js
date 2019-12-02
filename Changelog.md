@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0-beta.3
 ### Fixed
  - Select autocomplete input UI issues
+ - Fixing error that is thrown when reset number component occurs.
+ - Fixing wizard page numbers to be accurate.
+ - Fixed File component webcam issues
+ - Fixed FormioUtils.getStrings failing for Edit Grid component
+ - Fixed Wizard checkData validation order
+ - Fixed Select default value when multiple is true
+ - Fixed a problem when onChange option does not exist.
+ 
+### Changed
+ - Upgrade core-js@3.4.5, bootstrap@4.4.1, bootswatch@4.4.1, eslint@6.7.2
 
 ## 4.8.0-beta.2
 ### Changed

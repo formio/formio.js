@@ -790,7 +790,7 @@ export function getStrings(form) {
     }
 
     if (component.type === &apos;editgrid&apos;) {
-      const string = this.component.addAnother || &apos;Add Another&apos;;
+      const string = component.addAnother || &apos;Add Another&apos;;
       if (component.addAnother) {
         strings.push({
           key: component.key,

@@ -404,7 +404,7 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value.toString(), this.numberMask).conformedValue;
+    return conformToMask(value === null ? &apos;0&apos; : value.toString(), this.numberMask).conformedValue;
   }
 
   getValueAsString(value) {
