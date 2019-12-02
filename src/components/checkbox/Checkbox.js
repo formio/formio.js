@@ -111,6 +111,12 @@ export default class CheckBoxComponent extends Field {
    */
   set dataValue(value) {
     const setValue = (super.dataValue = value);
+    if (
+      !this.key ||
+      (!this.visible && this.component.clearOnHide && !this.rootPristine)
+    ) {
+      return setValue;
+    }
     if (this.component.name) {
       _.set(this.data, this.component.key, setValue === this.component.value);
     }
