@@ -175,7 +175,7 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value.toString(), this.numberMask).conformedValue;
+    return conformToMask(value ? value.toString() : '', this.numberMask).conformedValue;
   }
 
   getValueAsString(value) {
