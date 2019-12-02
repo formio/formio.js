@@ -181,6 +181,23 @@ export default class FileComponent extends Field {
     );
   }
 
+  stopVideo() {
+    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
+      console.warn('Video player not found in template.');
+      this.cameraMode = false;
+      this.redraw();
+      return;
+    }
+
+    const stream = navigator.mozGetUserMedia
+      ? this.refs.videoPlayer.mozSrcObject
+      : this.refs.videoPlayer.srcObject;
+
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+  }
+
   takePicture() {
     if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
       console.warn('Video player not found in template.');
@@ -330,6 +347,7 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.takePictureButton, 'click', (event) => {
         event.preventDefault();
         this.takePicture();
+        this.stopVideo();
       });
     }
 
@@ -338,9 +356,13 @@ export default class FileComponent extends Field {
         event.preventDefault();
         this.cameraMode = !this.cameraMode;
         if (this.cameraMode) {
+          this.redraw();
           this.startVideo();
         }
-        this.redraw();
+        else {
+          this.stopVideo();
+          this.redraw();
+        }
       });
     }
 
