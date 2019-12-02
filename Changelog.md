@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-beta.4
+### Fixed
+ - Fixed issue with unexpected additional value inside datagrid.
+ - Fixed Wizard checkData validation order
+ - Fix issue with hidden checkbox values not being updated correctly.
+ - Fix adding a removing components by schema instead of full definition.
+
 ## 4.8.0-beta.3
 ### Fixed
  - Select autocomplete input UI issues
