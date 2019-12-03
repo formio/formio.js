@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0-beta.6
+### Changed
+ - Upgrade Choices.js to 9.0.1
+ - Upgrade fast-deep-equal@3.1.1, file-loader@5.0.2, raw-loader@4.0.0
+
+### Added
+ - Ability to interpolate the HTML Component attribute values.
+
 ### Fixed
  - ```userPermissions``` function not taking into account Group Permissions
+ - Nested component issue where nested components visibility would not get set correctly when the parent was visibility was changed.
+ - The refreshOnChange property for HTML component to use a non event driven way.
+ - Fix issue with hidden checkbox values not being updated correctly.
+ - Fixing an error that is thrown when the input references are not set.
 
 ## 4.8.0-beta.5
 ### Fixed
