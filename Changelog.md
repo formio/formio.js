@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - ```userPermissions``` function not taking into account Group Permissions
+
 ## 4.8.0-beta.5
 ### Fixed
  - Problem where the accordion parent names are incorrect.
