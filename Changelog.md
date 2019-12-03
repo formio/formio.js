@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.8.0-beta.6
 ### Changed
- - Upgrade Choices.js to 9.0.1
  - Upgrade fast-deep-equal@3.1.1, file-loader@5.0.2, raw-loader@4.0.0
 
 ### Added
