@@ -6,7 +6,7 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import { currentTimezone } from './utils/utils';
+import { fastCloneDeep, currentTimezone } from './utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -731,7 +731,7 @@ export default class Webform extends NestedComponent {
       console.warn('Cannot save draft unless a user is authenticated.');
       return;
     }
-    const draft = _.cloneDeep(this.submission);
+    const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
     if (!this.savingDraft) {
       this.savingDraft = true;
@@ -760,7 +760,7 @@ export default class Webform extends NestedComponent {
       }
     }).then(submissions => {
       if (submissions.length > 0) {
-        const draft = _.cloneDeep(submissions[0]);
+        const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
           this.savingDraft = false;
@@ -775,7 +775,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.cloneDeep(_.omit(this._form, ['components']));
+    const schema = fastCloneDeep(_.omit(this._form, ['components']));
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -1027,7 +1027,7 @@ export default class Webform extends NestedComponent {
     this.submitting = false;
     this.setPristine(true);
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
-    this.setValue(_.cloneDeep(submission), {
+    this.setValue(fastCloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });
@@ -1156,7 +1156,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = _.cloneDeep(this.submission || {});
+      const submission = fastCloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
