@@ -43,6 +43,7 @@ export default class ColumnsComponent extends NestedComponent {
         const clonedComp = _.clone(comp);
         clonedComp.internal = true;
         const component = this.createComponent(clonedComp);
+        delete component.component.internal;
         schema.columns[colIndex].components[compIndex] = component.schema;
       });
     });
@@ -70,7 +71,7 @@ export default class ColumnsComponent extends NestedComponent {
       if (!Array.isArray(column.components)) {
         column.components = [];
       }
-      _.each(column.components, (comp) => {
+      _.each(column.components, (comp, compIndex) => {
         comp.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
         const component = this.createComponent(comp);
         component.column = index;

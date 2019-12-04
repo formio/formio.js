@@ -7,7 +7,7 @@ import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../Validator';
 import Templates from '../../../templates/Templates';
-import { boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
@@ -202,7 +202,7 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = _.cloneDeep(component);
+    this.originalComponent = fastCloneDeep(component);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -599,7 +599,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
+    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
   }
 
   /**
@@ -1422,7 +1422,7 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = _.cloneDeep(this.originalComponent);
+    const newComponent = fastCloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
@@ -2494,7 +2494,7 @@ export default class Component extends Element {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
-          const newComponent = _.cloneDeep(this.originalComponent);
+          const newComponent = fastCloneDeep(this.originalComponent);
           if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {

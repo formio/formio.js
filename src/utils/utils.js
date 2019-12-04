@@ -1085,6 +1085,13 @@ export function sanitize(string, options) {
   return dompurify.sanitize(string, sanitizeOptions);
 }
 
+/**
+ * Fast cloneDeep for JSON objects only.
+ */
+export function fastCloneDeep(obj) {
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
+}
+
 export { Evaluator, interpolate };
 
 export function isInputComponent(componentJson) {
