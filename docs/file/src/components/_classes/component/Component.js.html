@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -236,7 +237,7 @@ import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
 import Validator from &apos;../../Validator&apos;;
 import Templates from &apos;../../../templates/Templates&apos;;
-import { boolValue } from &apos;../../../utils/utils&apos;;
+import { fastCloneDeep, boolValue } from &apos;../../../utils/utils&apos;;
 import Element from &apos;../../../Element&apos;;
 const CKEDITOR = &apos;https://cdn.form.io/ckeditor/12.2.0/ckeditor.js&apos;;
 const QUILL_URL = &apos;https://cdn.form.io/quill/1.3.6&apos;;
@@ -431,7 +432,7 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = _.cloneDeep(component);
+    this.originalComponent = fastCloneDeep(component);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -828,7 +829,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.getModifiedSchema(_.omit(this.component, &apos;id&apos;), this.defaultSchema);
+    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, &apos;id&apos;), this.defaultSchema));
   }
 
   /**
@@ -1651,7 +1652,7 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = _.cloneDeep(this.originalComponent);
+    const newComponent = fastCloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) =&gt; {
       const result = FormioUtils.checkTrigger(
@@ -2723,7 +2724,7 @@ export default class Component extends Element {
       if (logic.trigger.type === &apos;event&apos;) {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) =&gt; {
-          const newComponent = _.cloneDeep(this.originalComponent);
+          const newComponent = fastCloneDeep(this.originalComponent);
           if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {

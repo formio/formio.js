@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -235,7 +236,7 @@ import Tooltip from &apos;tooltip.js&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import Formio from &apos;./Formio&apos;;
-import { bootstrapVersion } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, bootstrapVersion } from &apos;./utils/utils&apos;;
 import { eachComponent, getComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import _ from &apos;lodash&apos;;
@@ -593,7 +594,7 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          _.cloneDeep(Components.components[component.type].builderInfo, true),
+          fastCloneDeep(Components.components[component.type].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -886,12 +887,12 @@ export default class WebformBuilder extends Component {
     let info;
     // This is a new component
     if (this.schemas.hasOwnProperty(key)) {
-      info = _.cloneDeep(this.schemas[key]);
+      info = fastCloneDeep(this.schemas[key]);
     }
     else if (this.groups.hasOwnProperty(group)) {
       const groupComponents = this.groups[group].components;
       if (groupComponents.hasOwnProperty(key)) {
-        info = _.cloneDeep(groupComponents[key].schema);
+        info = fastCloneDeep(groupComponents[key].schema);
       }
     }
     else {
@@ -899,7 +900,7 @@ export default class WebformBuilder extends Component {
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
       if (resourceGroup &amp;&amp; resourceGroup.components.hasOwnProperty(key)) {
-        info = _.cloneDeep(resourceGroup.components[key].schema);
+        info = fastCloneDeep(resourceGroup.components[key].schema);
       }
     }
 
@@ -1169,6 +1170,29 @@ export default class WebformBuilder extends Component {
     this.emit(&apos;updateComponent&apos;, component);
   }
 
+  highlightInvalidComponents() {
+    const formKeys = {};
+    const repeatableKeys = [];
+
+    eachComponent(this.form.components, (comp) =&gt; {
+      if (!comp.key) {
+        return;
+      }
+
+      if (formKeys[comp.key] &amp;&amp; !repeatableKeys.includes(comp.key)) {
+        repeatableKeys.push(comp.key);
+      }
+
+      formKeys[comp.key] = true;
+    });
+
+    const components = this.webform.getComponents();
+    repeatableKeys.forEach((key) =&gt; {
+      const instances = components.filter((comp) =&gt; comp.key === key);
+      instances.forEach((instance) =&gt; instance.setCustomValidity(`API Key is not unique: ${key}`));
+    });
+  }
+
   /**
    * Called when a new component is saved.
    *
@@ -1212,8 +1236,11 @@ export default class WebformBuilder extends Component {
           isNew
         );
         this.emit(&apos;change&apos;, this.form);
+        this.highlightInvalidComponents();
       });
     }
+
+    this.highlightInvalidComponents();
     return NativePromise.resolve();
   }
 
@@ -1222,14 +1249,15 @@ export default class WebformBuilder extends Component {
       return;
     }
     let saved = false;
-    const componentCopy = _.cloneDeep(component);
-    let componentClass = Components.components[componentCopy.type];
-    const isCustom = componentClass === undefined;
+    const componentCopy = fastCloneDeep(component);
+    let ComponentClass = Components.components[componentCopy.type];
+    const isCustom = ComponentClass === undefined;
     isJsonEdit = isJsonEdit || isCustom;
-    componentClass = isCustom ? Components.components.unknown : componentClass;
+    ComponentClass = isCustom ? Components.components.unknown : ComponentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
+      this.highlightInvalidComponents();
     }
 
     // This is the render step.
@@ -1265,19 +1293,20 @@ export default class WebformBuilder extends Component {
           tooltip: &apos;Edit the JSON for this component.&apos;
         }
       ]
-    } : componentClass.editForm(_.cloneDeep(overrides));
+    } : ComponentClass.editForm(_.cloneDeep(overrides));
+    const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: componentCopy
+        componentJson: instance.component
       },
     } : {
-      data: componentCopy,
+      data: instance.component,
     };
 
     if (this.preview) {
       this.preview.destroy();
     }
-    if (!componentClass.builderInfo.hasOwnProperty(&apos;preview&apos;) || componentClass.builderInfo.preview) {
+    if (!ComponentClass.builderInfo.hasOwnProperty(&apos;preview&apos;) || ComponentClass.builderInfo.preview) {
       this.preview = new Webform(_.omit(this.options, [
         &apos;hooks&apos;,
         &apos;builder&apos;,
@@ -1289,7 +1318,7 @@ export default class WebformBuilder extends Component {
 
     this.componentEdit = this.ce(&apos;div&apos;);
     this.setContent(this.componentEdit, this.renderTemplate(&apos;builderEditForm&apos;, {
-      componentInfo: componentClass.builderInfo,
+      componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
     }));
@@ -1340,6 +1369,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.emit(&apos;cancelComponent&apos;, component);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;removeButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
@@ -1349,6 +1379,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.removeComponent(component, parent, original);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector(&apos;[ref=&quot;saveButton&quot;]&apos;), &apos;click&apos;, (event) =&gt; {
@@ -1370,6 +1401,7 @@ export default class WebformBuilder extends Component {
       }
       if (isNew &amp;&amp; !saved) {
         this.removeComponent(component, parent, original);
+        this.highlightInvalidComponents();
       }
       // Clean up.
       this.removeEventListener(this.dialog, &apos;close&apos;, dialogClose);
@@ -1391,8 +1423,7 @@ export default class WebformBuilder extends Component {
       return console.warn(&apos;Session storage is not supported in this browser.&apos;);
     }
     this.addClass(this.refs.form, &apos;builder-paste-mode&apos;);
-    const copy = _.cloneDeep(component.schema);
-    window.sessionStorage.setItem(&apos;formio.clipboard&apos;, JSON.stringify(copy));
+    window.sessionStorage.setItem(&apos;formio.clipboard&apos;, JSON.stringify(component.schema));
   }
 
   /**

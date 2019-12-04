@@ -261,35 +261,35 @@
     "filePath": "src/WebformBuilder.js",
     "lines": [
       {
-        "lineNumber": 942,
+        "lineNumber": 965,
         "line": "  /**"
       },
       {
-        "lineNumber": 943,
+        "lineNumber": 966,
         "line": "   * Called when a new component is saved."
       },
       {
-        "lineNumber": 944,
+        "lineNumber": 967,
         "line": "   *"
       },
       {
-        "lineNumber": 945,
+        "lineNumber": 968,
         "line": "   * @param parent"
       },
       {
-        "lineNumber": 946,
+        "lineNumber": 969,
         "line": "   * @param component"
       },
       {
-        "lineNumber": 947,
+        "lineNumber": 970,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 948,
+        "lineNumber": 971,
         "line": "   */"
       },
       {
-        "lineNumber": 949,
+        "lineNumber": 972,
         "line": "  saveComponent(component, parent, isNew, original) {"
       }
     ],
@@ -1062,35 +1062,35 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 403,
+        "lineNumber": 404,
         "line": "  /**"
       },
       {
-        "lineNumber": 404,
+        "lineNumber": 405,
         "line": "   * Checks the validity of this datagrid."
       },
       {
-        "lineNumber": 405,
+        "lineNumber": 406,
         "line": "   *"
       },
       {
-        "lineNumber": 406,
+        "lineNumber": 407,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 407,
+        "lineNumber": 408,
         "line": "   * @param dirty"
       },
       {
-        "lineNumber": 408,
+        "lineNumber": 409,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 409,
+        "lineNumber": 410,
         "line": "   */"
       },
       {
-        "lineNumber": 410,
+        "lineNumber": 411,
         "line": "  checkValidity(data, dirty, row) {"
       }
     ],
@@ -1109,35 +1109,35 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 421,
+        "lineNumber": 422,
         "line": "  /**"
       },
       {
-        "lineNumber": 422,
+        "lineNumber": 423,
         "line": "   * Checks the data within each cell of the datagrid."
       },
       {
-        "lineNumber": 423,
+        "lineNumber": 424,
         "line": "   *"
       },
       {
-        "lineNumber": 424,
+        "lineNumber": 425,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 425,
+        "lineNumber": 426,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 426,
+        "lineNumber": 427,
         "line": "   * @return {*}"
       },
       {
-        "lineNumber": 427,
+        "lineNumber": 428,
         "line": "   */"
       },
       {
-        "lineNumber": 428,
+        "lineNumber": 429,
         "line": "  checkData(data, flags, row) {"
       }
     ],
@@ -1156,39 +1156,39 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 435,
+        "lineNumber": 436,
         "line": "  /**"
       },
       {
-        "lineNumber": 436,
+        "lineNumber": 437,
         "line": "   * Checks all rows within the datagrid."
       },
       {
-        "lineNumber": 437,
+        "lineNumber": 438,
         "line": "   *"
       },
       {
-        "lineNumber": 438,
+        "lineNumber": 439,
         "line": "   * @param method"
       },
       {
-        "lineNumber": 439,
+        "lineNumber": 440,
         "line": "   * @param data"
       },
       {
-        "lineNumber": 440,
+        "lineNumber": 441,
         "line": "   * @param opts"
       },
       {
-        "lineNumber": 441,
+        "lineNumber": 442,
         "line": "   * @return {*|boolean}"
       },
       {
-        "lineNumber": 442,
+        "lineNumber": 443,
         "line": "   */"
       },
       {
-        "lineNumber": 443,
+        "lineNumber": 444,
         "line": "  checkRows(method, data, opts, rowData) {"
       }
     ],
@@ -1209,43 +1209,43 @@
     "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 450,
+        "lineNumber": 451,
         "line": "  /**"
       },
       {
-        "lineNumber": 451,
+        "lineNumber": 452,
         "line": "   * Checks validity of each row according to a specific method."
       },
       {
-        "lineNumber": 452,
+        "lineNumber": 453,
         "line": "   *"
       },
       {
-        "lineNumber": 453,
+        "lineNumber": 454,
         "line": "   * @param method"
       },
       {
-        "lineNumber": 454,
+        "lineNumber": 455,
         "line": "   * @param rowData"
       },
       {
-        "lineNumber": 455,
+        "lineNumber": 456,
         "line": "   * @param row"
       },
       {
-        "lineNumber": 456,
+        "lineNumber": 457,
         "line": "   * @param opts"
       },
       {
-        "lineNumber": 457,
+        "lineNumber": 458,
         "line": "   * @return {boolean}"
       },
       {
-        "lineNumber": 458,
+        "lineNumber": 459,
         "line": "   */"
       },
       {
-        "lineNumber": 459,
+        "lineNumber": 460,
         "line": "  checkRow(method, data, rowData, row, opts) {"
       }
     ],

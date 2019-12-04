@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -347,7 +348,7 @@ export default class DataMapComponent extends DataGridComponent {
     if (_.isEmpty(dataValue)) {
       return [];
     }
-    return Object.keys(dataValue).map(key =&gt; dataValue);
+    return Object.keys(dataValue).map(() =&gt; dataValue);
   }
 
   hasHeader() {
@@ -426,7 +427,6 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   addRow() {
-    const newKey = uniqueKey(this.dataValue, &apos;key&apos;);
     const index = this.rows.length;
     this.rows[index] = this.createRowComponents(this.dataValue, index);
     this.redraw();

@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -272,6 +273,7 @@ export default class ColumnsComponent extends NestedComponent {
         const clonedComp = _.clone(comp);
         clonedComp.internal = true;
         const component = this.createComponent(clonedComp);
+        delete component.component.internal;
         schema.columns[colIndex].components[compIndex] = component.schema;
       });
     });
@@ -299,7 +301,7 @@ export default class ColumnsComponent extends NestedComponent {
       if (!Array.isArray(column.components)) {
         column.components = [];
       }
-      _.each(column.components, (comp) =&gt; {
+      _.each(column.components, (comp, compIndex) =&gt; {
         comp.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
         const component = this.createComponent(comp);
         component.column = index;

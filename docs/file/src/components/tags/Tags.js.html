@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -229,7 +230,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tags/Tags.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Input from &apos;../_classes/input/Input&apos;;
 import Choices from &apos;choices.js/public/assets/scripts/choices.js&apos;;
-import _ from &apos;lodash&apos;;
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -292,7 +292,7 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
-    this.addEventListener(this.choices.input.element, &apos;blur&apos;, (target) =&gt; {
+    this.addEventListener(this.choices.input.element, &apos;blur&apos;, () =&gt; {
       const value = this.choices.input.value;
       if (value) {
         this.choices.setValue([value]);
@@ -311,29 +311,26 @@ export default class TagsComponent extends Input {
     }
   }
 
+  normalizeValue(value) {
+    if (this.component.storeas === &apos;string&apos; &amp;&amp; Array.isArray(value)) {
+      return value.join(this.delimiter);
+    }
+    else if (this.component.storeas === &apos;array&apos; &amp;&amp; typeof value === &apos;string&apos;) {
+      return value.split(this.delimiter).filter(result =&gt; result);
+    }
+    return value;
+  }
+
   setValue(value) {
-    if (this.component.storeas === &apos;string&apos; &amp;&amp; (typeof value === &apos;string&apos;)) {
-      value = value.split(this.delimiter).filter();
-    }
-    if (value &amp;&amp; !_.isArray(value)) {
-      value = [value];
-    }
     const changed = super.setValue(value);
     if (this.choices) {
+      const dataValue = this.dataValue;
       this.choices.removeActiveItems();
-      if (value) {
-        this.choices.setValue(value);
+      if (dataValue) {
+        this.choices.setValue(dataValue);
       }
     }
     return changed;
-  }
-
-  getValue() {
-    if (this.choices) {
-      const value = this.choices.getValue(true);
-      return (this.component.storeas === &apos;string&apos;) ? value.join(this.delimiter) : value;
-    }
-    return this.dataValue;
   }
 
   set disabled(disabled) {

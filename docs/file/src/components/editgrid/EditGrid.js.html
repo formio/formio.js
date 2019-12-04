@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -232,7 +233,7 @@ import equal from &apos;fast-deep-equal&apos;;
 
 import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
-import { Evaluator } from &apos;../../utils/utils&apos;;
+import { fastCloneDeep, Evaluator } from &apos;../../utils/utils&apos;;
 import templates from &apos;./templates&apos;;
 
 export default class EditGridComponent extends NestedComponent {
@@ -341,7 +342,7 @@ export default class EditGridComponent extends NestedComponent {
     // this.editRows = [];
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return &apos;[Complex Data]&apos;;
   }
 
@@ -616,7 +617,7 @@ export default class EditGridComponent extends NestedComponent {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
     this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
+    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
     }

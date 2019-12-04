@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -236,8 +237,7 @@ import NumberComponent from &apos;./Number&apos;;
 import {
   comp1,
   comp2,
-  comp3,
-  comp4
+  comp3
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Number Component&apos;, () =&gt; {
@@ -388,7 +388,6 @@ describe(&apos;Number Component&apos;, () =&gt; {
     comp.requireDecimal = true;
 
     return Harness.testCreate(NumberComponent, comp).then(number =&gt; {
-      const html = number.element.innerHTML;
       assert.deepEqual(_.get(number, [&apos;refs&apos;, &apos;input&apos;, &apos;0&apos;, &apos;value&apos;]), &apos;4.20&apos;);
     });
   });

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-beta.7
+### Changed
+ - Changed many _.cloneDeep with a fast JSON.parse(JSON.stringify) method.
+ 
+### Fixed
+ - Changed schema to clone the component before returning the modified schema.
+ - Tags component to always normalize the value and fixed "undefined" issue with filter command.
+ - Fixing build warnings.
+ - Fixed errors that show up when using this module in node.js.
+
 ## 4.8.0-beta.6
 ### Changed
  - Upgrade fast-deep-equal@3.1.1, file-loader@5.0.2, raw-loader@4.0.0

@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -231,7 +232,7 @@
 import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
 import Formio from &apos;./Formio&apos;;
-import { checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
 
 export default class Wizard extends Webform {
   /**
@@ -546,7 +547,7 @@ export default class Wizard extends Webform {
   pageFieldLogic(page) {
     // Handle field logic on pages.
     this.component = this.pages[page].component;
-    this.originalComponent = _.cloneDeep(this.component);
+    this.originalComponent = fastCloneDeep(this.component);
     this.fieldLogic(this.data);
     // If disabled changed, be sure to distribute the setting.
     this.disabled = this.shouldDisabled;
