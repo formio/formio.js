@@ -91,7 +91,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (window) {
+      if (typeof window === 'object') {
         returnVal = Array.isArray(args) ? func(...args) : func(args);
       }
       else {
