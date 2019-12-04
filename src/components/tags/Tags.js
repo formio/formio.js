@@ -81,29 +81,26 @@ export default class TagsComponent extends Input {
     }
   }
 
+  normalizeValue(value) {
+    if (this.component.storeas === 'string' && Array.isArray(value)) {
+      return value.join(this.delimiter);
+    }
+    else if (this.component.storeas === 'array' && typeof value === 'string') {
+      return value.split(this.delimiter).filter(result => result);
+    }
+    return value;
+  }
+
   setValue(value) {
-    if (this.component.storeas === 'string' && (typeof value === 'string')) {
-      value = value.split(this.delimiter).filter();
-    }
-    if (value && !_.isArray(value)) {
-      value = [value];
-    }
     const changed = super.setValue(value);
     if (this.choices) {
+      const dataValue = this.dataValue;
       this.choices.removeActiveItems();
-      if (value) {
-        this.choices.setValue(value);
+      if (dataValue) {
+        this.choices.setValue(dataValue);
       }
     }
     return changed;
-  }
-
-  getValue() {
-    if (this.choices) {
-      const value = this.choices.getValue(true);
-      return (this.component.storeas === 'string') ? value.join(this.delimiter) : value;
-    }
-    return this.dataValue;
   }
 
   set disabled(disabled) {
