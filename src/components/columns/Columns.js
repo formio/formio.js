@@ -71,7 +71,7 @@ export default class ColumnsComponent extends NestedComponent {
       if (!Array.isArray(column.components)) {
         column.components = [];
       }
-      _.each(column.components, (comp, compIndex) => {
+      _.each(column.components, (comp) => {
         comp.hideOnChildrenHidden = this.component.hideOnChildrenHidden;
         const component = this.createComponent(comp);
         component.column = index;
