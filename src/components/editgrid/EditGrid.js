@@ -112,7 +112,7 @@ export default class EditGridComponent extends NestedComponent {
     // this.editRows = [];
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return '[Complex Data]';
   }
 

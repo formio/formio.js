@@ -2,12 +2,10 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
-import EventEmitter from '../../EventEmitter';
 
 import {
   comp1,
-  comp2,
-  comp3
+  comp2
 } from './fixtures';
 
 describe('TextField Component', () => {

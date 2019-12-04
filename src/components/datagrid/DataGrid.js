@@ -124,7 +124,7 @@ export default class DataGridComponent extends NestedComponent {
     return !this.options.readOnly && _.get(this.component, 'reorder', false);
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return '[Complex Data]';
   }
 
