@@ -940,6 +940,29 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
+  highlightInvalidComponents() {
+    const formKeys = {};
+    const repeatableKeys = [];
+
+    eachComponent(this.form.components, (comp) => {
+      if (!comp.key) {
+        return;
+      }
+
+      if (formKeys[comp.key] && !repeatableKeys.includes(comp.key)) {
+        repeatableKeys.push(comp.key);
+      }
+
+      formKeys[comp.key] = true;
+    });
+
+    const components = this.webform.getComponents();
+    repeatableKeys.forEach((key) => {
+      const instances = components.filter((comp) => comp.key === key);
+      instances.forEach((instance) => instance.setCustomValidity(`API Key is not unique: ${key}`));
+    });
+  }
+
   /**
    * Called when a new component is saved.
    *
@@ -983,8 +1006,11 @@ export default class WebformBuilder extends Component {
           isNew
         );
         this.emit('change', this.form);
+        this.highlightInvalidComponents();
       });
     }
+
+    this.highlightInvalidComponents();
     return NativePromise.resolve();
   }
 
@@ -1001,6 +1027,7 @@ export default class WebformBuilder extends Component {
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
+      this.highlightInvalidComponents();
     }
 
     // This is the render step.
@@ -1111,6 +1138,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.emit('cancelComponent', component);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
@@ -1120,6 +1148,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.removeComponent(component, parent, original);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
@@ -1141,6 +1170,7 @@ export default class WebformBuilder extends Component {
       }
       if (isNew && !saved) {
         this.removeComponent(component, parent, original);
+        this.highlightInvalidComponents();
       }
       // Clean up.
       this.removeEventListener(this.dialog, 'close', dialogClose);
