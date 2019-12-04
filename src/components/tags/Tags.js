@@ -94,10 +94,13 @@ export default class TagsComponent extends Input {
   setValue(value) {
     const changed = super.setValue(value);
     if (this.choices) {
-      const dataValue = this.dataValue;
+      let dataValue = this.dataValue;
       this.choices.removeActiveItems();
       if (dataValue) {
-        this.choices.setValue(dataValue);
+        if (typeof dataValue === 'string') {
+          dataValue = dataValue.split(this.delimiter).filter(result => result);
+        }
+        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
     return changed;
