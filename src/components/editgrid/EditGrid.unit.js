@@ -2,11 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import EditGridComponent from './EditGrid';
-
-import {
-  comp1,
-  comp2
-} from './fixtures';
+import { comp1 } from './fixtures';
 
 describe('EditGrid Component', () => {
   it('Should build an empty edit grid component', () => {

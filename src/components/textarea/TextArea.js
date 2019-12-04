@@ -3,7 +3,6 @@ import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
-import Formio from '../../Formio';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {

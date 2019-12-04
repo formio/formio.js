@@ -1,6 +1,5 @@
 import Input from '../_classes/input/Input';
 import Choices from 'choices.js/public/assets/scripts/choices.js';
-import _ from 'lodash';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -63,7 +62,7 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
-    this.addEventListener(this.choices.input.element, 'blur', (target) => {
+    this.addEventListener(this.choices.input.element, 'blur', () => {
       const value = this.choices.input.value;
       if (value) {
         this.choices.setValue([value]);

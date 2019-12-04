@@ -118,7 +118,7 @@ export default class DataMapComponent extends DataGridComponent {
     if (_.isEmpty(dataValue)) {
       return [];
     }
-    return Object.keys(dataValue).map(key => dataValue);
+    return Object.keys(dataValue).map(() => dataValue);
   }
 
   hasHeader() {
@@ -197,7 +197,6 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   addRow() {
-    const newKey = uniqueKey(this.dataValue, 'key');
     const index = this.rows.length;
     this.rows[index] = this.createRowComponents(this.dataValue, index);
     this.redraw();
