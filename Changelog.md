@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-beta.9
+### Fixed
+ - Issue with userPermissions method when submissionId is not provided.
+
+## 4.8.0-beta.8
+### Fixed
+ - Issue where tags could not get set properly in the choices widget.
+
+## 4.8.0-beta.7
+### Changed
+ - Changed many _.cloneDeep with a fast JSON.parse(JSON.stringify) method.
+ 
+### Fixed
+ - Changed schema to clone the component before returning the modified schema.
+ - Tags component to always normalize the value and fixed "undefined" issue with filter command.
+ - Fixing build warnings.
+ - Fixed errors that show up when using this module in node.js.
+
+## 4.8.0-beta.6
+### Changed
+ - Upgrade fast-deep-equal@3.1.1, file-loader@5.0.2, raw-loader@4.0.0
+
+### Added
+ - Ability to interpolate the HTML Component attribute values.
+
+### Fixed
+ - ```userPermissions``` function not taking into account Group Permissions
+ - Nested component issue where nested components visibility would not get set correctly when the parent was visibility was changed.
+ - The refreshOnChange property for HTML component to use a non event driven way.
+ - Fix issue with hidden checkbox values not being updated correctly.
+ - Fixing an error that is thrown when the input references are not set.
+
+## 4.8.0-beta.5
+### Fixed
+ - Problem where the accordion parent names are incorrect.
+
 ## 4.8.0-beta.4
 ### Fixed
  - Fixed issue with unexpected additional value inside datagrid.

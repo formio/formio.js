@@ -246,7 +246,9 @@ class ValidationChecker {
           }
 
           // Isomorphic fetch
-          const isofetch = (window && window.fetch) ? { fetch, Headers, Request, Response } : require('fetch-ponyfill')();
+          const isofetch = (typeof window === 'object' && window.fetch) ?
+            { fetch, Headers, Request, Response } :
+            require('fetch-ponyfill')();
 
           const request = new isofetch.Request(requestOptions.url, {
             headers: new isofetch.Headers(requestOptions.headers)

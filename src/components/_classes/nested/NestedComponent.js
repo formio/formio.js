@@ -44,10 +44,10 @@ export default class NestedComponent extends Field {
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
       const conditionallyVisible = component.conditionallyVisible();
-      if (forceShow || (!isVisible && conditionallyVisible)) {
+      if (forceShow || conditionallyVisible) {
         component.visible = true;
       }
-      else if (forceHide || (isVisible && !conditionallyVisible)) {
+      else if (forceHide || !isVisible || !conditionallyVisible) {
         component.visible = false;
       }
       // If hiding a nested component, clear all errors below.

@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -240,6 +241,8 @@ import _intersection from &apos;lodash/intersection&apos;;
 import _get from &apos;lodash/get&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
 import _defaults from &apos;lodash/defaults&apos;;
+import { eachComponent } from &apos;./utils/utils&apos;;
+
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -787,10 +790,12 @@ export default class Formio {
     return NativePromise.all([
       (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
       (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
+      (submission !== undefined || !this.submissionId) ? NativePromise.resolve(submission) : this.loadSubmission(),
       this.accessInfo()
     ]).then((results) =&gt; {
       const form = results.shift();
       const user = results.shift() || { _id: false, roles: [] };
+      const submission = results.shift();
       const access = results.shift();
       const permMap = {
         create: &apos;create&apos;,
@@ -833,6 +838,39 @@ export default class Formio {
             }
           }
         }
+      }
+      // check for Group Permissions
+      if (submission) {
+        // we would anyway need to loop through components for create permission, so we&apos;ll do that for all of them
+        eachComponent(form.components, (component, path) =&gt; {
+          if (component &amp;&amp; component.defaultPermission) {
+            // we assume that there might be only single value of group component
+            const value = _get(submission.data, path);
+            if (
+              value &amp;&amp; value._id &amp;&amp; // group id is present
+              user.roles.indexOf(value._id) &gt; -1 // user has group id in his roles
+            ) {
+              if (component.defaultPermission === &apos;read&apos;) {
+                perms[permMap.read] = true;
+              }
+              if (component.defaultPermission === &apos;create&apos;) {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+              }
+              if (component.defaultPermission === &apos;write&apos;) {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+                perms[permMap.update] = true;
+              }
+              if (component.defaultPermission === &apos;admin&apos;) {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+                perms[permMap.update] = true;
+                perms[permMap.delete] = true;
+              }
+            }
+          }
+        });
       }
       return perms;
     });

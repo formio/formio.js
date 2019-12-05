@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -235,7 +236,7 @@ import Formio from &apos;./Formio&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import NestedComponent from &apos;./components/_classes/nested/NestedComponent&apos;;
-import { currentTimezone } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, currentTimezone } from &apos;./utils/utils&apos;;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -960,7 +961,7 @@ export default class Webform extends NestedComponent {
       console.warn(&apos;Cannot save draft unless a user is authenticated.&apos;);
       return;
     }
-    const draft = _.cloneDeep(this.submission);
+    const draft = fastCloneDeep(this.submission);
     draft.state = &apos;draft&apos;;
     if (!this.savingDraft) {
       this.savingDraft = true;
@@ -989,7 +990,7 @@ export default class Webform extends NestedComponent {
       }
     }).then(submissions =&gt; {
       if (submissions.length &gt; 0) {
-        const draft = _.cloneDeep(submissions[0]);
+        const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() =&gt; {
           this.draftEnabled = true;
           this.savingDraft = false;
@@ -1004,7 +1005,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.cloneDeep(_.omit(this._form, [&apos;components&apos;]));
+    const schema = fastCloneDeep(_.omit(this._form, [&apos;components&apos;]));
     schema.components = [];
     this.eachComponent((component) =&gt; schema.components.push(component.schema));
     return schema;
@@ -1256,7 +1257,7 @@ export default class Webform extends NestedComponent {
     this.submitting = false;
     this.setPristine(true);
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
-    this.setValue(_.cloneDeep(submission), {
+    this.setValue(fastCloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });
@@ -1385,7 +1386,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = _.cloneDeep(this.submission || {});
+      const submission = fastCloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};

@@ -2,7 +2,7 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Formio from './Formio';
-import { checkCondition, firstNonNil, uniqueKey } from './utils/utils';
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -317,7 +317,7 @@ export default class Wizard extends Webform {
   pageFieldLogic(page) {
     // Handle field logic on pages.
     this.component = this.pages[page].component;
-    this.originalComponent = _.cloneDeep(this.component);
+    this.originalComponent = fastCloneDeep(this.component);
     this.fieldLogic(this.data);
     // If disabled changed, be sure to distribute the setting.
     this.disabled = this.shouldDisabled;

@@ -71,6 +71,7 @@ dialog.fixed {
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }
 
+.builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
 .formio-component.alert-warning .invalid-feedback {
@@ -189,6 +190,9 @@ td > .form-group {
 [dir="rtl"] .btn.signature-pad-refresh {
   left: unset;
   right: 0; }
+
+.formio-component-multiple .choices__input {
+  width: 100%; }
 
 .choices__list--dropdown .choices__item--selectable {
   padding-right: 0px; }

@@ -4,7 +4,7 @@ import fetchPonyfill from 'fetch-ponyfill';
 import Formio from './Formio';
 
 import WebformBuilder from './WebformBuilder';
-import { getElementRect } from './utils/utils';
+import { fastCloneDeep, getElementRect } from './utils/utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 const { fetch, Headers } = fetchPonyfill({
@@ -416,7 +416,7 @@ export default class PDFBuilder extends WebformBuilder {
     const element = e.target;
     const type = element.getAttribute('data-type');
 
-    const schema = _.cloneDeep(this.schemas[type]);
+    const schema = fastCloneDeep(this.schemas[type]);
 
     schema.key = _.camelCase(
       schema.label ||

@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -228,6 +229,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Formio.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;./Formio&apos;;
+import { fastCloneDeep } from &apos;./utils/utils&apos;;
 import _each from &apos;lodash/each&apos;;
 import assert from &apos;power-assert&apos;;
 import sinon from &apos;sinon&apos;;
@@ -1400,7 +1402,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         name: &apos;Update Project&apos;,
         test() {
           const formio = new Formio(`/project/${project._id}`);
-          const newProject = _.cloneDeep(project);
+          const newProject = fastCloneDeep(project);
           newProject.name = chance.string({
             length: 10,
             pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
@@ -1508,7 +1510,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
             response(url, opts) {
               const body = JSON.parse(opts.body);
               const formId = generateID();
-              form = _.cloneDeep(body);
+              form = fastCloneDeep(body);
               _.assign(form, {
                 _id: formId,
                 created: new Date().toISOString(),
@@ -1587,7 +1589,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         name: &apos;Update Form&apos;,
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-          const newForm = _.cloneDeep(form);
+          const newForm = fastCloneDeep(form);
           newForm.title = chance.string({
             length: 10,
             pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
@@ -1726,7 +1728,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         name: &apos;Update Submission&apos;,
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-          const newSubmission = _.cloneDeep(submission);
+          const newSubmission = fastCloneDeep(submission);
           newSubmission.data.fieldLabel = chance.string();
           return formio.saveSubmission(newSubmission)
             .then((response) =&gt; {
@@ -1755,7 +1757,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         name: &apos;Update Submission without ID&apos;,
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-          const newSubmission = _.cloneDeep(submission);
+          const newSubmission = fastCloneDeep(submission);
           newSubmission.data.fieldLabel = chance.string();
           return formio.saveSubmission(newSubmission)
             .then((response) =&gt; {

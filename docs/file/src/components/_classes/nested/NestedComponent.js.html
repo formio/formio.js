@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -273,10 +274,10 @@ export default class NestedComponent extends Field {
     const forceHide = this.options.hide &amp;&amp; this.options.hide[this.component.key];
     this.components.forEach(component =&gt; {
       const conditionallyVisible = component.conditionallyVisible();
-      if (forceShow || (!isVisible &amp;&amp; conditionallyVisible)) {
+      if (forceShow || conditionallyVisible) {
         component.visible = true;
       }
-      else if (forceHide || (isVisible &amp;&amp; !conditionallyVisible)) {
+      else if (forceHide || !isVisible || !conditionallyVisible) {
         component.visible = false;
       }
       // If hiding a nested component, clear all errors below.

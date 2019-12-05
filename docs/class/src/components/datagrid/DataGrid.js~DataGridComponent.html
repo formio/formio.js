@@ -183,6 +183,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -227,13 +228,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import DataGridComponent from &apos;<span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber7">formiojs/src/components/datagrid/DataGrid.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import DataGridComponent from &apos;<span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber8">formiojs/src/components/datagrid/DataGrid.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber7">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber8">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -1411,7 +1412,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getValueAsString">getValueAsString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getValueAsString">getValueAsString</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -4117,7 +4118,8 @@
       <div>
         
         
-        
+        <div data-ice="description"><p>Determines if this component is visible, or not.</p>
+</div>
       </div>
     </td>
     <td>
@@ -4173,8 +4175,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Determines if this component is visible, or not.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -9259,7 +9260,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber20">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber21">source</a></span></span>
     </span>
   </h3>
 
@@ -9305,7 +9306,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber8">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber9">source</a></span></span>
     </span>
   </h3>
 
@@ -9379,7 +9380,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -9426,7 +9427,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber71">source</a></span></span>
     </span>
   </h3>
 
@@ -9469,7 +9470,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber46">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber47">source</a></span></span>
     </span>
   </h3>
 
@@ -9512,7 +9513,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -9555,7 +9556,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber224">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber225">source</a></span></span>
     </span>
   </h3>
 
@@ -9598,7 +9599,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber37">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 
@@ -9641,7 +9642,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber50">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber51">source</a></span></span>
     </span>
   </h3>
 
@@ -9685,7 +9686,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber58">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
@@ -9729,7 +9730,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber118">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber119">source</a></span></span>
     </span>
   </h3>
 
@@ -9772,7 +9773,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber62">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber63">source</a></span></span>
     </span>
   </h3>
 
@@ -9815,7 +9816,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber83">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -9858,7 +9859,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber114">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber115">source</a></span></span>
     </span>
   </h3>
 
@@ -9902,7 +9903,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber104">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber105">source</a></span></span>
     </span>
   </h3>
 
@@ -9946,7 +9947,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber292">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber293">source</a></span></span>
     </span>
   </h3>
 
@@ -9989,7 +9990,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber66">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber67">source</a></span></span>
     </span>
   </h3>
 
@@ -10033,7 +10034,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber75">source</a></span></span>
     </span>
   </h3>
 
@@ -10076,7 +10077,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber40">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber41">source</a></span></span>
     </span>
   </h3>
 
@@ -10119,7 +10120,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber33">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber34">source</a></span></span>
     </span>
   </h3>
 
@@ -10162,7 +10163,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber42">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber43">source</a></span></span>
     </span>
   </h3>
 
@@ -10208,7 +10209,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber351">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber352">source</a></span></span>
     </span>
   </h3>
 
@@ -10251,7 +10252,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber277">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber278">source</a></span></span>
     </span>
   </h3>
 
@@ -10322,7 +10323,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber468">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber469">source</a></span></span>
     </span>
   </h3>
 
@@ -10399,7 +10400,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber501">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber502">source</a></span></span>
     </span>
   </h3>
 
@@ -10483,7 +10484,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber429">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber430">source</a></span></span>
     </span>
   </h3>
 
@@ -10561,7 +10562,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber460">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber461">source</a></span></span>
     </span>
   </h3>
 
@@ -10651,7 +10652,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber444">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber445">source</a></span></span>
     </span>
   </h3>
 
@@ -10735,7 +10736,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber411">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber412">source</a></span></span>
     </span>
   </h3>
 
@@ -10813,7 +10814,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber391">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber392">source</a></span></span>
     </span>
   </h3>
 
@@ -10890,7 +10891,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber373">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber374">source</a></span></span>
     </span>
   </h3>
 
@@ -10961,7 +10962,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber264">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber265">source</a></span></span>
     </span>
   </h3>
 
@@ -11016,7 +11017,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber585">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber586">source</a></span></span>
     </span>
   </h3>
 
@@ -11095,7 +11096,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber174">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber175">source</a></span></span>
     </span>
   </h3>
 
@@ -11151,7 +11152,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber151">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber152">source</a></span></span>
     </span>
   </h3>
 
@@ -11208,7 +11209,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber136">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber137">source</a></span></span>
     </span>
   </h3>
 
@@ -11288,7 +11289,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber369">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber370">source</a></span></span>
     </span>
   </h3>
 
@@ -11343,7 +11344,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber254">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber255">source</a></span></span>
     </span>
   </h3>
 
@@ -11398,7 +11399,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber577">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber578">source</a></span></span>
     </span>
   </h3>
 
@@ -11450,11 +11451,11 @@ Each key in object represents index of first row in group.</p>
     
     
     
-    <span class="code" data-ice="name">getValueAsString</span><span class="code" data-ice="signature">(value: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="code" data-ice="name">getValueAsString</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber126">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber127">source</a></span></span>
     </span>
   </h3>
 
@@ -11465,23 +11466,7 @@ Each key in object represents index of first row in group.</p>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/_classes/component/Component.js~Component.html#instance-method-getValueAsString">Component#getValueAsString</a></span></div>
 
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">value</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
+  <div data-ice="properties">
 </div>
 
   <div class="return-params" data-ice="returnParams">
@@ -11525,7 +11510,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber190">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber191">source</a></span></span>
     </span>
   </h3>
 
@@ -11580,7 +11565,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber216">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber217">source</a></span></span>
     </span>
   </h3>
 
@@ -11635,7 +11620,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber220">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber221">source</a></span></span>
     </span>
   </h3>
 
@@ -11713,7 +11698,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber200">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber201">source</a></span></span>
     </span>
   </h3>
 
@@ -11768,7 +11753,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber270">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber271">source</a></span></span>
     </span>
   </h3>
 
@@ -11823,7 +11808,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber204">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber205">source</a></span></span>
     </span>
   </h3>
 
@@ -11878,7 +11863,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber178">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber179">source</a></span></span>
     </span>
   </h3>
 
@@ -11933,7 +11918,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber212">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber213">source</a></span></span>
     </span>
   </h3>
 
@@ -11988,7 +11973,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber37">source</a></span></span>
     </span>
   </h3>
 
@@ -12031,7 +12016,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber328">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber329">source</a></span></span>
     </span>
   </h3>
 
@@ -12108,7 +12093,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber363">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber364">source</a></span></span>
     </span>
   </h3>
 
@@ -12167,7 +12152,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber228">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber229">source</a></span></span>
     </span>
   </h3>
 
@@ -12222,7 +12207,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber581">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber582">source</a></span></span>
     </span>
   </h3>
 
@@ -12265,7 +12250,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber186">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber187">source</a></span></span>
     </span>
   </h3>
 
@@ -12324,7 +12309,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber522">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber523">source</a></span></span>
     </span>
   </h3>
 
@@ -12402,7 +12387,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber610">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber611">source</a></span></span>
     </span>
   </h3>
 
@@ -12467,7 +12452,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber182">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber183">source</a></span></span>
     </span>
   </h3>
 
@@ -12538,7 +12523,7 @@ Each key in object represents index of first row in group.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber517">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/datagrid/DataGrid.js.html#lineNumber518">source</a></span></span>
     </span>
   </h3>
 
