@@ -897,14 +897,16 @@ describe('Formio.js Tests', () => {
             return test.test();
           })
           .then(() => {
-            if (test.mock) fetchMock.restore();
+            if (test.mock) {
+              fetchMock.restore();
+            }
             done();
           })
           .catch((err) => {
-            assert.equal(err, null, 'Caught error during test');
-            if (err) console.error(err.stack);
-            if (test.mock) fetchMock.restore();
-            done();
+            if (test.mock) {
+              fetchMock.restore();
+            }
+            done(typeof err === 'string' ? new Error(err) : err);
           });
       });
     };
