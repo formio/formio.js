@@ -1,7 +1,7 @@
 const Rule = require('./Rule');
 
 module.exports = class MinWords extends Rule {
-  defaultMessage = '{{field}} must have more than {{settings.length}} words.';
+  defaultMessage = '{{field}} must have more than {{- settings.length}} words.';
 
   check(value) {
     const minWords = parseInt(this.settings.length, 10);

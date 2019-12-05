@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const Rule = require('./Rule');
 
 module.exports = class Pattern extends Rule {

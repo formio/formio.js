@@ -1,8 +1,7 @@
-import { boolValue, interpolate } from '../../utils/utils';
+import { interpolate } from '../../utils/utils';
 import _ from 'lodash';
 
 const Rule = require('./Rule');
-const config = {};
 
 module.exports = class Select extends Rule {
   defaultMessage = '{{field}} contains an invalid selection';
@@ -82,8 +81,8 @@ module.exports = class Select extends Rule {
     }
 
     // Set form.io authentication.
-    if (schema.authenticate && config.token) {
-      requestOptions.headers['x-jwt-token'] = config.token;
+    if (schema.authenticate && this.config.token) {
+      requestOptions.headers['x-jwt-token'] = this.config.token;
     }
 
     // Isomorphic fetch

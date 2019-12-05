@@ -1519,8 +1519,8 @@ export default class Component extends Element {
 
   // Deprecated
   addInputError(message, dirty, elements) {
-    this.addMessages(message, dirty, elements);
-    this.setErrorClasses(elements, true, !!message);
+    this.addMessages(message);
+    this.setErrorClasses(elements, dirty, !!message);
   }
 
   // Deprecated
@@ -1534,7 +1534,7 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addMessages(messages, dirty, elements) {
+  addMessages(messages) {
     if (!messages) {
       return;
     }
@@ -1552,9 +1552,9 @@ export default class Component extends Element {
     }
 
     if (this.refs.messageContainer) {
-      const renders = messages.map((message) => this.renderTemplate('message', message));
-      console.log('renders', renders.join(''));
-      this.setContent(this.refs.messageContainer, renders.join(''));
+      this.setContent(this.refs.messageContainer, messages.map((message) =>
+        this.renderTemplate('message', message)
+      ).join(''));
     }
   }
 
@@ -2315,7 +2315,6 @@ export default class Component extends Element {
   }
 
   setCustomValidity(messages, dirty, external) {
-    console.log('setCustomVisibility', this.key, messages);
     if (typeof messages === 'string' && messages) {
       messages = {
         level: 'error',
@@ -2334,7 +2333,7 @@ export default class Component extends Element {
 
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
 
-    if (messages) {
+    if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
@@ -2360,15 +2359,15 @@ export default class Component extends Element {
       this.clearErrorClasses();
     }
 
-    if (!this.refs.input) {
-      return;
-    }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      // if (typeof input.setCustomValidity === 'function') {
-      //   input.setCustomValidity(message, dirty);
-      // }
-    });
+    // if (!this.refs.input) {
+    //   return;
+    // }
+    // this.refs.input.forEach(input => {
+    //   input = this.performInputMapping(input);
+    //   if (typeof input.setCustomValidity === 'function') {
+    //     input.setCustomValidity(message, dirty);
+    //   }
+    // });
   }
 
   shouldSkipValidation(data, dirty, row) {

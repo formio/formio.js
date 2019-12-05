@@ -1,9 +1,8 @@
-import { boolValue, escapeRegExCharacters } from '../../utils/utils';
+import { escapeRegExCharacters } from '../../utils/utils';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
 const Rule = require('./Rule');
-const config = {};
 
 module.exports = class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
@@ -15,13 +14,13 @@ module.exports = class Unique extends Rule {
     }
 
     // Skip if we don't have a database connection
-    if (!config.db) {
+    if (!this.config.db) {
       return true;
     }
 
     return new NativePromise(resolve => {
-      const form = config.form;
-      const submission = config.submission;
+      const form = this.config.form;
+      const submission = this.config.submission;
       const path = `data.${this.component.path}`;
 
       // Build the query
@@ -52,7 +51,7 @@ module.exports = class Unique extends Rule {
       query.deleted = { $eq: null };
 
       // Try to find an existing value within the form
-      config.db.models.submission.findOne(query, (err, result) => {
+      this.config.db.models.submission.findOne(query, (err, result) => {
         if (err) {
           return resolve(false);
         }

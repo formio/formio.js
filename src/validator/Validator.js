@@ -19,6 +19,7 @@ import Rules from './Rules';
 class ValidationChecker {
   constructor(config = {}) {
     this.async = _.defaultTo(config.async, true);
+    this.config = config;
 
     this.validators = {
       required: {
@@ -909,7 +910,7 @@ class ValidationChecker {
     const Rule = Rules.getRule(validation.rule);
     const results = [];
     if (Rule) {
-      const rule = new Rule(component, validation.settings);
+      const rule = new Rule(component, validation.settings, this.config);
       values.map((value, index) => {
         const result = rule.check(value, data, row);
         if (result !== true) {

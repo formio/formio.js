@@ -1,5 +1,3 @@
-import { boolValue } from '../../utils/utils';
-
 const Rule = require('./Rule');
 
 module.exports = class Required extends Rule {
