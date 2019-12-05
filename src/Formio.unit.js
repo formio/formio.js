@@ -881,6 +881,8 @@ describe('Formio.js Tests', () => {
   describe('Test Formio.js capabilities', () => {
     const testCapability = function(test) {
       it(test.name, (done) => {
+        // need to clear Formio cache before every test, otherwise mock results might be ignored for same URLs
+        Formio.clearCache();
         if (test.mock) {
           const mock = test.mock();
           if (mock instanceof Array) {

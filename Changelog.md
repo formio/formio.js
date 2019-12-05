@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - ```userPermissions``` function not taking into account Group Permissions
  - ```userPermissions``` method throwing error when no submission or submission id is specified
  - ```Formio``` tests always failing with timeout error instead of actual error
+ - ```Formio``` tests ignoring mock results for same URLs
 
 ## 4.8.0-beta.5
 ### Fixed
