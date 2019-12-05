@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Fixed
  - ```userPermissions``` function not taking into account Group Permissions
+ - ```userPermissions``` method throwing error when no submission or submission id is specified
 
 ## 4.8.0-beta.5
 ### Fixed
