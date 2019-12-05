@@ -26,6 +26,7 @@ export default {
       const newKey = uniqueKey(formKeys, component.key);
       if (newKey !== component.key) {
         component.key = newKey;
+        formKeys[newKey] = true;
         changed = true;
       }
     }, true);
