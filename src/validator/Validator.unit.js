@@ -530,7 +530,7 @@ describe('Validator Tests', () => {
     component.dataValue = '2019-12-03T00:00:00.000Z';
     assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = '2019-12-04T00:00:00.000Z';
-    assert.deepEqual(Validator.checkComponent(component, {}), fail);
+    assert.deepEqual(Validator.checkComponent(component, {}), pass);
     component.dataValue = '2019-12-05T00:00:00.000Z';
     assert.deepEqual(Validator.checkComponent(component, {}), fail);
     component.dataValue = '2029-12-05T00:00:00.000Z';
