@@ -1,4 +1,5 @@
 import Formio from './Formio';
+import { fastCloneDeep } from './utils/utils';
 import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
@@ -1175,7 +1176,7 @@ describe('Formio.js Tests', () => {
         name: 'Update Project',
         test() {
           const formio = new Formio(`/project/${project._id}`);
-          const newProject = _.cloneDeep(project);
+          const newProject = fastCloneDeep(project);
           newProject.name = chance.string({
             length: 10,
             pool: 'abcdefghijklmnopqrstuvwxyz'
@@ -1283,7 +1284,7 @@ describe('Formio.js Tests', () => {
             response(url, opts) {
               const body = JSON.parse(opts.body);
               const formId = generateID();
-              form = _.cloneDeep(body);
+              form = fastCloneDeep(body);
               _.assign(form, {
                 _id: formId,
                 created: new Date().toISOString(),
@@ -1362,7 +1363,7 @@ describe('Formio.js Tests', () => {
         name: 'Update Form',
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-          const newForm = _.cloneDeep(form);
+          const newForm = fastCloneDeep(form);
           newForm.title = chance.string({
             length: 10,
             pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -1501,7 +1502,7 @@ describe('Formio.js Tests', () => {
         name: 'Update Submission',
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-          const newSubmission = _.cloneDeep(submission);
+          const newSubmission = fastCloneDeep(submission);
           newSubmission.data.fieldLabel = chance.string();
           return formio.saveSubmission(newSubmission)
             .then((response) => {
@@ -1530,7 +1531,7 @@ describe('Formio.js Tests', () => {
         name: 'Update Submission without ID',
         test() {
           const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-          const newSubmission = _.cloneDeep(submission);
+          const newSubmission = fastCloneDeep(submission);
           newSubmission.data.fieldLabel = chance.string();
           return formio.saveSubmission(newSubmission)
             .then((response) => {

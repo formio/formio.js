@@ -448,7 +448,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve(this.dataValue);
     }
     return this.submitSubForm(false)
-      .then((data) => {
+      .then(() => {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());

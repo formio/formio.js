@@ -3,6 +3,7 @@ import _ from 'lodash';
 import dragula from 'dragula/dist/dragula';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
+import { fastCloneDeep } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -123,7 +124,7 @@ export default class DataGridComponent extends NestedComponent {
     return !this.options.readOnly && _.get(this.component, 'reorder', false);
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return '[Complex Data]';
   }
 
@@ -335,7 +336,7 @@ export default class DataGridComponent extends NestedComponent {
     //should drop at next sibling position; no next sibling means drop to last position
     const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
     const movedBelow = newPosition > oldPosition;
-    const dataValue = _.cloneDeep(this.dataValue);
+    const dataValue = fastCloneDeep(this.dataValue);
     const draggedRowData = dataValue[oldPosition];
 
     //insert element at new position

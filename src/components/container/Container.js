@@ -71,7 +71,7 @@ export default class ContainerComponent extends NestedComponent {
     return this.dataValue;
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return '[Complex Data]';
   }
 

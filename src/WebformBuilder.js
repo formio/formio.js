@@ -6,7 +6,7 @@ import Tooltip from 'tooltip.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import Formio from './Formio';
-import { bootstrapVersion } from './utils/utils';
+import { fastCloneDeep, bootstrapVersion } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -364,7 +364,7 @@ export default class WebformBuilder extends Component {
 
         subgroup.componentOrder.push(component.key);
         subgroup.components[component.key] = _.merge(
-          _.cloneDeep(Components.components[component.type].builderInfo, true),
+          fastCloneDeep(Components.components[component.type].builderInfo),
           {
             key: component.key,
             title: componentName,
@@ -657,12 +657,12 @@ export default class WebformBuilder extends Component {
     let info;
     // This is a new component
     if (this.schemas.hasOwnProperty(key)) {
-      info = _.cloneDeep(this.schemas[key]);
+      info = fastCloneDeep(this.schemas[key]);
     }
     else if (this.groups.hasOwnProperty(group)) {
       const groupComponents = this.groups[group].components;
       if (groupComponents.hasOwnProperty(key)) {
-        info = _.cloneDeep(groupComponents[key].schema);
+        info = fastCloneDeep(groupComponents[key].schema);
       }
     }
     else {
@@ -670,7 +670,7 @@ export default class WebformBuilder extends Component {
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
       if (resourceGroup && resourceGroup.components.hasOwnProperty(key)) {
-        info = _.cloneDeep(resourceGroup.components[key].schema);
+        info = fastCloneDeep(resourceGroup.components[key].schema);
       }
     }
 
@@ -940,6 +940,29 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
+  highlightInvalidComponents() {
+    const formKeys = {};
+    const repeatableKeys = [];
+
+    eachComponent(this.form.components, (comp) => {
+      if (!comp.key) {
+        return;
+      }
+
+      if (formKeys[comp.key] && !repeatableKeys.includes(comp.key)) {
+        repeatableKeys.push(comp.key);
+      }
+
+      formKeys[comp.key] = true;
+    });
+
+    const components = this.webform.getComponents();
+    repeatableKeys.forEach((key) => {
+      const instances = components.filter((comp) => comp.key === key);
+      instances.forEach((instance) => instance.setCustomValidity(`API Key is not unique: ${key}`));
+    });
+  }
+
   /**
    * Called when a new component is saved.
    *
@@ -983,8 +1006,11 @@ export default class WebformBuilder extends Component {
           isNew
         );
         this.emit('change', this.form);
+        this.highlightInvalidComponents();
       });
     }
+
+    this.highlightInvalidComponents();
     return NativePromise.resolve();
   }
 
@@ -993,14 +1019,15 @@ export default class WebformBuilder extends Component {
       return;
     }
     let saved = false;
-    const componentCopy = _.cloneDeep(component);
-    let componentClass = Components.components[componentCopy.type];
-    const isCustom = componentClass === undefined;
+    const componentCopy = fastCloneDeep(component);
+    let ComponentClass = Components.components[componentCopy.type];
+    const isCustom = ComponentClass === undefined;
     isJsonEdit = isJsonEdit || isCustom;
-    componentClass = isCustom ? Components.components.unknown : componentClass;
+    ComponentClass = isCustom ? Components.components.unknown : ComponentClass;
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
+      this.highlightInvalidComponents();
     }
 
     // This is the render step.
@@ -1036,19 +1063,20 @@ export default class WebformBuilder extends Component {
           tooltip: 'Edit the JSON for this component.'
         }
       ]
-    } : componentClass.editForm(_.cloneDeep(overrides));
+    } : ComponentClass.editForm(_.cloneDeep(overrides));
+    const instance = new ComponentClass(componentCopy);
     this.editForm.submission = isJsonEdit ? {
       data: {
-        componentJson: componentCopy
+        componentJson: instance.component
       },
     } : {
-      data: componentCopy,
+      data: instance.component,
     };
 
     if (this.preview) {
       this.preview.destroy();
     }
-    if (!componentClass.builderInfo.hasOwnProperty('preview') || componentClass.builderInfo.preview) {
+    if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
       this.preview = new Webform(_.omit(this.options, [
         'hooks',
         'builder',
@@ -1060,7 +1088,7 @@ export default class WebformBuilder extends Component {
 
     this.componentEdit = this.ce('div');
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
-      componentInfo: componentClass.builderInfo,
+      componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
     }));
@@ -1111,6 +1139,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.emit('cancelComponent', component);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
@@ -1120,6 +1149,7 @@ export default class WebformBuilder extends Component {
       this.editForm.detach();
       this.removeComponent(component, parent, original);
       this.dialog.close();
+      this.highlightInvalidComponents();
     });
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
@@ -1141,6 +1171,7 @@ export default class WebformBuilder extends Component {
       }
       if (isNew && !saved) {
         this.removeComponent(component, parent, original);
+        this.highlightInvalidComponents();
       }
       // Clean up.
       this.removeEventListener(this.dialog, 'close', dialogClose);
@@ -1162,8 +1193,7 @@ export default class WebformBuilder extends Component {
       return console.warn('Session storage is not supported in this browser.');
     }
     this.addClass(this.refs.form, 'builder-paste-mode');
-    const copy = _.cloneDeep(component.schema);
-    window.sessionStorage.setItem('formio.clipboard', JSON.stringify(copy));
+    window.sessionStorage.setItem('formio.clipboard', JSON.stringify(component.schema));
   }
 
   /**

@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal';
 
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
-import { Evaluator } from '../../utils/utils';
+import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
@@ -112,7 +112,7 @@ export default class EditGridComponent extends NestedComponent {
     // this.editRows = [];
   }
 
-  getValueAsString(value) {
+  getValueAsString() {
     return '[Complex Data]';
   }
 
@@ -387,7 +387,7 @@ export default class EditGridComponent extends NestedComponent {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
     this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
+    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
     }

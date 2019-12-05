@@ -43,6 +43,7 @@ export default class ColumnsComponent extends NestedComponent {
         const clonedComp = _.clone(comp);
         clonedComp.internal = true;
         const component = this.createComponent(clonedComp);
+        delete component.component.internal;
         schema.columns[colIndex].components[compIndex] = component.schema;
       });
     });

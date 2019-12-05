@@ -91,7 +91,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (window) {
+      if (typeof window === 'object') {
         returnVal = Array.isArray(args) ? func(...args) : func(args);
       }
       else {
@@ -1083,6 +1083,13 @@ export function sanitize(string, options) {
     sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
   }
   return dompurify.sanitize(string, sanitizeOptions);
+}
+
+/**
+ * Fast cloneDeep for JSON objects only.
+ */
+export function fastCloneDeep(obj) {
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
 export { Evaluator, interpolate };

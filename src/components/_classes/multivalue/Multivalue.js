@@ -160,7 +160,7 @@ export default class Multivalue extends Field {
     });
 
     if (!this.attachMultiMask(index)) {
-      this.setInputMask(this.refs.input[index]);
+      this.setInputMask(element);
     }
   }
 
