@@ -2339,7 +2339,8 @@ export default class Component extends Element {
       }
       this.error = {
         component: this.component,
-        message: messages,
+        message: messages[0].message,
+        messages,
         external: !!external,
       };
       this.emit('componentError', this.error);

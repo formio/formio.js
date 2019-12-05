@@ -87,7 +87,7 @@ describe('Validator Tests', () => {
           validator: 'required',
         },
         level: 'error',
-        message: '{{field}} is required',
+        message: 'Test is required',
       }
     ]);
     done();
