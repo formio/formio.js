@@ -14,6 +14,7 @@ import {
   checkInvalidDate,
   CALENDAR_ERROR_MESSAGES
 } from '../utils/calendarUtils';
+import Rules from './Rules';
 
 class ValidationChecker {
   constructor(config = {}) {
@@ -791,6 +792,24 @@ class ValidationChecker {
       ? component.validationValue
       : [component.validationValue];
 
+    // If this component has the new validation system enabled, use it instead.
+    const validations = _.get(component, 'component.validations');
+    if (validations && Array.isArray(validations)) {
+      const resultsOrPromises = this.checkValidations(component, validations, data, row, values);
+
+      // Define how results should be formatted
+      const formatResults = results => {
+        return includeWarnings ? results : results.filter(result => result.level === 'error');
+      };
+
+      if (this.async) {
+        return NativePromise.all(resultsOrPromises).then(formatResults);
+      }
+      else {
+        return formatResults(resultsOrPromises);
+      }
+    }
+
     const validateCustom     = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
 
@@ -849,6 +868,70 @@ class ValidationChecker {
     else {
       return formatResults(resultsOrPromises);
     }
+  }
+
+  /**
+   * Use the new validations engine to evaluate any errors.
+   *
+   * @param component
+   * @param validations
+   * @param data
+   * @param row
+   * @param values
+   * @returns {any[]}
+   */
+  checkValidations(component, validations, data, row, values) {
+    // Get results.
+    const results = validations.map((validation) => {
+      return this.checkRule(component, validation, data, row, values);
+    });
+
+    // Flatten array and filter out empty results.
+    const messages = results.reduce((prev, result) => {
+      if (result) {
+        return [...prev, ...result];
+      }
+      return prev;
+    }, []).filter((result) => result);
+
+    // Keep only the last error for each rule.
+    const rules = messages.reduce((prev, message) => {
+      prev[message.context.validator] = message;
+      return prev;
+    }, {});
+
+    return Object.values(rules);
+  }
+
+  checkRule(component, validation, data, row, values) {
+    const Rule = Rules.getRule(validation.rule);
+    const results = [];
+    if (Rule) {
+      const rule = new Rule(component, validation.settings);
+      values.map((value, index) => {
+        const result = rule.check(value, data, row);
+        if (result !== true) {
+          results.push({
+            level: validation.level || 'error',
+            message: component.t(validation.message || rule.defaultMessage, {
+              settings: validation.settings,
+              field: component.errorLabel,
+              data,
+              row,
+              error: result,
+            }),
+            context: {
+              key: component.key,
+              index,
+              label: component.label,
+              validator: validation.rule,
+            },
+          });
+        }
+      });
+    }
+    // If there are no results, return false so it is removed by filter.
+    return results.length === 0 ? false : results;
   }
 
   get check() {

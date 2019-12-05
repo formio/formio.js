@@ -5,7 +5,7 @@ import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
-import Validator from '../../Validator';
+import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
 import { boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
@@ -1517,26 +1517,15 @@ export default class Component extends Element {
     }, false);
   }
 
-  addInputWarning(message, dirty, elements) {
-    if (!message) {
-      return;
-    }
+  // Deprecated
+  addInputError(message, dirty, elements) {
+    this.addMessages(message, dirty, elements);
+    this.setErrorClasses(elements, true, !!message);
+  }
 
-    if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
-        message
-      }));
-    }
-
-    elements
-      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentWarningClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
-    }
+  // Deprecated
+  removeInputError(elements) {
+    this.setErrorClasses(elements, true, false);
   }
 
   /**
@@ -1545,32 +1534,46 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty, elements) {
-    if (!message) {
+  addMessages(messages, dirty, elements) {
+    if (!messages) {
       return;
     }
 
+    // Standardize on array of objects for message.
+    if (typeof messages === 'string') {
+      messages = {
+        messages,
+        level: 'error',
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
-        message
-      }));
-    }
-
-    // Add error classes
-    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentErrorClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
+      const renders = messages.map((message) => this.renderTemplate('message', message));
+      console.log('renders', renders.join(''));
+      this.setContent(this.refs.messageContainer, renders.join(''));
     }
   }
 
-  removeInputError(elements) {
-    if (elements) {
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+    this.clearErrorClasses();
+    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    if (hasErrors) {
+      // Add error classes
+      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.options.componentErrorClass);
+      }
+      else {
+        this.addClass(this.element, 'has-error');
+      }
+    }
+    if (hasMessages) {
+      this.addClass(this.element, 'has-message');
     }
   }
 
@@ -2240,15 +2243,15 @@ export default class Component extends Element {
       return true;
     }
 
-    const errors = Validator.checkComponent(this, data);
-    if (errors.length && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true, row);
-      this.setCustomValidity(message, dirty);
+    const messages = Validator.checkComponent(this, data, row, true);
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    if (messages.length && (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
     }
     else {
       this.setCustomValidity('');
     }
-    return !errors.length;
+    return !hasErrors;
   }
 
   checkValidity(data, dirty, row) {
@@ -2307,28 +2310,43 @@ export default class Component extends Element {
   clearErrorClasses() {
     this.removeClass(this.element, 'formio-error-wrapper');
     this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'alert alert-warning');
     this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, 'has-message');
   }
 
-  setCustomValidity(message, dirty, external, isWarning = false) {
-    if (message) {
+  setCustomValidity(messages, dirty, external) {
+    console.log('setCustomVisibility', this.key, messages);
+    if (typeof messages === 'string' && messages) {
+      messages = {
+        level: 'error',
+        message: messages,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      if (messages) {
+        messages = [messages];
+      }
+      else {
+        messages = [];
+      }
+    }
+
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+
+    if (messages) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = {
         component: this.component,
-        message: message,
+        message: messages,
         external: !!external,
       };
       this.emit('componentError', this.error);
+      this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        if (isWarning) {
-          this.addInputWarning(message, dirty, this.refs.input);
-        }
-        else {
-          this.addInputError(message, dirty, this.refs.input);
-        }
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2336,7 +2354,9 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      this.removeInputError(this.refs.input);
+      if (this.refs.input) {
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      }
       this.clearErrorClasses();
     }
 
@@ -2345,9 +2365,9 @@ export default class Component extends Element {
     }
     this.refs.input.forEach(input => {
       input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
-      }
+      // if (typeof input.setCustomValidity === 'function') {
+      //   input.setCustomValidity(message, dirty);
+      // }
     });
   }
 
