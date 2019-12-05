@@ -197,6 +197,7 @@ export default class Component extends Element {
   /* eslint-disable max-statements */
   constructor(component, options, data) {
     super(Object.assign({
+      id: _.get(component, 'id'),
       renderMode: 'form',
       attachMode: 'full'
     }, options || {}));

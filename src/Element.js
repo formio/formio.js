@@ -29,7 +29,7 @@ export default class Element {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = FormioUtils.getRandomComponentId();
+    this.id = this.options.id || FormioUtils.getRandomComponentId();
     /**
      * An array of event handlers so that the destry command can deregister them.
      * @type {Array}

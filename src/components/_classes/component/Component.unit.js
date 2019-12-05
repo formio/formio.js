@@ -25,6 +25,13 @@ describe('Component', () => {
     });
   });
 
+  it('Should keep id component when id exists', () => {
+    return Harness.testCreate(Component, { id: 'componentId', type: 'base' })
+      .then((component) => {
+        assert.equal(component.id, 'componentId');
+      });
+  });
+
   it('Should provide required validation', (done) => {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { required: true }
