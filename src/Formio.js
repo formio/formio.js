@@ -560,7 +560,7 @@ export default class Formio {
     return NativePromise.all([
       (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
       (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
-      (submission !== undefined) ? NativePromise.resolve(submission) : this.loadSubmission(),
+      (submission !== undefined || !this.submissionId) ? NativePromise.resolve(submission) : this.loadSubmission(),
       this.accessInfo()
     ]).then((results) => {
       const form = results.shift();
