@@ -4,7 +4,7 @@ module.exports = class DateRule extends Rule {
   defaultMessage = '{{field}} is not a valid date.';
 
   check(value) {
-    if (value instanceof Date) {
+    if (!value || value instanceof Date) {
       return true;
     }
     if (value === 'Invalid date' || value === 'Invalid Date') {

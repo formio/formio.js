@@ -5,7 +5,7 @@ module.exports = class MaxLength extends Rule {
 
   check(value) {
     const maxLength = parseInt(this.settings.length, 10);
-    if (!maxLength || !value.hasOwnProperty('length')) {
+    if (!value || !maxLength || !value.hasOwnProperty('length')) {
       return true;
     }
     return (value.length <= maxLength);
