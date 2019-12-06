@@ -4,7 +4,7 @@ import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers/Providers';
-import Rules from './validator/rules/Rules';
+import Rules from './validator/Rules';
 import Formio from './Formio';
 Components.setComponents(AllComponents);
 Formio.Components = Components;
