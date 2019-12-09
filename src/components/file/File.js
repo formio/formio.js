@@ -290,7 +290,11 @@ export default class FileComponent extends Field {
             fileService.deleteFile(fileInfo);
           }
           else {
-            this.options.formio.makeRequest('', fileInfo.url, 'delete');
+            const formio = this.options.formio || (this.root && this.root.formio);
+
+            if (formio) {
+              formio.makeRequest('', fileInfo.url, 'delete');
+            }
           }
         }
         event.preventDefault();
