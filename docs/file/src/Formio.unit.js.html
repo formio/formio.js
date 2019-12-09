@@ -41,7 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -221,6 +220,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
@@ -1112,6 +1113,8 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
   describe(&apos;Test Formio.js capabilities&apos;, () =&gt; {
     const testCapability = function(test) {
       it(test.name, (done) =&gt; {
+        // need to clear Formio cache before every test, otherwise mock results might be ignored for same URLs
+        Formio.clearCache();
         if (test.mock) {
           const mock = test.mock();
           if (mock instanceof Array) {
@@ -1128,14 +1131,16 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
             return test.test();
           })
           .then(() =&gt; {
-            if (test.mock) fetchMock.restore();
+            if (test.mock) {
+              fetchMock.restore();
+            }
             done();
           })
           .catch((err) =&gt; {
-            assert.equal(err, null, &apos;Caught error during test&apos;);
-            if (err) console.error(err.stack);
-            if (test.mock) fetchMock.restore();
-            done();
+            if (test.mock) {
+              fetchMock.restore();
+            }
+            done(typeof err === &apos;string&apos; ? new Error(err) : err);
           });
       });
     };
@@ -1936,7 +1941,445 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
             }
           };
         }
-      }
+      },
+      {
+        name: &apos;userPermissions method should give create_all permission&apos;,
+        test() {
+          const user = {
+            _id: &apos;test_user_id&apos;,
+            roles: [&apos;test_role_id&apos;]
+          };
+
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+              assert.equal(permissions.read, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_all&apos;,
+                        roles: [&apos;test_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give create_own permission&apos;,
+        test() {
+          const userId = &apos;test_user_id&apos;;
+          const user = {
+            _id: userId,
+            roles: [&apos;test_role_id&apos;]
+          };
+          const submission = {
+            owner: userId
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.read, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_own&apos;,
+                        roles: [&apos;test_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give permissions for Anonymous role&apos;,
+        test() {
+          const user = {
+            _id: false,
+            roles: [],
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.read, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_all&apos;,
+                        roles: [&apos;test_anonymous_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: [
+                      {
+                        _id: &apos;test_anonymous_role_id&apos;,
+                        default: true
+                      }
+                    ]
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give all permissions for admin role&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_admin_role&apos;],
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, true);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: []
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: [
+                      {
+                        _id: &apos;test_admin_role&apos;,
+                        admin: true
+                      }
+                    ]
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give only group read permission for `read` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, false);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;read&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give group read and create permissions for `create` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;create&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give group read, create and edit permissions for `write` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;write&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give all group permissions for `admin` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, true);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;admin&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+
     ];
 
     tests.forEach(testCapability);

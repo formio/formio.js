@@ -4,13 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0-rc.1
 ### Fixed
  - ```userPermissions``` method throwing error when no submission or submission id is specified
  - ```Formio``` tests always failing with timeout error instead of actual error
  - ```Formio``` tests ignoring mock results for same URLs
+ - Fixed adding resource tag to query, which fixes the Resource fields getting into the builder.
+ - Fix issue where copying and pasting layout component with multiple items with the same key doesn't uniquify correctly.
+ - Fix problem where the form revision would not get loaded correctly.
+ - Fixed issue if there is no formio in options for File uploads when deleting files.
  
 ### Added
+ - New validation system with backwards compatability.
+ - Ability for modules to define their own validation rules.
  - Tests for ```userPermissions``` method
 
 ## 4.8.0-beta.9

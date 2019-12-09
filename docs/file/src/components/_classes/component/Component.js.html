@@ -41,7 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -221,6 +220,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
@@ -235,7 +236,7 @@ import Tooltip from &apos;tooltip.js&apos;;
 import _ from &apos;lodash&apos;;
 import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
-import Validator from &apos;../../Validator&apos;;
+import Validator from &apos;../../../validator/Validator&apos;;
 import Templates from &apos;../../../templates/Templates&apos;;
 import { fastCloneDeep, boolValue } from &apos;../../../utils/utils&apos;;
 import Element from &apos;../../../Element&apos;;
@@ -1747,26 +1748,15 @@ export default class Component extends Element {
     }, false);
   }
 
-  addInputWarning(message, dirty, elements) {
-    if (!message) {
-      return;
-    }
+  // Deprecated
+  addInputError(message, dirty, elements) {
+    this.addMessages(message);
+    this.setErrorClasses(elements, dirty, !!message);
+  }
 
-    if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate(&apos;warning&apos;, {
-        message
-      }));
-    }
-
-    elements
-      .forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-warning&apos;));
-
-    if (dirty &amp;&amp; this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentWarningClass);
-    }
-    else {
-      this.addClass(this.element, &apos;has-error&apos;);
-    }
+  // Deprecated
+  removeInputError(elements) {
+    this.setErrorClasses(elements, true, false);
   }
 
   /**
@@ -1775,32 +1765,46 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty, elements) {
-    if (!message) {
+  addMessages(messages) {
+    if (!messages) {
       return;
     }
 
+    // Standardize on array of objects for message.
+    if (typeof messages === &apos;string&apos;) {
+      messages = {
+        messages,
+        level: &apos;error&apos;,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate(&apos;message&apos;, {
-        message
-      }));
-    }
-
-    // Add error classes
-    elements.forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-invalid&apos;));
-
-    if (dirty &amp;&amp; this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentErrorClass);
-    }
-    else {
-      this.addClass(this.element, &apos;has-error&apos;);
+      this.setContent(this.refs.messageContainer, messages.map((message) =&gt;
+        this.renderTemplate(&apos;message&apos;, message)
+      ).join(&apos;&apos;));
     }
   }
 
-  removeInputError(elements) {
-    if (elements) {
-      elements.forEach((element) =&gt; this.removeClass(this.performInputMapping(element), &apos;is-invalid&apos;));
-      elements.forEach((element) =&gt; this.removeClass(this.performInputMapping(element), &apos;is-warning&apos;));
+  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+    this.clearErrorClasses();
+    elements.forEach((element) =&gt; this.removeClass(this.performInputMapping(element), &apos;is-invalid&apos;));
+    if (hasErrors) {
+      // Add error classes
+      elements.forEach((input) =&gt; this.addClass(this.performInputMapping(input), &apos;is-invalid&apos;));
+
+      if (dirty &amp;&amp; this.options.highlightErrors) {
+        this.addClass(this.element, this.options.componentErrorClass);
+      }
+      else {
+        this.addClass(this.element, &apos;has-error&apos;);
+      }
+    }
+    if (hasMessages) {
+      this.addClass(this.element, &apos;has-message&apos;);
     }
   }
 
@@ -2470,15 +2474,15 @@ export default class Component extends Element {
       return true;
     }
 
-    const errors = Validator.checkComponent(this, data);
-    if (errors.length &amp;&amp; (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true, row);
-      this.setCustomValidity(message, dirty);
+    const messages = Validator.checkComponent(this, data, row, true);
+    const hasErrors = !!messages.filter(message =&gt; message.level === &apos;error&apos;).length;
+    if (messages.length &amp;&amp; (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
     }
     else {
       this.setCustomValidity(&apos;&apos;);
     }
-    return !errors.length;
+    return !hasErrors;
   }
 
   checkValidity(data, dirty, row) {
@@ -2537,28 +2541,43 @@ export default class Component extends Element {
   clearErrorClasses() {
     this.removeClass(this.element, &apos;formio-error-wrapper&apos;);
     this.removeClass(this.element, &apos;alert alert-danger&apos;);
-    this.removeClass(this.element, &apos;alert alert-warning&apos;);
     this.removeClass(this.element, &apos;has-error&apos;);
+    this.removeClass(this.element, &apos;has-message&apos;);
   }
 
-  setCustomValidity(message, dirty, external, isWarning = false) {
-    if (message) {
+  setCustomValidity(messages, dirty, external) {
+    if (typeof messages === &apos;string&apos; &amp;&amp; messages) {
+      messages = {
+        level: &apos;error&apos;,
+        message: messages,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      if (messages) {
+        messages = [messages];
+      }
+      else {
+        messages = [];
+      }
+    }
+
+    const hasErrors = !!messages.filter(message =&gt; message.level === &apos;error&apos;).length;
+
+    if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = {
         component: this.component,
-        message: message,
+        message: messages[0].message,
+        messages,
         external: !!external,
       };
       this.emit(&apos;componentError&apos;, this.error);
+      this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        if (isWarning) {
-          this.addInputWarning(message, dirty, this.refs.input);
-        }
-        else {
-          this.addInputError(message, dirty, this.refs.input);
-        }
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error &amp;&amp; this.error.external === !!external) {
@@ -2566,19 +2585,21 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      this.removeInputError(this.refs.input);
+      if (this.refs.input) {
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      }
       this.clearErrorClasses();
     }
 
-    if (!this.refs.input) {
-      return;
-    }
-    this.refs.input.forEach(input =&gt; {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === &apos;function&apos;) {
-        input.setCustomValidity(message, dirty);
-      }
-    });
+    // if (!this.refs.input) {
+    //   return;
+    // }
+    // this.refs.input.forEach(input =&gt; {
+    //   input = this.performInputMapping(input);
+    //   if (typeof input.setCustomValidity === &apos;function&apos;) {
+    //     input.setCustomValidity(message, dirty);
+    //   }
+    // });
   }
 
   shouldSkipValidation(data, dirty, row) {
