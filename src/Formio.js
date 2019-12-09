@@ -12,6 +12,7 @@ import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
+import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
