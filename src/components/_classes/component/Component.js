@@ -1378,11 +1378,12 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
     if (!this.builderMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
