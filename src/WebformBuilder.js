@@ -297,10 +297,10 @@ export default class WebformBuilder extends Component {
       }
     };
     if (this.options && this.options.resourceTag) {
-      query.tags = [this.options.resourceTag];
+      query.params.tags = [this.options.resourceTag];
     }
     else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
-      query.tags = ['builder'];
+      query.params.tags = ['builder'];
     }
     const formio = new Formio(Formio.projectUrl);
     if (!formio.noProject) {
