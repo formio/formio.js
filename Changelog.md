@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - ```userPermissions``` method throwing error when no submission or submission id is specified
+ - ```Formio``` tests always failing with timeout error instead of actual error
+ - ```Formio``` tests ignoring mock results for same URLs
+ 
+### Added
+ - Tests for ```userPermissions``` method
+
 ## 4.8.0-beta.9
 ### Fixed
  - Issue with userPermissions method when submissionId is not provided.
