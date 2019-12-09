@@ -243,6 +243,11 @@ module.exports = class MaxDate extends Rule {
       return true;
     }
 
+    // If they are the exact same string or object, then return true.
+    if (value === this.settings.dateLimit) {
+      return true;
+    }
+
     const date = moment(value);
     const maxDate = getDateSetting(this.settings.dateLimit);
 

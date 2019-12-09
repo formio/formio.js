@@ -51856,7 +51856,7 @@
     "__docId__": 2681,
     "kind": "file",
     "name": "src/validator/rules/MaxDate.js",
-    "content": "import { getDateSetting } from '../../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\n\nconst Rule = require('./Rule');\n\nmodule.exports = class MaxDate extends Rule {\n  defaultMessage = '{{field}} should not contain date after {{settings.dateLimit}}';\n\n  check(value) {\n    if (!value) {\n      return true;\n    }\n\n    const date = moment(value);\n    const maxDate = getDateSetting(this.settings.dateLimit);\n\n    if (_.isNull(maxDate)) {\n      return true;\n    }\n    else {\n      maxDate.setHours(0, 0, 0, 0);\n    }\n\n    return date.isBefore(maxDate) || date.isSame(maxDate);\n  }\n};\n",
+    "content": "import { getDateSetting } from '../../utils/utils';\nimport moment from 'moment';\nimport _ from 'lodash';\n\nconst Rule = require('./Rule');\n\nmodule.exports = class MaxDate extends Rule {\n  defaultMessage = '{{field}} should not contain date after {{settings.dateLimit}}';\n\n  check(value) {\n    if (!value) {\n      return true;\n    }\n\n    // If they are the exact same string or object, then return true.\n    if (value === this.settings.dateLimit) {\n      return true;\n    }\n\n    const date = moment(value);\n    const maxDate = getDateSetting(this.settings.dateLimit);\n\n    if (_.isNull(maxDate)) {\n      return true;\n    }\n    else {\n      maxDate.setHours(0, 0, 0, 0);\n    }\n\n    return date.isBefore(maxDate) || date.isSame(maxDate);\n  }\n};\n",
     "static": true,
     "longname": "/Users/travistidwell/Documents/formio/modules/formio.js/src/validator/rules/MaxDate.js",
     "access": "public",
