@@ -764,6 +764,12 @@ export function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
   }
+
+  // If value is longer than mask, it isn't valid.
+  if (value.length > inputMask.length) {
+    return false;
+  }
+
   for (let i = 0; i < inputMask.length; i++) {
     const char = value[i];
     const charPart = inputMask[i];

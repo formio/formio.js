@@ -27,10 +27,22 @@
 .builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.alert-warning .invalid-feedback {
+.formio-component.has-message .invalid-feedback {
   display: block;
   color: inherit;
   margin-top: 4px;
+}
+
+.formio-errors {
+  .error {
+    color: #dc3545;
+  }
+  .warning {
+    color: #856404;
+  }
+  .info {
+    color: #004085;
+  }
 }
 
 .formio-wysiwyg-editor {
