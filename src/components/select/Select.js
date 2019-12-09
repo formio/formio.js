@@ -776,6 +776,12 @@ export default class SelectComponent extends Field {
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
+
+    this.addEventListener(input, 'hideDropdown', () => {
+      this.choices.input.element.value = '';
+      this.updateItems(null, true);
+    });
+
     if (this.selectOptions && this.selectOptions.length) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
     }
