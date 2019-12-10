@@ -579,7 +579,7 @@ export default class EditGridComponent extends NestedComponent {
       return true;
     }
 
-    return this.checkRowValidity(data, dirty, row);
+    return this.checkComponentValidity(data, dirty, row);
   }
 
   checkComponentValidity(data, dirty, row) {
