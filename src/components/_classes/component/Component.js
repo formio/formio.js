@@ -1449,6 +1449,32 @@ export default class Component extends Element {
     return changed;
   }
 
+  isIE() {
+    const userAgent = window.navigator.userAgent;
+
+    const msie = userAgent.indexOf('MSIE ');
+    if (msie > 0) {
+      // IE 10 or older => return version number
+      return parseInt(userAgent.substring(msie + 5, userAgent.indexOf('.', msie)), 10);
+    }
+
+    const trident = userAgent.indexOf('Trident/');
+    if (trident > 0) {
+      // IE 11 => return version number
+      const rv = userAgent.indexOf('rv:');
+      return parseInt(userAgent.substring(rv + 3, userAgent.indexOf('.', rv)), 10);
+    }
+
+    const edge = userAgent.indexOf('Edge/');
+    if (edge > 0) {
+      // IE 12 (aka Edge) => return version number
+      return parseInt(userAgent.substring(edge + 5, userAgent.indexOf('.', edge)), 10);
+    }
+
+    // other browser
+    return false;
+  }
+
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
