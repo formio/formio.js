@@ -258,7 +258,9 @@ export default class DayComponent extends Field {
       this.addEventListener(this.refs.month, 'input', () => {
         const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
         const day = this.getFieldValue('day');
-        this.refs.day.max = maxDay;
+        if (!this.component.fields.day.hide) {
+          this.refs.day.max = maxDay;
+        }
         if (day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
