@@ -354,6 +354,15 @@ export default class ButtonComponent extends Field {
         this.removeClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
         this.setContent(this.refs.buttonMessage, this.t(&apos;complete&apos;));
       }, true);
+      this.on(&apos;submitError&apos;, (error) =&gt; {
+        this.loading = false;
+        this.disabled = false;
+        this.removeClass(this.refs.button, &apos;btn-success submit-success&apos;);
+        this.addClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
+        this.removeClass(this.refs.buttonMessageContainer, &apos;has-success&apos;);
+        this.addClass(this.refs.buttonMessageContainer, &apos;has-error&apos;);
+        this.setContent(this.refs.buttonMessage, this.t(this.errorMessage(&apos;error&apos;)));
+      }, true);
       onChange = (value, isValid) =&gt; {
         this.removeClass(this.refs.button, &apos;btn-success submit-success&apos;);
         this.removeClass(this.refs.button, &apos;btn-danger submit-fail&apos;);
