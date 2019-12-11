@@ -1086,7 +1086,7 @@ export default class WebformBuilder extends Component {
       ]));
     }
 
-    this.componentEdit = this.ce('div');
+    this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
