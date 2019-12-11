@@ -1077,7 +1077,7 @@ export default class WebformBuilder extends Component {
       this.preview.destroy();
     }
     if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
-      this.preview = new Webform(_.omit(this.options, [
+      this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
         'hooks',
         'builder',
         'events',
