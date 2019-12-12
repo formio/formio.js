@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.3
+### Fixed
+ - Issue where applyActions was always triggering change events causing performance issues.
+
 ## 3.29.2
 ### Fixed
  - Issue where script tags could be added in HTML component.
