@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Okta: ```tokenManager``` field being undefined in ```oktaInit``` method due to missing ```OktaAuth``` constructor call
+
 ## 3.29.2
 ### Fixed
  - Issue where script tags could be added in HTML component.
