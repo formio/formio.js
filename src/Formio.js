@@ -12,6 +12,7 @@ import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
+import './polyfills';
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
@@ -309,6 +310,7 @@ export default class Formio {
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
           .then((revisionForm) => {
             currentForm.components = revisionForm.components;
+            currentForm.settings = revisionForm.settings;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
           })

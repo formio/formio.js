@@ -1609,11 +1609,12 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
     if (!this.builderMode &amp;&amp; this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
@@ -2510,6 +2511,10 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    const shouldCheckValidity = !this.builderMode &amp;&amp; !this.options.preview &amp;&amp; this.defaultValue;
+    if (shouldCheckValidity &amp;&amp; !flags.noValidate) {
+      return this.checkComponentValidity(data, true, row);
+    }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
   }
 

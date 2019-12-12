@@ -573,13 +573,18 @@ export default class EditGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
     return this.checkComponentValidity(data, dirty, row);
   }
 
   checkComponentValidity(data, dirty, row) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
+    if (!super.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     let rowsValid = true;

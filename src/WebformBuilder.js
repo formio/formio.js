@@ -1077,7 +1077,7 @@ export default class WebformBuilder extends Component {
       this.preview.destroy();
     }
     if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
-      this.preview = new Webform(_.omit(this.options, [
+      this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
         'hooks',
         'builder',
         'events',
@@ -1086,7 +1086,7 @@ export default class WebformBuilder extends Component {
       ]));
     }
 
-    this.componentEdit = this.ce('div');
+    this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),

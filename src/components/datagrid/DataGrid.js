@@ -412,9 +412,14 @@ export default class DataGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
+    }
+
+    if (!this.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     return this.checkRows('checkValidity', data, dirty, this.dataValue);

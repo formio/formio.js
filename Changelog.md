@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.2
+### Added
+ - FOR-2564: Add polyfills for Element and CustomEvent
+
+### Fixed
+ - Fixed required EditGrid's and DataGrids
+ - Keep form settings with old revisions so pdfs don't change.
+ - Perform day reference check in the Day component.
+ - Bug with validity on default value
+ 
+### Changed
+ - Update component settings CSS to flow a little more nicely
+ - Roll back flatpickr version to 4.6.2 to resolve an issue that doesn't allow to clear input for the DateTime component.
+
 ## 4.8.0-rc.1
 ### Fixed
  - ```userPermissions``` method throwing error when no submission or submission id is specified
