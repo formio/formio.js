@@ -23,12 +23,12 @@ This library has a very powerful JSON form builder, and can be used like the fol
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
     <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
     <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
-        Formio.builder(document.getElementById('builder'));
+        Formio.builder(document.getElementById('builder'), {}, {});
       };
     </script>
   </head>
@@ -46,7 +46,7 @@ The following is a simple example on how to render a form within your HTML appli
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
     <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
     <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
@@ -109,7 +109,7 @@ being set to ```wizard```.
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
     <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
     <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
