@@ -4,9 +4,9 @@ import sinon from 'sinon';
 import each from 'lodash/each';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
-import Formio from './Formio';
 import Webform from './Webform';
-import { APIMock } from '../test/APIMock';
+// import Formio from './Formio';
+// import { APIMock } from '../test/APIMock';
 
 describe('Webform tests', () => {
   let simpleForm = null;

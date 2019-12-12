@@ -32,10 +32,6 @@ export default [
     ignore: true
   },
   {
-    key: 'alwaysEnabled',
-    ignore: true
-  },
-  {
     key: 'tableView',
     ignore: true
   },

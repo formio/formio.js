@@ -54,6 +54,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
+    this.validators = this.validators.concat(['select']);
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -159,25 +160,6 @@ export default class SelectComponent extends Field {
     else {
       return JSON.stringify(data);
     }
-  }
-
-  /**
-   * @param {*} data
-   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
-   * @return {*}
-   */
-  itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
-      if (this.valueProperty) {
-        return _.get(data, this.valueProperty);
-      }
-
-      if (forceUseValue) {
-        return data.value;
-      }
-    }
-
-    return data;
   }
 
   /**
@@ -339,7 +321,7 @@ export default class SelectComponent extends Field {
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
+      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue);
       }
@@ -477,15 +459,16 @@ export default class SelectComponent extends Field {
   }
 
   refresh() {
+    if (this.component.clearOnRefresh) {
+      this.setValue(this.emptyValue);
+    }
+
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
     }
 
-    if (this.component.clearOnRefresh) {
-      this.setValue(this.emptyValue);
-    }
     this.updateItems(null, true);
   }
 
@@ -794,6 +777,15 @@ export default class SelectComponent extends Field {
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
 
+    this.addEventListener(input, 'hideDropdown', () => {
+      this.choices.input.element.value = '';
+      this.updateItems(null, true);
+    });
+
+    if (this.selectOptions && this.selectOptions.length) {
+      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+    }
+
     if (this.component.multiple) {
       this.focusableElement = this.choices.input.element;
     }
@@ -822,7 +814,7 @@ export default class SelectComponent extends Field {
           this.triggerUpdate(this.choices.input.element.value);
         }
       };
-      this.scrollList.addEventListener('scroll', this.onScroll);
+      this.addEventListener(this.scrollList, 'scroll', this.onScroll);
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -855,26 +847,16 @@ export default class SelectComponent extends Field {
     });
 
     if (placeholderValue && this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(placeholderValue);
+
       this.addEventListener(input, 'removeItem', () => {
-        const items = this.choices._store.activeItems;
-        if (!items.length) {
-          this.choices._addItem({
-            value: placeholderValue,
-            label: placeholderValue,
-            choiceId: 0,
-            groupId: -1,
-            customProperties: null,
-            placeholder: true,
-            keyCode: null });
-        }
+        this.addPlaceholderItem(placeholderValue);
       });
     }
 
     // Add value options.
-    if (this.addValueOptions()) {
-      this.choices.setChoiceByValue(this.dataValue);
-      // this.restoreValue();
-    }
+    this.addValueOptions();
+    this.setChoicesValue(this.dataValue);
 
     if (this.isSelectResource && this.refs.addResource) {
       this.addEventListener(this.refs.addResource, 'click', (event) => {
@@ -902,6 +884,20 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  addPlaceholderItem(placeholderValue) {
+    const items = this.choices._store.activeItems;
+    if (!items.length) {
+      this.choices._addItem({
+        value: placeholderValue,
+        label: placeholderValue,
+        choiceId: 0,
+        groupId: -1,
+        customProperties: null,
+        placeholder: true,
+        keyCode: null });
+    }
   }
 
   /* eslint-enable max-statements */
@@ -1144,7 +1140,13 @@ export default class SelectComponent extends Field {
 
     // Add the value options.
     this.addValueOptions();
+    this.setChoicesValue(value, hasPreviousValue);
+    return changed;
+  }
 
+  setChoicesValue(value, hasPreviousValue) {
+    const hasValue = Array.isArray(value) ? value.length : value;
+    hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
@@ -1182,8 +1184,6 @@ export default class SelectComponent extends Field {
         });
       }
     }
-
-    return changed;
   }
 
   /**
@@ -1276,7 +1276,7 @@ export default class SelectComponent extends Field {
       };
       this.emit('componentError', this.error);
       if (this.refs.selectContainer) {
-        this.addInputError(message, dirty, [this.refs.selectContainer]);
+        this.addMessage(message, dirty, [this.refs.selectContainer]);
       }
     }
     else if (this.error && this.error.external === !!external) {

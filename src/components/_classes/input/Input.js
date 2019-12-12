@@ -87,6 +87,10 @@ export default class Input extends Multivalue {
   }
 
   renderElement(value, index) {
+    // Double quotes cause the input value to close so replace them with html quote char.
+    if (value && typeof value === 'string') {
+      value = value.replace(/"/g, '&quot;');
+    }
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)));

@@ -6,6 +6,11 @@ export default {
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
         required: '{{field}} is required',
+        unique: '{{field}} must be unique',
+        array: '{{field}} must be an array',
+        array_nonempty: '{{field}} must be a non-empty array', // eslint-disable-line camelcase
+        nonarray: '{{field}} must not be an array',
+        select: '{{field}} contains an invalid selection',
         pattern: '{{field}} does not match the pattern {{pattern}}',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',

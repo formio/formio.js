@@ -11,11 +11,11 @@ export default function(...extend) {
     },
     {
       key: 'data',
-      ignore: true
+      ignore: true,
     },
     {
       key: 'validation',
-      ignore: true
+      ignore: true,
     },
     {
       key: 'logic',

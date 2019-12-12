@@ -71,11 +71,22 @@ dialog.fixed {
 .formio-disabled-input .form-control.flatpickr-input {
   background-color: #eee; }
 
+.builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.alert-warning .invalid-feedback {
+.formio-component.has-message .invalid-feedback {
   display: block;
-  color: inherit; }
+  color: inherit;
+  margin-top: 4px; }
+
+.formio-errors .error {
+  color: #dc3545; }
+
+.formio-errors .warning {
+  color: #856404; }
+
+.formio-errors .info {
+  color: #004085; }
 
 .formio-wysiwyg-editor {
   min-height: 200px;
@@ -188,6 +199,9 @@ td > .form-group {
 [dir="rtl"] .btn.signature-pad-refresh {
   left: unset;
   right: 0; }
+
+.formio-component-multiple .choices__input {
+  width: 100%; }
 
 .choices__list--dropdown .choices__item--selectable {
   padding-right: 0px; }
@@ -602,6 +616,10 @@ body.formio-dialog-open {
   right: 40px;
   z-index: 2; }
 
+.formio-component-hidden,
+.formio-component-datasource {
+  margin-bottom: 0; }
+
 .checkbox-inline label,
 .radio-inline label {
   font-weight: 400;
@@ -763,7 +781,8 @@ body.formio-dialog-open {
 .formio-select-autocomplete-input {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
-  position: absolute; }
+  position: absolute;
+  z-index: -1; }
 
 .has-error > .help-block {
   margin-top: 5px;

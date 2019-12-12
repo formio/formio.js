@@ -1,0 +1,27 @@
+<div id="day" class="form-group has-feedback formio-component formio-component-day formio-component-day " ref="component">
+  <label class="col-form-label ">
+    Day
+  </label>
+  <div class="row">
+    <div class="col col-xs-4">
+      <label for="day-month" class="">Month</label>
+      <div>
+        <div ref="value">00/00/0000</div>
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <label for="day-day" class="">Day</label>
+      <div>
+        <div ref="value">00/00/0000</div>
+      </div>
+    </div>
+    <div class="col col-xs-5">
+      <label for="day-year" class="">Year</label>
+      <div>
+        <div ref="value">00/00/0000</div>
+      </div>
+    </div>
+  </div>
+  <input name="ctx.data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

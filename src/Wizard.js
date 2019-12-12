@@ -2,7 +2,7 @@ import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import Formio from './Formio';
-import { checkCondition, firstNonNil } from './utils/utils';
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -23,8 +23,10 @@ export default class Wizard extends Webform {
     }
     super(element, options);
     this.pages = [];
-    this.globalComponents = [];
+    this.prefixComps = [];
+    this.suffixComps = [];
     this.components = [];
+    this.originalComponents = [];
     this.page = 0;
     this.currentNextPage = 0;
     this._seenPages = [0];
@@ -73,11 +75,13 @@ export default class Wizard extends Webform {
     });
 
     this.page = 0;
-    return super.init();
+    const onReady = super.init();
+    this.setComponentSchema();
+    return onReady;
   }
 
   get wizardKey() {
-    return `wizard-${this.key}`;
+    return `wizard-${this.id}`;
   }
 
   get form() {
@@ -119,7 +123,11 @@ export default class Wizard extends Webform {
       ...ctx,
       wizardHeader: this.renderTemplate('wizardHeader', ctx),
       wizardNav: this.renderTemplate('wizardNav', ctx),
-      components: this.renderComponents([...this.globalComponents, ...this.currentPage.components]),
+      components: this.renderComponents([
+        ...this.prefixComps,
+        ...this.currentPage.components,
+        ...this.suffixComps
+      ]),
     }, this.builderMode ? 'builder' : 'form');
   }
 
@@ -167,7 +175,11 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    const promises = this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.currentPage.components]);
+    const promises = this.attachComponents(this.refs[this.wizardKey], [
+      ...this.prefixComps,
+      ...this.currentPage.components,
+      ...this.suffixComps
+    ]);
     this.attachNav();
     this.attachHeader();
     return promises;
@@ -225,8 +237,11 @@ export default class Wizard extends Webform {
 
   establishPages() {
     this.pages = [];
+    this.prefixComps = [];
+    this.suffixComps = [];
     const visible = [];
     const currentPages = {};
+    const pageOptions = _.clone(this.options);
     if (this.components && this.components.length) {
       this.components.map(page => {
         if (page.component.type === 'panel') {
@@ -234,36 +249,41 @@ export default class Wizard extends Webform {
         }
       });
     }
-    _.each(this.originalComponents, (item) => {
-      const pageOptions = _.clone(this.options);
-      if (item.type === 'panel') {
-        if (!item.key) {
-          item.key = item.title;
-        }
-        let page = currentPages[item.key];
-        const isVisible = checkCondition(item, this.data, this.data, this.component, this);
-        if (isVisible) {
-          visible.push(item);
-          if (page) {
+    if (this.originalComponents) {
+      this.originalComponents.forEach((item) => {
+        if (item.type === 'panel') {
+          if (!item.key) {
+            item.key = item.title;
+          }
+          let page = currentPages[item.key];
+          const isVisible = checkCondition(item, this.data, this.data, this.component, this);
+          if (isVisible) {
+            visible.push(item);
+            if (page) {
+              this.pages.push(page);
+            }
+          }
+          if (!page && isVisible) {
+            page = this.createComponent(item, pageOptions);
             this.pages.push(page);
+            page.eachComponent((component) => {
+              component.page = (this.pages.length - 1);
+            });
+          }
+          else if (page && !isVisible) {
+            this.removeComponent(page);
           }
         }
-        if (!page && isVisible) {
-          page = this.createComponent(item, pageOptions);
-          this.pages.push(page);
-          page.eachComponent((component) => {
-            component.page = this.page;
-          });
+        else if (item.type !== 'button') {
+          if (!this.pages.length) {
+            this.prefixComps.push(this.createComponent(item, pageOptions));
+          }
+          else {
+            this.suffixComps.push(this.createComponent(item, pageOptions));
+          }
         }
-        else if (page && !isVisible) {
-          this.removeComponent(page);
-        }
-      }
-      else if (item.type === 'hidden') {
-        const component = this.createComponent(item, pageOptions);
-        this.globalComponents.push(component);
-      }
-    });
+      });
+    }
     return visible;
   }
 
@@ -297,7 +317,7 @@ export default class Wizard extends Webform {
   pageFieldLogic(page) {
     // Handle field logic on pages.
     this.component = this.pages[page].component;
-    this.originalComponent = _.cloneDeep(this.component);
+    this.originalComponent = fastCloneDeep(this.component);
     this.fieldLogic(this.data);
     // If disabled changed, be sure to distribute the setting.
     this.disabled = this.shouldDisabled;
@@ -403,6 +423,11 @@ export default class Wizard extends Webform {
     });
   }
 
+  checkData(data, flags) {
+    const dirty = this.currentPage.components.some(component => !component.isEmpty());
+    return super.checkData(data, flags) && this.checkValidity(data, dirty, true);
+  }
+
   cancel(noconfirm) {
     if (super.cancel(noconfirm)) {
       return this.setPage(0);
@@ -427,28 +452,37 @@ export default class Wizard extends Webform {
     return this.wizard;
   }
 
+  setComponentSchema() {
+    const pageKeys = {};
+    this.originalComponents = [];
+    this.component.components.map((item) => {
+      if (item.type === 'panel') {
+        item.key = uniqueKey(pageKeys, (item.key || 'panel'));
+        pageKeys[item.key] = true;
+      }
+      this.originalComponents.push(_.clone(item));
+    });
+
+    if (!Object.keys(pageKeys).length) {
+      const newPage = {
+        type: 'panel',
+        title: 'Page 1',
+        label: 'Page 1',
+        key: 'page1',
+        components: this.component.components
+      };
+      this.component.components = [newPage];
+      this.originalComponents.push(_.clone(newPage));
+    }
+  }
+
   setForm(form) {
     if (!form) {
       return;
     }
     this.wizard = form;
     this.component.components = form.components || [];
-
-    // Check if there are no panel components.
-    if (this.component.components.filter(component => component.type === 'panel').length === 0) {
-      this.component.components = [
-        {
-          type: 'panel',
-          title: 'Page 1',
-          label: 'Page 1',
-          key: 'page1',
-          components: this.component.components
-        }
-      ];
-    }
-
-    this.originalComponents = _.cloneDeep(this.component.components);
-
+    this.setComponentSchema();
     return super.setForm(form);
   }
 

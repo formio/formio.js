@@ -11,6 +11,9 @@ import _intersection from 'lodash/intersection';
 import _get from 'lodash/get';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
+import { eachComponent } from './utils/utils';
+import './polyfills';
+
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
 });
@@ -307,6 +310,7 @@ export default class Formio {
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
           .then((revisionForm) => {
             currentForm.components = revisionForm.components;
+            currentForm.settings = revisionForm.settings;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
           })
@@ -558,10 +562,12 @@ export default class Formio {
     return NativePromise.all([
       (form !== undefined) ? NativePromise.resolve(form) : this.loadForm(),
       (user !== undefined) ? NativePromise.resolve(user) : this.currentUser(),
+      (submission !== undefined || !this.submissionId) ? NativePromise.resolve(submission) : this.loadSubmission(),
       this.accessInfo()
     ]).then((results) => {
       const form = results.shift();
       const user = results.shift() || { _id: false, roles: [] };
+      const submission = results.shift();
       const access = results.shift();
       const permMap = {
         create: 'create',
@@ -604,6 +610,39 @@ export default class Formio {
             }
           }
         }
+      }
+      // check for Group Permissions
+      if (submission) {
+        // we would anyway need to loop through components for create permission, so we'll do that for all of them
+        eachComponent(form.components, (component, path) => {
+          if (component && component.defaultPermission) {
+            // we assume that there might be only single value of group component
+            const value = _get(submission.data, path);
+            if (
+              value && value._id && // group id is present
+              user.roles.indexOf(value._id) > -1 // user has group id in his roles
+            ) {
+              if (component.defaultPermission === 'read') {
+                perms[permMap.read] = true;
+              }
+              if (component.defaultPermission === 'create') {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+              }
+              if (component.defaultPermission === 'write') {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+                perms[permMap.update] = true;
+              }
+              if (component.defaultPermission === 'admin') {
+                perms[permMap.create] = true;
+                perms[permMap.read] = true;
+                perms[permMap.update] = true;
+                perms[permMap.delete] = true;
+              }
+            }
+          }
+        });
       }
       return perms;
     });
@@ -1341,10 +1380,16 @@ export default class Formio {
 
           // Add the script to the top page.
           const script = document.createElement(elementType);
-          for (const attr in attrs) {
-            script.setAttribute(attr, attrs[attr]);
+          if (script.setAttribute) {
+            for (const attr in attrs) {
+              script.setAttribute(attr, attrs[attr]);
+            }
           }
-          document.getElementsByTagName('head')[0].appendChild(script);
+
+          const head = document.getElementsByTagName('head')[0];
+          if (head) {
+            head.appendChild(script);
+          }
         });
 
         // if no callback is provided, then check periodically for the script.

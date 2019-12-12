@@ -3,7 +3,6 @@ import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
-import Formio from '../../Formio';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -235,7 +234,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.setAttribute('type', 'file');
       fileInput.setAttribute('accept', 'image/*');
       fileInput.classList.add('ql-image');
-      fileInput.addEventListener('change', () => {
+      this.addEventListener(fileInput, 'change', () => {
         const files = fileInput.files;
         const range = quillInstance.quill.getSelection(true);
 

@@ -60,7 +60,7 @@ export default class FileComponent extends Field {
     this.support = {
       filereader: typeof FileReader != 'undefined',
       formdata: !!window.FormData,
-      progress: 'upload' in new XMLHttpRequest
+      progress: window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false
     };
     // Called when our files are ready.
     this.filesReady = new NativePromise((resolve, reject) => {
@@ -181,6 +181,23 @@ export default class FileComponent extends Field {
     );
   }
 
+  stopVideo() {
+    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
+      console.warn('Video player not found in template.');
+      this.cameraMode = false;
+      this.redraw();
+      return;
+    }
+
+    const stream = navigator.mozGetUserMedia
+      ? this.refs.videoPlayer.mozSrcObject
+      : this.refs.videoPlayer.srcObject;
+
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+  }
+
   takePicture() {
     if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
       console.warn('Video player not found in template.');
@@ -273,7 +290,11 @@ export default class FileComponent extends Field {
             fileService.deleteFile(fileInfo);
           }
           else {
-            this.options.formio.makeRequest('', fileInfo.url, 'delete');
+            const formio = this.options.formio || (this.root && this.root.formio);
+
+            if (formio) {
+              formio.makeRequest('', fileInfo.url, 'delete');
+            }
           }
         }
         event.preventDefault();
@@ -330,6 +351,7 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.takePictureButton, 'click', (event) => {
         event.preventDefault();
         this.takePicture();
+        this.stopVideo();
       });
     }
 
@@ -338,9 +360,13 @@ export default class FileComponent extends Field {
         event.preventDefault();
         this.cameraMode = !this.cameraMode;
         if (this.cameraMode) {
+          this.redraw();
           this.startVideo();
         }
-        this.redraw();
+        else {
+          this.stopVideo();
+          this.redraw();
+        }
       });
     }
 
@@ -475,25 +501,31 @@ export default class FileComponent extends Field {
           name: fileName,
           size: file.size,
           status: 'info',
-          message: 'Starting upload'
+          message: this.t('Starting upload'),
         };
 
         // Check file pattern
         if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = 'error';
-          fileUpload.message = `File is the wrong type; it must be ${this.component.filePattern}`;
+          fileUpload.message = this.t('File is the wrong type; it must be {{ pattern }}', {
+            pattern: this.component.filePattern,
+          });
         }
 
         // Check file minimum size
         if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = 'error';
-          fileUpload.message = `File is too small; it must be at least ${this.component.fileMinSize}`;
+          fileUpload.message = this.t('File is too small; it must be at least {{ size }}', {
+            size: this.component.fileMinSize,
+          });
         }
 
         // Check file maximum size
         if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
           fileUpload.status = 'error';
-          fileUpload.message = `File is too big; it must be at most ${this.component.fileMaxSize}`;
+          fileUpload.message = this.t('File is too big; it must be at most {{ size }}', {
+            size: this.component.fileMaxSize,
+          });
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
@@ -501,7 +533,7 @@ export default class FileComponent extends Field {
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = 'error';
-          fileUpload.message = 'File Service not provided.';
+          fileUpload.message = this.t('File Service not provided.');
         }
 
         this.statuses.push(fileUpload);

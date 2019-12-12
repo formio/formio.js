@@ -105,7 +105,11 @@ export default class NumberComponent extends Input {
   }
 
   setInputMask(input) {
-    input.setAttribute('pattern', '\\d*');
+    let numberPattern = '[0-9';
+    numberPattern += this.decimalSeparator ? `\\${this.decimalSeparator}` : '';
+    numberPattern += this.delimiter ? `\\${this.delimiter}` : '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask
@@ -171,7 +175,7 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value.toString(), this.numberMask).conformedValue;
+    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
   getValueAsString(value) {

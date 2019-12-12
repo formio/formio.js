@@ -22,6 +22,9 @@ export default (iconset, name, spinning) => {
       case 'move':
         name = 'arrows';
         break;
+      case 'time':
+        name = 'clock-o';
+        break;
     }
   }
 
