@@ -5,6 +5,8 @@ import Form from './Form';
 export default class FormBuilder extends Form {
   static options = {};
   constructor(element, form, options) {
+    form = form || {};
+    options = options || {};
     super(element, form, Object.assign(options, FormBuilder.options));
   }
 
