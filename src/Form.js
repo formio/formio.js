@@ -61,7 +61,7 @@ export default class Form extends Element {
    * @return {*}
    */
   create(display) {
-    if (this.options && this.options.flatten) {
+    if (this.options && (this.options.flatten || this.options.renderMode === 'flat')) {
       display = 'form';
     }
     this.display = display;
@@ -88,14 +88,15 @@ export default class Form extends Element {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      result = (new Formio(formParam)).loadForm().then((form) => {
-        this.instance = this.instance || this.create(form.display);
-        this.instance.url = formParam;
-        this.instance.nosubmit = false;
-        this._form = this.instance.form = form;
-        return this.instance.ready.then(() => {
-          if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission().then(() => this.instance);
+      const formio = new Formio(formParam);
+      result = this.getSubmission(formio).then((submission) => {
+        return formio.loadForm().then((form) => {
+          this.instance = this.instance || this.create(form.display);
+          this.instance.url = formParam;
+          this.instance.nosubmit = false;
+          this._form = this.instance.form = form;
+          if (submission) {
+            this.instance.submission = submission;
           }
           return this.instance;
         });
@@ -112,6 +113,13 @@ export default class Form extends Element {
       this.element = this.instance.element;
       return this.instance;
     });
+  }
+
+  getSubmission(formio) {
+    if (formio.submissionId) {
+      return formio.loadSubmission();
+    }
+    return Promise.resolve();
   }
 
   /**

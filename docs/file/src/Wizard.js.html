@@ -41,7 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -183,6 +182,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -220,6 +220,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
@@ -231,7 +233,7 @@
 import _ from &apos;lodash&apos;;
 import Webform from &apos;./Webform&apos;;
 import Formio from &apos;./Formio&apos;;
-import { checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey } from &apos;./utils/utils&apos;;
 
 export default class Wizard extends Webform {
   /**
@@ -496,7 +498,7 @@ export default class Wizard extends Webform {
             page = this.createComponent(item, pageOptions);
             this.pages.push(page);
             page.eachComponent((component) =&gt; {
-              component.page = this.page;
+              component.page = (this.pages.length - 1);
             });
           }
           else if (page &amp;&amp; !isVisible) {
@@ -546,7 +548,7 @@ export default class Wizard extends Webform {
   pageFieldLogic(page) {
     // Handle field logic on pages.
     this.component = this.pages[page].component;
-    this.originalComponent = _.cloneDeep(this.component);
+    this.originalComponent = fastCloneDeep(this.component);
     this.fieldLogic(this.data);
     // If disabled changed, be sure to distribute the setting.
     this.disabled = this.shouldDisabled;
@@ -654,7 +656,7 @@ export default class Wizard extends Webform {
 
   checkData(data, flags) {
     const dirty = this.currentPage.components.some(component =&gt; !component.isEmpty());
-    return this.checkValidity(data, dirty, true) &amp;&amp; super.checkData(data, flags);
+    return super.checkData(data, flags) &amp;&amp; this.checkValidity(data, dirty, true);
   }
 
   cancel(noconfirm) {

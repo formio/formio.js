@@ -5,16 +5,17 @@ import Tooltip from 'tooltip.js';
 import _ from 'lodash';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
-import Validator from '../../Validator';
+import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
 
 /**
- * This is the Component class which all elements within the FormioForm derive from.
+ * This is the Component class
+ which all elements within the FormioForm derive from.
  */
 export default class Component extends Element {
   static schema(...sources) {
@@ -201,7 +202,7 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = _.cloneDeep(component);
+    this.originalComponent = fastCloneDeep(component);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -277,8 +278,8 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = this.conditionallyVisible(data);
     this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(data);
     this._parentDisabled = false;
 
     /**
@@ -309,6 +310,8 @@ export default class Component extends Element {
      * @type {[string]}
      */
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
+
+    this._path = '';
 
     /**
      * Used to trigger a new change in this component.
@@ -422,9 +425,6 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
   }
 
   destroy() {
@@ -533,6 +533,30 @@ export default class Component extends Element {
     return this.options.attachMode === 'builder';
   }
 
+  get calculatedPath() {
+    if (this._path) {
+      return this._path;
+    }
+
+    this._path = this.key;
+
+    if (!this.root) {
+      return this._path;
+    }
+
+    let parent = this.parent;
+
+    while (parent && parent.id !== this.root.id) {
+      if (['datagrid', 'container', 'editgrid'].includes(parent.type) || parent.tree) {
+        this._path = `${parent.key}.${this._path}`;
+      }
+
+      parent = parent.parent;
+    }
+
+    return this._path;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -561,6 +585,7 @@ export default class Component extends Element {
         (!recursion && (key === 'key')) ||
         (!recursion && (key === 'label')) ||
         (!recursion && (key === 'input')) ||
+        (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
         (val !== '' && val !== defaultSchema[key])
       ) {
@@ -574,7 +599,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
+    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
   }
 
   /**
@@ -916,38 +941,36 @@ export default class Component extends Element {
     }
   }
 
-  attachRefreshEvent(refreshData) {
-    this.on('change', (event) => {
-      const changeKey = _.get(event, 'changed.component.key', false);
-      // Don't let components change themselves.
-      if (changeKey && this.key === changeKey) {
-        return;
-      }
-      if (refreshData === 'data') {
-        this.refresh(this.data);
-      }
-      else if (
-        (changeKey && changeKey === refreshData) && event.changed && event.changed.instance &&
-        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-        // in fields inside EditGrids could alter their state from other rows (which is bad).
-        this.inContext(event.changed.instance)
-      ) {
-        this.refresh(event.changed.value);
-      }
-    }, true);
+  checkRefresh(refreshData, changed) {
+    const changePath = _.get(changed, 'instance.calculatedPath', false);
+    // Don't let components change themselves.
+    if (changePath && this.calculatedPath === changePath) {
+      return;
+    }
+    if (refreshData === 'data') {
+      this.refresh(this.data);
+    }
+    else if (
+      (changePath && changePath === refreshData) && changed && changed.instance &&
+      // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+      // in fields inside EditGrids could alter their state from other rows (which is bad).
+      this.inContext(changed.instance)
+    ) {
+      this.refresh(changed.value);
+    }
   }
 
-  attachRefreshOn() {
+  checkRefreshOn(changed) {
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
         refreshOn.forEach(refreshData => {
-          this.attachRefreshEvent(refreshData);
+          this.checkRefresh(refreshData, changed);
         });
       }
       else {
-        this.attachRefreshEvent(refreshOn);
+        this.checkRefresh(refreshOn, changed);
       }
     }
   }
@@ -1051,6 +1074,9 @@ export default class Component extends Element {
     if (_.isPlainObject(value)) {
       return JSON.stringify(value);
     }
+    if (value === null || value === undefined) {
+      return '';
+    }
     return value.toString();
   }
 
@@ -1066,8 +1092,27 @@ export default class Component extends Element {
     this.onChange(...args);
   }
 
-  createModal(element) {
-    const dialog = this.ce('div');
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
+  }
+
+  createModal(element, attr) {
+    const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
@@ -1180,9 +1225,7 @@ export default class Component extends Element {
     this.splice(index);
     this.redraw();
     this.restoreValue();
-    if (this.root) {
-      this.root.onChange();
-    }
+    this.triggerRootChange();
   }
 
   iconClass(name, spinning) {
@@ -1335,11 +1378,12 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
     if (!this.builderMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
@@ -1379,7 +1423,7 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = _.cloneDeep(this.originalComponent);
+    const newComponent = fastCloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
@@ -1474,26 +1518,15 @@ export default class Component extends Element {
     }, false);
   }
 
-  addInputWarning(message, dirty, elements) {
-    if (!message) {
-      return;
-    }
+  // Deprecated
+  addInputError(message, dirty, elements) {
+    this.addMessages(message);
+    this.setErrorClasses(elements, dirty, !!message);
+  }
 
-    if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
-        message
-      }));
-    }
-
-    elements
-      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentWarningClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
-    }
+  // Deprecated
+  removeInputError(elements) {
+    this.setErrorClasses(elements, true, false);
   }
 
   /**
@@ -1502,32 +1535,46 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty, elements) {
-    if (!message) {
+  addMessages(messages) {
+    if (!messages) {
       return;
     }
 
+    // Standardize on array of objects for message.
+    if (typeof messages === 'string') {
+      messages = {
+        messages,
+        level: 'error',
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
-        message
-      }));
-    }
-
-    // Add error classes
-    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentErrorClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
+      this.setContent(this.refs.messageContainer, messages.map((message) =>
+        this.renderTemplate('message', message)
+      ).join(''));
     }
   }
 
-  removeInputError(elements) {
-    if (elements) {
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+    this.clearErrorClasses();
+    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    if (hasErrors) {
+      // Add error classes
+      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.options.componentErrorClass);
+      }
+      else {
+        this.addClass(this.element, 'has-error');
+      }
+    }
+    if (hasMessages) {
+      this.addClass(this.element, 'has-message');
     }
   }
 
@@ -1548,6 +1595,15 @@ export default class Component extends Element {
           noUpdateEvent: true
         });
       }
+    }
+  }
+
+  triggerRootChange(...args) {
+    if (this.options.onChange) {
+      this.options.onChange(...args);
+    }
+    else if (this.root) {
+      this.root.triggerChange(...args);
     }
   }
 
@@ -1588,8 +1644,8 @@ export default class Component extends Element {
     }
 
     // Bubble this change up to the top.
-    if (this.root && !fromRoot) {
-      this.root.triggerChange(flags, changed, modified);
+    if (!fromRoot) {
+      this.triggerRootChange(flags, changed, modified);
     }
     return changed;
   }
@@ -1621,7 +1677,8 @@ export default class Component extends Element {
       toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
       styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
     };
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
+    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', {}), settings);
+    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1635,6 +1692,7 @@ export default class Component extends Element {
 
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
     if (!settings.theme) {
@@ -1645,7 +1703,7 @@ export default class Component extends Element {
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', `${QUILL_URL}/quill.min.js`, true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1687,7 +1745,8 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    return Formio.requireLibrary('ace', 'ace', ACE_URL, true)
+    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
@@ -2185,15 +2244,15 @@ export default class Component extends Element {
       return true;
     }
 
-    const errors = Validator.checkComponent(this, data);
-    if (errors.length && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true, row);
-      this.setCustomValidity(message, dirty);
+    const messages = Validator.checkComponent(this, data, row, true);
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    if (messages.length && (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
     }
     else {
       this.setCustomValidity('');
     }
-    return !errors.length;
+    return !hasErrors;
   }
 
   checkValidity(data, dirty, row) {
@@ -2215,11 +2274,16 @@ export default class Component extends Element {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
+    this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+    const shouldCheckValidity = !this.builderMode && !this.options.preview && this.defaultValue;
+    if (shouldCheckValidity && !flags.noValidate) {
+      return this.checkComponentValidity(data, true, row);
+    }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
   }
 
@@ -2251,28 +2315,43 @@ export default class Component extends Element {
   clearErrorClasses() {
     this.removeClass(this.element, 'formio-error-wrapper');
     this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'alert alert-warning');
     this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, 'has-message');
   }
 
-  setCustomValidity(message, dirty, external, isWarning = false) {
-    if (message) {
+  setCustomValidity(messages, dirty, external) {
+    if (typeof messages === 'string' && messages) {
+      messages = {
+        level: 'error',
+        message: messages,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      if (messages) {
+        messages = [messages];
+      }
+      else {
+        messages = [];
+      }
+    }
+
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+
+    if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = {
         component: this.component,
-        message: message,
+        message: messages[0].message,
+        messages,
         external: !!external,
       };
       this.emit('componentError', this.error);
+      this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        if (isWarning) {
-          this.addInputWarning(message, dirty, this.refs.input);
-        }
-        else {
-          this.addInputError(message, dirty, this.refs.input);
-        }
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2280,19 +2359,21 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      this.removeInputError(this.refs.input);
+      if (this.refs.input) {
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      }
       this.clearErrorClasses();
     }
 
-    if (!this.refs.input) {
-      return;
-    }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
-      }
-    });
+    // if (!this.refs.input) {
+    //   return;
+    // }
+    // this.refs.input.forEach(input => {
+    //   input = this.performInputMapping(input);
+    //   if (typeof input.setCustomValidity === 'function') {
+    //     input.setCustomValidity(message, dirty);
+    //   }
+    // });
   }
 
   shouldSkipValidation(data, dirty, row) {
@@ -2438,7 +2519,7 @@ export default class Component extends Element {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
-          const newComponent = _.cloneDeep(this.originalComponent);
+          const newComponent = fastCloneDeep(this.originalComponent);
           if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {

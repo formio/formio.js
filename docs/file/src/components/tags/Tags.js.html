@@ -41,7 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -183,6 +182,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -220,6 +220,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
@@ -229,7 +231,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tags/Tags.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Input from &apos;../_classes/input/Input&apos;;
 import Choices from &apos;choices.js/public/assets/scripts/choices.js&apos;;
-import _ from &apos;lodash&apos;;
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -292,6 +293,14 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
+    this.addEventListener(this.choices.input.element, &apos;blur&apos;, () =&gt; {
+      const value = this.choices.input.value;
+      if (value) {
+        this.choices.setValue([value]);
+        this.choices.clearInput();
+        this.choices.hideDropdown(true);
+      }
+    });
   }
 
   detach() {
@@ -303,29 +312,29 @@ export default class TagsComponent extends Input {
     }
   }
 
+  normalizeValue(value) {
+    if (this.component.storeas === &apos;string&apos; &amp;&amp; Array.isArray(value)) {
+      return value.join(this.delimiter);
+    }
+    else if (this.component.storeas === &apos;array&apos; &amp;&amp; typeof value === &apos;string&apos;) {
+      return value.split(this.delimiter).filter(result =&gt; result);
+    }
+    return value;
+  }
+
   setValue(value) {
-    if (this.component.storeas === &apos;string&apos; &amp;&amp; (typeof value === &apos;string&apos;)) {
-      value = value.split(this.delimiter);
-    }
-    if (value &amp;&amp; !_.isArray(value)) {
-      value = [value];
-    }
     const changed = super.setValue(value);
     if (this.choices) {
+      let dataValue = this.dataValue;
       this.choices.removeActiveItems();
-      if (value) {
-        this.choices.setValue(value);
+      if (dataValue) {
+        if (typeof dataValue === &apos;string&apos;) {
+          dataValue = dataValue.split(this.delimiter).filter(result =&gt; result);
+        }
+        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
     return changed;
-  }
-
-  getValue() {
-    if (this.choices) {
-      const value = this.choices.getValue(true);
-      return (this.component.storeas === &apos;string&apos;) ? value.join(this.delimiter) : value;
-    }
-    return this.dataValue;
   }
 
   set disabled(disabled) {

@@ -24,12 +24,25 @@
   background-color: #eee;
 }
 
+.builder-component.has-error .invalid-feedback,
 .formio-component.has-error .invalid-feedback,
 .formio-component.alert-danger .invalid-feedback,
-.formio-component.alert-warning .invalid-feedback {
+.formio-component.has-message .invalid-feedback {
   display: block;
   color: inherit;
   margin-top: 4px;
+}
+
+.formio-errors {
+  .error {
+    color: #dc3545;
+  }
+  .warning {
+    color: #856404;
+  }
+  .info {
+    color: #004085;
+  }
 }
 
 .formio-wysiwyg-editor {
@@ -170,6 +183,10 @@ td > .form-group {
 [dir="rtl"] .btn.signature-pad-refresh {
   left: unset;
   right: 0;
+}
+
+.formio-component-multiple .choices__input {
+  width: 100%;
 }
 
 .choices__list--dropdown .choices__item--selectable{
@@ -913,6 +930,7 @@ body.formio-dialog-open {
   /* we can't use display: none or visibility: hidden because autocomplete won't work on hidden field */
   opacity: 0;
   position: absolute;
+  z-index: -1;
 }
 
 .has-error > .help-block {

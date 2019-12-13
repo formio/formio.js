@@ -163,25 +163,6 @@ export default class SelectComponent extends Field {
   }
 
   /**
-   * @param {*} data
-   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
-   * @return {*}
-   */
-  itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
-      if (this.valueProperty) {
-        return _.get(data, this.valueProperty);
-      }
-
-      if (forceUseValue) {
-        return data.value;
-      }
-    }
-
-    return data;
-  }
-
-  /**
    * Adds an option to the select dropdown.
    *
    * @param value
@@ -340,7 +321,7 @@ export default class SelectComponent extends Field {
     }
     else {
       // If a default value is provided then select it.
-      const defaultValue = this.defaultValue;
+      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue);
       }
@@ -478,15 +459,16 @@ export default class SelectComponent extends Field {
   }
 
   refresh() {
+    if (this.component.clearOnRefresh) {
+      this.setValue(this.emptyValue);
+    }
+
     if (this.component.lazyLoad) {
       this.activated = false;
       this.loading = true;
       this.setItems([]);
     }
 
-    if (this.component.clearOnRefresh) {
-      this.setValue(this.emptyValue);
-    }
     this.updateItems(null, true);
   }
 
@@ -794,6 +776,12 @@ export default class SelectComponent extends Field {
     this.addPlaceholder();
     input.setAttribute('dir', this.i18next.dir());
     this.choices = new Choices(input, choicesOptions);
+
+    this.addEventListener(input, 'hideDropdown', () => {
+      this.choices.input.element.value = '';
+      this.updateItems(null, true);
+    });
+
     if (this.selectOptions && this.selectOptions.length) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
     }
@@ -826,7 +814,7 @@ export default class SelectComponent extends Field {
           this.triggerUpdate(this.choices.input.element.value);
         }
       };
-      this.scrollList.addEventListener('scroll', this.onScroll);
+      this.addEventListener(this.scrollList, 'scroll', this.onScroll);
     }
 
     this.focusableElement.setAttribute('tabIndex', tabIndex);
@@ -1288,7 +1276,7 @@ export default class SelectComponent extends Field {
       };
       this.emit('componentError', this.error);
       if (this.refs.selectContainer) {
-        this.addInputError(message, dirty, [this.refs.selectContainer]);
+        this.addMessage(message, dirty, [this.refs.selectContainer]);
       }
     }
     else if (this.error && this.error.external === !!external) {

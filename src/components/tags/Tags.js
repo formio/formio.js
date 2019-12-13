@@ -1,6 +1,5 @@
 import Input from '../_classes/input/Input';
 import Choices from 'choices.js/public/assets/scripts/choices.js';
-import _ from 'lodash';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -63,6 +62,14 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
+    this.addEventListener(this.choices.input.element, 'blur', () => {
+      const value = this.choices.input.value;
+      if (value) {
+        this.choices.setValue([value]);
+        this.choices.clearInput();
+        this.choices.hideDropdown(true);
+      }
+    });
   }
 
   detach() {
@@ -74,29 +81,29 @@ export default class TagsComponent extends Input {
     }
   }
 
+  normalizeValue(value) {
+    if (this.component.storeas === 'string' && Array.isArray(value)) {
+      return value.join(this.delimiter);
+    }
+    else if (this.component.storeas === 'array' && typeof value === 'string') {
+      return value.split(this.delimiter).filter(result => result);
+    }
+    return value;
+  }
+
   setValue(value) {
-    if (this.component.storeas === 'string' && (typeof value === 'string')) {
-      value = value.split(this.delimiter);
-    }
-    if (value && !_.isArray(value)) {
-      value = [value];
-    }
     const changed = super.setValue(value);
     if (this.choices) {
+      let dataValue = this.dataValue;
       this.choices.removeActiveItems();
-      if (value) {
-        this.choices.setValue(value);
+      if (dataValue) {
+        if (typeof dataValue === 'string') {
+          dataValue = dataValue.split(this.delimiter).filter(result => result);
+        }
+        this.choices.setValue(Array.isArray(dataValue) ? dataValue : [dataValue]);
       }
     }
     return changed;
-  }
-
-  getValue() {
-    if (this.choices) {
-      const value = this.choices.getValue(true);
-      return (this.component.storeas === 'string') ? value.join(this.delimiter) : value;
-    }
-    return this.dataValue;
   }
 
   set disabled(disabled) {

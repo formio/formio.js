@@ -1,8 +1,7 @@
 import NativePromise from 'native-promise-only';
-import _ from 'lodash';
-
 import Formio from './Formio';
 import Webform from './Webform';
+import { fastCloneDeep } from './utils/utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {
@@ -83,7 +82,7 @@ export default class PDF extends Webform {
         this.postMessage({ name: 'zoomOut' });
       });
 
-      const form = _.cloneDeep(this.form);
+      const form = fastCloneDeep(this.form);
       if (this.formio) {
         form.projectUrl = this.formio.projectUrl;
         form.url = this.formio.formUrl;

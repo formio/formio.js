@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal';
 
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
-import { Evaluator } from '../../utils/utils';
+import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
@@ -110,6 +110,10 @@ export default class EditGridComponent extends NestedComponent {
     super(...args);
     this.type = 'editgrid';
     // this.editRows = [];
+  }
+
+  getValueAsString() {
+    return '[Complex Data]';
   }
 
   hasAddButton() {
@@ -228,7 +232,7 @@ export default class EditGridComponent extends NestedComponent {
         ].forEach(action => {
           const elements = row.getElementsByClassName(action.class);
           Array.prototype.forEach.call(elements, element => {
-            element.addEventListener(action.event, action.action);
+            this.addEventListener(element, action.event, action.action);
           });
         });
       }
@@ -383,7 +387,7 @@ export default class EditGridComponent extends NestedComponent {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
     this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
+    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
     }
@@ -517,21 +521,20 @@ export default class EditGridComponent extends NestedComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.onChange = (flags, changed, modified) => {
+        if (this.component.inlineEdit && this.options.onChange) {
+          this.options.onChange(flags, changed, modified);
+        }
+        else if (this.editRows[rowIndex]) {
+          this.checkRow(null, this.editRows[rowIndex], {
+            changed
+          }, this.editRows[rowIndex].data);
+        }
+      };
       const comp = this.createComponent(_.assign({}, column, {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
-      // Don't bubble sub changes since they won't apply until pressing save.
-      comp.triggerChange = () => {
-        // Should we recalculate or something here?
-        // TODO: Cause refreshOn to trigger.
-        if (this.component.inlineEdit) {
-          this.triggerChange();
-        }
-        else {
-          this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
-        }
-      };
       components.push(comp);
     });
     return components;
@@ -570,13 +573,18 @@ export default class EditGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
     return this.checkComponentValidity(data, dirty, row);
   }
 
   checkComponentValidity(data, dirty, row) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
+    if (!super.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     let rowsValid = true;

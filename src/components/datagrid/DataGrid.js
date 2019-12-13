@@ -3,6 +3,7 @@ import _ from 'lodash';
 import dragula from 'dragula/dist/dragula';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
+import { fastCloneDeep } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -121,6 +122,10 @@ export default class DataGridComponent extends NestedComponent {
 
   get allowReorder() {
     return !this.options.readOnly && _.get(this.component, 'reorder', false);
+  }
+
+  getValueAsString() {
+    return '[Complex Data]';
   }
 
   /**
@@ -331,7 +336,7 @@ export default class DataGridComponent extends NestedComponent {
     //should drop at next sibling position; no next sibling means drop to last position
     const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
     const movedBelow = newPosition > oldPosition;
-    const dataValue = _.cloneDeep(this.dataValue);
+    const dataValue = fastCloneDeep(this.dataValue);
     const draggedRowData = dataValue[oldPosition];
 
     //insert element at new position
@@ -345,8 +350,13 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   addRow() {
-    this.dataValue.push({});
     const index = this.rows.length;
+
+    // Handle length mismatch between rows and dataValue
+    if (this.dataValue.length === index) {
+      this.dataValue.push({});
+    }
+
     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
     this.redraw();
   }
@@ -402,9 +412,14 @@ export default class DataGridComponent extends NestedComponent {
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
+
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
+    }
+
+    if (!this.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     return this.checkRows('checkValidity', data, dirty, this.dataValue);

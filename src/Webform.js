@@ -6,7 +6,7 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import { currentTimezone } from './utils/utils';
+import { fastCloneDeep, currentTimezone } from './utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -731,7 +731,7 @@ export default class Webform extends NestedComponent {
       console.warn('Cannot save draft unless a user is authenticated.');
       return;
     }
-    const draft = _.cloneDeep(this.submission);
+    const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
     if (!this.savingDraft) {
       this.savingDraft = true;
@@ -760,7 +760,7 @@ export default class Webform extends NestedComponent {
       }
     }).then(submissions => {
       if (submissions.length > 0) {
-        const draft = _.cloneDeep(submissions[0]);
+        const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() => {
           this.draftEnabled = true;
           this.savingDraft = false;
@@ -775,7 +775,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.cloneDeep(_.omit(this._form, ['components']));
+    const schema = fastCloneDeep(_.omit(this._form, ['components']));
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -902,19 +902,12 @@ export default class Webform extends NestedComponent {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.element.addEventListener('keydown', this.executeShortcuts);
+    this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
     setTimeout(() => this.emit('render'), 1);
     return childPromise.then(() => this.setValue(this._submission, {
       noUpdateEvent: true
     }));
-  }
-
-  detach() {
-    if (this.element) {
-      this.element.removeEventListener('keydown', this.executeShortcuts);
-    }
-    return super.detach();
   }
 
   resetValue() {
@@ -1034,7 +1027,7 @@ export default class Webform extends NestedComponent {
     this.submitting = false;
     this.setPristine(true);
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
-    this.setValue(_.cloneDeep(submission), {
+    this.setValue(fastCloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });
@@ -1065,6 +1058,7 @@ export default class Webform extends NestedComponent {
 
     this.submitting = false;
     this.setPristine(false);
+    this.emit('submitError', error);
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
@@ -1082,6 +1076,7 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed, modified) {
+    flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed && changed.component) {
@@ -1090,7 +1085,7 @@ export default class Webform extends NestedComponent {
 
     super.onChange(flags, true);
     const value = _.clone(this.submission);
-    value.changed = changed;
+    flags.changed = value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
@@ -1162,7 +1157,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = _.cloneDeep(this.submission || {});
+      const submission = fastCloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};

@@ -41,7 +41,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
@@ -183,6 +182,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
@@ -220,6 +220,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
 </ul>
@@ -235,7 +237,7 @@ import Formio from &apos;./Formio&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Components from &apos;./components/Components&apos;;
 import NestedComponent from &apos;./components/_classes/nested/NestedComponent&apos;;
-import { currentTimezone } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, currentTimezone } from &apos;./utils/utils&apos;;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -960,7 +962,7 @@ export default class Webform extends NestedComponent {
       console.warn(&apos;Cannot save draft unless a user is authenticated.&apos;);
       return;
     }
-    const draft = _.cloneDeep(this.submission);
+    const draft = fastCloneDeep(this.submission);
     draft.state = &apos;draft&apos;;
     if (!this.savingDraft) {
       this.savingDraft = true;
@@ -989,7 +991,7 @@ export default class Webform extends NestedComponent {
       }
     }).then(submissions =&gt; {
       if (submissions.length &gt; 0) {
-        const draft = _.cloneDeep(submissions[0]);
+        const draft = fastCloneDeep(submissions[0]);
         return this.setSubmission(draft).then(() =&gt; {
           this.draftEnabled = true;
           this.savingDraft = false;
@@ -1004,7 +1006,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.cloneDeep(_.omit(this._form, [&apos;components&apos;]));
+    const schema = fastCloneDeep(_.omit(this._form, [&apos;components&apos;]));
     schema.components = [];
     this.eachComponent((component) =&gt; schema.components.push(component.schema));
     return schema;
@@ -1131,19 +1133,12 @@ export default class Webform extends NestedComponent {
     this.element = element;
     this.loadRefs(element, { webform: &apos;single&apos; });
     const childPromise = this.attachComponents(this.refs.webform);
-    this.element.addEventListener(&apos;keydown&apos;, this.executeShortcuts);
+    this.addEventListener(this.element, &apos;keydown&apos;, this.executeShortcuts);
     this.currentForm = this;
     setTimeout(() =&gt; this.emit(&apos;render&apos;), 1);
     return childPromise.then(() =&gt; this.setValue(this._submission, {
       noUpdateEvent: true
     }));
-  }
-
-  detach() {
-    if (this.element) {
-      this.element.removeEventListener(&apos;keydown&apos;, this.executeShortcuts);
-    }
-    return super.detach();
   }
 
   resetValue() {
@@ -1263,7 +1258,7 @@ export default class Webform extends NestedComponent {
     this.submitting = false;
     this.setPristine(true);
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
-    this.setValue(_.cloneDeep(submission), {
+    this.setValue(fastCloneDeep(submission), {
       noValidate: true,
       noCheck: true
     });
@@ -1294,6 +1289,7 @@ export default class Webform extends NestedComponent {
 
     this.submitting = false;
     this.setPristine(false);
+    this.emit(&apos;submitError&apos;, error);
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error &amp;&amp; error.silent) {
@@ -1311,6 +1307,7 @@ export default class Webform extends NestedComponent {
    * @param flags
    */
   onChange(flags, changed, modified) {
+    flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
     if (changed &amp;&amp; changed.component) {
@@ -1319,7 +1316,7 @@ export default class Webform extends NestedComponent {
 
     super.onChange(flags, true);
     const value = _.clone(this.submission);
-    value.changed = changed;
+    flags.changed = value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
@@ -1391,7 +1388,7 @@ export default class Webform extends NestedComponent {
         });
       }
 
-      const submission = _.cloneDeep(this.submission || {});
+      const submission = fastCloneDeep(this.submission || {});
 
       // Add in metadata about client submitting the form
       submission.metadata = submission.metadata || {};
