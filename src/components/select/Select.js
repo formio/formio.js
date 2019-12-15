@@ -1057,14 +1057,9 @@ export default class SelectComponent extends Field {
     return done;
   }
 
-  /**
-   * Normalize values coming into updateValue.
-   *
-   * @param value
-   * @return {*}
-   */
-  normalizeValue(value) {
+  normalizeSingleValue(value) {
     const dataType = _.get(this.component, 'dataType', 'auto');
+
     switch (dataType) {
       case 'auto':
         if (!isNaN(parseFloat(value)) && isFinite(value)) {
@@ -1092,6 +1087,22 @@ export default class SelectComponent extends Field {
         value = !!value;
         break;
     }
+
+    return value;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple && Array.isArray(value)) {
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
+    }
+
+    this.normalizeSingleValue(value);
     return super.normalizeValue(value);
   }
 

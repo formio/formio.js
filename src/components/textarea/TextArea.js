@@ -129,11 +129,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   attachElement(element, index) {
     if (this.autoExpand && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
-      element.childNodes.forEach((element) => {
-        if (element.nodeName === 'TEXTAREA') {
-          this.addAutoExpanding(element);
-        }
-      });
+      if (element.nodeName === 'TEXTAREA') {
+        this.addAutoExpanding(element);
+      }
     }
 
     if (this.options.readOnly) {

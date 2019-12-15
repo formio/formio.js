@@ -3,6 +3,7 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
@@ -1181,6 +1182,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**

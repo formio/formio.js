@@ -1292,28 +1292,30 @@ export default class Formio {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
       var authClient = new Okta(options);
-      var accessToken = authClient.tokenManager.get('accessToken');
-      if (accessToken) {
-        resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
-      }
-      else if (location.hash) {
-        authClient.token.parseFromUrl()
-          .then(token => {
-            authClient.tokenManager.add('accessToken', token);
-            resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
-          })
-          .catch(err => {
-            console.warn(err);
-            reject(err);
-          });
-      }
-      else {
-        authClient.token.getWithRedirect({
-          responseType: 'token',
-          scopes: options.scopes
+      authClient.tokenManager.get('accessToken')
+        .then(accessToken => {
+          if (accessToken) {
+            resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
+          }
+          else if (location.hash) {
+            authClient.token.parseFromUrl()
+              .then(token => {
+                authClient.tokenManager.add('accessToken', token);
+                resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
+              })
+              .catch(err => {
+                console.warn(err);
+                reject(err);
+              });
+          }
+          else {
+            authClient.token.getWithRedirect({
+              responseType: 'token',
+              scopes: options.scopes
+            });
+            resolve(false);
+          }
         });
-        resolve(false);
-      }
     });
   }
 
@@ -1356,7 +1358,7 @@ export default class Formio {
           if (typeof lib === 'string') {
             lib = {
               type: 'script',
-              src: lib
+              src: lib,
             };
           }
           switch (lib.type) {
@@ -1366,29 +1368,29 @@ export default class Formio {
                 src: lib.src,
                 type: 'text/javascript',
                 defer: true,
-                async: true
+                async: true,
               };
               break;
             case 'styles':
               elementType = 'link';
               attrs = {
                 href: lib.src,
-                rel: 'stylesheet'
+                rel: 'stylesheet',
               };
               break;
           }
 
-          // Add the script to the top page.
-          const script = document.createElement(elementType);
-          if (script.setAttribute) {
+          // Add the script to the top of the page.
+          const element = document.createElement(elementType);
+          if (element.setAttribute) {
             for (const attr in attrs) {
-              script.setAttribute(attr, attrs[attr]);
+              element.setAttribute(attr, attrs[attr]);
             }
           }
 
-          const head = document.getElementsByTagName('head')[0];
+          const { head } = document;
           if (head) {
-            head.appendChild(script);
+            head.appendChild(element);
           }
         });
 

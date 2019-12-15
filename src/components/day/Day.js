@@ -256,12 +256,13 @@ export default class DayComponent extends Field {
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
-        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+          : '';
         const day = this.getFieldValue('day');
-        if (!this.component.fields.day.hide) {
+        if (!this.component.fields.day.hide && maxDay) {
           this.refs.day.max = maxDay;
         }
-        if (day > maxDay) {
+        if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
         this.updateValue(null, {
