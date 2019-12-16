@@ -4,9 +4,24 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0-rc.3
+### Fixed
+ - Fix spelling of addMessages.
+ - Fix invalid identity escape in numberPattern.
+ - Fixed Wizard navigation redraw.
+ - Fixed Select component value normalization for multivalues.
+ - Day component bug with hidden year field.
+ - TextArea component bug with autoexpand
+ - Fixed builder initialization code to not require two empty objects passed to factory method.
+
+### Added
+ - Added isMobile method to Component class.
+
 ### Changed
+ - Upgrade i18next@19.0.2, core-js@3.5.0
  - Okta: ```oktaInit``` method to expect okta-auth-js v2 being used
+ - Small improvements to requireLibrary method.
+ - Cleaned up file component ui improvements.
 
 ## 4.8.0-rc.2
 ### Added

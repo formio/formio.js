@@ -337,8 +337,8 @@ export default class NumberComponent extends Input {
 
   setInputMask(input) {
     let numberPattern = &apos;[0-9&apos;;
-    numberPattern += this.decimalSeparator ? `\\${this.decimalSeparator}` : &apos;&apos;;
-    numberPattern += this.delimiter ? `\\${this.delimiter}` : &apos;&apos;;
+    numberPattern += this.decimalSeparator || &apos;&apos;;
+    numberPattern += this.delimiter || &apos;&apos;;
     numberPattern += &apos;]*&apos;;
     input.setAttribute(&apos;pattern&apos;, numberPattern);
     input.mask = maskInput({
