@@ -1287,7 +1287,7 @@ export default class SelectComponent extends Field {
       };
       this.emit('componentError', this.error);
       if (this.refs.selectContainer) {
-        this.addMessage(message, dirty, [this.refs.selectContainer]);
+        this.addMessages(message, dirty, [this.refs.selectContainer]);
       }
     }
     else if (this.error && this.error.external === !!external) {

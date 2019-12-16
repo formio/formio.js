@@ -187,9 +187,9 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
-  addMessage(message, dirty, elements) {
-    super.addMessage(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
-    super.addMessage(message, dirty, elements);
+  addMessages(message, dirty, elements) {
+    super.addMessages(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
+    super.addMessages(message, dirty, elements);
   }
 
   removeInputError(elements) {
