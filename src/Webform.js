@@ -7,6 +7,7 @@ import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
+import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -908,6 +909,19 @@ export default class Webform extends NestedComponent {
     return childPromise.then(() => this.setValue(this._submission, {
       noUpdateEvent: true
     }));
+  }
+
+  hasRequiredFields() {
+    let result = false;
+
+    eachComponent(this.form.components, (component) => {
+      if (component.validate.required) {
+        result = true;
+        return true;
+      }
+    }, true);
+
+    return result;
   }
 
   resetValue() {
