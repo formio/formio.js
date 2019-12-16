@@ -1277,7 +1277,7 @@ export default class Formio {
     return new NativePromise((resolve, reject) => {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = Okta;
+      var authClient = new Okta(options);
       authClient.tokenManager.get('accessToken')
         .then(accessToken => {
           if (accessToken) {
