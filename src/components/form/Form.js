@@ -151,6 +151,13 @@ export default class FormComponent extends BaseComponent {
     });
   }
 
+  clearOnHide(show) {
+    super.clearOnHide(show);
+    if (this.subForm && this.component.clearOnHide) {
+      this.subForm.clearOnHide(show);
+    }
+  }
+
   show(...args) {
     const state = super.show(...args);
 
