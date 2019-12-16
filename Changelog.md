@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 3.29.4
 ### Fixed
+ - Fixed issue with immediate onchange event firing in wysiwyg editors.
+ - Fixed clearOnHide feature to nested form component.
  - Okta: ```tokenManager``` field being undefined in ```oktaInit``` method due to missing ```OktaAuth``` constructor call
 
 ## 3.29.3
