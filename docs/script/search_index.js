@@ -7968,6 +7968,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/form/form.js~formcomponent#clearonhide",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-clearOnHide",
+    "src/components/form/Form.js~FormComponent#clearOnHide",
+    "method"
+  ],
+  [
     "src/components/form/form.js~formcomponent#constructor",
     "class/src/components/form/Form.js~FormComponent.html#instance-constructor-constructor",
     "src/components/form/Form.js~FormComponent#constructor",

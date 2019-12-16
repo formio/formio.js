@@ -943,7 +943,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} submission - The Form.io submission object.
    */
   set submission(submission) {
-    this.setSubmission(submission);
+    this.setSubmission(submission, { autoModified: true });
   }
 
   /**

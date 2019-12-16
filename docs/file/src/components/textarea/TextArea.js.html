@@ -516,14 +516,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     fileInput.click();
   }
 
-  setWysiwygValue(value, skipSetting) {
+  setWysiwygValue(value, skipSetting, flags) {
     if (this.isPlain || this.options.readOnly || this.options.htmlView) {
       return;
     }
 
     if (this.editorReady) {
       this.editorReady.then((editor) =&gt; {
-        this.autoModified = _.isNil(this.autoModified) ? true : this.autoModified;
+        this.autoModified = (flags &amp;&amp; flags.autoModified)
+          || (_.isNil(this.autoModified) ? true : this.autoModified);
 
         if (!skipSetting) {
           if (this.component.editor === &apos;ace&apos;) {
@@ -753,6 +754,8 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = Array.isArray(value) ? value.map((val) =&gt; this.setConvertedValue(val)) : this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
+
+    this.dataValue = value;
 
     this.setWysiwygValue(value, skipSetting, flags);
     return this.updateValue(flags);
