@@ -37,6 +37,8 @@ $danger:        $red !default;
 $light:         $gray-200 !default;
 $dark:          $gray-900 !default;
 
+$yiq-contrasted-threshold:  170 !default;
+
 // Body
 
 $body-bg:                   $gray-900 !default;
@@ -52,6 +54,7 @@ $font-size-base:              0.9375rem !default;
 
 // Tables
 
+$table-color:                 $white !default;
 $table-accent-bg:             rgba($white,.05) !default;
 $table-hover-bg:              rgba($white,.075) !default;
 
@@ -72,6 +75,7 @@ $input-disabled-bg:                     #ccc !default;
 // Dropdowns
 
 $dropdown-bg:                       $gray-800 !default;
+$dropdown-border-color:             rgba($black, .6) !default;
 $dropdown-divider-bg:               rgba($black,.15) !default;
 
 $dropdown-link-color:               $body-color !default;
