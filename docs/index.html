@@ -242,12 +242,12 @@
 </code></pre><h2 id="form-building">Form Building</h2><p>This library has a very powerful JSON form builder, and can be used like the following.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
     &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
-        Formio.builder(document.getElementById(&apos;builder&apos;));
+        Formio.builder(document.getElementById(&apos;builder&apos;), {}, {});
       };
     &lt;/script&gt;
   &lt;/head&gt;
@@ -260,7 +260,7 @@
 <h2 id="form-rendering">Form Rendering</h2><p>The following is a simple example on how to render a form within your HTML application.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
     &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
@@ -310,7 +310,7 @@ The determiniation on whether it should render as a wizard or not is based on th
 being set to <code>wizard</code>.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css&apos;&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
     &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;

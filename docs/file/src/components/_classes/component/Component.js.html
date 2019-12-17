@@ -234,6 +234,7 @@ import { conformToMask } from &apos;vanilla-text-mask&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import _ from &apos;lodash&apos;;
+import isMobile from &apos;ismobilejs&apos;;
 import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
 import Validator from &apos;../../../validator/Validator&apos;;
@@ -1412,6 +1413,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**

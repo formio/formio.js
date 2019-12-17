@@ -563,7 +563,7 @@ export default class Wizard extends Webform {
     const form = this.pages[this.page].component;
     // Check conditional nextPage
     if (form) {
-      const page = this.page + 1;
+      const page = this.pages.length &gt; (this.page + 1) ? this.page + 1 : -1;
       if (form.nextPage) {
         const next = this.evaluate(form.nextPage, {
           next: page,
@@ -595,7 +595,7 @@ export default class Wizard extends Webform {
   }
 
   getPreviousPage() {
-    return Math.max(this.page - 1, 0);
+    return this.page - 1;
   }
 
   beforeSubmit() {
@@ -737,7 +737,7 @@ export default class Wizard extends Webform {
         _.get(currentPage, &apos;buttonSettings.previous&apos;),
         this.options.buttonSettings.showPrevious
       ]);
-      return (this.page &gt; 0) &amp;&amp; show;
+      return (this.getPreviousPage() &gt; -1) &amp;&amp; show;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
     if (name === &apos;next&apos;) {
@@ -745,7 +745,7 @@ export default class Wizard extends Webform {
         _.get(currentPage, &apos;buttonSettings.next&apos;),
         this.options.buttonSettings.showNext
       ]);
-      return (nextPage !== null) &amp;&amp; (nextPage &lt; this.pages.length) &amp;&amp; show;
+      return (nextPage !== null) &amp;&amp; (nextPage !== -1) &amp;&amp; show;
     }
     if (name === &apos;cancel&apos;) {
       return firstNonNil([
@@ -782,16 +782,16 @@ export default class Wizard extends Webform {
   onChange(flags, changed) {
     super.onChange(flags, changed);
 
-    // If the next page changes, then make sure to redraw navigation.
-    if (this.currentNextPage !== this.getNextPage()) {
-      this.redrawNavigation();
-    }
-
     // If the pages change, need to redraw the header.
     const currentPanels = this.pages.map(page =&gt; page.component.key);
     const panels = this.establishPages().map(panel =&gt; panel.key);
     if (!_.isEqual(panels, currentPanels)) {
       this.redrawHeader();
+    }
+
+    // If the next page changes, then make sure to redraw navigation.
+    if (this.currentNextPage !== this.getNextPage()) {
+      this.redrawNavigation();
     }
   }
 

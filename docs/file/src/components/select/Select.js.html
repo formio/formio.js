@@ -1288,14 +1288,9 @@ export default class SelectComponent extends Field {
     return done;
   }
 
-  /**
-   * Normalize values coming into updateValue.
-   *
-   * @param value
-   * @return {*}
-   */
-  normalizeValue(value) {
+  normalizeSingleValue(value) {
     const dataType = _.get(this.component, &apos;dataType&apos;, &apos;auto&apos;);
+
     switch (dataType) {
       case &apos;auto&apos;:
         if (!isNaN(parseFloat(value)) &amp;&amp; isFinite(value)) {
@@ -1323,6 +1318,22 @@ export default class SelectComponent extends Field {
         value = !!value;
         break;
     }
+
+    return value;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple &amp;&amp; Array.isArray(value)) {
+      return value.map((singleValue) =&gt; this.normalizeSingleValue(singleValue));
+    }
+
+    this.normalizeSingleValue(value);
     return super.normalizeValue(value);
   }
 
@@ -1507,7 +1518,7 @@ export default class SelectComponent extends Field {
       };
       this.emit(&apos;componentError&apos;, this.error);
       if (this.refs.selectContainer) {
-        this.addMessage(message, dirty, [this.refs.selectContainer]);
+        this.addMessages(message, dirty, [this.refs.selectContainer]);
       }
     }
     else if (this.error &amp;&amp; this.error.external === !!external) {

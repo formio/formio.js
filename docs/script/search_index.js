@@ -4560,6 +4560,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/component/component.js~component#ismobile",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-isMobile",
+    "src/components/_classes/component/Component.js~Component#isMobile",
+    "member"
+  ],
+  [
     "src/components/_classes/component/component.js~component#isvalid",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-isValid",
     "src/components/_classes/component/Component.js~Component#isValid",
@@ -7746,9 +7752,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/day/day.js~daycomponent#addmessage",
-    "class/src/components/day/Day.js~DayComponent.html#instance-method-addMessage",
-    "src/components/day/Day.js~DayComponent#addMessage",
+    "src/components/day/day.js~daycomponent#addmessages",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-addMessages",
+    "src/components/day/Day.js~DayComponent#addMessages",
     "method"
   ],
   [
@@ -8568,14 +8574,38 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/file/file.js~filecomponent#_cameramode",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-_cameraMode",
+    "src/components/file/File.js~FileComponent#_cameraMode",
+    "member"
+  ],
+  [
     "src/components/file/file.js~filecomponent#attach",
     "class/src/components/file/File.js~FileComponent.html#instance-method-attach",
     "src/components/file/File.js~FileComponent#attach",
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#browsefiles",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-browseFiles",
+    "src/components/file/File.js~FileComponent#browseFiles",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#browseoptions",
+    "class/src/components/file/File.js~FileComponent.html#instance-get-browseOptions",
+    "src/components/file/File.js~FileComponent#browseOptions",
+    "member"
+  ],
+  [
     "src/components/file/file.js~filecomponent#cameramode",
-    "class/src/components/file/File.js~FileComponent.html#instance-member-cameraMode",
+    "class/src/components/file/File.js~FileComponent.html#instance-set-cameraMode",
+    "src/components/file/File.js~FileComponent#cameraMode",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#cameramode",
+    "class/src/components/file/File.js~FileComponent.html#instance-get-cameraMode",
     "src/components/file/File.js~FileComponent#cameraMode",
     "member"
   ],
@@ -8608,6 +8638,12 @@ window.esdocSearchIndex = [
     "class/src/components/file/File.js~FileComponent.html#instance-get-defaultValue",
     "src/components/file/File.js~FileComponent#defaultValue",
     "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#deletefile",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-deleteFile",
+    "src/components/file/File.js~FileComponent#deleteFile",
+    "method"
   ],
   [
     "src/components/file/file.js~filecomponent#emptyvalue",
@@ -8658,6 +8694,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#getframe",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-getFrame",
+    "src/components/file/File.js~FileComponent#getFrame",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#getvalue",
     "class/src/components/file/File.js~FileComponent.html#instance-method-getValue",
     "src/components/file/File.js~FileComponent#getValue",
@@ -8670,6 +8712,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#getvideostream",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-getVideoStream",
+    "src/components/file/File.js~FileComponent#getVideoStream",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#globstringtoregex",
     "class/src/components/file/File.js~FileComponent.html#instance-method-globStringToRegex",
     "src/components/file/File.js~FileComponent#globStringToRegex",
@@ -8679,6 +8727,12 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#hastypes",
     "class/src/components/file/File.js~FileComponent.html#instance-get-hasTypes",
     "src/components/file/File.js~FileComponent#hasTypes",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#imageupload",
+    "class/src/components/file/File.js~FileComponent.html#instance-get-imageUpload",
+    "src/components/file/File.js~FileComponent#imageUpload",
     "member"
   ],
   [
@@ -8715,6 +8769,12 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#stopvideo",
     "class/src/components/file/File.js~FileComponent.html#instance-method-stopVideo",
     "src/components/file/File.js~FileComponent#stopVideo",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#stopvideostream",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-stopVideoStream",
+    "src/components/file/File.js~FileComponent#stopVideoStream",
     "method"
   ],
   [
@@ -8764,6 +8824,12 @@ window.esdocSearchIndex = [
     "class/src/components/file/File.js~FileComponent.html#instance-method-validatePattern",
     "src/components/file/File.js~FileComponent#validatePattern",
     "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#videostream",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-videoStream",
+    "src/components/file/File.js~FileComponent#videoStream",
+    "member"
   ],
   [
     "src/components/file/file.js~filecomponent.builderinfo",
@@ -10378,6 +10444,12 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-loading",
     "src/components/select/Select.js~SelectComponent#loading",
     "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#normalizesinglevalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-normalizeSingleValue",
+    "src/components/select/Select.js~SelectComponent#normalizeSingleValue",
+    "method"
   ],
   [
     "src/components/select/select.js~selectcomponent#normalizevalue",
