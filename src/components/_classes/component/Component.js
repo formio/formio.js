@@ -2285,7 +2285,7 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    const shouldCheckValidity = !this.builderMode && !this.options.preview && this.defaultValue;
+    const shouldCheckValidity = !this.builderMode && !this.options.preview && this.empty(this.defaultValue);
     if (shouldCheckValidity && !flags.noValidate) {
       return this.checkComponentValidity(data, true, row);
     }
