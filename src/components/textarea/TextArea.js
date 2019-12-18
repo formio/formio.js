@@ -55,6 +55,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 
+  validateMultiple() {
+    return !this.component.as === 'json';
+  }
+
   setupValueElement(element) {
     let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
