@@ -59,17 +59,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     return !this.component.as === 'json';
   }
 
-  setupValueElement(element) {
-    let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
-    if (this.component.wysiwyg) {
-      value = this.interpolate(value);
-    }
-    if (element) {
-      this.setContent(element, value);
-    }
-  }
-
   acePlaceholder() {
     if (!this.component.placeholder || !this.editor) {
       return;
@@ -129,6 +118,13 @@ export default class TextAreaComponent extends TextFieldComponent {
       });
     }
     this.autoModified = false;
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      textArea: 'single'
+    });
+    return super.attach(element);
   }
 
   attachElement(element, index) {
@@ -294,16 +290,14 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get htmlView() {
-    return this.options.readOnly && this.component.wysiwyg;
+    return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
   /* eslint-enable max-statements */
 
   setWysiwygValue(value, skipSetting) {
     if (this.htmlView) {
       // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
+      this.setContent(this.refs.textArea, this.interpolate(value));
     }
     else if (this.editorReady) {
       return this.editorReady.then((editor) => {
