@@ -1102,8 +1102,7 @@ export default class SelectComponent extends Field {
       return value.map((singleValue) => this.normalizeSingleValue(singleValue));
     }
 
-    this.normalizeSingleValue(value);
-    return super.normalizeValue(value);
+    return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
   setValue(value, flags) {
