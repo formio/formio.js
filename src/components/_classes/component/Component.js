@@ -2291,12 +2291,10 @@ export default class Component extends Element {
 
     // We need to perform a test to see if they provided a default value that is not valid and immediately show
     // an error if that is the case.
-    const defaultValue = this.defaultValue;
     if (
       !this.builderMode &&
       !this.options.preview &&
-      defaultValue &&
-      !_.isEqual(defaultValue, this.emptyValue) &&
+      !this.isEmpty(this.defaultValue) &&
       !flags.noValidate
     ) {
       return this.checkComponentValidity(data, true, row);
