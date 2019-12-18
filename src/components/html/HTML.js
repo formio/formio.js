@@ -41,7 +41,7 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    if (!this.builderMode && this.component.refreshOnChange && this.refs.html) {
+    if (!this.builderMode && this.component.refreshOnChange && this.element) {
       this.setContent(this.element, this.renderContent());
     }
   }
