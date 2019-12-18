@@ -1398,6 +1398,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += &apos; formio-component-label-hidden&apos;;
     }
+    if (!this.visible) {
+      className += &apos; formio-hidden&apos;;
+    }
     return className;
   }
 

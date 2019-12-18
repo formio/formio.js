@@ -11682,6 +11682,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#validatemultiple",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-validateMultiple",
+    "src/components/textarea/TextArea.js~TextAreaComponent#validateMultiple",
+    "method"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent.builderinfo",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#static-get-builderInfo",
     "src/components/textarea/TextArea.js~TextAreaComponent.builderInfo",
