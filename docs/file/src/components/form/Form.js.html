@@ -373,6 +373,7 @@ export default class FormComponent extends BaseComponent {
     super.clearOnHide(show);
     if (this.subForm &amp;&amp; this.component.clearOnHide) {
       this.subForm.clearOnHide(show);
+      this.subForm.triggerChange({ noEmit: true });
     }
   }
 
