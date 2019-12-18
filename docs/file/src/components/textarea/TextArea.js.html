@@ -526,7 +526,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.autoModified = (flags &amp;&amp; flags.autoModified)
           || (_.isNil(this.autoModified) ? true : this.autoModified);
 
-        if (!skipSetting) {
+        if (!skipSetting || (flags &amp;&amp; flags.autoModified)) {
           if (this.component.editor === &apos;ace&apos;) {
             editor.setValue(this.setConvertedValue(value));
           }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.5
+### Fixed
+ - Problems where erroneous change events would fire in text areas.
+
 ## 3.29.4
 ### Fixed
  - Fixed issue with immediate onchange event firing in wysiwyg editors.
