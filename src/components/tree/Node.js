@@ -54,7 +54,7 @@ export default class Node {
   }
 
   get hasChangingChildren() {
-    return this.changin || this.children.some((child) => child.hasChangingChildren);
+    return this.changing || this.children.some((child) => child.hasChangingChildren);
   }
 
   get hasData() {
