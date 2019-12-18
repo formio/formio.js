@@ -2288,8 +2288,17 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    const shouldCheckValidity = !this.builderMode && !this.options.preview && this.empty(this.defaultValue);
-    if (shouldCheckValidity && !flags.noValidate) {
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    const defaultValue = this.defaultValue;
+    if (
+      !this.builderMode &&
+      !this.options.preview &&
+      defaultValue &&
+      !_.isEqual(defaultValue, this.emptyValue) &&
+      !flags.noValidate
+    ) {
       return this.checkComponentValidity(data, true, row);
     }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
