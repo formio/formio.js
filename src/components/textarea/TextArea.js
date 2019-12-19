@@ -76,7 +76,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly || this.disabled) {
       return this.renderTemplate('well', {
-        children: value,
+        children: '<div ref="input"></div>',
         nestedKey: this.key,
         value
       });
@@ -299,7 +299,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get htmlView() {
-    return this.options.readOnly && this.component.wysiwyg;
+    return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
   /* eslint-enable max-statements */
 
@@ -330,7 +330,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  setConvertedValue(value) {
+  setReadOnlyValue(value, index) {
+    index = index || 0;
+    if (this.options.readOnly || this.disabled) {
+      if (this.refs.input && this.refs.input[index]) {
+        this.setContent(this.refs.input[index], this.interpolate(value));
+      }
+    }
+  }
+
+  setConvertedValue(value, index) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
@@ -344,6 +353,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = '';
     }
 
+    this.setReadOnlyValue(value, index);
     return value;
   }
 
