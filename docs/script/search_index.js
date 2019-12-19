@@ -7752,12 +7752,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/day/day.js~daycomponent#addmessages",
-    "class/src/components/day/Day.js~DayComponent.html#instance-method-addMessages",
-    "src/components/day/Day.js~DayComponent#addMessages",
-    "method"
-  ],
-  [
     "src/components/day/day.js~daycomponent#attach",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-attach",
     "src/components/day/Day.js~DayComponent#attach",
@@ -7911,6 +7905,12 @@ window.esdocSearchIndex = [
     "src/components/day/day.js~daycomponent#selectdefinition",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-selectDefinition",
     "src/components/day/Day.js~DayComponent#selectDefinition",
+    "method"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#seterrorclasses",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-setErrorClasses",
+    "src/components/day/Day.js~DayComponent#setErrorClasses",
     "method"
   ],
   [
@@ -10332,12 +10332,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/select/select.js~selectcomponent#error",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-error",
-    "src/components/select/Select.js~SelectComponent#error",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#focus",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-focus",
     "src/components/select/Select.js~SelectComponent#focus",
@@ -10530,9 +10524,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#setcustomvalidity",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setCustomValidity",
-    "src/components/select/Select.js~SelectComponent#setCustomValidity",
+    "src/components/select/select.js~selectcomponent#seterrorclasses",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setErrorClasses",
+    "src/components/select/Select.js~SelectComponent#setErrorClasses",
     "method"
   ],
   [
@@ -11652,6 +11646,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#setreadonlyvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setReadOnlyValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#setReadOnlyValue",
+    "method"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#setvalue",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setValue",
     "src/components/textarea/TextArea.js~TextAreaComponent#setValue",
@@ -11661,12 +11661,6 @@ window.esdocSearchIndex = [
     "src/components/textarea/textarea.js~textareacomponent#setwysiwygvalue",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setWysiwygValue",
     "src/components/textarea/TextArea.js~TextAreaComponent#setWysiwygValue",
-    "method"
-  ],
-  [
-    "src/components/textarea/textarea.js~textareacomponent#setupvalueelement",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setupValueElement",
-    "src/components/textarea/TextArea.js~TextAreaComponent#setupValueElement",
     "method"
   ],
   [
@@ -11680,6 +11674,12 @@ window.esdocSearchIndex = [
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-updateSize",
     "src/components/textarea/TextArea.js~TextAreaComponent#updateSize",
     "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#validatemultiple",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-validateMultiple",
+    "src/components/textarea/TextArea.js~TextAreaComponent#validateMultiple",
+    "method"
   ],
   [
     "src/components/textarea/textarea.js~textareacomponent.builderinfo",

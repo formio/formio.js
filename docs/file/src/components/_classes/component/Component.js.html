@@ -1398,6 +1398,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += &apos; formio-component-label-hidden&apos;;
     }
+    if (!this.visible) {
+      className += &apos; formio-hidden&apos;;
+    }
     return className;
   }
 
@@ -2516,8 +2519,10 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    const shouldCheckValidity = !this.builderMode &amp;&amp; !this.options.preview &amp;&amp; this.defaultValue;
-    if (shouldCheckValidity &amp;&amp; !flags.noValidate) {
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    if (!this.builderMode &amp;&amp; !this.options.preview &amp;&amp; !this.isEmpty(this.defaultValue) &amp;&amp; !flags.noValidate) {
       return this.checkComponentValidity(data, true, row);
     }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);

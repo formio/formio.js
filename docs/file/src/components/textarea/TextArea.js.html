@@ -286,15 +286,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 
-  setupValueElement(element) {
-    let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
-    if (this.component.wysiwyg) {
-      value = this.interpolate(value);
-    }
-    if (element) {
-      this.setContent(element, value);
-    }
+  validateMultiple() {
+    return !this.component.as === &apos;json&apos;;
   }
 
   acePlaceholder() {
@@ -322,7 +315,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly || this.disabled) {
       return this.renderTemplate(&apos;well&apos;, {
-        children: value,
+        children: &apos;&lt;div ref=&quot;input&quot;&gt;&lt;/div&gt;&apos;,
         nestedKey: this.key,
         value
       });
@@ -521,18 +514,12 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get htmlView() {
-    return this.options.readOnly &amp;&amp; this.component.wysiwyg;
+    return this.options.readOnly &amp;&amp; (this.component.editor || this.component.wysiwyg);
   }
   /* eslint-enable max-statements */
 
   setWysiwygValue(value, skipSetting) {
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
+    if (this.editorReady) {
       return this.editorReady.then((editor) =&gt; {
         this.autoModified = true;
         if (!skipSetting) {
@@ -562,7 +549,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     return NativePromise.resolve();
   }
 
-  setConvertedValue(value) {
+  setReadOnlyValue(value, index) {
+    index = index || 0;
+    if (this.options.readOnly || this.disabled) {
+      if (this.refs.input &amp;&amp; this.refs.input[index]) {
+        this.setContent(this.refs.input[index], this.interpolate(value));
+      }
+    }
+  }
+
+  setConvertedValue(value, index) {
     if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
@@ -576,6 +572,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = &apos;&apos;;
     }
 
+    this.setReadOnlyValue(value, index);
     return value;
   }
 
@@ -752,20 +749,16 @@ export default class TextAreaComponent extends TextFieldComponent {
   setValue(value, flags) {
     const skipSetting = _.isEqual(value, this.getValue());
     value = value || &apos;&apos;;
-    if (this.isPlain) {
-      value = Array.isArray(value) ? value.map((val) =&gt; this.setConvertedValue(val)) : this.setConvertedValue(value);
-      const changed = super.setValue(value, flags);
-      if (changed &amp;&amp; (this.disabled || this.options.readOnly)) {
-        this.triggerRedraw();
-      }
-      return changed;
+    if (this.isPlain || this.options.readOnly || this.disabled) {
+      value = Array.isArray(value) ? value.map((val, index) =&gt; this.setConvertedValue(val, index)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
-      this.setWysiwygValue(newValue, skipSetting, () =&gt; this.updateOnChange(flags, changed));
+      this.setWysiwygValue(newValue, skipSetting);
     }
     return changed;
   }

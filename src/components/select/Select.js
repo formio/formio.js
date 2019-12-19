@@ -1102,8 +1102,7 @@ export default class SelectComponent extends Field {
       return value.map((singleValue) => this.normalizeSingleValue(singleValue));
     }
 
-    this.normalizeSingleValue(value);
-    return super.normalizeValue(value);
+    return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
   setValue(value, flags) {
@@ -1275,28 +1274,11 @@ export default class SelectComponent extends Field {
     }
   }
 
-  setCustomValidity(message, dirty, external) {
-    if (message) {
-      if (this.refs.messageContainer) {
-        this.empty(this.refs.messageContainer);
-      }
-      this.error = {
-        component: this.component,
-        message: message,
-        external: !!external,
-      };
-      this.emit('componentError', this.error);
-      if (this.refs.selectContainer) {
-        this.addMessages(message, dirty, [this.refs.selectContainer]);
-      }
-    }
-    else if (this.error && this.error.external === !!external) {
-      if (this.refs.messageContainer) {
-        this.empty(this.refs.messageContainer);
-      }
-      this.error = null;
-      this.removeClass(this.refs.selectContainer, 'is-invalid');
-      this.clearErrorClasses();
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+    if (this.choices) {
+      super.setErrorClasses([this.choices.containerOuter.element, this.choices.containerInner.element], dirty, hasError);
     }
   }
 }
