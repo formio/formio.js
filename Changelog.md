@@ -5,7 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.8.0-rc.3
+### Changed
+ - Upgrade flatpickr@4.6.3, webpack@4.41.3, fetch-mock@8.1.0, marked@0.8.0
+
 ### Fixed
+ - Fixed problem where HTML refreshOnChange was not re-evaluating the whole template and setting it correctly.
+ - Fixed issue where require decimal on Number components was adding 20 decimals to the number.
+ - Fixed single value normalization for Select components.
+ - Fix nested components failing to save because child components are required
+ - Fix issue where textarea saving as json in select component won't allow array values.
+ - Fixed issue where textarea contents would not show in readonly mode.
  - Fix spelling of addMessages.
  - Fix invalid identity escape in numberPattern.
  - Fixed Wizard navigation redraw.

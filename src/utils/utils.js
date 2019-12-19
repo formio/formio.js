@@ -797,12 +797,12 @@ export function getNumberSeparators(lang = 'en') {
   };
 }
 
-export function getNumberDecimalLimit(component) {
+export function getNumberDecimalLimit(component, defaultLimit) {
   if (_.has(component, 'decimalLimit')) {
     return _.get(component, 'decimalLimit');
   }
   // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-  let decimalLimit = 20;
+  let decimalLimit = defaultLimit || 20;
   const step = _.get(component, 'validate.step', 'any');
 
   if (step !== 'any') {
