@@ -137,7 +137,9 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
             ace.on('input', () => this.acePlaceholder());
-            ace.setValue(this.setConvertedValue(this.dataValue));
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            ace.setValue(this.setConvertedValue(dataValue, index));
             if (this.component.placeholder) {
               setTimeout(() => {
                 const shouldShow = !ace.session.getValue().length;
@@ -185,7 +187,9 @@ export default class TextAreaComponent extends TextFieldComponent {
               quill.disable();
             }
 
-            quill.setContents(quill.clipboard.convert(this.setConvertedValue(this.dataValue)));
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
             editorReady(quill);
             return quill;
           }).catch(err => console.warn(err));
@@ -205,7 +209,9 @@ export default class TextAreaComponent extends TextFieldComponent {
                 const editorHeight = (numRows * 31) + 14;
                 editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
               }
-              editor.data.set(this.setConvertedValue(this.dataValue));
+              let dataValue = this.dataValue;
+              dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              editor.data.set(this.setConvertedValue(dataValue, index));
               editorReady(editor);
               return editor;
             });
@@ -221,6 +227,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
 
     return element;
+  }
+
+  attach(element) {
+    const attached = super.attach(element);
+    // Make sure we restore the value after attaching since wysiwygs and readonly texts need an additional set.
+    this.restoreValue();
+    return attached;
   }
 
   imageHandler(quillInstance) {
@@ -290,33 +303,47 @@ export default class TextAreaComponent extends TextFieldComponent {
   get htmlView() {
     return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
-  /* eslint-enable max-statements */
 
   setValueAt(index, value, flags) {
+    super.setValueAt(index, value, flags);
     if (this.editorsReady[index]) {
       this.editorsReady[index].then((editor) => {
         this.autoModified = true;
-        switch (this.component.editor) {
-          case 'ace':
-            editor.setValue(this.setConvertedValue(value));
-            break;
-          case 'quill':
-            if (this.component.isUploadEnabled) {
-              this.setAsyncConvertedValue(value)
-                .then(result => {
-                  editor.setContents(editor.clipboard.convert(result));
-                });
-            }
-            else {
-              editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-            }
-            break;
-          case 'ckeditor':
-            editor.data.set(this.setConvertedValue(value));
-            break;
+        if (!flags.skipWysiwyg) {
+          switch (this.component.editor) {
+            case 'ace':
+              editor.setValue(this.setConvertedValue(value, index));
+              break;
+            case 'quill':
+              if (this.component.isUploadEnabled) {
+                this.setAsyncConvertedValue(value)
+                  .then(result => {
+                    editor.setContents(editor.clipboard.convert(result));
+                  });
+              }
+              else {
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
+              }
+              break;
+            case 'ckeditor':
+              editor.data.set(this.setConvertedValue(value, index));
+              break;
+          }
         }
       });
     }
+  }
+
+  setValue(value, flags) {
+    flags = flags || {};
+    if (this.isPlain || this.options.readOnly || this.disabled) {
+      value = Array.isArray(value) ?
+        value.map((val, index) => this.setConvertedValue(val, index)) :
+        this.setConvertedValue(value);
+      return super.setValue(value, flags);
+    }
+    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    return super.setValue(value, flags);
   }
 
   setReadOnlyValue(value, index) {
@@ -528,7 +555,11 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   detach() {
     // Destroy all editors.
-    this.editors.forEach(editor => editor.destroy());
+    this.editors.forEach(editor => {
+      if (editor.destroy) {
+        editor.destroy();
+      }
+    });
     this.editors = [];
     this.editorsReady = [];
     this.updateSizes.forEach(updateSize => this.removeEventListener(window, 'resize', updateSize));
