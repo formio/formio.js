@@ -71,18 +71,7 @@ node server</pre>
 var jsonElement = document.getElementById('json');
 var formElement = document.getElementById('formio');
 var subJSON = document.getElementById('subjson');
-var builder = new Formio.FormBuilder(document.getElementById("builder"), {
-  display: 'form',
-  components: [],
-  settings: {
-    pdf: {
-      "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f0",
-      "src": "https://files.form.io/pdf/5692b91fd1028f01000407e3/file/1ec0f8ee-6685-5d98-a847-26f67b67d6f0"
-    }
-  }
-}, {
-  baseUrl: 'https://examples.form.io'
-});
+
 
 var onForm = function(form) {
   form.on('change', function() {
