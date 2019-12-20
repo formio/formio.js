@@ -30,6 +30,10 @@ export default class NumberComponent extends Input {
     };
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   constructor(...args) {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
