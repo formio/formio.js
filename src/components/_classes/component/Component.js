@@ -3,6 +3,7 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
@@ -846,7 +847,7 @@ export default class Component extends Element {
   }
 
   setOpenModalElement() {
-    this.componentModal.setOpenModalElement(`<button lang="en" class="btn btn-primary btn-md" ref="openModal">${this.label}</button>`);
+    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-primary btn-md' ref='openModal'>${this.label}</button>`);
   }
 
   build(element) {
@@ -868,7 +869,8 @@ export default class Component extends Element {
         styles: this.customStyle,
         children
       }, topLevel);
-    } else {
+    }
+    else {
       return this.renderTemplate('component', {
         visible: isVisible,
         id: this.id,
@@ -1192,6 +1194,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += ' formio-component-label-hidden';
     }
+    if (!this.visible) {
+      className += ' formio-hidden';
+    }
     return className;
   }
 
@@ -1207,6 +1212,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**
@@ -2306,8 +2315,10 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
-    const shouldCheckValidity = !this.builderMode && !this.options.preview && this.defaultValue;
-    if (shouldCheckValidity && !flags.noValidate) {
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
       return this.checkComponentValidity(data, true, row);
     }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);

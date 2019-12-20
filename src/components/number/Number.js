@@ -50,7 +50,8 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
+    this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -106,8 +107,8 @@ export default class NumberComponent extends Input {
 
   setInputMask(input) {
     let numberPattern = '[0-9';
-    numberPattern += this.decimalSeparator ? `\\${this.decimalSeparator}` : '';
-    numberPattern += this.delimiter ? `\\${this.delimiter}` : '';
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
     numberPattern += ']*';
     input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({

@@ -40,7 +40,7 @@ export default class FileComponent extends Field {
       filePattern: '*',
       fileMinSize: '0KB',
       fileMaxSize: '1GB',
-      uploadOnly: false
+      uploadOnly: false,
     }, ...extend);
   }
 
@@ -51,23 +51,28 @@ export default class FileComponent extends Field {
       icon: 'file',
       documentation: 'http://help.form.io/userguide/#file',
       weight: 100,
-      schema: FileComponent.schema()
+      schema: FileComponent.schema(),
     };
   }
 
   init() {
     super.init();
+
+    const fileReaderSupported = (typeof FileReader !== 'undefined');
+    const formDataSupported = Boolean(window.FormData);
+    const progressSupported = window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false;
+
     this.support = {
-      filereader: typeof FileReader != 'undefined',
-      formdata: !!window.FormData,
-      progress: window.XMLHttpRequest ? ('upload' in new XMLHttpRequest) : false
+      filereader: fileReaderSupported,
+      formdata: formDataSupported,
+      hasWarning: !fileReaderSupported || !formDataSupported || !progressSupported,
+      progress: progressSupported,
     };
     // Called when our files are ready.
     this.filesReady = new NativePromise((resolve, reject) => {
       this.filesReadyResolve = resolve;
       this.filesReadyReject = reject;
     });
-    this.support.hasWarning = !this.support.filereader || !this.support.formdata || !this.support.progress;
     this.cameraMode = false;
     this.statuses = [];
   }
@@ -81,9 +86,7 @@ export default class FileComponent extends Field {
   }
 
   loadImage(fileInfo) {
-    return this.fileService.downloadFile(fileInfo).then(result => {
-      return result.url;
-    });
+    return this.fileService.downloadFile(fileInfo).then((result) => result.url);
   }
 
   get emptyValue() {
@@ -142,81 +145,160 @@ export default class FileComponent extends Field {
     }));
   }
 
+  getVideoStream(constraints) {
+    return navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { min: 640, ideal: 1920 },
+        height: { min: 360, ideal: 1080 },
+        aspectRatio: { ideal: 16 / 9 },
+        ...constraints,
+      },
+      audio: false,
+    });
+  }
+
+  stopVideoStream(videoStream) {
+    videoStream.getVideoTracks().forEach((track) => track.stop());
+  }
+
+  getFrame(videoPlayer) {
+    return new NativePromise((resolve) => {
+      const canvas = document.createElement('canvas');
+      canvas.height = videoPlayer.videoHeight;
+      canvas.width = videoPlayer.videoWidth;
+      const context = canvas.getContext('2d');
+      context.drawImage(videoPlayer, 0, 0);
+      canvas.toBlob(resolve);
+    });
+  }
+
   startVideo() {
-    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
-      console.warn('Video player not found in template.');
-      this.cameraMode = false;
-      this.redraw();
-      return;
-    }
+    this.getVideoStream()
+      .then((stream) => {
+        this.videoStream = stream;
 
-    navigator.getMedia = (navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia);
+        const { videoPlayer } = this.refs;
+        if (!videoPlayer) {
+          console.warn('Video player not found in template.');
+          this.cameraMode = false;
+          this.redraw();
+          return;
+        }
 
-    navigator.getMedia(
-      {
-        video: {
-          width: { min: 640, ideal: 1920 },
-          height: { min: 400, ideal: 1080 },
-          aspectRatio: { ideal: 1.7777777778 }
-        },
-        audio: false
-      },
-      (stream) => {
-        if (navigator.mozGetUserMedia) {
-          this.refs.videoPlayer.mozSrcObject = stream;
-        }
-        else {
-          this.refs.videoPlayer.srcObject = stream;
-        }
+        videoPlayer.srcObject = stream;
         const width = parseInt(this.component.webcamSize) || 320;
-        this.refs.videoPlayer.setAttribute('width', width);
-        this.refs.videoPlayer.play();
-      },
-      (err) => {
+        videoPlayer.setAttribute('width', width);
+        videoPlayer.play();
+      })
+      .catch((err) => {
         console.error(err);
-      }
-    );
+        this.cameraMode = false;
+        this.redraw();
+      });
   }
 
   stopVideo() {
-    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
-      console.warn('Video player not found in template.');
-      this.cameraMode = false;
-      this.redraw();
-      return;
-    }
-
-    const stream = navigator.mozGetUserMedia
-      ? this.refs.videoPlayer.mozSrcObject
-      : this.refs.videoPlayer.srcObject;
-
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+    if (this.videoStream) {
+      this.stopVideoStream(this.videoStream);
+      this.videoStream = null;
     }
   }
 
   takePicture() {
-    if (!this.refs.videoPlayer || !this.refs.videoCanvas) {
+    const { videoPlayer } = this.refs;
+    if (!videoPlayer) {
       console.warn('Video player not found in template.');
       this.cameraMode = false;
       this.redraw();
       return;
     }
 
-    this.refs.videoCanvas.setAttribute('width', this.refs.videoPlayer.videoWidth);
-    this.refs.videoCanvas.setAttribute('height', this.refs.videoPlayer.videoHeight);
-    this.refs.videoCanvas.getContext('2d').drawImage(this.refs.videoPlayer, 0, 0);
-    this.refs.videoCanvas.toBlob(blob => {
-      blob.name = `photo-${Date.now()}.png`;
-      this.upload([blob]);
+    this.getFrame(videoPlayer)
+      .then((frame) => {
+        frame.name = `photo-${Date.now()}.png`;
+        this.upload([frame]);
+        this.cameraMode = false;
+        this.redraw();
+      });
+  }
+
+  browseFiles(attrs = {}) {
+    return new NativePromise((resolve) => {
+      const fileInput = this.ce('input', {
+        type: 'file',
+        style: 'height: 0; width: 0; visibility: hidden;',
+        tabindex: '-1',
+        ...attrs,
+      });
+      document.body.appendChild(fileInput);
+
+      fileInput.addEventListener('change', () => {
+        resolve(fileInput.files);
+        document.body.removeChild(fileInput);
+      }, true);
+
+      // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+      // a click event on it.
+      if (typeof fileInput.trigger === 'function') {
+        fileInput.trigger('click');
+      }
+      else {
+        fileInput.click();
+      }
     });
   }
 
+  set cameraMode(value) {
+    this._cameraMode = value;
+
+    if (value) {
+      this.startVideo();
+    }
+    else {
+      this.stopVideo();
+    }
+  }
+
+  get cameraMode() {
+    return this._cameraMode;
+  }
+
   get useWebViewCamera() {
-    return this.component.image && webViewCamera;
+    return this.imageUpload && webViewCamera;
+  }
+
+  get imageUpload() {
+    return Boolean(this.component.image);
+  }
+
+  get browseOptions() {
+    const options = {};
+
+    if (this.component.multiple) {
+      options.multiple = true;
+    }
+
+    if (this.imageUpload) {
+      options.accept = 'image/*';
+    }
+
+    return options;
+  }
+
+  deleteFile(fileInfo) {
+    if (fileInfo && (this.component.storage === 'url')) {
+      const fileService = this.fileService;
+      if (fileService && typeof fileService.deleteFile === 'function') {
+        fileService.deleteFile(fileInfo);
+      }
+      else {
+        const formio = this.options.formio || (this.root && this.root.formio);
+
+        if (formio) {
+          formio.makeRequest('', fileInfo.url, 'delete');
+        }
+      }
+    }
   }
 
   attach(element) {
@@ -228,8 +310,6 @@ export default class FileComponent extends Field {
       takePictureButton: 'single',
       toggleCameraMode: 'single',
       videoPlayer: 'single',
-      videoCanvas: 'single',
-      hiddenFileInputElement: 'single',
       fileLink: 'multiple',
       removeLink: 'multiple',
       fileStatusRemove: 'multiple',
@@ -255,21 +335,14 @@ export default class FileComponent extends Field {
       });
     }
 
-    if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {
+    if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
-        // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-        // a click event on it.
-        if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {
-          this.refs.hiddenFileInputElement.trigger('click');
-        }
-        else {
-          this.refs.hiddenFileInputElement.click();
-        }
-      });
-      this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
-        this.upload(this.refs.hiddenFileInputElement.files);
-        this.refs.hiddenFileInputElement.value = '';
+
+        this.browseFiles(this.browseOptions)
+          .then((files) => {
+            this.upload(files);
+          });
       });
     }
 
@@ -284,19 +357,7 @@ export default class FileComponent extends Field {
       this.addEventListener(removeLink, 'click', (event) => {
         const fileInfo = this.dataValue[index];
 
-        if (fileInfo && (this.component.storage === 'url')) {
-          const fileService = this.fileService;
-          if (fileService && typeof fileService.deleteFile === 'function') {
-            fileService.deleteFile(fileInfo);
-          }
-          else {
-            const formio = this.options.formio || (this.root && this.root.formio);
-
-            if (formio) {
-              formio.makeRequest('', fileInfo.url, 'delete');
-            }
-          }
-        }
+        this.deleteFile(fileInfo);
         event.preventDefault();
         this.splice(index);
         this.redraw();
@@ -322,7 +383,7 @@ export default class FileComponent extends Field {
             }
           );
         }, null, {
-          sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY
+          sourceType: webViewCamera.PictureSourceType.PHOTOLIBRARY,
         });
       });
     }
@@ -342,7 +403,7 @@ export default class FileComponent extends Field {
           encodingType: webViewCamera.EncodingType.PNG,
           mediaType: webViewCamera.MediaType.PICTURE,
           saveToPhotoAlbum: true,
-          correctOrientation: false
+          correctOrientation: false,
         });
       });
     }
@@ -351,7 +412,6 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.takePictureButton, 'click', (event) => {
         event.preventDefault();
         this.takePicture();
-        this.stopVideo();
       });
     }
 
@@ -359,14 +419,7 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.toggleCameraMode, 'click', (event) => {
         event.preventDefault();
         this.cameraMode = !this.cameraMode;
-        if (this.cameraMode) {
-          this.redraw();
-          this.startVideo();
-        }
-        else {
-          this.stopVideo();
-          this.redraw();
-        }
+        this.redraw();
       });
     }
 
@@ -415,11 +468,11 @@ export default class FileComponent extends Field {
         }
       }
       else {
-        if (str.indexOf('!') === 0) {
+        if (str.startsWith('!')) {
           excludes.push(`^((?!${this.globStringToRegex(str.substring(1)).regexp}).)*$`);
         }
         else {
-          if (str.indexOf('.') === 0) {
+          if (str.startsWith('.')) {
             str = `*${str}`;
           }
           regexp = `^${str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&')}$`;
@@ -427,7 +480,7 @@ export default class FileComponent extends Field {
         }
       }
     }
-    return { regexp: regexp, excludes: excludes };
+    return { regexp, excludes };
   }
 
   /* eslint-enable max-depth */
@@ -437,22 +490,22 @@ export default class FileComponent extends Field {
       if (str.search(/kb/i) === str.length - 2) {
         return parseFloat(str.substring(0, str.length - 2) * 1024);
       }
-      else if (str.search(/mb/i) === str.length - 2) {
-        return parseFloat(str.substring(0, str.length - 2) * 1048576);
+      if (str.search(/mb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1024 * 1024);
       }
-      else if (str.search(/gb/i) === str.length - 2) {
-        return parseFloat(str.substring(0, str.length - 2) * 1073741824);
+      if (str.search(/gb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1024 * 1024 * 1024);
       }
-      else if (str.search(/b/i) === str.length - 1) {
+      if (str.search(/b/i) === str.length - 1) {
         return parseFloat(str.substring(0, str.length - 1));
       }
-      else if (str.search(/s/i) === str.length - 1) {
+      if (str.search(/s/i) === str.length - 1) {
         return parseFloat(str.substring(0, str.length - 1));
       }
-      else if (str.search(/m/i) === str.length - 1) {
+      if (str.search(/m/i) === str.length - 1) {
         return parseFloat(str.substring(0, str.length - 1) * 60);
       }
-      else if (str.search(/h/i) === str.length - 1) {
+      if (str.search(/h/i) === str.length - 1) {
         return parseFloat(str.substring(0, str.length - 1) * 3600);
       }
     }
@@ -467,15 +520,14 @@ export default class FileComponent extends Field {
     let valid = true;
     if (pattern.regexp && pattern.regexp.length) {
       const regexp = new RegExp(pattern.regexp, 'i');
-      valid = (file.type != null && regexp.test(file.type)) ||
-        (file.name != null && regexp.test(file.name));
+      valid = (!_.isNil(file.type) && regexp.test(file.type)) ||
+        (!_.isNil(file.name) && regexp.test(file.name));
     }
-    let len = pattern.excludes.length;
-    while (len--) {
-      const exclude = new RegExp(pattern.excludes[len], 'i');
-      valid = valid && (file.type == null || exclude.test(file.type)) &&
-        (file.name == null || exclude.test(file.name));
-    }
+    valid = pattern.excludes.reduce((result, excludePattern) => {
+      const exclude = new RegExp(excludePattern, 'i');
+      return result && (_.isNil(file.type) || !exclude.test(file.type)) &&
+        (_.isNil(file.name) || !exclude.test(file.name));
+    }, valid);
     return valid;
   }
 
@@ -494,7 +546,7 @@ export default class FileComponent extends Field {
     }
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
-      Array.prototype.forEach.call(files, file => {
+      Array.prototype.forEach.call(files, (file) => {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const fileUpload = {
           originalName: file.name,
@@ -530,7 +582,7 @@ export default class FileComponent extends Field {
 
         // Get a unique name for this file to keep file collisions from occurring.
         const dir = this.interpolate(this.component.dir || '');
-        const fileService = this.fileService;
+        const { fileService } = this;
         if (!fileService) {
           fileUpload.status = 'error';
           fileUpload.message = this.t('File Service not provided.');
@@ -545,13 +597,13 @@ export default class FileComponent extends Field {
           }
           const { storage, url, options = {} } = this.component;
           const fileKey = this.component.fileKey || 'file';
-          fileService.uploadFile(storage, file, fileName, dir, evt => {
+          fileService.uploadFile(storage, file, fileName, dir, (evt) => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
             this.redraw();
           }, url, options, fileKey)
-            .then(fileInfo => {
+            .then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
                 this.statuses.splice(index, 1);
@@ -564,7 +616,7 @@ export default class FileComponent extends Field {
               this.redraw();
               this.triggerChange();
             })
-            .catch(response => {
+            .catch((response) => {
               fileUpload.status = 'error';
               fileUpload.message = response;
               delete fileUpload.progress;
@@ -577,7 +629,7 @@ export default class FileComponent extends Field {
 
   getFile(fileInfo) {
     const { options = {} } = this.component;
-    const fileService = this.fileService;
+    const { fileService } = this;
     if (!fileService) {
       return alert('File Service not provided');
     }
@@ -602,6 +654,8 @@ export default class FileComponent extends Field {
   }
 
   focus() {
-    this.refs.fileBrowse.focus();
+    if (this.refs.fileBrowse) {
+      this.refs.fileBrowse.focus();
+    }
   }
 }

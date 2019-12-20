@@ -932,6 +932,7 @@ export default class WebformBuilder extends Component {
         const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
         _.pull(newComp.validators, 'required');
         parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+        newComp.checkValidity = () => true;
         newComp.build(defaultValueComponent.element);
       }
     }

@@ -281,7 +281,8 @@ export default class NumberComponent extends Input {
       this.delimiter = &apos;&apos;;
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    const requireDecimal = _.get(this.component, &apos;requireDecimal&apos;, false);
+    this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -337,8 +338,8 @@ export default class NumberComponent extends Input {
 
   setInputMask(input) {
     let numberPattern = &apos;[0-9&apos;;
-    numberPattern += this.decimalSeparator ? `\\${this.decimalSeparator}` : &apos;&apos;;
-    numberPattern += this.delimiter ? `\\${this.delimiter}` : &apos;&apos;;
+    numberPattern += this.decimalSeparator || &apos;&apos;;
+    numberPattern += this.delimiter || &apos;&apos;;
     numberPattern += &apos;]*&apos;;
     input.setAttribute(&apos;pattern&apos;, numberPattern);
     input.mask = maskInput({

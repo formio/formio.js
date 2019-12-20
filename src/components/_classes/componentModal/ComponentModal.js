@@ -47,7 +47,7 @@ export default class ComponentModal {
 
   openModal(event) {
     event.preventDefault();
-    this.refs.modalWrapper.classList.remove('component-rendering-hidden')
+    this.refs.modalWrapper.classList.remove('component-rendering-hidden');
   }
 
   closeModal(event) {

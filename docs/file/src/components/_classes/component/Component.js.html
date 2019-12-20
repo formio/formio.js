@@ -234,6 +234,7 @@ import { conformToMask } from &apos;vanilla-text-mask&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import _ from &apos;lodash&apos;;
+import isMobile from &apos;ismobilejs&apos;;
 import Formio from &apos;../../../Formio&apos;;
 import * as FormioUtils from &apos;../../../utils/utils&apos;;
 import Validator from &apos;../../../validator/Validator&apos;;
@@ -1397,6 +1398,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += &apos; formio-component-label-hidden&apos;;
     }
+    if (!this.visible) {
+      className += &apos; formio-hidden&apos;;
+    }
     return className;
   }
 
@@ -1412,6 +1416,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**
@@ -1609,11 +1617,12 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
     if (!this.builderMode &amp;&amp; this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
@@ -2510,6 +2519,12 @@ export default class Component extends Element {
     }
     this.calculateComponentValue(data, flags, row);
     this.checkComponentConditions(data, flags, row);
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    if (!this.builderMode &amp;&amp; !this.options.preview &amp;&amp; !this.isEmpty(this.defaultValue) &amp;&amp; !flags.noValidate) {
+      return this.checkComponentValidity(data, true, row);
+    }
     return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
   }
 

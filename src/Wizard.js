@@ -332,7 +332,7 @@ export default class Wizard extends Webform {
     const form = this.pages[this.page].component;
     // Check conditional nextPage
     if (form) {
-      const page = this.page + 1;
+      const page = this.pages.length > (this.page + 1) ? this.page + 1 : -1;
       if (form.nextPage) {
         const next = this.evaluate(form.nextPage, {
           next: page,
@@ -364,7 +364,7 @@ export default class Wizard extends Webform {
   }
 
   getPreviousPage() {
-    return Math.max(this.page - 1, 0);
+    return this.page - 1;
   }
 
   beforeSubmit() {
@@ -506,7 +506,7 @@ export default class Wizard extends Webform {
         _.get(currentPage, 'buttonSettings.previous'),
         this.options.buttonSettings.showPrevious
       ]);
-      return (this.page > 0) && show;
+      return (this.getPreviousPage() > -1) && show;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage() : nextPage;
     if (name === 'next') {
@@ -514,7 +514,7 @@ export default class Wizard extends Webform {
         _.get(currentPage, 'buttonSettings.next'),
         this.options.buttonSettings.showNext
       ]);
-      return (nextPage !== null) && (nextPage < this.pages.length) && show;
+      return (nextPage !== null) && (nextPage !== -1) && show;
     }
     if (name === 'cancel') {
       return firstNonNil([
@@ -551,16 +551,16 @@ export default class Wizard extends Webform {
   onChange(flags, changed) {
     super.onChange(flags, changed);
 
-    // If the next page changes, then make sure to redraw navigation.
-    if (this.currentNextPage !== this.getNextPage()) {
-      this.redrawNavigation();
-    }
-
     // If the pages change, need to redraw the header.
     const currentPanels = this.pages.map(page => page.component.key);
     const panels = this.establishPages().map(panel => panel.key);
     if (!_.isEqual(panels, currentPanels)) {
       this.redrawHeader();
+    }
+
+    // If the next page changes, then make sure to redraw navigation.
+    if (this.currentNextPage !== this.getNextPage()) {
+      this.redrawNavigation();
     }
   }
 

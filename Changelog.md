@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.3
+### Changed
+ - Upgrade flatpickr@4.6.3, webpack@4.41.3, fetch-mock@8.1.0, marked@0.8.0
+
+### Fixed
+ - Fixed problem where HTML refreshOnChange was not re-evaluating the whole template and setting it correctly.
+ - Fixed issue where require decimal on Number components was adding 20 decimals to the number.
+ - Fixed single value normalization for Select components.
+ - Fix nested components failing to save because child components are required
+ - Fix issue where textarea saving as json in select component won't allow array values.
+ - Fixed issue where textarea contents would not show in readonly mode.
+ - Fix spelling of addMessages.
+ - Fix invalid identity escape in numberPattern.
+ - Fixed Wizard navigation redraw.
+ - Fixed Select component value normalization for multivalues.
+ - Day component bug with hidden year field.
+ - TextArea component bug with autoexpand
+ - Fixed builder initialization code to not require two empty objects passed to factory method.
+
+### Added
+ - Added isMobile method to Component class.
+
+### Changed
+ - Upgrade i18next@19.0.2, core-js@3.5.0
+ - Okta: ```oktaInit``` method to expect okta-auth-js v2 being used
+ - Small improvements to requireLibrary method.
+ - Cleaned up file component ui improvements.
+
+## 4.8.0-rc.2
+### Added
+ - FOR-2564: Add polyfills for Element and CustomEvent
+
+### Fixed
+ - Fixed required EditGrid's and DataGrids
+ - Keep form settings with old revisions so pdfs don't change.
+ - Perform day reference check in the Day component.
+ - Bug with validity on default value
+ 
+### Changed
+ - Update component settings CSS to flow a little more nicely
+ - Roll back flatpickr version to 4.6.2 to resolve an issue that doesn't allow to clear input for the DateTime component.
+
 ## 4.8.0-rc.1
 ### Fixed
  - ```userPermissions``` method throwing error when no submission or submission id is specified

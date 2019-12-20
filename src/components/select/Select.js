@@ -1057,14 +1057,9 @@ export default class SelectComponent extends Field {
     return done;
   }
 
-  /**
-   * Normalize values coming into updateValue.
-   *
-   * @param value
-   * @return {*}
-   */
-  normalizeValue(value) {
+  normalizeSingleValue(value) {
     const dataType = _.get(this.component, 'dataType', 'auto');
+
     switch (dataType) {
       case 'auto':
         if (!isNaN(parseFloat(value)) && isFinite(value)) {
@@ -1092,7 +1087,22 @@ export default class SelectComponent extends Field {
         value = !!value;
         break;
     }
-    return super.normalizeValue(value);
+
+    return value;
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple && Array.isArray(value)) {
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
+    }
+
+    return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
   setValue(value, flags) {
@@ -1264,28 +1274,11 @@ export default class SelectComponent extends Field {
     }
   }
 
-  setCustomValidity(message, dirty, external) {
-    if (message) {
-      if (this.refs.messageContainer) {
-        this.empty(this.refs.messageContainer);
-      }
-      this.error = {
-        component: this.component,
-        message: message,
-        external: !!external,
-      };
-      this.emit('componentError', this.error);
-      if (this.refs.selectContainer) {
-        this.addMessage(message, dirty, [this.refs.selectContainer]);
-      }
-    }
-    else if (this.error && this.error.external === !!external) {
-      if (this.refs.messageContainer) {
-        this.empty(this.refs.messageContainer);
-      }
-      this.error = null;
-      this.removeClass(this.refs.selectContainer, 'is-invalid');
-      this.clearErrorClasses();
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+    if (this.choices) {
+      super.setErrorClasses([this.choices.containerOuter.element, this.choices.containerInner.element], dirty, hasError);
     }
   }
 }

@@ -143,7 +143,7 @@ export default class SignatureComponent extends Input {
   }
 
   setOpenModalElement() {
-    this.componentModal.setOpenModalElement(`<button lang="en" class="btn btn-light btn-md" ref="openModal">Click to Sign</button>`);
+    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-light btn-md' ref='openModal'>${'Click to Sign'}</button>`);
   }
 
   attach(element) {

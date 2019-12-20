@@ -1163,6 +1163,7 @@ export default class WebformBuilder extends Component {
         const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
         _.pull(newComp.validators, &apos;required&apos;);
         parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+        newComp.checkValidity = () =&gt; true;
         newComp.build(defaultValueComponent.element);
       }
     }
@@ -1308,7 +1309,7 @@ export default class WebformBuilder extends Component {
       this.preview.destroy();
     }
     if (!ComponentClass.builderInfo.hasOwnProperty(&apos;preview&apos;) || ComponentClass.builderInfo.preview) {
-      this.preview = new Webform(_.omit(this.options, [
+      this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
         &apos;hooks&apos;,
         &apos;builder&apos;,
         &apos;events&apos;,
@@ -1317,7 +1318,7 @@ export default class WebformBuilder extends Component {
       ]));
     }
 
-    this.componentEdit = this.ce(&apos;div&apos;);
+    this.componentEdit = this.ce(&apos;div&apos;, { &apos;class&apos;: &apos;component-edit-container&apos; });
     this.setContent(this.componentEdit, this.renderTemplate(&apos;builderEditForm&apos;, {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
