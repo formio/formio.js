@@ -124,5 +124,13 @@ export default [
     key: 'tableView',
     input: true
   },
+  {
+    weight: 1600,
+    type: 'checkbox',
+    label: 'Modal View',
+    tooltip: 'Renders component in modal.',
+    key: 'modalView',
+    input: true
+  },
 ];
 /* eslint-enable max-len */
