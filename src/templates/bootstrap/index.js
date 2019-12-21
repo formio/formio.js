@@ -10,6 +10,7 @@ import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
+import componentModal from './componentModal';
 import components from './components';
 import container from './container';
 import datagrid from './datagrid';
@@ -78,6 +79,7 @@ export default {
   checkbox,
   columns,
   component,
+  componentModal,
   components,
   container,
   datagrid,

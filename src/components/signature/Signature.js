@@ -142,6 +142,10 @@ export default class SignatureComponent extends Input {
     });
   }
 
+  setOpenModalElement() {
+    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-light btn-md' ref='openModal'>${'Click to Sign'}</button>`);
+  }
+
   attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
