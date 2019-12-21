@@ -36,7 +36,8 @@ export default class DateTimeComponent extends Input {
         readonlyInput: false,
         mousewheel: true,
         arrowkeys: true
-      }
+      },
+      customOptions: {},
     }, ...extend);
   }
 
@@ -70,6 +71,18 @@ export default class DateTimeComponent extends Input {
       this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');
     }
 
+    let customOptions = this.component.customOptions || {};
+
+    if (typeof customOptions === 'string') {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
     /* eslint-disable camelcase */
     this.component.widget = {
       type: 'calendar',
@@ -88,7 +101,8 @@ export default class DateTimeComponent extends Input {
       time_24hr: time24hr,
       readOnly: this.options.readOnly,
       minDate: _.get(this.component, 'datePicker.minDate'),
-      maxDate: _.get(this.component, 'datePicker.maxDate')
+      maxDate: _.get(this.component, 'datePicker.maxDate'),
+      ...customOptions,
     };
     /* eslint-enable camelcase */
 
