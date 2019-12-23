@@ -127,9 +127,9 @@ export default [
   {
     weight: 1600,
     type: 'checkbox',
-    label: 'Modal View',
-    tooltip: 'Renders component in modal.',
-    key: 'modalView',
+    label: 'Modal Edit',
+    tooltip: 'Opens up a modal to edit the value of this component.',
+    key: 'modalEdit',
     input: true
   },
 ];
