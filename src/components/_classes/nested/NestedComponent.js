@@ -464,6 +464,16 @@ export default class NestedComponent extends Field {
     return false;
   }
 
+  shouldSkipValidation(data, dirty, row) {
+    // Nested components with no input should not be validated.
+    if (!this.component.input) {
+      return true;
+    }
+    else {
+      return super.shouldSkipValidation(data, dirty, row);
+    }
+  }
+
   checkData(data, flags, row, components) {
     data = data || this.rootValue;
     flags = flags || {};

@@ -18,6 +18,15 @@ describe('DataGrid Component', () => {
     });
   });
 
+  it('Should not skip validation on input nested components', done => {
+    Harness.testCreate(DataGridComponent, comp1)
+      .then(cmp => {
+        expect(cmp.shouldSkipValidation()).to.be.false;
+        done();
+      }, done)
+      .catch(done);
+  });
+
   it('Should get and set values within the grid.', () => {
     return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
