@@ -2020,7 +2020,7 @@ export default class Component extends Element {
    */
   updateComponentValue(value, flags) {
     flags = flags || {};
-    let newValue = ((value === undefined || value === null) && this.component.type !== 'number') ? this.getValue() : value;
+    let newValue = (value === undefined || value === null) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
