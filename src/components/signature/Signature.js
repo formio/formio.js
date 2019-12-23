@@ -46,6 +46,10 @@ export default class SignatureComponent extends Input {
     return '';
   }
 
+  get emptyModalText() {
+    return 'Click to Sign';
+  }
+
   get defaultSchema() {
     return SignatureComponent.schema();
   }
@@ -140,10 +144,6 @@ export default class SignatureComponent extends Input {
       element: super.renderElement(value, index),
       required: _.get(this.component, 'validate.required', false),
     });
-  }
-
-  setOpenModalElement() {
-    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-light btn-md' ref='openModal'>${'Click to Sign'}</button>`);
   }
 
   attach(element) {

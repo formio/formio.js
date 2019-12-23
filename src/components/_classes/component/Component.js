@@ -846,10 +846,6 @@ export default class Component extends Element {
     }
   }
 
-  setOpenModalElement() {
-    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-primary btn-md' ref='openModal'>${this.label}</button>`);
-  }
-
   build(element) {
     element = element || this.element;
     this.empty(element);
@@ -860,31 +856,22 @@ export default class Component extends Element {
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
+    return this.renderTemplate('component', {
+      visible: isVisible,
+      id: this.id,
+      classes: this.className,
+      styles: this.customStyle,
+      children
+    }, topLevel);
+  }
 
-    if (!this.builderMode && this.component.modalView) {
-      return ComponentModal.render(this, {
-        visible: isVisible,
-        id: this.id,
-        classes: this.className,
-        styles: this.customStyle,
-        children
-      }, topLevel);
-    }
-    else {
-      return this.renderTemplate('component', {
-        visible: isVisible,
-        id: this.id,
-        classes: this.className,
-        styles: this.customStyle,
-        children
-      }, topLevel);
-    }
+  get emptyModalText() {
+    return 'Click to add';
   }
 
   attach(element) {
-    if (!this.builderMode && this.component.modalView) {
-      this.componentModal = new ComponentModal(this, element);
-      this.setOpenModalElement();
+    if (this.componentModal) {
+      this.componentModal.attach(element);
     }
 
     this.attached = true;
@@ -1981,6 +1968,9 @@ export default class Component extends Element {
       if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
+    }
+    if (changed && this.component.modalView) {
+      this.redraw();
     }
     return changed;
   }

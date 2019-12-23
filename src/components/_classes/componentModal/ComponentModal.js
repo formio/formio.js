@@ -1,57 +1,70 @@
 export default class ComponentModal {
-  static render(component, data, topLevel) {
-    const children = component.renderTemplate('component', data, topLevel);
-
-    return component.renderTemplate('componentModal', {
-      ...data,
-      children,
-    });
-  }
-
-  constructor(component, modal) {
+  constructor(component) {
+    this.previousValue = null;
     this.component = component;
-    this.modal = modal;
-    this.init();
   }
 
-  get refs() {
-    return this.component.refs;
+  renderElement(value, index) {
+    const children = this.component.renderTemplate('component');
+    const view = this.component.isEmpty(value) ? this.component.emptyModalText : this.component.renderTemplate('component', {
+      value: this.component.formatValue(this.component.parseValue(value)),
+      index
+    }, 'html');
+    return `<button lang='en' class='btn btn-light btn-md' ref='openModal'>${view}</button>${this.component.renderTemplate('componentModal', children)}`;
   }
 
-  init() {
-    this.loadRefs();
+  attachModal() {
+    this.component.attach(this.refs.modalContents);
   }
 
-  setOpenModalElement(template) {
-    this.component.setContent(this.refs.openButtonWrapper, template);
-    this.loadRefs();
-    this.setEventListeners();
+  detachModal() {
+    this.component.detach();
   }
 
-  loadRefs() {
-    this.component.loadRefs(this.modal, {
+  loadRefs(element) {
+    this.component.loadRefs(element, {
       modalOverlay: 'single',
       modalContents: 'single',
       modalClose: 'single',
       openButtonWrapper: 'single',
       openModal: 'single',
       modalWrapper: 'single',
+      saveButton: 'single',
+      cancelButton: 'single'
     });
   }
 
-  setEventListeners() {
+  get refs() {
+    return this.component.refs;
+  }
+
+  attach(element) {
+    this.loadRefs(element);
+    this.component.setContent(this.refs.openButtonWrapper, element);
+    this.component.addEventListener(this.refs.saveButton, 'click', this.setValue.bind(this));
+    this.component.addEventListener(this.refs.cancelButton, 'click', this.closeModal.bind(this));
     this.component.addEventListener(this.refs.openModal, 'click', this.openModal.bind(this));
     this.component.addEventListener(this.refs.modalOverlay, 'click', this.closeModal.bind(this));
     this.component.addEventListener(this.refs.modalClose, 'click', this.closeModal.bind(this));
   }
 
+  setValue(event) {
+    event.preventDefault();
+    this.refs.modalWrapper.classList.add('component-rendering-hidden');
+    this.component.redraw();
+  }
+
   openModal(event) {
     event.preventDefault();
+    this.previousValue = this.component.getValue();
     this.refs.modalWrapper.classList.remove('component-rendering-hidden');
+    this.attachModal();
   }
 
   closeModal(event) {
     event.preventDefault();
+    this.component.setValue(this.previousValue);
     this.refs.modalWrapper.classList.add('component-rendering-hidden');
+    this.detachModal();
   }
 }

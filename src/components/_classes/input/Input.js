@@ -2,6 +2,7 @@ import Multivalue from '../multivalue/Multivalue';
 import { delay } from '../../../utils/utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
+import ComponentModal from '../componentModal/ComponentModal';
 
 export default class Input extends Multivalue {
   constructor(component, options, data) {
@@ -87,6 +88,11 @@ export default class Input extends Multivalue {
   }
 
   renderElement(value, index) {
+    if (!this.builderMode && this.component.modalView) {
+      this.componentModal = new ComponentModal(this);
+      return this.componentModal.renderElement(value, index);
+    }
+
     // Double quotes cause the input value to close so replace them with html quote char.
     if (value && typeof value === 'string') {
       value = value.replace(/"/g, '&quot;');
