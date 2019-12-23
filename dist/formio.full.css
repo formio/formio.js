@@ -3202,6 +3202,10 @@ div[data-oembed-url] {
 .radio label.label-position-left input[type="radio"], .checkbox label.label-position-left input[type="checkbox"] {
   margin-left: 10px; }
 
+.open-modal-button {
+  width: 100%;
+  text-align: left; }
+
 /* ckeditor5-image/theme/image.css */
 .formio-component-content .image {
   display: table;
@@ -3470,3 +3474,8 @@ div[data-oembed-url] {
 .component-edit-tabs.col-sm-12 .editForm {
   height: calc(100% - 4em);
   overflow-y: auto; }
+
+.formio-component-modal-wrapper {
+  margin-bottom: 10px; }
+  .formio-component-modal-wrapper .component-rendering-hidden {
+    visibility: hidden; }
