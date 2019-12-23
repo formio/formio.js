@@ -11,6 +11,7 @@ export default class ComponentModal {
   constructor(component, modal) {
     this.component = component;
     this.modal = modal;
+    this.currentValue = this.component.dataValue;
     this.init();
   }
 
@@ -22,8 +23,14 @@ export default class ComponentModal {
     this.loadRefs();
   }
 
+  setValue(value) {
+    this.currentValue = value;
+    this.updateView();
+  }
+
   setOpenModalElement(template) {
-    this.component.setContent(this.refs.openButtonWrapper, template);
+    this.openModalTemplate = template;
+    this.component.setContent(this.refs.openModalWrapper, template);
     this.loadRefs();
     this.setEventListeners();
   }
@@ -33,25 +40,55 @@ export default class ComponentModal {
       modalOverlay: 'single',
       modalContents: 'single',
       modalClose: 'single',
-      openButtonWrapper: 'single',
+      openModalWrapper: 'single',
       openModal: 'single',
+      modalSave: 'single',
       modalWrapper: 'single',
     });
   }
 
   setEventListeners() {
-    this.component.addEventListener(this.refs.openModal, 'click', this.openModal.bind(this));
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.closeModal.bind(this));
-    this.component.addEventListener(this.refs.modalClose, 'click', this.closeModal.bind(this));
+    this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
+    this.component.addEventListener(this.refs.modalOverlay, 'click', this.closeModalHandler.bind(this));
+    this.component.addEventListener(this.refs.modalClose, 'click', this.closeModalHandler.bind(this));
+    this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalValueHandler.bind(this));
   }
 
-  openModal(event) {
+  setOpenEventListener() {
+    this.component.loadRefs(this.modal, {
+      'openModal': 'single',
+    });
+
+    this.component.addEventListener(this.refs.openModal, 'click', this.openModalHandler.bind(this));
+  }
+
+  openModalHandler(event) {
     event.preventDefault();
     this.refs.modalWrapper.classList.remove('component-rendering-hidden');
   }
 
-  closeModal(event) {
-    event.preventDefault();
+  updateView() {
+    const template = this.currentValue === this.component.defaultValue
+      ? this.openModalTemplate
+      : this.component.getModalPreviewTemplate();
+    this.component.setContent(this.refs.openModalWrapper, template);
+    this.setOpenEventListener();
+  }
+
+  closeModal() {
     this.refs.modalWrapper.classList.add('component-rendering-hidden');
+    this.updateView();
+  }
+
+  closeModalHandler(event) {
+    event.preventDefault();
+    this.component.setValue(this.currentValue);
+    this.closeModal();
+  }
+
+  saveModalValueHandler(event) {
+    event.preventDefault();
+    this.currentValue = this.component.dataValue;
+    this.closeModal();
   }
 }

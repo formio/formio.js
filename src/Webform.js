@@ -703,6 +703,10 @@ export default class Webform extends NestedComponent {
    * @return {Promise.<TResult>}
    */
   setSubmission(submission, flags) {
+    flags = {
+      ...flags,
+      fromSubmission: true,
+    };
     return this.onSubmission = this.formReady.then(
       () => {
         this.submissionSet = true;
