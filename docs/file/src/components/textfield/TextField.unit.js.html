@@ -234,6 +234,7 @@
 import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import TextFieldComponent from &apos;./TextField&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 import {
   comp1,
@@ -291,7 +292,7 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
       }
     })).then((component) =&gt; {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, &apos;Joe&apos;, &apos;firstName&apos;, &apos;You cannot be Joe&apos;),
         Harness.testValid(component, &apos;Tom&apos;)
       ];
@@ -315,7 +316,7 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         }
       }
     })).then((component) =&gt; {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, &apos;Tom&apos;, &apos;firstName&apos;, &apos;You must be Joe&apos;),
         Harness.testValid(component, &apos;Joe&apos;)
       ];

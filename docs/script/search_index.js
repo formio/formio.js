@@ -5964,6 +5964,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#shouldskipvalidation",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-shouldSkipValidation",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#shouldSkipValidation",
+    "method"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#templatename",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-templateName",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#templateName",
