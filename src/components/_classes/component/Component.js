@@ -10,6 +10,7 @@ import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
+import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
@@ -100,6 +101,11 @@ export default class Component extends Element {
        * If this component should be included as a column within a submission table.
        */
       tableView: false,
+
+      /**
+       * If this component should be rendering in modal.
+       */
+      modalView: false,
 
       /**
        * The input label provided to this component.
@@ -840,6 +846,10 @@ export default class Component extends Element {
     }
   }
 
+  setOpenModalElement() {
+    this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-primary btn-md' ref='openModal'>${this.label}</button>`);
+  }
+
   build(element) {
     element = element || this.element;
     this.empty(element);
@@ -850,16 +860,33 @@ export default class Component extends Element {
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
-    return this.renderTemplate('component', {
-      visible: isVisible,
-      id: this.id,
-      classes: this.className,
-      styles: this.customStyle,
-      children
-    }, topLevel);
+
+    if (!this.builderMode && this.component.modalView) {
+      return ComponentModal.render(this, {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
+    else {
+      return this.renderTemplate('component', {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
   }
 
   attach(element) {
+    if (!this.builderMode && this.component.modalView) {
+      this.componentModal = new ComponentModal(this, element);
+      this.setOpenModalElement();
+    }
+
     this.attached = true;
     this.element = element;
     element.component = this;

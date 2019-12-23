@@ -1,0 +1,15 @@
+<div class="formio-component-modal-wrapper" ref="componentModalWrapper">
+  <div ref="openButtonWrapper"></div>
+
+  <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
+    <div class="formio-dialog-overlay" ref="modalOverlay"></div>
+    <div class="formio-dialog-content" ref="modalContents">
+      <div ref="modalContents">
+        {% if (ctx.visible) { %}
+        {{ctx.children}}
+        {% } %}
+      </div>
+      <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="close" ref="modalClose"></button>
+    </div>
+  </div>
+</div>
