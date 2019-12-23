@@ -850,6 +850,10 @@ export default class Component extends Element {
     this.componentModal.setOpenModalElement(`<button lang='en' class='btn btn-primary btn-md' ref='openModal'>${this.label}</button>`);
   }
 
+  getModalPreviewTemplate() {
+    return `<button lang='en' class='btn btn-primary btn-md' ref='openModal'>${this.label}</button> <label>${this.getValueAsString(this.dataValue)}</label>`;
+  }
+
   build(element) {
     element = element || this.element;
     this.empty(element);
@@ -1969,6 +1973,9 @@ export default class Component extends Element {
    */
   setValue(value, flags) {
     const changed = this.updateValue(value, flags);
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
+    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
