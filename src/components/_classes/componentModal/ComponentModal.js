@@ -12,6 +12,7 @@ export default class ComponentModal {
     this.component = component;
     this.modal = modal;
     this.currentValue = this.component.dataValue;
+    this.dataLoaded = false;
     this.init();
   }
 
@@ -24,7 +25,12 @@ export default class ComponentModal {
   }
 
   setValue(value) {
+    if (this.dataLoaded) {
+      return;
+    }
+
     this.currentValue = value;
+    this.dataLoaded = true;
     this.updateView();
   }
 
