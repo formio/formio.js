@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.5
+### Fixed
+ - Issues with libraries including formiojs getting warnings with Error: Can't resolve 'vm'
+
 ## 4.8.0-rc.4
 ### Added
  - A new setting called Modal Edit which allows you to edit any component within a modal.
