@@ -411,7 +411,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
-      return NativePromise.reject(this.showErrors(null, true));
+      return NativePromise.reject(this.showErrors([], true));
     }
   }
 
@@ -550,6 +550,10 @@ export default class Wizard extends Webform {
 
   onChange(flags, changed) {
     super.onChange(flags, changed);
+    if (this.alert && !this.submitted) {
+      this.checkValidity(this.submission.data, true, this.submission.data, true);
+      this.showErrors([], true);
+    }
 
     // If the pages change, need to redraw the header.
     const currentPanels = this.pages.map(page => page.component.key);
@@ -586,6 +590,26 @@ export default class Wizard extends Webform {
     }
 
     return super.errors;
+  }
+
+  focusOnComponent(key) {
+    let pageIndex = 0;
+    const [page] = this.pages.filter((page, index) => {
+      if (page.getComponent(key)) {
+        pageIndex = index;
+        return true;
+      }
+      return false;
+    });
+
+    if (page && page !== this.currentPage) {
+      return this.setPage(pageIndex).then(() => {
+        this.checkValidity(this.submission.data, true, this.submission.data);
+        this.showErrors();
+        super.focusOnComponent(key);
+      });
+    }
+    return super.focusOnComponent(key);
   }
 }
 
