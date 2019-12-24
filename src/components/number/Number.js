@@ -62,10 +62,6 @@ export default class NumberComponent extends Input {
     this.numberMask = this.createNumberMask();
   }
 
-  normalizeValue(value, flags) {
-    return flags.noUpdateEvent ? null : value;
-  }
-
   /**
    * Creates the number mask for normal numbers.
    *
