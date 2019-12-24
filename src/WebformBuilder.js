@@ -487,7 +487,7 @@ export default class WebformBuilder extends Component {
    */
   findNamespaceRoot(component) {
     // First get the component with nested parents.
-    const comp = getComponent(this.webform.form.components, component.key, true);
+    const comp = getComponent(this.webform.components, component.key, true);
     const namespaceKey = this.recurseNamespace(comp);
 
     // If there is no key, it is the root form.
@@ -747,7 +747,7 @@ export default class WebformBuilder extends Component {
 
     if (target !== source) {
       // Ensure the key remains unique in its new container.
-      BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent.component), info);
+      BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent), info);
     }
 
     const parent = target.formioComponent;
