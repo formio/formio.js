@@ -44,6 +44,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
@@ -267,7 +268,8 @@ export default class DateTimeComponent extends Input {
         readonlyInput: false,
         mousewheel: true,
         arrowkeys: true
-      }
+      },
+      customOptions: {},
     }, ...extend);
   }
 
@@ -301,6 +303,18 @@ export default class DateTimeComponent extends Input {
       this.component.format = this.component.format.replace(/HH:mm$/g, &apos;hh:mm a&apos;);
     }
 
+    let customOptions = this.component.customOptions || {};
+
+    if (typeof customOptions === &apos;string&apos;) {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
     /* eslint-disable camelcase */
     this.component.widget = {
       type: &apos;calendar&apos;,
@@ -319,7 +333,8 @@ export default class DateTimeComponent extends Input {
       time_24hr: time24hr,
       readOnly: this.options.readOnly,
       minDate: _.get(this.component, &apos;datePicker.minDate&apos;),
-      maxDate: _.get(this.component, &apos;datePicker.maxDate&apos;)
+      maxDate: _.get(this.component, &apos;datePicker.maxDate&apos;),
+      ...customOptions,
     };
     /* eslint-enable camelcase */
 

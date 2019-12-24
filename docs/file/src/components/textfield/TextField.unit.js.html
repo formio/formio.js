@@ -44,6 +44,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
@@ -233,6 +234,7 @@
 import _ from &apos;lodash&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import TextFieldComponent from &apos;./TextField&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
 
 import {
   comp1,
@@ -290,7 +292,7 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
       }
     })).then((component) =&gt; {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, &apos;Joe&apos;, &apos;firstName&apos;, &apos;You cannot be Joe&apos;),
         Harness.testValid(component, &apos;Tom&apos;)
       ];
@@ -314,7 +316,7 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         }
       }
     })).then((component) =&gt; {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, &apos;Tom&apos;, &apos;firstName&apos;, &apos;You must be Joe&apos;),
         Harness.testValid(component, &apos;Joe&apos;)
       ];
