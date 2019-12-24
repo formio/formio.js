@@ -523,7 +523,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   setValue(value, flags) {
     const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
-    if (this.isPlain) {
+    if (this.isPlain || this.options.readOnly) {
       value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
       const changed = super.setValue(value, flags);
       if (changed && (this.disabled || this.options.readOnly)) {
