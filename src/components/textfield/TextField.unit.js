@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
+import NativePromise from 'native-promise-only';
 
 import {
   comp1,
@@ -59,7 +60,7 @@ describe('TextField Component', () => {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
       }
     })).then((component) => {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe'),
         Harness.testValid(component, 'Tom')
       ];
@@ -83,7 +84,7 @@ describe('TextField Component', () => {
         }
       }
     })).then((component) => {
-      return Promise.all[
+      return NativePromise.all[
         Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe'),
         Harness.testValid(component, 'Joe')
       ];

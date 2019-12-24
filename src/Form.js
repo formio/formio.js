@@ -119,7 +119,7 @@ export default class Form extends Element {
     if (formio.submissionId) {
       return formio.loadSubmission();
     }
-    return Promise.resolve();
+    return NativePromise.resolve();
   }
 
   /**
