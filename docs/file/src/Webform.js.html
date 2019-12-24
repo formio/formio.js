@@ -1158,10 +1158,10 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
-    const { errorsStyle } = this.form;
+    const errorStyle = _.get(this.form, &apos;settings.errorStyle&apos;, &apos;&apos;);
     if (!type &amp;&amp; this.submitted) {
       if (this.alert) {
-        if (errorsStyle === &apos;advanced&apos;) {
+        if (errorStyle === &apos;advanced&apos;) {
           this.refs.errorRef.forEach(el =&gt; {
             this.removeEventListener(el, &apos;click&apos;);
             this.removeEventListener(el, &apos;keypress&apos;);
@@ -1180,7 +1180,7 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
-        if (errorsStyle === &apos;advanced&apos;) {
+        if (errorStyle === &apos;advanced&apos;) {
           this.refs.errorRef.forEach(el =&gt; {
             this.removeEventListener(el, &apos;click&apos;);
             this.removeEventListener(el, &apos;keypress&apos;);
@@ -1211,7 +1211,7 @@ export default class Webform extends NestedComponent {
 
     this.loadRefs(this.alert, { errorRef: &apos;multiple&apos; });
 
-    if (errorsStyle === &apos;advanced&apos;) {
+    if (errorStyle === &apos;advanced&apos;) {
       this.refs.errorRef.forEach(el =&gt; {
         this.addEventListener(el, &apos;click&apos;, (e) =&gt; {
           const key = e.currentTarget.dataset.componentKey;
@@ -1301,7 +1301,7 @@ export default class Webform extends NestedComponent {
         components.forEach((component) =&gt; component.setCustomValidity(err.message, true));
       });
     });
-    const { errorsStyle } = this.form;
+    const errorStyle = _.get(this.form, &apos;settings.errorStyle&apos;, &apos;&apos;);
     const message = document.createDocumentFragment();
     const p = this.ce(&apos;p&apos;);
     this.setContent(p, this.t(&apos;error&apos;));
@@ -1310,7 +1310,7 @@ export default class Webform extends NestedComponent {
       if (err) {
         const  params = { ref: &apos;errorRef&apos; };
 
-        if (errorsStyle === &apos;advanced&apos;) {
+        if (errorStyle === &apos;advanced&apos;) {
           params.tabIndex = 0;
         }
 
@@ -1332,7 +1332,7 @@ export default class Webform extends NestedComponent {
     }
 
     if (!isAlertBefore) {
-      if (errorsStyle === &apos;advanced&apos;) {
+      if (errorStyle === &apos;advanced&apos;) {
         this.refs.errorRef[0].focus();
       }
       else {
