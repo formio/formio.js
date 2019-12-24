@@ -225,7 +225,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             .then((tiny) => {
               this.editors[index] = tiny;
               tiny.setContent(this.setConvertedValue(this.dataValue));
-              this.editorReadyResolve(tiny);
+              editorReady(tiny);
               return tiny;
             }).catch(err => console.warn(err));
           break;
