@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Refactored TextArea components to allow multiple Wysiwyg instances.
  - Fix github #1953: Override .defaultValue of subcomponents.
+ - Problem where multiple number components would not let you add new values. 
  
 ### Changed
  - Upgrade eventemitter2@6.0.0, sinon@8.0.1

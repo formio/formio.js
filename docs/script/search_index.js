@@ -9690,12 +9690,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/number/number.js~numbercomponent#normalizevalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-normalizeValue",
-    "src/components/number/Number.js~NumberComponent#normalizeValue",
-    "method"
-  ],
-  [
     "src/components/number/number.js~numbercomponent#numbermask",
     "class/src/components/number/Number.js~NumberComponent.html#instance-member-numberMask",
     "src/components/number/Number.js~NumberComponent#numberMask",
