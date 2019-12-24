@@ -3,7 +3,6 @@ import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import { uniqueName } from '../../utils/utils';
-import Formio from '../../Formio';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -56,15 +55,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 
-  setupValueElement(element) {
-    let value = this.getValue();
-    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getValueAsString(value);
-    if (this.component.wysiwyg) {
-      value = this.interpolate(value);
-    }
-    if (element) {
-      this.setContent(element, value);
-    }
+  validateMultiple() {
+    return !this.component.as === 'json';
   }
 
   acePlaceholder() {
@@ -92,7 +84,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if (this.options.readOnly || this.disabled) {
       return this.renderTemplate('well', {
-        children: value,
+        children: '<div ref="input"></div>',
         nestedKey: this.key,
         value
       });
@@ -130,11 +122,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   attachElement(element, index) {
     if (this.autoExpand && (this.isPlain || this.options.readOnly || this.options.htmlView)) {
-      element.childNodes.forEach((element) => {
-        if (element.nodeName === 'TEXTAREA') {
-          this.addAutoExpanding(element);
-        }
-      });
+      if (element.nodeName === 'TEXTAREA') {
+        this.addAutoExpanding(element);
+      }
     }
 
     if (this.options.readOnly) {
@@ -248,7 +238,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       fileInput.setAttribute('type', 'file');
       fileInput.setAttribute('accept', 'image/*');
       fileInput.classList.add('ql-image');
-      fileInput.addEventListener('change', () => {
+      this.addEventListener(fileInput, 'change', () => {
         const files = fileInput.files;
         const range = quillInstance.quill.getSelection(true);
 
@@ -306,18 +296,12 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   get htmlView() {
-    return this.options.readOnly && this.component.wysiwyg;
+    return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
   }
   /* eslint-enable max-statements */
 
   setWysiwygValue(value, skipSetting) {
-    if (this.htmlView) {
-      // For HTML view, just view the contents.
-      if (this.input) {
-        this.setContent(this.input, this.interpolate(value));
-      }
-    }
-    else if (this.editorReady) {
+    if (this.editorReady) {
       return this.editorReady.then((editor) => {
         this.autoModified = true;
         if (!skipSetting) {
@@ -350,7 +334,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     return NativePromise.resolve();
   }
 
-  setConvertedValue(value) {
+  setReadOnlyValue(value, index) {
+    index = index || 0;
+    if (this.options.readOnly || this.disabled) {
+      if (this.refs.input && this.refs.input[index]) {
+        this.setContent(this.refs.input[index], this.interpolate(value));
+      }
+    }
+  }
+
+  setConvertedValue(value, index) {
     if (this.component.as && this.component.as === 'json' && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
@@ -364,6 +357,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = '';
     }
 
+    this.setReadOnlyValue(value, index);
     return value;
   }
 
@@ -540,20 +534,16 @@ export default class TextAreaComponent extends TextFieldComponent {
   setValue(value, flags) {
     const skipSetting = _.isEqual(value, this.getValue());
     value = value || '';
-    if (this.isPlain) {
-      value = Array.isArray(value) ? value.map((val) => this.setConvertedValue(val)) : this.setConvertedValue(value);
-      const changed = super.setValue(value, flags);
-      if (changed && (this.disabled || this.options.readOnly)) {
-        this.triggerRedraw();
-      }
-      return changed;
+    if (this.isPlain || this.options.readOnly || this.disabled) {
+      value = Array.isArray(value) ? value.map((val, index) => this.setConvertedValue(val, index)) : this.setConvertedValue(value);
+      return super.setValue(value, flags);
     }
 
     // Set the value when the editor is ready.
     const newValue = (value === undefined || value === null) ? this.getValue() : value;
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
-      this.setWysiwygValue(newValue, skipSetting, () => this.updateOnChange(flags, changed));
+      this.setWysiwygValue(newValue, skipSetting);
     }
     return changed;
   }

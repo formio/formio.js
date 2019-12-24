@@ -182,21 +182,7 @@ export default class FormComponent extends Component {
     if (!value.data || !Object.keys(value.data).length) {
       return 'No data provided';
     }
-    const columns = Object.keys(value.data).map(column => {
-      return {
-        key: column,
-        label: column,
-        hideLabel: false
-      };
-    });
-
-    return super.render(this.renderTemplate('datagrid', {
-      rows: [value.data],
-      columns: columns,
-      visibleColumns: value.data,
-      hasHeader: true,
-      numColumns: Object.keys(value.data).length,
-    }));
+    return '[Complex Data]';
   }
 
   attach(element) {
@@ -351,16 +337,16 @@ export default class FormComponent extends Component {
     return NativePromise.resolve();
   }
 
-  checkComponentValidity(data, dirty) {
+  checkComponentValidity(data, dirty, row) {
     if (this.subForm) {
       return this.subForm.checkValidity(this.dataValue.data, dirty);
     }
 
-    return super.checkComponentValidity(data, dirty);
+    return super.checkComponentValidity(data, dirty, row);
   }
 
-  checkComponentConditions(data) {
-    const visible = super.checkComponentConditions(data);
+  checkComponentConditions(data, flags, row) {
+    const visible = super.checkComponentConditions(data, flags, row);
 
     // Return if already hidden
     if (!visible) {
@@ -374,12 +360,12 @@ export default class FormComponent extends Component {
     return visible;
   }
 
-  calculateValue(data, flags) {
+  calculateValue(data, flags, row) {
     if (this.subForm) {
       return this.subForm.calculateValue(this.dataValue.data, flags);
     }
 
-    return super.calculateValue(data, flags);
+    return super.calculateValue(data, flags, row);
   }
 
   setPristine(pristine) {
@@ -462,7 +448,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve(this.dataValue);
     }
     return this.submitSubForm(false)
-      .then((data) => {
+      .then(() => {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());

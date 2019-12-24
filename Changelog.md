@@ -4,6 +4,265 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.6
+### Fixed
+ - Changed references to Promise and replace them with NativePromise.
+ - Removed component validity checks on non-input nested components.
+
+### Changed
+ - Upgraded @babel/cli@7.7.7, @babel/core@7.7.7, @babel/preset-env@7.7.7, @babel/register@7.7.7, webpack@4.41.4, core-js@3.6.0, eslint@6.8.0
+
+## 4.8.0-rc.5
+### Fixed
+ - Issues with libraries including formiojs getting warnings with Error: Can't resolve 'vm'
+
+## 4.8.0-rc.4
+### Added
+ - A new setting called Modal Edit which allows you to edit any component within a modal.
+ 
+### Fixed
+ - Fixed issue with Number component where empty value for reset was not working.
+
+## 4.8.0-rc.3
+### Changed
+ - Upgrade flatpickr@4.6.3, webpack@4.41.3, fetch-mock@8.1.0, marked@0.8.0
+
+### Fixed
+ - Fixed problem where HTML refreshOnChange was not re-evaluating the whole template and setting it correctly.
+ - Fixed issue where require decimal on Number components was adding 20 decimals to the number.
+ - Fixed single value normalization for Select components.
+ - Fix nested components failing to save because child components are required
+ - Fix issue where textarea saving as json in select component won't allow array values.
+ - Fixed issue where textarea contents would not show in readonly mode.
+ - Fix spelling of addMessages.
+ - Fix invalid identity escape in numberPattern.
+ - Fixed Wizard navigation redraw.
+ - Fixed Select component value normalization for multivalues.
+ - Day component bug with hidden year field.
+ - TextArea component bug with autoexpand
+ - Fixed builder initialization code to not require two empty objects passed to factory method.
+
+### Added
+ - Added isMobile method to Component class.
+
+### Changed
+ - Upgrade i18next@19.0.2, core-js@3.5.0
+ - Okta: ```oktaInit``` method to expect okta-auth-js v2 being used
+ - Small improvements to requireLibrary method.
+ - Cleaned up file component ui improvements.
+
+## 4.8.0-rc.2
+### Added
+ - FOR-2564: Add polyfills for Element and CustomEvent
+
+### Fixed
+ - Fixed required EditGrid's and DataGrids
+ - Keep form settings with old revisions so pdfs don't change.
+ - Perform day reference check in the Day component.
+ - Bug with validity on default value
+ 
+### Changed
+ - Update component settings CSS to flow a little more nicely
+ - Roll back flatpickr version to 4.6.2 to resolve an issue that doesn't allow to clear input for the DateTime component.
+
+## 4.8.0-rc.1
+### Fixed
+ - ```userPermissions``` method throwing error when no submission or submission id is specified
+ - ```Formio``` tests always failing with timeout error instead of actual error
+ - ```Formio``` tests ignoring mock results for same URLs
+ - Fixed adding resource tag to query, which fixes the Resource fields getting into the builder.
+ - Fix issue where copying and pasting layout component with multiple items with the same key doesn't uniquify correctly.
+ - Fix problem where the form revision would not get loaded correctly.
+ - Fixed issue if there is no formio in options for File uploads when deleting files.
+ 
+### Added
+ - New validation system with backwards compatability.
+ - Ability for modules to define their own validation rules.
+ - Tests for ```userPermissions``` method
+
+## 4.8.0-beta.9
+### Fixed
+ - Issue with userPermissions method when submissionId is not provided.
+
+## 4.8.0-beta.8
+### Fixed
+ - Issue where tags could not get set properly in the choices widget.
+
+## 4.8.0-beta.7
+### Changed
+ - Changed many _.cloneDeep with a fast JSON.parse(JSON.stringify) method.
+ 
+### Fixed
+ - Changed schema to clone the component before returning the modified schema.
+ - Tags component to always normalize the value and fixed "undefined" issue with filter command.
+ - Fixing build warnings.
+ - Fixed errors that show up when using this module in node.js.
+
+## 4.8.0-beta.6
+### Changed
+ - Upgrade fast-deep-equal@3.1.1, file-loader@5.0.2, raw-loader@4.0.0
+
+### Added
+ - Ability to interpolate the HTML Component attribute values.
+
+### Fixed
+ - ```userPermissions``` function not taking into account Group Permissions
+ - Nested component issue where nested components visibility would not get set correctly when the parent was visibility was changed.
+ - The refreshOnChange property for HTML component to use a non event driven way.
+ - Fix issue with hidden checkbox values not being updated correctly.
+ - Fixing an error that is thrown when the input references are not set.
+
+## 4.8.0-beta.5
+### Fixed
+ - Problem where the accordion parent names are incorrect.
+
+## 4.8.0-beta.4
+### Fixed
+ - Fixed issue with unexpected additional value inside datagrid.
+ - Fixed Wizard checkData validation order
+ - Fix issue with hidden checkbox values not being updated correctly.
+ - Fix adding a removing components by schema instead of full definition.
+
+## 4.8.0-beta.3
+### Fixed
+ - Select autocomplete input UI issues
+ - Fixing error that is thrown when reset number component occurs.
+ - Fixing wizard page numbers to be accurate.
+ - Fixed File component webcam issues
+ - Fixed FormioUtils.getStrings failing for Edit Grid component
+ - Fixed Wizard checkData validation order
+ - Fixed Select default value when multiple is true
+ - Fixed a problem when onChange option does not exist.
+ 
+### Changed
+ - Upgrade core-js@3.4.5, bootstrap@4.4.1, bootswatch@4.4.1, eslint@6.7.2
+
+## 4.8.0-beta.2
+### Changed
+ - Updated semantic template to fix undefined method in radio html template.
+
+### Fixed
+ - Build issues when used within an angular application.
+ - Fix datagrid, editgrid, container and tabs in data view.
+ - Fixed issue if process is not defined.
+ 
+### Added
+ - Allow editor source url and settings to be provided in form options
+ - Allow attributes to be passed to modal creation in the form builder
+
+## 4.8.0-beta.1
+### Changed
+ - Upgraded @formio/bootstrap3@1.1.3, @formio/semantic@1.2.2, core-js@3.4.2, i18next@19.0.1, file-loader@4.3.0
+ - Adding major changes to validator to support Isomorphic Validation
+ - Adding Merge Component action to Logic settings.
+ - Allow "persistent" prefix and suffix components in wizard by adding components outside of root panels.
+
+### Added
+ - Added ability to render radio with some options disabled.
+ - Adding MinLength and MaxLength validation configuration to DataGrid.
+ - Adding ability to open first EditGrid row when it is empty.
+ - Adding a feature that will clone the rows of table components to quickly create input tables.
+ - Allow translation of file error messages
+ - Added ability to configure form builder options globally.
+ - Add kickbox settings back.
+
+### Fixed
+ - Fix required validation border is being removed after correcting one field
+ - Fix configurations for Add Another not changing on top.
+ - Fixed issues where default value component would be hidden on edit form.
+ - Fixed margins on invisible fields.
+ - Fix radio thinking false is true. 
+ - Fix quotes in input components.
+ - Bugfix/radio keyboard uncheck
+ - Fixed check node data for tree node
+ - Signature component fix 100% width issue
+ - Fixed placeholder on initial render in select component.
+ - Fix icon for time component
+ - Fix issue with Field Logic events accumulating.
+ - Fix clear on hide not working since root is never set to pristine.
+ - Fixed the wizard to work with forms with duplicate panel keys.
+ - Fixing the validator to be component type agnostic.
+ - Fixed an issue where the wizard navigation would not show correctly if default submission is provided.
+ - Fixing issues where the select component would not default values in wizard mode.
+ - Fixing the pattern attribute on Number components to also allow for comma's and decimals.
+ - Fix flattened to support renderMode = 'flat' as well.
+ - Fix tags to not start with empty string and automatically add tags on blur.
+ - Disable button clicks in builder mode.
+ - Some Event Listener leaks.
+ - An issue where you could drop a component outside of the wizard page in builder mode.
+
+### Removed
+ - Remove unneeded settings from components.
+ - Removed "always enabled" configuration.
+ - Remove field logic validation.
+ - Remove field logic from edit preview.
+
+## 4.7.8
+### Fixed
+ - Modules not setting default templates correctly.
+ 
+### Added
+ - Export all extendable types.
+
+## 4.7.7
+### Changed
+ - Upgraded @formio/bootstrap3@1.1.2
+
+## 4.7.6
+### Fixed
+ - Focus shifting when typing in fields with multiple actions Field Logic
+ - The min validation to not fire if the field is empty. You can use "required" validation for this.
+ - Fixed the currency component to work with viewAsHTML to show the currency symbol.
+ - Fixed tooltips for components inside datagrid.
+ - Fixed problem where nested Containers, Data Grids, and EditGrids were not setting nested data correctly.
+
+## 4.7.5
+### Fixed
+ - Issues where the bootstrap and semantic templates were not compiled to ES5 to work with IE11.
+ 
+### Changed
+ - Upgrade core-js@3.4.1
+
+## 4.7.4
+### Fixed
+ - Ensure that the defaultValue builder field allows for changes to be made to the value without refresh.
+ - Fixing issues where modified flag is propogating and setting other elements to modified.
+ - isBreadcrumbClickable moved to top nav instead of buttons
+
+### Changed
+ - Update @babel/core@7.7.2, core-js@3.4.0
+
+## 4.7.3
+### Fixed
+ - Avoid JS errors when using autoAdjust columns.
+ - Focus shifting when typing in fields with Field Logic
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.3
+
+## 4.7.2
+### Fixed
+ - Fixing calculateValue and checkConditionals to use correct context variables "row" and "data" for EditGrid and DataGrid.
+ - Fix unchecked deep access in WebformBuilder. Fixes https://github.com/formio/formio.js/issues/1920
+ - Added uniqification for pages in wizard builder.
+ - Fixed problem where inputs were not getting destroyed properly causing memory leaks.
+ - Problem where getWidgetValueAsString is undefined.
+
+### Changed
+ - Upgrade @babel/cli@7.7.0, @babel/core@7.7.0, @babel/plugin-proposal-class-properties@7.7.0, @babel/polyfill@7.7.0, @babel/preset-env@7.7.1, @babel/register@7.7.0, browser-env@3.3.0
+
+## 4.7.1
+### Fixed
+ - The default value configuration to reflect the component instance type.
+ - The default date setting to allow for "moment" type of default dates.
+ - Issue where a memory leak was caused by widgets not getting properly destroyed.
+
+### Added
+ - Spellcheck configurations
+ 
+### Changed
+ - Upgrade fetch-mock@7.7.2, jsdom@15.2.1
+
 ## 4.7.0
 ### Changed
  - Refactored the widget logic to work with multiple inputs.

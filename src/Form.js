@@ -1,8 +1,6 @@
 import Element from './Element';
 import Formio from './Formio';
-import Wizard from './Wizard';
-import PDF from './PDF';
-import Webform from './Webform';
+import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
 import NativePromise from 'native-promise-only';
@@ -63,17 +61,16 @@ export default class Form extends Element {
    * @return {*}
    */
   create(display) {
-    if (this.options && this.options.flatten) {
+    if (this.options && (this.options.flatten || this.options.renderMode === 'flat')) {
       display = 'form';
     }
     this.display = display;
-    switch (display) {
-      case 'wizard':
-        return new Wizard(this.element, this.options);
-      case 'pdf':
-        return new PDF(this.element, this.options);
-      default:
-        return new Webform(this.element, this.options);
+    if (Displays.displays[display]) {
+      return new Displays.displays[display](this.element, this.options);
+    }
+    else {
+      // eslint-disable-next-line new-cap
+      return new Displays.displays['webform'](this.element, this.options);
     }
   }
 
@@ -91,14 +88,15 @@ export default class Form extends Element {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      result = (new Formio(formParam)).loadForm().then((form) => {
-        this.instance = this.instance || this.create(form.display);
-        this.instance.url = formParam;
-        this.instance.nosubmit = false;
-        this._form = this.instance.form = form;
-        return this.instance.ready.then(() => {
-          if (this.instance.loadSubmission) {
-            return this.instance.loadSubmission().then(() => this.instance);
+      const formio = new Formio(formParam);
+      result = this.getSubmission(formio).then((submission) => {
+        return formio.loadForm().then((form) => {
+          this.instance = this.instance || this.create(form.display);
+          this.instance.url = formParam;
+          this.instance.nosubmit = false;
+          this._form = this.instance.form = form;
+          if (submission) {
+            this.instance.submission = submission;
           }
           return this.instance;
         });
@@ -115,6 +113,13 @@ export default class Form extends Element {
       this.element = this.instance.element;
       return this.instance;
     });
+  }
+
+  getSubmission(formio) {
+    if (formio.submissionId) {
+      return formio.loadSubmission();
+    }
+    return NativePromise.resolve();
   }
 
   /**

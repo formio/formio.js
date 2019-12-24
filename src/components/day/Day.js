@@ -149,7 +149,10 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      { value: '', label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      {
+        value: '',
+        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')
+      },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
       { value: 3, label: 'March' },
@@ -184,9 +187,9 @@ export default class DayComponent extends Field {
     return this._years;
   }
 
-  addInputError(message, dirty, elements) {
-    super.addInputError(message, dirty, [this.refs.day, this.refs.month, this.refs.year]);
-    super.addInputError(message, dirty, elements);
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, hasError);
   }
 
   removeInputError(elements) {
@@ -253,10 +256,13 @@ export default class DayComponent extends Field {
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
-        const maxDay = parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10);
+        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+          : '';
         const day = this.getFieldValue('day');
-        this.refs.day.max = maxDay;
-        if (day > maxDay) {
+        if (!this.component.fields.day.hide && maxDay) {
+          this.refs.day.max = maxDay;
+        }
+        if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
         this.updateValue(null, {
@@ -346,7 +352,7 @@ export default class DayComponent extends Field {
   }
 
   getFieldValue(name) {
-    const parts = this.dataValue.split('/');
+    const parts = this.dataValue ? this.dataValue.split('/') : [];
     let val = 0;
 
     switch (name) {
@@ -500,7 +506,7 @@ export default class DayComponent extends Field {
    * @return {null}
    */
   getValueAsString(value) {
-    return this.getDate(value);
+    return this.getDate(value) || '';
   }
 
   focus() {

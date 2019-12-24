@@ -1,4 +1,3 @@
-import maskInput from 'vanilla-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
@@ -30,34 +29,36 @@ export default class CurrencyComponent extends NumberComponent {
       component.delimiter = true;
     }
     super(component, options, data);
-    this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
+  }
+
+  /**
+   * Creates the number mask for currency numbers.
+   *
+   * @return {*}
+   */
+  createNumberMask() {
+    const decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
-      decimalLimit: this.decimalLimit,
+      decimalLimit: decimalLimit,
       decimalSeparator: this.decimalSeparator,
       lang: this.options.language
     });
     this.prefix = this.options.prefix || affixes.prefix;
     this.suffix = this.options.suffix || affixes.suffix;
+    return createNumberMask({
+      prefix: this.prefix,
+      suffix: this.suffix,
+      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+      decimalLimit: decimalLimit,
+      allowNegative: _.get(this.component, 'allowNegative', true),
+      allowDecimal: _.get(this.component, 'allowDecimal', true)
+    });
   }
 
   get defaultSchema() {
     return CurrencyComponent.schema();
-  }
-
-  setInputMask(input) {
-    input.mask = maskInput({
-      inputElement: input,
-      mask: createNumberMask({
-        prefix: this.prefix,
-        suffix: this.suffix,
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
-        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: this.decimalLimit,
-        allowNegative: _.get(this.component, 'allowNegative', true),
-        allowDecimal: _.get(this.component, 'allowDecimal', true)
-      })
-    });
   }
 
   parseNumber(value) {

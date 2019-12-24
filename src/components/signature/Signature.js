@@ -33,6 +33,7 @@ export default class SignatureComponent extends Input {
     super.init();
     this.currentWidth = 0;
     this.scale = 1;
+
     if (!this.component.width) {
       this.component.width = '100%';
     }
@@ -141,11 +142,31 @@ export default class SignatureComponent extends Input {
     });
   }
 
+  setOpenModalElement() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
+    `;
+    this.componentModal.setOpenModalElement(template);
+  }
+
+  getModalPreviewTemplate() {
+    return `
+      <label class="control-label">${this.component.label}</label><br>
+      <img src=${this.dataValue} ref='openModal' />
+    `;
+  }
+
   attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
 
     this.onDisabled();
+
+    if (this.refs.refresh && this.options.readOnly) {
+      this.refs.refresh.classList.add('disabled');
+    }
+
     // Create the signature pad.
     if (this.refs.canvas) {
       this.signaturePad = new SignaturePad(this.refs.canvas, {
@@ -162,6 +183,10 @@ export default class SignatureComponent extends Input {
 
       // Ensure the signature is always the size of its container.
       if (this.refs.padBody) {
+        if (!this.refs.padBody.style.maxWidth) {
+          this.refs.padBody.style.maxWidth = '100%';
+        }
+
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
         setTimeout(function checkWidth() {
           if (this.refs.padBody && this.refs.padBody.offsetWidth) {

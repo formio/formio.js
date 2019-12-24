@@ -561,7 +561,7 @@ export function getStrings(form) {
     }
 
     if (component.type === 'editgrid') {
-      const string = this.component.addAnother || 'Add Another';
+      const string = component.addAnother || 'Add Another';
       if (component.addAnother) {
         strings.push({
           key: component.key,

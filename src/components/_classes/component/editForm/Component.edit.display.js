@@ -117,19 +117,19 @@ export default [
     input: true
   },
   {
-    weight: 1450,
-    type: 'checkbox',
-    label: 'Always enabled',
-    tooltip: 'Make this field always enabled, even if the form is disabled',
-    key: 'alwaysEnabled',
-    input: true
-  },
-  {
     weight: 1500,
     type: 'checkbox',
     label: 'Table View',
     tooltip: 'Shows this value within the table view of the submissions.',
     key: 'tableView',
+    input: true
+  },
+  {
+    weight: 1600,
+    type: 'checkbox',
+    label: 'Modal Edit',
+    tooltip: 'Opens up a modal to edit the value of this component.',
+    key: 'modalEdit',
     input: true
   },
 ];

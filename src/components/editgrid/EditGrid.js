@@ -3,7 +3,7 @@ import equal from 'fast-deep-equal';
 
 import NestedComponent from '../_classes/nested/NestedComponent';
 import Component from '../_classes/component/Component';
-import { Evaluator } from '../../utils/utils';
+import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
 export default class EditGridComponent extends NestedComponent {
@@ -17,6 +17,7 @@ export default class EditGridComponent extends NestedComponent {
       tree: true,
       removeRow: 'Cancel',
       defaultOpen: false,
+      openWhenEmpty: false,
       components: [],
       inlineEdit: false,
       templates: {
@@ -111,6 +112,10 @@ export default class EditGridComponent extends NestedComponent {
     // this.editRows = [];
   }
 
+  getValueAsString() {
+    return '[Complex Data]';
+  }
+
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
@@ -137,12 +142,24 @@ export default class EditGridComponent extends NestedComponent {
 
     this.components = this.components || [];
     const dataValue = this.dataValue || [];
-    this.editRows = dataValue.map((row, rowIndex) => ({
-      isOpen: false,
-      data: row,
-      components: this.createRowComponents(row, rowIndex),
-    }));
-    this.checkData(this.data);
+    const openWhenEmpty = !dataValue.length && this.component.openWhenEmpty;
+    if (openWhenEmpty) {
+      const dataObj = {};
+      this.editRows = [{
+        isOpen: true,
+        data: dataObj,
+        emptyOpen: true,
+        components: this.createRowComponents(dataObj, 0),
+      }];
+    }
+    else {
+      this.editRows = dataValue.map((row, rowIndex) => ({
+        isOpen: false,
+        data: row,
+        components: this.createRowComponents(row, rowIndex),
+      }));
+    }
+    this.checkData();
   }
 
   render(children) {
@@ -215,7 +232,7 @@ export default class EditGridComponent extends NestedComponent {
         ].forEach(action => {
           const elements = row.getElementsByClassName(action.class);
           Array.prototype.forEach.call(elements, element => {
-            element.addEventListener(action.event, action.action);
+            this.addEventListener(element, action.event, action.action);
           });
         });
       }
@@ -257,13 +274,19 @@ export default class EditGridComponent extends NestedComponent {
     }
   }
 
-  checkData(data, flags = {}) {
-    Component.prototype.checkData.call(this, data, flags);
-    return this.editRows.reduce((valid, editRow) => this.checkRow(editRow.data, editRow, flags) && valid, true);
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    Component.prototype.checkData.call(this, data, flags, row);
+    return this.editRows.reduce(
+      (valid, editRow) => this.checkRow(data, editRow, flags, editRow.data) && valid,
+      true
+    );
   }
 
-  checkRow(data, editRow, flags = {}) {
-    return super.checkData(data, flags, editRow.components);
+  checkRow(data, editRow, flags, row) {
+    return super.checkData(data, flags, row, editRow.components);
   }
 
   everyComponent(fn, rowIndex) {
@@ -330,7 +353,7 @@ export default class EditGridComponent extends NestedComponent {
       row: editRow
     });
     editRow.components = this.createRowComponents(editRow.data, rowIndex);
-    this.checkRow(editRow.data, editRow);
+    this.checkRow(null, editRow, {}, editRow.data);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -364,7 +387,7 @@ export default class EditGridComponent extends NestedComponent {
     const dataValue = this.dataValue || [];
     const editRow = this.editRows[rowIndex];
     this.setEditRowSettings(editRow);
-    const dataSnapshot = dataValue[rowIndex] ? _.cloneDeep(dataValue[rowIndex]) : {};
+    const dataSnapshot = dataValue[rowIndex] ? fastCloneDeep(dataValue[rowIndex]) : {};
     if (this.component.inlineEdit) {
       editRow.backup = dataSnapshot;
     }
@@ -421,7 +444,7 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows.splice(rowIndex, 1);
     }
 
-    this.checkValidity(this.data, true);
+    this.checkValidity(null, true);
     this.redraw();
   }
 
@@ -457,7 +480,7 @@ export default class EditGridComponent extends NestedComponent {
     editRow.editing = false;
     this.updateValue();
     this.triggerChange();
-    this.checkValidity(this.data, true);
+    this.checkValidity(null, true);
     this.redraw();
 
     return true;
@@ -479,8 +502,8 @@ export default class EditGridComponent extends NestedComponent {
     this.updateRowsComponents(rowIndex);
     this.updateValue();
     this.triggerChange();
-    this.checkValidity(this.data, true);
-    this.checkData(this.data);
+    this.checkValidity(null, true);
+    this.checkData();
     this.redraw();
   }
 
@@ -498,21 +521,20 @@ export default class EditGridComponent extends NestedComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.onChange = (flags, changed, modified) => {
+        if (this.component.inlineEdit && this.options.onChange) {
+          this.options.onChange(flags, changed, modified);
+        }
+        else if (this.editRows[rowIndex]) {
+          this.checkRow(null, this.editRows[rowIndex], {
+            changed
+          }, this.editRows[rowIndex].data);
+        }
+      };
       const comp = this.createComponent(_.assign({}, column, {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
-      // Don't bubble sub changes since they won't apply until pressing save.
-      comp.triggerChange = () => {
-        // Should we recalculate or something here?
-        // TODO: Cause refreshOn to trigger.
-        if (this.component.inlineEdit) {
-          this.triggerChange();
-        }
-        else {
-          this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
-        }
-      };
       components.push(comp);
     });
     return components;
@@ -548,14 +570,21 @@ export default class EditGridComponent extends NestedComponent {
     return !!valid;
   }
 
-  checkValidity(data, dirty) {
-    return this.checkComponentValidity(data, dirty);
-  }
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
 
-  checkComponentValidity(data, dirty) {
-    if (!this.checkCondition(null, data)) {
+    if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
+    }
+
+    return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkComponentValidity(data, dirty, row) {
+    if (!super.checkComponentValidity(data, dirty, row)) {
+      return false;
     }
 
     let rowsValid = true;
@@ -621,10 +650,15 @@ export default class EditGridComponent extends NestedComponent {
       if (editRow) {
         editRow.data = row;
         if (editRow.isOpen) {
-          editRow.components.forEach(col => {
-            col.data = row;
-            col.setValue(row[col.key], flags);
-          });
+          if (editRow.emptyOpen) {
+            editRow.isOpen = false;
+          }
+          else {
+            editRow.components.forEach(col => {
+              col.data = row;
+              col.setValue(row[col.key], flags);
+            });
+          }
         }
       }
       else {
@@ -633,7 +667,7 @@ export default class EditGridComponent extends NestedComponent {
           isOpen: false,
           data: row,
         };
-        this.checkRow(this.editRows[rowIndex].data, this.editRows[rowIndex]);
+        this.checkRow(null, this.editRows[rowIndex], {}, this.editRows[rowIndex].data);
       }
     });
     this.updateOnChange(flags, changed);
@@ -657,7 +691,12 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   restoreRowContext(editRow) {
-    editRow.components.forEach((component) => component.data = editRow.data);
+    editRow.components.forEach((component) => {
+      component.data = editRow.data;
+      if (_.has(editRow.data, component.key)) {
+        component.setValue(editRow.data[component.key]);
+      }
+    });
   }
 }
 

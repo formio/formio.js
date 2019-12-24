@@ -1,23 +1,22 @@
 import Formio from './Formio';
-import WebformBuilder from './WebformBuilder';
-import WizardBuilder from './WizardBuilder';
-import PDFBuilder from './PDFBuilder';
+import Builders from './builders';
 import Form from './Form';
 
 export default class FormBuilder extends Form {
+  static options = {};
   constructor(element, form, options) {
-    super(element, form, options);
+    form = form || {};
+    options = options || {};
+    super(element, form, Object.assign(options, FormBuilder.options));
   }
 
   create(display) {
-    if (display === 'wizard') {
-      return new WizardBuilder(this.element, this.options);
-    }
-    else if (display === 'pdf') {
-      return new PDFBuilder(this.element, this.options);
+    if (Builders.builders[display]) {
+      return new Builders.builders[display](this.element, this.options);
     }
     else {
-      return new WebformBuilder(this.element, this.options);
+      // eslint-disable-next-line new-cap
+      return new Builders.builders['webform'](this.element, this.options);
     }
   }
 }

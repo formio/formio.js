@@ -160,7 +160,7 @@ export default class Multivalue extends Field {
     });
 
     if (!this.attachMultiMask(index)) {
-      this.setInputMask(this.refs.input[index]);
+      this.setInputMask(element);
     }
   }
 
@@ -232,7 +232,7 @@ export default class Multivalue extends Field {
   addValue() {
     this.addNewValue();
     this.redraw();
-    this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions();
     if (!this.isEmpty(this.dataValue)) {
       this.restoreValue();
     }

@@ -435,12 +435,7 @@ export default class AddressComponent extends TextFieldComponent {
     };
     suggestion.clickListener = clickListener;
     suggestion.item = item;
-    if ('addEventListener' in item) {
-      item.addEventListener('click', clickListener, false);
-    }
-    else if ('attachEvent' in item) {
-      item.attachEvent('onclick', clickListener);
-    }
+    this.addEventListener(item, 'click', clickListener);
   }
   /* eslint-enable max-depth, max-statements */
 

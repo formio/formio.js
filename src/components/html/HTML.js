@@ -39,25 +39,37 @@ export default class HTMLComponent extends Component {
     return ['br', 'img', 'hr'];
   }
 
-  render() {
-    return super.render(this.renderTemplate('html', {
+  checkRefreshOn(changed) {
+    super.checkRefreshOn(changed);
+    if (!this.builderMode && this.component.refreshOnChange && this.element) {
+      this.setContent(this.element, this.renderContent());
+    }
+  }
+
+  renderContent() {
+    return this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
-      attrs: this.component.attrs || {},
+      attrs: (this.component.attrs || []).map((attr) => {
+        return {
+          attr: attr.attr,
+          value: this.interpolate(attr.value, {
+            data: this.rootValue,
+            row: this.data
+          })
+        };
+      }),
       content: this.content,
       singleTags: this.singleTags,
-    }));
+    });
+  }
+
+  render() {
+    return super.render(this.renderContent());
   }
 
   attach(element) {
     this.loadRefs(element, { html: 'single' });
-    if (this.component.refreshOnChange) {
-      this.on('change', () => {
-        if (this.refs.html) {
-          this.setContent(this.refs.html, this.content);
-        }
-      }, true);
-    }
     return super.attach(element);
   }
 }

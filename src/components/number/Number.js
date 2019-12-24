@@ -50,7 +50,8 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    this.decimalLimit = getNumberDecimalLimit(this.component);
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
+    this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
@@ -58,7 +59,20 @@ export default class NumberComponent extends Input {
       this.decimalSeparator = override.decimalSeparator;
       this.delimiter = override.delimiter;
     }
-    this.numberMask = createNumberMask({
+    this.numberMask = this.createNumberMask();
+  }
+
+  normalizeValue(value, flags) {
+    return flags.noUpdateEvent ? null : value;
+  }
+
+  /**
+   * Creates the number mask for normal numbers.
+   *
+   * @return {*}
+   */
+  createNumberMask() {
+    return createNumberMask({
       prefix: '',
       suffix: '',
       requireDecimal: _.get(this.component, 'requireDecimal', false),
@@ -96,8 +110,11 @@ export default class NumberComponent extends Input {
   }
 
   setInputMask(input) {
-    input.setAttribute('pattern', '\\d*');
-
+    let numberPattern = '[0-9';
+    numberPattern += this.decimalSeparator || '';
+    numberPattern += this.delimiter || '';
+    numberPattern += ']*';
+    input.setAttribute('pattern', numberPattern);
     input.mask = maskInput({
       inputElement: input,
       mask: this.numberMask
@@ -163,7 +180,7 @@ export default class NumberComponent extends Input {
   }
 
   getMaskedValue(value) {
-    return conformToMask(value.toString(), this.numberMask).conformedValue;
+    return conformToMask(value === null ? '0' : value.toString(), this.numberMask).conformedValue;
   }
 
   getValueAsString(value) {

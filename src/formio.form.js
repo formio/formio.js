@@ -1,7 +1,10 @@
 import AllComponents from './components';
+import Builders from './builders/Builders';
 import Components from './components/Components';
+import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers/Providers';
+import Rules from './validator/Rules';
 import Formio from './Formio';
 Components.setComponents(AllComponents);
 Formio.Components = Components;
@@ -12,7 +15,7 @@ const registerPlugin = (plugin) => {
     return;
   }
   for (const key of Object.keys(plugin)) {
-    const current = Templates.framework || 'bootstrap';
+    const current = plugin.framework || Templates.framework || 'bootstrap';
     switch (key) {
       case 'templates':
         for (const framework of Object.keys(plugin.templates)) {
@@ -38,6 +41,15 @@ const registerPlugin = (plugin) => {
           Providers.addProviders(type, plugin.providers[type]);
         }
         break;
+      case 'displays':
+        Displays.addDisplays(plugin.displays);
+        break;
+      case 'builders':
+        Builders.addBuilders(plugin.builders);
+        break;
+      case 'rules':
+        Rules.addRules(plugin.rules);
+        break;
       default:
         console.log('Unknown plugin option', key);
     }
@@ -61,4 +73,4 @@ Formio.use = (...plugins) => {
 };
 export Form from './Form';
 export Utils from './utils';
-export { Components, Templates, Formio };
+export { Builders, Components, Displays, Providers, Templates, Formio };

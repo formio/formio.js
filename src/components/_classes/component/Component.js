@@ -3,19 +3,22 @@ import { conformToMask } from 'vanilla-text-mask';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import _ from 'lodash';
+import isMobile from 'ismobilejs';
 import Formio from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
-import Validator from '../../Validator';
+import Validator from '../../../validator/Validator';
 import Templates from '../../../templates/Templates';
-import { boolValue } from '../../../utils/utils';
+import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
+import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
- * This is the Component class which all elements within the FormioForm derive from.
+ * This is the Component class
+ which all elements within the FormioForm derive from.
  */
 export default class Component extends Element {
   static schema(...sources) {
@@ -101,6 +104,11 @@ export default class Component extends Element {
       tableView: false,
 
       /**
+       * If this component should be rendering in modal.
+       */
+      modalEdit: false,
+
+      /**
        * The input label provided to this component.
        */
       label: '',
@@ -169,7 +177,6 @@ export default class Component extends Element {
       },
       allowCalculateOverride: false,
       encrypted: false,
-      alwaysEnabled: false,
       showCharCount: false,
       showWordCount: false,
       properties: {},
@@ -203,7 +210,7 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = _.cloneDeep(component);
+    this.originalComponent = fastCloneDeep(component);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -279,8 +286,8 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = this.conditionallyVisible(data);
     this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._visible = this._parentVisible && this.conditionallyVisible(data);
     this._parentDisabled = false;
 
     /**
@@ -311,6 +318,8 @@ export default class Component extends Element {
      * @type {[string]}
      */
     this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
+
+    this._path = '';
 
     /**
      * Used to trigger a new change in this component.
@@ -424,9 +433,6 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-
-    // Attach the refresh on events.
-    this.attachRefreshOn();
   }
 
   destroy() {
@@ -535,6 +541,30 @@ export default class Component extends Element {
     return this.options.attachMode === 'builder';
   }
 
+  get calculatedPath() {
+    if (this._path) {
+      return this._path;
+    }
+
+    this._path = this.key;
+
+    if (!this.root) {
+      return this._path;
+    }
+
+    let parent = this.parent;
+
+    while (parent && parent.id !== this.root.id) {
+      if (['datagrid', 'container', 'editgrid'].includes(parent.type) || parent.tree) {
+        this._path = `${parent.key}.${this._path}`;
+      }
+
+      parent = parent.parent;
+    }
+
+    return this._path;
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -563,6 +593,7 @@ export default class Component extends Element {
         (!recursion && (key === 'key')) ||
         (!recursion && (key === 'label')) ||
         (!recursion && (key === 'input')) ||
+        (!recursion && (key === 'tableView')) ||
         (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
         (val !== '' && val !== defaultSchema[key])
       ) {
@@ -576,7 +607,7 @@ export default class Component extends Element {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
+    return fastCloneDeep(this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema));
   }
 
   /**
@@ -805,10 +836,6 @@ export default class Component extends Element {
     return this.options.submissionTimezone;
   }
 
-  get canDisable() {
-    return !this.component.alwaysEnabled;
-  }
-
   loadRefs(element, refs) {
     for (const ref in refs) {
       if (refs[ref] === 'single') {
@@ -818,6 +845,20 @@ export default class Component extends Element {
         this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
       }
     }
+  }
+
+  setOpenModalElement() {
+    const template = `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
+    `;
+    this.componentModal.setOpenModalElement(template);
+  }
+
+  getModalPreviewTemplate() {
+    return `
+      <label class="control-label">${this.component.label}</label><br>
+      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
   }
 
   build(element) {
@@ -830,16 +871,33 @@ export default class Component extends Element {
   render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
-    return this.renderTemplate('component', {
-      visible: isVisible,
-      id: this.id,
-      classes: this.className,
-      styles: this.customStyle,
-      children
-    }, topLevel);
+
+    if (!this.builderMode && this.component.modalEdit) {
+      return ComponentModal.render(this, {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
+    else {
+      return this.renderTemplate('component', {
+        visible: isVisible,
+        id: this.id,
+        classes: this.className,
+        styles: this.customStyle,
+        children
+      }, topLevel);
+    }
   }
 
   attach(element) {
+    if (!this.builderMode && this.component.modalEdit) {
+      this.componentModal = new ComponentModal(this, element);
+      this.setOpenModalElement();
+    }
+
     this.attached = true;
     this.element = element;
     element.component = this;
@@ -860,7 +918,12 @@ export default class Component extends Element {
         trigger: 'hover click',
         placement: 'right',
         html: true,
-        title: title
+        title: title,
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
       });
     });
 
@@ -911,43 +974,42 @@ export default class Component extends Element {
   detach() {
     this.refs = {};
     this.removeEventListeners();
+    this.detachLogic();
     if (this.tooltip) {
       this.tooltip.dispose();
     }
   }
 
-  attachRefreshEvent(refreshData) {
-    this.on('change', (event) => {
-      const changeKey = _.get(event, 'changed.component.key', false);
-      // Don't let components change themselves.
-      if (changeKey && this.key === changeKey) {
-        return;
-      }
-      if (refreshData === 'data') {
-        this.refresh(this.data);
-      }
-      else if (
-        (changeKey && changeKey === refreshData) && event.changed && event.changed.instance &&
-        // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
-        // in fields inside EditGrids could alter their state from other rows (which is bad).
-        this.inContext(event.changed.instance)
-      ) {
-        this.refresh(event.changed.value);
-      }
-    }, true);
+  checkRefresh(refreshData, changed) {
+    const changePath = _.get(changed, 'instance.calculatedPath', false);
+    // Don't let components change themselves.
+    if (changePath && this.calculatedPath === changePath) {
+      return;
+    }
+    if (refreshData === 'data') {
+      this.refresh(this.data);
+    }
+    else if (
+      (changePath && changePath === refreshData) && changed && changed.instance &&
+      // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
+      // in fields inside EditGrids could alter their state from other rows (which is bad).
+      this.inContext(changed.instance)
+    ) {
+      this.refresh(changed.value);
+    }
   }
 
-  attachRefreshOn() {
+  checkRefreshOn(changed) {
     const refreshOn = this.component.refreshOn || this.component.redrawOn;
     // If they wish to refresh on a value, then add that here.
     if (refreshOn) {
       if (Array.isArray(refreshOn)) {
         refreshOn.forEach(refreshData => {
-          this.attachRefreshEvent(refreshData);
+          this.checkRefresh(refreshData, changed);
         });
       }
       else {
-        this.attachRefreshEvent(refreshOn);
+        this.checkRefresh(refreshOn, changed);
       }
     }
   }
@@ -1018,6 +1080,28 @@ export default class Component extends Element {
     return '-';
   }
 
+  /**
+   * Uses the widget to determine the output string.
+   *
+   * @param value
+   * @return {*}
+   */
+  getWidgetValueAsString(value) {
+    if (!value || !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      const values = [];
+      value.forEach((val, index) => {
+        if (this.refs.input[index] && this.refs.input[index].widget) {
+          values.push(this.refs.input[index].widget.getValueAsString(val));
+        }
+      });
+      return values;
+    }
+    return this.refs.input[0].widget.getValueAsString(value);
+  }
+
   getValueAsString(value) {
     if (!value) {
       return '';
@@ -1028,6 +1112,9 @@ export default class Component extends Element {
     }
     if (_.isPlainObject(value)) {
       return JSON.stringify(value);
+    }
+    if (value === null || value === undefined) {
+      return '';
     }
     return value.toString();
   }
@@ -1044,8 +1131,27 @@ export default class Component extends Element {
     this.onChange(...args);
   }
 
-  createModal(element) {
-    const dialog = this.ce('div');
+  /**
+   * @param {*} data
+   * @param {boolean} [forceUseValue=false] - if true, return 'value' property of the data
+   * @return {*}
+   */
+  itemValue(data, forceUseValue = false) {
+    if (_.isObject(data)) {
+      if (this.valueProperty) {
+        return _.get(data, this.valueProperty);
+      }
+
+      if (forceUseValue) {
+        return data.value;
+      }
+    }
+
+    return data;
+  }
+
+  createModal(element, attr) {
+    const dialog = this.ce('div', attr || {});
     this.setContent(dialog, this.renderTemplate('dialog'));
 
     // Add refs to dialog, not "this".
@@ -1099,6 +1205,9 @@ export default class Component extends Element {
     if (this.labelIsHidden()) {
       className += ' formio-component-label-hidden';
     }
+    if (!this.visible) {
+      className += ' formio-hidden';
+    }
     return className;
   }
 
@@ -1114,6 +1223,10 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+
+  get isMobile() {
+    return isMobile();
   }
 
   /**
@@ -1158,9 +1271,7 @@ export default class Component extends Element {
     this.splice(index);
     this.redraw();
     this.restoreValue();
-    if (this.root) {
-      this.root.onChange();
-    }
+    this.triggerRootChange();
   }
 
   iconClass(name, spinning) {
@@ -1276,17 +1387,20 @@ export default class Component extends Element {
    * @param data
    * @return {boolean}
    */
-  conditionallyVisible(data) {
+  conditionallyVisible(data, row) {
     data = data || this.rootValue;
+    row = row || this.data;
     if (this.builderMode || !this.hasCondition()) {
       return !this.component.hidden;
     }
     data = data || (this.root ? this.root.data : {});
-    return this.checkCondition(null, data);
+    return this.checkCondition(row, data);
   }
 
   /**
    * Checks the condition of this component.
+   *
+   * TODO: Switch row and data parameters to be consistent with other methods.
    *
    * @param row - The row contextual data.
    * @param data - The global data object.
@@ -1305,14 +1419,17 @@ export default class Component extends Element {
   /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
-  checkComponentConditions(data) {
+  checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data);
-    if (!this.builderMode && this.fieldLogic(data)) {
+    if (!this.builderMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
+
+    // Check advanced conditions
+    const visible = this.conditionallyVisible(data, row);
 
     if (this.visible !== visible) {
       this.visible = visible;
@@ -1326,8 +1443,11 @@ export default class Component extends Element {
    * @param args
    * @return {boolean}
    */
-  checkConditions(...args) {
-    return this.checkComponentConditions(...args);
+  checkConditions(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    return this.checkComponentConditions(data, flags, row);
   }
 
   get logic() {
@@ -1339,8 +1459,9 @@ export default class Component extends Element {
    *
    * @param data
    */
-  fieldLogic(data) {
+  fieldLogic(data, row) {
     data = data || this.rootValue;
+    row = row || this.data;
     const logics = this.logic;
 
     // If there aren't logic, don't go further.
@@ -1348,22 +1469,19 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = _.cloneDeep(this.originalComponent);
+    const newComponent = fastCloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
-        this.data,
+        row,
         data,
         this.root ? this.root._form : {},
-        this
+        this,
       );
 
-      if (result) {
-        changed |= this.applyActions(logic.actions, result, data, newComponent);
-      }
-      return changed;
+      return (result ? this.applyActions(newComponent, logic.actions, result, row, data) : false) || changed;
     }, false);
 
     // If component definition changed, replace and mark as changed.
@@ -1377,15 +1495,22 @@ export default class Component extends Element {
     return changed;
   }
 
-  applyActions(actions, result, data, newComponent) {
+  applyActions(newComponent, actions, result, row, data) {
+    data = data || this.rootValue;
+    row = row || this.data;
+
     return actions.reduce((changed, action) => {
       switch (action.type) {
-        case 'property':
-          FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
-          if (!_.isEqual(this, newComponent)) {
+        case 'property': {
+          FormioUtils.setActionProperty(newComponent, action, result, row, data, this);
+
+          const property = action.property.value;
+          if (!_.isEqual(_.get(this.component, property), _.get(newComponent, property))) {
             changed = true;
           }
+
           break;
+        }
         case 'value': {
           const oldValue = this.getValue();
           const newValue = this.evaluate(
@@ -1393,45 +1518,61 @@ export default class Component extends Element {
             {
               value: _.clone(oldValue),
               data,
+              row,
               component: newComponent,
-              result
+              result,
             },
-            'value'
+            'value',
           );
+
           if (!_.isEqual(oldValue, newValue)) {
             this.setValue(newValue);
+
+            if (this.viewOnly) {
+              this.dataValue = newValue;
+            }
+
             changed = true;
           }
+
           break;
         }
-        case 'validation':
-          // TODO
+        case 'mergeComponentSchema': {
+          const schema = this.evaluate(
+            action.schemaDefinition,
+            {
+              value: _.clone(this.getValue()),
+              data,
+              row,
+              component: newComponent,
+              result,
+            },
+            'schema',
+          );
+
+          _.assign(newComponent, schema);
+
+          if (!_.isEqual(this.component, newComponent)) {
+            changed = true;
+          }
+
           break;
+        }
       }
+
       return changed;
     }, false);
   }
 
-  addInputWarning(message, dirty, elements) {
-    if (!message) {
-      return;
-    }
+  // Deprecated
+  addInputError(message, dirty, elements) {
+    this.addMessages(message);
+    this.setErrorClasses(elements, dirty, !!message);
+  }
 
-    if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('warning', {
-        message
-      }));
-    }
-
-    elements
-      .forEach((input) => this.addClass(this.performInputMapping(input), 'is-warning'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentWarningClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
-    }
+  // Deprecated
+  removeInputError(elements) {
+    this.setErrorClasses(elements, true, false);
   }
 
   /**
@@ -1440,32 +1581,46 @@ export default class Component extends Element {
    * @param message
    * @param dirty
    */
-  addInputError(message, dirty, elements) {
-    if (!message) {
+  addMessages(messages) {
+    if (!messages) {
       return;
     }
 
+    // Standardize on array of objects for message.
+    if (typeof messages === 'string') {
+      messages = {
+        messages,
+        level: 'error',
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      messages = [messages];
+    }
+
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, this.renderTemplate('message', {
-        message
-      }));
-    }
-
-    // Add error classes
-    elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
-
-    if (dirty && this.options.highlightErrors) {
-      this.addClass(this.element, this.options.componentErrorClass);
-    }
-    else {
-      this.addClass(this.element, 'has-error');
+      this.setContent(this.refs.messageContainer, messages.map((message) =>
+        this.renderTemplate('message', message)
+      ).join(''));
     }
   }
 
-  removeInputError(elements) {
-    if (elements) {
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
-      elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-warning'));
+  setErrorClasses(elements, dirty, hasErrors, hasMessages) {
+    this.clearErrorClasses();
+    elements.forEach((element) => this.removeClass(this.performInputMapping(element), 'is-invalid'));
+    if (hasErrors) {
+      // Add error classes
+      elements.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, this.options.componentErrorClass);
+      }
+      else {
+        this.addClass(this.element, 'has-error');
+      }
+    }
+    if (hasMessages) {
+      this.addClass(this.element, 'has-message');
     }
   }
 
@@ -1486,6 +1641,15 @@ export default class Component extends Element {
           noUpdateEvent: true
         });
       }
+    }
+  }
+
+  triggerRootChange(...args) {
+    if (this.options.onChange) {
+      this.options.onChange(...args);
+    }
+    else if (this.root) {
+      this.root.triggerChange(...args);
     }
   }
 
@@ -1518,9 +1682,16 @@ export default class Component extends Element {
     // Emit the change.
     this.emit('componentChange', changed);
 
+    // Do not propogate the modified flag.
+    let modified = false;
+    if (flags.modified) {
+      modified = true;
+      delete flags.modified;
+    }
+
     // Bubble this change up to the top.
-    if (this.root && !fromRoot) {
-      this.root.triggerChange(flags, changed);
+    if (!fromRoot) {
+      this.triggerRootChange(flags, changed, modified);
     }
     return changed;
   }
@@ -1552,7 +1723,8 @@ export default class Component extends Element {
       toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
       styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
     };
-    return Formio.requireLibrary('ckeditor', 'ClassicEditor', CKEDITOR, true)
+    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', {}), settings);
+    return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1566,6 +1738,7 @@ export default class Component extends Element {
 
   addQuill(element, settings, onChange) {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+    settings = _.merge(_.get(this.options, 'editors.quill.settings', {}), settings);
 
     // Lazy load the quill css.
     if (!settings.theme) {
@@ -1576,7 +1749,7 @@ export default class Component extends Element {
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', `${QUILL_URL}/quill.min.js`, true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
       .then(() => {
         if (!element.parentNode) {
           return NativePromise.reject();
@@ -1618,7 +1791,8 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    return Formio.requireLibrary('ace', 'ace', ACE_URL, true)
+    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
@@ -1821,6 +1995,9 @@ export default class Component extends Element {
    */
   setValue(value, flags) {
     const changed = this.updateValue(value, flags);
+    if (this.componentModal && flags && flags.fromSubmission) {
+      this.componentModal.setValue(value);
+    }
     value = this.dataValue;
     if (!this.hasInput) {
       return changed;
@@ -1982,7 +2159,7 @@ export default class Component extends Element {
    *
    * @return {boolean} - If the value changed during calculation.
    */
-  calculateComponentValue(data, flags) {
+  calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     if (!this.component.calculateValue || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)) {
@@ -2018,7 +2195,8 @@ export default class Component extends Element {
     // Calculate the new value.
     const calculatedValue = this.evaluate(this.component.calculateValue, {
       value: dataValue,
-      data
+      data,
+      row: row || this.data
     }, 'value');
 
     // If this is the firstPass, and the dataValue is different than to the calculatedValue.
@@ -2045,8 +2223,11 @@ export default class Component extends Element {
    * @param args
    * @return {boolean}
    */
-  calculateValue(...args) {
-    return this.calculateComponentValue(...args);
+  calculateValue(data, flags, row) {
+    data = data || this.rootValue;
+    flags = flags || {};
+    row = row || this.data;
+    return this.calculateComponentValue(data, flags, row);
   }
 
   /**
@@ -2084,8 +2265,8 @@ export default class Component extends Element {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty, ignoreCondition) {
-    if (!ignoreCondition && !this.checkCondition(null, data)) {
+  invalidMessage(data, dirty, ignoreCondition, row) {
+    if (!ignoreCondition && !this.checkCondition(row, data)) {
       return '';
     }
 
@@ -2099,7 +2280,7 @@ export default class Component extends Element {
       return '';
     }
 
-    return Validator.check(this, data);
+    return _.map(Validator.checkComponent(this, data), 'message').join('\n\n');
   }
 
   /**
@@ -2118,47 +2299,58 @@ export default class Component extends Element {
    *
    * @param data
    * @param dirty
-   * @param rowData
+   * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, rowData) {
-    if (this.shouldSkipValidation(data, dirty, rowData)) {
+  checkComponentValidity(data, dirty, row) {
+    if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return true;
     }
 
-    const error = Validator.check(this, data);
-    if (error && (dirty || !this.pristine)) {
-      const message = this.invalidMessage(data, dirty, true);
-      this.setCustomValidity(message, dirty);
+    const messages = Validator.checkComponent(this, data, row, true);
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    if (messages.length && (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
     }
     else {
       this.setCustomValidity('');
     }
-    return !error;
+    return !hasErrors;
   }
 
-  checkValidity(...args) {
-    return this.checkComponentValidity(...args);
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    return this.checkComponentValidity(data, dirty, row);
   }
 
   /**
    * Check the conditions, calculations, and validity of a single component and triggers an update if
    * something changed.
    *
-   * @param data - The contextual data of the change event.
+   * @param data - The root data of the change event.
    * @param flags - The flags from this change event.
    *
    * @return boolean - If component is valid or not.
    */
-  checkData(data, flags) {
+  checkData(data, flags, row) {
+    data = data || this.rootValue;
     flags = flags || {};
+    row = row || this.data;
+    this.checkRefreshOn(flags.changed);
     if (flags.noCheck) {
       return true;
     }
-    this.calculateComponentValue(data);
-    this.checkComponentConditions(data);
-    return flags.noValidate ? true : this.checkComponentValidity(data);
+    this.calculateComponentValue(data, flags, row);
+    this.checkComponentConditions(data, flags, row);
+
+    // We need to perform a test to see if they provided a default value that is not valid and immediately show
+    // an error if that is the case.
+    if (!this.builderMode && !this.options.preview && !this.isEmpty(this.defaultValue) && !flags.noValidate) {
+      return this.checkComponentValidity(data, true, row);
+    }
+    return flags.noValidate ? true : this.checkComponentValidity(data, false, row);
   }
 
   get validationValue() {
@@ -2178,8 +2370,8 @@ export default class Component extends Element {
    *
    * @return {boolean}
    */
-  validateMultiple(value) {
-    return this.component.multiple && Array.isArray(value);
+  validateMultiple() {
+    return true;
   }
 
   get errors() {
@@ -2189,28 +2381,43 @@ export default class Component extends Element {
   clearErrorClasses() {
     this.removeClass(this.element, 'formio-error-wrapper');
     this.removeClass(this.element, 'alert alert-danger');
-    this.removeClass(this.element, 'alert alert-warning');
     this.removeClass(this.element, 'has-error');
+    this.removeClass(this.element, 'has-message');
   }
 
-  setCustomValidity(message, dirty, external, isWarning = false) {
-    if (message) {
+  setCustomValidity(messages, dirty, external) {
+    if (typeof messages === 'string' && messages) {
+      messages = {
+        level: 'error',
+        message: messages,
+      };
+    }
+
+    if (!Array.isArray(messages)) {
+      if (messages) {
+        messages = [messages];
+      }
+      else {
+        messages = [];
+      }
+    }
+
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+
+    if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
       this.error = {
         component: this.component,
-        message: message,
+        message: messages[0].message,
+        messages,
         external: !!external,
       };
       this.emit('componentError', this.error);
+      this.addMessages(messages, dirty, this.refs.input);
       if (this.refs.input) {
-        if (isWarning) {
-          this.addInputWarning(message, dirty, this.refs.input);
-        }
-        else {
-          this.addInputError(message, dirty, this.refs.input);
-        }
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
       }
     }
     else if (this.error && this.error.external === !!external) {
@@ -2218,27 +2425,29 @@ export default class Component extends Element {
         this.empty(this.refs.messageContainer);
       }
       this.error = null;
-      this.removeInputError(this.refs.input);
+      if (this.refs.input) {
+        this.setErrorClasses(this.refs.input, dirty, hasErrors, !!messages.length);
+      }
       this.clearErrorClasses();
     }
 
-    if (!this.refs.input) {
-      return;
-    }
-    this.refs.input.forEach(input => {
-      input = this.performInputMapping(input);
-      if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message, dirty);
-      }
-    });
+    // if (!this.refs.input) {
+    //   return;
+    // }
+    // this.refs.input.forEach(input => {
+    //   input = this.performInputMapping(input);
+    //   if (typeof input.setCustomValidity === 'function') {
+    //     input.setCustomValidity(message, dirty);
+    //   }
+    // });
   }
 
-  shouldSkipValidation(data, dirty, rowData) {
+  shouldSkipValidation(data, dirty, row) {
     const rules = [
       // Force valid if component is hidden.
       () => !this.visible,
       // Force valid if component is conditionally hidden.
-      () => !this.checkCondition(rowData, data)
+      () => !this.checkCondition(row, data)
     ];
 
     return rules.some(pred => pred());
@@ -2276,11 +2485,6 @@ export default class Component extends Element {
    * @param {boolean} disabled
    */
   set disabled(disabled) {
-    // Do not allow a component to be disabled if it should be always...
-    if (disabled && !this.canDisable) {
-      return;
-    }
-
     this._disabled = disabled;
   }
 
@@ -2367,13 +2571,22 @@ export default class Component extends Element {
     this.removeChildFrom(element, this.element);
   }
 
-  attachLogic() {
+  detachLogic() {
     this.logic.forEach(logic => {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
+        this.off(event); // only applies to callbacks on this component
+      }
+    });
+  }
+
+  attachLogic() {
+    this.logic.forEach((logic) => {
+      if (logic.trigger.type === 'event') {
+        const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
-          const newComponent = _.cloneDeep(this.originalComponent);
-          if (this.applyActions(logic.actions, args, this.data, newComponent)) {
+          const newComponent = fastCloneDeep(this.originalComponent);
+          if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;

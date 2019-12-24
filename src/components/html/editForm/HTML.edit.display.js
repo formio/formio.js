@@ -28,10 +28,6 @@ export default [
     ignore: true
   },
   {
-    key: 'alwaysEnabled',
-    ignore: true
-  },
-  {
     key: 'tabindex',
     ignore: true
   },
