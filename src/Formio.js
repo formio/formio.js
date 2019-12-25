@@ -1369,6 +1369,7 @@ export default class Formio {
                 type: 'text/javascript',
                 defer: true,
                 async: true,
+                referrerpolicy: 'origin',
               };
               break;
             case 'styles':

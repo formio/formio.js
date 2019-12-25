@@ -273,12 +273,24 @@ export default [
     data: {
       values: [
         { label: &apos;None&apos;, value: &apos;&apos; },
-        { label: &apos;CKEditor&apos;, value: &apos;ckeditor&apos; },
         { label: &apos;ACE&apos;, value: &apos;ace&apos; },
-        { label: &apos;Quill&apos;, value: &apos;quill&apos; }
+        { label: &apos;CKEditor&apos;, value: &apos;ckeditor&apos; },
+        { label: &apos;Quill&apos;, value: &apos;quill&apos; },
+        { label: &apos;TinyMCE&apos;, value: &apos;tiny&apos; },
       ]
     },
     weight: 415
+  },
+  {
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;tinyApiKey&apos;,
+    label: &apos;TinyMCE Api Key&apos;,
+    weight: 415.2,
+    placeholder: &apos;If you have a TinyMCE APi Key, enter it here.&apos;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.editor&apos; }, &apos;tiny&apos;] }
+    }
   },
   {
     type: &apos;checkbox&apos;,
@@ -466,6 +478,10 @@ export default [
       json: {
         or: [
           { &apos;===&apos;: [
+              { var: &apos;data.editor&apos; },
+              &apos;ace&apos;
+            ] },
+          { &apos;===&apos;: [
             { var: &apos;data.editor&apos; },
             &apos;ckeditor&apos;
           ] },
@@ -475,8 +491,8 @@ export default [
           ] },
           { &apos;===&apos;: [
             { var: &apos;data.editor&apos; },
-            &apos;ace&apos;
-          ] }
+            &apos;tiny&apos;
+          ] },
         ]
       }
     },

@@ -268,7 +268,10 @@ export default class FormComponent extends Component {
       }
 
       // Iterate through every component and hide the submit button.
+      // Override defaultValue with respective parts from old dataValue.
+      const oldData = this.dataValue ? this.dataValue.data : {};
       eachComponent(form.components, (component) => {
+        component.defaultValue = _.get(oldData, component.key, component.defaultValue);
         if (
           (component.type === 'button') &&
           ((component.action === 'submit') || !component.action)

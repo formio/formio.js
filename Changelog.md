@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.8
+### Changed
+ - The path to the error styles to use form settings.
+
+## 4.8.0-rc.7
+### Added
+ - TinyMCE wysiwyg editor support.
+ - Implemented errors list navigation
+ 
+### Fixed
+ - Refactored TextArea components to allow multiple Wysiwyg instances.
+ - Fix github #1953: Override .defaultValue of subcomponents.
+ - Problem where multiple number components would not let you add new values. 
+ 
+### Changed
+ - Upgrade eventemitter2@6.0.0, sinon@8.0.1
+
 ## 4.8.0-rc.6
 ### Fixed
  - Changed references to Promise and replace them with NativePromise.

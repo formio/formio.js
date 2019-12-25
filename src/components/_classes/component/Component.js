@@ -14,6 +14,7 @@ import ComponentModal from '../componentModal/ComponentModal';
 const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
 const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
 const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
+const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
  * This is the Component class
@@ -1832,6 +1833,21 @@ export default class Component extends Element {
       });
   }
 
+  addTiny(element, settings, onChange) {
+    return Formio.requireLibrary('tinymce', 'tinymce', TINYMCE_URL.replace('no-api-key', settings.tinyApiKey), true)
+      .then((editor) => {
+        return editor.init({
+          ...settings,
+          target: element,
+          theme: 'silver',
+          // eslint-disable-next-line camelcase
+          init_instance_callback: (editor) => {
+            editor.on('Change', () => onChange(editor.getContent()));
+          },
+        });
+      });
+  }
+
   /**
    * The empty value for this component.
    *
@@ -2094,7 +2110,7 @@ export default class Component extends Element {
    */
   updateComponentValue(value, flags) {
     flags = flags || {};
-    let newValue = (value === undefined || value === null) ? this.getValue() : value;
+    let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
@@ -2127,7 +2143,11 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
+    this.setValue(this.emptyValue, {
+      noUpdateEvent: true,
+      noValidate: true,
+      resetValue: true
+    });
     _.unset(this.data, this.key);
   }
 

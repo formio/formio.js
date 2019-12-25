@@ -1158,8 +1158,15 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
+    const errorStyle = _.get(this.form, &apos;settings.errorStyle&apos;, &apos;&apos;);
     if (!type &amp;&amp; this.submitted) {
       if (this.alert) {
+        if (errorStyle === &apos;advanced&apos;) {
+          this.refs.errorRef.forEach(el =&gt; {
+            this.removeEventListener(el, &apos;click&apos;);
+            this.removeEventListener(el, &apos;keypress&apos;);
+          });
+        }
         this.removeChild(this.alert);
         this.alert = null;
       }
@@ -1173,6 +1180,12 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
+        if (errorStyle === &apos;advanced&apos;) {
+          this.refs.errorRef.forEach(el =&gt; {
+            this.removeEventListener(el, &apos;click&apos;);
+            this.removeEventListener(el, &apos;keypress&apos;);
+          });
+        }
         this.removeChild(this.alert);
         this.alert = null;
       }
@@ -1185,12 +1198,60 @@ export default class Webform extends NestedComponent {
         class: `alert alert-${type}`,
         role: &apos;alert&apos;
       });
-      this.setContent(this.alert, message);
+      if (message instanceof HTMLElement) {
+        this.appendTo(message, this.alert);
+      }
+      else {
+        this.setContent(this.alert, message);
+      }
     }
     if (!this.alert) {
       return;
     }
+
+    this.loadRefs(this.alert, { errorRef: &apos;multiple&apos; });
+
+    if (errorStyle === &apos;advanced&apos;) {
+      this.refs.errorRef.forEach(el =&gt; {
+        this.addEventListener(el, &apos;click&apos;, (e) =&gt; {
+          const key = e.currentTarget.dataset.componentKey;
+          this.focusOnComponent(key);
+        });
+        this.addEventListener(el, &apos;keypress&apos;, (e) =&gt; {
+          if (e.keyCode === 13) {
+            const key = e.currentTarget.dataset.componentKey;
+            this.focusOnComponent(key);
+          }
+        });
+      });
+    }
     this.prepend(this.alert);
+  }
+
+  /**
+   * Focus on selected component.
+   *
+   * @param {string} key - The key of selected component.
+   * @returns {*}
+   */
+  focusOnComponent(key) {
+    if (key) {
+      const component = this.getComponent(key);
+      const listenerFunction = (e) =&gt; {
+        e.stopPropagation();
+
+        this.formReady.then(() =&gt; {
+          if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
+            this.refs.errorRef[0].focus();
+          }
+        });
+
+        this.removeEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
+      };
+
+      this.addEventListener(component.refs.input[0], &apos;blur&apos;, listenerFunction);
+      component.focus();
+    }
   }
 
   /**
@@ -1209,6 +1270,9 @@ export default class Webform extends NestedComponent {
       else {
         errors.push(error);
       }
+    }
+    else {
+      errors = super.errors;
     }
 
     errors = errors.concat(this.customErrors);
@@ -1237,17 +1301,46 @@ export default class Webform extends NestedComponent {
         components.forEach((component) =&gt; component.setCustomValidity(err.message, true));
       });
     });
+    const errorStyle = _.get(this.form, &apos;settings.errorStyle&apos;, &apos;&apos;);
+    const message = document.createDocumentFragment();
+    const p = this.ce(&apos;p&apos;);
+    this.setContent(p, this.t(&apos;error&apos;));
+    const ul = this.ce(&apos;ul&apos;);
+    errors.forEach(err =&gt; {
+      if (err) {
+        const  params = { ref: &apos;errorRef&apos; };
 
-    const message = `
-      &lt;p&gt;${this.t(&apos;error&apos;)}&lt;/p&gt;
-      &lt;ul&gt;
-        ${errors.map((err) =&gt; err ? `&lt;li&gt;&lt;strong&gt;${err.message || err}&lt;/strong&gt;&lt;/li&gt;` : &apos;&apos;).join(&apos;&apos;)}
-      &lt;/ul&gt;
-    `;
+        if (errorStyle === &apos;advanced&apos;) {
+          params.tabIndex = 0;
+        }
+
+        const li = this.ce(&apos;li&apos;, params);
+        const strong = this.ce(&apos;strong&apos;);
+        this.setContent(strong, err.message || err);
+        if (err.component &amp;&amp; err.component.key) {
+          li.dataset.componentKey = err.component.key;
+        }
+        this.appendTo(strong, li);
+        this.appendTo(li, ul);
+      }
+    });
+    message.append(p, ul);
+    const isAlertBefore = this.alert ? true : false;
     this.setAlert(&apos;danger&apos;, message);
     if (triggerEvent) {
       this.emit(&apos;error&apos;, errors);
     }
+
+    if (!isAlertBefore) {
+      if (errorStyle === &apos;advanced&apos;) {
+        this.refs.errorRef[0].focus();
+      }
+      else {
+        const withKeys = Array.from(this.refs.errorRef).filter(ref =&gt; !!ref.dataset.componentKey);
+        withKeys.length &amp;&amp; this.focusOnComponent(withKeys[0].dataset.componentKey);
+      }
+    }
+
     return errors;
   }
 

@@ -246,6 +246,7 @@ import ComponentModal from &apos;../componentModal/ComponentModal&apos;;
 const CKEDITOR = &apos;https://cdn.form.io/ckeditor/12.2.0/ckeditor.js&apos;;
 const QUILL_URL = &apos;https://cdn.form.io/quill/1.3.6&apos;;
 const ACE_URL = &apos;https://cdn.form.io/ace/1.4.5/ace.js&apos;;
+const TINYMCE_URL = &apos;https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js&apos;;
 
 /**
  * This is the Component class
@@ -2038,6 +2039,21 @@ export default class Component extends Element {
       });
   }
 
+  addTiny(element, settings, onChange) {
+    return Formio.requireLibrary(&apos;tinymce&apos;, &apos;tinymce&apos;, TINYMCE_URL.replace(&apos;no-api-key&apos;, settings.tinyApiKey), true)
+      .then((editor) =&gt; {
+        return editor.init({
+          ...settings,
+          target: element,
+          theme: &apos;silver&apos;,
+          // eslint-disable-next-line camelcase
+          init_instance_callback: (editor) =&gt; {
+            editor.on(&apos;Change&apos;, () =&gt; onChange(editor.getContent()));
+          },
+        });
+      });
+  }
+
   /**
    * The empty value for this component.
    *
@@ -2300,7 +2316,7 @@ export default class Component extends Element {
    */
   updateComponentValue(value, flags) {
     flags = flags || {};
-    let newValue = (value === undefined || value === null) ? this.getValue() : value;
+    let newValue = (!flags.resetValue &amp;&amp; (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
     const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
     if (changed) {
@@ -2333,7 +2349,11 @@ export default class Component extends Element {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
+    this.setValue(this.emptyValue, {
+      noUpdateEvent: true,
+      noValidate: true,
+      resetValue: true
+    });
     _.unset(this.data, this.key);
   }
 

@@ -2706,6 +2706,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#focusoncomponent",
+    "class/src/Webform.js~Webform.html#instance-method-focusOnComponent",
+    "src/Webform.js~Webform#focusOnComponent",
+    "method"
+  ],
+  [
     "src/webform.js~webform#form",
     "class/src/Webform.js~Webform.html#instance-get-form",
     "src/Webform.js~Webform#form",
@@ -3522,6 +3528,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/wizard.js~wizard#focusoncomponent",
+    "class/src/Wizard.js~Wizard.html#instance-method-focusOnComponent",
+    "src/Wizard.js~Wizard#focusOnComponent",
+    "method"
+  ],
+  [
     "src/wizard.js~wizard#form",
     "class/src/Wizard.js~Wizard.html#instance-get-form",
     "src/Wizard.js~Wizard#form",
@@ -4017,6 +4029,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#addshortcut",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-addShortcut",
     "src/components/_classes/component/Component.js~Component#addShortcut",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#addtiny",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-addTiny",
+    "src/components/_classes/component/Component.js~Component#addTiny",
     "method"
   ],
   [
@@ -9672,12 +9690,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/number/number.js~numbercomponent#normalizevalue",
-    "class/src/components/number/Number.js~NumberComponent.html#instance-method-normalizeValue",
-    "src/components/number/Number.js~NumberComponent#normalizeValue",
-    "method"
-  ],
-  [
     "src/components/number/number.js~numbercomponent#numbermask",
     "class/src/components/number/Number.js~NumberComponent.html#instance-member-numberMask",
     "src/components/number/Number.js~NumberComponent#numberMask",
@@ -11658,15 +11670,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#aceplaceholder",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-acePlaceholder",
-    "src/components/textarea/TextArea.js~TextAreaComponent#acePlaceholder",
-    "method"
-  ],
-  [
     "src/components/textarea/textarea.js~textareacomponent#addautoexpanding",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-addAutoExpanding",
     "src/components/textarea/TextArea.js~TextAreaComponent#addAutoExpanding",
+    "method"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#attach",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-attach",
+    "src/components/textarea/TextArea.js~TextAreaComponent#attach",
     "method"
   ],
   [
@@ -11700,27 +11712,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#destroy",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-destroy",
-    "src/components/textarea/TextArea.js~TextAreaComponent#destroy",
+    "src/components/textarea/textarea.js~textareacomponent#detach",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-detach",
+    "src/components/textarea/TextArea.js~TextAreaComponent#detach",
     "method"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#editor",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editor",
-    "src/components/textarea/TextArea.js~TextAreaComponent#editor",
+    "src/components/textarea/textarea.js~textareacomponent#editors",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editors",
+    "src/components/textarea/TextArea.js~TextAreaComponent#editors",
     "member"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#editorready",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editorReady",
-    "src/components/textarea/TextArea.js~TextAreaComponent#editorReady",
-    "member"
-  ],
-  [
-    "src/components/textarea/textarea.js~textareacomponent#editorreadyresolve",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editorReadyResolve",
-    "src/components/textarea/TextArea.js~TextAreaComponent#editorReadyResolve",
+    "src/components/textarea/textarea.js~textareacomponent#editorsready",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editorsReady",
+    "src/components/textarea/TextArea.js~TextAreaComponent#editorsReady",
     "member"
   ],
   [
@@ -11826,9 +11832,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#setwysiwygvalue",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setWysiwygValue",
-    "src/components/textarea/TextArea.js~TextAreaComponent#setWysiwygValue",
+    "src/components/textarea/textarea.js~textareacomponent#setvalueat",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setValueAt",
+    "src/components/textarea/TextArea.js~TextAreaComponent#setValueAt",
     "method"
   ],
   [
@@ -11838,9 +11844,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/textarea/textarea.js~textareacomponent#updatesize",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-updateSize",
-    "src/components/textarea/TextArea.js~TextAreaComponent#updateSize",
+    "src/components/textarea/textarea.js~textareacomponent#updatesizes",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-updateSizes",
+    "src/components/textarea/TextArea.js~TextAreaComponent#updateSizes",
     "member"
   ],
   [

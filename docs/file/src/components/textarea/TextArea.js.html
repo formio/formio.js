@@ -266,9 +266,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   init() {
     super.init();
-    this.editorReady = new NativePromise((resolve) =&gt; {
-      this.editorReadyResolve = resolve;
-    });
+    this.editors = [];
+    this.editorsReady = [];
+    this.updateSizes = [];
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
@@ -289,25 +289,6 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   validateMultiple() {
     return !this.component.as === &apos;json&apos;;
-  }
-
-  acePlaceholder() {
-    if (!this.component.placeholder || !this.editor) {
-      return;
-    }
-    const shouldShow = !this.editor.session.getValue().length;
-    let node = this.editor.renderer.emptyMessageNode;
-    if (!shouldShow &amp;&amp; node) {
-      this.editor.renderer.scroller.removeChild(this.editor.renderer.emptyMessageNode);
-      this.editor.renderer.emptyMessageNode = null;
-    }
-    else if (shouldShow &amp;&amp; !node) {
-      node = this.editor.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
-      node.textContent = this.t(this.component.placeholder);
-      node.className = &apos;ace_invisible ace_emptyMessage&apos;;
-      node.style.padding = &apos;0 9px&apos;;
-      this.editor.renderer.scroller.appendChild(node);
-    }
   }
 
   renderElement(value, index) {
@@ -342,9 +323,16 @@ export default class TextAreaComponent extends TextFieldComponent {
    *
    * @param newValue
    */
-  updateEditorValue(newValue) {
+  updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.removeBlanks(newValue));
-    if ((newValue !== this.dataValue) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(this.dataValue))) {
+    const dataValue = this.dataValue;
+    if (Array.isArray(dataValue)) {
+      const newArray = _.clone(dataValue);
+      newArray[index] = newValue;
+      newValue = newArray;
+    }
+
+    if ((!_.isEqual(newValue, dataValue)) &amp;&amp; (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
       this.updateValue(newValue, {
         modified: !this.autoModified
       });
@@ -355,7 +343,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   attachElement(element, index) {
     if (this.autoExpand &amp;&amp; (this.isPlain || this.options.readOnly || this.options.htmlView)) {
       if (element.nodeName === &apos;TEXTAREA&apos;) {
-        this.addAutoExpanding(element);
+        this.addAutoExpanding(element, index);
       }
     }
 
@@ -369,85 +357,128 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     let settings = _.isEmpty(this.component.wysiwyg) ? this.wysiwygDefault : this.component.wysiwyg;
 
-    // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
-    switch (this.component.editor) {
-      case &apos;ace&apos;:
-        if (!settings) {
-          settings = {};
-        }
-        settings.mode = this.component.as || &apos;javascript&apos;;
-        this.addAce(element, settings, (newValue) =&gt; this.updateEditorValue(newValue)).then((ace) =&gt; {
-          this.editor = ace;
-          this.editor.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
-          this.editor.setValue(this.setConvertedValue(this.dataValue));
-          setTimeout(() =&gt; {
-            this.acePlaceholder();
-          }, 100);
-          this.editorReadyResolve(ace);
-          return ace;
-        }).catch(err =&gt; console.warn(err));
-        break;
-      case &apos;quill&apos;:
-        // Normalize the configurations for quill.
-        if (settings.hasOwnProperty(&apos;toolbarGroups&apos;) || settings.hasOwnProperty(&apos;toolbar&apos;)) {
-          console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
-          settings = this.wysiwygDefault;
-        }
-
-        // Add the quill editor.
-        this.addQuill(
-          element,
-          settings, () =&gt; this.updateEditorValue(this.editor.root.innerHTML)
-        ).then((quill) =&gt; {
-          this.editor = quill;
-          if (this.component.isUploadEnabled) {
-            const _this = this;
-            quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, function() {
-              //we need initial &apos;this&apos; because quill calls this method with its own context and we need some inner quill methods exposed in it
-              //we also need current component instance as we use some fields and methods from it as well
-              _this.imageHandler.call(_this, this);
-            } );
+    // Keep track of when this editor is ready.
+    this.editorsReady[index] = new NativePromise((editorReady) =&gt; {
+      // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
+      switch (this.component.editor) {
+        case &apos;ace&apos;:
+          if (!settings) {
+            settings = {};
           }
-          quill.root.spellcheck = this.component.spellcheck;
-          if (this.options.readOnly || this.component.disabled) {
-            this.editor.disable();
+          settings.mode = this.component.as || &apos;javascript&apos;;
+          this.addAce(element, settings, (newValue) =&gt; this.updateEditorValue(index, newValue)).then((ace) =&gt; {
+            this.editors[index] = ace;
+            ace.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            ace.setValue(this.setConvertedValue(dataValue, index));
+            if (this.component.placeholder) {
+              setTimeout(() =&gt; {
+                const shouldShow = !ace.session.getValue().length;
+                let node = ace.renderer.emptyMessageNode;
+                if (!shouldShow &amp;&amp; node) {
+                  ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
+                  ace.renderer.emptyMessageNode = null;
+                }
+                else if (shouldShow &amp;&amp; !node) {
+                  node = ace.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
+                  node.textContent = this.t(this.component.placeholder);
+                  node.className = &apos;ace_invisible ace_emptyMessage&apos;;
+                  node.style.padding = &apos;0 9px&apos;;
+                  ace.renderer.scroller.appendChild(node);
+                }
+              }, 100);
+            }
+            editorReady(ace);
+            return ace;
+          }).catch(err =&gt; console.warn(err));
+          break;
+        case &apos;quill&apos;:
+          // Normalize the configurations for quill.
+          if (settings.hasOwnProperty(&apos;toolbarGroups&apos;) || settings.hasOwnProperty(&apos;toolbar&apos;)) {
+            console.warn(&apos;The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.&apos;);
+            settings = this.wysiwygDefault;
           }
 
-          this.editor.setContents(this.editor.clipboard.convert(this.setConvertedValue(this.dataValue)));
-          this.editorReadyResolve(this.editor);
-          return quill;
-        }).catch(err =&gt; console.warn(err));
-        break;
-      case &apos;ckeditor&apos;:
-        settings = settings || {};
-        settings.rows = this.component.rows;
-        this.addCKE(element, settings, (newValue) =&gt; this.updateEditorValue(newValue))
-          .then((editor) =&gt; {
-            this.editor = editor;
+          // Add the quill editor.
+          this.addQuill(
+            element,
+            settings, () =&gt; this.updateEditorValue(index, this.editors[index].root.innerHTML)
+          ).then((quill) =&gt; {
+            this.editors[index] = quill;
+            if (this.component.isUploadEnabled) {
+              const _this = this;
+              quill.getModule(&apos;toolbar&apos;).addHandler(&apos;image&apos;, function() {
+                //we need initial &apos;this&apos; because quill calls this method with its own context and we need some inner quill methods exposed in it
+                //we also need current component instance as we use some fields and methods from it as well
+                _this.imageHandler.call(_this, this);
+              } );
+            }
+            quill.root.spellcheck = this.component.spellcheck;
             if (this.options.readOnly || this.component.disabled) {
-              this.editor.isReadOnly = true;
+              quill.disable();
             }
-            const numRows = parseInt(this.component.rows, 10);
-            if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
-              // Default height is 21px with 10px margin + a 14px top margin.
-              const editorHeight = (numRows * 31) + 14;
-              editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-            }
-            editor.data.set(this.setConvertedValue(this.dataValue));
-            this.editorReadyResolve(this.editor);
-            return editor;
+
+            let dataValue = this.dataValue;
+            dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            quill.setContents(quill.clipboard.convert(this.setConvertedValue(dataValue, index)));
+            editorReady(quill);
+            return quill;
+          }).catch(err =&gt; console.warn(err));
+          break;
+        case &apos;ckeditor&apos;:
+          settings = settings || {};
+          settings.rows = this.component.rows;
+          this.addCKE(element, settings, (newValue) =&gt; this.updateEditorValue(index, newValue))
+            .then((editor) =&gt; {
+              this.editors[index] = editor;
+              if (this.options.readOnly || this.component.disabled) {
+                editor.isReadOnly = true;
+              }
+              const numRows = parseInt(this.component.rows, 10);
+              if (_.isFinite(numRows) &amp;&amp; _.has(editor, &apos;ui.view.editable.editableElement&apos;)) {
+                // Default height is 21px with 10px margin + a 14px top margin.
+                const editorHeight = (numRows * 31) + 14;
+                editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
+              }
+              let dataValue = this.dataValue;
+              dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              editor.data.set(this.setConvertedValue(dataValue, index));
+              editorReady(editor);
+              return editor;
+            });
+          break;
+        case &apos;tiny&apos;:
+          if (!settings) {
+            settings = {};
+          }
+          settings.mode = this.component.as || &apos;javascript&apos;;
+          this.addTiny(element, settings, (newValue) =&gt; this.updateEditorValue(newValue))
+            .then((tiny) =&gt; {
+              this.editors[index] = tiny;
+              tiny.setContent(this.setConvertedValue(this.dataValue));
+              editorReady(tiny);
+              return tiny;
+            }).catch(err =&gt; console.warn(err));
+          break;
+        default:
+          super.attachElement(element, index);
+          this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
+            this.updateValue(null, {
+              modified: true
+            }, index);
           });
-        break;
-      default:
-        super.attachElement(element, index);
-        this.addEventListener(element, this.inputInfo.changeEvent, () =&gt; {
-          this.updateValue(null, {
-            modified: true
-          }, index);
-        });
-    }
+      }
+    });
 
     return element;
+  }
+
+  attach(element) {
+    const attached = super.attach(element);
+    // Make sure we restore the value after attaching since wysiwygs and readonly texts need an additional set.
+    this.restoreValue();
+    return attached;
   }
 
   imageHandler(quillInstance) {
@@ -517,16 +548,16 @@ export default class TextAreaComponent extends TextFieldComponent {
   get htmlView() {
     return this.options.readOnly &amp;&amp; (this.component.editor || this.component.wysiwyg);
   }
-  /* eslint-enable max-statements */
 
-  setWysiwygValue(value, skipSetting) {
-    if (this.editorReady) {
-      return this.editorReady.then((editor) =&gt; {
+  setValueAt(index, value, flags) {
+    super.setValueAt(index, value, flags);
+    if (this.editorsReady[index]) {
+      this.editorsReady[index].then((editor) =&gt; {
         this.autoModified = true;
-        if (!skipSetting) {
+        if (!flags.skipWysiwyg) {
           switch (this.component.editor) {
             case &apos;ace&apos;:
-              editor.setValue(this.setConvertedValue(value));
+              editor.setValue(this.setConvertedValue(value, index));
               break;
             case &apos;quill&apos;:
               if (this.component.isUploadEnabled) {
@@ -536,18 +567,31 @@ export default class TextAreaComponent extends TextFieldComponent {
                   });
               }
               else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
               }
               break;
             case &apos;ckeditor&apos;:
-              editor.data.set(this.setConvertedValue(value));
+              editor.data.set(this.setConvertedValue(value, index));
+              break;
+            case &apos;tiny&apos;:
+              editor.setContent(this.setConvertedValue(value));
               break;
           }
         }
       });
     }
+  }
 
-    return NativePromise.resolve();
+  setValue(value, flags) {
+    flags = flags || {};
+    if (this.isPlain || this.options.readOnly || this.disabled) {
+      value = Array.isArray(value) ?
+        value.map((val, index) =&gt; this.setConvertedValue(val, index)) :
+        this.setConvertedValue(value);
+      return super.setValue(value, flags);
+    }
+    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    return super.setValue(value, flags);
   }
 
   setReadOnlyValue(value, index) {
@@ -622,7 +666,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     }));
   }
 
-  addAutoExpanding(textarea) {
+  addAutoExpanding(textarea, index) {
     let heightOffset = null;
     let previousHeight = null;
 
@@ -697,7 +741,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     this.addEventListener(textarea, &apos;input&apos;, update);
     this.on(&apos;initialized&apos;, update);
-    this.updateSize = update;
+    this.updateSizes[index] = update;
     update();
   }
 
@@ -725,9 +769,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   onChange(flags, fromRoot) {
     const changed = super.onChange(flags, fromRoot);
-    if (this.updateSize) {
-      this.updateSize();
-    }
+    this.updateSizes.forEach(updateSize =&gt; updateSize());
     return changed;
   }
 
@@ -747,23 +789,6 @@ export default class TextAreaComponent extends TextFieldComponent {
     return defaultValue;
   }
 
-  setValue(value, flags) {
-    const skipSetting = _.isEqual(value, this.getValue());
-    value = value || &apos;&apos;;
-    if (this.isPlain || this.options.readOnly || this.disabled) {
-      value = Array.isArray(value) ? value.map((val, index) =&gt; this.setConvertedValue(val, index)) : this.setConvertedValue(value);
-      return super.setValue(value, flags);
-    }
-
-    // Set the value when the editor is ready.
-    const newValue = (value === undefined || value === null) ? this.getValue() : value;
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
-    if (changed) {
-      this.setWysiwygValue(newValue, skipSetting);
-    }
-    return changed;
-  }
-
   getConvertedValue(value) {
     if (this.component.as &amp;&amp; this.component.as === &apos;json&apos; &amp;&amp; value) {
       try {
@@ -776,20 +801,17 @@ export default class TextAreaComponent extends TextFieldComponent {
     return value;
   }
 
-  destroy() {
-    if (this.editorReady) {
-      this.editorReady.then((editor) =&gt; {
-        if (editor.destroy) {
-          return editor.destroy();
-        }
-      });
-    }
-
-    if (this.updateSize) {
-      this.removeEventListener(window, &apos;resize&apos;, this.updateSize);
-    }
-
-    return super.destroy();
+  detach() {
+    // Destroy all editors.
+    this.editors.forEach(editor =&gt; {
+      if (editor.destroy) {
+        editor.destroy();
+      }
+    });
+    this.editors = [];
+    this.editorsReady = [];
+    this.updateSizes.forEach(updateSize =&gt; this.removeEventListener(window, &apos;resize&apos;, updateSize));
+    this.updateSizes = [];
   }
 
   getValue() {
