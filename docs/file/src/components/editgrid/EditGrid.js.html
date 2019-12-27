@@ -602,8 +602,10 @@ export default class EditGridComponent extends NestedComponent {
     dialog.refs.dialogContents.appendChild( this.ce(&apos;button&apos;, {
       class: &apos;btn btn-primary&apos;,
       onClick: () =&gt; {
-        dialog.close();
-        this.saveRow(rowIndex);
+        if (this.validateRow(this.editRows[rowIndex], true)) {
+          dialog.close();
+          this.saveRow(rowIndex);
+        }
       }
     }, this.component.saveRow || &apos;Save&apos;));
     this.attachComponents(formComponents, this.editRows[rowIndex].components);
