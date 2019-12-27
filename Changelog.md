@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.10
+### Fixed
+ - Removed async and await so that Babel would not add code that fails noeval configurations.
+ - Validation bug with modal
+
 ## 4.8.0-rc.9
 ### Changed
  - Made new error list system enabled by default.
