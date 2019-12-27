@@ -262,27 +262,30 @@ describe(&apos;TextField Component&apos;, () =&gt; {
   it(&apos;Should provide required validation&apos;, () =&gt; {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
-    })).then(async component =&gt; {
-      await Harness.testInvalid(component, &apos;&apos;, &apos;firstName&apos;, &apos;First Name is required&apos;);
-      await Harness.testValid(component, &apos;te&apos;);
+    })).then((component) =&gt; {
+      return Harness.testInvalid(component, &apos;&apos;, &apos;firstName&apos;, &apos;First Name is required&apos;).then(() =&gt; component);
+    }).then((component) =&gt; {
+      return Harness.testValid(component, &apos;te&apos;).then(() =&gt; component);
     });
   });
 
   it(&apos;Should provide minLength validation&apos;, () =&gt; {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
-    })).then(async component =&gt; {
-      await Harness.testInvalid(component, &apos;t&apos;, &apos;firstName&apos;, &apos;First Name must be longer than 1 characters.&apos;);
-      await Harness.testValid(component, &apos;te&apos;);
+    })).then((component) =&gt; {
+      return Harness.testInvalid(component, &apos;t&apos;, &apos;firstName&apos;, &apos;First Name must be longer than 1 characters.&apos;).then(() =&gt; component);
+    }).then((component) =&gt; {
+      return Harness.testValid(component, &apos;te&apos;).then(() =&gt; component);
     });
   });
 
   it(&apos;Should provide maxLength validation&apos;, () =&gt; {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
-    })).then(async component =&gt; {
-      await Harness.testInvalid(component, &apos;testte&apos;, &apos;firstName&apos;, &apos;First Name must be shorter than 6 characters.&apos;);
-      await Harness.testValid(component, &apos;te&apos;);
+    })).then(component =&gt; {
+      return Harness.testInvalid(component, &apos;testte&apos;, &apos;firstName&apos;, &apos;First Name must be shorter than 6 characters.&apos;).then(() =&gt; component);
+    }).then((component) =&gt; {
+      return Harness.testValid(component, &apos;te&apos;).then(() =&gt; component);
     });
   });
 

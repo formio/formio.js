@@ -488,12 +488,14 @@ class ValidationChecker {
           });
 
           return isofetch.fetch(request)
-            .then(async response =&gt; {
+            .then(response =&gt; {
               if (!response.ok) {
                 return false;
               }
 
-              const results = await response.json();
+              return response.json();
+            })
+            .then((results) =&gt; {
               return results &amp;&amp; results.length;
             })
             .catch(() =&gt; false);
