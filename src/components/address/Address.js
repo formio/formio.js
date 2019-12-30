@@ -87,7 +87,7 @@ export default class AddressComponent extends ContainerComponent {
 
   init() {
     this.components = this.components || [];
-    NestedComponent.prototype.addComponents.call(this, {});
+    NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
     Field.prototype.init.call(this);
 
     if (!this.builderMode && this.component.provider) {
@@ -126,9 +126,7 @@ export default class AddressComponent extends ContainerComponent {
   restoreComponentsContext() {
     this.getComponents().forEach((component) => {
       component.data = this.address;
-      component.setValue(component.dataValue, {
-        modified: true,
-      });
+      component.restoreValue();
     });
   }
 
