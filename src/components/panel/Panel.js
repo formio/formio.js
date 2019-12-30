@@ -1,4 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
+import _ from 'lodash';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -34,6 +35,31 @@ export default class PanelComponent extends NestedComponent {
 
   get templateName() {
     return 'panel';
+  }
+
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    return this.checkComponentValidity(data, dirty, row);
+  }
+
+  everyComponent(fn, hasChildren) {
+    const components = this.getComponents();
+
+    this.collapsed = !hasChildren;
+
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
+        const isPanel = component.component.type === 'panel';
+        if (component.everyComponent(fn, isPanel) === false) {
+          return false;
+        }
+      }
+    });
   }
 
   constructor(...args) {
