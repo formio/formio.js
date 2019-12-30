@@ -1,4 +1,9 @@
 import { interpolate } from '../../utils/utils';
+import NativePromise from 'native-promise-only';
+import fetchPonyfill from 'fetch-ponyfill';
+const { fetch, Headers, Request } = fetchPonyfill({
+  Promise: NativePromise
+});
 import _ from 'lodash';
 
 const Rule = require('./Rule');
@@ -85,14 +90,9 @@ module.exports = class Select extends Rule {
       requestOptions.headers['x-jwt-token'] = this.config.token;
     }
 
-    // Isomorphic fetch
-    const isofetch = (window && window.fetch) ? { fetch, Headers, Request, Response } : require('fetch-ponyfill')();
-
-    const request = new isofetch.Request(requestOptions.url, {
-      headers: new isofetch.Headers(requestOptions.headers)
-    });
-
-    return isofetch.fetch(request)
+    return fetch(new Request(requestOptions.url, {
+      headers: new Headers(requestOptions.headers)
+    }))
       .then(response => {
         if (!response.ok) {
           return false;
