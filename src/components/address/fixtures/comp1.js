@@ -9,12 +9,7 @@ export default {
   'clearOnHide': true,
   'unique': false,
   'persistent': true,
-  'map': {
-    'region': '',
-    'key': '',
-    'autocompleteOptions': null,
-    'autocompleteFilter': null
-  },
+  'provider': 'nominatim',
   'validate': {
     'customPrivate': false,
     'custom': '',

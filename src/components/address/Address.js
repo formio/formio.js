@@ -413,6 +413,10 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
+
     const { address } = value;
 
     if (this.provider && !this.manualMode) {
