@@ -43,12 +43,16 @@ export default class PanelComponent extends NestedComponent {
     return this.checkComponentValidity(data, dirty, row);
   }
 
-  everyComponent(fn, hasChildren) {
+  everyComponent(fn, isPanel) {
     const components = this.getComponents();
-
-    this.collapsed = !hasChildren;
+    let hasErrors = false;
 
     _.each(components, (component, index) => {
+      if (isPanel && !component.checkValidity(null, true)) {
+        hasErrors = true;
+        this.collapsed = !isPanel && hasErrors;
+      }
+
       if (fn(component, components, index) === false) {
         return false;
       }
