@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Radio components with Field Logic rendering as text inputs
+ - Field Logic triggering component JSON change when nothing was changed
+
 ## 4.8.0-rc.10
 ### Fixed
  - Removed async and await so that Babel would not add code that fails noeval configurations.
