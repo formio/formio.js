@@ -1041,7 +1041,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error, triggerEvent) {
+    showErrors(error, triggerEvent) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1101,20 +1101,17 @@ export default class Webform extends NestedComponent {
       }
     });
     message.append(p, ul);
-    const isAlertBefore = this.alert ? true : false;
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
     }
 
-    if (!isAlertBefore) {
-      if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.refs.errorRef[0].focus();
-      }
-      else {
-        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
-      }
+    if (this.refs.errorRef && this.refs.errorRef.length) {
+      this.refs.errorRef[0].focus();
+    }
+    else {
+      const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
+      withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
     }
 
     return errors;
