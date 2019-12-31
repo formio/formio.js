@@ -210,9 +210,8 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = fastCloneDeep(component);
+    this.originalComponent = _.defaultsDeep(component || {} , this.defaultSchema);
     // original component with default schema values
-    this.defaultComponent = _.defaultsDeep(component || {} , this.defaultSchema);
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -255,7 +254,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.cloneDeep(this.defaultComponent);
+    this.component = fastCloneDeep(this.originalComponent);
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -1471,7 +1470,7 @@ export default class Component extends Element {
       return;
     }
 
-    const newComponent = fastCloneDeep(this.defaultComponent);
+    const newComponent = fastCloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(
@@ -2591,7 +2590,7 @@ export default class Component extends Element {
       if (logic.trigger.type === 'event') {
         const event = this.interpolate(logic.trigger.event);
         this.on(event, (...args) => {
-          const newComponent = fastCloneDeep(this.defaultComponent);
+          const newComponent = fastCloneDeep(this.originalComponent);
           if (this.applyActions(newComponent, logic.actions, args)) {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
