@@ -4,10 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0-rc.11
 ### Fixed
  - Radio components with Field Logic rendering as text inputs
  - Field Logic triggering component JSON change when nothing was changed
+ - Issues with Promises getting included in final build.
+ - Fixing file types to not be part of the submission.
+ 
+### Changed
+ - Upgrade vanilla-picker@2.10.1, sinon@8.0.2, webpack@4.41.5, fetch-mock@8.3.0
 
 ## 4.8.0-rc.10
 ### Fixed
