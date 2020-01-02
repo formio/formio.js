@@ -210,7 +210,8 @@ export default class Component extends Element {
     }, options || {}));
 
     // Save off the original component.
-    this.originalComponent = fastCloneDeep(component);
+    this.originalComponent = _.defaultsDeep(component || {} , this.defaultSchema);
+    // original component with default schema values
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -253,7 +254,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this.component = fastCloneDeep(this.originalComponent);
 
     // Add the id to the component.
     this.component.id = this.id;
