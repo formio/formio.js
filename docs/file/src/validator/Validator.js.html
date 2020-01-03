@@ -242,6 +242,10 @@ import {
 } from &apos;../utils/utils&apos;;
 import moment from &apos;moment&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
+const { fetch, Headers, Request } = fetchPonyfill({
+  Promise: NativePromise
+});
 import {
   checkInvalidDate,
   CALENDAR_ERROR_MESSAGES
@@ -478,16 +482,9 @@ class ValidationChecker {
             requestOptions.headers[&apos;x-jwt-token&apos;] = config.token;
           }
 
-          // Isomorphic fetch
-          const isofetch = (typeof window === &apos;object&apos; &amp;&amp; window.fetch) ?
-            { fetch, Headers, Request, Response } :
-            require(&apos;fetch-ponyfill&apos;)();
-
-          const request = new isofetch.Request(requestOptions.url, {
-            headers: new isofetch.Headers(requestOptions.headers)
-          });
-
-          return isofetch.fetch(request)
+          return fetch(new Request(requestOptions.url, {
+            headers: new Headers(requestOptions.headers)
+          }))
             .then(response =&gt; {
               if (!response.ok) {
                 return false;
