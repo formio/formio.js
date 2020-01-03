@@ -33,37 +33,25 @@ export default class PanelComponent extends NestedComponent {
     return PanelComponent.schema();
   }
 
+  checkValidity(data, dirty, row) {
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
+    return this.getComponents().reduce(
+      (check, comp) => {
+        if (!comp.checkValidity(data, dirty, row)) {
+          this.collapsed = false;
+        }
+        return comp.checkValidity(data, dirty, row) && check;
+      },
+      super.checkValidity(data, dirty, row)
+    );
+  }
+
   get templateName() {
     return 'panel';
-  }
-
-  checkValidity(data, dirty, row) {
-    data = data || this.rootValue;
-    row = row || this.data;
-    return this.checkComponentValidity(data, dirty, row);
-  }
-
-  everyComponent(fn, isPanel) {
-    const components = this.getComponents();
-    let hasErrors = false;
-
-    _.each(components, (component, index) => {
-      if (isPanel && !component.checkValidity(null, true)) {
-        hasErrors = true;
-        this.collapsed = !isPanel && hasErrors;
-      }
-
-      if (fn(component, components, index) === false) {
-        return false;
-      }
-
-      if (typeof component.everyComponent === 'function') {
-        const isPanel = component.component.type === 'panel';
-        if (component.everyComponent(fn, isPanel) === false) {
-          return false;
-        }
-      }
-    });
   }
 
   constructor(...args) {
