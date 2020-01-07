@@ -62,6 +62,9 @@ const Evaluator = {
       }
     }
     return template;
+  },
+  evaluate(func, args) {
+    return Array.isArray(args) ? func(...args) : func(...(_.values(args)));
   }
 };
 

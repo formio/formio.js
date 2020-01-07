@@ -235,6 +235,18 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = '';
+
+    /**
      * If the component has been attached
      */
     this.attached = false;
@@ -2300,6 +2312,23 @@ export default class Component extends Element {
   }
 
   /**
+   * Sets the component validity provided some validation messages.
+   *
+   * @param messages
+   * @return {boolean}
+   */
+  setComponentValidity(messages, dirty) {
+    const hasErrors = !!messages.filter(message => message.level === 'error').length;
+    if (messages.length && (dirty || !this.pristine)) {
+      this.setCustomValidity(messages, dirty);
+    }
+    else {
+      this.setCustomValidity('');
+    }
+    return !hasErrors;
+  }
+
+  /**
    * Checks the validity of this component and sets the error message if it is invalid.
    *
    * @param data
@@ -2310,18 +2339,13 @@ export default class Component extends Element {
   checkComponentValidity(data, dirty, row) {
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
-      return true;
+      return this.validator.config.async ? NativePromise.resolve(true) : true;
     }
 
-    const messages = Validator.checkComponent(this, data, row, true);
-    const hasErrors = !!messages.filter(message => message.level === 'error').length;
-    if (messages.length && (dirty || !this.pristine)) {
-      this.setCustomValidity(messages, dirty);
-    }
-    else {
-      this.setCustomValidity('');
-    }
-    return !hasErrors;
+    const check = Validator.checkComponent(this, data, row, true);
+    return this.validator.config.async ?
+      check.then((messages) => this.setComponentValidity(messages, dirty)) :
+      this.setComponentValidity(check, dirty);
   }
 
   checkValidity(data, dirty, row) {

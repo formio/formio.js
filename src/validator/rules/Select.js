@@ -18,7 +18,7 @@ module.exports = class Select extends Rule {
     }
 
     // Skip if we're not async-capable
-    if (!this.async) {
+    if (!this.config.async) {
       return true;
     }
 

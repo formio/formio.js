@@ -258,6 +258,10 @@ export default class NestedComponent extends Field {
     options.root = this.root || this;
     const comp = Components.create(component, options, data, true);
     comp.isBuilt = true;
+    if (component.key) {
+      comp.path = this.path ? `${this.path}.` : '';
+      comp.path += component.key;
+    }
     if (component.internal) {
       return comp;
     }
@@ -549,13 +553,22 @@ export default class NestedComponent extends Field {
   checkValidity(data, dirty, row) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
-      return true;
+      return this.validator.config.async ? NativePromise.resolve(true) : true;
     }
 
-    return this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row) && check,
+    let valid = true;
+    const result = this.getComponents().reduce(
+      (check, comp) => {
+        if (this.validator.config.async) {
+          return check
+            .then((compValid) => (valid = (valid && compValid)))
+            .then(() => comp.checkValidity(data, dirty, row));
+        }
+        return comp.checkValidity(data, dirty, row) && check;
+      },
       super.checkValidity(data, dirty, row)
     );
+    return this.validator.config.async ? result.then(() => valid) : result;
   }
 
   setPristine(pristine) {

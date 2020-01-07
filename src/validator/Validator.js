@@ -22,9 +22,7 @@ import Rules from './Rules';
 
 class ValidationChecker {
   constructor(config = {}) {
-    this.async = _.defaultTo(config.async, true);
-    this.config = config;
-
+    this.config = _.defaults(config, ValidationChecker.config);
     this.validators = {
       required: {
         key: 'validate.required',
@@ -69,13 +67,13 @@ class ValidationChecker {
           }
 
           // Skip if we don't have a database connection
-          if (!config.db) {
+          if (!this.config.db) {
             return true;
           }
 
           return new NativePromise(resolve => {
-            const form = config.form;
-            const submission = config.submission;
+            const form = this.config.form;
+            const submission = this.config.submission;
             const path = `data.${component.path}`;
 
             // Build the query
@@ -106,7 +104,7 @@ class ValidationChecker {
             query.deleted = { $eq: null };
 
             // Try to find an existing value within the form
-            config.db.models.submission.findOne(query, (err, result) => {
+            this.config.db.models.submission.findOne(query, (err, result) => {
               if (err) {
                 return resolve(false);
               }
@@ -178,7 +176,7 @@ class ValidationChecker {
           }
 
           // Skip if we're not async-capable
-          if (!this.async) {
+          if (!this.config.async) {
             return true;
           }
 
@@ -246,8 +244,8 @@ class ValidationChecker {
           }
 
           // Set form.io authentication.
-          if (schema.authenticate && config.token) {
-            requestOptions.headers['x-jwt-token'] = config.token;
+          if (schema.authenticate && this.config.token) {
+            requestOptions.headers['x-jwt-token'] = this.config.token;
           }
 
           return fetch(new Request(requestOptions.url, {
@@ -732,7 +730,7 @@ class ValidationChecker {
       return '';
     };
 
-    if (this.async) {
+    if (this.config.async) {
       return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
@@ -754,11 +752,7 @@ class ValidationChecker {
       return result ? {
         message: _.get(result, 'message', result),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: (component.path || '')
-          .replace(/[[\]]/g, '.')
-          .replace(/\.\./g, '.')
-          .split('.')
-          .map(part => _.defaultTo(_.toNumber(part), part)),
+        path: component.path,
         context: {
           validator: validatorName,
           setting,
@@ -769,7 +763,7 @@ class ValidationChecker {
       } : false;
     };
 
-    if (this.async) {
+    if (this.config.async) {
       return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
@@ -804,7 +798,7 @@ class ValidationChecker {
         return includeWarnings ? results : results.filter(result => result.level === 'error');
       };
 
-      if (this.async) {
+      if (this.config.async) {
         return NativePromise.all(resultsOrPromises).then(formatResults);
       }
       else {
@@ -864,7 +858,7 @@ class ValidationChecker {
     };
 
     // Wait for results if using async mode, otherwise process and return immediately
-    if (this.async) {
+    if (this.config.async) {
       return NativePromise.all(resultsOrPromises).then(formatResults);
     }
     else {
@@ -953,7 +947,15 @@ class ValidationChecker {
   }
 }
 
-const instance = new ValidationChecker({ async: false });
+ValidationChecker.config = {
+  async: false,
+  db: null,
+  token: null,
+  form: null,
+  submission: null
+};
+
+const instance = new ValidationChecker();
 
 export {
   instance as default,
