@@ -254,7 +254,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = fastCloneDeep(this.originalComponent);
+    this.component = _.cloneDeep(this.originalComponent);
 
     // Add the id to the component.
     this.component.id = this.id;
