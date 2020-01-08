@@ -314,6 +314,7 @@ export default class FileComponent extends Field {
       removeLink: 'multiple',
       fileStatusRemove: 'multiple',
       fileImage: 'multiple',
+      fileType: 'multiple',
     });
     const superAttach = super.attach(element);
 
@@ -422,6 +423,13 @@ export default class FileComponent extends Field {
         this.redraw();
       });
     }
+
+    this.refs.fileType.forEach((fileType, index) => {
+      this.addEventListener(fileType, 'change', (event) => {
+        event.preventDefault();
+        this.dataValue[index].fileType = this.value;
+      });
+    });
 
     const fileService = this.fileService;
     if (fileService) {

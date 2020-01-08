@@ -209,9 +209,6 @@ export default class Component extends Element {
       attachMode: 'full'
     }, options || {}));
 
-    // Save off the original component.
-    this.originalComponent = fastCloneDeep(component);
-
     /**
      * Determines if this component has a condition assigned to it.
      * @type {null}
@@ -234,6 +231,15 @@ export default class Component extends Element {
     }
 
     /**
+     * The Form.io component JSON schema.
+     * @type {*}
+     */
+    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+
+    // Save off the original component to be used in logic.
+    this.originalComponent = fastCloneDeep(this.component);
+
+    /**
      * If the component has been attached
      */
     this.attached = false;
@@ -248,12 +254,6 @@ export default class Component extends Element {
      * @type {*}
      */
     this.data = data || {};
-
-    /**
-     * The Form.io component JSON schema.
-     * @type {*}
-     */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
 
     // Add the id to the component.
     this.component.id = this.id;

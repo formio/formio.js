@@ -231,6 +231,11 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/validator/rules/Select.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { interpolate } from &apos;../../utils/utils&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
+const { fetch, Headers, Request } = fetchPonyfill({
+  Promise: NativePromise
+});
 import _ from &apos;lodash&apos;;
 
 const Rule = require(&apos;./Rule&apos;);
@@ -317,14 +322,9 @@ module.exports = class Select extends Rule {
       requestOptions.headers[&apos;x-jwt-token&apos;] = this.config.token;
     }
 
-    // Isomorphic fetch
-    const isofetch = (window &amp;&amp; window.fetch) ? { fetch, Headers, Request, Response } : require(&apos;fetch-ponyfill&apos;)();
-
-    const request = new isofetch.Request(requestOptions.url, {
-      headers: new isofetch.Headers(requestOptions.headers)
-    });
-
-    return isofetch.fetch(request)
+    return fetch(new Request(requestOptions.url, {
+      headers: new Headers(requestOptions.headers)
+    }))
       .then(response =&gt; {
         if (!response.ok) {
           return false;
