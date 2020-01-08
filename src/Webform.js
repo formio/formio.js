@@ -867,19 +867,6 @@ export default class Webform extends NestedComponent {
     return this.formReady;
   }
 
-  /**
-   * Performs an evaluation using the evaluation context of this component.
-   *
-   * @param func
-   * @param args
-   * @param ret
-   * @param tokenize
-   * @return {*}
-   */
-  evaluate(func, args, ret, tokenize) {
-    return evaluate(func, this.evalContext(args), ret, tokenize);
-  }
-
   executeFormController() {
     // If no controller value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
@@ -890,9 +877,11 @@ export default class Webform extends NestedComponent {
       return false;
     }
 
-    this.evaluate(this.form.controller, {
-      components: this.components,
-    }, 'value');
+    this.formReady.then(() => {
+      this.evaluate(this.form.controller, {
+        components: this.components,
+      });
+    });
   }
 
   destroy() {
