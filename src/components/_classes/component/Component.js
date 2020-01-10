@@ -11,9 +11,9 @@ import Templates from '../../../templates/Templates';
 import { fastCloneDeep, boolValue } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
-const CKEDITOR = 'https://cdn.form.io/ckeditor/12.2.0/ckeditor.js';
-const QUILL_URL = 'https://cdn.form.io/quill/1.3.6';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.5/ace.js';
+const CKEDITOR = 'https://cdn.form.io/ckeditor/16.0.0/ckeditor.js';
+const QUILL_URL = 'https://cdn.form.io/quill/1.3.7';
+const ACE_URL = 'https://cdn.form.io/ace/1.4.7/ace.js';
 const TINYMCE_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js';
 
 /**
@@ -1715,15 +1715,32 @@ export default class Component extends Element {
     };
   }
 
+  get ckEditorConfig() {
+    return {
+      image: {
+        toolbar: [
+          'imageTextAlternative',
+          '|',
+          'imageStyle:full',
+          'imageStyle:alignLeft',
+          'imageStyle:alignCenter',
+          'imageStyle:alignRight'
+        ],
+        styles: [
+          'full',
+          'alignLeft',
+          'alignCenter',
+          'alignRight'
+        ]
+      }
+    };
+  }
+
   addCKE(element, settings, onChange) {
     settings = _.isEmpty(settings) ? {} : settings;
     settings.base64Upload = true;
     settings.mediaEmbed = { previewsInData: true };
-    settings.image = {
-      toolbar: ['imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'],
-      styles: ['full', 'alignLeft', 'alignCenter', 'alignRight']
-    };
-    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', {}), settings);
+    settings = _.merge(_.get(this.options, 'editors.ckeditor.settings', this.ckEditorConfig), settings);
     return Formio.requireLibrary('ckeditor', 'ClassicEditor', _.get(this.options, 'editors.ckeditor.src', CKEDITOR), true)
       .then(() => {
         if (!element.parentNode) {
