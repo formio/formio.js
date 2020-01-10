@@ -6,7 +6,7 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import { fastCloneDeep, currentTimezone, evaluate } from './utils/utils';
+import { fastCloneDeep, currentTimezone } from './utils/utils';
 
 // Initialize the available forms.
 Formio.forms = {};

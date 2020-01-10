@@ -1,5 +1,4 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
-import _ from 'lodash';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
