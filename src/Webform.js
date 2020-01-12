@@ -1089,8 +1089,8 @@ export default class Webform extends NestedComponent {
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
-        const params = { ref: 'errorRef', tabIndex: 0 };
         const createListItem = (message) => {
+          const params = { ref: 'errorRef', tabIndex: 0, 'aria-label': `${message}. Click to navigate to the field with following error.` };
           const li = this.ce('li', params);
           this.setContent(li, message);
 
