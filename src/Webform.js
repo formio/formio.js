@@ -1090,14 +1090,23 @@ export default class Webform extends NestedComponent {
     errors.forEach(err => {
       if (err) {
         const params = { ref: 'errorRef', tabIndex: 0 };
-        const li = this.ce('li', params);
-        const strong = this.ce('strong');
-        this.setContent(strong, err.message || err);
-        if (err.component && err.component.key) {
-          li.dataset.componentKey = err.component.key;
+        const createListItem = (message) => {
+          const li = this.ce('li', params);
+          this.setContent(li, message);
+
+          if (err.component && err.component.key) {
+            li.dataset.componentKey = err.component.key;
+          }
+
+          this.appendTo(li, ul);
+        };
+
+        if (err.messages && err.messages.length) {
+          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
         }
-        this.appendTo(strong, li);
-        this.appendTo(li, ul);
+        else if (err) {
+          createListItem(err);
+        }
       }
     });
     p.appendChild(ul);
