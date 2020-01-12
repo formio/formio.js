@@ -1100,7 +1100,8 @@ export default class Webform extends NestedComponent {
         this.appendTo(li, ul);
       }
     });
-    message.append(p, ul);
+    p.appendChild(ul);
+    message.appendChild(p);
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
