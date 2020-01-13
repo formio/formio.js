@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.13
+### Added
+ - "metadata" and "submission" to the interpolation contexts for HTML and Content components.
+ - Implemented Form Controller Execution
+ 
+### Fixed
+ - Focus method for tags component
+ - Convert Flatpickr Timestamp `U` to Moment.js `X`
+ - Expand panel when validation errors 
+ - Fix Display of Help Link
+ 
+### Changed
+ - Upgrade idb@5.0.0, mocha@7.0.0
+
+## 4.8.0-rc.12
+### Fixed
+ - Problems where the form builder would not save changes to components.
+ 
+### Changed
+ - Upgrade core-js@3.6.2, i18next@19.0.3, fetch-mock@8.3.1, sinon@8.0.4
+
 ## 4.8.0-rc.11
 ### Fixed
  - Radio components with Field Logic rendering as text inputs

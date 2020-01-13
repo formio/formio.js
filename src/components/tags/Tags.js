@@ -122,4 +122,10 @@ export default class TagsComponent extends Input {
   get disabled() {
     return super.disabled;
   }
+
+  focus() {
+    if (this.refs.input && this.refs.input.length) {
+      this.refs.input[0].parentNode.lastChild.focus();
+    }
+  }
 }

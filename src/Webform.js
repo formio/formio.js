@@ -862,7 +862,26 @@ export default class Webform extends NestedComponent {
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
     this.on('refreshData', () => this.updateValue(), true);
 
+    this.executeFormController();
+
     return this.formReady;
+  }
+
+  executeFormController() {
+    // If no controller value or
+    // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+    if (
+      !this.form || !this.form.controller
+      || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)
+    ) {
+      return false;
+    }
+
+    this.formReady.then(() => {
+      this.evaluate(this.form.controller, {
+        components: this.components,
+      });
+    });
   }
 
   destroy() {
