@@ -36,6 +36,16 @@ export default class PanelComponent extends NestedComponent {
     return 'panel';
   }
 
+  get collapsed() {
+    return super.collapsed;
+  }
+
+  set collapsed(value) {
+    super.collapsed = value;
+    const accordionButton = this.element && this.element.querySelector('.usa-accordion__button');
+    accordionButton && accordionButton.focus();
+  }
+
   constructor(...args) {
     super(...args);
     this.noField = true;
