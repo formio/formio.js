@@ -1116,7 +1116,7 @@ export default class Webform extends NestedComponent {
       this.emit('error', errors);
     }
 
-    if (this.refs.errorRef && this.refs.errorRef.length) {
+    if (triggerEvent && this.refs.errorRef && this.refs.errorRef.length) {
       this.refs.errorRef[0].focus();
     }
     else {
