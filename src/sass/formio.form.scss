@@ -1142,13 +1142,12 @@ div[data-oembed-url] {
 }
 
 .autocomplete > div {
-  // background: $body-bg;
-  color: #D3D8DC;
   cursor: pointer;
   padding: 6px 10px;
 }
 
 .autocomplete > div:hover:not(.group),
 .autocomplete > div.selected {
-  background: #F7852C;
+  background: #1e90ff;
+  color: #ffffff;
 }

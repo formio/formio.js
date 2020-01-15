@@ -85,15 +85,33 @@ export default class AddressComponent extends ContainerComponent {
     };
   }
 
+  mergeSchema(component = {}) {
+    let { defaultSchema } = this;
+
+    if (component.components) {
+      defaultSchema = _.omit(defaultSchema, 'components');
+    }
+
+    return _.defaultsDeep(component , defaultSchema);
+  }
+
   init() {
     this.components = this.components || [];
     NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
     Field.prototype.init.call(this);
 
     if (!this.builderMode && this.component.provider) {
-      const Provider = Formio.Providers.getProvider('address', this.component.provider);
-      this.provider = new Provider(this.component.providerOptions || {});
+      const {
+        provider,
+        providerOptions,
+      } = this.component;
+      this.provider = this.initializeProvider(provider, providerOptions);
     }
+  }
+
+  initializeProvider(provider, options = {}) {
+    const Provider = Formio.Providers.getProvider('address', provider);
+    return new Provider(options);
   }
 
   get emptyValue() {
@@ -104,15 +122,11 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get mode() {
-    return this.dataValue.mode;
+    return this.dataValue ? this.dataValue.mode : this.dataValue;
   }
 
   set mode(value) {
     this.dataValue.mode = value;
-
-    if (value === AddressComponentMode.Manual) {
-      this.restoreComponentsContext();
-    }
   }
 
   get autocompleteMode() {
@@ -126,12 +140,14 @@ export default class AddressComponent extends ContainerComponent {
   restoreComponentsContext() {
     this.getComponents().forEach((component) => {
       component.data = this.address;
-      component.restoreValue();
+      component.setValue(component.dataValue, {
+        noUpdateEvent: true,
+      });
     });
   }
 
   get address() {
-    return this.dataValue.address;
+    return this.dataValue ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
@@ -160,7 +176,6 @@ export default class AddressComponent extends ContainerComponent {
 
     if (this.isValueInLegacyFormat(value)) {
       // Fallback to legacy version where Google Maps was the only provider.
-      const Provider = GoogleAddressProvider;
       const {
         map,
         providerOptions = {},
@@ -180,7 +195,7 @@ export default class AddressComponent extends ContainerComponent {
         }
       }
 
-      this.provider = new Provider(providerOptions);
+      this.provider = this.initializeProvider(GoogleAddressProvider.name, providerOptions);
     }
 
     if (this.manualMode) {
@@ -272,6 +287,14 @@ export default class AddressComponent extends ContainerComponent {
     const result = ((this.builderMode || this.manualMode) ? super.attach : Field.prototype.attach).call(this, element);
 
     if (!this.builderMode) {
+      if (!this.provider && this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
+
       this.loadRefs(element, {
         [AddressComponent.modeSwitcherRef]: 'single',
         [AddressComponent.removeValueIconRef]: 'single',
@@ -333,12 +356,18 @@ export default class AddressComponent extends ContainerComponent {
             return;
           }
 
-          this.dataValue = this.defaultValue;
+          this.dataValue = this.emptyValue;
           this.mode = this.modeSwitcher.checked
             ? AddressComponentMode.Manual
             : AddressComponentMode.Autocomplete;
 
-          this.triggerChange();
+          if (this.manualMode) {
+            this.restoreComponentsContext();
+          }
+
+          this.triggerChange({
+            modified: true,
+          });
           this.redraw();
         });
       }
@@ -381,7 +410,7 @@ export default class AddressComponent extends ContainerComponent {
       this.triggerChange();
     }
 
-    this.dataValue = this.defaultValue;
+    this.dataValue = this.emptyValue;
     if (this.searchInput) {
       this.searchInput.value = '';
     }
