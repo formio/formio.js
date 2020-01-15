@@ -231,6 +231,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/html/HTML.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Component from &apos;../_classes/component/Component&apos;;
+import _ from &apos;lodash&apos;;
 
 export default class HTMLComponent extends Component {
   static schema(...extend) {
@@ -261,7 +262,10 @@ export default class HTMLComponent extends Component {
   }
 
   get content() {
+    const submission = _.get(this.root, &apos;submission&apos;, {});
     return this.component.content ? this.interpolate(this.component.content, {
+      metadata: submission.metadata || {},
+      submission: submission,
       data: this.rootValue,
       row: this.data
     }) : &apos;&apos;;
@@ -279,6 +283,7 @@ export default class HTMLComponent extends Component {
   }
 
   renderContent() {
+    const submission = _.get(this.root, &apos;submission&apos;, {});
     return this.renderTemplate(&apos;html&apos;, {
       component: this.component,
       tag: this.component.tag,
@@ -286,6 +291,8 @@ export default class HTMLComponent extends Component {
         return {
           attr: attr.attr,
           value: this.interpolate(attr.value, {
+            metadata: submission.metadata || {},
+            submission: submission,
             data: this.rootValue,
             row: this.data
           })

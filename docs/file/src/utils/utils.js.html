@@ -939,7 +939,9 @@ export function convertFormatToMoment(format) {
     // Day in week.
     .replace(/E/g, &apos;d&apos;)
     // AM/PM marker
-    .replace(/a/g, &apos;A&apos;);
+    .replace(/a/g, &apos;A&apos;)
+    // Unix Timestamp
+    .replace(/U/g, &apos;X&apos;);
 }
 
 export function convertFormatToMask(format) {
