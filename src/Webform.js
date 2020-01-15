@@ -6,7 +6,7 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import { fastCloneDeep, currentTimezone } from './utils/utils';
+import { fastCloneDeep, currentTimezone, expandParents } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
@@ -1018,20 +1018,25 @@ export default class Webform extends NestedComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      const listenerFunction = (e) => {
-        e.stopPropagation();
 
-        this.formReady.then(() => {
-          if (this.refs.errorRef && this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
-        });
+      if (component) {
+        expandParents(component);
 
-        this.removeEventListener(component.refs.input[0], 'blur', listenerFunction);
-      };
+        const listenerFunction = (e) => {
+          e.stopPropagation();
 
-      this.addEventListener(component.refs.input[0], 'blur', listenerFunction);
-      component.focus();
+          this.formReady.then(() => {
+            if (this.refs.errorRef && this.refs.errorRef.length) {
+              this.refs.errorRef[0].focus();
+            }
+          });
+
+          this.removeEventListener(component.refs.input[0], 'blur', listenerFunction);
+        };
+
+        this.addEventListener(component.refs.input[0], 'blur', listenerFunction);
+        component.focus();
+      }
     }
   }
 
@@ -1112,16 +1117,17 @@ export default class Webform extends NestedComponent {
     p.appendChild(ul);
     message.appendChild(p);
     this.setAlert('danger', message);
+
     if (triggerEvent) {
       this.emit('error', errors);
-    }
 
-    if (this.refs.errorRef && this.refs.errorRef.length) {
-      this.refs.errorRef[0].focus();
-    }
-    else {
-      const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-      withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
+      if (this.refs.errorRef && this.refs.errorRef.length) {
+        this.refs.errorRef[0].focus();
+      }
+      else {
+        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
+        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
+      }
     }
 
     return errors;

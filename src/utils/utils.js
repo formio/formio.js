@@ -1119,3 +1119,16 @@ export function isInputComponent(componentJson) {
       return true;
   }
 }
+
+export function expandParents(component) {
+  const { parent } = component;
+
+  if (parent) {
+    if (parent.component && parent.component.collapsible && !parent.collapsed) {
+      parent.collapsed = true;
+      parent.checkValidity && parent.checkValidity();
+    }
+
+    expandParents(parent);
+  }
+}
