@@ -182,10 +182,7 @@ export default class Wizard extends Webform {
     ]);
     this.attachNav();
     this.attachHeader();
-
-    return promises.then(() => {
-      return this.emit('render');
-    });
+    return promises.then(() => this.emit('render'));
   }
 
   isBreadcrumbClickable() {
