@@ -178,11 +178,14 @@ export default class Wizard extends Webform {
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
       ...this.currentPage.components,
-      ...this.suffixComps
+      ...this.suffixComps,
     ]);
     this.attachNav();
     this.attachHeader();
-    return promises;
+
+    return promises.then(() => {
+      return this.emit('render');
+    });
   }
 
   isBreadcrumbClickable() {
