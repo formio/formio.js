@@ -1,4 +1,5 @@
 import Component from '../_classes/component/Component';
+import _ from 'lodash';
 
 export default class ContentComponent extends Component {
   static schema(...extend) {
@@ -28,7 +29,10 @@ export default class ContentComponent extends Component {
   }
 
   get content() {
+    const submission = _.get(this.root, 'submission', {});
     return this.component.html ? this.interpolate(this.component.html, {
+      metadata: submission.metadata || {},
+      submission: submission,
       data: this.rootValue,
       row: this.data
     }) : '';
