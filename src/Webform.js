@@ -1021,6 +1021,7 @@ export default class Webform extends NestedComponent {
 
       if (component) {
         expandParents(component);
+        const { input } = component.refs;
 
         const listenerFunction = (e) => {
           e.stopPropagation();
@@ -1031,10 +1032,10 @@ export default class Webform extends NestedComponent {
             }
           });
 
-          this.removeEventListener(component.refs.input[0], 'blur', listenerFunction);
+          this.removeEventListener(input[input.length - 1], 'blur', listenerFunction);
         };
 
-        this.addEventListener(component.refs.input[0], 'blur', listenerFunction);
+        input.length && this.addEventListener(input[input.length - 1], 'blur', listenerFunction);
         component.focus();
       }
     }
