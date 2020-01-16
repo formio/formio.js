@@ -103,6 +103,7 @@ export class Component extends Element {
   applyActions(actions: any[], result: any, data: any, newComponent: any): boolean;
   addInputError(message: any, dirty: boolean): void;
   clearOnHide(show: boolean): void;
+  clearErrorClasses(fields?: [any]): void;
   onChange(flags: Object, fromRoot: boolean): void;
   readonly wysiwygDefault: {
     theme: string;
