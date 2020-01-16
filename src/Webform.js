@@ -1041,7 +1041,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-    showErrors(error, triggerEvent) {
+  showErrors(error, triggerEvent) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
