@@ -211,7 +211,6 @@ export function findComponent(components, key, path, fn) {
     if (!component) return;
 
     if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
-      newPath.push('columns');
       component.columns.forEach(function(column, index) {
         var colPath = newPath.slice();
         colPath.push(index);
@@ -221,7 +220,6 @@ export function findComponent(components, key, path, fn) {
     }
 
     if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
-      newPath.push('rows');
       component.rows.forEach(function(row, index) {
         var rowPath = newPath.slice();
         rowPath.push(index);
@@ -235,7 +233,6 @@ export function findComponent(components, key, path, fn) {
     }
 
     if (component.hasOwnProperty('components') && Array.isArray(component.components)) {
-      newPath.push('components');
       findComponent(component.components, key, newPath, fn);
     }
 
