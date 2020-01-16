@@ -695,6 +695,19 @@ export default class EditGridComponent extends NestedComponent {
     return;
   }
 
+  setData(data) {
+    if (!this.hasValue(data)) {
+      _.set(data, this.key, this.emptyValue);
+    }
+    const context = _.get(data, this.key);
+    this.editRows.forEach((editRow, index) => {
+      if (!context[index]) {
+        context[index] = {};
+      }
+      editRow.components.forEach((component) => component.setData(context[index]));
+    });
+  }
+
   restoreRowContext(editRow) {
     editRow.components.forEach((component) => {
       component.data = editRow.data;

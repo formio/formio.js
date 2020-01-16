@@ -15,9 +15,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from './builder';
-export { BuilderUtils };
-
 export * from './formUtils';
 
 // Configure JsonLogic

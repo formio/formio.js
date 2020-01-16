@@ -104,7 +104,7 @@ class ValidationChecker {
             query.deleted = { $eq: null };
 
             // Try to find an existing value within the form
-            this.config.db.models.submission.findOne(query, (err, result) => {
+            this.config.db.findOne(query, (err, result) => {
               if (err) {
                 return resolve(false);
               }
@@ -164,7 +164,7 @@ class ValidationChecker {
             data: component.data
           });
         },
-        check(component, setting, value) {
+        check(component, setting, value, data, index, row, async) {
           // Skip if setting is falsy
           if (!boolValue(setting)) {
             return true;
@@ -176,7 +176,7 @@ class ValidationChecker {
           }
 
           // Skip if we're not async-capable
-          if (!this.config.async) {
+          if (!async) {
             return true;
           }
 
@@ -707,15 +707,15 @@ class ValidationChecker {
     };
   }
 
-  checkValidator(component, validator, setting, value, data, index, row) {
+  checkValidator(component, validator, setting, value, data, index, row, async) {
     let resultOrPromise = null;
 
     // Allow each component to override their own validators by implementing the validator.method
     if (validator.method && (typeof component[validator.method] === 'function')) {
-      resultOrPromise = component[validator.method](setting, value, data, index, row);
+      resultOrPromise = component[validator.method](setting, value, data, index, row, async);
     }
     else {
-      resultOrPromise = validator.check.call(this, component, setting, value, data, index, row);
+      resultOrPromise = validator.check.call(this, component, setting, value, data, index, row, async);
     }
 
     const processResult = result => {
@@ -730,7 +730,7 @@ class ValidationChecker {
       return '';
     };
 
-    if (this.config.async) {
+    if (async) {
       return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
@@ -738,7 +738,7 @@ class ValidationChecker {
     }
   }
 
-  validate(component, validatorName, value, data, index, row) {
+  validate(component, validatorName, value, data, index, row, async) {
     // Skip validation for conditionally hidden components
     if (!component.conditionallyVisible()) {
       return false;
@@ -746,13 +746,17 @@ class ValidationChecker {
 
     const validator       = this.validators[validatorName];
     const setting         = _.get(component.component, validator.key, null);
-    const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row);
+    const resultOrPromise = this.checkValidator(component, validator, setting, value, data, index, row, async);
 
     const processResult = result => {
       return result ? {
         message: _.get(result, 'message', result),
         level: _.get(result, 'level') === 'warning' ? 'warning' : 'error',
-        path: component.path,
+        path: (component.path || '')
+          .replace(/[[\]]/g, '.')
+          .replace(/\.\./g, '.')
+          .split('.')
+          .map(part => _.defaultTo(_.toNumber(part), part)),
         context: {
           validator: validatorName,
           setting,
@@ -763,7 +767,7 @@ class ValidationChecker {
       } : false;
     };
 
-    if (this.config.async) {
+    if (async) {
       return NativePromise.resolve(resultOrPromise).then(processResult);
     }
     else {
@@ -771,14 +775,14 @@ class ValidationChecker {
     }
   }
 
-  checkComponent(component, data, row, includeWarnings = false) {
+  checkComponent(component, data, row, includeWarnings = false, async = false) {
     const isServerSidePersistent = typeof process !== 'undefined'
       && _.get(process, 'release.name') === 'node'
       && !_.defaultTo(component.component.persistent, true);
 
     // If we're server-side and it's not a persistent component, don't run validation at all
     if (isServerSidePersistent || component.component.validate === false) {
-      return [];
+      return async ? NativePromise.resolve([]) : [];
     }
 
     data = data || component.rootValue;
@@ -791,14 +795,14 @@ class ValidationChecker {
     // If this component has the new validation system enabled, use it instead.
     const validations = _.get(component, 'component.validations');
     if (validations && Array.isArray(validations)) {
-      const resultsOrPromises = this.checkValidations(component, validations, data, row, values);
+      const resultsOrPromises = this.checkValidations(component, validations, data, row, values, async);
 
       // Define how results should be formatted
       const formatResults = results => {
         return includeWarnings ? results : results.filter(result => result.level === 'error');
       };
 
-      if (this.config.async) {
+      if (async) {
         return NativePromise.all(resultsOrPromises).then(formatResults);
       }
       else {
@@ -824,7 +828,7 @@ class ValidationChecker {
           };
         }
 
-        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row));
+        return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async));
       })
       .flatten()
       .value();
@@ -832,11 +836,11 @@ class ValidationChecker {
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
     component.component.validate.unique = component.component.unique;
-    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async));
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
-    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data));
+    resultsOrPromises.push(this.validate(component, 'multiple', component.validationValue, data, 0, data, async));
 
     // Define how results should be formatted
     const formatResults = results => {
@@ -858,7 +862,7 @@ class ValidationChecker {
     };
 
     // Wait for results if using async mode, otherwise process and return immediately
-    if (this.config.async) {
+    if (async) {
       return NativePromise.all(resultsOrPromises).then(formatResults);
     }
     else {
@@ -876,10 +880,10 @@ class ValidationChecker {
    * @param values
    * @returns {any[]}
    */
-  checkValidations(component, validations, data, row, values) {
+  checkValidations(component, validations, data, row, values, async) {
     // Get results.
     const results = validations.map((validation) => {
-      return this.checkRule(component, validation, data, row, values);
+      return this.checkRule(component, validation, data, row, values, async);
     });
 
     // Flatten array and filter out empty results.
@@ -899,13 +903,13 @@ class ValidationChecker {
     return Object.values(rules);
   }
 
-  checkRule(component, validation, data, row, values) {
+  checkRule(component, validation, data, row, values, async) {
     const Rule = Rules.getRule(validation.rule);
     const results = [];
     if (Rule) {
       const rule = new Rule(component, validation.settings, this.config);
       values.map((value, index) => {
-        const result = rule.check(value, data, row);
+        const result = rule.check(value, data, row, async);
         if (result !== true) {
           results.push({
             level: validation.level || 'error',
@@ -948,7 +952,6 @@ class ValidationChecker {
 }
 
 ValidationChecker.config = {
-  async: false,
   db: null,
   token: null,
   form: null,

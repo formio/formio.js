@@ -256,12 +256,13 @@ export default class NestedComponent extends Field {
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    comp.isBuilt = true;
     if (component.key) {
       comp.path = this.path ? `${this.path}.` : '';
       comp.path += component.key;
     }
+    comp.init();
     if (component.internal) {
       return comp;
     }
@@ -553,22 +554,19 @@ export default class NestedComponent extends Field {
   checkValidity(data, dirty, row) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
-      return this.validator.config.async ? NativePromise.resolve(true) : true;
+      return true;
     }
 
-    let valid = true;
-    const result = this.getComponents().reduce(
-      (check, comp) => {
-        if (this.validator.config.async) {
-          return check
-            .then((compValid) => (valid = (valid && compValid)))
-            .then(() => comp.checkValidity(data, dirty, row));
-        }
-        return comp.checkValidity(data, dirty, row) && check;
-      },
+    return this.getComponents().reduce(
+      (check, comp) => comp.checkValidity(data, dirty, row) && check,
       super.checkValidity(data, dirty, row)
     );
-    return this.validator.config.async ? result.then(() => valid) : result;
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    const promises = [super.checkAsyncValidity(data, dirty, row)];
+    this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row)));
+    return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
   }
 
   setPristine(pristine) {
@@ -606,6 +604,15 @@ export default class NestedComponent extends Field {
     this.getComponents().forEach((comp) => comp.resetValue());
     _.unset(this.data, this.key);
     this.setPristine(true);
+  }
+
+  /**
+   * Sets a new data context variable
+   *
+   * @param data
+   */
+  setData(data) {
+    this.getComponents().forEach((comp) => comp.setData(data));
   }
 
   get dataReady() {

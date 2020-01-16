@@ -381,9 +381,6 @@ export default class Component extends Element {
     // To force this component to be invalid.
     this.invalid = false;
 
-    // Determine if the component has been built.
-    this.isBuilt = false;
-
     if (this.component) {
       this.type = this.component.type;
       if (this.allowData && this.key) {
@@ -1915,7 +1912,7 @@ export default class Component extends Element {
       return value;
     }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
     _.set(this.data, this.key, value);
@@ -1939,6 +1936,19 @@ export default class Component extends Element {
   }
 
   /**
+   * Sets a new data context variable
+   *
+   * @param data
+   */
+  setData(data) {
+    this.data = data;
+  }
+
+  unset() {
+    _.unset(this.data, this.key);
+  }
+
+  /**
    * Deletes the value of the component.
    */
   deleteValue() {
@@ -1946,7 +1956,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -2151,7 +2161,7 @@ export default class Component extends Element {
       noValidate: true,
       resetValue: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -2327,12 +2337,6 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  /**
-   * Sets the component validity provided some validation messages.
-   *
-   * @param messages
-   * @return {boolean}
-   */
   setComponentValidity(messages, dirty) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
     if (messages.length && (dirty || !this.pristine)) {
@@ -2352,14 +2356,14 @@ export default class Component extends Element {
    * @param row
    * @return {boolean}
    */
-  checkComponentValidity(data, dirty, row) {
+  checkComponentValidity(data, dirty, row, async = false) {
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
-      return this.validator.config.async ? NativePromise.resolve(true) : true;
+      return async ? NativePromise.resolve(true) : true;
     }
 
-    const check = Validator.checkComponent(this, data, row, true);
-    return this.validator.config.async ?
+    const check = Validator.checkComponent(this, data, row, true, async);
+    return async ?
       check.then((messages) => this.setComponentValidity(messages, dirty)) :
       this.setComponentValidity(check, dirty);
   }
@@ -2368,6 +2372,10 @@ export default class Component extends Element {
     data = data || this.rootValue;
     row = row || this.data;
     return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
   /**

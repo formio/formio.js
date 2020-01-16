@@ -51,7 +51,7 @@ module.exports = class Unique extends Rule {
       query.deleted = { $eq: null };
 
       // Try to find an existing value within the form
-      this.config.db.models.submission.findOne(query, (err, result) => {
+      this.config.db.findOne(query, (err, result) => {
         if (err) {
           return resolve(false);
         }

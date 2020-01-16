@@ -592,6 +592,19 @@ export default class DataGridComponent extends NestedComponent {
     this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
   }
 
+  setData(data) {
+    if (!this.hasValue(data)) {
+      _.set(data, this.key, this.emptyValue);
+    }
+    const context = _.get(data, this.key);
+    this.rows.forEach((row, index) => {
+      if (!context[index]) {
+        context[index] = {};
+      }
+      _.forIn(row, (component) => component.setData(context[index]));
+    });
+  }
+
   getComponent(path, fn) {
     path = Array.isArray(path) ? path : [path];
     const [key, ...remainingPath] = path;

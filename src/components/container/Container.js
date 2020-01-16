@@ -95,4 +95,11 @@ export default class ContainerComponent extends NestedComponent {
     }
     return super.setValue(value, flags);
   }
+
+  setData(data) {
+    if (!this.hasValue(data)) {
+      _.set(data, this.key, this.emptyValue);
+    }
+    return super.setData(_.get(data, this.key));
+  }
 }

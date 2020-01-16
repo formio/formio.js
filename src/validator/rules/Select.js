@@ -11,14 +11,14 @@ const Rule = require('./Rule');
 module.exports = class Select extends Rule {
   defaultMessage = '{{field}} contains an invalid selection';
 
-  check(value) {
+  check(value, data, row, async) {
     // Skip if value is empty
     if (!value || _.isEmpty(value)) {
       return true;
     }
 
     // Skip if we're not async-capable
-    if (!this.config.async) {
+    if (!async) {
       return true;
     }
 
