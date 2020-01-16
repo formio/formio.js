@@ -1,0 +1,25 @@
+diff --git a/src/components/select/Select.js b/src/components/select/Select.js
+index 4cee86a2b..9ace9843e 100644
+--- a/src/components/select/Select.js
++++ b/src/components/select/Select.js
+@@ -20,6 +20,7 @@ export default class SelectComponent extends Field {
+       },
+       clearOnRefresh: false,
+       limit: 100,
++      widget: 'html5',
+       dataSrc: 'values',
+       valueProperty: '',
+       lazyLoad: true,
+diff --git a/src/components/select/editForm/Select.edit.display.js b/src/components/select/editForm/Select.edit.display.js
+index 763e541bf..a8705426b 100644
+--- a/src/components/select/editForm/Select.edit.display.js
++++ b/src/components/select/editForm/Select.edit.display.js
+@@ -5,7 +5,7 @@ export default [
+     weight: 20,
+     tooltip: 'Select the type of widget you\'d like to use.',
+     key: 'widget',
+-    defaultValue: 'choicesjs',
++    defaultValue: 'html5',
+     label: 'Widget Type',
+     dataSrc: 'values',
+     data: {
