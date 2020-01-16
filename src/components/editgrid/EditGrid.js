@@ -249,6 +249,18 @@ export default class EditGridComponent extends NestedComponent {
     return super.attach(element);
   }
 
+  clearOnHide(show) {
+    super.clearOnHide(show);
+
+    if (this.component.clearOnHide && !this.visible) {
+      if (!this.editRows) {
+        return;
+      }
+
+      this.removeAllRows();
+    }
+  }
+
   renderRow(row, rowIndex) {
     const dataValue = this.dataValue || [];
     if (row.isOpen) {
@@ -507,6 +519,19 @@ export default class EditGridComponent extends NestedComponent {
     this.checkValidity(null, true);
     this.checkData();
     this.redraw();
+  }
+
+  removeAllRows() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const editRows = this.editRows || [];
+    const rowIndex = editRows.length - 1;
+
+    for (let index = rowIndex; index >= 0; index--) {
+      this.removeRow(index);
+    }
   }
 
   updateComponentsRowIndex(components, rowIndex) {
