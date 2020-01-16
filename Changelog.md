@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.0-rc.14
+### Changed
+ - Added improvements to accessibility.
+ - Remove editgrid rows on hide if clearOnHide is true.
+ - Upgrade core-js@3.6.4, @babel/cli@7.8.3, @babel/core@7.8.3, @babel/plugin-proposal-class-properties@7.8.3, @babel/plugin-proposal-export-default-from@7.8.3, @babel/plugin-proposal-optional-chaining@7.8.3, @babel/polyfill@7.8.3, @babel/preset-env@7.8.3, @babel/register@7.8.3, sinon@8.1.0, jsdom@16.0.0
+
+### Fixed
+ - FOR-2574: Flatten tabs for PDF renderer
+ - Wizard initial focus fix
+ - Fixed removing values from select if lazyLoad is true.
+ - Fix applying input format for number component
+
 ## 4.8.0-rc.13
 ### Added
  - "metadata" and "submission" to the interpolation contexts for HTML and Content components.
