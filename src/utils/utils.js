@@ -1128,7 +1128,7 @@ export function expandParents(component) {
   if (parent) {
     if (parent.component && parent.component.collapsible && !parent.collapsed) {
       parent.collapsed = true;
-      parent.checkValidity && parent.checkValidity();
+      parent.checkData && parent.checkData();
     }
 
     expandParents(parent);
