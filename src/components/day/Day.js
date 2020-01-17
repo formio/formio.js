@@ -353,7 +353,6 @@ export default class DayComponent extends Field {
    * @param value
    */
   setValueAt(index, value) {
-    value = this.normalizeValue(value);
     // temporary solution to avoid input reset
     // on invalid date.
     if (!value || value === 'Invalid date') {
