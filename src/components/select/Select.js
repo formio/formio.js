@@ -1010,7 +1010,11 @@ export default class SelectComponent extends Field {
 
   getValue() {
     // If the widget isn't active.
-    if (this.viewOnly || this.loading || !this.selectOptions.length || !this.element) {
+    if (
+      this.viewOnly || this.loading
+      || (!this.component.lazyLoad && !this.selectOptions.length)
+      || !this.element
+    ) {
       return this.dataValue;
     }
 

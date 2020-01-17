@@ -2760,6 +2760,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/webform.js~webform#hasrequiredfields",
+    "class/src/Webform.js~Webform.html#instance-method-hasRequiredFields",
+    "src/Webform.js~Webform#hasRequiredFields",
+    "method"
+  ],
+  [
     "src/webform.js~webform#init",
     "class/src/Webform.js~Webform.html#instance-method-init",
     "src/Webform.js~Webform#init",
@@ -4599,6 +4605,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#isequal",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-isEqual",
     "src/components/_classes/component/Component.js~Component#isEqual",
+    "method"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#isie",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-isIE",
+    "src/components/_classes/component/Component.js~Component#isIE",
     "method"
   ],
   [
@@ -8304,6 +8316,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/editgrid/editgrid.js~editgridcomponent#clearonhide",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-clearOnHide",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#clearOnHide",
+    "method"
+  ],
+  [
     "src/components/editgrid/editgrid.js~editgridcomponent#components",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-member-components",
     "src/components/editgrid/EditGrid.js~EditGridComponent#components",
@@ -8434,6 +8452,12 @@ window.esdocSearchIndex = [
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-minLength",
     "src/components/editgrid/EditGrid.js~EditGridComponent#minLength",
     "member"
+  ],
+  [
+    "src/components/editgrid/editgrid.js~editgridcomponent#removeallrows",
+    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-removeAllRows",
+    "src/components/editgrid/EditGrid.js~EditGridComponent#removeAllRows",
+    "method"
   ],
   [
     "src/components/editgrid/editgrid.js~editgridcomponent#removerow",
@@ -9622,6 +9646,12 @@ window.esdocSearchIndex = [
     "file/src/components/number/Number.js.html",
     "src/components/number/Number.js",
     "file"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#addfocusblurevents",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-addFocusBlurEvents",
+    "src/components/number/Number.js~NumberComponent#addFocusBlurEvents",
+    "method"
   ],
   [
     "src/components/number/number.js~numbercomponent#constructor",
