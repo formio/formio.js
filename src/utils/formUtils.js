@@ -211,6 +211,7 @@ export function findComponent(components, key, path, fn) {
     if (!component) return;
 
     if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
+      newPath.push('columns');
       component.columns.forEach(function(column, index) {
         var colPath = newPath.slice();
         colPath.push(index);
@@ -220,6 +221,7 @@ export function findComponent(components, key, path, fn) {
     }
 
     if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
+      newPath.push('rows');
       component.rows.forEach(function(row, index) {
         var rowPath = newPath.slice();
         rowPath.push(index);
@@ -233,6 +235,7 @@ export function findComponent(components, key, path, fn) {
     }
 
     if (component.hasOwnProperty('components') && Array.isArray(component.components)) {
+      newPath.push('components');
       findComponent(component.components, key, newPath, fn);
     }
 
@@ -322,6 +325,10 @@ export function applyFormChanges(form, changes) {
       case 'remove':
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
+          const oldComponent = get(form.components, path);
+          if (oldComponent.key !== component.key) {
+            path.pop();
+          }
           removeComponent(form.components, path);
         });
         break;
@@ -329,7 +336,14 @@ export function applyFormChanges(form, changes) {
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
           try {
-            set(form.components, path, applyPatch(component, change.patches).newDocument);
+            const oldComponent = get(form.components, path);
+            const newComponent = applyPatch(component, change.patches).newDocument;
+
+            if (oldComponent.key !== newComponent.key) {
+              path.pop();
+            }
+
+            set(form.components, path, newComponent);
           }
           catch (err) {
             failed.push(change);
