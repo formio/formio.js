@@ -133,7 +133,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = this.component.as || 'javascript';
+          settings.mode = this.component.as;
           this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
             this.editors[index] = ace;
             ace.on('change', () => this.checkAcePlaceholder(ace));

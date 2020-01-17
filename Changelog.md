@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Ace Textarea issues
    - Placeholder not disappearing when typing
+   - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
+   - Editor settings from component JSON being ignored
+   - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
 
 ## 4.8.0-rc.14
 ### Changed
