@@ -4,6 +4,7 @@ import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
+import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { fastCloneDeep, currentTimezone, expandParents } from './utils/utils';
@@ -959,8 +960,18 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
+    const hotkeyListener = (e) => {
+      const { keyCode, key, ctrlKey, altKey } = e;
+        if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
+          if (this.refs.errorRef && this.refs.errorRef.length) {
+            this.refs.errorRef[0].focus();
+          }
+        }
+    };
     if (!type && this.submitted) {
       if (this.alert) {
+        this.removeEventListener(window, 'keydown', hotkeyListener);
+
         if (this.refs.errorRef && this.refs.errorRef.length) {
           this.refs.errorRef.forEach(el => {
             this.removeEventListener(el, 'click');
@@ -980,6 +991,8 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
+        this.removeEventListener(window, 'keydown', hotkeyListener);
+
         if (this.refs.errorRef && this.refs.errorRef.length) {
           this.refs.errorRef.forEach(el => {
             this.removeEventListener(el, 'click');
@@ -1012,6 +1025,18 @@ export default class Webform extends NestedComponent {
     this.loadRefs(this.alert, { errorRef: 'multiple' });
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
+      this.tooltips.push(new Tooltip(this.refs.errorRef[0], {
+        trigger: 'focus hover click',
+        placement: 'right',
+        html: true,
+        title: 'Press Ctrl + Alt + x to back on error list.',
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
+      }));
+      this.addEventListener(window, 'keydown', hotkeyListener);
       this.refs.errorRef.forEach(el => {
         this.addEventListener(el, 'click', (e) => {
           const key = e.currentTarget.dataset.componentKey;
@@ -1040,21 +1065,6 @@ export default class Webform extends NestedComponent {
 
       if (component) {
         expandParents(component);
-        const { input } = component.refs;
-
-        const listenerFunction = (e) => {
-          e.stopPropagation();
-
-          this.formReady.then(() => {
-            if (this.refs.errorRef && this.refs.errorRef.length) {
-              this.refs.errorRef[0].focus();
-            }
-          });
-
-          this.removeEventListener(input[input.length - 1], 'blur', listenerFunction);
-        };
-
-        input.length && this.addEventListener(input[input.length - 1], 'blur', listenerFunction);
         component.focus();
       }
     }
@@ -1111,6 +1121,21 @@ export default class Webform extends NestedComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p');
     this.setContent(p, this.t('error'));
+    const hotkeyInfo = this.ce('div');
+    this.addClass(hotkeyInfo, 'fa fa-question-circle text-based');
+    hotkeyInfo.tabIndex = 0;
+    this.tooltips.push(new Tooltip(hotkeyInfo, {
+      trigger: 'focus hover click',
+      placement: 'right',
+      html: true,
+      title: 'Presssssssss',
+      template: `
+        <div class="tooltip" style="opacity: 1;" role="tooltip">
+          <div class="tooltip-arrow"></div>
+          <div class="tooltip-inner"></div>
+        </div>`,
+    }));
+    this.appendTo(hotkeyInfo, message);
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
@@ -1137,7 +1162,6 @@ export default class Webform extends NestedComponent {
     p.appendChild(ul);
     message.appendChild(p);
     this.setAlert('danger', message);
-
     if (triggerEvent) {
       this.emit('error', errors);
 
