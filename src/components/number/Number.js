@@ -189,4 +189,12 @@ export default class NumberComponent extends Input {
     }
     return this.getMaskedValue(value);
   }
+
+  addFocusBlurEvents(element) {
+    super.addFocusBlurEvents(element);
+
+    this.addEventListener(element, 'blur', () => {
+      element.value = this.getValueAsString(this.formatValue(this.parseValue(this.dataValue)));
+    });
+  }
 }
