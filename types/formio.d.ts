@@ -28,7 +28,7 @@ export class Formio {
   static projectUrlSet: boolean;
   static plugins: any;
   static cache: any;
-  static providers: any;
+  static Providers: any;
   static events: any; // EventEmitter2
   static namespace: string;
   static formOnly?: boolean;

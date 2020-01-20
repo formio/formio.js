@@ -1147,7 +1147,7 @@ export default class Component extends Element {
     this.refs.tooltip.forEach((tooltip, index) =&gt; {
       const title = this.interpolate(tooltip.getAttribute(&apos;data-title&apos;) || this.t(this.component.tooltip)).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;);
       this.tooltips[index] = new Tooltip(tooltip, {
-        trigger: &apos;hover click&apos;,
+        trigger: &apos;hover click focus&apos;,
         placement: &apos;right&apos;,
         html: true,
         title: title,
@@ -1508,7 +1508,9 @@ export default class Component extends Element {
 
   iconClass(name, spinning) {
     const iconset = this.options.iconset || Templates.current.defaultIconset || &apos;fa&apos;;
-    return Templates.current.hasOwnProperty(&apos;iconClass&apos;) ? Templates.current.iconClass(iconset, name, spinning) : name;
+    return Templates.current.hasOwnProperty(&apos;iconClass&apos;)
+      ? Templates.current.iconClass(iconset, name, spinning)
+      : this.options.iconset === &apos;fa&apos; ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
   }
 
   /**
@@ -1725,6 +1727,32 @@ export default class Component extends Element {
     }
 
     return changed;
+  }
+
+  isIE() {
+    const userAgent = window.navigator.userAgent;
+
+    const msie = userAgent.indexOf(&apos;MSIE &apos;);
+    if (msie &gt; 0) {
+      // IE 10 or older =&gt; return version number
+      return parseInt(userAgent.substring(msie + 5, userAgent.indexOf(&apos;.&apos;, msie)), 10);
+    }
+
+    const trident = userAgent.indexOf(&apos;Trident/&apos;);
+    if (trident &gt; 0) {
+      // IE 11 =&gt; return version number
+      const rv = userAgent.indexOf(&apos;rv:&apos;);
+      return parseInt(userAgent.substring(rv + 3, userAgent.indexOf(&apos;.&apos;, rv)), 10);
+    }
+
+    const edge = userAgent.indexOf(&apos;Edge/&apos;);
+    if (edge &gt; 0) {
+      // IE 12 (aka Edge) =&gt; return version number
+      return parseInt(userAgent.substring(edge + 5, userAgent.indexOf(&apos;.&apos;, edge)), 10);
+    }
+
+    // other browser
+    return false;
   }
 
   applyActions(newComponent, actions, result, row, data) {

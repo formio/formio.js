@@ -929,10 +929,13 @@ export default class Webform extends NestedComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
-    setTimeout(() => this.emit('render'), 1);
-    return childPromise.then(() => this.setValue(this._submission, {
-      noUpdateEvent: true
-    }));
+    return childPromise.then(() => {
+      this.emit('render');
+
+      return this.setValue(this._submission, {
+        noUpdateEvent: true,
+      });
+    });
   }
 
   hasRequiredFields() {
@@ -1076,7 +1079,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-    showErrors(error, triggerEvent) {
+  showErrors(error, triggerEvent) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
