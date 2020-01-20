@@ -1129,7 +1129,10 @@ export default class Webform extends NestedComponent {
           this.appendTo(li, ul);
         };
 
-        if (err.messages && err.messages.length) {
+        if (err.message && !err.messages) {
+          createListItem(`${err.message}`);
+        }
+        else if (err.messages && err.messages.length) {
           err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
         }
         else if (err) {
