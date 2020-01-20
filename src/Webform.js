@@ -174,6 +174,13 @@ export default class Webform extends NestedComponent {
     this.alert = null;
 
     /**
+     * The attached tooltip forerror list
+     * @type {Tooltip}
+     */
+
+    this.errorTooltip = null;
+
+    /**
      * Promise that is triggered when the submission is done loading.
      * @type {Promise}
      */
@@ -983,6 +990,8 @@ export default class Webform extends NestedComponent {
         }
         this.removeChild(this.alert);
         this.alert = null;
+        this.errorTooltip && this.errorTooltip.dispose();
+        this.errorTooltip = null;
       }
       return;
     }
@@ -1004,6 +1013,8 @@ export default class Webform extends NestedComponent {
         }
         this.removeChild(this.alert);
         this.alert = null;
+        this.errorTooltip && this.errorTooltip.dispose();
+        this.errorTooltip = null;
       }
       catch (err) {
         // ignore
@@ -1025,20 +1036,22 @@ export default class Webform extends NestedComponent {
       return;
     }
 
-    this.loadRefs(this.alert, { errorRef: 'multiple' });
+    this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
 
-    if (this.refs.errorRef && this.refs.errorRef.length) {
-      this.tooltips.push(new Tooltip(this.refs.errorRef[0], {
-        trigger: 'focus hover click',
+      const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
+      this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
+        trigger: 'hover click focus',
         placement: 'right',
         html: true,
-        title: 'Press Ctrl + Alt + x to back on error list.',
+        title: title,
         template: `
           <div class="tooltip" style="opacity: 1;" role="tooltip">
             <div class="tooltip-arrow"></div>
             <div class="tooltip-inner"></div>
           </div>`,
-      }));
+      });
+
+    if (this.refs.errorRef && this.refs.errorRef.length) {
       this.addEventListener(window, 'keydown', hotkeyListener);
       this.refs.errorRef.forEach(el => {
         this.addEventListener(el, 'click', (e) => {
@@ -1124,21 +1137,17 @@ export default class Webform extends NestedComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p');
     this.setContent(p, this.t('error'));
-    const hotkeyInfo = this.ce('div');
-    this.addClass(hotkeyInfo, 'fa fa-question-circle text-based');
-    hotkeyInfo.tabIndex = 0;
-    this.tooltips.push(new Tooltip(hotkeyInfo, {
-      trigger: 'focus hover click',
-      placement: 'right',
-      html: true,
-      title: 'Presssssssss',
-      template: `
-        <div class="tooltip" style="opacity: 1;" role="tooltip">
-          <div class="tooltip-arrow"></div>
-          <div class="tooltip-inner"></div>
-        </div>`,
-    }));
-    this.appendTo(hotkeyInfo, message);
+
+    const params = {
+      class: 'fa fa-question-circle text-based',
+      style: 'margin-left: 5px',
+      ref: 'errorTooltip',
+      tabIndex: 0,
+      'data-title': this.t('errorListHotkey'),
+    };
+    const hotkeyInfo = this.ce('i', params);
+    this.appendTo(hotkeyInfo, p);
+
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
@@ -1165,11 +1174,14 @@ export default class Webform extends NestedComponent {
     p.appendChild(ul);
     message.appendChild(p);
     this.setAlert('danger', message);
+
     if (triggerEvent) {
       this.emit('error', errors);
 
       if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.refs.errorRef[0].focus();
+        this.ready.then(() => {
+          this.refs.errorRef[0].focus();
+        });
       }
       else {
         const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
