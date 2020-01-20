@@ -576,10 +576,10 @@ class ValidationChecker {
             value = value ? value.value : value;
           }
           else {
-            inputMask = component._inputMask;
+            inputMask = component.component.inputMask;
           }
           if (value && inputMask) {
-            return matchInputMask(value, inputMask);
+            return matchInputMask(value, getInputMask(inputMask));
           }
           return true;
         }
