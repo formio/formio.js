@@ -978,20 +978,25 @@ export default class Webform extends NestedComponent {
           }
         }
     };
+
+    const removeAlert = () => {
+      this.removeEventListener(window, 'keydown', hotkeyListener);
+
+      if (this.refs.errorRef && this.refs.errorRef.length) {
+        this.refs.errorRef.forEach(el => {
+          this.removeEventListener(el, 'click');
+          this.removeEventListener(el, 'keypress');
+        });
+      }
+      this.removeChild(this.alert);
+      this.alert = null;
+      this.errorTooltip && this.errorTooltip.dispose();
+      this.errorTooltip = null;
+    };
+
     if (!type && this.submitted) {
       if (this.alert) {
-        this.removeEventListener(window, 'keydown', hotkeyListener);
-
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
-        this.errorTooltip && this.errorTooltip.dispose();
-        this.errorTooltip = null;
+       removeAlert();
       }
       return;
     }
@@ -1003,18 +1008,7 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
-        this.removeEventListener(window, 'keydown', hotkeyListener);
-
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
-        this.errorTooltip && this.errorTooltip.dispose();
-        this.errorTooltip = null;
+        removeAlert();
       }
       catch (err) {
         // ignore
