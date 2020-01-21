@@ -968,8 +968,9 @@ export default class Webform extends NestedComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
+   * @param {string} classes - Styling classes for alert.
    */
-  setAlert(type, message) {
+  setAlert(type, message, classes) {
     const hotkeyListener = (e) => {
       const { keyCode, key, ctrlKey, altKey } = e;
         if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
@@ -1016,7 +1017,7 @@ export default class Webform extends NestedComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: `alert alert-${type}`,
+        class: classes || `alert alert-${type}`,
         role: 'alert'
       });
       if (message instanceof HTMLElement) {
@@ -1032,6 +1033,7 @@ export default class Webform extends NestedComponent {
 
     this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
 
+    if (this.refs && this.refs.errorTooltip) {
       const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
       this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
         trigger: 'hover click focus',
@@ -1044,6 +1046,7 @@ export default class Webform extends NestedComponent {
             <div class="tooltip-inner"></div>
           </div>`,
       });
+    }
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
       this.addEventListener(window, 'keydown', hotkeyListener);
