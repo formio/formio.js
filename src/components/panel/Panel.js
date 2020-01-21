@@ -40,7 +40,7 @@ export default class PanelComponent extends NestedComponent {
 
     return this.getComponents().reduce(
       (check, comp) => {
-        if (!comp.checkValidity(data, dirty, row)) {
+        if (!comp.checkValidity(data, dirty, row) && this.collapsed) {
           this.collapsed = false;
         }
         return comp.checkValidity(data, dirty, row) && check;
@@ -51,16 +51,6 @@ export default class PanelComponent extends NestedComponent {
 
   get templateName() {
     return 'panel';
-  }
-
-  get collapsed() {
-    return super.collapsed;
-  }
-
-  set collapsed(value) {
-    super.collapsed = value;
-    const accordionButton = this.element && this.element.querySelector('.usa-accordion__button');
-    accordionButton && accordionButton.focus();
   }
 
   constructor(...args) {

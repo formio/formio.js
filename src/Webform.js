@@ -7,7 +7,7 @@ import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
-import { fastCloneDeep, currentTimezone, expandParents } from './utils/utils';
+import { fastCloneDeep, currentTimezone } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
@@ -1075,11 +1075,7 @@ export default class Webform extends NestedComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-
-      if (component) {
-        expandParents(component);
-        component.focus();
-      }
+      component && component.focus();
     }
   }
 

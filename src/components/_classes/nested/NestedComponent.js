@@ -368,6 +368,8 @@ export default class NestedComponent extends Field {
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
+        const accordionButton = this.refs.header.querySelector('button');
+        accordionButton && accordionButton.focus();
       });
     }
 
@@ -521,6 +523,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
+    this.collapsed && (this.collapsed = false);
     return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
