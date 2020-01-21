@@ -265,7 +265,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -414,6 +414,14 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
 
   // Allow componets to notify when ready.
   get ready() {
@@ -1963,15 +1971,6 @@ export default class Component extends Element {
     }
   }
 
-  /**
-   * Sets a new data context variable
-   *
-   * @param data
-   */
-  setData(data) {
-    this.data = data;
-  }
-
   unset() {
     _.unset(this.data, this.key);
   }
@@ -2205,6 +2204,14 @@ export default class Component extends Element {
       ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
+    }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &&
+      newValue !== null &&
+      !this.hasValue()
+    ) {
+      return true;
     }
     return !_.isEqual(newValue, oldValue);
   }

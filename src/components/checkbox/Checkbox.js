@@ -189,7 +189,7 @@ export default class CheckBoxComponent extends Field {
     flags = flags || {};
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && !this.component.clearOnHide)
+      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
     ) {
       return this.updateValue(value, flags);
     }

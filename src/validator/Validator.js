@@ -828,6 +828,11 @@ class ValidationChecker {
           };
         }
 
+        // Handle the case when there is no values defined and it is required.
+        if (validatorName === 'required' && !values.length) {
+          return [this.validate(component, validatorName, null, data, 0, row, async)];
+        }
+
         return _.map(values, (value, index) => this.validate(component, validatorName, value, data, index, row, async));
       })
       .flatten()

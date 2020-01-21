@@ -119,6 +119,10 @@ export default class NestedComponent extends Field {
     });
   }
 
+  componentContext() {
+    return this._data;
+  }
+
   get data() {
     return this._data;
   }
@@ -126,7 +130,7 @@ export default class NestedComponent extends Field {
   set data(value) {
     this._data = value;
     this.eachComponent((component) => {
-      component.data = this._data;
+      component.data = this.componentContext(component);
     });
   }
 
@@ -604,15 +608,6 @@ export default class NestedComponent extends Field {
     this.getComponents().forEach((comp) => comp.resetValue());
     _.unset(this.data, this.key);
     this.setPristine(true);
-  }
-
-  /**
-   * Sets a new data context variable
-   *
-   * @param data
-   */
-  setData(data) {
-    this.getComponents().forEach((comp) => comp.setData(data));
   }
 
   get dataReady() {

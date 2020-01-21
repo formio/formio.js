@@ -74,7 +74,8 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...(_.keys(args)));
+      func = Evaluator.evaluator(func, args);
+      args = _.values(args);
     }
     catch (err) {
       console.warn(`An error occured within the custom function for ${componentKey}`, err);
