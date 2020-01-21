@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+ - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+
 ## 4.8.0-rc.14
 ### Changed
  - Added improvements to accessibility.
