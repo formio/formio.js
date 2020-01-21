@@ -45,7 +45,8 @@ export default {
         next: 'Next',
         previous: 'Previous',
         cancel: 'Cancel',
-        submit: 'Submit Form'
+        submit: 'Submit Form',
+        errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.'
       }
     }
   }

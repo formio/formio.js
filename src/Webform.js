@@ -4,6 +4,7 @@ import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
+import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { fastCloneDeep, currentTimezone, expandParents } from './utils/utils';
@@ -171,6 +172,13 @@ export default class Webform extends NestedComponent {
      * @type {HTMLElement}
      */
     this.alert = null;
+
+    /**
+     * The attached tooltip forerror list
+     * @type {Tooltip}
+     */
+
+    this.errorTooltip = null;
 
     /**
      * Promise that is triggered when the submission is done loading.
@@ -962,16 +970,33 @@ export default class Webform extends NestedComponent {
    * @param {string} message - The message to show in the alert.
    */
   setAlert(type, message) {
+    const hotkeyListener = (e) => {
+      const { keyCode, key, ctrlKey, altKey } = e;
+        if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
+          if (this.refs.errorRef && this.refs.errorRef.length) {
+            this.refs.errorRef[0].focus();
+          }
+        }
+    };
+
+    const removeAlert = () => {
+      this.removeEventListener(window, 'keydown', hotkeyListener);
+
+      if (this.refs.errorRef && this.refs.errorRef.length) {
+        this.refs.errorRef.forEach(el => {
+          this.removeEventListener(el, 'click');
+          this.removeEventListener(el, 'keypress');
+        });
+      }
+      this.removeChild(this.alert);
+      this.alert = null;
+      this.errorTooltip && this.errorTooltip.dispose();
+      this.errorTooltip = null;
+    };
+
     if (!type && this.submitted) {
       if (this.alert) {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
+       removeAlert();
       }
       return;
     }
@@ -983,14 +1008,7 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
+        removeAlert();
       }
       catch (err) {
         // ignore
@@ -1012,9 +1030,23 @@ export default class Webform extends NestedComponent {
       return;
     }
 
-    this.loadRefs(this.alert, { errorRef: 'multiple' });
+    this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
+
+      const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
+      this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
+        trigger: 'hover click focus',
+        placement: 'right',
+        html: true,
+        title: title,
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
+      });
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
+      this.addEventListener(window, 'keydown', hotkeyListener);
       this.refs.errorRef.forEach(el => {
         this.addEventListener(el, 'click', (e) => {
           const key = e.currentTarget.dataset.componentKey;
@@ -1043,21 +1075,6 @@ export default class Webform extends NestedComponent {
 
       if (component) {
         expandParents(component);
-        const { input } = component.refs;
-
-        const listenerFunction = (e) => {
-          e.stopPropagation();
-
-          this.formReady.then(() => {
-            if (this.refs.errorRef && this.refs.errorRef.length) {
-              this.refs.errorRef[0].focus();
-            }
-          });
-
-          this.removeEventListener(input[input.length - 1], 'blur', listenerFunction);
-        };
-
-        input.length && this.addEventListener(input[input.length - 1], 'blur', listenerFunction);
         component.focus();
       }
     }
@@ -1114,6 +1131,17 @@ export default class Webform extends NestedComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p');
     this.setContent(p, this.t('error'));
+
+    const params = {
+      class: 'fa fa-question-circle text-based',
+      style: 'margin-left: 5px',
+      ref: 'errorTooltip',
+      tabIndex: 0,
+      'data-title': this.t('errorListHotkey'),
+    };
+    const hotkeyInfo = this.ce('i', params);
+    this.appendTo(hotkeyInfo, p);
+
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
@@ -1148,7 +1176,9 @@ export default class Webform extends NestedComponent {
       this.emit('error', errors);
 
       if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.refs.errorRef[0].focus();
+        this.ready.then(() => {
+          this.refs.errorRef[0].focus();
+        });
       }
       else {
         const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
