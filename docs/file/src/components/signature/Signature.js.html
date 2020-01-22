@@ -277,6 +277,7 @@ export default class SignatureComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     const changed = super.setValue(value, flags);
+    this.shouldShowCanvas = this.isEmpty(value) || (value &amp;&amp; flags.noSign);
     if (this.signaturePad) {
       if (value &amp;&amp; !flags.noSign) {
         this.signatureImage.setAttribute(&apos;src&apos;, value);
@@ -302,7 +303,7 @@ export default class SignatureComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.showCanvas(!disabled);
+    this.showCanvas(!disabled &amp;&amp; this.shouldShowCanvas);
     if (this.signaturePad) {
       if (disabled) {
         this.signaturePad.off();

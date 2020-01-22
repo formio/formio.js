@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.29.7
+### Fixed
+ - Update logic to show image/canvas for logic
+
 ## 3.29.6
 ### Fixed
  - Nested clear on hide fix
