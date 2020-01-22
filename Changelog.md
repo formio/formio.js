@@ -4,21 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 4.8.0
+### Added
+ - Error messages when loadForm and loadSubmission fails.
+
 ### Changed
  - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+ - Changed dirty parameter value for wizard onchange validations.
  
 ### Fixed
+ - Fix form version control 
+ - Normalize date value for day component
+ - Fileuploader component does not render the progress percentage
+ - Don't interpolate content when in builder mode so that it won't throw errors and shows the interpolation options.
+ - Fixed unexpected validation for selectboxes on pristine form
  - Ace Textarea issues
    - Placeholder not disappearing when typing
    - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
    - Editor settings from component JSON being ignored
    - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
-
-### Changed
- - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
-
-### Fixed
  - ```userPermissions``` method not handling submissions with multiple groups properly 
 
 ## 4.8.0-rc.14

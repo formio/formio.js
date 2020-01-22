@@ -1530,6 +1530,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/form.js~form#errorform",
+    "class/src/Form.js~Form.html#instance-method-errorForm",
+    "src/Form.js~Form#errorForm",
+    "method"
+  ],
+  [
     "src/form.js~form#form",
     "class/src/Form.js~Form.html#instance-set-form",
     "src/Form.js~Form#form",
@@ -8070,6 +8076,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/day/day.js~daycomponent#normalizevalue",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-normalizeValue",
+    "src/components/day/Day.js~DayComponent#normalizeValue",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#parts",
     "class/src/components/day/Day.js~DayComponent.html#instance-get-parts",
     "src/components/day/Day.js~DayComponent#parts",
@@ -8145,6 +8157,12 @@ window.esdocSearchIndex = [
     "src/components/day/day.js~daycomponent#validators",
     "class/src/components/day/Day.js~DayComponent.html#instance-member-validators",
     "src/components/day/Day.js~DayComponent#validators",
+    "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#valuemask",
+    "class/src/components/day/Day.js~DayComponent.html#instance-get-valueMask",
+    "src/components/day/Day.js~DayComponent#valueMask",
     "member"
   ],
   [
@@ -11758,6 +11776,12 @@ window.esdocSearchIndex = [
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-autoModified",
     "src/components/textarea/TextArea.js~TextAreaComponent#autoModified",
     "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#checkaceplaceholder",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-checkAcePlaceholder",
+    "src/components/textarea/TextArea.js~TextAreaComponent#checkAcePlaceholder",
+    "method"
   ],
   [
     "src/components/textarea/textarea.js~textareacomponent#defaultschema",

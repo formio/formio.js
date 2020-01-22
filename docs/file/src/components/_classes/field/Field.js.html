@@ -239,9 +239,8 @@ export default class Field extends Component {
     }
     else {
       return super.render(this.renderTemplate(&apos;field&apos;, {
-        label: this.labelInfo,
+        labelMarkup: this.renderTemplate(&apos;label&apos;),
         element: element,
-        tooltip: this.interpolate(this.component.tooltip || &apos;&apos;).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;),
       }));
     }
   }
