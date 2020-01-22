@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Ace Textarea issues
+   - Placeholder not disappearing when typing
+   - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
+   - Editor settings from component JSON being ignored
+   - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
+
+### Changed
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+
+### Fixed
+ - ```userPermissions``` method not handling submissions with multiple groups properly 
+
 ## 4.8.0-rc.14
 ### Changed
  - Added improvements to accessibility.
