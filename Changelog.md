@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+
 ### Fixed
  - ```userPermissions``` method not handling submissions with multiple groups properly 
 
