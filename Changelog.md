@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+ - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+ 
 ### Fixed
  - Ace Textarea issues
    - Placeholder not disappearing when typing

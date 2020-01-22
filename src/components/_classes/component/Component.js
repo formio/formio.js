@@ -724,7 +724,14 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
-    data.render = this.renderTemplate.bind(this);
+    data.render = (...args) => {
+      console.warn(`Form.io 'render' template function is deprecated.
+      If you need to render template (template A) inside of another template (template B),
+      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      return this.renderTemplate(...args);
+    };
+    data.label = this.labelInfo;
+    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
     // Allow more specific template names
     const names = [

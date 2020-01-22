@@ -1,5 +1,5 @@
 {% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { %}
-  {{ ctx.render('label', ctx) }}
+  {{ ctx.labelMarkup }}
 {% } %}
 
 {% if (ctx.label.hidden && ctx.label.className && ctx.component.validate.required) { %}
@@ -7,12 +7,9 @@
 {% } %}
 
 {{ctx.element}}
+
 {% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}
-  <label class="{{ctx.label.className}}">{{ctx.t(ctx.component.label)}}
-  {% if (ctx.component.tooltip) { %}
-    <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
-  {% } %}
-  </label>
+  {{ ctx.labelMarkup }}
 {% } %}
 {% if (ctx.component.description) { %}
   <div class="form-text text-muted">{{ctx.t(ctx.component.description)}}</div>
