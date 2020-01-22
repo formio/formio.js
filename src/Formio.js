@@ -616,31 +616,34 @@ export default class Formio {
         // we would anyway need to loop through components for create permission, so we'll do that for all of them
         eachComponent(form.components, (component, path) => {
           if (component && component.defaultPermission) {
-            // we assume that there might be only single value of group component
             const value = _get(submission.data, path);
-            if (
-              value && value._id && // group id is present
-              user.roles.indexOf(value._id) > -1 // user has group id in his roles
-            ) {
-              if (component.defaultPermission === 'read') {
-                perms[permMap.read] = true;
+            // make it work for single-select Group and multi-select Group
+            const groups = Array.isArray(value) ? value : [value];
+            groups.forEach(group => {
+              if (
+                group && group._id && // group id is present
+                user.roles.indexOf(group._id) > -1 // user has group id in his roles
+              ) {
+                if (component.defaultPermission === 'read') {
+                  perms[permMap.read] = true;
+                }
+                if (component.defaultPermission === 'create') {
+                  perms[permMap.create] = true;
+                  perms[permMap.read] = true;
+                }
+                if (component.defaultPermission === 'write') {
+                  perms[permMap.create] = true;
+                  perms[permMap.read] = true;
+                  perms[permMap.update] = true;
+                }
+                if (component.defaultPermission === 'admin') {
+                  perms[permMap.create] = true;
+                  perms[permMap.read] = true;
+                  perms[permMap.update] = true;
+                  perms[permMap.delete] = true;
+                }
               }
-              if (component.defaultPermission === 'create') {
-                perms[permMap.create] = true;
-                perms[permMap.read] = true;
-              }
-              if (component.defaultPermission === 'write') {
-                perms[permMap.create] = true;
-                perms[permMap.read] = true;
-                perms[permMap.update] = true;
-              }
-              if (component.defaultPermission === 'admin') {
-                perms[permMap.create] = true;
-                perms[permMap.read] = true;
-                perms[permMap.update] = true;
-                perms[permMap.delete] = true;
-              }
-            }
+            });
           }
         });
       }
