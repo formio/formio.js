@@ -111,19 +111,21 @@ export default class Form extends Element {
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
-      let submissionError;
+      let error;
       result = this.getSubmission(formio)
         .catch((err) => {
-          submissionError = err;
+          error = err;
         })
         .then((submission) => {
           return formio.loadForm()
           // If the form returned an error, show it instead of the form.
-            .catch(this.errorForm)
+            .catch(err => {
+              error = err;
+            })
             .then((form) => {
               // If the submission returned an error, show it instead of the form.
-              if (submissionError) {
-                form = this.errorForm(submissionError);
+              if (error) {
+                form = this.errorForm(error);
               }
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
@@ -131,6 +133,9 @@ export default class Form extends Element {
               this._form = this.instance.form = form;
               if (submission) {
                 this.instance.submission = submission;
+              }
+              if (error) {
+                throw error;
               }
               return this.instance;
             });
