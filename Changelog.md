@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
  - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+ 
+### Fixed
+ - Ace Textarea issues
+   - Placeholder not disappearing when typing
+   - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
+   - Editor settings from component JSON being ignored
+   - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
+
+### Changed
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+
+### Fixed
+ - ```userPermissions``` method not handling submissions with multiple groups properly 
 
 ## 4.8.0-rc.14
 ### Changed

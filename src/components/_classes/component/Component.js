@@ -1843,16 +1843,18 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    const defaultAceSettings = {
+      maxLines: 12,
+      minLines: 12,
+      tabSize: 2,
+      mode: 'javascript',
+    };
+    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions({
-          maxLines: 12,
-          minLines: 12
-        });
-        editor.getSession().setTabSize(2);
+        editor.setOptions(settings);
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
