@@ -325,6 +325,10 @@ export function applyFormChanges(form, changes) {
       case 'remove':
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
+          const oldComponent = get(form.components, path);
+          if (oldComponent.key !== component.key) {
+            path.pop();
+          }
           removeComponent(form.components, path);
         });
         break;
@@ -332,7 +336,14 @@ export function applyFormChanges(form, changes) {
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
           try {
-            set(form.components, path, applyPatch(component, change.patches).newDocument);
+            const oldComponent = get(form.components, path);
+            const newComponent = applyPatch(component, change.patches).newDocument;
+
+            if (oldComponent.key !== newComponent.key) {
+              path.pop();
+            }
+
+            set(form.components, path, newComponent);
           }
           catch (err) {
             failed.push(change);
