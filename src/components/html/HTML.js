@@ -30,6 +30,9 @@ export default class HTMLComponent extends Component {
   }
 
   get content() {
+    if (this.builderMode) {
+      return this.component.content;
+    }
     const submission = _.get(this.root, 'submission', {});
     return this.component.content ? this.interpolate(this.component.content, {
       metadata: submission.metadata || {},
