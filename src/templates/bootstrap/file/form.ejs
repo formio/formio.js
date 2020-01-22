@@ -85,7 +85,7 @@
       <div class="col-sm-12">
         {% if (status.status === 'progress') { %}
           <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}%">
               <span class="sr-only">{{status.progress}}% {{ctx.t('Complete')}}</span>
             </div>
           </div>
