@@ -286,7 +286,6 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, &apos;root._form&apos;, {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === &apos;string&apos;) {
@@ -323,27 +322,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === &apos;function&apos;) {
     try {
-      if (typeof window === &apos;object&apos;) {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
-      else {
-        // Need to assume we&apos;re server side and limit ourselves to a sandbox VM
-        const vm = require(&apos;vm&apos;);
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
+      returnVal = Array.isArray(args) ? func(...args) : func(args);
     }
     catch (err) {
       returnVal = null;
