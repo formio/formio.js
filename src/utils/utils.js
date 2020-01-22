@@ -54,7 +54,6 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === 'string') {
