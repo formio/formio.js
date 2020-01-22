@@ -26,6 +26,7 @@ export default {
         invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
         invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
         mask: '{{field}} does not match the mask.',
+        time: '{{field}} contains invalid time',
         stripe: '{{stripe}}',
         month: 'Month',
         day: 'Day',

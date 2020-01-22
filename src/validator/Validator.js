@@ -559,6 +559,7 @@ class ValidationChecker {
         }
       },
       mask: {
+        key: 'mask',
         message(component) {
           return component.t(component.errorMessage('mask'), {
             field: component.errorLabel,
@@ -576,10 +577,10 @@ class ValidationChecker {
             value = value ? value.value : value;
           }
           else {
-            inputMask = component._inputMask;
+            inputMask = component.component.inputMask;
           }
           if (value && inputMask) {
-            return matchInputMask(value, inputMask);
+            return matchInputMask(value,  getInputMask(inputMask));
           }
           return true;
         }
@@ -660,6 +661,21 @@ class ValidationChecker {
           }
 
           return date.isAfter(minDate) || date.isSame(minDate);
+        }
+      },
+      time: {
+        key: 'time',
+        message(component) {
+          return component.t(component.errorMessage('time'), {
+            field: component.errorLabel,
+            time: component.rawData || component.dataValue
+          });
+        },
+        check(component, setting, value) {
+          if (!value || (component.isNotCompleteInput && component.isNotCompleteInput(value))) {
+            return true;
+          }
+         return moment(value, component.format || 'HH:mm').isValid();
         }
       },
       calendar: {
