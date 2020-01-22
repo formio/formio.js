@@ -234,7 +234,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this.component = this.mergeSchema(component || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -405,6 +405,10 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  mergeSchema(component = {}) {
+    return _.defaultsDeep(component, this.defaultSchema);
+  }
 
   // Allow componets to notify when ready.
   get ready() {
@@ -1876,6 +1880,10 @@ export default class Component extends Element {
       });
   }
 
+  get tree() {
+    return this.component.tree || false;
+  }
+
   /**
    * The empty value for this component.
    *
@@ -2000,7 +2008,7 @@ export default class Component extends Element {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**

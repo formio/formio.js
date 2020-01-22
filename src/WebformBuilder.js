@@ -905,43 +905,51 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
-    if (defaultValueComponent && !defaultChanged) {
-      _.assign(defaultValueComponent.component, _.omit(component, [
-        'key',
-        'label',
-        'placeholder',
-        'tooltip',
-        'hidden',
-        'autofocus',
-        'validate',
-        'disabled',
-        'defaultValue',
-        'customDefaultValue',
-        'calculateValue'
-      ]));
-      const parentComponent = defaultValueComponent.parent;
-      let tabIndex = -1;
-      let index = -1;
-      parentComponent.tabs.some((tab, tIndex) => {
-        tab.some((comp, compIndex) => {
-          if (comp.id === defaultValueComponent.id) {
-            tabIndex = tIndex;
-            index = compIndex;
-            return true;
-          }
-          return false;
-        });
-      });
+    if (defaultValueComponent) {
+      const defaultChanged = changed && (
+        (changed.component && changed.component.key === 'defaultValue')
+        || (changed.instance && defaultValueComponent.hasComponent(changed.instance))
+      );
 
-      if (tabIndex !== -1 && index !== -1) {
-        const sibling = parentComponent.tabs[tabIndex][index + 1];
-        parentComponent.removeComponent(defaultValueComponent);
-        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
-        _.pull(newComp.validators, 'required');
-        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
-        newComp.checkValidity = () => true;
-        newComp.build(defaultValueComponent.element);
+      if (!defaultChanged) {
+        _.assign(defaultValueComponent.component, _.omit(component, [
+          'key',
+          'label',
+          'placeholder',
+          'tooltip',
+          'hidden',
+          'autofocus',
+          'validate',
+          'disabled',
+          'defaultValue',
+          'customDefaultValue',
+          'calculateValue',
+          'conditional',
+          'customConditional',
+        ]));
+        const parentComponent = defaultValueComponent.parent;
+        let tabIndex = -1;
+        let index = -1;
+        parentComponent.tabs.some((tab, tIndex) => {
+          tab.some((comp, compIndex) => {
+            if (comp.id === defaultValueComponent.id) {
+              tabIndex = tIndex;
+              index = compIndex;
+              return true;
+            }
+            return false;
+          });
+        });
+
+        if (tabIndex !== -1 && index !== -1) {
+          const sibling = parentComponent.tabs[tabIndex][index + 1];
+          parentComponent.removeComponent(defaultValueComponent);
+          const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+          _.pull(newComp.validators, 'required');
+          parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+          newComp.checkValidity = () => true;
+          newComp.build(defaultValueComponent.element);
+        }
       }
     }
 

@@ -2,26 +2,15 @@
   <label class="">
     Address
   </label>
-  <table class="ui celled table">
-    <tbody>
-      <tr ref="row">
-        <td>
-          <div class="ui input fluid ">
-            <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value=""></input>
-          </div>
-        </td>
-        <td>
-          <button type="button" class="ui icon button secondary" ref="removeRow">
-            <i class="trash icon"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <button class="ui button primary" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="address-autocomplete-container">
+    <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="">
+    <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
+  </div>
+  <div class="form-check checkbox">
+    <label class="form-check-label">
+      <input ref="modeSwitcher" type="checkbox" class="form-check-input" tabindex="0">
+      <span>Can't find address? Switch to manual mode.</span>
+    </label>
+  </div>
   <div ref="messageContainer"></div>
 </div>
