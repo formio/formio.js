@@ -67,7 +67,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && (!flags.noSign || this.options.readOnly)) {
+    if (value && this.refs.signatureImage && this.options.readOnly) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -142,7 +142,7 @@ export default class SignatureComponent extends Input {
       this.signaturePad.clear();
 
       if (this.dataValue) {
-        this.setDataToSigaturePad();
+        this.signaturePad.fromDataURL(this.dataValue);
       }
     }
   }
