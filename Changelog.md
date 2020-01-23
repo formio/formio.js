@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
+
 ## 4.8.0
 ### Added
  - Error messages when loadForm and loadSubmission fails.
