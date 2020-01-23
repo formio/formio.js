@@ -33,7 +33,7 @@ export default class PDF extends Webform {
   }
 
   attach(element) {
-    return super.attach(element).then(() => {
+    return super.attach(element).then(async() => {
       this.loadRefs(element, {
         submitButton: 'single',
         zoomIn: 'single',
@@ -48,8 +48,16 @@ export default class PDF extends Webform {
       });
 
       // iframes cannot be in the template so manually create it
+      let iframeSrc = '';
+      try {
+        iframeSrc = await this.getSrc();
+      }
+      catch (err) {
+        iframeSrc = err;
+      }
+      console.log('iframeSrc from library', iframeSrc);
       this.iframeElement = this.ce('iframe', {
-        src: this.getSrc(),
+        srcdoc: iframeSrc,
         id: `iframe-${this.id}`,
         seamless: true,
         class: 'formio-iframe'
@@ -116,7 +124,7 @@ export default class PDF extends Webform {
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
-  getSrc() {
+  async getSrc() {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return '';
     }
@@ -140,7 +148,23 @@ export default class PDF extends Webform {
       iframeSrc += `?${params.join('&')}`;
     }
 
-    return iframeSrc;
+    const { headers } = this.options;
+
+    try {
+      const bodyRequest = await fetch(iframeSrc, {
+        method: 'GET',
+        headers: {
+          credentials: 'include',
+          ...headers,
+        },
+      });
+      const htmlBody = await bodyRequest.text();
+      return htmlBody;
+    }
+    catch (error) {
+      console.log('error setting pdf iframe', error);
+      return iframeSrc;
+    }
   }
 
   setForm(form) {
