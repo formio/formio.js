@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
+
 ## 4.8.0
 ### Added
  - Error messages when loadForm and loadSubmission fails.
