@@ -271,12 +271,17 @@ export default [
   },
   {
     weight: 200,
-    type: &apos;textfield&apos;,
+    type: &apos;textarea&apos;,
     input: true,
     key: &apos;description&apos;,
     label: &apos;Description&apos;,
     placeholder: &apos;Description for this field.&apos;,
-    tooltip: &apos;The description is text that will appear below the input field.&apos;
+    tooltip: &apos;The description is text that will appear below the input field.&apos;,
+    editor: &apos;ace&apos;,
+    as: &apos;html&apos;,
+    wysiwyg: {
+      minLines: 3,
+    },
   },
   {
     weight: 300,
@@ -285,7 +290,12 @@ export default [
     key: &apos;tooltip&apos;,
     label: &apos;Tooltip&apos;,
     placeholder: &apos;To add a tooltip to this field, enter text here.&apos;,
-    tooltip: &apos;Adds a tooltip to the side of this field.&apos;
+    tooltip: &apos;Adds a tooltip to the side of this field.&apos;,
+    editor: &apos;ace&apos;,
+    as: &apos;html&apos;,
+    wysiwyg: {
+      minLines: 3,
+    },
   },
   {
     weight: 500,

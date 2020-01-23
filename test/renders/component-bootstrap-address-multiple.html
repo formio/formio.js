@@ -2,24 +2,15 @@
   <label class="col-form-label ">
     Address
   </label>
-  <table class="table table-bordered">
-    <tbody>
-      <tr ref="row">
-        <td>
-          <input ref="input" name="data[address]" type="text" class="form-control address-search" lang="en" value=""></input>
-        </td>
-        <td>
-          <button type="button" class="btn btn-secondary" ref="removeRow">
-            <i class="fa fa-times-circle-o"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="address-autocomplete-container">
+    <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="">
+    <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
+  </div>
+  <div class="form-check checkbox">
+    <label class="form-check-label">
+      <input ref="modeSwitcher" type="checkbox" class="form-check-input" tabindex="0">
+      <span>Can't find address? Switch to manual mode.</span>
+    </label>
+  </div>
   <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
 </div>

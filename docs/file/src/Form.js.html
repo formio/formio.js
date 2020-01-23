@@ -316,23 +316,57 @@ export default class Form extends Element {
     return this.setForm(formParam);
   }
 
+  errorForm(err) {
+    return {
+      components: [
+        {
+          &apos;label&apos;: &apos;HTML&apos;,
+          &apos;tag&apos;: &apos;div&apos;,
+          &apos;className&apos;: &apos;error error-message alert alert-danger ui red message&apos;,
+          &apos;attrs&apos;: [
+            {
+              &apos;attr&apos;: &apos;role&apos;,
+              &apos;value&apos;: &apos;alert&apos;
+            }
+          ],
+          &apos;key&apos;: &apos;errorMessage&apos;,
+          &apos;type&apos;: &apos;htmlelement&apos;,
+          &apos;input&apos;: false,
+          &apos;content&apos;: typeof err === &apos;string&apos; ? err : err.message,
+        }
+      ]
+    };
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === &apos;string&apos;) {
       const formio = new Formio(formParam);
-      result = this.getSubmission(formio).then((submission) =&gt; {
-        return formio.loadForm().then((form) =&gt; {
-          this.instance = this.instance || this.create(form.display);
-          this.instance.url = formParam;
-          this.instance.nosubmit = false;
-          this._form = this.instance.form = form;
-          if (submission) {
-            this.instance.submission = submission;
-          }
-          return this.instance;
+      let submissionError;
+      result = this.getSubmission(formio)
+        .catch((err) =&gt; {
+          submissionError = err;
+        })
+        .then((submission) =&gt; {
+          return formio.loadForm()
+          // If the form returned an error, show it instead of the form.
+            .catch(this.errorForm)
+            .then((form) =&gt; {
+              // If the submission returned an error, show it instead of the form.
+              if (submissionError) {
+                form = this.errorForm(submissionError);
+              }
+              this.instance = this.instance || this.create(form.display);
+              this.instance.url = formParam;
+              this.instance.nosubmit = false;
+              this._form = this.instance.form = form;
+              if (submission) {
+                this.instance.submission = submission;
+              }
+              return this.instance;
+            });
         });
-      });
     }
     else {
       this.instance = this.instance || this.create(formParam.display);

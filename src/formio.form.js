@@ -3,7 +3,7 @@ import Builders from './builders/Builders';
 import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
-import Providers from './providers/Providers';
+import Providers from './providers';
 import Rules from './validator/Rules';
 import Formio from './Formio';
 Components.setComponents(AllComponents);

@@ -29,6 +29,9 @@ export default class ContentComponent extends Component {
   }
 
   get content() {
+    if (this.builderMode) {
+      return this.component.html;
+    }
     const submission = _.get(this.root, 'submission', {});
     return this.component.html ? this.interpolate(this.component.html, {
       metadata: submission.metadata || {},

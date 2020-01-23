@@ -365,28 +365,16 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = this.component.as || &apos;javascript&apos;;
+          settings.mode = this.component.as;
           this.addAce(element, settings, (newValue) =&gt; this.updateEditorValue(index, newValue)).then((ace) =&gt; {
             this.editors[index] = ace;
-            ace.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
+            ace.on(&apos;change&apos;, () =&gt; this.checkAcePlaceholder(ace));
             let dataValue = this.dataValue;
             dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
             ace.setValue(this.setConvertedValue(dataValue, index));
             if (this.component.placeholder) {
               setTimeout(() =&gt; {
-                const shouldShow = !ace.session.getValue().length;
-                let node = ace.renderer.emptyMessageNode;
-                if (!shouldShow &amp;&amp; node) {
-                  ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
-                  ace.renderer.emptyMessageNode = null;
-                }
-                else if (shouldShow &amp;&amp; !node) {
-                  node = ace.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
-                  node.textContent = this.t(this.component.placeholder);
-                  node.className = &apos;ace_invisible ace_emptyMessage&apos;;
-                  node.style.padding = &apos;0 9px&apos;;
-                  ace.renderer.scroller.appendChild(node);
-                }
+                this.checkAcePlaceholder(ace);
               }, 100);
             }
             editorReady(ace);
@@ -472,6 +460,22 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
 
     return element;
+  }
+
+  checkAcePlaceholder(ace) {
+    const shouldShow = !ace.session.getValue().length;
+    let node = ace.renderer.emptyMessageNode;
+    if (!shouldShow &amp;&amp; node) {
+      ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
+      ace.renderer.emptyMessageNode = null;
+    }
+    else if (shouldShow &amp;&amp; !node) {
+      node = ace.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
+      node.textContent = this.t(this.component.placeholder);
+      node.className = &apos;ace_invisible ace_emptyMessage&apos;;
+      node.style.padding = &apos;0 9px&apos;;
+      ace.renderer.scroller.appendChild(node);
+    }
   }
 
   attach(element) {
