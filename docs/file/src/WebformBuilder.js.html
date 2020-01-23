@@ -921,15 +921,23 @@ export default class WebformBuilder extends Component {
   getComponentsPath(component, parent) {
     // Get path to the component in the parent component.
     let path = &apos;components&apos;;
+    let columnIndex = 0;
+    let tableRowIndex = 0;
+    let tableColumnIndex = 0;
+    let tabIndex = 0;
     switch (parent.type) {
       case &apos;table&apos;:
-        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        tableRowIndex = _.findIndex(parent.rows, row =&gt; row.some(column =&gt; column.components.some(comp =&gt; comp.key  === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column =&gt; column.components.some(comp =&gt; comp.key  === component.key)));
+        path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case &apos;columns&apos;:
-        path = `columns[${component.column}].components`;
+        columnIndex = _.findIndex(parent.columns, column =&gt; column.components.some(comp =&gt; comp.key === component.key));
+        path = `columns[${columnIndex}].components`;
         break;
       case &apos;tabs&apos;:
-        path = `components[${component.tab}].components`;
+        tabIndex = _.findIndex(parent.components, tab =&gt; tab.components.some(comp =&gt; comp.key  === component.key));
+        path = `components[${tabIndex}].components`;
         break;
     }
     return path;

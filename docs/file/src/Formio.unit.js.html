@@ -2380,7 +2380,80 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
           ];
         }
       },
-
+      {
+        name: &apos;userPermissions method should handle submission with multiple groups&apos;,
+        test() {
+          const user1 = {
+            roles: [&apos;test_group_id1&apos;],
+          };
+          const user2 = {
+            roles: [&apos;test_group_id2&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: [
+                {
+                  _id: &apos;test_group_id1&apos;
+                },
+                {
+                  _id: &apos;test_group_id2&apos;
+                }
+              ]
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return NativePromise.all([
+            formio.userPermissions(user1, undefined, submission)
+              .then(permissions =&gt; {
+                assert.equal(permissions.create, false);
+                assert.equal(permissions.read, true);
+                assert.equal(permissions.edit, false);
+                assert.equal(permissions.delete, false);
+              }),
+            formio.userPermissions(user2, undefined, submission)
+              .then(permissions =&gt; {
+                assert.equal(permissions.create, false);
+                assert.equal(permissions.read, true);
+                assert.equal(permissions.edit, false);
+                assert.equal(permissions.delete, false);
+              }),
+          ]);
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;read&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
     ];
 
     tests.forEach(testCapability);

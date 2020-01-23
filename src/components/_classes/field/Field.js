@@ -7,9 +7,8 @@ export default class Field extends Component {
     }
     else {
       return super.render(this.renderTemplate('field', {
-        label: this.labelInfo,
+        labelMarkup: this.renderTemplate('label'),
         element: element,
-        tooltip: this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />'),
       }));
     }
   }

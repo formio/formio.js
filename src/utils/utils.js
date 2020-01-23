@@ -54,7 +54,6 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === 'string') {
@@ -91,27 +90,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (typeof window === 'object') {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
-      else {
-        // Need to assume we're server side and limit ourselves to a sandbox VM
-        const vm = require('vm');
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
+      returnVal = Array.isArray(args) ? func(...args) : func(args);
     }
     catch (err) {
       returnVal = null;
