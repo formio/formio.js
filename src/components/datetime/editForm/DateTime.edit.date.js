@@ -33,5 +33,5 @@ export default [
     placeholder: 'yyyy-MM-dd',
     tooltip: 'Add dates that you want to blacklist. For example: \n \n 2025-02-21',
     weight: 55
-  },
+  }
 ];
