@@ -178,11 +178,11 @@ export default class Wizard extends Webform {
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
       ...this.currentPage.components,
-      ...this.suffixComps
+      ...this.suffixComps,
     ]);
     this.attachNav();
     this.attachHeader();
-    return promises;
+    return promises.then(() => this.emit('render'));
   }
 
   isBreadcrumbClickable() {
@@ -552,7 +552,7 @@ export default class Wizard extends Webform {
     super.onChange(flags, changed);
     if (this.alert && !this.submitted) {
       this.checkValidity(this.submission.data, true, this.submission.data, true);
-      this.showErrors([], true);
+      this.showErrors([]);
     }
 
     // If the pages change, need to redraw the header.

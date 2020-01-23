@@ -87,7 +87,7 @@ export default class TabsComponent extends NestedComponent {
       tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
       tabComponents: this.tabs.map(tab => this.renderComponents(tab))
-    }, (this.options.flatten ? 'flat' : null)));
+    }, (this.options.flatten || this.options.pdf ? 'flat' : null)));
   }
 
   attach(element) {

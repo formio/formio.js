@@ -9,6 +9,8 @@ import Formio from './Formio';
 Components.setComponents(AllComponents);
 Formio.Components = Components;
 Formio.Templates = Templates;
+Formio.Displays = Displays;
+Formio.Builders = Builders;
 const registerPlugin = (plugin) => {
   // Sanity check.
   if (typeof plugin !== 'object') {

@@ -4,6 +4,7 @@ import EventEmitter from './EventEmitter';
 import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
+import Tooltip from 'tooltip.js';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
@@ -171,6 +172,13 @@ export default class Webform extends NestedComponent {
      * @type {HTMLElement}
      */
     this.alert = null;
+
+    /**
+     * The attached tooltip forerror list
+     * @type {Tooltip}
+     */
+
+    this.errorTooltip = null;
 
     /**
      * Promise that is triggered when the submission is done loading.
@@ -863,7 +871,26 @@ export default class Webform extends NestedComponent {
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
     this.on('refreshData', () => this.updateValue(), true);
 
+    this.executeFormController();
+
     return this.formReady;
+  }
+
+  executeFormController() {
+    // If no controller value or
+    // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+    if (
+      !this.form || !this.form.controller
+      || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)
+    ) {
+      return false;
+    }
+
+    this.formReady.then(() => {
+      this.evaluate(this.form.controller, {
+        components: this.components,
+      });
+    });
   }
 
   destroy() {
@@ -909,10 +936,13 @@ export default class Webform extends NestedComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
-    setTimeout(() => this.emit('render'), 1);
-    return childPromise.then(() => this.setValue(this._submission, {
-      noUpdateEvent: true
-    }));
+    return childPromise.then(() => {
+      this.emit('render');
+
+      return this.setValue(this._submission, {
+        noUpdateEvent: true,
+      });
+    });
   }
 
   hasRequiredFields() {
@@ -938,18 +968,36 @@ export default class Webform extends NestedComponent {
    *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
+   * @param {string} classes - Styling classes for alert.
    */
-  setAlert(type, message) {
+  setAlert(type, message, classes) {
+    const hotkeyListener = (e) => {
+      const { keyCode, key, ctrlKey, altKey } = e;
+        if ((key === 'x' || keyCode === 88) && ctrlKey && altKey) {
+          if (this.refs.errorRef && this.refs.errorRef.length) {
+            this.refs.errorRef[0].focus();
+          }
+        }
+    };
+
+    const removeAlert = () => {
+      this.removeEventListener(window, 'keydown', hotkeyListener);
+
+      if (this.refs.errorRef && this.refs.errorRef.length) {
+        this.refs.errorRef.forEach(el => {
+          this.removeEventListener(el, 'click');
+          this.removeEventListener(el, 'keypress');
+        });
+      }
+      this.removeChild(this.alert);
+      this.alert = null;
+      this.errorTooltip && this.errorTooltip.dispose();
+      this.errorTooltip = null;
+    };
+
     if (!type && this.submitted) {
       if (this.alert) {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
+       removeAlert();
       }
       return;
     }
@@ -961,14 +1009,7 @@ export default class Webform extends NestedComponent {
     }
     if (this.alert) {
       try {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach(el => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
+        removeAlert();
       }
       catch (err) {
         // ignore
@@ -976,7 +1017,7 @@ export default class Webform extends NestedComponent {
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: `alert alert-${type}`,
+        class: classes || `alert alert-${type}`,
         role: 'alert'
       });
       if (message instanceof HTMLElement) {
@@ -990,9 +1031,25 @@ export default class Webform extends NestedComponent {
       return;
     }
 
-    this.loadRefs(this.alert, { errorRef: 'multiple' });
+    this.loadRefs(this.alert, { errorRef: 'multiple', errorTooltip: 'single' });
+
+    if (this.refs && this.refs.errorTooltip) {
+      const title = this.interpolate(this.refs.errorTooltip.getAttribute('data-title'), '<br />');
+      this.errorTooltip = new Tooltip(this.refs.errorTooltip, {
+        trigger: 'hover click focus',
+        placement: 'right',
+        html: true,
+        title: title,
+        template: `
+          <div class="tooltip" style="opacity: 1;" role="tooltip">
+            <div class="tooltip-arrow"></div>
+            <div class="tooltip-inner"></div>
+          </div>`,
+      });
+    }
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
+      this.addEventListener(window, 'keydown', hotkeyListener);
       this.refs.errorRef.forEach(el => {
         this.addEventListener(el, 'click', (e) => {
           const key = e.currentTarget.dataset.componentKey;
@@ -1018,20 +1075,7 @@ export default class Webform extends NestedComponent {
   focusOnComponent(key) {
     if (key) {
       const component = this.getComponent(key);
-      const listenerFunction = (e) => {
-        e.stopPropagation();
-
-        this.formReady.then(() => {
-          if (this.refs.errorRef && this.refs.errorRef.length) {
-            this.refs.errorRef[0].focus();
-          }
-        });
-
-        this.removeEventListener(component.refs.input[0], 'blur', listenerFunction);
-      };
-
-      this.addEventListener(component.refs.input[0], 'blur', listenerFunction);
-      component.focus();
+      component && component.focus();
     }
   }
 
@@ -1086,6 +1130,17 @@ export default class Webform extends NestedComponent {
     const message = document.createDocumentFragment();
     const p = this.ce('p');
     this.setContent(p, this.t('error'));
+
+    const params = {
+      class: 'fa fa-question-circle text-based',
+      style: 'margin-left: 5px',
+      ref: 'errorTooltip',
+      tabIndex: 0,
+      'data-title': this.t('errorListHotkey'),
+    };
+    const hotkeyInfo = this.ce('i', params);
+    this.appendTo(hotkeyInfo, p);
+
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
@@ -1101,7 +1156,10 @@ export default class Webform extends NestedComponent {
           this.appendTo(li, ul);
         };
 
-        if (err.messages && err.messages.length) {
+        if (err.message && !err.messages) {
+          createListItem(`${err.message}`);
+        }
+        else if (err.messages && err.messages.length) {
           err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
         }
         else if (err) {
@@ -1112,16 +1170,19 @@ export default class Webform extends NestedComponent {
     p.appendChild(ul);
     message.appendChild(p);
     this.setAlert('danger', message);
+
     if (triggerEvent) {
       this.emit('error', errors);
-    }
 
-    if (triggerEvent && this.refs.errorRef && this.refs.errorRef.length) {
-      this.refs.errorRef[0].focus();
-    }
-    else {
-      const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-      withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
+      if (this.refs.errorRef && this.refs.errorRef.length) {
+        this.ready.then(() => {
+          this.refs.errorRef[0].focus();
+        });
+      }
+      else {
+        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
+        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
+      }
     }
 
     return errors;

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
+import * as FormioUtils from '../../utils/utils';
 
 const defaultDataFormat = 'HH:mm:ss';
 
@@ -19,6 +20,7 @@ export default class TimeComponent extends TextFieldComponent {
     super(component, options, data);
 
     this.component.inputMask = '99:99';
+    this.component.defaultMask = FormioUtils.getInputMask('99:99:99');
     this.component.inputType = this.component.inputType || 'time';
   }
 
