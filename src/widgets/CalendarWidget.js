@@ -42,6 +42,7 @@ export default class CalendarWidget extends InputWidget {
       displayInTimezone: '',
       timezone: '',
       minDate: '',
+      disable: [],
       maxDate: ''
     };
   }
@@ -95,6 +96,7 @@ export default class CalendarWidget extends InputWidget {
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
+    this.settings.disable = this.disabledDates;
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
@@ -177,6 +179,10 @@ export default class CalendarWidget extends InputWidget {
 
   get input() {
     return this.calendar ? this.calendar.altInput : null;
+  }
+
+  get disabledDates() {
+    return this.settings.disabledDates ? this.settings.disabledDates.split(',') : [];
   }
 
   get localeFormat() {
