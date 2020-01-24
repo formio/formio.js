@@ -4,11 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
- - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
-
 ## 4.8.0
 ### Added
  - Error messages when loadForm and loadSubmission fails.
@@ -19,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed dirty parameter value for wizard onchange validations.
  
 ### Fixed
+ - Fixed editing existing signature. 
+ - Added check for hasComponent in WebformBuilder. 
+ - Added modified flag to wizard onChange event.
+ - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
+ - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
  - Fix form version control 
  - Normalize date value for day component
  - Fileuploader component does not render the progress percentage

@@ -52,6 +52,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +141,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -230,22 +236,79 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/address/Address.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals google */
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import autocompleter from &apos;autocompleter&apos;;
 import _ from &apos;lodash&apos;;
 
-import TextFieldComponent from &apos;../textfield/TextField&apos;;
 import Formio from &apos;../../Formio&apos;;
+import { GoogleAddressProvider } from &apos;../../providers/address/GoogleAddressProvider&apos;;
 
-export default class AddressComponent extends TextFieldComponent {
+import Field from &apos;../_classes/field/Field&apos;;
+import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
+import ContainerComponent from &apos;../container/Container&apos;;
+
+export const AddressComponentMode = {
+  Autocomplete: &apos;autocomplete&apos;,
+  Manual: &apos;manual&apos;,
+};
+
+const RemoveValueIconHiddenClass = &apos;address-autocomplete-remove-value-icon--hidden&apos;;
+
+export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
+    return ContainerComponent.schema({
       type: &apos;address&apos;,
       label: &apos;Address&apos;,
       key: &apos;address&apos;,
-      map: {
-        region: &apos;&apos;,
-        key: &apos;&apos;
-      }
+      switchToManualModeLabel: &quot;Can&apos;t find address? Switch to manual mode.&quot;,
+      provider: &apos;&apos;,
+      providerOptions: {},
+      manualModeViewString: &apos;&apos;,
+      hideLabel: false,
+      disableClearIcon: false,
+      components: [
+        {
+          label: &apos;Street&apos;,
+          tableView: true,
+          key: &apos;street&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+        {
+          label: &apos;City&apos;,
+          tableView: true,
+          key: &apos;city&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+        {
+          label: &apos;County&apos;,
+          tableView: true,
+          key: &apos;county&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+        {
+          label: &apos;State&apos;,
+          tableView: true,
+          key: &apos;state&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+        {
+          label: &apos;Zip Code&apos;,
+          tableView: true,
+          key: &apos;zip&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+        {
+          label: &apos;Country&apos;,
+          tableView: true,
+          key: &apos;country&apos;,
+          type: &apos;textfield&apos;,
+          input: true,
+        },
+      ],
     }, ...extend);
   }
 
@@ -256,470 +319,397 @@ export default class AddressComponent extends TextFieldComponent {
       icon: &apos;home&apos;,
       documentation: &apos;http://help.form.io/userguide/#address&apos;,
       weight: 35,
-      schema: AddressComponent.schema()
+      schema: AddressComponent.schema(),
     };
   }
 
-  init() {
-    super.init();
-    let src = &apos;https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;callback=googleMapsCallback&apos;;
-    if (this.component.map &amp;&amp; this.component.map.key) {
-      src += `&amp;key=${this.component.map.key}`;
-    }
-    if (this.component.map &amp;&amp; this.component.map.region) {
-      src += `&amp;region=${this.component.map.region}`;
-    }
-    Formio.requireLibrary(&apos;googleMaps&apos;, &apos;google.maps.places&apos;, src);
+  mergeSchema(component = {}) {
+    let { defaultSchema } = this;
 
-    // Keep track of the full addresses.
-    this.addresses = this.dataValue || &apos;&apos;;
-    if (!Array.isArray(this.addresses)) {
-      this.addresses = [this.addresses];
+    if (component.components) {
+      defaultSchema = _.omit(defaultSchema, &apos;components&apos;);
     }
+
+    return _.defaultsDeep(component , defaultSchema);
+  }
+
+  init() {
+    this.components = this.components || [];
+    NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
+    Field.prototype.init.call(this);
+
+    if (!this.builderMode &amp;&amp; this.component.provider) {
+      const {
+        provider,
+        providerOptions,
+      } = this.component;
+      this.provider = this.initializeProvider(provider, providerOptions);
+    }
+  }
+
+  initializeProvider(provider, options = {}) {
+    const Provider = Formio.Providers.getProvider(&apos;address&apos;, provider);
+    return new Provider(options);
+  }
+
+  get emptyValue() {
+    return {
+      mode: AddressComponentMode.Autocomplete,
+      address: {},
+    };
+  }
+
+  get mode() {
+    return this.dataValue ? this.dataValue.mode : this.dataValue;
+  }
+
+  set mode(value) {
+    this.dataValue.mode = value;
+  }
+
+  get autocompleteMode() {
+    return this.mode === AddressComponentMode.Autocomplete;
+  }
+
+  get manualMode() {
+    return this.mode === AddressComponentMode.Manual;
+  }
+
+  restoreComponentsContext() {
+    this.getComponents().forEach((component) =&gt; {
+      component.data = this.address;
+      component.setValue(component.dataValue, {
+        noUpdateEvent: true,
+      });
+    });
+  }
+
+  get address() {
+    return this.dataValue ? this.dataValue.address : this.dataValue;
+  }
+
+  set address(value) {
+    this.dataValue.address = value;
   }
 
   get defaultSchema() {
     return AddressComponent.schema();
   }
 
-  get inputInfo() {
-    const info = super.inputInfo;
-    info.attr.class += &apos; address-search&apos;;
-    return info;
+  isValueInLegacyFormat(value) {
+    return !this.provider &amp;&amp; value &amp;&amp; !value.mode;
   }
 
-  setValueAt(index, value, flags) {
-    flags = flags || {};
-    if (!flags.noDefault &amp;&amp; (value === null || value === undefined)) {
-      value = this.defaultValue;
-    }
-    this.addresses[index] = value;
-    if (value &amp;&amp; value.formatted_address) {
-      this.refs.input[index].value = value.formatted_address;
-    }
-  }
-
-  getValueAt(index) {
-    return this.addresses[index];
-  }
-
-  /**
-   * Start the autocomplete and the input listeners
-   *
-   * @param input
-   *   The input field
-   * @param autoCompleteOptions
-   *   The default option for the autocompletion
-   */
-  autoCompleteInit(input, autoCompleteOptions) {
-    // Set attribute autoComplete to off
-    input.setAttribute(&apos;autocomplete&apos;, &apos;off&apos;);
-
-    // Init suggestions list
-    this.autoCompleteSuggestions = [];
-
-    // Start Google AutocompleteService
-    const autoComplete = new google.maps.places.AutocompleteService();
-
-    // Create suggestions container
-    const suggestionContainer = document.createElement(&apos;div&apos;);
-    suggestionContainer.classList.add(&apos;pac-container&apos;, &apos;pac-logo&apos;);
-    input.parentNode.appendChild(suggestionContainer);
-
-    // Add listener on input field for input event
-    this.addEventListener(input, &apos;input&apos;, () =&gt; {
-      if (input.value) {
-        const options = {
-          input: input.value
-        };
-        autoComplete.getPlacePredictions(_.defaultsDeep(options, autoCompleteOptions),
-          (suggestions, status) =&gt; {
-            this.autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
-          });
+  normalizeValue(value) {
+    return this.isValueInLegacyFormat(value)
+      ? {
+        mode: AddressComponentMode.Autocomplete,
+        address: value,
       }
-      else {
-        this.autoCompleteCleanSuggestions(suggestionContainer);
-        suggestionContainer.style.display = &apos;none&apos;;
-      }
-    });
-    // Add listener on input field for blur event
-    this.addEventListener(input, &apos;blur&apos;, () =&gt; {
-      // Delay to allow click on suggestion list
-      _.delay(() =&gt; {
-        suggestionContainer.style.display = &apos;none&apos;;
-      }, 100);
-    });
-    // Add listener on input field for focus event
-    this.addEventListener(input, &apos;focus&apos;, () =&gt; {
-      if (suggestionContainer.childElementCount) {
-        suggestionContainer.style.display = &apos;block&apos;;
-      }
-    });
-    // Add listener on input field for focus event
-    this.addEventListener(window, &apos;resize&apos;, () =&gt; {
-      // Set the same width as input field
-      suggestionContainer.style.width = `${input.offsetWidth}px`;
-    });
-    // Add listiner on input field for key event
-    this.autoCompleteKeyboardListener(suggestionContainer, input);
+      : value;
   }
 
-  /**
-   * Add listiner on input field for key event
-   *
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteKeyboardListener(suggestionContainer, input) {
-    this.autoCompleteKeyCodeListener = (event) =&gt; {
-      if (input.value) {
-        switch (event.keyCode) {
-          case 38:
-          // UP
-            this.autoCompleteKeyUpInteraction(suggestionContainer, input);
-            break;
+  setValue(value, flags) {
+    const changed = Field.prototype.setValue.call(this, value, flags);
 
-          case 40:
-            // DOWN
-            this.autoCompleteKeyDownInteraction(suggestionContainer, input);
-            break;
+    if (this.isValueInLegacyFormat(value)) {
+      // Fallback to legacy version where Google Maps was the only provider.
+      const {
+        map,
+        providerOptions = {},
+      } = this.component;
 
-          case 9:
-            // TAB
-            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
-            break;
+      if (map) {
+        const {
+          key,
+          region,
+        } = map;
 
-          case 13:
-            // ENTER
-            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
-            break;
+        if (key) {
+          providerOptions.apiKey = key;
+        }
+        if (region) {
+          providerOptions.region = region;
         }
       }
+
+      this.provider = this.initializeProvider(GoogleAddressProvider.name, providerOptions);
+    }
+
+    if (this.manualMode) {
+      this.restoreComponentsContext();
+    }
+
+    if (changed) {
+      this.redraw();
+    }
+
+    return changed;
+  }
+
+  static get modeSwitcherRef() {
+    return &apos;modeSwitcher&apos;;
+  }
+
+  static get removeValueIconRef() {
+    return &apos;removeValueIcon&apos;;
+  }
+
+  static get searchInputRef() {
+    return &apos;searchInput&apos;;
+  }
+
+  get modeSwitcher() {
+    return this.refs
+      ? (this.refs[AddressComponent.modeSwitcherRef] || null)
+      : null;
+  }
+
+  get removeValueIcon() {
+    return this.refs
+      ? (this.refs[AddressComponent.removeValueIconRef] || null)
+      : null;
+  }
+
+  get searchInput() {
+    return this.refs
+      ? (this.refs[AddressComponent.searchInputRef] || null)
+      : null;
+  }
+
+  get searchInputAttributes() {
+    const attr = {
+      name: this.options.name,
+      type: &apos;text&apos;,
+      class: &apos;form-control&apos;,
+      lang: this.options.language,
+      tabindex: this.component.tabindex || 0,
     };
 
-    this.addEventListener(input, &apos;keydown&apos;, this.autoCompleteKeyCodeListener);
+    if (this.component.placeholder) {
+      attr.placeholder = this.t(this.component.placeholder);
+    }
+
+    if (this.disabled) {
+      attr.disabled = &apos;disabled&apos;;
+    }
+
+    _.defaults(attr, this.component.attributes);
+
+    return attr;
   }
 
-  /**
-   * Action when key up is trigger
-   *
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteKeyUpInteraction(suggestionContainer, input) {
-    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
-    if (!elementSelected) {
-      // Returns the bottom of the list.
-      return this.autoCompleteListDecorator(suggestionContainer.lastChild, input);
-    }
-    else {
-      // Transverse the list in reverse order.
-      const previousSibling = elementSelected.previousSibling;
-      if (previousSibling) {
-        this.autoCompleteListDecorator(previousSibling, input);
-      }
-      else {
-        // Return to input value
-        elementSelected.classList.remove(&apos;pac-item-selected&apos;);
-        input.value = this.autoCompleteInputValue;
-      }
-    }
+  get templateName() {
+    return this.builderMode ? super.templateName : &apos;address&apos;;
   }
 
-  /**
-   * Action when key down is trigger
-   *
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteKeyDownInteraction(suggestionContainer, input) {
-    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
-    if (!elementSelected) {
-      // Start at the top of the list.
-      if (suggestionContainer.firstChild) {
-        return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
-      }
-    }
-    else {
-      // Transverse the list from top down.
-      const nextSibling = elementSelected.nextSibling;
-      if (nextSibling) {
-        this.autoCompleteListDecorator(nextSibling, input);
-      }
-      else {
-        // Return to input value
-        elementSelected.classList.remove(&apos;pac-item-selected&apos;);
-        input.value = this.autoCompleteInputValue;
-      }
-    }
+  render() {
+    return super.render(this.renderTemplate(this.templateName, {
+      children: this.renderComponents(),
+      nestedKey: this.nestedKey,
+      inputAttributes: this.searchInputAttributes,
+      ref: {
+        modeSwitcher: AddressComponent.modeSwitcherRef,
+        removeValueIcon: AddressComponent.removeValueIconRef,
+        searchInput: AddressComponent.searchInputRef,
+      },
+      displayValue: this.getDisplayValue(),
+      mode: {
+        autocomplete: this.autocompleteMode,
+        manual: this.manualMode,
+      },
+    }));
   }
 
-  /**
-   * Action when validation is trigger
-   *
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteKeyValidationInteraction(suggestionContainer, input) {
-    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
-    if (elementSelected) {
-      for (const suggestion of this.autoCompleteSuggestions) {
-        const content = elementSelected.textContent || elementSelected.innerText;
-        if (content === suggestion.description) {
-          this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
-        }
+  attach(element) {
+    const result = ((this.builderMode || this.manualMode) ? super.attach : Field.prototype.attach).call(this, element);
+
+    if (!this.builderMode) {
+      if (!this.provider &amp;&amp; this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
+        this.provider = this.initializeProvider(provider, providerOptions);
       }
-      elementSelected.classList.remove(&apos;pac-item-selected&apos;);
-    }
-  }
 
-  /**
-   * Highlight suggestion selected
-   *
-   * @param item
-   *   Item selected in suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteListDecorator(item, input) {
-    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
-    if (elementSelected) {
-      elementSelected.classList.remove(&apos;pac-item-selected&apos;);
-    }
-    input.value = item.textContent;
-    item.classList.add(&apos;pac-item-selected&apos;);
-  }
+      this.loadRefs(element, {
+        [AddressComponent.modeSwitcherRef]: &apos;single&apos;,
+        [AddressComponent.removeValueIconRef]: &apos;single&apos;,
+        [AddressComponent.searchInputRef]: &apos;single&apos;,
+      });
 
-  /**
-   * Filter method to return if the suggestion should be displayed
-   *
-   * @param data
-   *   Data to check
-   * @returns {Boolean}
-   */
-  autoCompleteFilterSuggestion(data) {
-    const result = this.evaluate(this.component.map.autoCompleteFilter, {
-      show: true,
-      data
-    }, &apos;show&apos;);
-    if (result === null) {
-      return true;
-    }
-    return result.toString() === &apos;true&apos;;
-  }
+      if (this.searchInput &amp;&amp; this.provider) {
+        autocompleter({
+          input: this.searchInput,
+          debounceWaitMs: 300,
+          fetch: (text, update) =&gt; {
+            const query = text;
+            this.provider.search(query).then(update);
+          },
+          render: (address) =&gt; {
+            const div = this.ce(&apos;div&apos;);
+            div.textContent = this.getDisplayValue(address);
+            return div;
+          },
+          onSelect: (address) =&gt; {
+            this.updateValue({
+              ...this.dataValue,
+              address,
+            }, {
+              modified: true,
+            });
 
-  /**
-   * Clean suggestions list
-   *
-   * @param suggestionContainer
-   *   Container tag
-   */
-  autoCompleteCleanSuggestions(suggestionContainer) {
-    // Clean click listener
-    for (const suggestion of this.autoCompleteSuggestions) {
-      suggestion.item.removeEventListener(&apos;click&apos;, suggestion.clickListener);
-    }
-    this.autoCompleteSuggestions = [];
-
-    // Delete current suggestion list
-    while (suggestionContainer.firstChild) {
-      suggestionContainer.removeChild(suggestionContainer.firstChild);
-    }
-  }
-
-  /**
-   * Display suggestions when API returns value
-   *
-   * @param suggestions
-   *   Suggestions returned
-   * @param status
-   *   State returned
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input) {
-    // Set the same width as input field
-    suggestionContainer.style.width = `${input.offsetWidth}px`;
-
-    // Set the default input value
-    this.autoCompleteInputValue = input.value;
-
-    this.autoCompleteCleanSuggestions(suggestionContainer);
-    if (status !== google.maps.places.PlacesServiceStatus.OK) {
-      suggestionContainer.style.display = &apos;none&apos;;
-      return;
-    }
-
-    for (const suggestion of suggestions) {
-      if (this.autoCompleteFilterSuggestion(suggestion)) {
-        this.autoCompleteSuggestions.push(suggestion);
-        this.autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input);
-      }
-    }
-
-    if (!suggestionContainer.childElementCount) {
-      this.autoCompleteCleanSuggestions(suggestionContainer);
-      suggestionContainer.style.display = &apos;none&apos;;
-    }
-    else {
-      suggestionContainer.style.display = &apos;block&apos;;
-    }
-  }
-
-  /**
-   * Draw a suggestion in the list
-   *
-   * @param suggestion
-   *   Suggestion to draw
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  /* eslint-disable max-depth, max-statements */
-  autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
-    const item = document.createElement(&apos;div&apos;);
-    item.classList.add(&apos;pac-item&apos;);
-
-    const itemLogo = document.createElement(&apos;span&apos;);
-    itemLogo.classList.add(&apos;pac-icon&apos;, &apos;pac-icon-marker&apos;);
-    item.appendChild(itemLogo);
-
-    // Draw Main part
-    const itemMain = document.createElement(&apos;span&apos;);
-    itemMain.classList.add(&apos;pac-item-query&apos;);
-    if (suggestion.structured_formatting.main_text_matched_substrings) {
-      const matches = suggestion.structured_formatting.main_text_matched_substrings;
-      for (const k in matches) {
-        const part = matches[k];
-        if (k === 0 &amp;&amp; part.offset &gt; 0) {
-          itemMain.appendChild(document.createTextNode(
-            suggestion.structured_formatting.main_text.substring(0, part.offset)));
-        }
-
-        const itemBold = document.createElement(&apos;span&apos;);
-        itemBold.classList.add(&apos;pac-matched&apos;);
-        itemBold.appendChild(document.createTextNode(
-          suggestion.structured_formatting.main_text.substring(part.offset, (part.offset + part.length))));
-        itemMain.appendChild(itemBold);
-
-        if (k === (matches.length - 1)) {
-          const content = suggestion.structured_formatting.main_text.substring((part.offset + part.length));
-          if (content.length &gt; 0) {
-            itemMain.appendChild(document.createTextNode(content));
-          }
-        }
-      }
-    }
-    else {
-      itemMain.appendChild(document.createTextNode(suggestion.structured_formatting.main_text));
-    }
-    item.appendChild(itemMain);
-
-    // Draw secondary part
-    if (suggestion.structured_formatting.secondary_text) {
-      const itemSecondary = document.createElement(&apos;span&apos;);
-      if (suggestion.structured_formatting.secondary_text_matched_substrings) {
-        const matches = suggestion.structured_formatting.secondary_text_matched_substrings;
-        for (const k in matches) {
-          const part = matches[k];
-          if (k === 0 &amp;&amp; part.offset &gt; 0) {
-            itemSecondary.appendChild(document.createTextNode(
-              suggestion.structured_formatting.secondary_text.substring(0, part.offset)));
-          }
-
-          const itemBold = document.createElement(&apos;span&apos;);
-          itemBold.classList.add(&apos;pac-matched&apos;);
-          itemBold.appendChild(document.createTextNode(
-            suggestion.structured_formatting.secondary_text.substring(part.offset, (part.offset + part.length))));
-          itemSecondary.appendChild(itemBold);
-
-          if (k === (matches.length - 1)) {
-            const content = suggestion.structured_formatting.secondary_text.substring((part.offset + part.length));
-            if (content.length &gt; 0) {
-              itemSecondary.appendChild(document.createTextNode(content));
+            if (this.searchInput) {
+              this.searchInput.value = this.getDisplayValue();
             }
+            this.updateRemoveIcon();
+          },
+        });
+
+        this.addEventListener(this.searchInput, &apos;blur&apos;, () =&gt; {
+          if (!this.searchInput) {
+            return;
           }
-        }
+
+          if (this.searchInput.value) {
+            this.searchInput.value = this.getDisplayValue();
+          }
+        });
+
+        this.addEventListener(this.searchInput, &apos;keyup&apos;, () =&gt; {
+          if (!this.searchInput) {
+            return;
+          }
+
+          if (!this.searchInput.value) {
+            this.clearAddress();
+          }
+        });
       }
-      else {
-        itemSecondary.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text));
+
+      if (this.modeSwitcher) {
+        this.addEventListener(this.modeSwitcher, &apos;change&apos;, () =&gt; {
+          if (!this.modeSwitcher) {
+            return;
+          }
+
+          this.dataValue = this.emptyValue;
+          this.mode = this.modeSwitcher.checked
+            ? AddressComponentMode.Manual
+            : AddressComponentMode.Autocomplete;
+
+          if (this.manualMode) {
+            this.restoreComponentsContext();
+          }
+
+          this.triggerChange({
+            modified: true,
+          });
+          this.redraw();
+        });
       }
-      item.appendChild(itemSecondary);
+
+      if (this.removeValueIcon) {
+        this.updateRemoveIcon();
+
+        const removeValueHandler = () =&gt; {
+          this.clearAddress();
+          this.focus();
+        };
+
+        this.addEventListener(this.removeValueIcon, &apos;click&apos;, removeValueHandler);
+        this.addEventListener(this.removeValueIcon, &apos;keydown&apos;, ({ key }) =&gt; {
+          if (key === &apos;Enter&apos;) {
+            removeValueHandler();
+          }
+        });
+      }
     }
 
-    suggestionContainer.appendChild(item);
-
-    const clickListener = () =&gt; {
-      input.value = suggestion.description;
-      this.autoCompleteInputValue = suggestion.description;
-      this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
-    };
-    suggestion.clickListener = clickListener;
-    suggestion.item = item;
-    this.addEventListener(item, &apos;click&apos;, clickListener);
-  }
-  /* eslint-enable max-depth, max-statements */
-
-  /**
-   * Get detailed information and set it as value
-   *
-   * @param suggestion
-   *   Suggestion to draw
-   * @param suggestionContainer
-   *   Suggestions container
-   * @param input
-   *   Input field to listen
-   */
-  autoCompleteServiceListener(suggestion, suggestionContainer, input) {
-    const service = new google.maps.places.PlacesService(input);
-    service.getDetails({
-      placeId: suggestion.place_id,
-    }, (place, status) =&gt; {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        this.setValue(place);
-      }
-    });
+    return result;
   }
 
-  attachElement(element, index) {
-    super.attachElement(element, index);
-    Formio.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
-      let autoCompleteOptions = {};
-      if (this.component.map) {
-        autoCompleteOptions = this.component.map.autoCompleteOptions || {};
-        if (autoCompleteOptions.location) {
-          const {
-            lat,
-            lng
-          } = autoCompleteOptions.location;
-          autoCompleteOptions.location = new google.maps.LatLng(lat, lng);
+  redraw() {
+    const modeSwitcherInFocus = (this.modeSwitcher &amp;&amp; (document.activeElement === this.modeSwitcher));
+
+    return super.redraw()
+      .then((result) =&gt; {
+        if (modeSwitcherInFocus &amp;&amp; this.modeSwitcher) {
+          this.modeSwitcher.focus();
         }
-      }
 
-      if (this.component.map &amp;&amp; this.component.map.autoCompleteFilter) {
-        // Call custom autoComplete to filter suggestions
-        this.autoCompleteInit(element, autoCompleteOptions);
+        return result;
+      });
+  }
+
+  clearAddress() {
+    if (!this.isEmpty()) {
+      this.triggerChange();
+    }
+
+    this.dataValue = this.emptyValue;
+    if (this.searchInput) {
+      this.searchInput.value = &apos;&apos;;
+    }
+    this.updateRemoveIcon();
+  }
+
+  getDisplayValue(value = this.address) {
+    return (this.provider &amp;&amp; !this.manualMode)
+      ? this.provider.getDisplayValue(value)
+      : &apos;&apos;;
+  }
+
+  validateMultiple() {
+    // Address component can&apos;t be multivalue.
+    return false;
+  }
+
+  updateRemoveIcon() {
+    if (this.removeValueIcon) {
+      if (this.isEmpty() || this.disabled) {
+        this.addClass(this.removeValueIcon, RemoveValueIconHiddenClass);
       }
       else {
-        const autocomplete = new google.maps.places.Autocomplete(element);
-        autocomplete.addListener(&apos;place_changed&apos;, () =&gt; this.setValue(autocomplete.getPlace()));
+        this.removeClass(this.removeValueIcon, RemoveValueIconHiddenClass);
       }
-    });
+    }
   }
 
   getValueAsString(value) {
-    return _.get(value, &apos;formatted_address&apos;, &apos;&apos;);
+    if (!value) {
+      return &apos;&apos;;
+    }
+
+    const { address } = value;
+
+    if (this.provider &amp;&amp; !this.manualMode) {
+      return this.getDisplayValue(address);
+    }
+
+    if (this.manualMode) {
+      if (this.component.manualModeViewString) {
+        return this.interpolate(this.component.manualModeViewString, {
+          address,
+          data: this.data,
+          component: this.component,
+        });
+      }
+
+      return this.getComponents()
+        .filter((component) =&gt; !component.isEmpty())
+        .map((component) =&gt; component.getValueAsString(component.dataValue))
+        .join(&apos;, &apos;);
+    }
+
+    return super.getValueAsString(address);
+  }
+
+  focus() {
+    if (this.searchInput) {
+      this.searchInput.focus();
+    }
   }
 }
 </code></pre>

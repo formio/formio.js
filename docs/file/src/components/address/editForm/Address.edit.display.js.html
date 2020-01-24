@@ -52,6 +52,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +141,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -232,29 +238,29 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/address/editForm/Address.edit.display.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
   {
-    type: &apos;container&apos;,
-    key: &apos;map&apos;,
+    key: &apos;labelPosition&apos;,
+    ignore: true,
+  },
+  {
+    weight: 30,
+    type: &apos;textfield&apos;,
     input: true,
-    weight: 200,
-    components: [
-      {
-        type: &apos;textfield&apos;,
-        input: true,
-        label: &apos;Region Bias&apos;,
-        key: &apos;region&apos;,
-        tooltip: &quot;The region bias to use for this search. See &lt;a href=&apos;https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes&apos; target=&apos;_blank&apos;&gt;Region Biasing&lt;/a&gt; for more information.&quot;,
-        placeholder: &apos;USA&apos;
-      },
-      {
-        type: &apos;textfield&apos;,
-        input: true,
-        label: &apos;Google Maps API Key&apos;,
-        key: &apos;key&apos;,
-        tooltip: &quot;The API key for Google Maps. See &lt;a href=&apos;https://developers.google.com/maps/documentation/geocoding/get-api-key&apos; target=&apos;_blank&apos;&gt;Get an API Key&lt;/a&gt; for more information.&quot;,
-        placeholder: &apos;xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx&apos;
-      }
-    ]
-  }
+    key: &apos;switchToManualModeLabel&apos;,
+    label: &apos;Switch To Matual Mode Label&apos;,
+    placeholder: &apos;Switch To Matual Mode Label&apos;,
+    tooltip: &apos;The label for the checkbox used to switch to manual mode.&apos;,
+    validate: {
+      required: true,
+    },
+  },
+  {
+    weight: 40,
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;disableClearIcon&apos;,
+    label: &apos;Disable Clear Icon&apos;,
+    tooltip: &apos;Clear Icon allows easily clear component\&apos;s value&apos;,
+  },
 ];
 </code></pre>
 
