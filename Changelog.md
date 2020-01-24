@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
+ - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
  - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
 
 ## 4.8.0
