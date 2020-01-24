@@ -914,7 +914,7 @@ export default class WebformBuilder extends Component {
     if (defaultValueComponent) {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
-        || (changed.instance && defaultValueComponent.hasComponent(changed.instance))
+        || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
       );
 
       if (!defaultChanged) {
