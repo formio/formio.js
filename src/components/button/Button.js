@@ -152,8 +152,6 @@ export default class ButtonComponent extends Field {
       };
     }
 
-    this.triggerReCaptcha();
-
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
@@ -225,6 +223,7 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
+    this.triggerReCaptcha();
     // Don't click if disabled or in builder mode.
     if (this.disabled || this.options.attachMode === 'builder') {
       return;
