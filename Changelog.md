@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed dirty parameter value for wizard onchange validations.
  
 ### Fixed
+ - Fixed on hover notification for datetime
  - Fixed editing existing signature. 
  - Added check for hasComponent in WebformBuilder. 
  - Added modified flag to wizard onChange event.

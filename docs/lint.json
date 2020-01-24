@@ -1935,35 +1935,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 873,
+        "lineNumber": 874,
         "line": "/**"
       },
       {
-        "lineNumber": 874,
+        "lineNumber": 875,
         "line": " * Delays function execution with possibility to execute function synchronously or cancel it."
       },
       {
-        "lineNumber": 875,
+        "lineNumber": 876,
         "line": " *"
       },
       {
-        "lineNumber": 876,
+        "lineNumber": 877,
         "line": " * @param fn Function to delay"
       },
       {
-        "lineNumber": 877,
+        "lineNumber": 878,
         "line": " * @param delay Delay time"
       },
       {
-        "lineNumber": 878,
+        "lineNumber": 879,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 879,
+        "lineNumber": 880,
         "line": " */"
       },
       {
-        "lineNumber": 880,
+        "lineNumber": 881,
         "line": "export function delay(fn, delay = 0, ...args) {"
       }
     ],
@@ -1982,35 +1982,35 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 947,
+        "lineNumber": 948,
         "line": "/**"
       },
       {
-        "lineNumber": 948,
+        "lineNumber": 949,
         "line": " * Retrun provided argument."
       },
       {
-        "lineNumber": 949,
+        "lineNumber": 950,
         "line": " * If argument is a function, returns the result of a function call."
       },
       {
-        "lineNumber": 950,
+        "lineNumber": 951,
         "line": " * @param {*} e;"
       },
       {
-        "lineNumber": 951,
+        "lineNumber": 952,
         "line": " *"
       },
       {
-        "lineNumber": 952,
+        "lineNumber": 953,
         "line": " * @return {*}"
       },
       {
-        "lineNumber": 953,
+        "lineNumber": 954,
         "line": " */"
       },
       {
-        "lineNumber": 954,
+        "lineNumber": 955,
         "line": "export function unfold(e) {"
       }
     ],
@@ -2026,31 +2026,31 @@
     "filePath": "src/utils/utils.js",
     "lines": [
       {
-        "lineNumber": 1037,
+        "lineNumber": 1038,
         "line": "/**"
       },
       {
-        "lineNumber": 1038,
+        "lineNumber": 1039,
         "line": " * Sanitize an html string."
       },
       {
-        "lineNumber": 1039,
+        "lineNumber": 1040,
         "line": " *"
       },
       {
-        "lineNumber": 1040,
+        "lineNumber": 1041,
         "line": " * @param string"
       },
       {
-        "lineNumber": 1041,
+        "lineNumber": 1042,
         "line": " * @returns {*}"
       },
       {
-        "lineNumber": 1042,
+        "lineNumber": 1043,
         "line": " */"
       },
       {
-        "lineNumber": 1043,
+        "lineNumber": 1044,
         "line": "export function sanitize(string, options) {"
       }
     ],
