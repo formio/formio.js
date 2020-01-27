@@ -543,6 +543,9 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
+    this.on('change', (form) => {
+      this.populateRecaptchaSettings(form);
+    });
     return super.attach(element).then(() => {
       this.loadRefs(element, {
         form: 'single',
@@ -822,9 +825,17 @@ export default class WebformBuilder extends Component {
   }
 
   setForm(form) {
+    this.emit('change', form);
+    return super.setForm(form).then(retVal => {
+      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
+      return retVal;
+    });
+  }
+
+  populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
     var isRecaptchaEnabled = false;
-    if (form.components) {
+    if (this.form.components) {
       eachComponent(form.components, component => {
         if (isRecaptchaEnabled) {
           return;
@@ -841,11 +852,6 @@ export default class WebformBuilder extends Component {
         _.set(form, 'settings.recaptcha.isEnabled', false);
       }
     }
-    this.emit('change', form);
-    return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
   }
 
   removeComponent(component, parent, original) {
@@ -908,7 +914,7 @@ export default class WebformBuilder extends Component {
     if (defaultValueComponent) {
       const defaultChanged = changed && (
         (changed.component && changed.component.key === 'defaultValue')
-        || (changed.instance && defaultValueComponent.hasComponent(changed.instance))
+        || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
       );
 
       if (!defaultChanged) {
