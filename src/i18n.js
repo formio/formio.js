@@ -46,7 +46,8 @@ export default {
         previous: 'Previous',
         cancel: 'Cancel',
         submit: 'Submit Form',
-        errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.'
+        errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.',
+        errorListHelpMessage: 'Click to navigate to the field with following error.',
       }
     }
   }
