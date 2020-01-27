@@ -257,12 +257,9 @@ const Harness = {
       done();
     });
 
-    onNext(form, 'change', () => {
-      form.submit();
-    });
-
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
+    form.submit();
   },
   testValid(component, value) {
     return new Promise((resolve, reject) => {

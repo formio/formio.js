@@ -1,3 +1,4 @@
+import address from './address';
 import builder from './builder';
 import builderComponent from './builderComponent';
 import builderComponents from './builderComponents';
@@ -67,6 +68,7 @@ export default {
   defaultIconset: 'fa',
   iconClass,
   cssClasses,
+  address,
   builder,
   builderComponent,
   builderComponents,

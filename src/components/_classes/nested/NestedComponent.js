@@ -167,6 +167,19 @@ export default class NestedComponent extends Field {
     });
   }
 
+  hasComponent(component) {
+    let result = false;
+
+    this.everyComponent((comp) => {
+      if (comp === component) {
+        result = true;
+        return false;
+      }
+    });
+
+    return result;
+  }
+
   flattenComponents() {
     const result = {};
 

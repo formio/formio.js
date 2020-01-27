@@ -1,11 +1,14 @@
 import _ from 'lodash';
-import storage from './storage';
+
+import address from './address';
 import auth from './auth';
+import storage from './storage';
 
 export default class Providers {
   static providers = {
-    storage,
+    address,
     auth,
+    storage,
   };
 
   static addProvider(type, name, provider) {

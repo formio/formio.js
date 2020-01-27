@@ -49,6 +49,10 @@ export default class DayComponent extends Field {
     return '00/00/0000';
   }
 
+  get valueMask() {
+    return /^\d{2}\/\d{2}\/\d{4}$/;
+  }
+
   get dayRequired() {
     return this.showDay && _.get(this.component, 'fields.day.required', false);
   }
@@ -315,6 +319,31 @@ export default class DayComponent extends Field {
       this.refs.month.removeAttribute('disabled');
       this.refs.day.removeAttribute('disabled');
     }
+  }
+
+  normalizeValue(value) {
+    if (!value || this.valueMask.test(value)) {
+      return value;
+    }
+    const dateParts = [];
+    const valueParts = value.split('/');
+
+    const getNextPart = (shouldTake, defaultValue) =>
+      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+
+    if (this.dayFirst) {
+      getNextPart(this.showDay, '00');
+    }
+
+    getNextPart(this.showMonth, '00');
+
+    if (!this.dayFirst) {
+      getNextPart(this.showDay, '00');
+    }
+
+    getNextPart(this.showYear, '0000');
+
+    return dateParts.join('/');
   }
 
   /**

@@ -68,7 +68,7 @@ export default class SignatureComponent extends Input {
   setValue(value, flags) {
     flags = flags || {};
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && (!flags.noSign || this.options.readOnly)) {
+    if (value && this.refs.signatureImage && this.options.readOnly) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -132,6 +132,10 @@ export default class SignatureComponent extends Input {
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
       this.signaturePad.clear();
+
+      if (this.dataValue) {
+        this.signaturePad.fromDataURL(this.dataValue);
+      }
     }
   }
 
@@ -176,9 +180,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
-        noSign: true
-      });
+      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       // Ensure the signature is always the size of its container.

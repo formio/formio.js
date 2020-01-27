@@ -52,6 +52,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +141,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -316,23 +322,62 @@ export default class Form extends Element {
     return this.setForm(formParam);
   }
 
+  errorForm(err) {
+    return {
+      components: [
+        {
+          &apos;label&apos;: &apos;HTML&apos;,
+          &apos;tag&apos;: &apos;div&apos;,
+          &apos;className&apos;: &apos;error error-message alert alert-danger ui red message&apos;,
+          &apos;attrs&apos;: [
+            {
+              &apos;attr&apos;: &apos;role&apos;,
+              &apos;value&apos;: &apos;alert&apos;
+            }
+          ],
+          &apos;key&apos;: &apos;errorMessage&apos;,
+          &apos;type&apos;: &apos;htmlelement&apos;,
+          &apos;input&apos;: false,
+          &apos;content&apos;: typeof err === &apos;string&apos; ? err : err.message,
+        }
+      ]
+    };
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === &apos;string&apos;) {
       const formio = new Formio(formParam);
-      result = this.getSubmission(formio).then((submission) =&gt; {
-        return formio.loadForm().then((form) =&gt; {
-          this.instance = this.instance || this.create(form.display);
-          this.instance.url = formParam;
-          this.instance.nosubmit = false;
-          this._form = this.instance.form = form;
-          if (submission) {
-            this.instance.submission = submission;
-          }
-          return this.instance;
+      let error;
+      result = this.getSubmission(formio)
+        .catch((err) =&gt; {
+          error = err;
+        })
+        .then((submission) =&gt; {
+          return formio.loadForm()
+          // If the form returned an error, show it instead of the form.
+            .catch(err =&gt; {
+              error = err;
+            })
+            .then((form) =&gt; {
+              // If the submission returned an error, show it instead of the form.
+              if (error) {
+                form = this.errorForm(error);
+              }
+              this.instance = this.instance || this.create(form.display);
+              this.instance.url = formParam;
+              this.instance.nosubmit = false;
+              this._form = this.instance.form = form;
+              if (submission) {
+                this.instance.submission = submission;
+              }
+              if (error) {
+                throw error;
+              }
+              return this.instance;
+            });
         });
-      });
     }
     else {
       this.instance = this.instance || this.create(formParam.display);

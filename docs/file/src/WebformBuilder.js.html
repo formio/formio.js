@@ -52,6 +52,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +141,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -775,6 +781,9 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
+    this.on(&apos;change&apos;, (form) =&gt; {
+      this.populateRecaptchaSettings(form);
+    });
     return super.attach(element).then(() =&gt; {
       this.loadRefs(element, {
         form: &apos;single&apos;,
@@ -921,15 +930,23 @@ export default class WebformBuilder extends Component {
   getComponentsPath(component, parent) {
     // Get path to the component in the parent component.
     let path = &apos;components&apos;;
+    let columnIndex = 0;
+    let tableRowIndex = 0;
+    let tableColumnIndex = 0;
+    let tabIndex = 0;
     switch (parent.type) {
       case &apos;table&apos;:
-        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        tableRowIndex = _.findIndex(parent.rows, row =&gt; row.some(column =&gt; column.components.some(comp =&gt; comp.key  === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column =&gt; column.components.some(comp =&gt; comp.key  === component.key)));
+        path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case &apos;columns&apos;:
-        path = `columns[${component.column}].components`;
+        columnIndex = _.findIndex(parent.columns, column =&gt; column.components.some(comp =&gt; comp.key === component.key));
+        path = `columns[${columnIndex}].components`;
         break;
       case &apos;tabs&apos;:
-        path = `components[${component.tab}].components`;
+        tabIndex = _.findIndex(parent.components, tab =&gt; tab.components.some(comp =&gt; comp.key  === component.key));
+        path = `components[${tabIndex}].components`;
         break;
     }
     return path;
@@ -1046,9 +1063,17 @@ export default class WebformBuilder extends Component {
   }
 
   setForm(form) {
+    this.emit(&apos;change&apos;, form);
+    return super.setForm(form).then(retVal =&gt; {
+      setTimeout(() =&gt; (this.builderHeight = this.refs.form.offsetHeight), 200);
+      return retVal;
+    });
+  }
+
+  populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
     var isRecaptchaEnabled = false;
-    if (form.components) {
+    if (this.form.components) {
       eachComponent(form.components, component =&gt; {
         if (isRecaptchaEnabled) {
           return;
@@ -1065,11 +1090,6 @@ export default class WebformBuilder extends Component {
         _.set(form, &apos;settings.recaptcha.isEnabled&apos;, false);
       }
     }
-    this.emit(&apos;change&apos;, form);
-    return super.setForm(form).then(retVal =&gt; {
-      setTimeout(() =&gt; (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
   }
 
   removeComponent(component, parent, original) {
@@ -1129,43 +1149,51 @@ export default class WebformBuilder extends Component {
 
     // Change the &quot;default value&quot; field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, &apos;defaultValue&apos;);
-    const defaultChanged = changed &amp;&amp; changed.component &amp;&amp; changed.component.key === &apos;defaultValue&apos;;
-    if (defaultValueComponent &amp;&amp; !defaultChanged) {
-      _.assign(defaultValueComponent.component, _.omit(component, [
-        &apos;key&apos;,
-        &apos;label&apos;,
-        &apos;placeholder&apos;,
-        &apos;tooltip&apos;,
-        &apos;hidden&apos;,
-        &apos;autofocus&apos;,
-        &apos;validate&apos;,
-        &apos;disabled&apos;,
-        &apos;defaultValue&apos;,
-        &apos;customDefaultValue&apos;,
-        &apos;calculateValue&apos;
-      ]));
-      const parentComponent = defaultValueComponent.parent;
-      let tabIndex = -1;
-      let index = -1;
-      parentComponent.tabs.some((tab, tIndex) =&gt; {
-        tab.some((comp, compIndex) =&gt; {
-          if (comp.id === defaultValueComponent.id) {
-            tabIndex = tIndex;
-            index = compIndex;
-            return true;
-          }
-          return false;
-        });
-      });
+    if (defaultValueComponent) {
+      const defaultChanged = changed &amp;&amp; (
+        (changed.component &amp;&amp; changed.component.key === &apos;defaultValue&apos;)
+        || (changed.instance &amp;&amp; defaultValueComponent.hasComponent &amp;&amp; defaultValueComponent.hasComponent(changed.instance))
+      );
 
-      if (tabIndex !== -1 &amp;&amp; index !== -1) {
-        const sibling = parentComponent.tabs[tabIndex][index + 1];
-        parentComponent.removeComponent(defaultValueComponent);
-        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
-        _.pull(newComp.validators, &apos;required&apos;);
-        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
-        newComp.checkValidity = () =&gt; true;
-        newComp.build(defaultValueComponent.element);
+      if (!defaultChanged) {
+        _.assign(defaultValueComponent.component, _.omit(component, [
+          &apos;key&apos;,
+          &apos;label&apos;,
+          &apos;placeholder&apos;,
+          &apos;tooltip&apos;,
+          &apos;hidden&apos;,
+          &apos;autofocus&apos;,
+          &apos;validate&apos;,
+          &apos;disabled&apos;,
+          &apos;defaultValue&apos;,
+          &apos;customDefaultValue&apos;,
+          &apos;calculateValue&apos;,
+          &apos;conditional&apos;,
+          &apos;customConditional&apos;,
+        ]));
+        const parentComponent = defaultValueComponent.parent;
+        let tabIndex = -1;
+        let index = -1;
+        parentComponent.tabs.some((tab, tIndex) =&gt; {
+          tab.some((comp, compIndex) =&gt; {
+            if (comp.id === defaultValueComponent.id) {
+              tabIndex = tIndex;
+              index = compIndex;
+              return true;
+            }
+            return false;
+          });
+        });
+
+        if (tabIndex !== -1 &amp;&amp; index !== -1) {
+          const sibling = parentComponent.tabs[tabIndex][index + 1];
+          parentComponent.removeComponent(defaultValueComponent);
+          const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+          _.pull(newComp.validators, &apos;required&apos;);
+          parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+          newComp.checkValidity = () =&gt; true;
+          newComp.build(defaultValueComponent.element);
+        }
       }
     }
 
