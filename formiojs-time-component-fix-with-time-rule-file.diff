@@ -1,0 +1,211 @@
+From 61252b0a48562efb54ec645f3b2f48b0e2dba77b Mon Sep 17 00:00:00 2001
+From: Alexandra Romanenko <butterfly.in.a.cast@gmail.com>
+Date: Wed, 22 Jan 2020 15:05:43 +0300
+Subject: [PATCH] Time validation added and rawData field for validation and
+ displaing
+
+---
+ src/components/time/Time.js  | 52 ++++++++++++++++++++++++++++++++----
+ src/i18n.js                  |  1 +
+ src/validator/Validator.js   | 20 ++++++++++++--
+ src/validator/rules/Time.js  | 15 +++++++++++
+ src/validator/rules/index.js |  2 ++
+ 5 files changed, 83 insertions(+), 7 deletions(-)
+ create mode 100644 src/validator/rules/Time.js
+
+diff --git a/src/components/time/Time.js b/src/components/time/Time.js
+index 609a10c57..b01796546 100644
+--- a/src/components/time/Time.js
++++ b/src/components/time/Time.js
+@@ -18,8 +18,10 @@ export default class TimeComponent extends TextFieldComponent {
+   constructor(component, options, data) {
+     super(component, options, data);
+ 
++    this.validators.push('time');
+     this.component.inputMask = '99:99';
+     this.component.inputType = this.component.inputType || 'time';
++    this.rawData = this.component.multiple ? [] : this.emptyValue;
+   }
+ 
+   static get builderInfo() {
+@@ -54,6 +56,10 @@ export default class TimeComponent extends TextFieldComponent {
+     return value;
+   }
+ 
++  get validationValue() {
++    return this.rawData;
++  }
++
+   get inputInfo() {
+     const info = super.inputInfo;
+     info.attr.type = this.component.inputType;
+@@ -64,27 +70,63 @@ export default class TimeComponent extends TextFieldComponent {
+     return true;
+   }
+ 
++  isNotCompleteInput(value) {
++    return value.includes('_');
++  }
++
++  removeValue(index) {
++    super.removeValue(index);
++    this.rawData = Array.isArray(this.rawData) ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)] : this.emptyValue;
++  }
++
+   getValueAt(index) {
+     if (!this.refs.input.length || !this.refs.input[index]) {
+       return this.emptyValue;
+     }
++
+     const { value } = this.refs.input[index];
++
+     if (!value) {
++      this.resetRawData(index);
+       return this.emptyValue;
+     }
+ 
++    this.setRawValue(value, index);
+     return this.getStringAsValue(value);
+   }
+ 
++  resetRawData(index) {
++    if (index) {
++      this.setRawValue(this.emptyValue, index);
++    }
++    else {
++      this.rawData = [];
++    }
++  }
++
++  setRawValue(value, index) {
++    if (Array.isArray(this.rawData)) {
++      this.rawData[index] = value;
++    }
++    else {
++      this.rawData = value;
++    }
++  }
++
++  getRawValue(index) {
++    if (index && Array.isArray(this.rawData)) {
++      return this.rawData[index] || this.emptyValue;
++    }
++    else {
++      return this.rawData;
++    }
++  }
++
+   setValueAt(index, value) {
+-    this.refs.input[index].value = value ? this.getValueAsString(value) : value;
++    this.refs.input[index].value = this.getRawValue(index);
+   }
+ 
+   getStringAsValue(view) {
+     return view ? moment(view, this.component.format).format(this.dataFormat) : view;
+   }
+-
+-  getValueAsString(value) {
+-    return (value ? moment(value, this.dataFormat).format(this.component.format) : value) || '';
+-  }
+ }
+diff --git a/src/i18n.js b/src/i18n.js
+index a15d98ef2..24704d6c7 100644
+--- a/src/i18n.js
++++ b/src/i18n.js
+@@ -26,6 +26,7 @@ export default {
+         invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
+         invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
+         mask: '{{field}} does not match the mask.',
++        time: '{{field}} contains invalid time',
+         stripe: '{{stripe}}',
+         month: 'Month',
+         day: 'Day',
+diff --git a/src/validator/Validator.js b/src/validator/Validator.js
+index 54fbbd5e4..fac214cad 100644
+--- a/src/validator/Validator.js
++++ b/src/validator/Validator.js
+@@ -559,6 +559,7 @@ class ValidationChecker {
+         }
+       },
+       mask: {
++        key: 'mask',
+         message(component) {
+           return component.t(component.errorMessage('mask'), {
+             field: component.errorLabel,
+@@ -576,10 +577,10 @@ class ValidationChecker {
+             value = value ? value.value : value;
+           }
+           else {
+-            inputMask = component._inputMask;
++            inputMask = component.component.inputMask;
+           }
+           if (value && inputMask) {
+-            return matchInputMask(value, inputMask);
++            return matchInputMask(value,  getInputMask(inputMask));
+           }
+           return true;
+         }
+@@ -662,6 +663,21 @@ class ValidationChecker {
+           return date.isAfter(minDate) || date.isSame(minDate);
+         }
+       },
++      time: {
++        key: 'time',
++        message(component) {
++          return component.t(component.errorMessage('time'), {
++            field: component.errorLabel,
++            time: component.rawData || component.dataValue
++          });
++        },
++        check(component, setting, value) {
++          if (!value || (component.isNotCompleteInput && component.isNotCompleteInput(value))) {
++            return true;
++          }
++         return moment(value, component.format || 'HH:mm').isValid();
++        }
++      },
+       calendar: {
+         key: 'validate.calendar',
+         messageText: '',
+diff --git a/src/validator/rules/Time.js b/src/validator/rules/Time.js
+new file mode 100644
+index 000000000..62798e187
+--- /dev/null
++++ b/src/validator/rules/Time.js
+@@ -0,0 +1,15 @@
++import moment from 'moment';
++
++const Rule = require('./Rule');
++
++module.exports = class Time extends Rule {
++  defaultMessage = '{{field}} contains invalid time';
++
++  check(value) {
++    if (!value || (this.component.isNotCompleteInput && this.component.isNotCompleteInput(value))) {
++      return true;
++    }
++
++    return moment(value, this.component.format || 'HH:mm').isValid();
++  }
++};
+diff --git a/src/validator/rules/index.js b/src/validator/rules/index.js
+index 8aad931db..2c8315295 100644
+--- a/src/validator/rules/index.js
++++ b/src/validator/rules/index.js
+@@ -17,6 +17,7 @@ const required = require('./Required');
+ const select = require('./Select');
+ const unique = require('./Unique');
+ const url = require('./Url');
++const time = require('./Time');
+ 
+ module.exports = {
+   custom,
+@@ -38,4 +39,5 @@ module.exports = {
+   select,
+   unique,
+   url,
++  time
+ };
+-- 
+2.23.0.windows.1
+
