@@ -102,6 +102,8 @@ export default class DateTimeComponent extends Input {
       readOnly: this.options.readOnly,
       minDate: _.get(this.component, 'datePicker.minDate'),
       disabledDates: _.get(this.component, 'datePicker.disable'),
+      disableWeekends: _.get(this.component, 'datePicker.disableWeekends'),
+      disableFunction: _.get(this.component, 'datePicker.disableFunction'),
       maxDate: _.get(this.component, 'datePicker.maxDate'),
       ...customOptions,
     };
