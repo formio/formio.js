@@ -1083,9 +1083,11 @@ export default class Webform extends NestedComponent {
    * Show the errors of this form within the alert dialog.
    *
    * @param {Object} error - An optional additional error to display along with the component errors.
+   * @param {boolean} triggerEvent
+   * @param {string} messageClass - A specific class for the help message.
    * @returns {*}
    */
-  showErrors(error, triggerEvent) {
+  showErrors(error, triggerEvent, messageClass) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1145,14 +1147,18 @@ export default class Webform extends NestedComponent {
     errors.forEach(err => {
       if (err) {
         const createListItem = (message) => {
-          const params = { ref: 'errorRef', tabIndex: 0, 'aria-label': `${message}. Click to navigate to the field with following error.` };
+          const params = { ref: 'errorRef', tabIndex: 0 };
           const li = this.ce('li', params);
           this.setContent(li, message);
+
+          const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
+          this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           if (err.component && err.component.key) {
             li.dataset.componentKey = err.component.key;
           }
 
+          li.appendChild(helpMessage);
           this.appendTo(li, ul);
         };
 
@@ -1160,7 +1166,7 @@ export default class Webform extends NestedComponent {
           createListItem(`${err.message}`);
         }
         else if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
+          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}. `));
         }
         else if (err) {
           createListItem(err);
