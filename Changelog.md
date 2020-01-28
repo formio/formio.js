@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.8.1
 ### Fixed
  - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
+ - Issue where tags component would not get its value set properly.
 
 ### Added
  - A way to disable certain dates from the DateTime picker.

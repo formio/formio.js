@@ -15006,6 +15006,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/widgets/calendarwidget.js~calendarwidget#disableweekdays",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disableWeekdays",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekdays",
+    "member"
+  ],
+  [
     "src/widgets/calendarwidget.js~calendarwidget#disableweekends",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disableWeekends",
     "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekends",
