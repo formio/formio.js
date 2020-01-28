@@ -41,6 +41,7 @@ export default class CalendarWidget extends InputWidget {
       saveAs: 'date',
       displayInTimezone: '',
       timezone: '',
+      disable: [],
       minDate: '',
       maxDate: ''
     };
@@ -93,8 +94,12 @@ export default class CalendarWidget extends InputWidget {
 
     this.closedOn = 0;
     this.valueFormat = this.settings.dateFormat || ISO_8601_FORMAT;
+
     this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
     this.settings.minDate = getDateSetting(this.settings.minDate);
+    this.settings.disable = this.disabledDates;
+    this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
+    this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
@@ -131,6 +136,16 @@ export default class CalendarWidget extends InputWidget {
       );
     }
     return superAttach;
+  }
+
+  get disableWeekends() {
+    return function(date) {
+      return (date.getDay() === 0 || date.getDay() === 6);
+    };
+  }
+
+  get disableFunction() {
+    return eval(`(${this.settings.disableFunction})`);
   }
 
   get timezone() {
@@ -177,6 +192,23 @@ export default class CalendarWidget extends InputWidget {
 
   get input() {
     return this.calendar ? this.calendar.altInput : null;
+  }
+
+  get disabledDates() {
+    if (this.settings.disabledDates) {
+      const disabledDates = this.settings.disabledDates.split(',');
+      return disabledDates.map((item) => {
+        const dateMask = /\d{4}-\d{2}-\d{2}/g;
+        const dates = item.match(dateMask);
+        if (dates.length) {
+          return dates.length === 1 ?  item.match(dateMask)[0] : {
+            from: item.match(dateMask)[0],
+            to: item.match(dateMask)[1],
+          };
+        }
+      });
+    }
+    return [];
   }
 
   get localeFormat() {
