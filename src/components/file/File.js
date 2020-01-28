@@ -135,8 +135,17 @@ export default class FileComponent extends Field {
     return formio;
   }
 
+  getAllowedFileTypes() {
+    if (this.component.filePattern && this.component.filePattern !== '*') {
+      return this.component.filePattern.split(',').join(', ');
+    }
+
+    return '.doc, .docx, .xls, .xlsx, .ppt, .potx, .pdf, .gif, .tiff, .tif, .jpe, .jpeg, .jpg, .png, .rtf, .txt, .bmp, etc.';
+  }
+
   render() {
     return super.render(this.renderTemplate('file', {
+      allowedFileTypes: this.getAllowedFileTypes(),
       fileSize: this.fileSize,
       files: this.dataValue || [],
       statuses: this.statuses,
