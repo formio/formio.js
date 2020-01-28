@@ -1,4 +1,5 @@
 import Evaluator from '../../../utils/Evaluator';
+import EditFormUtils from '../../_classes/component/editForm/utils';
 
 export default [
   {
@@ -38,41 +39,30 @@ export default [
   },
   {
     type: 'panel',
-    title: 'JavaScript',
+    title: 'Custom Disabled Dates',
     collapsible: true,
-    collapsed: false,
+    collapsed: true,
     style: { 'margin-bottom': '10px' },
     key: 'panel-disable-function',
     customConditional() {
       return !Evaluator.noeval;
     },
     components: [
-      {
-        type: 'htmlelement',
-        tag: 'div',
-        content:
-          '<table class="table table-bordered table-condensed table-striped">' +
-          '<tr><th>date</th><td>The main object.</td></tr>' +
-          '<tr><th>getDay()</th><td>Returns the number of the day starting from sundays</td></tr>' +
-          '<tr><th>getMonth()</th><td>Returns the number of the month starting from january</td></tr>' +
-          '<tr><th>_</th><td>For more information check out the <a href="https://flatpickr.js.org/examples/#disabling-dates" target="_blank">Docs</a>.</td></tr>' +
-          '</table><br/>'
-      },
+      EditFormUtils.logicVariablesTable('<tr><th>date</th><td>The date object.</td></tr>'),
       {
         type: 'textarea',
         input: true,
         editor: 'ace',
         key: 'datePicker.disableFunction',
         label: 'Disabling dates by a function',
+        description: 'For more information check out the <a href="https://flatpickr.js.org/examples/#disabling-dates" target="_blank">Docs</a>',
         weight: 22
       },
       {
         type: 'htmlelement',
         tag: 'div',
-        content: '<p>Enter custom javascript code.</p>' +
-          '<h4>Example</h4>' +
-          `<pre>function(date) {<br>  // return true to disable<br>  return (date.getDay() === 0 || date.getDay() === 6); <br>}
-           </pre>
+        content: '<h4>Example</h4>' +
+          `<pre>// Disable all weekends<br>date.getDay() === 0 || date.getDay() === 6</pre>
           `
       }
     ]
@@ -81,8 +71,16 @@ export default [
     type: 'checkbox',
     input: true,
     key: 'datePicker.disableWeekends',
-    label: 'Disabling weekends',
+    label: 'Disable weekends',
     tooltip: 'Check to disable weekends',
+    weight: 23
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    key: 'datePicker.disableWeekdays',
+    label: 'Disable weekdays',
+    tooltip: 'Check to disable weekdays',
     weight: 23
   }
 ];
