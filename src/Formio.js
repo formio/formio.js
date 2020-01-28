@@ -1208,13 +1208,17 @@ export default class Formio {
   }
 
   static logout(formio, options) {
-    options = options || {};
-    options.formio = formio;
-    Formio.setToken(null, options);
-    Formio.setUser(null, options);
-    Formio.clearCache();
+    const clearState = () => {
+      options = options || {};
+      options.formio = formio;
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+    };
+
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
-    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
+    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
+      .then(clearState, clearState);
   }
 
   static pageQuery() {
