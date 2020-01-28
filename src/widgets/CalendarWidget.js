@@ -99,6 +99,7 @@ export default class CalendarWidget extends InputWidget {
     this.settings.minDate = getDateSetting(this.settings.minDate);
     this.settings.disable = this.disabledDates;
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
+    this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
     this.settings.maxDate = getDateSetting(this.settings.maxDate);
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
@@ -144,8 +145,14 @@ export default class CalendarWidget extends InputWidget {
     };
   }
 
+  get disableWeekdays() {
+    return (date) => !this.disableWeekends(date);
+  }
+
   get disableFunction() {
-    return eval(`(${this.settings.disableFunction})`);
+    return (date) => this.evaluate(`return ${this.settings.disableFunction}`, {
+      date
+    });
   }
 
   get timezone() {
