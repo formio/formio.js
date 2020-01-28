@@ -730,6 +730,7 @@ export function getInputMask(mask) {
         maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
+        maskArray.numeric = false;
         maskArray.push(mask[i]);
         break;
     }

@@ -578,6 +578,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         result = result.concat(comp);
       }
     });
+
     return result.length > 0 ? result : null;
   }
 

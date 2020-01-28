@@ -619,7 +619,8 @@ body.formio-dialog-open {
   right: 40px;
   z-index: 2; }
 
-.formio-component-hidden,
+/* Fix for Hidden checkbox in component editform. */
+.formio-component-hidden:not(.formio-component-checkbox),
 .formio-component-datasource {
   margin-bottom: 0; }
 
@@ -941,3 +942,31 @@ div[data-oembed-url] {
 .formio-component-content[dir="rtl"] blockquote {
   border-left: 0;
   border-right: solid 5px #cccccc; }
+
+.address-autocomplete-container {
+  position: relative; }
+  .address-autocomplete-container .address-autocomplete-remove-value-icon {
+    cursor: pointer;
+    position: absolute;
+    margin-top: -9px;
+    right: 10px;
+    top: 50%; }
+    .address-autocomplete-container .address-autocomplete-remove-value-icon--hidden {
+      display: none; }
+
+.autocomplete {
+  background: white;
+  font: 14px/22px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid rgba(50, 50, 50, 0.6);
+  z-index: 11000; }
+
+.autocomplete > div {
+  cursor: pointer;
+  padding: 6px 10px; }
+
+.autocomplete > div:hover:not(.group),
+.autocomplete > div.selected {
+  background: #1e90ff;
+  color: #ffffff; }

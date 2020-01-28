@@ -543,6 +543,9 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
+    this.on('change', (form) => {
+      this.populateRecaptchaSettings(form);
+    });
     return super.attach(element).then(() => {
       this.loadRefs(element, {
         form: 'single',
@@ -689,15 +692,23 @@ export default class WebformBuilder extends Component {
   getComponentsPath(component, parent) {
     // Get path to the component in the parent component.
     let path = 'components';
+    let columnIndex = 0;
+    let tableRowIndex = 0;
+    let tableColumnIndex = 0;
+    let tabIndex = 0;
     switch (parent.type) {
       case 'table':
-        path = `rows[${component.tableRow}][${component.tableColumn}].components`;
+        tableRowIndex = _.findIndex(parent.rows, row => row.some(column => column.components.some(comp => comp.key  === component.key)));
+        tableColumnIndex = _.findIndex(parent.rows[tableRowIndex], (column => column.components.some(comp => comp.key  === component.key)));
+        path = `rows[${tableRowIndex}][${tableColumnIndex}].components`;
         break;
       case 'columns':
-        path = `columns[${component.column}].components`;
+        columnIndex = _.findIndex(parent.columns, column => column.components.some(comp => comp.key === component.key));
+        path = `columns[${columnIndex}].components`;
         break;
       case 'tabs':
-        path = `components[${component.tab}].components`;
+        tabIndex = _.findIndex(parent.components, tab => tab.components.some(comp => comp.key  === component.key));
+        path = `components[${tabIndex}].components`;
         break;
     }
     return path;
@@ -814,9 +825,17 @@ export default class WebformBuilder extends Component {
   }
 
   setForm(form) {
+    this.emit('change', form);
+    return super.setForm(form).then(retVal => {
+      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
+      return retVal;
+    });
+  }
+
+  populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
     var isRecaptchaEnabled = false;
-    if (form.components) {
+    if (this.form.components) {
       eachComponent(form.components, component => {
         if (isRecaptchaEnabled) {
           return;
@@ -833,11 +852,6 @@ export default class WebformBuilder extends Component {
         _.set(form, 'settings.recaptcha.isEnabled', false);
       }
     }
-    this.emit('change', form);
-    return super.setForm(form).then(retVal => {
-      setTimeout(() => (this.builderHeight = this.refs.form.offsetHeight), 200);
-      return retVal;
-    });
   }
 
   removeComponent(component, parent, original) {
@@ -897,43 +911,51 @@ export default class WebformBuilder extends Component {
 
     // Change the "default value" field to be reflective of this component.
     const defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
-    const defaultChanged = changed && changed.component && changed.component.key === 'defaultValue';
-    if (defaultValueComponent && !defaultChanged) {
-      _.assign(defaultValueComponent.component, _.omit(component, [
-        'key',
-        'label',
-        'placeholder',
-        'tooltip',
-        'hidden',
-        'autofocus',
-        'validate',
-        'disabled',
-        'defaultValue',
-        'customDefaultValue',
-        'calculateValue'
-      ]));
-      const parentComponent = defaultValueComponent.parent;
-      let tabIndex = -1;
-      let index = -1;
-      parentComponent.tabs.some((tab, tIndex) => {
-        tab.some((comp, compIndex) => {
-          if (comp.id === defaultValueComponent.id) {
-            tabIndex = tIndex;
-            index = compIndex;
-            return true;
-          }
-          return false;
-        });
-      });
+    if (defaultValueComponent) {
+      const defaultChanged = changed && (
+        (changed.component && changed.component.key === 'defaultValue')
+        || (changed.instance && defaultValueComponent.hasComponent && defaultValueComponent.hasComponent(changed.instance))
+      );
 
-      if (tabIndex !== -1 && index !== -1) {
-        const sibling = parentComponent.tabs[tabIndex][index + 1];
-        parentComponent.removeComponent(defaultValueComponent);
-        const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
-        _.pull(newComp.validators, 'required');
-        parentComponent.tabs[tabIndex].splice(index, 1, newComp);
-        newComp.checkValidity = () => true;
-        newComp.build(defaultValueComponent.element);
+      if (!defaultChanged) {
+        _.assign(defaultValueComponent.component, _.omit(component, [
+          'key',
+          'label',
+          'placeholder',
+          'tooltip',
+          'hidden',
+          'autofocus',
+          'validate',
+          'disabled',
+          'defaultValue',
+          'customDefaultValue',
+          'calculateValue',
+          'conditional',
+          'customConditional',
+        ]));
+        const parentComponent = defaultValueComponent.parent;
+        let tabIndex = -1;
+        let index = -1;
+        parentComponent.tabs.some((tab, tIndex) => {
+          tab.some((comp, compIndex) => {
+            if (comp.id === defaultValueComponent.id) {
+              tabIndex = tIndex;
+              index = compIndex;
+              return true;
+            }
+            return false;
+          });
+        });
+
+        if (tabIndex !== -1 && index !== -1) {
+          const sibling = parentComponent.tabs[tabIndex][index + 1];
+          parentComponent.removeComponent(defaultValueComponent);
+          const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
+          _.pull(newComp.validators, 'required');
+          parentComponent.tabs[tabIndex].splice(index, 1, newComp);
+          newComp.checkValidity = () => true;
+          newComp.build(defaultValueComponent.element);
+        }
       }
     }
 

@@ -1,26 +1,26 @@
 export default [
   {
-    type: 'container',
-    key: 'map',
+    key: 'labelPosition',
+    ignore: true,
+  },
+  {
+    weight: 30,
+    type: 'textfield',
     input: true,
-    weight: 200,
-    components: [
-      {
-        type: 'textfield',
-        input: true,
-        label: 'Region Bias',
-        key: 'region',
-        tooltip: "The region bias to use for this search. See <a href='https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes' target='_blank'>Region Biasing</a> for more information.",
-        placeholder: 'USA'
-      },
-      {
-        type: 'textfield',
-        input: true,
-        label: 'Google Maps API Key',
-        key: 'key',
-        tooltip: "The API key for Google Maps. See <a href='https://developers.google.com/maps/documentation/geocoding/get-api-key' target='_blank'>Get an API Key</a> for more information.",
-        placeholder: 'xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx'
-      }
-    ]
-  }
+    key: 'switchToManualModeLabel',
+    label: 'Switch To Matual Mode Label',
+    placeholder: 'Switch To Matual Mode Label',
+    tooltip: 'The label for the checkbox used to switch to manual mode.',
+    validate: {
+      required: true,
+    },
+  },
+  {
+    weight: 40,
+    type: 'checkbox',
+    input: true,
+    key: 'disableClearIcon',
+    label: 'Disable Clear Icon',
+    tooltip: 'Clear Icon allows easily clear component\'s value',
+  },
 ];

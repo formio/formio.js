@@ -246,7 +246,7 @@ export default class Component extends Element {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this.component = this.mergeSchema(component || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -421,6 +421,10 @@ export default class Component extends Element {
 
   set data(value) {
     this._data = value;
+  }
+
+  mergeSchema(component = {}) {
+    return _.defaultsDeep(component, this.defaultSchema);
   }
 
   // Allow componets to notify when ready.
@@ -741,7 +745,14 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
-    data.render = this.renderTemplate.bind(this);
+    data.render = (...args) => {
+      console.warn(`Form.io 'render' template function is deprecated.
+      If you need to render template (template A) inside of another template (template B),
+      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      return this.renderTemplate(...args);
+    };
+    data.label = this.labelInfo;
+    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
     // Allow more specific template names
     const names = [
@@ -1266,6 +1277,7 @@ export default class Component extends Element {
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
+      iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
     }, additional));
@@ -1853,16 +1865,18 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    const defaultAceSettings = {
+      maxLines: 12,
+      minLines: 12,
+      tabSize: 2,
+      mode: 'javascript',
+    };
+    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions({
-          maxLines: 12,
-          minLines: 12
-        });
-        editor.getSession().setTabSize(2);
+        editor.setOptions(settings);
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
@@ -1882,6 +1896,10 @@ export default class Component extends Element {
           },
         });
       });
+  }
+
+  get tree() {
+    return this.component.tree || false;
   }
 
   /**
@@ -2012,7 +2030,7 @@ export default class Component extends Element {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**
