@@ -851,8 +851,6 @@ export default class Webform extends NestedComponent {
     this.component.input = false;
 
     this.addComponents();
-    this.isBuilt = true;
-
     this.on('submitButton', options => {
       this.submit(false, options).catch(e => e !== false && console.log(e));
     }, true);
