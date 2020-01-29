@@ -231,6 +231,18 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = '';
+
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */

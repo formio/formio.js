@@ -562,6 +562,9 @@ export default class EditGridComponent extends NestedComponent {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
+      if (comp.path && column.key) {
+        comp.path = comp.path.replace(new RegExp(`\\.${column.key}$`), `[${rowIndex}].${column.key}`);
+      }
       components.push(comp);
     });
     return components;
