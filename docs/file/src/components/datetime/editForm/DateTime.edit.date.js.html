@@ -236,7 +236,10 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/editForm/DateTime.edit.date.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Evaluator from &apos;../../../utils/Evaluator&apos;;
+import EditFormUtils from &apos;../../_classes/component/editForm/utils&apos;;
+
+export default [
   {
     type: &apos;checkbox&apos;,
     input: true,
@@ -262,6 +265,61 @@
     placeholder: &apos;yyyy-MM-dd&apos;,
     tooltip: &apos;The maximum date that can be picked. You can also use Moment.js functions. For example: \n \n moment().add(10, \&apos;days\&apos;)&apos;,
     weight: 20
+  },
+  {
+    type: &apos;tags&apos;,
+    input: true,
+    key: &apos;datePicker.disable&apos;,
+    label: &apos;Disable specific dates or dates by range&apos;,
+    placeholder: &apos;(yyyy-MM-dd) or (yyyy-MM-dd - yyyy-MM-dd)&apos;,
+    tooltip: &apos;Add dates that you want to blacklist. For example: \n \n 2025-02-21&apos;,
+    weight: 21
+  },
+  {
+    type: &apos;panel&apos;,
+    title: &apos;Custom Disabled Dates&apos;,
+    collapsible: true,
+    collapsed: true,
+    style: { &apos;margin-bottom&apos;: &apos;10px&apos; },
+    key: &apos;panel-disable-function&apos;,
+    customConditional() {
+      return !Evaluator.noeval;
+    },
+    components: [
+      EditFormUtils.logicVariablesTable(&apos;&lt;tr&gt;&lt;th&gt;date&lt;/th&gt;&lt;td&gt;The date object.&lt;/td&gt;&lt;/tr&gt;&apos;),
+      {
+        type: &apos;textarea&apos;,
+        input: true,
+        editor: &apos;ace&apos;,
+        key: &apos;datePicker.disableFunction&apos;,
+        label: &apos;Disabling dates by a function&apos;,
+        description: &apos;For more information check out the &lt;a href=&quot;https://flatpickr.js.org/examples/#disabling-dates&quot; target=&quot;_blank&quot;&gt;Docs&lt;/a&gt;&apos;,
+        weight: 22
+      },
+      {
+        type: &apos;htmlelement&apos;,
+        tag: &apos;div&apos;,
+        content: &apos;&lt;h4&gt;Example&lt;/h4&gt;&apos; +
+          `&lt;pre&gt;// Disable all weekends&lt;br&gt;date.getDay() === 0 || date.getDay() === 6&lt;/pre&gt;
+          `
+      }
+    ]
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;datePicker.disableWeekends&apos;,
+    label: &apos;Disable weekends&apos;,
+    tooltip: &apos;Check to disable weekends&apos;,
+    weight: 23
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;datePicker.disableWeekdays&apos;,
+    label: &apos;Disable weekdays&apos;,
+    tooltip: &apos;Check to disable weekdays&apos;,
+    weight: 23
   }
 ];
 </code></pre>

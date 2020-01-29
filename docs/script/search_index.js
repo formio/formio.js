@@ -15000,9 +15000,33 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/widgets/calendarwidget.js~calendarwidget#disablefunction",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disableFunction",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disableFunction",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#disableweekdays",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disableWeekdays",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekdays",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#disableweekends",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disableWeekends",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disableWeekends",
+    "member"
+  ],
+  [
     "src/widgets/calendarwidget.js~calendarwidget#disabled",
     "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-set-disabled",
     "src/widgets/CalendarWidget.js~CalendarWidget#disabled",
+    "member"
+  ],
+  [
+    "src/widgets/calendarwidget.js~calendarwidget#disableddates",
+    "class/src/widgets/CalendarWidget.js~CalendarWidget.html#instance-get-disabledDates",
+    "src/widgets/CalendarWidget.js~CalendarWidget#disabledDates",
     "member"
   ],
   [

@@ -1,7 +1,7 @@
 /* global google */
 
 import Formio from '../../Formio';
-
+import NativePromise from 'native-promise-only';
 import { AddressProvider } from './AddressProvider';
 
 export class GoogleAddressProvider extends AddressProvider {
@@ -39,7 +39,7 @@ export class GoogleAddressProvider extends AddressProvider {
 
     return Formio.libraryReady('googleMaps').then(() => {
       const service = new google.maps.places.PlacesService(document.createElement('div'));
-      return new Promise((resolve, reject) => {
+      return new NativePromise((resolve, reject) => {
         service.textSearch(params, (results, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             resolve(results);

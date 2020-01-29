@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.1
+### Fixed
+ - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
+ - Issue where tags component would not get its value set properly.
+
+### Added
+ - A way to disable certain dates from the DateTime picker.
+ - File types to the file input.
+ 
+### Changed
+ - Upgrade fetch-mock@8.3.2, mocha@7.0.1, i18next@19.1.0
+ 
 ## 4.8.0
 ### Added
  - Error messages when loadForm and loadSubmission fails.
