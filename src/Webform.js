@@ -794,7 +794,7 @@ export default class Webform extends NestedComponent {
     });
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     if (!submission || !submission.data) {
       submission = { data: {} };
     }
@@ -811,7 +811,9 @@ export default class Webform extends NestedComponent {
     }
 
     const changed = super.setValue(submission.data, flags);
-    this.mergeData(this.data, submission.data);
+    if (!flags.sanitize) {
+      this.mergeData(this.data, submission.data);
+    }
     submission.data = this.data;
     this._submission = submission;
     return changed;
