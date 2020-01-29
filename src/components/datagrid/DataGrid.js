@@ -383,9 +383,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      components[col.key] = this.createComponent(col, options, row);
-      components[col.key].rowIndex = rowIndex;
-      components[col.key].inDataGrid = true;
+      const comp = this.createComponent(col, options, row);
+      if (comp.path && col.key) {
+        comp.path = comp.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
+      }
+      comp.rowIndex = rowIndex;
+      comp.inDataGrid = true;
+      components[col.key] = comp;
     });
     return components;
   }

@@ -1207,7 +1207,7 @@ export default class SelectComponent extends Field {
     this.setValue('', {
       noUpdateEvent: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -1280,9 +1280,11 @@ export default class SelectComponent extends Field {
 
   setErrorClasses(elements, dirty, hasError) {
     super.setErrorClasses(elements, dirty, hasError);
-    super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
     if (this.choices) {
-      super.setErrorClasses([this.choices.containerOuter.element, this.choices.containerInner.element], dirty, hasError);
+      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError);
+    }
+    else {
+      super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
     }
   }
 }

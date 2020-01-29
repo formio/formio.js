@@ -794,7 +794,7 @@ export default class Webform extends NestedInputComponent {
     });
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     if (!submission || !submission.data) {
       submission = { data: {} };
     }
@@ -811,7 +811,9 @@ export default class Webform extends NestedInputComponent {
     }
 
     const changed = super.setValue(submission.data, flags);
-    this.mergeData(this.data, submission.data);
+    if (!flags.sanitize) {
+      this.mergeData(this.data, submission.data);
+    }
     submission.data = this.data;
     this._submission = submission;
     return changed;
@@ -851,8 +853,6 @@ export default class Webform extends NestedInputComponent {
     this.component.input = false;
 
     this.addComponents();
-    this.isBuilt = true;
-
     this.on('submitButton', options => {
       this.submit(false, options).catch(e => e !== false && console.log(e));
     }, true);
@@ -1322,9 +1322,9 @@ export default class Webform extends NestedInputComponent {
         }
 
         this.getAllComponents().forEach((comp) => {
-          const { persistent, key } = comp.component;
+          const { persistent } = comp.component;
           if (persistent === 'client-only') {
-            delete submission.data[key];
+            _.unset(submission.data, comp.path);
           }
         });
 
