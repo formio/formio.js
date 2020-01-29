@@ -18,7 +18,10 @@ export default class PDF extends Webform {
     }), true);
 
     // Trigger when this form is ready.
-    this.on('iframe-ready', () => this.iframeReadyResolve(), true);
+    this.on('iframe-ready', () => {
+      console.log('iframe-ready');
+      return this.iframeReadyResolve();
+    }, true);
   }
 
   render() {
@@ -48,19 +51,14 @@ export default class PDF extends Webform {
       });
 
       // iframes cannot be in the template so manually create it
-      let iframeSrc = '';
-      try {
-        iframeSrc = await this.getSrc();
-      }
-      catch (err) {
-        iframeSrc = err;
-      }
-      console.log('iframeSrc from library', iframeSrc);
+
+      const iframeSrc = this.getSrc();
+
       this.iframeElement = this.ce('iframe', {
-        srcdoc: iframeSrc,
+        src: iframeSrc,
         id: `iframe-${this.id}`,
         seamless: true,
-        class: 'formio-iframe'
+        class: 'formio-iframe',
       });
 
       this.iframeElement.formioContainer = this.component.components;
@@ -69,6 +67,26 @@ export default class PDF extends Webform {
       // Append the iframe to the iframeContainer in the template
       this.empty(this.refs.iframeContainer);
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+      const { headers } = this.options;
+      try {
+          const bodyRequest = await fetch(iframeSrc, {
+            method: 'GET',
+            headers: {
+              credentials: 'include',
+              ...headers,
+            },
+          });
+          const htmlBody = await bodyRequest.text();
+          const iframeWindow = this.iframeElement.contentWindow || this.iframeElement.contentDocument.parentWindow;
+          const iframeDoc = iframeWindow.document;
+          iframeDoc.open();
+          iframeDoc.write(htmlBody);
+          iframeDoc.close();
+      }
+      catch (error) {
+        console.log('error setting pdf iframe', error);
+      }
 
       // Post the form to the iframe
       this.postMessage({ name: 'form', data: this.form });
@@ -124,7 +142,7 @@ export default class PDF extends Webform {
     return this.getSubmission().then(() => super.submitForm(options));
   }
 
-  async getSrc() {
+  getSrc() {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return '';
     }
@@ -148,23 +166,7 @@ export default class PDF extends Webform {
       iframeSrc += `?${params.join('&')}`;
     }
 
-    const { headers } = this.options;
-
-    try {
-      const bodyRequest = await fetch(iframeSrc, {
-        method: 'GET',
-        headers: {
-          credentials: 'include',
-          ...headers,
-        },
-      });
-      const htmlBody = await bodyRequest.text();
-      return htmlBody;
-    }
-    catch (error) {
-      console.log('error setting pdf iframe', error);
-      return iframeSrc;
-    }
+   return iframeSrc;
   }
 
   setForm(form) {
@@ -199,11 +201,13 @@ export default class PDF extends Webform {
     submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() => {
       if (this.formio) {
+        console.log('getting submission', this.formio.getDownloadUrl);
         this.formio.getDownloadUrl().then((url) => {
           // Add a download button if it has a download url.
           if (!url) {
             return;
           }
+          console.log('url', url);
           if (!this.downloadButton) {
             if (this.options.primaryProject) {
               url += `&project=${this.options.primaryProject}`;
@@ -218,6 +222,8 @@ export default class PDF extends Webform {
             }));
             this.element.insertBefore(this.downloadButton, this.iframe);
           }
+        }).catch((err) => {
+          console.log('err!', err);
         });
       }
     });
@@ -233,7 +239,10 @@ export default class PDF extends Webform {
       message.type = 'iframe-data';
     }
 
+    console.log('this.iframeReady', this.iframeReady);
+    console.log('message', message);
     this.iframeReady.then(() => {
+      console.log('this.iframeReady promised ready!!');
       if (this.iframeElement && this.iframeElement.contentWindow) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
       }
@@ -255,6 +264,8 @@ window.addEventListener('message', (event) => {
   catch (err) {
     eventData = null;
   }
+  console.log('MESSAGE DATA', eventData);
+  console.log('Formio.forms', Formio.forms);
 
   // If this form exists, then emit the event within this form.
   if (

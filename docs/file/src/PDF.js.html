@@ -263,7 +263,7 @@ export default class PDF extends Webform {
   }
 
   attach(element) {
-    return super.attach(element).then(() =&gt; {
+    return super.attach(element).then(async() =&gt; {
       this.loadRefs(element, {
         submitButton: &apos;single&apos;,
         zoomIn: &apos;single&apos;,
@@ -277,9 +277,20 @@ export default class PDF extends Webform {
         this.iframeReadyReject = reject;
       });
 
+      // eslint-disable-next-line no-console
+      console.log(&apos;options&apos;, this.options);
+
       // iframes cannot be in the template so manually create it
+      let iframeSrc = &apos;&apos;;
+      try {
+        iframeSrc = await this.getSrc();
+      }
+      catch (err) {
+        iframeSrc = err;
+      }
+      console.log(&apos;iframeSrc from library&apos;, iframeSrc);
       this.iframeElement = this.ce(&apos;iframe&apos;, {
-        src: this.getSrc(),
+        srcdoc: iframeSrc,
         id: `iframe-${this.id}`,
         seamless: true,
         class: &apos;formio-iframe&apos;
@@ -346,7 +357,7 @@ export default class PDF extends Webform {
     return this.getSubmission().then(() =&gt; super.submitForm(options));
   }
 
-  getSrc() {
+  async getSrc() {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return &apos;&apos;;
     }
@@ -370,7 +381,23 @@ export default class PDF extends Webform {
       iframeSrc += `?${params.join(&apos;&amp;&apos;)}`;
     }
 
-    return iframeSrc;
+    const { headers } = this.options;
+
+    try {
+      const bodyRequest = await fetch(iframeSrc, {
+        method: &apos;GET&apos;,
+        headers: {
+          credentials: &apos;include&apos;,
+          ...headers,
+        },
+      });
+      const htmlBody = await bodyRequest.text();
+      return htmlBody;
+    }
+    catch (error) {
+      console.log(&apos;error setting pdf iframe&apos;, error);
+      return iframeSrc;
+    }
   }
 
   setForm(form) {

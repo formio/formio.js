@@ -246,6 +246,7 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform = new PDF(this.element, options);
     this.webform.on('attach', () => {
       // If the dropzone exists but has been removed in a PDF rebuild, reinstate it
+      console.log('atached finished', this.refs.form);
       if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {
         this.prependTo(this.refs.iframeDropzone, this.refs.form);
       }
