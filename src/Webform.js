@@ -1324,7 +1324,7 @@ export default class Webform extends NestedComponent {
         this.getAllComponents().forEach((comp) => {
           const { persistent } = comp.component;
           if (persistent === 'client-only') {
-            comp.unset();
+            _.unset(submission.data, comp.path);
           }
         });
 
