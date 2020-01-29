@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.1
+### Added
+ - Created nested base classes for DataGrid, EditGrid, and Containers
+ - Adding addComponent hook. 
+ - Adding asynchronous validations through the checkAsyncValidity method.
+ - Allow generic nested components to be instantiated
+ - Changing data model to getters and setters and allow recursive setting.
+ - Adding a better mechanism for setting the component paths.
+ - Adding a sanitize flag to setSubmission so that it will not merge existing data.
+ 
+### Fixed
+ - Ensure that the checkbox component updates when it is visible.
+ - Fixed error handling on data based nested components.
+ - Fixing the Element polyfill to work isomorphically
+ - Fixing async validations to be easier to configure and also handle async operations more efficiently.
+ - is-invalid on choicesjs
+ - Fixed an issue where the wizard builder would create duplicate pages and cause conflicts.
+
+### Changed
+ - Removed recursive include in utils.
+ - Modified the Evaluator so that it could be extended by external systems.
+ - Upgrade idb@5.0.1
+
+### Removed
+ - Removing the isBuilt property since it is not being used anymore
+
 ## 4.8.1
 ### Fixed
  - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
