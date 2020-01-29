@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.8.1
+### Fixed
+ - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
+ - Issue where tags component would not get its value set properly.
+
+### Added
+ - A way to disable certain dates from the DateTime picker.
+ - File types to the file input.
+ 
+### Changed
+ - Upgrade fetch-mock@8.3.2, mocha@7.0.1, i18next@19.1.0
+ 
+## 4.8.0
+### Added
+ - Error messages when loadForm and loadSubmission fails.
+
+### Changed
+ - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+ - Changed dirty parameter value for wizard onchange validations.
+ 
+### Fixed
+ - Fixed on hover notification for datetime
+ - Fixed editing existing signature. 
+ - Added check for hasComponent in WebformBuilder. 
+ - Added modified flag to wizard onChange event.
+ - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
+ - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
+ - Fix form version control 
+ - Normalize date value for day component
+ - Fileuploader component does not render the progress percentage
+ - Don't interpolate content when in builder mode so that it won't throw errors and shows the interpolation options.
+ - Fixed unexpected validation for selectboxes on pristine form
+ - Ace Textarea issues
+   - Placeholder not disappearing when typing
+   - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
+   - Editor settings from component JSON being ignored
+   - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
+ - ```userPermissions``` method not handling submissions with multiple groups properly 
+
+## 4.8.0-rc.14
+### Changed
+ - Added improvements to accessibility.
+ - Remove editgrid rows on hide if clearOnHide is true.
+ - Upgrade core-js@3.6.4, @babel/cli@7.8.3, @babel/core@7.8.3, @babel/plugin-proposal-class-properties@7.8.3, @babel/plugin-proposal-export-default-from@7.8.3, @babel/plugin-proposal-optional-chaining@7.8.3, @babel/polyfill@7.8.3, @babel/preset-env@7.8.3, @babel/register@7.8.3, sinon@8.1.0, jsdom@16.0.0
+
+### Fixed
+ - FOR-2574: Flatten tabs for PDF renderer
+ - Wizard initial focus fix
+ - Fixed removing values from select if lazyLoad is true.
+ - Fix applying input format for number component
+
 ## 4.8.0-rc.13
 ### Added
  - "metadata" and "submission" to the interpolation contexts for HTML and Content components.

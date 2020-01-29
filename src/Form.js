@@ -84,23 +84,62 @@ export default class Form extends Element {
     return this.setForm(formParam);
   }
 
+  errorForm(err) {
+    return {
+      components: [
+        {
+          'label': 'HTML',
+          'tag': 'div',
+          'className': 'error error-message alert alert-danger ui red message',
+          'attrs': [
+            {
+              'attr': 'role',
+              'value': 'alert'
+            }
+          ],
+          'key': 'errorMessage',
+          'type': 'htmlelement',
+          'input': false,
+          'content': typeof err === 'string' ? err : err.message,
+        }
+      ]
+    };
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
-      result = this.getSubmission(formio).then((submission) => {
-        return formio.loadForm().then((form) => {
-          this.instance = this.instance || this.create(form.display);
-          this.instance.url = formParam;
-          this.instance.nosubmit = false;
-          this._form = this.instance.form = form;
-          if (submission) {
-            this.instance.submission = submission;
-          }
-          return this.instance;
+      let error;
+      result = this.getSubmission(formio)
+        .catch((err) => {
+          error = err;
+        })
+        .then((submission) => {
+          return formio.loadForm()
+          // If the form returned an error, show it instead of the form.
+            .catch(err => {
+              error = err;
+            })
+            .then((form) => {
+              // If the submission returned an error, show it instead of the form.
+              if (error) {
+                form = this.errorForm(error);
+              }
+              this.instance = this.instance || this.create(form.display);
+              this.instance.url = formParam;
+              this.instance.nosubmit = false;
+              this._form = this.instance.form = form;
+              if (submission) {
+                this.instance.submission = submission;
+              }
+              if (error) {
+                throw error;
+              }
+              return this.instance;
+            });
         });
-      });
     }
     else {
       this.instance = this.instance || this.create(formParam.display);

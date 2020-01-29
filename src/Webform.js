@@ -7,6 +7,7 @@ import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedComponent from './components/_classes/nested/NestedComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
+import { eachComponent } from './utils/formUtils';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -927,10 +928,26 @@ export default class Webform extends NestedComponent {
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
     this.currentForm = this;
-    setTimeout(() => this.emit('render'), 1);
-    return childPromise.then(() => this.setValue(this._submission, {
-      noUpdateEvent: true
-    }));
+    return childPromise.then(() => {
+      this.emit('render');
+
+      return this.setValue(this._submission, {
+        noUpdateEvent: true,
+      });
+    });
+  }
+
+  hasRequiredFields() {
+    let result = false;
+
+    eachComponent(this.form.components, (component) => {
+      if (component.validate.required) {
+        result = true;
+        return true;
+      }
+    }, true);
+
+    return result;
   }
 
   resetValue() {
@@ -1094,32 +1111,39 @@ export default class Webform extends NestedComponent {
     const ul = this.ce('ul');
     errors.forEach(err => {
       if (err) {
-        const params = { ref: 'errorRef', tabIndex: 0 };
-        const li = this.ce('li', params);
-        const strong = this.ce('strong');
-        this.setContent(strong, err.message || err);
-        if (err.component && err.component.key) {
-          li.dataset.componentKey = err.component.key;
+        const createListItem = (message) => {
+          const params = { ref: 'errorRef', tabIndex: 0, 'aria-label': `${message}. Click to navigate to the field with following error.` };
+          const li = this.ce('li', params);
+          this.setContent(li, message);
+
+          if (err.component && err.component.key) {
+            li.dataset.componentKey = err.component.key;
+          }
+
+          this.appendTo(li, ul);
+        };
+
+        if (err.messages && err.messages.length) {
+          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
         }
-        this.appendTo(strong, li);
-        this.appendTo(li, ul);
+        else if (err) {
+          createListItem(err);
+        }
       }
     });
-    message.append(p, ul);
-    const isAlertBefore = this.alert ? true : false;
+    p.appendChild(ul);
+    message.appendChild(p);
     this.setAlert('danger', message);
     if (triggerEvent) {
       this.emit('error', errors);
     }
 
-    if (!isAlertBefore) {
-      if (this.refs.errorRef && this.refs.errorRef.length) {
-        this.refs.errorRef[0].focus();
-      }
-      else {
-        const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
-        withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
-      }
+    if (triggerEvent && this.refs.errorRef && this.refs.errorRef.length) {
+      this.refs.errorRef[0].focus();
+    }
+    else {
+      const withKeys = Array.from(this.refs.errorRef).filter(ref => !!ref.dataset.componentKey);
+      withKeys.length && this.focusOnComponent(withKeys[0].dataset.componentKey);
     }
 
     return errors;
