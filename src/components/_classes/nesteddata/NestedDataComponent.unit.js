@@ -1,11 +1,11 @@
 'use strict';
-import NestedInputComponent from './NestedInputComponent';
+import NestedDataComponent from './NestedDataComponent';
 import Harness from '../../../../test/harness';
 
 let component = null;
-describe('NestedInputComponent class', () => {
-  it('Should create a new NestedInputComponent class', () => {
-    return Harness.testCreate(NestedInputComponent, {
+describe('NestedDataComponent class', () => {
+  it('Should create a new NestedDataComponent class', () => {
+    return Harness.testCreate(NestedDataComponent, {
       // key: 'nested',
       components: [
         {

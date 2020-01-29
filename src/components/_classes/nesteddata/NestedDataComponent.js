@@ -3,7 +3,7 @@ import Component from '../component/Component';
 import NestedComponent from '../nested/NestedComponent';
 import _ from 'lodash';
 
-export default class NestedInputComponent extends NestedComponent {
+export default class NestedDataComponent extends NestedComponent {
   hasChanged(newValue, oldValue) {
     // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
     if (

@@ -1,7 +1,7 @@
 'use strict';
-import NestedInputComponent from '../nestedinput/NestedInputComponent';
+import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
-export default class NestedArrayComponent extends NestedInputComponent {
+export default class NestedArrayComponent extends NestedDataComponent {
   componentContext(component) {
     let dataValue = this.dataValue;
     if (!dataValue[component.rowIndex]) {

@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import NestedInputComponent from '../_classes/nestedinput/NestedInputComponent';
+import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
-export default class ContainerComponent extends NestedInputComponent {
+export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedInputComponent.schema({
+    return NestedDataComponent.schema({
       label: 'Container',
       type: 'container',
       key: 'container',
