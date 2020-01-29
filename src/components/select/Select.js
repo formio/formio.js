@@ -1207,7 +1207,7 @@ export default class SelectComponent extends Field {
     this.setValue('', {
       noUpdateEvent: true
     });
-    _.unset(this.data, this.key);
+    _.unset(this._data, this.key);
   }
 
   /**

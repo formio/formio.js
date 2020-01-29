@@ -268,6 +268,9 @@ export default class NestedComponent extends Field {
    * @param data
    */
   createComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
@@ -276,7 +279,11 @@ export default class NestedComponent extends Field {
     options.skipInit = true;
     const comp = Components.create(component, options, data, true);
     if (component.key) {
-      comp.path = this.path ? `${this.path}.` : '';
+      let thisPath = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      comp.path = thisPath.path ? `${thisPath.path}.` : '';
       comp.path += component.key;
     }
     comp.init();
@@ -348,6 +355,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
       return comp;
@@ -619,7 +627,7 @@ export default class NestedComponent extends Field {
 
   resetValue() {
     this.getComponents().forEach((comp) => comp.resetValue());
-    _.unset(this.data, this.key);
+    _.unset(this._data, this.key);
     this.setPristine(true);
   }
 

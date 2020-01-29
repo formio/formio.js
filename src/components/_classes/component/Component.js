@@ -1950,7 +1950,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -1960,16 +1960,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) && (value !== undefined)) {
+      value = this.hook('setDataValue', value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
       this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -1990,7 +1994,7 @@ export default class Component extends Element {
   }
 
   unset() {
-    _.unset(this.data, this.key);
+    _.unset(this._data, this.key);
   }
 
   /**
@@ -2410,6 +2414,8 @@ export default class Component extends Element {
    * @return {boolean}
    */
   checkComponentValidity(data, dirty, row, async = false) {
+    data = data || this.rootValue;
+    row = row || this.data;
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
       return async ? NativePromise.resolve(true) : true;
