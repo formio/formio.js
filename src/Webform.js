@@ -5,7 +5,7 @@ import i18next from 'i18next';
 import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import NestedComponent from './components/_classes/nested/NestedComponent';
+import NestedInputComponent from './components/_classes/nestedinput/NestedInputComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -42,7 +42,7 @@ function getOptions(options) {
 /**
  * Renders a Form.io form within the webpage.
  */
-export default class Webform extends NestedComponent {
+export default class Webform extends NestedInputComponent {
   /**
    * Creates a new Form instance.
    *
