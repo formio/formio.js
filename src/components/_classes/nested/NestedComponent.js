@@ -143,6 +143,10 @@ export default class NestedComponent extends Field {
       let result = component;
 
       if (component && component.getAllComponents) {
+        // Add this component if data is allowed
+        if (component.allowData) {
+          components.push(component);
+        }
         result = component.getAllComponents();
       }
 
@@ -618,7 +622,8 @@ export default class NestedComponent extends Field {
   }
 
   get errors() {
-    return this.getAllComponents().reduce((errors, comp) => errors.concat(comp.errors || []), []);
+    const thisErrors = this.error ? [this.error] : [];
+    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
   }
 
   getValue() {

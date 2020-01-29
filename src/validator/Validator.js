@@ -86,9 +86,14 @@ class ValidationChecker {
               };
             }
             // FOR-213 - Pluck the unique location id
-            else if (_.isPlainObject(value) && value.hasOwnProperty('address_components') && value.hasOwnProperty('place_id')) {
-              query[`${path}.place_id`] = {
-                $regex: new RegExp(`^${escapeRegExCharacters(value.place_id)}$`),
+            else if (
+              _.isPlainObject(value) &&
+              value.address &&
+              value.address['address_components'] &&
+              value.address['place_id']
+            ) {
+              query[`${path}.address.place_id`] = {
+                $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
                 $options: 'i'
               };
             }
