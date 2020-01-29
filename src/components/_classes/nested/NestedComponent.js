@@ -264,13 +264,25 @@ export default class NestedComponent extends Field {
    * @param data
    */
   createComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    comp.isBuilt = true;
+    if (component.key) {
+      let thisPath = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      comp.path = thisPath.path ? `${thisPath.path}.` : '';
+      comp.path += component.key;
+    }
+    comp.init();
     if (component.internal) {
       return comp;
     }
