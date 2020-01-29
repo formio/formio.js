@@ -253,7 +253,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -405,6 +405,14 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
 
   mergeSchema(component = {}) {
     return _.defaultsDeep(component, this.defaultSchema);
@@ -1933,7 +1941,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -1943,16 +1951,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) && (value !== undefined)) {
+      value = this.hook('setDataValue', value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -1972,6 +1984,10 @@ export default class Component extends Element {
     }
   }
 
+  unset() {
+    _.unset(this._data, this.key);
+  }
+
   /**
    * Deletes the value of the component.
    */
@@ -1980,7 +1996,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -2185,7 +2201,7 @@ export default class Component extends Element {
       noValidate: true,
       resetValue: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -2201,6 +2217,14 @@ export default class Component extends Element {
       ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
+    }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &&
+      newValue !== null &&
+      !this.hasValue()
+    ) {
+      return true;
     }
     return !_.isEqual(newValue, oldValue);
   }
