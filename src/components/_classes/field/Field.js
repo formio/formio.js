@@ -5,6 +5,13 @@ export default class Field extends Component {
     if (this.noField) {
       return super.render(element);
     }
+    else if (this.isLegacyLabel && this.options.pdf) {
+      return super.render(this.renderTemplate('field', {
+        ...this.getLabelInfo(),
+        labelMarkup: this.renderTemplate('label'),
+        element: element
+      }, 'pdf'));
+    }
     else {
       return super.render(this.renderTemplate('field', {
         labelMarkup: this.renderTemplate('label'),
