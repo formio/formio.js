@@ -14,6 +14,9 @@ const Evaluator = {
       return _.noop;
     }
 
+    if (typeof params[0] === 'object') {
+      params = _.keys(params[0]);
+    }
     return new Function(...params, func);
   },
   template(template, hash) {
@@ -62,6 +65,9 @@ const Evaluator = {
       }
     }
     return template;
+  },
+  evaluate(func, args) {
+    return Array.isArray(args) ? func(...args) : func(args);
   }
 };
 
