@@ -339,6 +339,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
       return comp;
