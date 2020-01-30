@@ -231,6 +231,18 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = '';
+
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */
@@ -253,7 +265,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -369,9 +381,6 @@ export default class Component extends Element {
     // To force this component to be invalid.
     this.invalid = false;
 
-    // Determine if the component has been built.
-    this.isBuilt = false;
-
     if (this.component) {
       this.type = this.component.type;
       if (this.allowData && this.key) {
@@ -405,6 +414,14 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
 
   mergeSchema(component = {}) {
     return _.defaultsDeep(component, this.defaultSchema);
@@ -1981,7 +1998,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -1991,16 +2008,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) && (value !== undefined)) {
+      value = this.hook('setDataValue', value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -2020,6 +2041,10 @@ export default class Component extends Element {
     }
   }
 
+  unset() {
+    _.unset(this._data, this.key);
+  }
+
   /**
    * Deletes the value of the component.
    */
@@ -2028,7 +2053,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -2233,7 +2258,7 @@ export default class Component extends Element {
       noValidate: true,
       resetValue: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -2249,6 +2274,14 @@ export default class Component extends Element {
       ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
+    }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &&
+      newValue !== null &&
+      !this.hasValue()
+    ) {
+      return true;
     }
     return !_.isEqual(newValue, oldValue);
   }
@@ -2409,21 +2442,7 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  /**
-   * Checks the validity of this component and sets the error message if it is invalid.
-   *
-   * @param data
-   * @param dirty
-   * @param row
-   * @return {boolean}
-   */
-  checkComponentValidity(data, dirty, row) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      this.setCustomValidity('');
-      return true;
-    }
-
-    const messages = Validator.checkComponent(this, data, row, true);
+  setComponentValidity(messages, dirty) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
     if (messages.length && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
@@ -2434,10 +2453,36 @@ export default class Component extends Element {
     return !hasErrors;
   }
 
+  /**
+   * Checks the validity of this component and sets the error message if it is invalid.
+   *
+   * @param data
+   * @param dirty
+   * @param row
+   * @return {boolean}
+   */
+  checkComponentValidity(data, dirty, row, async = false) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity('');
+      return async ? NativePromise.resolve(true) : true;
+    }
+
+    const check = Validator.checkComponent(this, data, row, true, async);
+    return async ?
+      check.then((messages) => this.setComponentValidity(messages, dirty)) :
+      this.setComponentValidity(check, dirty);
+  }
+
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
     return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
   /**

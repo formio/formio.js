@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import equal from 'fast-deep-equal';
 
-import NestedComponent from '../_classes/nested/NestedComponent';
+import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import { fastCloneDeep, Evaluator } from '../../utils/utils';
 import templates from './templates';
 
-export default class EditGridComponent extends NestedComponent {
+export default class EditGridComponent extends NestedArrayComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedArrayComponent.schema({
       type: 'editgrid',
       label: 'Edit Grid',
       key: 'editGrid',
@@ -83,10 +83,6 @@ export default class EditGridComponent extends NestedComponent {
     return _.get(this.component, 'validate.minLength', 0);
   }
 
-  get allowData() {
-    return true;
-  }
-
   get data() {
     return this._data;
   }
@@ -110,10 +106,6 @@ export default class EditGridComponent extends NestedComponent {
     super(...args);
     this.type = 'editgrid';
     // this.editRows = [];
-  }
-
-  getValueAsString() {
-    return '[Complex Data]';
   }
 
   hasAddButton() {
@@ -562,6 +554,9 @@ export default class EditGridComponent extends NestedComponent {
         row: options.row
       }), options, row);
       comp.rowIndex = rowIndex;
+      if (comp.path && column.key) {
+        comp.path = comp.path.replace(new RegExp(`\\.${column.key}$`), `[${rowIndex}].${column.key}`);
+      }
       components.push(comp);
     });
     return components;
@@ -682,8 +677,8 @@ export default class EditGridComponent extends NestedComponent {
           }
           else {
             editRow.components.forEach(col => {
-              col.data = row;
-              col.setValue(row[col.key], flags);
+              col.rowIndex = rowIndex;
+              this.setNestedValue(col, row, flags, false);
             });
           }
         }
@@ -704,15 +699,6 @@ export default class EditGridComponent extends NestedComponent {
     return changed;
   }
 
-  /**
-   * Get the value of this component.
-   *
-   * @returns {*}
-   */
-  getValue() {
-    return this.dataValue;
-  }
-
   restoreComponentsContext() {
     return;
   }
@@ -728,4 +714,3 @@ export default class EditGridComponent extends NestedComponent {
 }
 
 EditGridComponent.prototype.hasChanged = Component.prototype.hasChanged;
-EditGridComponent.prototype.updateValue = Component.prototype.updateValue;

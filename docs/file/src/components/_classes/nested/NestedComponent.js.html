@@ -50,6 +50,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
@@ -357,6 +359,10 @@ export default class NestedComponent extends Field {
     });
   }
 
+  componentContext() {
+    return this._data;
+  }
+
   get data() {
     return this._data;
   }
@@ -364,7 +370,7 @@ export default class NestedComponent extends Field {
   set data(value) {
     this._data = value;
     this.eachComponent((component) =&gt; {
-      component.data = this._data;
+      component.data = this.componentContext(component);
     });
   }
 
@@ -377,6 +383,10 @@ export default class NestedComponent extends Field {
       let result = component;
 
       if (component &amp;&amp; component.getAllComponents) {
+        // Add this component if data is allowed
+        if (component.allowData) {
+          components.push(component);
+        }
         result = component.getAllComponents();
       }
 
@@ -502,13 +512,25 @@ export default class NestedComponent extends Field {
    * @param data
    */
   createComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    comp.isBuilt = true;
+    if (component.key) {
+      let thisPath = this;
+      while (thisPath &amp;&amp; !thisPath.allowData &amp;&amp; thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      comp.path = thisPath.path ? `${thisPath.path}.` : &apos;&apos;;
+      comp.path += component.key;
+    }
+    comp.init();
     if (component.internal) {
       return comp;
     }
@@ -577,6 +599,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    component = this.hook(&apos;addComponent&apos;, component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
       return comp;
@@ -809,6 +832,12 @@ export default class NestedComponent extends Field {
     );
   }
 
+  checkAsyncValidity(data, dirty, row) {
+    const promises = [super.checkAsyncValidity(data, dirty, row)];
+    this.eachComponent((component) =&gt; promises.push(component.checkAsyncValidity(data, dirty, row)));
+    return NativePromise.all(promises).then((results) =&gt; results.reduce((valid, result) =&gt; (valid &amp;&amp; result), true));
+  }
+
   setPristine(pristine) {
     super.setPristine(pristine);
     this.getComponents().forEach((comp) =&gt; comp.setPristine(pristine));
@@ -833,7 +862,8 @@ export default class NestedComponent extends Field {
   }
 
   get errors() {
-    return this.getAllComponents().reduce((errors, comp) =&gt; errors.concat(comp.errors || []), []);
+    const thisErrors = this.error ? [this.error] : [];
+    return this.getComponents().reduce((errors, comp) =&gt; errors.concat(comp.errors || []), thisErrors);
   }
 
   getValue() {
@@ -842,7 +872,7 @@ export default class NestedComponent extends Field {
 
   resetValue() {
     this.getComponents().forEach((comp) =&gt; comp.resetValue());
-    _.unset(this.data, this.key);
+    this.unset();
     this.setPristine(true);
   }
 

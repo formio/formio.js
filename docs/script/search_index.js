@@ -408,6 +408,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html",
+    "<span>NestedArrayComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nestedarray/NestedArrayComponent.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/_classes/nested/nestedcomponent.form.js~nestedcomponent",
     "function/index.html#static-function-NestedComponent",
     "<span>NestedComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nested/NestedComponent.form.js</span>",
@@ -417,6 +423,12 @@ window.esdocSearchIndex = [
     "formiojs/src/components/_classes/nested/nestedcomponent.js~nestedcomponent",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html",
     "<span>NestedComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nested/NestedComponent.js</span>",
+    "class"
+  ],
+  [
+    "formiojs/src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html",
+    "<span>NestedDataComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/nesteddata/NestedDataComponent.js</span>",
     "class"
   ],
   [
@@ -2820,12 +2832,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/webform.js~webform#isbuilt",
-    "class/src/Webform.js~Webform.html#instance-member-isBuilt",
-    "src/Webform.js~Webform#isBuilt",
-    "member"
-  ],
-  [
     "src/webform.js~webform#keyboardcatchableelement",
     "class/src/Webform.js~Webform.html#instance-method-keyboardCatchableElement",
     "src/Webform.js~Webform#keyboardCatchableElement",
@@ -4014,6 +4020,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/component/component.js~component#_data",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-member-_data",
+    "src/components/_classes/component/Component.js~Component#_data",
+    "member"
+  ],
+  [
     "src/components/_classes/component/component.js~component#_disabled",
     "class/src/components/_classes/component/Component.js~Component.html#instance-member-_disabled",
     "src/components/_classes/component/Component.js~Component#_disabled",
@@ -4200,6 +4212,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/component/component.js~component#checkasyncvalidity",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-checkAsyncValidity",
+    "src/components/_classes/component/Component.js~Component#checkAsyncValidity",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#checkcomponentconditions",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-checkComponentConditions",
     "src/components/_classes/component/Component.js~Component#checkComponentConditions",
@@ -4345,7 +4363,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/_classes/component/component.js~component#data",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-member-data",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-get-data",
+    "src/components/_classes/component/Component.js~Component#data",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#data",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-set-data",
     "src/components/_classes/component/Component.js~Component#data",
     "member"
   ],
@@ -4638,12 +4662,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/_classes/component/component.js~component#isbuilt",
-    "class/src/components/_classes/component/Component.js~Component.html#instance-member-isBuilt",
-    "src/components/_classes/component/Component.js~Component#isBuilt",
-    "member"
-  ],
-  [
     "src/components/_classes/component/component.js~component#isempty",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-isEmpty",
     "src/components/_classes/component/Component.js~Component#isEmpty",
@@ -4785,6 +4803,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#parentvisible",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-parentVisible",
     "src/components/_classes/component/Component.js~Component#parentVisible",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#path",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-member-path",
+    "src/components/_classes/component/Component.js~Component#path",
     "member"
   ],
   [
@@ -4968,6 +4992,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/component/component.js~component#setcomponentvalidity",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-setComponentValidity",
+    "src/components/_classes/component/Component.js~Component#setComponentValidity",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#setcontent",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-setContent",
     "src/components/_classes/component/Component.js~Component#setContent",
@@ -5106,6 +5136,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/_classes/component/component.js~component#unset",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-method-unset",
+    "src/components/_classes/component/Component.js~Component#unset",
+    "method"
+  ],
+  [
     "src/components/_classes/component/component.js~component#updatecomponentvalue",
     "class/src/components/_classes/component/Component.js~Component.html#instance-method-updateComponentValue",
     "src/components/_classes/component/Component.js~Component#updateComponentValue",
@@ -5139,6 +5175,12 @@ window.esdocSearchIndex = [
     "src/components/_classes/component/component.js~component#validationvalue",
     "class/src/components/_classes/component/Component.js~Component.html#instance-get-validationValue",
     "src/components/_classes/component/Component.js~Component#validationValue",
+    "member"
+  ],
+  [
+    "src/components/_classes/component/component.js~component#validator",
+    "class/src/components/_classes/component/Component.js~Component.html#instance-member-validator",
+    "src/components/_classes/component/Component.js~Component#validator",
     "member"
   ],
   [
@@ -5736,6 +5778,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#checkasyncvalidity",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkAsyncValidity",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkAsyncValidity",
+    "method"
+  ],
+  [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#checkconditions",
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-checkConditions",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#checkConditions",
@@ -5776,6 +5824,12 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-get-componentComponents",
     "src/components/_classes/nested/NestedComponent.js~NestedComponent#componentComponents",
     "member"
+  ],
+  [
+    "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#componentcontext",
+    "class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html#instance-method-componentContext",
+    "src/components/_classes/nested/NestedComponent.js~NestedComponent#componentContext",
+    "method"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.js~nestedcomponent#components",
@@ -6129,6 +6183,72 @@ window.esdocSearchIndex = [
     "src/components/_classes/nested/fixtures/index.js",
     "file/src/components/_classes/nested/fixtures/index.js.html",
     "src/components/_classes/nested/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js",
+    "file/src/components/_classes/nestedarray/NestedArrayComponent.js.html",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.js~nestedarraycomponent#componentcontext",
+    "class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html#instance-method-componentContext",
+    "src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent#componentContext",
+    "method"
+  ],
+  [
+    "src/components/_classes/nestedarray/nestedarraycomponent.unit.js",
+    "file/src/components/_classes/nestedarray/NestedArrayComponent.unit.js.html",
+    "src/components/_classes/nestedarray/NestedArrayComponent.unit.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js",
+    "file/src/components/_classes/nesteddata/NestedDataComponent.js.html",
+    "src/components/_classes/nesteddata/NestedDataComponent.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#allowdata",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-get-allowData",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#allowData",
+    "member"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#getvalue",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-getValue",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#getvalueasstring",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-getValueAsString",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#getValueAsString",
+    "method"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#haschanged",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-hasChanged",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#hasChanged",
+    "method"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#setnestedvalue",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-setNestedValue",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#setNestedValue",
+    "method"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.js~nesteddatacomponent#updatevalue",
+    "class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html#instance-method-updateValue",
+    "src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent#updateValue",
+    "method"
+  ],
+  [
+    "src/components/_classes/nesteddata/nesteddatacomponent.unit.js",
+    "file/src/components/_classes/nesteddata/NestedDataComponent.unit.js.html",
+    "src/components/_classes/nesteddata/NestedDataComponent.unit.js",
     "file"
   ],
   [
@@ -6960,40 +7080,22 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/container/container.js~containercomponent#_data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-member-_data",
-    "src/components/container/Container.js~ContainerComponent#_data",
-    "member"
-  ],
-  [
     "src/components/container/container.js~containercomponent#addcomponents",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-addComponents",
     "src/components/container/Container.js~ContainerComponent#addComponents",
     "method"
   ],
   [
-    "src/components/container/container.js~containercomponent#allowdata",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-allowData",
-    "src/components/container/Container.js~ContainerComponent#allowData",
-    "member"
+    "src/components/container/container.js~containercomponent#componentcontext",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-componentContext",
+    "src/components/container/Container.js~ContainerComponent#componentContext",
+    "method"
   ],
   [
     "src/components/container/container.js~containercomponent#constructor",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-constructor-constructor",
     "src/components/container/Container.js~ContainerComponent#constructor",
     "method"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-data",
-    "src/components/container/Container.js~ContainerComponent#data",
-    "member"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#data",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-set-data",
-    "src/components/container/Container.js~ContainerComponent#data",
-    "member"
   ],
   [
     "src/components/container/container.js~containercomponent#datavalue",
@@ -7014,24 +7116,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/container/container.js~containercomponent#getvalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-getValue",
-    "src/components/container/Container.js~ContainerComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#getvalueasstring",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-getValueAsString",
-    "src/components/container/Container.js~ContainerComponent#getValueAsString",
-    "method"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#haschanged",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-hasChanged",
-    "src/components/container/Container.js~ContainerComponent#hasChanged",
-    "method"
-  ],
-  [
     "src/components/container/container.js~containercomponent#setvalue",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-setValue",
     "src/components/container/Container.js~ContainerComponent#setValue",
@@ -7048,12 +7132,6 @@ window.esdocSearchIndex = [
     "class/src/components/container/Container.js~ContainerComponent.html#instance-member-type",
     "src/components/container/Container.js~ContainerComponent#type",
     "member"
-  ],
-  [
-    "src/components/container/container.js~containercomponent#updatevalue",
-    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-updateValue",
-    "src/components/container/Container.js~ContainerComponent#updateValue",
-    "method"
   ],
   [
     "src/components/container/container.js~containercomponent.builderinfo",
@@ -7320,12 +7398,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datagrid/datagrid.js~datagridcomponent#allowdata",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-allowData",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#allowData",
-    "member"
-  ],
-  [
     "src/components/datagrid/datagrid.js~datagridcomponent#allowreorder",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-allowReorder",
     "src/components/datagrid/DataGrid.js~DataGridComponent#allowReorder",
@@ -7500,18 +7572,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datagrid/datagrid.js~datagridcomponent#getvalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getValue",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#getvalueasstring",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-getValueAsString",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#getValueAsString",
-    "method"
-  ],
-  [
     "src/components/datagrid/datagrid.js~datagridcomponent#hasaddbutton",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-hasAddButton",
     "src/components/datagrid/DataGrid.js~DataGridComponent#hasAddButton",
@@ -7521,12 +7581,6 @@ window.esdocSearchIndex = [
     "src/components/datagrid/datagrid.js~datagridcomponent#hasbottomsubmit",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-hasBottomSubmit",
     "src/components/datagrid/DataGrid.js~DataGridComponent#hasBottomSubmit",
-    "method"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#haschanged",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-hasChanged",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#hasChanged",
     "method"
   ],
   [
@@ -7630,12 +7684,6 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-type",
     "src/components/datagrid/DataGrid.js~DataGridComponent#type",
     "member"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#updatevalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-updateValue",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#updateValue",
-    "method"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#visiblecolumns",
@@ -8436,12 +8484,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/editgrid/editgrid.js~editgridcomponent#allowdata",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-get-allowData",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#allowData",
-    "member"
-  ],
-  [
     "src/components/editgrid/editgrid.js~editgridcomponent#attach",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-attach",
     "src/components/editgrid/EditGrid.js~EditGridComponent#attach",
@@ -8583,18 +8625,6 @@ window.esdocSearchIndex = [
     "src/components/editgrid/editgrid.js~editgridcomponent#getcomponents",
     "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getComponents",
     "src/components/editgrid/EditGrid.js~EditGridComponent#getComponents",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#getvalue",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getValue",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#getValue",
-    "method"
-  ],
-  [
-    "src/components/editgrid/editgrid.js~editgridcomponent#getvalueasstring",
-    "class/src/components/editgrid/EditGrid.js~EditGridComponent.html#instance-method-getValueAsString",
-    "src/components/editgrid/EditGrid.js~EditGridComponent#getValueAsString",
     "method"
   ],
   [
@@ -14722,12 +14752,6 @@ window.esdocSearchIndex = [
     "file/src/validator/Validator.js.html",
     "src/validator/Validator.js",
     "file"
-  ],
-  [
-    "src/validator/validator.js~validationchecker#async",
-    "class/src/validator/Validator.js~ValidationChecker.html#instance-member-async",
-    "src/validator/Validator.js~ValidationChecker#async",
-    "member"
   ],
   [
     "src/validator/validator.js~validationchecker#check",

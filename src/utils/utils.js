@@ -15,9 +15,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from './builder';
-export { BuilderUtils };
-
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -60,7 +57,6 @@ export function evaluate(func, args, ret, tokenize) {
     if (ret) {
       func += `;return ${ret}`;
     }
-    const params = _.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
@@ -78,7 +74,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
+      func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
     catch (err) {
@@ -90,7 +86,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      returnVal = Array.isArray(args) ? func(...args) : func(args);
+      returnVal = Evaluator.evaluate(func, args);
     }
     catch (err) {
       returnVal = null;
