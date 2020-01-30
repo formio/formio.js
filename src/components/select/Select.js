@@ -170,7 +170,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: _.isObject(value) ? value : String(value),
+      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(value),
       label: label
     };
 
