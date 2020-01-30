@@ -10,7 +10,7 @@ export default class Field extends Component {
         ...this.getLabelInfo(),
         labelMarkup: this.renderTemplate('label'),
         element: element
-      }, 'pdf'));
+      }, 'align'));
     }
     else {
       return super.render(this.renderTemplate('field', {

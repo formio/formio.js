@@ -1,4 +1,4 @@
 import form from './form.ejs';
-import pdf from './pdf.ejs';
+import align from './align.ejs';
 
-export default { form, pdf };
+export default { form, align };
