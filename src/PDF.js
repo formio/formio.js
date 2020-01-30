@@ -19,7 +19,6 @@ export default class PDF extends Webform {
 
     // Trigger when this form is ready.
     this.on('iframe-ready', () => {
-      console.log('iframe-ready');
       return this.iframeReadyResolve();
     }, true);
   }
@@ -68,8 +67,10 @@ export default class PDF extends Webform {
       this.empty(this.refs.iframeContainer);
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
-      const { headers } = this.options;
-      try {
+      const { appEnv, headers } = this.options;
+      const acceptedEnvs = ['dev'];
+      if (acceptedEnvs.includes(appEnv)) {
+        try {
           const bodyRequest = await fetch(iframeSrc, {
             method: 'GET',
             headers: {
@@ -83,9 +84,10 @@ export default class PDF extends Webform {
           iframeDoc.open();
           iframeDoc.write(htmlBody);
           iframeDoc.close();
-      }
-      catch (error) {
-        console.log('error setting pdf iframe', error);
+        }
+        catch (error) {
+          console.log('error setting pdf iframe', error);
+        }
       }
 
       // Post the form to the iframe
@@ -201,13 +203,11 @@ export default class PDF extends Webform {
     submission.readOnly = !!this.options.readOnly;
     return super.setSubmission(submission).then(() => {
       if (this.formio) {
-        console.log('getting submission', this.formio.getDownloadUrl);
         this.formio.getDownloadUrl().then((url) => {
           // Add a download button if it has a download url.
           if (!url) {
             return;
           }
-          console.log('url', url);
           if (!this.downloadButton) {
             if (this.options.primaryProject) {
               url += `&project=${this.options.primaryProject}`;
@@ -222,8 +222,6 @@ export default class PDF extends Webform {
             }));
             this.element.insertBefore(this.downloadButton, this.iframe);
           }
-        }).catch((err) => {
-          console.log('err!', err);
         });
       }
     });
@@ -239,10 +237,7 @@ export default class PDF extends Webform {
       message.type = 'iframe-data';
     }
 
-    console.log('this.iframeReady', this.iframeReady);
-    console.log('message', message);
     this.iframeReady.then(() => {
-      console.log('this.iframeReady promised ready!!');
       if (this.iframeElement && this.iframeElement.contentWindow) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
       }
@@ -264,8 +259,6 @@ window.addEventListener('message', (event) => {
   catch (err) {
     eventData = null;
   }
-  console.log('MESSAGE DATA', eventData);
-  console.log('Formio.forms', Formio.forms);
 
   // If this form exists, then emit the event within this form.
   if (
