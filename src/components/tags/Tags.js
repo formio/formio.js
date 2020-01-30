@@ -68,6 +68,9 @@ export default class TagsComponent extends Input {
         this.choices.setValue([value]);
         this.choices.clearInput();
         this.choices.hideDropdown(true);
+        this.updateValue(null, {
+          modified: true
+        });
       }
     });
   }

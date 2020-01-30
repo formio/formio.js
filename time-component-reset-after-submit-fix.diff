@@ -1,0 +1,40 @@
+diff --git a/src/components/time/Time.js b/src/components/time/Time.js
+index b01796546..d28b73207 100644
+--- a/src/components/time/Time.js
++++ b/src/components/time/Time.js
+@@ -1,5 +1,6 @@
+ import moment from 'moment';
+ import TextFieldComponent from '../textfield/TextField';
++import Formio from '../../Formio.js';
+ 
+ const defaultDataFormat = 'HH:mm:ss';
+ 
+@@ -75,8 +76,8 @@ export default class TimeComponent extends TextFieldComponent {
+   }
+ 
+   removeValue(index) {
+-    super.removeValue(index);
+     this.rawData = Array.isArray(this.rawData) ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)] : this.emptyValue;
++    super.removeValue(index);
+   }
+ 
+   getValueAt(index) {
+@@ -123,10 +124,17 @@ export default class TimeComponent extends TextFieldComponent {
+   }
+ 
+   setValueAt(index, value) {
++    if (value && !this.getRawValue(index)) {
++      this.setRawValue(this.getValueAsString(value), index);
++    }
+     this.refs.input[index].value = this.getRawValue(index);
+   }
+ 
+   getStringAsValue(view) {
+-    return view ? moment(view, this.component.format).format(this.dataFormat) : view;
++    return view ? moment(view, this.component.format).format(this.component.dataFormat) : view;
++  }
++
++  getValueAsString(value) {
++    return value ? moment(value, this.component.dataFormat).format(this.component.format) : value;
+   }
+ }

@@ -1,0 +1,109 @@
+diff --git a/src/components/_classes/component/Component.js b/src/components/_classes/component/Component.js
+index aaaad7e4a..1969c6039 100644
+--- a/src/components/_classes/component/Component.js
++++ b/src/components/_classes/component/Component.js
+@@ -859,17 +859,14 @@ export default class Component extends Element {
+   }
+ 
+   setOpenModalElement() {
+-    const template = `
+-      <label class="control-label">${this.component.label}</label><br>
+-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to set value</button>
+-    `;
++    const template = this.getModalPreviewTemplate();
+     this.componentModal.setOpenModalElement(template);
+   }
+ 
+   getModalPreviewTemplate() {
+     return `
+       <label class="control-label">${this.component.label}</label><br>
+-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.dataValue)}</button>`;
++      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>${this.getValueAsString(this.componentModal.currentValue) || 'Click to set value'}</button>`;
+   }
+ 
+   build(element) {
+diff --git a/src/components/_classes/componentModal/ComponentModal.js b/src/components/_classes/componentModal/ComponentModal.js
+index b1ada3527..5878f0453 100644
+--- a/src/components/_classes/componentModal/ComponentModal.js
++++ b/src/components/_classes/componentModal/ComponentModal.js
+@@ -35,7 +35,6 @@ export default class ComponentModal {
+   }
+ 
+   setOpenModalElement(template) {
+-    this.openModalTemplate = template;
+     this.component.setContent(this.refs.openModalWrapper, template);
+     this.loadRefs();
+     this.setEventListeners();
+@@ -74,9 +73,7 @@ export default class ComponentModal {
+   }
+ 
+   updateView() {
+-    const template = this.currentValue === this.component.defaultValue
+-      ? this.openModalTemplate
+-      : this.component.getModalPreviewTemplate();
++    const template = this.component.getModalPreviewTemplate();
+     this.component.setContent(this.refs.openModalWrapper, template);
+     this.setOpenEventListener();
+   }
+diff --git a/src/components/datagrid/DataGrid.js b/src/components/datagrid/DataGrid.js
+index 4a4ba5e2a..5e175bc55 100644
+--- a/src/components/datagrid/DataGrid.js
++++ b/src/components/datagrid/DataGrid.js
+@@ -311,15 +311,14 @@ export default class DataGridComponent extends NestedComponent {
+      }
+ 
+     const columns = this.getColumns();
+-    const rowLength = columns.length;
++    const colomnsLength = columns.length;
+     this.rows.forEach((row, rowIndex) => {
+       let columnIndex = 0;
+       columns.forEach((col) => {
+-        this.attachComponents(
+-          this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+-          [this.rows[rowIndex][col.key]],
+-          this.component.components
+-        );
++        const element = this.refs[this.datagridKey][(rowIndex * colomnsLength) + columnIndex];
++        const components = [this.rows[rowIndex][col.key]];
++        const container =  this.component.components;
++        this.attachComponents(element, components, container);
+         columnIndex++;
+       });
+     });
+@@ -354,7 +353,7 @@ export default class DataGridComponent extends NestedComponent {
+ 
+     // Handle length mismatch between rows and dataValue
+     if (this.dataValue.length === index) {
+-      this.dataValue.push({});
++      this.updateValue([...this.dataValue, {}]);
+     }
+ 
+     this.rows[index] = this.createRowComponents(this.dataValue[index], index);
+diff --git a/src/components/signature/Signature.js b/src/components/signature/Signature.js
+index 1708808ef..7113486d0 100644
+--- a/src/components/signature/Signature.js
++++ b/src/components/signature/Signature.js
+@@ -147,17 +147,18 @@ export default class SignatureComponent extends Input {
+   }
+ 
+   setOpenModalElement() {
+-    const template = `
+-      <label class="control-label">${this.component.label}</label><br>
+-      <button lang='en' class='btn btn-light btn-md open-modal-button' ref='openModal'>Click to Sign</button>
+-    `;
++    const template = this.getModalPreviewTemplate();
+     this.componentModal.setOpenModalElement(template);
+   }
+ 
+   getModalPreviewTemplate() {
++    const valueTemplate = `<img src=${this.dataValue} ref='openModal' />`;
++    const emptyValueTemplate = '<button lang="en" class="btn btn-light btn-md open-modal-button" ref="openModal">Click to Sign</button>';
++    const templatePreviewValue = (this.dataValue && this.dataValue !== this.emptyValue) ? valueTemplate : emptyValueTemplate;
++
+     return `
+       <label class="control-label">${this.component.label}</label><br>
+-      <img src=${this.dataValue} ref='openModal' />
++      ${templatePreviewValue}
+     `;
+   }
+ 

@@ -497,7 +497,6 @@ export default class Element {
       moment,
       instance: this,
       self: this,
-      iconClass: this.iconClass.bind(this),
       config: this.root && this.root.form && this.root.form.config ? this.root.form.config : {},
     }, additional);
   }

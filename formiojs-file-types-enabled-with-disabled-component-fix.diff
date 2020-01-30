@@ -1,0 +1,26 @@
+diff --git a/src/templates/bootstrap/file/form.ejs b/src/templates/bootstrap/file/form.ejs
+index dedab265e..37a42af5e 100644
+--- a/src/templates/bootstrap/file/form.ejs
++++ b/src/templates/bootstrap/file/form.ejs
+@@ -27,12 +27,20 @@
+           </div>
+           <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+           {% if (ctx.self.hasTypes) { %}
+-            <div class="col-md-2">
++          <div class="col-md-2">
++            {% if (ctx.self.disabled) { %}
++            <select class="file-type" disabled>
++              {% ctx.component.fileTypes.map(function(type) { %}
++                <option class="test" value="{{ type.value }}" {% if (type.value === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
++              {% }); %}
++            </select>
++            {% } else { %}
+               <select class="file-type">
+                 {% ctx.component.fileTypes.map(function(type) { %}
+                   <option class="test" value="{{ type.value }}" {% if (type.value === file.fileType) { %}selected="selected"{% } %}>{{ type.label }}</option>
+                 {% }); %}
+               </select>
++            {% } %}
+             </div>
+           {% } %}
+         </div>

@@ -118,7 +118,7 @@ export default class CheckBoxComponent extends Field {
       return setValue;
     }
     if (this.component.name) {
-      _.set(this.data, this.component.key, setValue === this.component.value);
+      _.set(this._data, this.component.key, setValue === this.component.value);
     }
     return setValue;
   }
@@ -126,7 +126,7 @@ export default class CheckBoxComponent extends Field {
   get dataValue() {
     const getValue = super.dataValue;
     if (this.component.name) {
-      _.set(this.data, this.component.key, getValue === this.component.value);
+      _.set(this._data, this.component.key, getValue === this.component.value);
     }
     return getValue;
   }
@@ -189,7 +189,7 @@ export default class CheckBoxComponent extends Field {
     flags = flags || {};
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && !this.component.clearOnHide)
+      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
     ) {
       return this.updateValue(value, flags);
     }

@@ -50,6 +50,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
@@ -237,12 +239,11 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
-import Component from &apos;../_classes/component/Component&apos;;
+import NestedDataComponent from &apos;../_classes/nesteddata/NestedDataComponent&apos;;
 
-export default class ContainerComponent extends NestedComponent {
+export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedDataComponent.schema({
       label: &apos;Container&apos;,
       type: &apos;container&apos;,
       key: &apos;container&apos;,
@@ -286,52 +287,28 @@ export default class ContainerComponent extends NestedComponent {
     return &apos;container&apos;;
   }
 
-  get allowData() {
-    return true;
-  }
-
-  get data() {
-    return this._data;
-  }
-
-  set data(value) {
-    this._data = value;
-    this.eachComponent(component =&gt; {
-      component.data = this.dataValue;
-    });
-  }
-
-  hasChanged(newValue, oldValue) {
-    return !_.isEqual(newValue, oldValue);
-  }
-
-  getValue() {
+  componentContext() {
     return this.dataValue;
-  }
-
-  getValueAsString() {
-    return &apos;[Complex Data]&apos;;
-  }
-
-  updateValue(value, flags) {
-    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, value, flags);
   }
 
   setValue(value, flags) {
     flags = flags || {};
-    if (!value || !_.isObject(value)) {
-      return false;
-    }
+    let changed = false;
     const hasValue = this.hasValue();
     if (hasValue &amp;&amp; _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
-    if (!hasValue) {
-      // Set the data value and then reset each component to use the new data object.
-      this.dataValue = {};
+    if (!value || !_.isObject(value) || !hasValue) {
+      changed = true;
+      this.dataValue = this.defaultValue;
     }
-    return super.setValue(value, flags);
+    else {
+      changed = this.hasChanged(value, this.dataValue);
+      this.dataValue = value;
+    }
+    super.setValue(value, flags);
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 }
 </code></pre>

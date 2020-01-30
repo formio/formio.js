@@ -1,0 +1,37 @@
+diff --git a/src/components/_classes/component/Component.js b/src/components/_classes/component/Component.js
+index d3e4779c8..aaaad7e4a 100644
+--- a/src/components/_classes/component/Component.js
++++ b/src/components/_classes/component/Component.js
+@@ -2113,11 +2113,7 @@ export default class Component extends Element {
+       });
+     }
+     else {
+-      const defaultValue = this.component.multiple
+-        ? this.dataValue.length
+-          ? [this.defaultValue]
+-          : []
+-        : this.defaultValue;
++      const defaultValue = this.defaultValue;
+       if (defaultValue) {
+         this.setValue(defaultValue, {
+           noUpdateEvent: true
+diff --git a/src/components/_classes/multivalue/Multivalue.js b/src/components/_classes/multivalue/Multivalue.js
+index 23a0a1b15..e9815e8c3 100644
+--- a/src/components/_classes/multivalue/Multivalue.js
++++ b/src/components/_classes/multivalue/Multivalue.js
+@@ -17,7 +17,14 @@ export default class Multivalue extends Field {
+ 
+   get defaultValue() {
+     if (this.component.multiple) {
+-      return [super.defaultValue];
++      let value = super.defaultValue;
++      if (Array.isArray(value)) {
++        value = !value.length ? [super.emptyValue] : value;
++      }
++      else {
++        value = [value];
++      }
++      return value;
+     }
+     return super.defaultValue;
+   }

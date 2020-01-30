@@ -1,0 +1,13 @@
+diff --git a/src/WizardBuilder.js b/src/WizardBuilder.js
+index d38cf1de3..75a5a71b9 100644
+--- a/src/WizardBuilder.js
++++ b/src/WizardBuilder.js
+@@ -102,7 +102,7 @@ export default class WizardBuilder extends WebformBuilder {
+   }
+ 
+   get schema() {
+-    _.assign(this._form.components[this.page], this.webform._form.components[0]);
++    _.assign(this._form.components.find(comp => comp.key === this.webform._form.components[0].key)[this.page], this.webform._form.components[0]);
+     const webform = new Webform(this.options);
+     webform.form = this._form;
+     return webform.schema;
