@@ -574,20 +574,20 @@ export default class Component extends Element {
   }
 
   get labelWidth() {
-    return this.component.labelWidth;
+    return this.component.labelWidth || 30;
   }
 
   get labelMargin() {
-    return this.component.labelMargin;
+    return this.component.labelMargin || 3;
   }
 
-  get isLegacyLabel() {
+  get isAdvancedLabel() {
     return [
       'left-left',
       'left-right',
       'right-left',
       'right-right'
-    ].includes(this.labelPosition) && this.labelWidth && this.labelMargin;
+    ].includes(this.labelPosition);
   }
 
   get labelPositions() {

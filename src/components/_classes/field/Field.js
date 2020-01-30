@@ -5,7 +5,7 @@ export default class Field extends Component {
     if (this.noField) {
       return super.render(element);
     }
-    else if (this.isLegacyLabel) {
+    else if (this.isAdvancedLabel) {
       return super.render(this.renderTemplate('field', {
         ...this.getLabelInfo(),
         labelMarkup: this.renderTemplate('label'),

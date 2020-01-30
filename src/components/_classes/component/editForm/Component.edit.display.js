@@ -24,8 +24,58 @@ export default [
     data: {
       values: [
         { label: 'Top', value: 'top' },
+        { label: 'Left (Left-aligned)', value: 'left-left' },
+        { label: 'Left (Right-aligned)', value: 'left-right' },
+        { label: 'Right (Left-aligned)', value: 'right-left' },
+        { label: 'Right (Right-aligned)', value: 'right-right' },
         { label: 'Bottom', value: 'bottom' }
       ]
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelWidth',
+    label: 'Label Width',
+    tooltip: 'The width of label on line in percentages.',
+    clearOnHide: false,
+    weight: 30,
+    placeholder: '30',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        and: [
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
+        ]
+      }
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelMargin',
+    label: 'Label Margin',
+    tooltip: 'The width of label margin on line in percentages.',
+    clearOnHide: false,
+    weight: 30,
+    placeholder: '3',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        and: [
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
+        ]
+      }
     }
   },
   {
