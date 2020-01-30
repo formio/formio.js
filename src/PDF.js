@@ -68,7 +68,7 @@ export default class PDF extends Webform {
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
 
       const { appEnv, headers } = this.options;
-      const acceptedEnvs = ['dev'];
+      const acceptedEnvs = ['dev', 'local'];
       if (acceptedEnvs.includes(appEnv)) {
         try {
           const bodyRequest = await fetch(iframeSrc, {
