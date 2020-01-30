@@ -69,7 +69,7 @@ export default class PDF extends Webform {
 
       const { appEnv, headers } = this.options;
       const acceptedEnvs = ['dev', 'local'];
-      if (acceptedEnvs.includes(appEnv)) {
+      if (appEnv && acceptedEnvs.includes(appEnv)) {
         try {
           const bodyRequest = await fetch(iframeSrc, {
             method: 'GET',

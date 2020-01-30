@@ -248,7 +248,9 @@ export default class PDF extends Webform {
     }), true);
 
     // Trigger when this form is ready.
-    this.on(&apos;iframe-ready&apos;, () =&gt; this.iframeReadyResolve(), true);
+    this.on(&apos;iframe-ready&apos;, () =&gt; {
+      return this.iframeReadyResolve();
+    }, true);
   }
 
   render() {
@@ -277,23 +279,15 @@ export default class PDF extends Webform {
         this.iframeReadyReject = reject;
       });
 
-      // eslint-disable-next-line no-console
-      console.log(&apos;options&apos;, this.options);
-
       // iframes cannot be in the template so manually create it
-      let iframeSrc = &apos;&apos;;
-      try {
-        iframeSrc = await this.getSrc();
-      }
-      catch (err) {
-        iframeSrc = err;
-      }
-      console.log(&apos;iframeSrc from library&apos;, iframeSrc);
+
+      const iframeSrc = this.getSrc();
+
       this.iframeElement = this.ce(&apos;iframe&apos;, {
-        srcdoc: iframeSrc,
+        src: iframeSrc,
         id: `iframe-${this.id}`,
         seamless: true,
-        class: &apos;formio-iframe&apos;
+        class: &apos;formio-iframe&apos;,
       });
 
       this.iframeElement.formioContainer = this.component.components;
@@ -302,6 +296,29 @@ export default class PDF extends Webform {
       // Append the iframe to the iframeContainer in the template
       this.empty(this.refs.iframeContainer);
       this.appendChild(this.refs.iframeContainer, this.iframeElement);
+
+      const { appEnv, headers } = this.options;
+      const acceptedEnvs = [&apos;dev&apos;, &apos;local&apos;];
+      if (appEnv &amp;&amp; acceptedEnvs.includes(appEnv)) {
+        try {
+          const bodyRequest = await fetch(iframeSrc, {
+            method: &apos;GET&apos;,
+            headers: {
+              credentials: &apos;include&apos;,
+              ...headers,
+            },
+          });
+          const htmlBody = await bodyRequest.text();
+          const iframeWindow = this.iframeElement.contentWindow || this.iframeElement.contentDocument.parentWindow;
+          const iframeDoc = iframeWindow.document;
+          iframeDoc.open();
+          iframeDoc.write(htmlBody);
+          iframeDoc.close();
+        }
+        catch (error) {
+          console.log(&apos;error setting pdf iframe&apos;, error);
+        }
+      }
 
       // Post the form to the iframe
       this.postMessage({ name: &apos;form&apos;, data: this.form });
@@ -357,7 +374,7 @@ export default class PDF extends Webform {
     return this.getSubmission().then(() =&gt; super.submitForm(options));
   }
 
-  async getSrc() {
+  getSrc() {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return &apos;&apos;;
     }
@@ -381,23 +398,7 @@ export default class PDF extends Webform {
       iframeSrc += `?${params.join(&apos;&amp;&apos;)}`;
     }
 
-    const { headers } = this.options;
-
-    try {
-      const bodyRequest = await fetch(iframeSrc, {
-        method: &apos;GET&apos;,
-        headers: {
-          credentials: &apos;include&apos;,
-          ...headers,
-        },
-      });
-      const htmlBody = await bodyRequest.text();
-      return htmlBody;
-    }
-    catch (error) {
-      console.log(&apos;error setting pdf iframe&apos;, error);
-      return iframeSrc;
-    }
+   return iframeSrc;
   }
 
   setForm(form) {

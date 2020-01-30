@@ -4543,7 +4543,7 @@
     "__docId__": 235,
     "kind": "file",
     "name": "src/PDF.js",
-    "content": "import NativePromise from 'native-promise-only';\nimport Formio from './Formio';\nimport Webform from './Webform';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class PDF extends Webform {\n  constructor(element, options) {\n    super(element, options);\n    this.components = [];\n  }\n\n  init() {\n    super.init();\n\n    // Handle an iframe submission.\n    this.on('iframe-submission', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    // Trigger when this form is ready.\n    this.on('iframe-ready', () => this.iframeReadyResolve(), true);\n  }\n\n  render() {\n    return this.renderTemplate('pdf', {\n      classes: 'formio-form-pdf',\n      children: this.renderComponents()\n    });\n  }\n\n  redraw() {\n    return super.redraw();\n  }\n\n  attach(element) {\n    return super.attach(element).then(async() => {\n      this.loadRefs(element, {\n        submitButton: 'single',\n        zoomIn: 'single',\n        zoomOut: 'single',\n        iframeContainer: 'single'\n      });\n\n      // Reset the iframeReady promise.\n      this.iframeReady = new NativePromise((resolve, reject) => {\n        this.iframeReadyResolve = resolve;\n        this.iframeReadyReject = reject;\n      });\n\n      // eslint-disable-next-line no-console\n      console.log('options', this.options);\n\n      // iframes cannot be in the template so manually create it\n      let iframeSrc = '';\n      try {\n        iframeSrc = await this.getSrc();\n      }\n      catch (err) {\n        iframeSrc = err;\n      }\n      console.log('iframeSrc from library', iframeSrc);\n      this.iframeElement = this.ce('iframe', {\n        srcdoc: iframeSrc,\n        id: `iframe-${this.id}`,\n        seamless: true,\n        class: 'formio-iframe'\n      });\n\n      this.iframeElement.formioContainer = this.component.components;\n      this.iframeElement.formioComponent = this;\n\n      // Append the iframe to the iframeContainer in the template\n      this.empty(this.refs.iframeContainer);\n      this.appendChild(this.refs.iframeContainer, this.iframeElement);\n\n      // Post the form to the iframe\n      this.postMessage({ name: 'form', data: this.form });\n\n      // Hide the submit button if the associated component is hidden\n      const submitButton = this.components.find(c => c.element === this.refs.submitButton);\n      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);\n\n      // Submit the form if they click the submit button.\n      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());\n\n      this.addEventListener(this.refs.zoomIn, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomIn' });\n      });\n\n      this.addEventListener(this.refs.zoomOut, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomOut' });\n      });\n\n      const form = fastCloneDeep(this.form);\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n\n      this.emit('attach');\n    });\n  }\n\n  /**\n   * Get the submission from the iframe.\n   *\n   * @return {Promise<any>}\n   */\n  getSubmission() {\n    return new NativePromise((resolve) => {\n      this.once('iframe-submission', resolve);\n      this.postMessage({ name: 'getSubmission' });\n    });\n  }\n\n  /**\n   * Ensure we have the submission from the iframe before we submit the form.\n   *\n   * @param options\n   * @return {*}\n   */\n  submitForm(options = {}) {\n    return this.getSubmission().then(() => super.submitForm(options));\n  }\n\n  async getSrc() {\n    if (!this._form || !this._form.settings || !this._form.settings.pdf) {\n      return '';\n    }\n\n    let iframeSrc = `${this._form.settings.pdf.src}.html`;\n    const params = [`id=${this.id}`];\n\n    if (this.options.readOnly) {\n      params.push('readonly=1');\n    }\n\n    if (this.options.zoom) {\n      params.push(`zoom=${this.options.zoom}`);\n    }\n\n    if (this.builderMode) {\n      params.push('builder=1');\n    }\n\n    if (params.length) {\n      iframeSrc += `?${params.join('&')}`;\n    }\n\n    const { headers } = this.options;\n\n    try {\n      const bodyRequest = await fetch(iframeSrc, {\n        method: 'GET',\n        headers: {\n          credentials: 'include',\n          ...headers,\n        },\n      });\n      const htmlBody = await bodyRequest.text();\n      return htmlBody;\n    }\n    catch (error) {\n      console.log('error setting pdf iframe', error);\n      return iframeSrc;\n    }\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n      this.postMessage({ name: 'form', data: form });\n    });\n  }\n\n  /**\n   * Set's the value of this form component.\n   *\n   * @param submission\n   * @param flags\n   */\n  setValue(submission, flags) {\n    const changed = super.setValue(submission, flags);\n    if (!flags || !flags.fromIframe) {\n      this.once('iframe-ready', () => {\n        this.postMessage({ name: 'submission', data: submission });\n      });\n    }\n    return changed;\n  }\n\n  setSubmission(submission) {\n    submission.readOnly = !!this.options.readOnly;\n    return super.setSubmission(submission).then(() => {\n      if (this.formio) {\n        this.formio.getDownloadUrl().then((url) => {\n          // Add a download button if it has a download url.\n          if (!url) {\n            return;\n          }\n          if (!this.downloadButton) {\n            if (this.options.primaryProject) {\n              url += `&project=${this.options.primaryProject}`;\n            }\n            this.downloadButton = this.ce('a', {\n              href: url,\n              target: '_blank',\n              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'\n            }, this.ce('img', {\n              src: require('./pdf.image'),\n              style: 'width:3em;'\n            }));\n            this.element.insertBefore(this.downloadButton, this.iframe);\n          }\n        });\n      }\n    });\n  }\n\n  postMessage(message) {\n    // If we get here before the iframeReady promise is set up, it's via the superclass constructor\n    if (!this.iframeReady) {\n      return;\n    }\n\n    if (!message.type) {\n      message.type = 'iframe-data';\n    }\n\n    this.iframeReady.then(() => {\n      if (this.iframeElement && this.iframeElement.contentWindow) {\n        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');\n      }\n    });\n  }\n\n  // Do not clear the iframe.\n  clear() {}\n}\n\n/**\n * Listen for window messages.\n */\nwindow.addEventListener('message', (event) => {\n  let eventData = null;\n  try {\n    eventData = JSON.parse(event.data);\n  }\n  catch (err) {\n    eventData = null;\n  }\n\n  // If this form exists, then emit the event within this form.\n  if (\n    eventData &&\n    eventData.name &&\n    eventData.formId &&\n    Formio.forms.hasOwnProperty(eventData.formId)\n  ) {\n    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);\n  }\n});\n",
+    "content": "import NativePromise from 'native-promise-only';\nimport Formio from './Formio';\nimport Webform from './Webform';\nimport { fastCloneDeep } from './utils/utils';\n\nexport default class PDF extends Webform {\n  constructor(element, options) {\n    super(element, options);\n    this.components = [];\n  }\n\n  init() {\n    super.init();\n\n    // Handle an iframe submission.\n    this.on('iframe-submission', (submission) => this.setValue(submission, {\n      fromIframe: true\n    }), true);\n\n    // Trigger when this form is ready.\n    this.on('iframe-ready', () => {\n      return this.iframeReadyResolve();\n    }, true);\n  }\n\n  render() {\n    return this.renderTemplate('pdf', {\n      classes: 'formio-form-pdf',\n      children: this.renderComponents()\n    });\n  }\n\n  redraw() {\n    return super.redraw();\n  }\n\n  attach(element) {\n    return super.attach(element).then(async() => {\n      this.loadRefs(element, {\n        submitButton: 'single',\n        zoomIn: 'single',\n        zoomOut: 'single',\n        iframeContainer: 'single'\n      });\n\n      // Reset the iframeReady promise.\n      this.iframeReady = new NativePromise((resolve, reject) => {\n        this.iframeReadyResolve = resolve;\n        this.iframeReadyReject = reject;\n      });\n\n      // iframes cannot be in the template so manually create it\n\n      const iframeSrc = this.getSrc();\n\n      this.iframeElement = this.ce('iframe', {\n        src: iframeSrc,\n        id: `iframe-${this.id}`,\n        seamless: true,\n        class: 'formio-iframe',\n      });\n\n      this.iframeElement.formioContainer = this.component.components;\n      this.iframeElement.formioComponent = this;\n\n      // Append the iframe to the iframeContainer in the template\n      this.empty(this.refs.iframeContainer);\n      this.appendChild(this.refs.iframeContainer, this.iframeElement);\n\n      const { appEnv, headers } = this.options;\n      const acceptedEnvs = ['dev', 'local'];\n      if (appEnv && acceptedEnvs.includes(appEnv)) {\n        try {\n          const bodyRequest = await fetch(iframeSrc, {\n            method: 'GET',\n            headers: {\n              credentials: 'include',\n              ...headers,\n            },\n          });\n          const htmlBody = await bodyRequest.text();\n          const iframeWindow = this.iframeElement.contentWindow || this.iframeElement.contentDocument.parentWindow;\n          const iframeDoc = iframeWindow.document;\n          iframeDoc.open();\n          iframeDoc.write(htmlBody);\n          iframeDoc.close();\n        }\n        catch (error) {\n          console.log('error setting pdf iframe', error);\n        }\n      }\n\n      // Post the form to the iframe\n      this.postMessage({ name: 'form', data: this.form });\n\n      // Hide the submit button if the associated component is hidden\n      const submitButton = this.components.find(c => c.element === this.refs.submitButton);\n      this.refs.submitButton.classList.toggle('hidden', !submitButton.visible);\n\n      // Submit the form if they click the submit button.\n      this.addEventListener(this.refs.submitButton, 'click', () => this.submit());\n\n      this.addEventListener(this.refs.zoomIn, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomIn' });\n      });\n\n      this.addEventListener(this.refs.zoomOut, 'click', (event) => {\n        event.preventDefault();\n        this.postMessage({ name: 'zoomOut' });\n      });\n\n      const form = fastCloneDeep(this.form);\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n\n      this.emit('attach');\n    });\n  }\n\n  /**\n   * Get the submission from the iframe.\n   *\n   * @return {Promise<any>}\n   */\n  getSubmission() {\n    return new NativePromise((resolve) => {\n      this.once('iframe-submission', resolve);\n      this.postMessage({ name: 'getSubmission' });\n    });\n  }\n\n  /**\n   * Ensure we have the submission from the iframe before we submit the form.\n   *\n   * @param options\n   * @return {*}\n   */\n  submitForm(options = {}) {\n    return this.getSubmission().then(() => super.submitForm(options));\n  }\n\n  getSrc() {\n    if (!this._form || !this._form.settings || !this._form.settings.pdf) {\n      return '';\n    }\n\n    let iframeSrc = `${this._form.settings.pdf.src}.html`;\n    const params = [`id=${this.id}`];\n\n    if (this.options.readOnly) {\n      params.push('readonly=1');\n    }\n\n    if (this.options.zoom) {\n      params.push(`zoom=${this.options.zoom}`);\n    }\n\n    if (this.builderMode) {\n      params.push('builder=1');\n    }\n\n    if (params.length) {\n      iframeSrc += `?${params.join('&')}`;\n    }\n\n   return iframeSrc;\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      if (this.formio) {\n        form.projectUrl = this.formio.projectUrl;\n        form.url = this.formio.formUrl;\n        form.base = this.formio.base;\n        this.postMessage({ name: 'token', data: this.formio.getToken() });\n      }\n      this.postMessage({ name: 'form', data: form });\n    });\n  }\n\n  /**\n   * Set's the value of this form component.\n   *\n   * @param submission\n   * @param flags\n   */\n  setValue(submission, flags) {\n    const changed = super.setValue(submission, flags);\n    if (!flags || !flags.fromIframe) {\n      this.once('iframe-ready', () => {\n        this.postMessage({ name: 'submission', data: submission });\n      });\n    }\n    return changed;\n  }\n\n  setSubmission(submission) {\n    submission.readOnly = !!this.options.readOnly;\n    return super.setSubmission(submission).then(() => {\n      if (this.formio) {\n        this.formio.getDownloadUrl().then((url) => {\n          // Add a download button if it has a download url.\n          if (!url) {\n            return;\n          }\n          if (!this.downloadButton) {\n            if (this.options.primaryProject) {\n              url += `&project=${this.options.primaryProject}`;\n            }\n            this.downloadButton = this.ce('a', {\n              href: url,\n              target: '_blank',\n              style: 'position:absolute;right:10px;top:110px;cursor:pointer;'\n            }, this.ce('img', {\n              src: require('./pdf.image'),\n              style: 'width:3em;'\n            }));\n            this.element.insertBefore(this.downloadButton, this.iframe);\n          }\n        });\n      }\n    });\n  }\n\n  postMessage(message) {\n    // If we get here before the iframeReady promise is set up, it's via the superclass constructor\n    if (!this.iframeReady) {\n      return;\n    }\n\n    if (!message.type) {\n      message.type = 'iframe-data';\n    }\n\n    this.iframeReady.then(() => {\n      if (this.iframeElement && this.iframeElement.contentWindow) {\n        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');\n      }\n    });\n  }\n\n  // Do not clear the iframe.\n  clear() {}\n}\n\n/**\n * Listen for window messages.\n */\nwindow.addEventListener('message', (event) => {\n  let eventData = null;\n  try {\n    eventData = JSON.parse(event.data);\n  }\n  catch (err) {\n    eventData = null;\n  }\n\n  // If this form exists, then emit the event within this form.\n  if (\n    eventData &&\n    eventData.name &&\n    eventData.formId &&\n    Formio.forms.hasOwnProperty(eventData.formId)\n  ) {\n    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);\n  }\n});\n",
     "static": true,
     "longname": "/Users/luispadilla/Documents/Casebook/formio.js/src/PDF.js",
     "access": "public",
@@ -4627,7 +4627,7 @@
     "longname": "src/PDF.js~PDF#render",
     "access": "public",
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 26,
     "undocument": true,
     "params": [],
     "return": {
@@ -4647,7 +4647,7 @@
     "longname": "src/PDF.js~PDF#redraw",
     "access": "public",
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 33,
     "undocument": true,
     "params": [],
     "return": {
@@ -4667,7 +4667,7 @@
     "longname": "src/PDF.js~PDF#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 37,
     "undocument": true,
     "params": [
       {
@@ -4692,7 +4692,7 @@
     "longname": "src/PDF.js~PDF#iframeReady",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 47,
     "undocument": true,
     "type": {
       "types": [
@@ -4709,7 +4709,7 @@
     "longname": "src/PDF.js~PDF#iframeReadyResolve",
     "access": "public",
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 48,
     "undocument": true,
     "type": {
       "types": [
@@ -4726,7 +4726,7 @@
     "longname": "src/PDF.js~PDF#iframeReadyReject",
     "access": "public",
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 49,
     "undocument": true,
     "type": {
       "types": [
@@ -4743,7 +4743,7 @@
     "longname": "src/PDF.js~PDF#iframeElement",
     "access": "public",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 56,
     "undocument": true,
     "type": {
       "types": [
@@ -4762,7 +4762,7 @@
     "longname": "src/PDF.js~PDF#getSubmission",
     "access": "public",
     "description": "Get the submission from the iframe.",
-    "lineNumber": 113,
+    "lineNumber": 130,
     "return": {
       "nullable": null,
       "types": [
@@ -4784,7 +4784,7 @@
     "longname": "src/PDF.js~PDF#submitForm",
     "access": "public",
     "description": "Ensure we have the submission from the iframe before we submit the form.",
-    "lineNumber": 126,
+    "lineNumber": 143,
     "params": [
       {
         "nullable": null,
@@ -4812,12 +4812,12 @@
     "name": "getSrc",
     "memberof": "src/PDF.js~PDF",
     "generator": false,
-    "async": true,
+    "async": false,
     "static": false,
     "longname": "src/PDF.js~PDF#getSrc",
     "access": "public",
     "description": null,
-    "lineNumber": 130,
+    "lineNumber": 147,
     "undocument": true,
     "params": [],
     "return": {
@@ -4837,7 +4837,7 @@
     "longname": "src/PDF.js~PDF#setForm",
     "access": "public",
     "description": null,
-    "lineNumber": 173,
+    "lineNumber": 174,
     "undocument": true,
     "params": [
       {
@@ -4864,7 +4864,7 @@
     "longname": "src/PDF.js~PDF#setValue",
     "access": "public",
     "description": "Set's the value of this form component.",
-    "lineNumber": 191,
+    "lineNumber": 192,
     "params": [
       {
         "nullable": null,
@@ -4904,7 +4904,7 @@
     "longname": "src/PDF.js~PDF#setSubmission",
     "access": "public",
     "description": null,
-    "lineNumber": 201,
+    "lineNumber": 202,
     "undocument": true,
     "params": [
       {
@@ -4929,7 +4929,7 @@
     "longname": "src/PDF.js~PDF#downloadButton",
     "access": "public",
     "description": null,
-    "lineNumber": 214,
+    "lineNumber": 215,
     "undocument": true,
     "type": {
       "types": [
@@ -4948,7 +4948,7 @@
     "longname": "src/PDF.js~PDF#postMessage",
     "access": "public",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 230,
     "undocument": true,
     "params": [
       {
@@ -4971,7 +4971,7 @@
     "longname": "src/PDF.js~PDF#clear",
     "access": "public",
     "description": null,
-    "lineNumber": 247,
+    "lineNumber": 248,
     "undocument": true,
     "params": [],
     "return": null
@@ -4980,7 +4980,7 @@
     "__docId__": 256,
     "kind": "file",
     "name": "src/PDFBuilder.js",
-    "content": "import _ from 'lodash';\nimport NativePromise from 'native-promise-only';\nimport fetchPonyfill from 'fetch-ponyfill';\nimport Formio from './Formio';\n\nimport WebformBuilder from './WebformBuilder';\nimport { fastCloneDeep, getElementRect } from './utils/utils';\nimport BuilderUtils from './utils/builder';\nimport PDF from './PDF';\nconst { fetch, Headers } = fetchPonyfill({\n  Promise: NativePromise\n});\n\nexport default class PDFBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n\n    // Force superclass to skip the automatic init; we'll trigger it manually\n    options.skipInit = true;\n\n    if (element) {\n      super(element, options);\n    }\n    else {\n      super(options);\n    }\n\n    this.dragDropEnabled = false;\n  }\n\n  get defaultGroups() {\n    return {\n      pdf: {\n        title: 'PDF Fields',\n        weight: 0,\n        default: true,\n        components: {\n          textfield: true,\n          number: true,\n          password: true,\n          email: true,\n          phoneNumber: true,\n          currency: true,\n          checkbox: true,\n          signature: true,\n          select: true,\n          textarea: true,\n          datetime: true,\n          file: true\n        }\n      },\n      basic: false,\n      advanced: false,\n      layout: false,\n      data: false,\n      premium: false,\n      resource: false\n    };\n  }\n\n  get hasPDF() {\n    return _.has(this.webform.form, 'settings.pdf');\n  }\n\n  get projectUrl() {\n    return this.options.projectUrl || Formio.getProjectUrl();\n  }\n\n  // 888      d8b  .d888                                    888\n  // 888      Y8P d88P\"                                     888\n  // 888          888                                       888\n  // 888      888 888888 .d88b.   .d8888b 888  888  .d8888b 888  .d88b.\n  // 888      888 888   d8P  Y8b d88P\"    888  888 d88P\"    888 d8P  Y8b\n  // 888      888 888   88888888 888      888  888 888      888 88888888\n  // 888      888 888   Y8b.     Y88b.    Y88b 888 Y88b.    888 Y8b.\n  // 88888888 888 888    \"Y8888   \"Y8888P  \"Y88888  \"Y8888P 888  \"Y8888\n  //                                           888\n  //                                      Y8b d88P\n  //                                       \"Y88P\"\n\n  init() {\n    this.options.attachMode = 'builder';\n    this.webform = this.webform || this.createForm(this.options);\n    this.webform.init();\n  }\n\n  render() {\n    const result = this.renderTemplate('pdfBuilder', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `builder-sidebar-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      form: this.hasPDF ?\n        this.webform.render() :\n        this.renderTemplate('pdfBuilderUpload', {})\n    });\n\n    return result;\n  }\n\n  attach(element) {\n    // PDF Upload\n    if (!this.hasPDF) {\n      this.loadRefs(element, {\n        'fileDrop': 'single',\n        'fileBrowse': 'single',\n        'hiddenFileInputElement': 'single',\n        'uploadError': 'single',\n      });\n      this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {\n        event.preventDefault();\n      });\n\n      // Init the upload error.\n      if (!this.projectUrl) {\n        this.setUploadError('Form options.projectUrl not set. Please set the \"projectUrl\" property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.');\n      }\n      else {\n        this.setUploadError();\n      }\n\n      if (this.refs.fileDrop) {\n        const element = this;\n        this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {\n          this.className = 'fileSelector fileDragOver';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'drop', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n          element.upload(event.dataTransfer.files[0]);\n          return false;\n        });\n      }\n\n      if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {\n        this.addEventListener(this.refs.fileBrowse, 'click', (event) => {\n          event.preventDefault();\n          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger\n          // a click event on it.\n          if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {\n            this.refs.hiddenFileInputElement.trigger('click');\n          }\n          else {\n            this.refs.hiddenFileInputElement.click();\n          }\n        });\n        this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {\n          this.upload(this.refs.hiddenFileInputElement.files[0]);\n          this.refs.hiddenFileInputElement.value = '';\n        });\n      }\n\n      return NativePromise.resolve();\n    }\n\n    // Normal PDF Builder\n    return super.attach(element).then(() => {\n      this.loadRefs(this.element, {\n        iframeDropzone: 'single', 'sidebar-container': 'single'\n      });\n\n      this.afterAttach();\n      return this.element;\n    });\n  }\n\n  afterAttach() {\n    this.initIframeEvents();\n    this.updateDropzoneDimensions();\n    this.initDropzoneEvents();\n    this.prepSidebarComponentsForDrag();\n  }\n\n  upload(file) {\n    const headers = new Headers({\n      'Accept': 'application/json, text/plain, */*',\n      'x-jwt-token': Formio.getToken(),\n    });\n\n    const formData = new FormData();\n    formData.append('file', file);\n\n    fetch(`${this.projectUrl}/upload`, {\n      method: 'POST',\n      headers,\n      body: formData\n    })\n      .then((response) => {\n        if (response.status !== 201) {\n          response.text().then((info) => {\n            this.setUploadError(`${response.statusText} - ${info}`);\n          });\n        }\n        else {\n          response.json().then((data) => {\n            _.set(this.webform.form, 'settings.pdf', {\n              id: data.file,\n              src: `${data.filesServer}${data.path}`\n            });\n            this.emit('pdfUploaded', data);\n            // Now that the settings are set, redraw to show the builder.\n            this.redraw();\n          });\n        }\n      })\n      .catch(() => {\n        this.setUploadError('Upload failed.');\n      });\n  }\n\n  setUploadError(message) {\n    if (!this.refs.uploadError) {\n      return;\n    }\n    this.refs.uploadError.style.display = message ? '' : 'none';\n    this.refs.uploadError.innerHTML = message;\n  }\n\n  createForm(options) {\n    // Instantiate the webform from the PDF class instead of Webform\n    options.skipInit = false;\n    this.webform = new PDF(this.element, options);\n    this.webform.on('attach', () => {\n      // If the dropzone exists but has been removed in a PDF rebuild, reinstate it\n      if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {\n        this.prependTo(this.refs.iframeDropzone, this.refs.form);\n      }\n    });\n    return this.webform;\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      return this.ready.then(() => {\n        if (this.webform) {\n          this.webform.postMessage({ name: 'form', data: form });\n          return this.webform.setForm(form);\n        }\n        return form;\n      });\n    });\n  }\n\n  saveComponent(...args) {\n    return super.saveComponent(...args).then(() => this.afterAttach());\n  }\n\n  destroy() {\n    super.destroy();\n    this.webform.destroy();\n  }\n\n  // d8b 8888888888                                                                              888\n  // Y8P 888                                                                                     888\n  //     888                                                                                     888\n  // 888 8888888 888d888 8888b.  88888b.d88b.   .d88b.        .d88b.  888  888  .d88b.  88888b.  888888 .d8888b\n  // 888 888     888P\"      \"88b 888 \"888 \"88b d8P  Y8b      d8P  Y8b 888  888 d8P  Y8b 888 \"88b 888    88K\n  // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    \"Y8888b.\n  // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88\n  // 888 888     888    \"Y888888 888  888  888  \"Y8888        \"Y8888    Y88P    \"Y8888  888  888  \"Y888  88888P'\n\n  initIframeEvents() {\n    if (!this.webform.iframeElement) {\n      return;\n    }\n    this.webform.off('iframe-elementUpdate');\n    this.webform.off('iframe-componentUpdate');\n    this.webform.off('iframe-componentClick');\n    this.webform.on('iframe-elementUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.page,\n          left: schema.left,\n          top: schema.top,\n          height: schema.height,\n          width: schema.width\n        };\n        this.editComponent(component.component, this.webform.iframeElement);\n        this.emit('updateComponent', component);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.overlay.page,\n          left: schema.overlay.left,\n          top: schema.overlay.top,\n          height: schema.overlay.height,\n          width: schema.overlay.width\n        };\n        this.emit('updateComponent', component);\n\n        const localComponent = _.find(this.form.components, { id: schema.id });\n        if (localComponent) {\n          localComponent.overlay = _.clone(component.component.overlay);\n        }\n\n        this.emit('change', this.form);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentClick', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component) {\n        this.editComponent(component.component, this.webform.iframeElement);\n      }\n    }, true);\n  }\n\n  // 8888888b.                                                                   888                   d8b\n  // 888  \"Y88b                                                                  888                   Y8P\n  // 888    888                                                                  888\n  // 888    888 888d888 .d88b.  88888b. 88888888  .d88b.  88888b.   .d88b.       888  .d88b.   .d88b.  888  .d8888b\n  // 888    888 888P\"  d88\"\"88b 888 \"88b   d88P  d88\"\"88b 888 \"88b d8P  Y8b      888 d88\"\"88b d88P\"88b 888 d88P\"\n  // 888    888 888    888  888 888  888  d88P   888  888 888  888 88888888      888 888  888 888  888 888 888\n  // 888  .d88P 888    Y88..88P 888 d88P d88P    Y88..88P 888  888 Y8b.          888 Y88..88P Y88b 888 888 Y88b.\n  // 8888888P\"  888     \"Y88P\"  88888P\" 88888888  \"Y88P\"  888  888  \"Y8888       888  \"Y88P\"   \"Y88888 888  \"Y8888P\n  //                            888                                                                888\n  //                            888                                                           Y8b d88P\n  //                            888                                                            \"Y88P\"\n\n  initDropzoneEvents() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n    // This is required per HTML spec in order for the drop event to fire\n    this.removeEventListener(this.refs.iframeDropzone, 'dragover');\n    this.removeEventListener(this.refs.iframeDropzone, 'drop');\n    this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {\n      e.preventDefault();\n      return false;\n    });\n\n    this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));\n  }\n\n  prepSidebarComponentsForDrag() {\n    if (!this.refs['sidebar-container']) {\n      return;\n    }\n    [...this.refs['sidebar-container'].children].forEach(el => {\n      el.draggable = true;\n      el.setAttribute('draggable', true);\n      this.removeEventListener(el, 'dragstart');\n      this.removeEventListener(el, 'dragend');\n      this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);\n      this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);\n    });\n  }\n\n  updateDropzoneDimensions() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n\n    const iframeRect = getElementRect(this.webform.refs.iframeContainer);\n    this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';\n    this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';\n  }\n\n  onDragStart(e) {\n    e.dataTransfer.setData('text/html', null);\n    this.updateDropzoneDimensions();\n    this.addClass(this.refs.iframeDropzone, 'enabled');\n  }\n\n  onDropzoneDrop(e) {\n    this.dropEvent = e;\n    e.preventDefault();\n    return false;\n  }\n\n  onDragEnd(e) {\n    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will\n    // reflect absolute positioning if accessed after the target element is hidden\n    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;\n    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;\n\n    // Always disable the dropzone on drag end\n    this.removeClass(this.refs.iframeDropzone, 'enabled');\n\n    // If there hasn't been a drop event on the dropzone, we're done\n    if (!this.dropEvent) {\n      return;\n    }\n\n    const element = e.target;\n    const type = element.getAttribute('data-type');\n\n    const schema = fastCloneDeep(this.schemas[type]);\n\n    schema.key = _.camelCase(\n      schema.label ||\n      schema.placeholder ||\n      schema.type\n    );\n\n    // Set a unique key for this component.\n    BuilderUtils.uniquify([this.webform.component], schema);\n\n    this.webform.component.components.push(schema);\n\n    this.emit('addComponent', schema);\n\n    schema.overlay = {\n      top: offsetY,\n      left: offsetX,\n      width: 100,\n      height: 20\n    };\n\n    this.webform.addComponent(schema, {}, null, true);\n    this.webform.postMessage({ name: 'addElement', data: schema });\n\n    // Delete the stored drop event now that it's been handled\n    this.dropEvent = null;\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport NativePromise from 'native-promise-only';\nimport fetchPonyfill from 'fetch-ponyfill';\nimport Formio from './Formio';\n\nimport WebformBuilder from './WebformBuilder';\nimport { fastCloneDeep, getElementRect } from './utils/utils';\nimport BuilderUtils from './utils/builder';\nimport PDF from './PDF';\nconst { fetch, Headers } = fetchPonyfill({\n  Promise: NativePromise\n});\n\nexport default class PDFBuilder extends WebformBuilder {\n  constructor() {\n    let element, options;\n    if (arguments[0] instanceof HTMLElement || arguments[1]) {\n      element = arguments[0];\n      options = arguments[1];\n    }\n    else {\n      options = arguments[0];\n    }\n\n    // Force superclass to skip the automatic init; we'll trigger it manually\n    options.skipInit = true;\n\n    if (element) {\n      super(element, options);\n    }\n    else {\n      super(options);\n    }\n\n    this.dragDropEnabled = false;\n  }\n\n  get defaultGroups() {\n    return {\n      pdf: {\n        title: 'PDF Fields',\n        weight: 0,\n        default: true,\n        components: {\n          textfield: true,\n          number: true,\n          password: true,\n          email: true,\n          phoneNumber: true,\n          currency: true,\n          checkbox: true,\n          signature: true,\n          select: true,\n          textarea: true,\n          datetime: true,\n          file: true\n        }\n      },\n      basic: false,\n      advanced: false,\n      layout: false,\n      data: false,\n      premium: false,\n      resource: false\n    };\n  }\n\n  get hasPDF() {\n    return _.has(this.webform.form, 'settings.pdf');\n  }\n\n  get projectUrl() {\n    return this.options.projectUrl || Formio.getProjectUrl();\n  }\n\n  // 888      d8b  .d888                                    888\n  // 888      Y8P d88P\"                                     888\n  // 888          888                                       888\n  // 888      888 888888 .d88b.   .d8888b 888  888  .d8888b 888  .d88b.\n  // 888      888 888   d8P  Y8b d88P\"    888  888 d88P\"    888 d8P  Y8b\n  // 888      888 888   88888888 888      888  888 888      888 88888888\n  // 888      888 888   Y8b.     Y88b.    Y88b 888 Y88b.    888 Y8b.\n  // 88888888 888 888    \"Y8888   \"Y8888P  \"Y88888  \"Y8888P 888  \"Y8888\n  //                                           888\n  //                                      Y8b d88P\n  //                                       \"Y88P\"\n\n  init() {\n    this.options.attachMode = 'builder';\n    this.webform = this.webform || this.createForm(this.options);\n    this.webform.init();\n  }\n\n  render() {\n    const result = this.renderTemplate('pdfBuilder', {\n      sidebar: this.renderTemplate('builderSidebar', {\n        scrollEnabled: this.sideBarScroll,\n        groupOrder: this.groupOrder,\n        groupId: `builder-sidebar-${this.id}`,\n        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {\n          group: this.groups[groupKey],\n          groupKey,\n          groupId: `builder-sidebar-${this.id}`,\n          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {\n            group,\n            groupKey: group.key,\n            groupId: `builder-sidebar-${groupKey}`,\n            subgroups: []\n          })),\n        })),\n      }),\n      form: this.hasPDF ?\n        this.webform.render() :\n        this.renderTemplate('pdfBuilderUpload', {})\n    });\n\n    return result;\n  }\n\n  attach(element) {\n    // PDF Upload\n    if (!this.hasPDF) {\n      this.loadRefs(element, {\n        'fileDrop': 'single',\n        'fileBrowse': 'single',\n        'hiddenFileInputElement': 'single',\n        'uploadError': 'single',\n      });\n      this.addEventListener(this.refs['pdf-upload-button'], 'click',(event) => {\n        event.preventDefault();\n      });\n\n      // Init the upload error.\n      if (!this.projectUrl) {\n        this.setUploadError('Form options.projectUrl not set. Please set the \"projectUrl\" property of the options for this form or use Formio.setProjectUrl(). This setting is necessary to upload a pdf background.');\n      }\n      else {\n        this.setUploadError();\n      }\n\n      if (this.refs.fileDrop) {\n        const element = this;\n        this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {\n          this.className = 'fileSelector fileDragOver';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n        });\n        this.addEventListener(this.refs.fileDrop, 'drop', function(event) {\n          this.className = 'fileSelector';\n          event.preventDefault();\n          element.upload(event.dataTransfer.files[0]);\n          return false;\n        });\n      }\n\n      if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {\n        this.addEventListener(this.refs.fileBrowse, 'click', (event) => {\n          event.preventDefault();\n          // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger\n          // a click event on it.\n          if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {\n            this.refs.hiddenFileInputElement.trigger('click');\n          }\n          else {\n            this.refs.hiddenFileInputElement.click();\n          }\n        });\n        this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {\n          this.upload(this.refs.hiddenFileInputElement.files[0]);\n          this.refs.hiddenFileInputElement.value = '';\n        });\n      }\n\n      return NativePromise.resolve();\n    }\n\n    // Normal PDF Builder\n    return super.attach(element).then(() => {\n      this.loadRefs(this.element, {\n        iframeDropzone: 'single', 'sidebar-container': 'single'\n      });\n\n      this.afterAttach();\n      return this.element;\n    });\n  }\n\n  afterAttach() {\n    this.initIframeEvents();\n    this.updateDropzoneDimensions();\n    this.initDropzoneEvents();\n    this.prepSidebarComponentsForDrag();\n  }\n\n  upload(file) {\n    const headers = new Headers({\n      'Accept': 'application/json, text/plain, */*',\n      'x-jwt-token': Formio.getToken(),\n    });\n\n    const formData = new FormData();\n    formData.append('file', file);\n\n    fetch(`${this.projectUrl}/upload`, {\n      method: 'POST',\n      headers,\n      body: formData\n    })\n      .then((response) => {\n        if (response.status !== 201) {\n          response.text().then((info) => {\n            this.setUploadError(`${response.statusText} - ${info}`);\n          });\n        }\n        else {\n          response.json().then((data) => {\n            _.set(this.webform.form, 'settings.pdf', {\n              id: data.file,\n              src: `${data.filesServer}${data.path}`\n            });\n            this.emit('pdfUploaded', data);\n            // Now that the settings are set, redraw to show the builder.\n            this.redraw();\n          });\n        }\n      })\n      .catch(() => {\n        this.setUploadError('Upload failed.');\n      });\n  }\n\n  setUploadError(message) {\n    if (!this.refs.uploadError) {\n      return;\n    }\n    this.refs.uploadError.style.display = message ? '' : 'none';\n    this.refs.uploadError.innerHTML = message;\n  }\n\n  createForm(options) {\n    // Instantiate the webform from the PDF class instead of Webform\n    options.skipInit = false;\n    this.webform = new PDF(this.element, options);\n    this.webform.on('attach', () => {\n      // If the dropzone exists but has been removed in a PDF rebuild, reinstate it\n      console.log('atached finished', this.refs.form);\n      if (this.refs.iframeDropzone && ![...this.refs.form.children].includes(this.refs.iframeDropzone)) {\n        this.prependTo(this.refs.iframeDropzone, this.refs.form);\n      }\n    });\n    return this.webform;\n  }\n\n  setForm(form) {\n    return super.setForm(form).then(() => {\n      return this.ready.then(() => {\n        if (this.webform) {\n          this.webform.postMessage({ name: 'form', data: form });\n          return this.webform.setForm(form);\n        }\n        return form;\n      });\n    });\n  }\n\n  saveComponent(...args) {\n    return super.saveComponent(...args).then(() => this.afterAttach());\n  }\n\n  destroy() {\n    super.destroy();\n    this.webform.destroy();\n  }\n\n  // d8b 8888888888                                                                              888\n  // Y8P 888                                                                                     888\n  //     888                                                                                     888\n  // 888 8888888 888d888 8888b.  88888b.d88b.   .d88b.        .d88b.  888  888  .d88b.  88888b.  888888 .d8888b\n  // 888 888     888P\"      \"88b 888 \"888 \"88b d8P  Y8b      d8P  Y8b 888  888 d8P  Y8b 888 \"88b 888    88K\n  // 888 888     888    .d888888 888  888  888 88888888      88888888 Y88  88P 88888888 888  888 888    \"Y8888b.\n  // 888 888     888    888  888 888  888  888 Y8b.          Y8b.      Y8bd8P  Y8b.     888  888 Y88b.       X88\n  // 888 888     888    \"Y888888 888  888  888  \"Y8888        \"Y8888    Y88P    \"Y8888  888  888  \"Y888  88888P'\n\n  initIframeEvents() {\n    if (!this.webform.iframeElement) {\n      return;\n    }\n    this.webform.off('iframe-elementUpdate');\n    this.webform.off('iframe-componentUpdate');\n    this.webform.off('iframe-componentClick');\n    this.webform.on('iframe-elementUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.page,\n          left: schema.left,\n          top: schema.top,\n          height: schema.height,\n          width: schema.width\n        };\n        this.editComponent(component.component, this.webform.iframeElement);\n        this.emit('updateComponent', component);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentUpdate', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component && component.component) {\n        component.component.overlay = {\n          page: schema.overlay.page,\n          left: schema.overlay.left,\n          top: schema.overlay.top,\n          height: schema.overlay.height,\n          width: schema.overlay.width\n        };\n        this.emit('updateComponent', component);\n\n        const localComponent = _.find(this.form.components, { id: schema.id });\n        if (localComponent) {\n          localComponent.overlay = _.clone(component.component.overlay);\n        }\n\n        this.emit('change', this.form);\n      }\n      return component;\n    });\n\n    this.webform.on('iframe-componentClick', schema => {\n      const component = this.webform.getComponentById(schema.id);\n      if (component) {\n        this.editComponent(component.component, this.webform.iframeElement);\n      }\n    }, true);\n  }\n\n  // 8888888b.                                                                   888                   d8b\n  // 888  \"Y88b                                                                  888                   Y8P\n  // 888    888                                                                  888\n  // 888    888 888d888 .d88b.  88888b. 88888888  .d88b.  88888b.   .d88b.       888  .d88b.   .d88b.  888  .d8888b\n  // 888    888 888P\"  d88\"\"88b 888 \"88b   d88P  d88\"\"88b 888 \"88b d8P  Y8b      888 d88\"\"88b d88P\"88b 888 d88P\"\n  // 888    888 888    888  888 888  888  d88P   888  888 888  888 88888888      888 888  888 888  888 888 888\n  // 888  .d88P 888    Y88..88P 888 d88P d88P    Y88..88P 888  888 Y8b.          888 Y88..88P Y88b 888 888 Y88b.\n  // 8888888P\"  888     \"Y88P\"  88888P\" 88888888  \"Y88P\"  888  888  \"Y8888       888  \"Y88P\"   \"Y88888 888  \"Y8888P\n  //                            888                                                                888\n  //                            888                                                           Y8b d88P\n  //                            888                                                            \"Y88P\"\n\n  initDropzoneEvents() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n    // This is required per HTML spec in order for the drop event to fire\n    this.removeEventListener(this.refs.iframeDropzone, 'dragover');\n    this.removeEventListener(this.refs.iframeDropzone, 'drop');\n    this.addEventListener(this.refs.iframeDropzone, 'dragover', (e) => {\n      e.preventDefault();\n      return false;\n    });\n\n    this.addEventListener(this.refs.iframeDropzone, 'drop', this.onDropzoneDrop.bind(this));\n  }\n\n  prepSidebarComponentsForDrag() {\n    if (!this.refs['sidebar-container']) {\n      return;\n    }\n    [...this.refs['sidebar-container'].children].forEach(el => {\n      el.draggable = true;\n      el.setAttribute('draggable', true);\n      this.removeEventListener(el, 'dragstart');\n      this.removeEventListener(el, 'dragend');\n      this.addEventListener(el, 'dragstart', this.onDragStart.bind(this), true);\n      this.addEventListener(el, 'dragend',   this.onDragEnd  .bind(this), true);\n    });\n  }\n\n  updateDropzoneDimensions() {\n    if (!this.refs.iframeDropzone) {\n      return;\n    }\n\n    const iframeRect = getElementRect(this.webform.refs.iframeContainer);\n    this.refs.iframeDropzone.style.height = iframeRect && iframeRect.height ? `${iframeRect.height}px` : '1000px';\n    this.refs.iframeDropzone.style.width  = iframeRect && iframeRect.width  ? `${iframeRect.width }px` : '100%';\n  }\n\n  onDragStart(e) {\n    e.dataTransfer.setData('text/html', null);\n    this.updateDropzoneDimensions();\n    this.addClass(this.refs.iframeDropzone, 'enabled');\n  }\n\n  onDropzoneDrop(e) {\n    this.dropEvent = e;\n    e.preventDefault();\n    return false;\n  }\n\n  onDragEnd(e) {\n    // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will\n    // reflect absolute positioning if accessed after the target element is hidden\n    const offsetX = this.dropEvent ? this.dropEvent.offsetX : null;\n    const offsetY = this.dropEvent ? this.dropEvent.offsetY : null;\n\n    // Always disable the dropzone on drag end\n    this.removeClass(this.refs.iframeDropzone, 'enabled');\n\n    // If there hasn't been a drop event on the dropzone, we're done\n    if (!this.dropEvent) {\n      return;\n    }\n\n    const element = e.target;\n    const type = element.getAttribute('data-type');\n\n    const schema = fastCloneDeep(this.schemas[type]);\n\n    schema.key = _.camelCase(\n      schema.label ||\n      schema.placeholder ||\n      schema.type\n    );\n\n    // Set a unique key for this component.\n    BuilderUtils.uniquify([this.webform.component], schema);\n\n    this.webform.component.components.push(schema);\n\n    this.emit('addComponent', schema);\n\n    schema.overlay = {\n      top: offsetY,\n      left: offsetX,\n      width: 100,\n      height: 20\n    };\n\n    this.webform.addComponent(schema, {}, null, true);\n    this.webform.postMessage({ name: 'addElement', data: schema });\n\n    // Delete the stored drop event now that it's been handled\n    this.dropEvent = null;\n  }\n}\n",
     "static": true,
     "longname": "/Users/luispadilla/Documents/Casebook/formio.js/src/PDFBuilder.js",
     "access": "public",
@@ -5312,7 +5312,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#setForm",
     "access": "public",
     "description": null,
-    "lineNumber": 256,
+    "lineNumber": 257,
     "undocument": true,
     "params": [
       {
@@ -5339,7 +5339,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#saveComponent",
     "access": "public",
     "description": null,
-    "lineNumber": 268,
+    "lineNumber": 269,
     "undocument": true,
     "params": [
       {
@@ -5367,7 +5367,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 272,
+    "lineNumber": 273,
     "undocument": true,
     "params": [],
     "return": null
@@ -5383,7 +5383,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#initIframeEvents",
     "access": "public",
     "description": null,
-    "lineNumber": 286,
+    "lineNumber": 287,
     "undocument": true,
     "params": [],
     "return": null
@@ -5399,7 +5399,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#initDropzoneEvents",
     "access": "public",
     "description": null,
-    "lineNumber": 351,
+    "lineNumber": 352,
     "undocument": true,
     "params": [],
     "return": null
@@ -5415,7 +5415,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#prepSidebarComponentsForDrag",
     "access": "public",
     "description": null,
-    "lineNumber": 366,
+    "lineNumber": 367,
     "undocument": true,
     "params": [],
     "return": null
@@ -5431,7 +5431,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#updateDropzoneDimensions",
     "access": "public",
     "description": null,
-    "lineNumber": 380,
+    "lineNumber": 381,
     "undocument": true,
     "params": [],
     "return": null
@@ -5447,7 +5447,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDragStart",
     "access": "public",
     "description": null,
-    "lineNumber": 390,
+    "lineNumber": 391,
     "undocument": true,
     "params": [
       {
@@ -5470,7 +5470,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDropzoneDrop",
     "access": "public",
     "description": null,
-    "lineNumber": 396,
+    "lineNumber": 397,
     "undocument": true,
     "params": [
       {
@@ -5495,7 +5495,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#dropEvent",
     "access": "public",
     "description": null,
-    "lineNumber": 397,
+    "lineNumber": 398,
     "undocument": true,
     "type": {
       "types": [
@@ -5514,7 +5514,7 @@
     "longname": "src/PDFBuilder.js~PDFBuilder#onDragEnd",
     "access": "public",
     "description": null,
-    "lineNumber": 402,
+    "lineNumber": 403,
     "undocument": true,
     "params": [
       {
