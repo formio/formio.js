@@ -579,6 +579,6 @@ export default class FormComponent extends Component {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 }

@@ -50,6 +50,8 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
@@ -239,13 +241,13 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 // Import from &quot;dist&quot; because it would require and &quot;global&quot; would not be defined in Angular apps.
 import dragula from &apos;dragula/dist/dragula&apos;;
-import NestedComponent from &apos;../_classes/nested/NestedComponent&apos;;
+import NestedArrayComponent from &apos;../_classes/nestedarray/NestedArrayComponent&apos;;
 import Component from &apos;../_classes/component/Component&apos;;
 import { fastCloneDeep } from &apos;../../utils/utils&apos;;
 
-export default class DataGridComponent extends NestedComponent {
+export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
+    return NestedArrayComponent.schema({
       label: &apos;Data Grid&apos;,
       key: &apos;dataGrid&apos;,
       type: &apos;datagrid&apos;,
@@ -280,10 +282,6 @@ export default class DataGridComponent extends NestedComponent {
     this.createRows(true);
     this.visibleColumns = {};
     this.checkColumns();
-  }
-
-  get allowData() {
-    return true;
   }
 
   get dataValue() {
@@ -360,10 +358,6 @@ export default class DataGridComponent extends NestedComponent {
 
   get allowReorder() {
     return !this.options.readOnly &amp;&amp; _.get(this.component, &apos;reorder&apos;, false);
-  }
-
-  getValueAsString() {
-    return &apos;[Complex Data]&apos;;
   }
 
   /**
@@ -454,10 +448,6 @@ export default class DataGridComponent extends NestedComponent {
 
   hasBottomSubmit() {
     return this.hasAddButton() &amp;&amp; [&apos;bottom&apos;, &apos;both&apos;].includes(this.addAnotherPosition);
-  }
-
-  hasChanged(newValue, oldValue) {
-    return !_.isEqual(newValue, oldValue);
   }
 
   get canAddColumn() {
@@ -633,9 +623,13 @@ export default class DataGridComponent extends NestedComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      components[col.key] = this.createComponent(col, options, row);
-      components[col.key].rowIndex = rowIndex;
-      components[col.key].inDataGrid = true;
+      const comp = this.createComponent(col, options, row);
+      if (comp.path &amp;&amp; col.key) {
+        comp.path = comp.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
+      }
+      comp.rowIndex = rowIndex;
+      comp.inDataGrid = true;
+      components[col.key] = comp;
     });
     return components;
   }
@@ -758,11 +752,6 @@ export default class DataGridComponent extends NestedComponent {
     return show;
   }
 
-  updateValue(value, flags) {
-    // Intentionally skip over nested component updateValue method to keep recursive update from occurring with sub components.
-    return Component.prototype.updateValue.call(this, value, flags);
-  }
-
   setValue(value, flags) {
     flags = flags || {};
     if (!value) {
@@ -793,33 +782,14 @@ export default class DataGridComponent extends NestedComponent {
       if (value.length &lt;= rowIndex) {
         return;
       }
-      _.each(row, (col, key) =&gt; {
-        if (col.type === &apos;components&apos;) {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex], flags);
-        }
-        else if (value[rowIndex].hasOwnProperty(key)) {
-          col.data = value[rowIndex];
-          col.setValue(value[rowIndex][key], flags);
-        }
-        else {
-          col.data = value[rowIndex];
-          col.setValue(col.defaultValue, flags);
-        }
+      _.each(row, (col) =&gt; {
+        col.rowIndex = rowIndex;
+        this.setNestedValue(col, value[rowIndex], flags, false);
       });
     });
 
     this.updateOnChange(flags, changed);
     return changed;
-  }
-
-  /**
-   * Get the value of this component.
-   *
-   * @returns {*}
-   */
-  getValue() {
-    return this.dataValue;
   }
 
   restoreComponentsContext() {
