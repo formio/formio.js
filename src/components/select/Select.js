@@ -1144,11 +1144,12 @@ export default class SelectComponent extends Field {
       !this.lazyLoadInit &&
       !this.active &&
       !this.selectOptions.length &&
-      hasValue
+      hasValue &&
+      this.visible
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(value, true);
+      this.triggerUpdate(_.get(value.data || value, this.component.searchField, value), true);
       return changed;
     }
 
