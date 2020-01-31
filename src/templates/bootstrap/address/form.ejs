@@ -6,6 +6,7 @@
         {{attr}}="{{ctx.inputAttributes[attr]}}"
       {% } %}
       value="{{ ctx.displayValue }}"
+      autocomplete="off"
     >
     {% if (!ctx.component.disableClearIcon) { %}
       <i
