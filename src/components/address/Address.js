@@ -29,46 +29,52 @@ export default class AddressComponent extends ContainerComponent {
       disableClearIcon: false,
       components: [
         {
-          label: 'Street',
-          tableView: true,
-          key: 'street',
+          label: 'Address 1',
+          tableView: false,
+          key: 'address1',
           type: 'textfield',
           input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+        },
+        {
+          label: 'Address 2',
+          tableView: false,
+          key: 'address2',
+          type: 'textfield',
+          input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
         },
         {
           label: 'City',
-          tableView: true,
+          tableView: false,
           key: 'city',
           type: 'textfield',
           input: true,
-        },
-        {
-          label: 'County',
-          tableView: true,
-          key: 'county',
-          type: 'textfield',
-          input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
         },
         {
           label: 'State',
-          tableView: true,
+          tableView: false,
           key: 'state',
           type: 'textfield',
           input: true,
-        },
-        {
-          label: 'Zip Code',
-          tableView: true,
-          key: 'zip',
-          type: 'textfield',
-          input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
         },
         {
           label: 'Country',
-          tableView: true,
+          tableView: false,
           key: 'country',
           type: 'textfield',
           input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+        },
+        {
+          label: 'Zip Code',
+          tableView: false,
+          key: 'zip',
+          type: 'textfield',
+          input: true,
+          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
         },
       ],
     }, ...extend);
@@ -100,12 +106,39 @@ export default class AddressComponent extends ContainerComponent {
     NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
     Field.prototype.init.call(this);
 
-    if (!this.builderMode && this.component.provider) {
-      const {
-        provider,
-        providerOptions,
-      } = this.component;
-      this.provider = this.initializeProvider(provider, providerOptions);
+    if (!this.builderMode) {
+      if (this.component.provider) {
+        const {
+          provider,
+          providerOptions,
+        } = this.component;
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
+      else if (this.component.map) {
+        // Fallback to legacy version where Google Maps was the only provider.
+        this.component.provider = GoogleAddressProvider.name;
+        this.component.providerOptions = this.component.providerOptions || {};
+
+        const {
+          map,
+          provider,
+          providerOptions,
+        } = this.component;
+
+        const {
+          key,
+          region,
+        } = map;
+
+        if (key) {
+          providerOptions.apiKey = key;
+        }
+        if (region) {
+          providerOptions.region = region;
+        }
+
+        this.provider = this.initializeProvider(provider, providerOptions);
+      }
     }
   }
 
@@ -159,7 +192,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   isValueInLegacyFormat(value) {
-    return !this.provider && value && !value.mode;
+    return value && !value.mode;
   }
 
   normalizeValue(value) {
@@ -173,30 +206,6 @@ export default class AddressComponent extends ContainerComponent {
 
   setValue(value, flags) {
     const changed = Field.prototype.setValue.call(this, value, flags);
-
-    if (this.isValueInLegacyFormat(value)) {
-      // Fallback to legacy version where Google Maps was the only provider.
-      const {
-        map,
-        providerOptions = {},
-      } = this.component;
-
-      if (map) {
-        const {
-          key,
-          region,
-        } = map;
-
-        if (key) {
-          providerOptions.apiKey = key;
-        }
-        if (region) {
-          providerOptions.region = region;
-        }
-      }
-
-      this.provider = this.initializeProvider(GoogleAddressProvider.name, providerOptions);
-    }
 
     if (this.manualMode) {
       this.restoreComponentsContext();
@@ -444,13 +453,19 @@ export default class AddressComponent extends ContainerComponent {
       return '';
     }
 
-    const { address } = value;
+    const normalizedValue = this.normalizeValue(value);
 
-    if (this.provider && !this.manualMode) {
+    const {
+      address,
+      mode,
+    } = normalizedValue;
+    const valueInManualMode = (mode === AddressComponentMode.Manual);
+
+    if (this.provider && !valueInManualMode) {
       return this.getDisplayValue(address);
     }
 
-    if (this.manualMode) {
+    if (valueInManualMode) {
       if (this.component.manualModeViewString) {
         return this.interpolate(this.component.manualModeViewString, {
           address,
@@ -460,8 +475,10 @@ export default class AddressComponent extends ContainerComponent {
       }
 
       return this.getComponents()
-        .filter((component) => !component.isEmpty())
-        .map((component) => component.getValueAsString(component.dataValue))
+        .filter((component) => component.hasValue(address))
+        .map((component) => [component, _.get(address, component.key)])
+        .filter(([component, componentValue]) => !component.isEmpty(componentValue))
+        .map(([component, componentValue]) => component.getValueAsString(componentValue))
         .join(', ');
     }
 
