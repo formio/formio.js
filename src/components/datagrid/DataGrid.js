@@ -364,7 +364,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (!this.rows[index]) {
+      if (this.rows[index]) {
+        _.each(this.rows[index], (component) => component.data = row);
+      }
+      else {
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
