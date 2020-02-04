@@ -326,31 +326,34 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.editorsReady[index]) {
       this.editorsReady[index].then((editor) => {
         this.autoModified = true;
-        if (!flags.skipWysiwyg) {
-          switch (this.component.editor) {
-            case 'ace':
-              editor.setValue(this.setConvertedValue(value, index));
-              break;
-            case 'quill':
-              if (this.component.isUploadEnabled) {
-                this.setAsyncConvertedValue(value)
-                  .then(result => {
-                    editor.setContents(editor.clipboard.convert(result));
-                  });
-              }
-              else {
-                editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
-              }
-              break;
-            case 'ckeditor':
-              editor.data.set(this.setConvertedValue(value, index));
-              break;
-            case 'tiny':
-              editor.setContent(this.setConvertedValue(value));
-              break;
-          }
-        }
       });
+
+        if (!flags.skipWysiwyg) {
+          this.editorsReady[index].then((editor) => {
+            switch (this.component.editor) {
+              case 'ace':
+                editor.setValue(this.setConvertedValue(value, index));
+                break;
+              case 'quill':
+                if (this.component.isUploadEnabled) {
+                  this.setAsyncConvertedValue(value)
+                    .then(result => {
+                      editor.setContents(editor.clipboard.convert(result));
+                    });
+                }
+                else {
+                  editor.setContents(editor.clipboard.convert(this.setConvertedValue(value, index)));
+                }
+                break;
+              case 'ckeditor':
+                editor.data.set(this.setConvertedValue(value, index));
+                break;
+              case 'tiny':
+                editor.setContent(this.setConvertedValue(value));
+                break;
+          }
+        });
+      }
     }
   }
 
