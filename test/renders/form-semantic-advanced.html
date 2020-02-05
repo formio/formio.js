@@ -27,14 +27,8 @@
         Address
       </label>
       <div class="address-autocomplete-container">
-        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="">
+        <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off">
         <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
-      </div>
-      <div class="form-check checkbox">
-        <label class="form-check-label">
-          <input ref="modeSwitcher" type="checkbox" class="form-check-input" tabindex="0">
-          <span>Can't find address? Switch to manual mode.</span>
-        </label>
       </div>
       <div ref="messageContainer"></div>
     </div>
