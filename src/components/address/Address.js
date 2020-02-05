@@ -28,6 +28,7 @@ export default class AddressComponent extends ContainerComponent {
       manualModeViewString: '',
       hideLabel: false,
       disableClearIcon: false,
+      enableManualMode: false,
       components: [
         {
           label: 'Address 1',
@@ -104,7 +105,9 @@ export default class AddressComponent extends ContainerComponent {
 
   init() {
     this.components = this.components || [];
-    NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
+    if (this.builderMode || this.manualModeEnabled) {
+      NestedComponent.prototype.addComponents.call(this, this.manualMode ? this.address : {});
+    }
     Field.prototype.init.call(this);
 
     if (!this.builderMode) {
@@ -149,18 +152,26 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get emptyValue() {
-    return {
-      mode: AddressComponentMode.Autocomplete,
-      address: {},
-    };
+    return this.manualModeEnabled
+      ? {
+        mode: AddressComponentMode.Autocomplete,
+        address: {},
+      }
+      : {};
   }
 
   get mode() {
-    return this.dataValue ? this.dataValue.mode : this.dataValue;
+    return this.manualModeEnabled
+      ? this.dataValue
+        ? this.dataValue.mode
+        : this.dataValue
+      : AddressComponentMode.Autocomplete;
   }
 
   set mode(value) {
-    this.dataValue.mode = value;
+    if (this.manualModeEnabled) {
+      this.dataValue.mode = value;
+    }
   }
 
   get autocompleteMode() {
@@ -169,6 +180,10 @@ export default class AddressComponent extends ContainerComponent {
 
   get manualMode() {
     return this.mode === AddressComponentMode.Manual;
+  }
+
+  get manualModeEnabled() {
+    return Boolean(this.component.enableManualMode);
   }
 
   restoreComponentsContext() {
@@ -181,11 +196,16 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get address() {
-    return this.dataValue ? this.dataValue.address : this.dataValue;
+    return (this.manualModeEnabled && this.dataValue) ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
-    this.dataValue.address = value;
+    if (this.manualModeEnabled) {
+      this.dataValue.address = value;
+    }
+    else {
+      this.dataValue = value;
+    }
   }
 
   get defaultSchema() {
@@ -197,7 +217,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   normalizeValue(value) {
-    return this.isValueInLegacyFormat(value)
+    return (this.manualModeEnabled && this.isValueInLegacyFormat(value))
       ? {
         mode: AddressComponentMode.Autocomplete,
         address: value,
@@ -277,7 +297,7 @@ export default class AddressComponent extends ContainerComponent {
 
   render() {
     return super.render(this.renderTemplate(this.templateName, {
-      children: this.renderComponents(),
+      children: (this.builderMode || this.manualModeEnabled) ? this.renderComponents() : '',
       nestedKey: this.nestedKey,
       inputAttributes: this.searchInputAttributes,
       ref: {
@@ -326,10 +346,8 @@ export default class AddressComponent extends ContainerComponent {
           return div;
         },
         onSelect: (address) => {
-          this.updateValue({
-            ...this.dataValue,
-            address,
-          }, {
+          this.address = address;
+          this.triggerChange({
             modified: true,
           });
 
@@ -466,7 +484,14 @@ export default class AddressComponent extends ContainerComponent {
     const {
       address,
       mode,
-    } = normalizedValue;
+    } = (
+      this.manualModeEnabled
+        ? normalizedValue
+        : {
+          address: normalizedValue,
+          mode: AddressComponentMode.Autocomplete,
+        }
+    );
     const valueInManualMode = (mode === AddressComponentMode.Manual);
 
     if (this.provider && !valueInManualMode) {
