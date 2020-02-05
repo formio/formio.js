@@ -562,6 +562,7 @@ class ValidationChecker {
         }
       },
       mask: {
+        key: 'inputMask',
         message(component) {
           return component.t(component.errorMessage('mask'), {
             field: component.errorLabel,
@@ -579,7 +580,7 @@ class ValidationChecker {
             value = value ? value.value : value;
           }
           else {
-            inputMask = component._inputMask;
+            inputMask = setting;
           }
           if (value && inputMask) {
             return matchInputMask(value, inputMask);
