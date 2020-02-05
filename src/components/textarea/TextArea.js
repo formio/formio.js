@@ -324,7 +324,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   setValueAt(index, value, flags) {
     super.setValueAt(index, value, flags);
     if (this.editorsReady[index]) {
-      this.editorsReady[index].then((editor) => {
+      const setEditorsValue = (flags) => (editor) => {
         this.autoModified = true;
         if (!flags.skipWysiwyg) {
           switch (this.component.editor) {
@@ -350,7 +350,9 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
           }
         }
-      });
+      };
+
+      this.editorsReady[index].then(setEditorsValue(_.clone(flags)));
     }
   }
 
