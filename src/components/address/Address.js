@@ -14,6 +14,7 @@ export const AddressComponentMode = {
 };
 
 const RemoveValueIconHiddenClass = 'address-autocomplete-remove-value-icon--hidden';
+const ChildConditional = 'show = _.get(instance, \'parent.manualMode\', false);';
 
 export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
@@ -21,7 +22,7 @@ export default class AddressComponent extends ContainerComponent {
       type: 'address',
       label: 'Address',
       key: 'address',
-      switchToManualModeLabel: "Can't find address? Switch to manual mode.",
+      switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
       provider: '',
       providerOptions: {},
       manualModeViewString: '',
@@ -34,7 +35,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'address1',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
         {
           label: 'Address 2',
@@ -42,7 +43,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'address2',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
         {
           label: 'City',
@@ -50,7 +51,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'city',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
         {
           label: 'State',
@@ -58,7 +59,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'state',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
         {
           label: 'Country',
@@ -66,7 +67,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'country',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
         {
           label: 'Zip Code',
@@ -74,7 +75,7 @@ export default class AddressComponent extends ContainerComponent {
           key: 'zip',
           type: 'textfield',
           input: true,
-          customConditional: 'show = _.get(instance, \'parent.dataValue.mode\') === \'manual\';',
+          customConditional: ChildConditional,
         },
       ],
     }, ...extend);
@@ -271,7 +272,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get templateName() {
-    return this.builderMode ? super.templateName : 'address';
+    return 'address';
   }
 
   render() {
@@ -303,73 +304,75 @@ export default class AddressComponent extends ContainerComponent {
         } = this.component;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
+    }
 
-      this.loadRefs(element, {
-        [AddressComponent.modeSwitcherRef]: 'single',
-        [AddressComponent.removeValueIconRef]: 'single',
-        [AddressComponent.searchInputRef]: 'single',
-      });
+    this.loadRefs(element, {
+      [AddressComponent.modeSwitcherRef]: 'single',
+      [AddressComponent.removeValueIconRef]: 'single',
+      [AddressComponent.searchInputRef]: 'single',
+    });
 
-      if (this.searchInput && this.provider) {
-        autocompleter({
-          input: this.searchInput,
-          debounceWaitMs: 300,
-          fetch: (text, update) => {
-            const query = text;
-            this.provider.search(query).then(update);
-          },
-          render: (address) => {
-            const div = this.ce('div');
-            div.textContent = this.getDisplayValue(address);
-            return div;
-          },
-          onSelect: (address) => {
-            this.updateValue({
-              ...this.dataValue,
-              address,
-            }, {
-              modified: true,
-            });
+    if (!this.builderMode && this.searchInput && this.provider) {
+      autocompleter({
+        input: this.searchInput,
+        debounceWaitMs: 300,
+        fetch: (text, update) => {
+          const query = text;
+          this.provider.search(query).then(update);
+        },
+        render: (address) => {
+          const div = this.ce('div');
+          div.textContent = this.getDisplayValue(address);
+          return div;
+        },
+        onSelect: (address) => {
+          this.updateValue({
+            ...this.dataValue,
+            address,
+          }, {
+            modified: true,
+          });
 
-            if (this.searchInput) {
-              this.searchInput.value = this.getDisplayValue();
-            }
-            this.updateRemoveIcon();
-          },
-        });
-
-        this.addEventListener(this.searchInput, 'blur', () => {
-          if (!this.searchInput) {
-            return;
-          }
-
-          if (this.searchInput.value) {
+          if (this.searchInput) {
             this.searchInput.value = this.getDisplayValue();
           }
-        });
+          this.updateRemoveIcon();
+        },
+      });
 
-        this.addEventListener(this.searchInput, 'keyup', () => {
-          if (!this.searchInput) {
-            return;
-          }
+      this.addEventListener(this.searchInput, 'blur', () => {
+        if (!this.searchInput) {
+          return;
+        }
 
-          if (!this.searchInput.value) {
-            this.clearAddress();
-          }
-        });
-      }
+        if (this.searchInput.value) {
+          this.searchInput.value = this.getDisplayValue();
+        }
+      });
 
-      if (this.modeSwitcher) {
-        this.addEventListener(this.modeSwitcher, 'change', () => {
-          if (!this.modeSwitcher) {
-            return;
-          }
+      this.addEventListener(this.searchInput, 'keyup', () => {
+        if (!this.searchInput) {
+          return;
+        }
 
-          this.dataValue = this.emptyValue;
-          this.mode = this.modeSwitcher.checked
-            ? AddressComponentMode.Manual
-            : AddressComponentMode.Autocomplete;
+        if (!this.searchInput.value) {
+          this.clearAddress();
+        }
+      });
+    }
 
+    if (this.modeSwitcher) {
+      this.addEventListener(this.modeSwitcher, 'change', () => {
+        if (!this.modeSwitcher) {
+          return;
+        }
+
+        this.dataValue = this.emptyValue;
+        this.mode = this.modeSwitcher.checked
+          ? AddressComponentMode.Manual
+          : AddressComponentMode.Autocomplete;
+
+        if (!this.builderMode) {
           if (this.manualMode) {
             this.restoreComponentsContext();
           }
@@ -377,28 +380,33 @@ export default class AddressComponent extends ContainerComponent {
           this.triggerChange({
             modified: true,
           });
-          this.redraw();
-        });
-      }
+        }
 
-      if (this.removeValueIcon) {
-        this.updateRemoveIcon();
+        this.redraw();
+      });
+    }
 
-        const removeValueHandler = () => {
-          this.clearAddress();
-          this.focus();
-        };
+    if (!this.builderMode && this.removeValueIcon) {
+      this.updateRemoveIcon();
 
-        this.addEventListener(this.removeValueIcon, 'click', removeValueHandler);
-        this.addEventListener(this.removeValueIcon, 'keydown', ({ key }) => {
-          if (key === 'Enter') {
-            removeValueHandler();
-          }
-        });
-      }
+      const removeValueHandler = () => {
+        this.clearAddress();
+        this.focus();
+      };
+
+      this.addEventListener(this.removeValueIcon, 'click', removeValueHandler);
+      this.addEventListener(this.removeValueIcon, 'keydown', ({ key }) => {
+        if (key === 'Enter') {
+          removeValueHandler();
+        }
+      });
     }
 
     return result;
+  }
+
+  addChildComponent(component) {
+    component.customConditional = ChildConditional;
   }
 
   redraw() {

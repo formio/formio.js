@@ -786,7 +786,8 @@ export default class WebformBuilder extends Component {
         index = 0;
       }
     }
-    else if (parent && parent.addChildComponent) {
+
+    if (parent && parent.addChildComponent) {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 
