@@ -303,10 +303,10 @@ export default class WebformBuilder extends Component {
       query.params.tags = ['builder'];
     }
     const formio = new Formio(Formio.projectUrl);
-    const isResourcesEnabled = this.options.builder && this.options.builder.resource !== false;
+    const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
-    if (!formio.noProject && isResourcesEnabled) {
-      const resourceOptions = this.options.builder.resource;
+    if (!formio.noProject && !isResourcesDisabled) {
+      const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) => {
           if (resources.length) {
