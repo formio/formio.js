@@ -386,6 +386,9 @@ export default class TextAreaComponent extends TextFieldComponent {
         console.warn(error);
       }
 
+      if (!requestData) {
+        return NativePromise.resolve();
+      }
       return this.root.formio.downloadFile(requestData)
         .then((result) => {
           image.setAttribute('src', result.url);
