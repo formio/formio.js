@@ -575,16 +575,20 @@ class ValidationChecker {
             const maskName = value ? value.maskName : undefined;
             const formioInputMask = component.getMaskByName(maskName);
             if (formioInputMask) {
-              inputMask = getInputMask(formioInputMask);
+              inputMask = formioInputMask;
             }
             value = value ? value.value : value;
           }
           else {
             inputMask = setting;
           }
+
+          inputMask = inputMask ? getInputMask(inputMask) : null;
+
           if (value && inputMask) {
             return matchInputMask(value, inputMask);
           }
+
           return true;
         }
       },
