@@ -1018,7 +1018,6 @@ export default class Webform extends NestedDataComponent {
     if (message) {
       this.alert = this.ce('div', {
         class: classes || `alert alert-${type}`,
-        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1130,7 +1129,7 @@ export default class Webform extends NestedDataComponent {
     });
 
     const message = document.createDocumentFragment();
-    const p = this.ce('p');
+    const p = this.ce('p', { id: 'fix-errors' });
     this.setContent(p, this.t('error'));
 
     const params = {
@@ -1143,7 +1142,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul');
+    const ul = this.ce('ul', { 'aria-describedby': 'fix-errors' });
     errors.forEach(err => {
       if (err) {
         const createListItem = (message) => {
