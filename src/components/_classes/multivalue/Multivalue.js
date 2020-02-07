@@ -16,10 +16,18 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
+    let value = super.defaultValue;
+
     if (this.component.multiple) {
-      return [super.defaultValue];
+      if (_.isArray(value)) {
+        value = !value.length ? [super.emptyValue] : value;
+      }
+      else {
+        value = [value];
+      }
     }
-    return super.defaultValue;
+
+    return value;
   }
 
   get addAnother() {

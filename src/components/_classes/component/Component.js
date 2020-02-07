@@ -2139,13 +2139,8 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple
-        ? this.dataValue.length
-          ? [this.defaultValue]
-          : []
-        : this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue, {
+      if (this.defaultValue) {
+        this.setValue(this.defaultValue, {
           noUpdateEvent: true
         });
       }
