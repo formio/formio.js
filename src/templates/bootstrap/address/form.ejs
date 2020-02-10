@@ -6,6 +6,7 @@
         {{attr}}="{{ctx.inputAttributes[attr]}}"
       {% } %}
       value="{{ ctx.displayValue }}"
+      autocomplete="off"
     >
     {% if (!ctx.component.disableClearIcon) { %}
       <i
@@ -16,19 +17,21 @@
     {% } %}
   </div>
 {% } %}
-<div class="form-check checkbox">
-  <label class="form-check-label">
-    <input
-      ref="{{ ctx.ref.modeSwitcher }}"
-      type="checkbox"
-      class="form-check-input"
-      tabindex="{{ ctx.inputAttributes.tabindex }}"
-      {% if (ctx.mode.manual) { %}checked=true{% } %}
-      {% if (ctx.disabled) { %}disabled=true{% } %}
-    >
-    <span>{{ ctx.component.switchToManualModeLabel }}</span>
-  </label>
-</div>
+{% if (ctx.self.manualModeEnabled) { %}
+  <div class="form-check checkbox">
+    <label class="form-check-label">
+      <input
+        ref="{{ ctx.ref.modeSwitcher }}"
+        type="checkbox"
+        class="form-check-input"
+        tabindex="{{ ctx.inputAttributes.tabindex }}"
+        {% if (ctx.mode.manual) { %}checked=true{% } %}
+        {% if (ctx.disabled) { %}disabled=true{% } %}
+      >
+      <span>{{ ctx.component.switchToManualModeLabel }}</span>
+    </label>
+  </div>
+{% } %}
 {% if (ctx.self.manualMode) { %}
   <div ref="{{ ctx.nestedKey }}">
     {{ ctx.children }}
