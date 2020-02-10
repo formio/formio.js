@@ -17,6 +17,8 @@ const required = require('./Required');
 const select = require('./Select');
 const unique = require('./Unique');
 const url = require('./Url');
+const minYear = require('./MinYear');
+const maxYear = require('./MaxYear');
 
 module.exports = {
   custom,
@@ -38,4 +40,6 @@ module.exports = {
   select,
   unique,
   url,
+  minYear,
+  maxYear
 };

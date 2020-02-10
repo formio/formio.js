@@ -20,6 +20,8 @@ export default {
         max: '{{field}} cannot be greater than {{max}}.',
         maxDate: '{{field}} should not contain date after {{- maxDate}}',
         minDate: '{{field}} should not contain date before {{- minDate}}',
+        maxYear: '{{field}} should not contain year greater than {{maxYear}}',
+        minYear: '{{field}} should not contain year less than {{minYear}}',
         invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
         invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
         invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
