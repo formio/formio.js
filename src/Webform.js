@@ -1130,7 +1130,7 @@ export default class Webform extends NestedDataComponent {
     });
 
     const message = document.createDocumentFragment();
-    const p = this.ce('p', { id: 'fix-errors' });
+    const p = this.ce('p', { id: `fix-errors-${this.id}` });
     this.setContent(p, this.t('error'));
 
     const params = {
@@ -1143,7 +1143,7 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul', { 'aria-describedby': 'fix-errors' });
+    const ul = this.ce('ul', { 'aria-describedby': `fix-errors-${this.id}` });
     errors.forEach(err => {
       if (err) {
         const createListItem = (message) => {
