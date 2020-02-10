@@ -351,7 +351,8 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   removeRow(index) {
     this.splice(index);
-    this.rows.splice(index, 1);
+    const [row] = this.rows.splice(index, 1);
+    _.each(row, (component) => this.removeComponent(component));
     this.redraw();
   }
 
@@ -364,7 +365,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     const rowValues = this.getRowValues();
     // Create any missing rows.
     rowValues.forEach((row, index) => {
-      if (!this.rows[index]) {
+      if (this.rows[index]) {
+        _.each(this.rows[index], (component) => component.data = row);
+      }
+      else {
         this.rows[index] = this.createRowComponents(row, index);
         added = true;
       }
@@ -383,13 +387,13 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const comp = this.createComponent(col, options, row);
-      if (comp.path && col.key) {
-        comp.path = comp.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
+      const component = this.createComponent(col, options, row);
+      if (component.path && col.key) {
+        component.path = component.path.replace(new RegExp(`\\.${col.key}$`), `[${rowIndex}].${col.key}`);
       }
-      comp.rowIndex = rowIndex;
-      comp.inDataGrid = true;
-      components[col.key] = comp;
+      component.rowIndex = rowIndex;
+      component.inDataGrid = true;
+      components[col.key] = component;
     });
     return components;
   }

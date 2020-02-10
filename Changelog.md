@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.3
+### Fixed
+ - Added check for empty triggers to skip it
+ - Fixed defaultValue for multiple components to make them not return [[]]
+ - Time component raw data
+ - Fixed error appearing for isUploadEnabled Textareas for images with missing alt attribute
+ - Fixed copying info from nested components for resources
+ - Address Component fixes.
+ - Fixed an issue where select components would fire wrong search value
+ 
+### Changed
+ - Improve interpolation for noeval
+ - Upgrade dompurify@2.0.8, @babel/cli@7.8.4, @babel/core@7.8.4, @babel/preset-env@7.8.4, jsdom@16.1.0
+
+### Added
+ - Added min and max year validation
+ 
+### Removed
+ - Removed the need for getAllComponents.
+
+## 4.9.0-beta.2
+### Fixed
+ - Missing key for mask validation added 
+ - Pick message from error object to not display 'Object object' 
+ - Fix setting value in wysiwyg editors 
+ - Fixed DataGrid removeRow. 
+ - Make resource fields group editable 
+ - Fixed problem where the button loaders were occurring on all submit buttons instead of the one clicked.
+ - Fixed ability to sumbit form on required select field with no data 
+
 ## 4.9.0-beta.1
 ### Added
  - Created nested base classes for DataGrid, EditGrid, and Containers

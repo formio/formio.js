@@ -303,27 +303,32 @@ export default class WebformBuilder extends Component {
       query.params.tags = ['builder'];
     }
     const formio = new Formio(Formio.projectUrl);
-    if (!formio.noProject) {
+    const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
+
+    if (!formio.noProject && !isResourcesDisabled) {
+      const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) => {
           if (resources.length) {
             this.builder.resource = {
-              title: 'Existing Resource Fields',
+              title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight : 50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
             this.groups.resource = {
-              title: 'Existing Resource Fields',
+              title: resourceOptions ? resourceOptions.title : 'Existing Resource Fields',
               key: 'resource',
-              weight: 50,
+              weight: resourceOptions ? resourceOptions.weight :  50,
               subgroups: [],
               components: [],
               componentOrder: []
             };
-            this.groupOrder.push('resource');
+            if (!this.groupOrder.includes('resource')) {
+              this.groupOrder.push('resource');
+            }
             this.addExistingResourceFields(resources);
           }
         });
@@ -668,7 +673,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    else {
+    if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
@@ -786,7 +791,8 @@ export default class WebformBuilder extends Component {
         index = 0;
       }
     }
-    else if (parent && parent.addChildComponent) {
+
+    if (parent && parent.addChildComponent) {
       parent.addChildComponent(info, element, target, source, sibling);
     }
 

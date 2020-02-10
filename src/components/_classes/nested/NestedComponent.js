@@ -138,22 +138,6 @@ export default class NestedComponent extends Field {
     return this.components || [];
   }
 
-  getAllComponents() {
-    return this.getComponents().reduce((components, component) => {
-      let result = component;
-
-      if (component && component.getAllComponents) {
-        // Add this component if data is allowed
-        if (component.allowData) {
-          components.push(component);
-        }
-        result = component.getAllComponents();
-      }
-
-      return components.concat(result);
-    }, []);
-  }
-
   /**
    * Perform a deep iteration over every component, including those
    * within other container based components.

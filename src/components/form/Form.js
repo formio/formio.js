@@ -492,11 +492,12 @@ export default class FormComponent extends Component {
     return this.dataValue;
   }
 
-  getAllComponents() {
-    if (!this.subForm) {
-      return [];
+  get errors() {
+    let errors = this.errors;
+    if (this.subForm) {
+      errors = errors.concat(this.subForm.errors);
     }
-    return this.subForm.getAllComponents();
+    return errors;
   }
 
   updateSubFormVisibility() {

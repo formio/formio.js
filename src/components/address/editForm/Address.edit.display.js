@@ -4,6 +4,14 @@ export default [
     ignore: true,
   },
   {
+    weight: 20,
+    type: 'checkbox',
+    input: true,
+    key: 'enableManualMode',
+    label: 'Enable Manual Mode',
+    tooltip: 'Should Manual Mode be enabled for that component or not.',
+  },
+  {
     weight: 30,
     type: 'textfield',
     input: true,
@@ -14,6 +22,7 @@ export default [
     validate: {
       required: true,
     },
+    customConditional: ({ data }) => Boolean(data.enableManualMode),
   },
   {
     weight: 40,
@@ -21,6 +30,6 @@ export default [
     input: true,
     key: 'disableClearIcon',
     label: 'Disable Clear Icon',
-    tooltip: 'Clear Icon allows easily clear component\'s value',
+    tooltip: 'Clear Icon allows easily clear component\'s value.',
   },
 ];

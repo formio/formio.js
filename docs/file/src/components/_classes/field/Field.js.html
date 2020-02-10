@@ -245,6 +245,13 @@ export default class Field extends Component {
     if (this.noField) {
       return super.render(element);
     }
+    else if (this.isAdvancedLabel) {
+      return super.render(this.renderTemplate(&apos;field&apos;, {
+        ...this.getLabelInfo(),
+        labelMarkup: this.renderTemplate(&apos;label&apos;),
+        element: element
+      }, &apos;align&apos;));
+    }
     else {
       return super.render(this.renderTemplate(&apos;field&apos;, {
         labelMarkup: this.renderTemplate(&apos;label&apos;),

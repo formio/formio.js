@@ -562,6 +562,7 @@ class ValidationChecker {
         }
       },
       mask: {
+        key: 'inputMask',
         message(component) {
           return component.t(component.errorMessage('mask'), {
             field: component.errorLabel,
@@ -574,16 +575,20 @@ class ValidationChecker {
             const maskName = value ? value.maskName : undefined;
             const formioInputMask = component.getMaskByName(maskName);
             if (formioInputMask) {
-              inputMask = getInputMask(formioInputMask);
+              inputMask = formioInputMask;
             }
             value = value ? value.value : value;
           }
           else {
             inputMask = component._inputMask || component.component.inputMask;
           }
+
+          inputMask = inputMask ? getInputMask(inputMask) : null;
+
           if (value && inputMask) {
             return matchInputMask(value, component.component.defaultMask || getInputMask(inputMask));
           }
+
           return true;
         }
       },
@@ -663,6 +668,46 @@ class ValidationChecker {
           }
 
           return date.isAfter(minDate) || date.isSame(minDate);
+        }
+      },
+      minYear: {
+        key: 'minYear',
+        message(component, setting) {
+          return component.t(component.errorMessage('minYear'), {
+            field: component.errorLabel,
+            minYear: setting,
+          });
+        },
+        check(component, setting, value) {
+          const minYear = setting;
+          let year = /\d{4}$/.exec(value);
+          year = year ? year[0] : null;
+
+          if (!minYear || !year) {
+            return true;
+          }
+
+          return +year >= +minYear;
+        }
+      },
+      maxYear: {
+        key: 'maxYear',
+        message(component, setting) {
+          return component.t(component.errorMessage('maxYear'), {
+            field: component.errorLabel,
+            maxYear: setting,
+          });
+        },
+        check(component, setting, value) {
+          const maxYear = setting;
+          let year = /\d{4}$/.exec(value);
+          year = year ? year[0] : null;
+
+          if (!maxYear || !year) {
+            return true;
+          }
+
+          return +year <= +maxYear;
         }
       },
       calendar: {

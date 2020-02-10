@@ -170,7 +170,7 @@ export default class SelectComponent extends Field {
    */
   addOption(value, label, attrs = {}, id) {
     const option = {
-      value: _.isObject(value) ? value : String(value),
+      value: _.isObject(value) ? value :  _.isNull(value) ? this.emptyValue : String(value),
       label: label
     };
 
@@ -1144,11 +1144,12 @@ export default class SelectComponent extends Field {
       !this.lazyLoadInit &&
       !this.active &&
       !this.selectOptions.length &&
-      hasValue
+      hasValue &&
+      this.visible
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(value, true);
+      this.triggerUpdate(_.get(value.data || value, this.component.searchField, value), true);
       return changed;
     }
 

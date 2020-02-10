@@ -251,10 +251,14 @@
     placeholder: &apos;Default Value&apos;,
     tooltip: &apos;The will be the value for this field, before user interaction. Having a default value will override the placeholder text.&apos;,
     input: true,
-    defaultValue: {
-      mode: &apos;autocomplete&apos;,
-      address: {},
-    },
+    customDefaultValue: ({ instance }) =&gt; (
+      instance.manualModeEnabled
+        ? {
+          mode: &apos;autocomplete&apos;,
+          address: {},
+        }
+        : {}
+    ),
   },
 ];
 </code></pre>

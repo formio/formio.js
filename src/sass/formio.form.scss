@@ -1116,6 +1116,16 @@ div[data-oembed-url] {
   border-right: solid 5px hsl(0, 0%, 80%);
 }
 
+.formio-component-address.formio-component-label-hidden {
+  & > label.field-required {
+    z-index: 1;
+
+    & ~ .address-autocomplete-container .address-autocomplete-remove-value-icon {
+      right: 20px;
+    }
+  }
+}
+
 .address-autocomplete-container {
   position: relative;
 
@@ -1150,4 +1160,16 @@ div[data-oembed-url] {
 .autocomplete > div.selected {
   background: #1e90ff;
   color: #ffffff;
+}
+
+.field-wrapper {
+  display: flex;
+
+  &--reverse {
+    flex-direction: row-reverse;
+  }
+
+  .field-label--right {
+    text-align: right;
+  }
 }

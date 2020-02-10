@@ -1172,7 +1172,8 @@ export default class Webform extends NestedDataComponent {
           });
         }
         else if (err) {
-          createListItem(err);
+          const message = _.isObject(err) ? err.message || '' : err;
+          createListItem(message);
         }
       }
     });
@@ -1369,7 +1370,7 @@ export default class Webform extends NestedDataComponent {
           return reject();
         }
 
-        this.getAllComponents().forEach((comp) => {
+        this.everyComponent((comp) => {
           const { persistent } = comp.component;
           if (persistent === 'client-only') {
             _.unset(submission.data, comp.path);
