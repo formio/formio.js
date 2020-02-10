@@ -586,6 +586,54 @@ export default class Component extends Element {
     return this._path;
   }
 
+  get labelPosition() {
+    return this.component.labelPosition;
+  }
+
+  get labelWidth() {
+    return this.component.labelWidth || 30;
+  }
+
+  get labelMargin() {
+    return this.component.labelMargin || 3;
+  }
+
+  get isAdvancedLabel() {
+    return [
+      'left-left',
+      'left-right',
+      'right-left',
+      'right-right'
+    ].includes(this.labelPosition);
+  }
+
+  get labelPositions() {
+    return this.labelPosition.split('-');
+  }
+
+  rightDirection(direction) {
+    return direction === 'right';
+  }
+
+  getLabelInfo() {
+    const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isRightAlign = this.rightDirection(this.labelPositions[1]);
+    const labelStyles = `
+      flex: ${this.labelWidth};
+      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+    `;
+    const contentStyles = `
+      flex: ${100 - this.labelWidth - this.labelMargin};
+    `;
+
+    return {
+      isRightPosition,
+      isRightAlign,
+      labelStyles,
+      contentStyles
+    };
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
