@@ -673,7 +673,7 @@ export default class WebformBuilder extends Component {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
-    else {
+    if (group.slice(0, group.indexOf('-')) === 'resource') {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
