@@ -32,10 +32,14 @@ module.exports = class Unique extends Rule {
           $options: 'i'
         };
       }
-      // FOR-213 - Pluck the unique location id
-      else if (_.isPlainObject(value) && value.hasOwnProperty('address_components') && value.hasOwnProperty('place_id')) {
-        query[`${path}.place_id`] = {
-          $regex: new RegExp(`^${escapeRegExCharacters(value.place_id)}$`),
+      else if (
+        _.isPlainObject(value) &&
+        value.address &&
+        value.address['address_components'] &&
+        value.address['place_id']
+      ) {
+        query[`${path}.address.place_id`] = {
+          $regex: new RegExp(`^${escapeRegExCharacters(value.address['place_id'])}$`),
           $options: 'i'
         };
       }
@@ -51,7 +55,7 @@ module.exports = class Unique extends Rule {
       query.deleted = { $eq: null };
 
       // Try to find an existing value within the form
-      this.config.db.models.submission.findOne(query, (err, result) => {
+      this.config.db.findOne(query, (err, result) => {
         if (err) {
           return resolve(false);
         }

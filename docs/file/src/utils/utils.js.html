@@ -50,8 +50,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +143,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -247,9 +255,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from &apos;./builder&apos;;
-export { BuilderUtils };
-
 export * from &apos;./formUtils&apos;;
 
 // Configure JsonLogic
@@ -286,14 +291,12 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, &apos;root._form&apos;, {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === &apos;string&apos;) {
     if (ret) {
       func += `;return ${ret}`;
     }
-    const params = _.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
@@ -311,7 +314,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
+      func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
     catch (err) {
@@ -323,27 +326,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === &apos;function&apos;) {
     try {
-      if (typeof window === &apos;object&apos;) {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
-      else {
-        // Need to assume we&apos;re server side and limit ourselves to a sandbox VM
-        const vm = require(&apos;vm&apos;);
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
+      returnVal = Evaluator.evaluate(func, args);
     }
     catch (err) {
       returnVal = null;
@@ -559,6 +542,11 @@ export function checkCondition(component, row, data, form, instance) {
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don&apos;t fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
   switch (trigger.type) {
     case &apos;simple&apos;:
       return checkSimpleConditional(component, trigger.simple, row, data);
@@ -987,6 +975,7 @@ export function getInputMask(mask) {
         maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
+        maskArray.numeric = false;
         maskArray.push(mask[i]);
         break;
     }

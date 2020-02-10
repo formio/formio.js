@@ -4,6 +4,102 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.9.0-beta.3
+### Fixed
+ - Added check for empty triggers to skip it
+ - Fixed defaultValue for multiple components to make them not return [[]]
+ - Time component raw data
+ - Fixed error appearing for isUploadEnabled Textareas for images with missing alt attribute
+ - Fixed copying info from nested components for resources
+ - Address Component fixes.
+ - Fixed an issue where select components would fire wrong search value
+ 
+### Changed
+ - Improve interpolation for noeval
+ - Upgrade dompurify@2.0.8, @babel/cli@7.8.4, @babel/core@7.8.4, @babel/preset-env@7.8.4, jsdom@16.1.0
+
+### Added
+ - Added min and max year validation
+ 
+### Removed
+ - Removed the need for getAllComponents.
+
+## 4.9.0-beta.2
+### Fixed
+ - Missing key for mask validation added 
+ - Pick message from error object to not display 'Object object' 
+ - Fix setting value in wysiwyg editors 
+ - Fixed DataGrid removeRow. 
+ - Make resource fields group editable 
+ - Fixed problem where the button loaders were occurring on all submit buttons instead of the one clicked.
+ - Fixed ability to sumbit form on required select field with no data 
+
+## 4.9.0-beta.1
+### Added
+ - Created nested base classes for DataGrid, EditGrid, and Containers
+ - Adding addComponent hook. 
+ - Adding asynchronous validations through the checkAsyncValidity method.
+ - Allow generic nested components to be instantiated
+ - Changing data model to getters and setters and allow recursive setting.
+ - Adding a better mechanism for setting the component paths.
+ - Adding a sanitize flag to setSubmission so that it will not merge existing data.
+ 
+### Fixed
+ - Ensure that the checkbox component updates when it is visible.
+ - Fixed error handling on data based nested components.
+ - Fixing the Element polyfill to work isomorphically
+ - Fixing async validations to be easier to configure and also handle async operations more efficiently.
+ - is-invalid on choicesjs
+ - Fixed an issue where the wizard builder would create duplicate pages and cause conflicts.
+
+### Changed
+ - Removed recursive include in utils.
+ - Modified the Evaluator so that it could be extended by external systems.
+ - Upgrade idb@5.0.1
+
+### Removed
+ - Removing the isBuilt property since it is not being used anymore
+
+## 4.8.1
+### Fixed
+ - Issue where regular promises were used in new address component and was breaking Angular 7 builds.
+ - Issue where tags component would not get its value set properly.
+
+### Added
+ - A way to disable certain dates from the DateTime picker.
+ - File types to the file input.
+ 
+### Changed
+ - Upgrade fetch-mock@8.3.2, mocha@7.0.1, i18next@19.1.0
+ 
+## 4.8.0
+### Added
+ - Error messages when loadForm and loadSubmission fails.
+
+### Changed
+ - Replaced usage of `render` template function with usage of pre-compiled template, deprecated `render` template function
+ - Tooltip and Description component settings to be Ace Textarea so that it would be convenient for HTML
+ - Changed dirty parameter value for wizard onchange validations.
+ 
+### Fixed
+ - Fixed on hover notification for datetime
+ - Fixed editing existing signature. 
+ - Added check for hasComponent in WebformBuilder. 
+ - Added modified flag to wizard onChange event.
+ - `settings.recaptcha.isEnabled` not being populated for the form in Form Builder
+ - Button Click reCAPTCHA being triggered on Form Load instead of Button Click
+ - Fix form version control 
+ - Normalize date value for day component
+ - Fileuploader component does not render the progress percentage
+ - Don't interpolate content when in builder mode so that it won't throw errors and shows the interpolation options.
+ - Fixed unexpected validation for selectboxes on pristine form
+ - Ace Textarea issues
+   - Placeholder not disappearing when typing
+   - Editor settings passed through `options` being mutated (`options.editors.ace.settings`)
+   - Editor settings from component JSON being ignored
+   - `minLines`, `maxLines`, `tabSize` Aces settings being hardcoded without ability to override
+ - ```userPermissions``` method not handling submissions with multiple groups properly 
+
 ## 4.8.0-rc.14
 ### Changed
  - Added improvements to accessibility.

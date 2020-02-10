@@ -91,7 +91,7 @@ export default class TreeComponent extends NestedComponent {
       return super.render();
     }
 
-    return super.render(this.renderTree(this.tree));
+    return super.render(this.renderTree(this.treeRoot));
   }
 
   renderTree(node = {}, odd = true) {
@@ -144,7 +144,7 @@ export default class TreeComponent extends NestedComponent {
 
     return NativePromise.all([
       super.attach(element),
-      this.attachNode(this.refs.root, this.tree),
+      this.attachNode(this.refs.root, this.treeRoot),
     ]);
   }
 
@@ -399,14 +399,14 @@ export default class TreeComponent extends NestedComponent {
 
   setRoot() {
     const value = this.dataValue;
-    this.tree = new Node(null, value, {
+    this.treeRoot = new Node(null, value, {
       isNew: !value.data,
       createComponents: this.createComponents.bind(this),
       checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
     });
     this.hook('tree.setRoot', {
-      root: this.tree,
+      root: this.treeRoot,
       component: this,
     });
   }
@@ -416,12 +416,12 @@ export default class TreeComponent extends NestedComponent {
   }
 
   updateTree() {
-    this.updateValue(this.tree.value);
+    this.updateValue(this.treeRoot.value);
     this.redraw();
   }
 
   checkData(data, flags, row) {
-    return this.checkNode(data, this.tree, flags, row);
+    return this.checkNode(data, this.treeRoot, flags, row);
   }
 
   checkNode(data, node, flags, row) {

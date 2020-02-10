@@ -15,9 +15,6 @@ const { fetch } = fetchPonyfill({
   Promise: NativePromise
 });
 
-import BuilderUtils from './builder';
-export { BuilderUtils };
-
 export * from './formUtils';
 
 // Configure JsonLogic
@@ -54,14 +51,12 @@ export function evaluate(func, args, ret, tokenize) {
     args.form = _.get(args.instance, 'root._form', {});
   }
 
-  const originalArgs = args;
   const componentKey = component.key;
 
   if (typeof func === 'string') {
     if (ret) {
       func += `;return ${ret}`;
     }
-    const params = _.keys(args);
 
     if (tokenize) {
       // Replace all {{ }} references with actual data.
@@ -79,7 +74,7 @@ export function evaluate(func, args, ret, tokenize) {
     }
 
     try {
-      func = Evaluator.evaluator(func, ...params);
+      func = Evaluator.evaluator(func, args);
       args = _.values(args);
     }
     catch (err) {
@@ -91,27 +86,7 @@ export function evaluate(func, args, ret, tokenize) {
 
   if (typeof func === 'function') {
     try {
-      if (typeof window === 'object') {
-        returnVal = Array.isArray(args) ? func(...args) : func(args);
-      }
-      else {
-        // Need to assume we're server side and limit ourselves to a sandbox VM
-        const vm = require('vm');
-        const sandbox = vm.createContext({ ...originalArgs, result: null });
-
-        // Build the arg string
-        let argStr = _.keys(originalArgs).join();
-
-        if (!Array.isArray(args)) {
-          argStr = `{${argStr}}`;
-        }
-
-        // Execute the script
-        const script = new vm.Script(`result = ${func.toString()}(${argStr});`);
-        script.runInContext(sandbox, { timeout: 250 });
-
-        returnVal = sandbox.result;
-      }
+      returnVal = Evaluator.evaluate(func, args);
     }
     catch (err) {
       returnVal = null;
@@ -327,6 +302,11 @@ export function checkCondition(component, row, data, form, instance) {
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don't fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
   switch (trigger.type) {
     case 'simple':
       return checkSimpleConditional(component, trigger.simple, row, data);
@@ -755,6 +735,7 @@ export function getInputMask(mask) {
         maskArray.push(/[a-zA-Z0-9]/);
         break;
       default:
+        maskArray.numeric = false;
         maskArray.push(mask[i]);
         break;
     }

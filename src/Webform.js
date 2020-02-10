@@ -6,7 +6,7 @@ import Formio from './Formio';
 import NativePromise from 'native-promise-only';
 import Tooltip from 'tooltip.js';
 import Components from './components/Components';
-import NestedComponent from './components/_classes/nested/NestedComponent';
+import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import { fastCloneDeep, currentTimezone } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -43,7 +43,7 @@ function getOptions(options) {
 /**
  * Renders a Form.io form within the webpage.
  */
-export default class Webform extends NestedComponent {
+export default class Webform extends NestedDataComponent {
   /**
    * Creates a new Form instance.
    *
@@ -802,7 +802,7 @@ export default class Webform extends NestedComponent {
     });
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags = {}) {
     if (!submission || !submission.data) {
       submission = { data: {} };
     }
@@ -819,7 +819,9 @@ export default class Webform extends NestedComponent {
     }
 
     const changed = super.setValue(submission.data, flags);
-    this.mergeData(this.data, submission.data);
+    if (!flags.sanitize) {
+      this.mergeData(this.data, submission.data);
+    }
     submission.data = this.data;
     this._submission = submission;
     return changed;
@@ -859,8 +861,6 @@ export default class Webform extends NestedComponent {
     this.component.input = false;
 
     this.addComponents();
-    this.isBuilt = true;
-
     this.on('submitButton', options => {
       this.submit(false, options).catch(e => e !== false && console.log(e));
     }, true);
@@ -1163,7 +1163,8 @@ export default class Webform extends NestedComponent {
           err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
         }
         else if (err) {
-          createListItem(err);
+          const message = _.isObject(err) ? err.message || '' : err;
+          createListItem(message);
         }
       }
     });
@@ -1360,10 +1361,10 @@ export default class Webform extends NestedComponent {
           return reject();
         }
 
-        this.getAllComponents().forEach((comp) => {
-          const { persistent, key } = comp.component;
+        this.everyComponent((comp) => {
+          const { persistent } = comp.component;
           if (persistent === 'client-only') {
-            delete submission.data[key];
+            _.unset(submission.data, comp.path);
           }
         });
 

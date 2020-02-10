@@ -121,7 +121,7 @@ export function eachComponent(components, fn, includeAll, path, parent) {
  */
 export function matchComponent(component, query) {
   if (isString(query)) {
-    return component.key === query;
+    return (component.key === query) || (component.path === query);
   }
   else {
     let matches = false;
@@ -149,8 +149,7 @@ export function matchComponent(component, query) {
 export function getComponent(components, key, includeAll) {
   let result;
   eachComponent(components, (component, path) => {
-    if (path === key) {
-      component.path = path;
+    if ((path === key) || (component.path === key)) {
       result = component;
       return true;
     }
@@ -167,9 +166,8 @@ export function getComponent(components, key, includeAll) {
  */
 export function searchComponents(components, query) {
   const results = [];
-  eachComponent(components, (component, path) => {
+  eachComponent(components, (component) => {
     if (matchComponent(component, query)) {
-      component.path = path;
       results.push(component);
     }
   }, true);
@@ -325,6 +323,10 @@ export function applyFormChanges(form, changes) {
       case 'remove':
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
+          const oldComponent = get(form.components, path);
+          if (oldComponent.key !== component.key) {
+            path.pop();
+          }
           removeComponent(form.components, path);
         });
         break;
@@ -332,7 +334,14 @@ export function applyFormChanges(form, changes) {
         findComponent(form.components, change.key, null, function(component, path) {
           found = true;
           try {
-            set(form.components, path, applyPatch(component, change.patches).newDocument);
+            const oldComponent = get(form.components, path);
+            const newComponent = applyPatch(component, change.patches).newDocument;
+
+            if (oldComponent.key !== newComponent.key) {
+              path.pop();
+            }
+
+            set(form.components, path, newComponent);
           }
           catch (err) {
             failed.push(change);

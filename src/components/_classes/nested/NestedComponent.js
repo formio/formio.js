@@ -119,6 +119,10 @@ export default class NestedComponent extends Field {
     });
   }
 
+  componentContext() {
+    return this._data;
+  }
+
   get data() {
     return this._data;
   }
@@ -126,24 +130,12 @@ export default class NestedComponent extends Field {
   set data(value) {
     this._data = value;
     this.eachComponent((component) => {
-      component.data = this._data;
+      component.data = this.componentContext(component);
     });
   }
 
   getComponents() {
     return this.components || [];
-  }
-
-  getAllComponents() {
-    return this.getComponents().reduce((components, component) => {
-      let result = component;
-
-      if (component && component.getAllComponents) {
-        result = component.getAllComponents();
-      }
-
-      return components.concat(result);
-    }, []);
   }
 
   /**
@@ -165,6 +157,19 @@ export default class NestedComponent extends Field {
         }
       }
     });
+  }
+
+  hasComponent(component) {
+    let result = false;
+
+    this.everyComponent((comp) => {
+      if (comp === component) {
+        result = true;
+        return false;
+      }
+    });
+
+    return result;
   }
 
   flattenComponents() {
@@ -251,13 +256,25 @@ export default class NestedComponent extends Field {
    * @param data
    */
   createComponent(component, options, data, before) {
+    if (!component) {
+      return;
+    }
     options = options || this.options;
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
     options.root = this.root || this;
+    options.skipInit = true;
     const comp = Components.create(component, options, data, true);
-    comp.isBuilt = true;
+    if (component.key) {
+      let thisPath = this;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      comp.path = thisPath.path ? `${thisPath.path}.` : '';
+      comp.path += component.key;
+    }
+    comp.init();
     if (component.internal) {
       return comp;
     }
@@ -326,6 +343,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
       return comp;
@@ -561,6 +579,12 @@ export default class NestedComponent extends Field {
     );
   }
 
+  checkAsyncValidity(data, dirty, row) {
+    const promises = [super.checkAsyncValidity(data, dirty, row)];
+    this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row)));
+    return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+  }
+
   setPristine(pristine) {
     super.setPristine(pristine);
     this.getComponents().forEach((comp) => comp.setPristine(pristine));
@@ -585,7 +609,8 @@ export default class NestedComponent extends Field {
   }
 
   get errors() {
-    return this.getAllComponents().reduce((errors, comp) => errors.concat(comp.errors || []), []);
+    const thisErrors = this.error ? [this.error] : [];
+    return this.getComponents().reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors);
   }
 
   getValue() {
@@ -594,7 +619,7 @@ export default class NestedComponent extends Field {
 
   resetValue() {
     this.getComponents().forEach((comp) => comp.resetValue());
-    _.unset(this.data, this.key);
+    this.unset();
     this.setPristine(true);
   }
 

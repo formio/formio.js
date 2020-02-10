@@ -231,10 +231,22 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = '';
+
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this.component = this.mergeSchema(component || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -253,7 +265,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -369,9 +381,6 @@ export default class Component extends Element {
     // To force this component to be invalid.
     this.invalid = false;
 
-    // Determine if the component has been built.
-    this.isBuilt = false;
-
     if (this.component) {
       this.type = this.component.type;
       if (this.allowData && this.key) {
@@ -405,6 +414,18 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
+
+  mergeSchema(component = {}) {
+    return _.defaultsDeep(component, this.defaultSchema);
+  }
 
   // Allow componets to notify when ready.
   get ready() {
@@ -563,6 +584,54 @@ export default class Component extends Element {
     }
 
     return this._path;
+  }
+
+  get labelPosition() {
+    return this.component.labelPosition;
+  }
+
+  get labelWidth() {
+    return this.component.labelWidth || 30;
+  }
+
+  get labelMargin() {
+    return this.component.labelMargin || 3;
+  }
+
+  get isAdvancedLabel() {
+    return [
+      'left-left',
+      'left-right',
+      'right-left',
+      'right-right'
+    ].includes(this.labelPosition);
+  }
+
+  get labelPositions() {
+    return this.labelPosition.split('-');
+  }
+
+  rightDirection(direction) {
+    return direction === 'right';
+  }
+
+  getLabelInfo() {
+    const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isRightAlign = this.rightDirection(this.labelPositions[1]);
+    const labelStyles = `
+      flex: ${this.labelWidth};
+      ${isRightPosition ? 'margin-left' : 'margin-right'}:${this.labelMargin}%;
+    `;
+    const contentStyles = `
+      flex: ${100 - this.labelWidth - this.labelMargin};
+    `;
+
+    return {
+      isRightPosition,
+      isRightAlign,
+      labelStyles,
+      contentStyles
+    };
   }
 
   /**
@@ -724,7 +793,14 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
-    data.render = this.renderTemplate.bind(this);
+    data.render = (...args) => {
+      console.warn(`Form.io 'render' template function is deprecated.
+      If you need to render template (template A) inside of another template (template B),
+      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      return this.renderTemplate(...args);
+    };
+    data.label = this.labelInfo;
+    data.tooltip = this.interpolate(this.component.tooltip || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
 
     // Allow more specific template names
     const names = [
@@ -1249,6 +1325,7 @@ export default class Component extends Element {
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
+      iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
     }, additional));
@@ -1836,16 +1913,18 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    settings = _.merge(_.get(this.options, 'editors.ace.settings', {}), settings || {});
+    const defaultAceSettings = {
+      maxLines: 12,
+      minLines: 12,
+      tabSize: 2,
+      mode: 'javascript',
+    };
+    settings = _.merge({}, defaultAceSettings, _.get(this.options, 'editors.ace.settings', {}), settings || {});
     return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
-        editor.setOptions({
-          maxLines: 12,
-          minLines: 12
-        });
-        editor.getSession().setTabSize(2);
+        editor.setOptions(settings);
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on('change', () => onChange(editor.getValue()));
         return editor;
@@ -1865,6 +1944,10 @@ export default class Component extends Element {
           },
         });
       });
+  }
+
+  get tree() {
+    return this.component.tree || false;
   }
 
   /**
@@ -1915,7 +1998,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -1925,16 +2008,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible && this.component.clearOnHide && !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) && (value !== undefined)) {
+      value = this.hook('setDataValue', value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -1954,6 +2041,10 @@ export default class Component extends Element {
     }
   }
 
+  unset() {
+    _.unset(this._data, this.key);
+  }
+
   /**
    * Deletes the value of the component.
    */
@@ -1962,7 +2053,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -1991,7 +2082,7 @@ export default class Component extends Element {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**
@@ -2096,13 +2187,8 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple
-        ? this.dataValue.length
-          ? [this.defaultValue]
-          : []
-        : this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue, {
+      if (this.defaultValue) {
+        this.setValue(this.defaultValue, {
           noUpdateEvent: true
         });
       }
@@ -2167,7 +2253,7 @@ export default class Component extends Element {
       noValidate: true,
       resetValue: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -2183,6 +2269,14 @@ export default class Component extends Element {
       ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
+    }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &&
+      newValue !== null &&
+      !this.hasValue()
+    ) {
+      return true;
     }
     return !_.isEqual(newValue, oldValue);
   }
@@ -2343,21 +2437,7 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  /**
-   * Checks the validity of this component and sets the error message if it is invalid.
-   *
-   * @param data
-   * @param dirty
-   * @param row
-   * @return {boolean}
-   */
-  checkComponentValidity(data, dirty, row) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      this.setCustomValidity('');
-      return true;
-    }
-
-    const messages = Validator.checkComponent(this, data, row, true);
+  setComponentValidity(messages, dirty) {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
     if (messages.length && (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
@@ -2368,10 +2448,36 @@ export default class Component extends Element {
     return !hasErrors;
   }
 
+  /**
+   * Checks the validity of this component and sets the error message if it is invalid.
+   *
+   * @param data
+   * @param dirty
+   * @param row
+   * @return {boolean}
+   */
+  checkComponentValidity(data, dirty, row, async = false) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity('');
+      return async ? NativePromise.resolve(true) : true;
+    }
+
+    const check = Validator.checkComponent(this, data, row, true, async);
+    return async ?
+      check.then((messages) => this.setComponentValidity(messages, dirty)) :
+      this.setComponentValidity(check, dirty);
+  }
+
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
     return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
   /**

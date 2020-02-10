@@ -50,8 +50,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +143,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -365,28 +373,16 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = this.component.as || &apos;javascript&apos;;
+          settings.mode = this.component.as;
           this.addAce(element, settings, (newValue) =&gt; this.updateEditorValue(index, newValue)).then((ace) =&gt; {
             this.editors[index] = ace;
-            ace.on(&apos;input&apos;, () =&gt; this.acePlaceholder());
+            ace.on(&apos;change&apos;, () =&gt; this.checkAcePlaceholder(ace));
             let dataValue = this.dataValue;
             dataValue = Array.isArray(dataValue) ? dataValue[index] : dataValue;
             ace.setValue(this.setConvertedValue(dataValue, index));
             if (this.component.placeholder) {
               setTimeout(() =&gt; {
-                const shouldShow = !ace.session.getValue().length;
-                let node = ace.renderer.emptyMessageNode;
-                if (!shouldShow &amp;&amp; node) {
-                  ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
-                  ace.renderer.emptyMessageNode = null;
-                }
-                else if (shouldShow &amp;&amp; !node) {
-                  node = ace.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
-                  node.textContent = this.t(this.component.placeholder);
-                  node.className = &apos;ace_invisible ace_emptyMessage&apos;;
-                  node.style.padding = &apos;0 9px&apos;;
-                  ace.renderer.scroller.appendChild(node);
-                }
+                this.checkAcePlaceholder(ace);
               }, 100);
             }
             editorReady(ace);
@@ -474,6 +470,22 @@ export default class TextAreaComponent extends TextFieldComponent {
     return element;
   }
 
+  checkAcePlaceholder(ace) {
+    const shouldShow = !ace.session.getValue().length;
+    let node = ace.renderer.emptyMessageNode;
+    if (!shouldShow &amp;&amp; node) {
+      ace.renderer.scroller.removeChild(ace.renderer.emptyMessageNode);
+      ace.renderer.emptyMessageNode = null;
+    }
+    else if (shouldShow &amp;&amp; !node) {
+      node = ace.renderer.emptyMessageNode = this.ce(&apos;div&apos;);
+      node.textContent = this.t(this.component.placeholder);
+      node.className = &apos;ace_invisible ace_emptyMessage&apos;;
+      node.style.padding = &apos;0 9px&apos;;
+      ace.renderer.scroller.appendChild(node);
+    }
+  }
+
   attach(element) {
     const attached = super.attach(element);
     // Make sure we restore the value after attaching since wysiwygs and readonly texts need an additional set.
@@ -551,8 +563,9 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setValueAt(index, value, flags) {
     super.setValueAt(index, value, flags);
+
     if (this.editorsReady[index]) {
-      this.editorsReady[index].then((editor) =&gt; {
+      const setEditorsValue = (flags) =&gt; (editor) =&gt; {
         this.autoModified = true;
         if (!flags.skipWysiwyg) {
           switch (this.component.editor) {
@@ -578,7 +591,9 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
           }
         }
-      });
+      };
+
+      this.editorsReady[index].then(setEditorsValue(_.clone(flags)));
     }
   }
 

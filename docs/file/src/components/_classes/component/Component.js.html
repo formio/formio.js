@@ -50,8 +50,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nestedarray">components/_classes/nestedarray</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nestedarray/NestedArrayComponent.js~NestedArrayComponent.html">NestedArrayComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nesteddata">components/_classes/nesteddata</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nesteddata/NestedDataComponent.js~NestedDataComponent.html">NestedDataComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AddressComponentMode">AddressComponentMode</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
@@ -140,6 +143,11 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
@@ -463,10 +471,22 @@ export default class Component extends Element {
     }
 
     /**
+     * Set the validator instance.
+     */
+    this.validator = Validator;
+
+    /**
+     * The data path to this specific component instance.
+     *
+     * @type {string}
+     */
+    this.path = &apos;&apos;;
+
+    /**
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = _.defaultsDeep(component || {} , this.defaultSchema);
+    this.component = this.mergeSchema(component || {});
 
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
@@ -485,7 +505,7 @@ export default class Component extends Element {
      * The data object in which this component resides.
      * @type {*}
      */
-    this.data = data || {};
+    this._data = data || {};
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -601,9 +621,6 @@ export default class Component extends Element {
     // To force this component to be invalid.
     this.invalid = false;
 
-    // Determine if the component has been built.
-    this.isBuilt = false;
-
     if (this.component) {
       this.type = this.component.type;
       if (this.allowData &amp;&amp; this.key) {
@@ -637,6 +654,18 @@ export default class Component extends Element {
     }
   }
   /* eslint-enable max-statements */
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+  }
+
+  mergeSchema(component = {}) {
+    return _.defaultsDeep(component, this.defaultSchema);
+  }
 
   // Allow componets to notify when ready.
   get ready() {
@@ -795,6 +824,54 @@ export default class Component extends Element {
     }
 
     return this._path;
+  }
+
+  get labelPosition() {
+    return this.component.labelPosition;
+  }
+
+  get labelWidth() {
+    return this.component.labelWidth || 30;
+  }
+
+  get labelMargin() {
+    return this.component.labelMargin || 3;
+  }
+
+  get isAdvancedLabel() {
+    return [
+      &apos;left-left&apos;,
+      &apos;left-right&apos;,
+      &apos;right-left&apos;,
+      &apos;right-right&apos;
+    ].includes(this.labelPosition);
+  }
+
+  get labelPositions() {
+    return this.labelPosition.split(&apos;-&apos;);
+  }
+
+  rightDirection(direction) {
+    return direction === &apos;right&apos;;
+  }
+
+  getLabelInfo() {
+    const isRightPosition = this.rightDirection(this.labelPositions[0]);
+    const isRightAlign = this.rightDirection(this.labelPositions[1]);
+    const labelStyles = `
+      flex: ${this.labelWidth};
+      ${isRightPosition ? &apos;margin-left&apos; : &apos;margin-right&apos;}:${this.labelMargin}%;
+    `;
+    const contentStyles = `
+      flex: ${100 - this.labelWidth - this.labelMargin};
+    `;
+
+    return {
+      isRightPosition,
+      isRightAlign,
+      labelStyles,
+      contentStyles
+    };
   }
 
   /**
@@ -956,7 +1033,14 @@ export default class Component extends Element {
     data.value = data.value || this.dataValue;
     data.disabled = this.disabled;
     data.builder = this.builderMode;
-    data.render = this.renderTemplate.bind(this);
+    data.render = (...args) =&gt; {
+      console.warn(`Form.io &apos;render&apos; template function is deprecated.
+      If you need to render template (template A) inside of another template (template B),
+      pass pre-compiled template A (use this.renderTemplate(&apos;template_A_name&apos;) as template context variable for template B`);
+      return this.renderTemplate(...args);
+    };
+    data.label = this.labelInfo;
+    data.tooltip = this.interpolate(this.component.tooltip || &apos;&apos;).replace(/(?:\r\n|\r|\n)/g, &apos;&lt;br /&gt;&apos;);
 
     // Allow more specific template names
     const names = [
@@ -1481,6 +1565,7 @@ export default class Component extends Element {
       row: this.data,
       rowIndex: this.rowIndex,
       data: this.rootValue,
+      iconClass: this.iconClass.bind(this),
       submission: (this.root ? this.root._submission : {}),
       form: this.root ? this.root._form : {},
     }, additional));
@@ -2068,16 +2153,18 @@ export default class Component extends Element {
   }
 
   addAce(element, settings, onChange) {
-    settings = _.merge(_.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
+    const defaultAceSettings = {
+      maxLines: 12,
+      minLines: 12,
+      tabSize: 2,
+      mode: &apos;javascript&apos;,
+    };
+    settings = _.merge({}, defaultAceSettings, _.get(this.options, &apos;editors.ace.settings&apos;, {}), settings || {});
     return Formio.requireLibrary(&apos;ace&apos;, &apos;ace&apos;, _.get(this.options, &apos;editors.ace.src&apos;, ACE_URL), true)
       .then((editor) =&gt; {
         editor = editor.edit(element);
         editor.removeAllListeners(&apos;change&apos;);
-        editor.setOptions({
-          maxLines: 12,
-          minLines: 12
-        });
-        editor.getSession().setTabSize(2);
+        editor.setOptions(settings);
         editor.getSession().setMode(`ace/mode/${settings.mode}`);
         editor.on(&apos;change&apos;, () =&gt; onChange(editor.getValue()));
         return editor;
@@ -2097,6 +2184,10 @@ export default class Component extends Element {
           },
         });
       });
+  }
+
+  get tree() {
+    return this.component.tree || false;
   }
 
   /**
@@ -2147,7 +2238,7 @@ export default class Component extends Element {
       }
       return empty;
     }
-    return _.get(this.data, this.key);
+    return _.get(this._data, this.key);
   }
 
   /**
@@ -2157,16 +2248,20 @@ export default class Component extends Element {
    */
   set dataValue(value) {
     if (
+      !this.allowData ||
       !this.key ||
       (!this.visible &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
     ) {
       return value;
     }
+    if ((value !== null) &amp;&amp; (value !== undefined)) {
+      value = this.hook(&apos;setDataValue&apos;, value, this.key, this._data);
+    }
     if ((value === null) || (value === undefined)) {
-      _.unset(this.data, this.key);
+      this.unset();
       return value;
     }
-    _.set(this.data, this.key, value);
+    _.set(this._data, this.key, value);
     return value;
   }
 
@@ -2186,6 +2281,10 @@ export default class Component extends Element {
     }
   }
 
+  unset() {
+    _.unset(this._data, this.key);
+  }
+
   /**
    * Deletes the value of the component.
    */
@@ -2194,7 +2293,7 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   get defaultValue() {
@@ -2223,7 +2322,7 @@ export default class Component extends Element {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    return _.cloneDeep(defaultValue);
   }
 
   /**
@@ -2328,13 +2427,8 @@ export default class Component extends Element {
       });
     }
     else {
-      const defaultValue = this.component.multiple
-        ? this.dataValue.length
-          ? [this.defaultValue]
-          : []
-        : this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue, {
+      if (this.defaultValue) {
+        this.setValue(this.defaultValue, {
           noUpdateEvent: true
         });
       }
@@ -2399,7 +2493,7 @@ export default class Component extends Element {
       noValidate: true,
       resetValue: true
     });
-    _.unset(this.data, this.key);
+    this.unset();
   }
 
   /**
@@ -2415,6 +2509,14 @@ export default class Component extends Element {
       ((oldValue === undefined) || (oldValue === null) || this.isEmpty(oldValue))
     ) {
       return false;
+    }
+    // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
+    if (
+      newValue !== undefined &amp;&amp;
+      newValue !== null &amp;&amp;
+      !this.hasValue()
+    ) {
+      return true;
     }
     return !_.isEqual(newValue, oldValue);
   }
@@ -2575,21 +2677,7 @@ export default class Component extends Element {
     return !this.invalidMessage(data, dirty);
   }
 
-  /**
-   * Checks the validity of this component and sets the error message if it is invalid.
-   *
-   * @param data
-   * @param dirty
-   * @param row
-   * @return {boolean}
-   */
-  checkComponentValidity(data, dirty, row) {
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      this.setCustomValidity(&apos;&apos;);
-      return true;
-    }
-
-    const messages = Validator.checkComponent(this, data, row, true);
+  setComponentValidity(messages, dirty) {
     const hasErrors = !!messages.filter(message =&gt; message.level === &apos;error&apos;).length;
     if (messages.length &amp;&amp; (dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
@@ -2600,10 +2688,36 @@ export default class Component extends Element {
     return !hasErrors;
   }
 
+  /**
+   * Checks the validity of this component and sets the error message if it is invalid.
+   *
+   * @param data
+   * @param dirty
+   * @param row
+   * @return {boolean}
+   */
+  checkComponentValidity(data, dirty, row, async = false) {
+    data = data || this.rootValue;
+    row = row || this.data;
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      this.setCustomValidity(&apos;&apos;);
+      return async ? NativePromise.resolve(true) : true;
+    }
+
+    const check = Validator.checkComponent(this, data, row, true, async);
+    return async ?
+      check.then((messages) =&gt; this.setComponentValidity(messages, dirty)) :
+      this.setComponentValidity(check, dirty);
+  }
+
   checkValidity(data, dirty, row) {
     data = data || this.rootValue;
     row = row || this.data;
     return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkAsyncValidity(data, dirty, row) {
+    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, true));
   }
 
   /**

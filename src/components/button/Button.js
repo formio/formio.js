@@ -111,7 +111,6 @@ export default class ButtonComponent extends Field {
     let onError = null;
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
@@ -152,11 +151,8 @@ export default class ButtonComponent extends Field {
       };
     }
 
-    this.triggerReCaptcha();
-
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
-        this.loading = true;
         this.disabled = true;
       }, true);
       this.on('requestDone', () => {
@@ -225,6 +221,7 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
+    this.triggerReCaptcha();
     // Don't click if disabled or in builder mode.
     if (this.disabled || this.options.attachMode === 'builder') {
       return;
@@ -238,9 +235,11 @@ export default class ButtonComponent extends Field {
       case 'submit':
         event.preventDefault();
         event.stopPropagation();
+        this.loading = true;
         this.emit('submitButton', {
           state: this.component.state || 'submitted',
-          component: this.component
+          component: this.component,
+          instance: this
         });
         break;
       case 'event':
@@ -275,7 +274,11 @@ export default class ButtonComponent extends Field {
         break;
       }
       case 'url':
-        this.emit('requestButton');
+        this.loading = true;
+        this.emit('requestButton', {
+          component: this.component,
+          instance: this
+        });
         this.emit('requestUrl', {
           url: this.interpolate(this.component.url),
           headers: this.component.headers
