@@ -988,16 +988,17 @@ export default class Webform extends NestedDataComponent {
           this.removeEventListener(el, 'click');
           this.removeEventListener(el, 'keypress');
         });
+
+        this.removeChild(this.alert);
+        this.alert = null;
+        this.errorTooltip && this.errorTooltip.dispose();
+        this.errorTooltip = null;
       }
-      this.removeChild(this.alert);
-      this.alert = null;
-      this.errorTooltip && this.errorTooltip.dispose();
-      this.errorTooltip = null;
     };
 
     if (!type && this.submitted) {
       if (this.alert) {
-       removeAlert();
+        removeAlert();
       }
       return;
     }
