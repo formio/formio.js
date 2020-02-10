@@ -7,6 +7,8 @@ import NativePromise from 'native-promise-only';
 
 let Camera;
 const webViewCamera = navigator.camera || Camera;
+const SPACE_KEY = 32;
+const ENTER_KEY = 13;
 
 // canvas.toBlob polyfill.
 if (!HTMLCanvasElement.prototype.toBlob) {
@@ -135,8 +137,17 @@ export default class FileComponent extends Field {
     return formio;
   }
 
+  getAllowedFileTypes() {
+    if (this.component.filePattern && this.component.filePattern !== '*') {
+      return this.component.filePattern.split(',').join(', ');
+    }
+
+    return '.doc, .docx, .xls, .xlsx, .ppt, .potx, .pdf, .gif, .tiff, .tif, .jpe, .jpeg, .jpg, .png, .rtf, .txt, .bmp, etc.';
+  }
+
   render() {
     return super.render(this.renderTemplate('file', {
+      allowedFileTypes: this.getAllowedFileTypes(),
       fileSize: this.fileSize,
       files: this.dataValue || [],
       statuses: this.statuses,
@@ -354,22 +365,46 @@ export default class FileComponent extends Field {
       });
     });
 
-    this.refs.removeLink.forEach((removeLink, index) => {
-      this.addEventListener(removeLink, 'click', (event) => {
-        const fileInfo = this.dataValue[index];
+    const activateRemoveLink = (event, index) => {
+      const fileInfo = this.dataValue[index];
 
-        this.deleteFile(fileInfo);
-        event.preventDefault();
-        this.splice(index);
-        this.redraw();
+      this.deleteFile(fileInfo);
+      event.preventDefault();
+      this.splice(index);
+      this.redraw();
+    };
+
+    this.refs.removeLink.forEach((removeLink, index) => {
+      this.addEventListener(removeLink, 'click', (event) => activateRemoveLink(event, index));
+    });
+
+    this.refs.removeLink.forEach((removeLink, index) => {
+      this.addEventListener(removeLink, 'keydown', (event) => {
+        const { keyCode } = event;
+
+        if (keyCode === ENTER_KEY || keyCode === SPACE_KEY) {
+          activateRemoveLink(event, index);
+        }
       });
     });
 
+    const activateFileStatusRemove = (event, index) => {
+      event.preventDefault();
+      this.statuses.splice(index, 1);
+      this.redraw();
+    };
+
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
-      this.addEventListener(fileStatusRemove, 'click', (event) => {
-        event.preventDefault();
-        this.statuses.splice(index, 1);
-        this.redraw();
+      this.addEventListener(fileStatusRemove, 'click', (event) => activateFileStatusRemove(event, index));
+    });
+
+    this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
+      this.addEventListener(fileStatusRemove, 'keydown', (event) => {
+        const { keyCode } = event;
+
+        if (keyCode === ENTER_KEY || keyCode === SPACE_KEY) {
+          activateFileStatusRemove(event, index);
+        }
       });
     });
 

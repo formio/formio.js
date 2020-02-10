@@ -988,16 +988,17 @@ export default class Webform extends NestedDataComponent {
           this.removeEventListener(el, 'click');
           this.removeEventListener(el, 'keypress');
         });
+
+        this.removeChild(this.alert);
+        this.alert = null;
+        this.errorTooltip && this.errorTooltip.dispose();
+        this.errorTooltip = null;
       }
-      this.removeChild(this.alert);
-      this.alert = null;
-      this.errorTooltip && this.errorTooltip.dispose();
-      this.errorTooltip = null;
     };
 
     if (!type && this.submitted) {
       if (this.alert) {
-       removeAlert();
+        removeAlert();
       }
       return;
     }
@@ -1018,7 +1019,6 @@ export default class Webform extends NestedDataComponent {
     if (message) {
       this.alert = this.ce('div', {
         class: classes || `alert alert-${type}`,
-        role: 'alert'
       });
       if (message instanceof HTMLElement) {
         this.appendTo(message, this.alert);
@@ -1083,9 +1083,11 @@ export default class Webform extends NestedDataComponent {
    * Show the errors of this form within the alert dialog.
    *
    * @param {Object} error - An optional additional error to display along with the component errors.
+   * @param {boolean} triggerEvent
+   * @param {string} messageClass - A specific class for the help message.
    * @returns {*}
    */
-  showErrors(error, triggerEvent) {
+  showErrors(error, triggerEvent, messageClass) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -1128,7 +1130,7 @@ export default class Webform extends NestedDataComponent {
     });
 
     const message = document.createDocumentFragment();
-    const p = this.ce('p');
+    const p = this.ce('p', { id: 'fix-errors' });
     this.setContent(p, this.t('error'));
 
     const params = {
@@ -1141,18 +1143,22 @@ export default class Webform extends NestedDataComponent {
     const hotkeyInfo = this.ce('i', params);
     this.appendTo(hotkeyInfo, p);
 
-    const ul = this.ce('ul');
+    const ul = this.ce('ul', { 'aria-describedby': 'fix-errors' });
     errors.forEach(err => {
       if (err) {
         const createListItem = (message) => {
-          const params = { ref: 'errorRef', tabIndex: 0, 'aria-label': `${message}. Click to navigate to the field with following error.` };
+          const params = { ref: 'errorRef', tabIndex: 0 };
           const li = this.ce('li', params);
           this.setContent(li, message);
+
+          const helpMessage = this.ce('span', { class: messageClass || 'sr-only' });
+          this.setContent(helpMessage, this.t('errorListHelpMessage'));
 
           if (err.component && err.component.key) {
             li.dataset.componentKey = err.component.key;
           }
 
+          li.appendChild(helpMessage);
           this.appendTo(li, ul);
         };
 
@@ -1160,7 +1166,10 @@ export default class Webform extends NestedDataComponent {
           createListItem(`${err.message}`);
         }
         else if (err.messages && err.messages.length) {
-          err.messages.forEach(({ message }) => createListItem(`${err.component.label}. ${message}`));
+            err.messages.forEach(({ message }) => {
+            const additionalPeriod = message.charAt(message.length - 1) === '.' ? '' : '.';
+            createListItem(`${err.component.label}. ${message}${additionalPeriod} `);
+          });
         }
         else if (err) {
           const message = _.isObject(err) ? err.message || '' : err;

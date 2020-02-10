@@ -581,7 +581,6 @@ class ValidationChecker {
           }
           else {
             inputMask = component._inputMask || component.component.inputMask;
-            // inputMask = setting;
           }
 
           inputMask = inputMask ? getInputMask(inputMask) : null;
